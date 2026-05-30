@@ -7,9 +7,6 @@ import {
   buildDependenciesResult,
   categorizeVersionType,
   type DependenciesResult,
-  type DependencyInfo,
-  type DependencyTree,
-  type SemverRange,
 } from './dependencies-helpers.js'
 import {
   formatDependenciesCsv,

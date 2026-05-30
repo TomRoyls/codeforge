@@ -880,7 +880,7 @@ export async function buildOpalHorizonResult(
 export function generateRecommendations(
   fragments: OpalFragment[],
   veins: OpalVein[],
-  spectrum: OpalHorizonResult['spectrum'],
+  _spectrum: OpalHorizonResult['spectrum'],
   stats: OpalHorizonResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -325,7 +325,6 @@ export function measureScriptConsistency(content: string): number {
   if (loc === 0) return 0
 
   const usesConst = /\bconst\b/.test(content)
-  const usesLet = /\blet\b/.test(content)
   const usesVar = /\bvar\b/.test(content)
 
   let styleScore = 20
@@ -512,8 +511,8 @@ export function analyzeScripts(content: string): ScriptsInfo {
     { name: 'greek', val: greek },
   ]
   const sorted = Array.from(vals).sort((a, b) => b.val - a.val)
-  const dominantScript = sorted[0].name
   const isMultiscript = hieroglyphic >= 40 && demotic >= 40 && greek >= 40
+  const dominantScript = sorted[0]?.name ?? 'greek'
 
   return { hieroglyphic, demotic, greek, isMultiscript, dominantScript }
 }
@@ -695,7 +694,7 @@ export function analyzeStoneTablet(inscriptions: Inscription[], dirPath: string)
  * generateRecommendations(inscriptions, tablets, stats) // string[]
  */
 export function generateRecommendations(
-  inscriptions: Inscription[],
+  _inscriptions: Inscription[],
   tablets: StoneTablet[],
   stats: RosettaStoneStats,
 ): string[] {
@@ -804,13 +803,13 @@ export function buildRosettaStoneResult(
     overallReadability,
     translatorGrade: classifyTranslatorGrade(overallReadability),
     mostReadable: inscriptions.length > 0
-      ? inscriptions.reduce((b, i) => i.qualityScore > b.qualityScore ? i : b, inscriptions[0]).file : 'none',
+      ? inscriptions.reduce((b, i) => i.qualityScore > b.qualityScore ? i : b, inscriptions[0] as typeof inscriptions[number]).file : 'none',
     leastReadable: inscriptions.length > 0
-      ? inscriptions.reduce((w, i) => i.qualityScore < w.qualityScore ? i : w, inscriptions[0]).file : 'none',
+      ? inscriptions.reduce((w, i) => i.qualityScore < w.qualityScore ? i : w, inscriptions[0] as typeof inscriptions[number]).file : 'none',
     bestPreserved: inscriptions.length > 0
-      ? inscriptions.reduce((b, i) => i.preservation > b.preservation ? i : b, inscriptions[0]).file : 'none',
+      ? inscriptions.reduce((b, i) => i.preservation > b.preservation ? i : b, inscriptions[0] as typeof inscriptions[number]).file : 'none',
     mostCryptic: inscriptions.length > 0
-      ? inscriptions.reduce((c, i) => i.glyphs.obscureGlyphs > c.glyphs.obscureGlyphs ? i : c, inscriptions[0]).file : 'none',
+      ? inscriptions.reduce((c, i) => i.glyphs.obscureGlyphs > c.glyphs.obscureGlyphs ? i : c, inscriptions[0] as typeof inscriptions[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(inscriptions, tablets, stats)

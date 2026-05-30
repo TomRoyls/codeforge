@@ -30,6 +30,7 @@ export class TopologicalSort2 {
   sort(): string[] {
     const result: string[] = [];
     const queue: string[] = [];
+    let queueHead = 0
     const tempInDegree = new Map(this.inDegree);
 
     for (const [node, degree] of Array.from(tempInDegree)) {
@@ -38,8 +39,9 @@ export class TopologicalSort2 {
       }
     }
 
-    while (queue.length > 0) {
-      const node = queue.shift()!;
+    while (queue.length > queueHead) {
+      const node = queue[queueHead]!
+      queueHead++
       result.push(node);
 
       const neighbors = this.adjacency.get(node)!;

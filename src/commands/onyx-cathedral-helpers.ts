@@ -881,7 +881,7 @@ export async function buildOnyxCathedralResult(
 export function generateRecommendations(
   pillars: OnyxPillar[],
   naves: OnyxNave[],
-  darkness: OnyxCathedralResult['darkness'],
+  _darkness: OnyxCathedralResult['darkness'],
   stats: OnyxCathedralStats,
 ): string[] {
   const recs: string[] = []

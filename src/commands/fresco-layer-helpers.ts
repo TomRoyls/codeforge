@@ -329,13 +329,14 @@ export function analyzeBoundary(
   const lowerContent = lower.files.length > 0
     ? lower.files.map(f => {
         const idx = allFiles.indexOf(f)
-        return idx >= 0 ? allContents[idx] ?? '' : ''
+        const entry = idx >= 0 ? allContents[idx] : undefined
+        return entry ?? ''
       }).join('\n')
     : ''
 
   const importsFromLower = upper.files.reduce((count, f) => {
     const idx = allFiles.indexOf(f)
-    const content = idx >= 0 ? allContents[idx] ?? '' : ''
+    const content = idx >= 0 ? (allContents[idx] ?? '') : ''
     for (const lowerFile of lower.files) {
       const importPath = lowerFile.replace(/\.\w+$/, '').replace(/\/index$/, '')
       if (content.includes(importPath)) count++
@@ -394,13 +395,16 @@ export function analyzeStrataColumn(
   const layerMap = new Map<string, { files: string[]; contents: string[] }>()
 
   for (let i = 0; i < files.length; i++) {
-    const layer = identifyLayer(files[i], contents[i])
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const layer = identifyLayer(file, content)
     const existing = layerMap.get(layer)
     if (existing) {
-      existing.files.push(files[i])
-      existing.contents.push(contents[i])
+      existing.files.push(file)
+      existing.contents.push(content)
     } else {
-      layerMap.set(layer, { files: [files[i]], contents: [contents[i]] })
+      layerMap.set(layer, { files: [file], contents: [content] })
     }
   }
 
@@ -413,13 +417,20 @@ export function analyzeStrataColumn(
 
   // Set bondedTo relationships
   for (let i = 0; i < layers.length; i++) {
-    if (i > 0) layers[i].bondedTo.push(layers[i - 1].layerName)
-    if (i < layers.length - 1) layers[i].bondedTo.push(layers[i + 1].layerName)
+    const layer = layers[i]
+    const prev = layers[i - 1]
+    const next = layers[i + 1]
+    if (layer === undefined) continue
+    if (prev !== undefined) layer.bondedTo.push(prev.layerName)
+    if (next !== undefined) layer.bondedTo.push(next.layerName)
   }
 
   const boundaries: LayerBoundary[] = []
   for (let i = 0; i < layers.length - 1; i++) {
-    boundaries.push(analyzeBoundary(layers[i], layers[i + 1], files, contents))
+    const upper = layers[i]
+    const lower = layers[i + 1]
+    if (upper === undefined || lower === undefined) continue
+    boundaries.push(analyzeBoundary(upper, lower, files, contents))
   }
 
   const avgQuality = layers.length > 0
@@ -600,8 +611,8 @@ export function classifyStabilityGrade(score: number): FrescoLayerStats['stabili
  * generateRecommendations(layers, boundaries, columns, stats) // string[]
  */
 export function generateRecommendations(
-  layers: StrataLayer[],
-  boundaries: LayerBoundary[],
+  _layers: StrataLayer[],
+  _boundaries: LayerBoundary[],
   columns: StrataColumn[],
   stats: FrescoLayerStats,
 ): string[] {
@@ -641,27 +652,33 @@ export function buildFrescoLayerResult(
   // Group files by directory for column analysis
   const dirMap = new Map<string, { files: string[]; contents: string[] }>()
   for (let i = 0; i < files.length; i++) {
-    const normalized = files[i].replace(/\\/g, '/')
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const normalized = file.replace(/\\/g, '/')
     const dir = normalized.includes('/') ? normalized.substring(0, normalized.lastIndexOf('/')) : '.'
     const existing = dirMap.get(dir)
     if (existing) {
-      existing.files.push(files[i])
-      existing.contents.push(contents[i])
+      existing.files.push(file)
+      existing.contents.push(content)
     } else {
-      dirMap.set(dir, { files: [files[i]], contents: [contents[i]] })
+      dirMap.set(dir, { files: [file], contents: [content] })
     }
   }
 
   // Build layers from all files
   const layerMap = new Map<string, { files: string[]; contents: string[] }>()
   for (let i = 0; i < files.length; i++) {
-    const layer = identifyLayer(files[i], contents[i])
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const layer = identifyLayer(file, content)
     const existing = layerMap.get(layer)
     if (existing) {
-      existing.files.push(files[i])
-      existing.contents.push(contents[i])
+      existing.files.push(file)
+      existing.contents.push(content)
     } else {
-      layerMap.set(layer, { files: [files[i]], contents: [contents[i]] })
+      layerMap.set(layer, { files: [file], contents: [content] })
     }
   }
 
@@ -673,14 +690,21 @@ export function buildFrescoLayerResult(
 
   // Set bondedTo
   for (let i = 0; i < layers.length; i++) {
-    if (i > 0) layers[i].bondedTo.push(layers[i - 1].layerName)
-    if (i < layers.length - 1) layers[i].bondedTo.push(layers[i + 1].layerName)
+    const layer = layers[i]
+    const prev = layers[i - 1]
+    const next = layers[i + 1]
+    if (layer === undefined) continue
+    if (prev !== undefined) layer.bondedTo.push(prev.layerName)
+    if (next !== undefined) layer.bondedTo.push(next.layerName)
   }
 
   // Build boundaries
   const boundaries: LayerBoundary[] = []
   for (let i = 0; i < layers.length - 1; i++) {
-    boundaries.push(analyzeBoundary(layers[i], layers[i + 1], files, contents))
+    const upper = layers[i]
+    const lower = layers[i + 1]
+    if (upper === undefined || lower === undefined) continue
+    boundaries.push(analyzeBoundary(upper, lower, files, contents))
   }
 
   // Build columns
@@ -727,12 +751,12 @@ function computeStats(
   const stabilityGrade = classifyStabilityGrade(score)
 
   const sortedByIntegrity = [...columns].sort((a, b) => b.structuralIntegrity - a.structuralIntegrity)
-  const mostStableColumn = sortedByIntegrity.length > 0 ? sortedByIntegrity[0].directory : 'none'
-  const leastStableColumn = sortedByIntegrity.length > 0 ? sortedByIntegrity[sortedByIntegrity.length - 1].directory : 'none'
+  const mostStableColumn = sortedByIntegrity[0]?.directory ?? 'none'
+  const leastStableColumn = sortedByIntegrity[sortedByIntegrity.length - 1]?.directory ?? 'none'
 
   const sortedByDepth = [...layers].sort((a, b) => b.depth - a.depth)
-  const deepestLayer = sortedByDepth.length > 0 ? sortedByDepth[0].layerName : 'none'
-  const shallowestLayer = layers.length > 0 ? layers[0].layerName : 'none'
+  const deepestLayer = sortedByDepth[0]?.layerName ?? 'none'
+  const shallowestLayer = layers[0]?.layerName ?? 'none'
 
   return {
     totalFiles,

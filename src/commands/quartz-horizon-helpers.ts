@@ -716,7 +716,7 @@ export function analyzeQuartzVein(crystals: QuartzCrystal[], dirPath: string): Q
 export function generateRecommendations(
   crystals: QuartzCrystal[],
   veins: QuartzVein[],
-  geology: QuartzHorizonResult['geology'],
+  _geology: QuartzHorizonResult['geology'],
   stats: QuartzHorizonResult['stats'],
 ): string[] {
   const recs: string[] = []

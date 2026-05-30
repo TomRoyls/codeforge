@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { CourtCondition, SeatCondition, EmeraldSeat, EmeraldCourt, EmeraldThroneStats, EmeraldThroneResult } from './emerald-throne-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorCourtCondition(condition: CourtCondition | string): string 
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatSeatTable(seat) */
 export function formatSeatTable(seat: EmeraldSeat): string {

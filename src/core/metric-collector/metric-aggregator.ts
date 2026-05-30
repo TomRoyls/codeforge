@@ -127,7 +127,7 @@ export class MetricAggregator {
       if (v > max) max = v
     }
     const avg = count > 0 ? sum / count : 0
-    const lastValue = values[count - 1]!
+    const lastValue = samples[count - 1]!.value
     const metricType: MetricType | undefined = samples[0]?.type
 
     let p50 = 0
@@ -135,6 +135,7 @@ export class MetricAggregator {
     let p99 = 0
 
     if (this.percentileEnabled && count > 0) {
+      const values = samples.map((s) => s.value)
       p50 = this.calculatePercentile(values, 50)
       p95 = this.calculatePercentile(values, 95)
       p99 = this.calculatePercentile(values, 99)

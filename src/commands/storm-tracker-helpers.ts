@@ -295,15 +295,15 @@ export function detectCyclones(files: string[], contents: string[]): WeatherSyst
     const matches = (contents[i] ?? '').matchAll(/import\s+.*?from\s+['"]([^'"]+)['"]/g)
     for (const m of matches) {
       const source = m[1]
-      if (source.startsWith('.')) {
+      if (source?.startsWith('.')) {
         for (const f of files) {
-          if (f !== files[i] && (f.includes(source.replace(/^\.\//, '')) || source.includes(f.replace(/\.\w+$/, '')))) {
+          if (f !== files[i] && (f.includes(source?.replace(/^\.\//, '')) || source?.includes(f.replace(/\.\w+$/, '')))) {
             deps.add(f)
           }
         }
       }
     }
-    importGraph.set(files[i], deps)
+    importGraph.set(files[i] ?? '', deps)
   }
 
   const visited = new Set<string>()
@@ -337,8 +337,8 @@ export function detectCyclones(files: string[], contents: string[]): WeatherSyst
   }
 
   for (let i = 0; i < cycles.length; i++) {
-    const cycle = cycles[i]
-    const intensity = Math.min(100, cycle.length * 20 + 40)
+    const cycle = cycles[i] ?? []
+    const intensity = Math.min(100, (cycle?.length ?? 0) * 20 + 40)
     systems.push({
       id: `cyclone-${i}`,
       type: 'cyclone',
@@ -348,7 +348,7 @@ export function detectCyclones(files: string[], contents: string[]): WeatherSyst
       intensity,
       category: Math.min(5, Math.max(1, Math.ceil(intensity / 20))) as SystemCategory,
       movement: 'stationary',
-      description: `Circular dependency: ${cycle.join(' → ')} → ${cycle[0]}`,
+      description: `Circular dependency: ${cycle?.join(' → ')} → ${cycle[0]}`,
       forecast: 'Will cause build issues if dependencies change',
     })
   }
@@ -439,7 +439,7 @@ export function detectTornadoes(conditions: AtmosphericCondition[], contents: st
     const c = conditions[i]
     const content = contents[i] ?? ''
 
-    if (c.temperature > 70) {
+    if ((c?.temperature ?? 0) > 70) {
       let maxNesting = 0
       let nesting = 0
       for (const ch of content) {
@@ -453,8 +453,8 @@ export function detectTornadoes(conditions: AtmosphericCondition[], contents: st
           id: `tornado-${count}`,
           type: 'tornado',
           name: `Tornado ${count}`,
-          epicenter: c.file,
-          affectedFiles: [c.file],
+          epicenter: c?.file ?? '',
+          affectedFiles: [c?.file ?? ''],
           intensity: Math.min(100, maxNesting * 15),
           category: Math.min(5, Math.max(1, Math.ceil(maxNesting / 2))) as SystemCategory,
           movement: 'stationary',
@@ -736,7 +736,7 @@ export function buildStormTrackerResult(files: string[], contents: string[], opt
     const condition = classifyCondition(temp, humidity, visibility)
 
     conditions.push({
-      file: files[i],
+      file: files[i] ?? '',
       temperature: temp,
       humidity,
       pressure,

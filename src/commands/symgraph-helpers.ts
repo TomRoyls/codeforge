@@ -75,7 +75,7 @@ export function extractFunctions(content: string, filePath: string): Map<string,
 
     const funcMatch = line.match(/(?:export\s+)?(?:async\s+)?function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/)
     if (funcMatch) {
-      const name = funcMatch[1]!
+      const name = funcMatch[1] ?? ''
       const isExported = line.includes('export ')
       const isAsync = line.includes('async ')
       const key = `${filePath}:${name}`
@@ -89,7 +89,7 @@ export function extractFunctions(content: string, filePath: string): Map<string,
 
     const arrowMatch = line.match(/(?:export\s+)?(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[a-zA-Z_$][a-zA-Z0-9_$]*)\s*=>/)
     if (arrowMatch) {
-      const name = arrowMatch[1]!
+      const name = arrowMatch[1] ?? ''
       const isExported = line.includes('export ')
       const isAsync = line.includes('async ')
       const key = `${filePath}:${name}`
@@ -103,7 +103,7 @@ export function extractFunctions(content: string, filePath: string): Map<string,
 
     const classMatch = line.match(/(?:export\s+)?class\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/)
     if (classMatch) {
-      const name = classMatch[1]!
+      const name = classMatch[1] ?? ''
       const isExported = line.includes('export ')
       const key = `${filePath}:${name}`
       nodes.set(key, {
@@ -135,7 +135,7 @@ export function extractCalls(content: string, filePath: string, definedNames: Se
 
     const matchAll = line.matchAll(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g)
     for (const match of matchAll) {
-      const name = match[1]!
+      const name = match[1] ?? ''
       if (['if', 'for', 'while', 'switch', 'catch', 'return', 'new', 'throw', 'class', 'function', 'const', 'let', 'var', 'import', 'export', 'typeof', 'void'].includes(name)) continue
 
       const key = `${filePath}:${name}`
@@ -175,7 +175,6 @@ export function buildCallGraph(files: string[], contents: string[]): CallGraph {
   for (let i = 0; i < files.length; i++) {
     const filePath = files[i]!
     const content = contents[i] ?? ''
-    const fileCalls = extractCalls(content, filePath, allDefinedNames)
 
     // distribute calls to function nodes in this file
     const fileNodes = [...nodes.values()].filter((n) => n.file === filePath)
@@ -380,8 +379,10 @@ export function assignDepths(graph: CallGraph, entryPoints: CallNode[]): void {
     queue.push({ key, depth: 0 })
   }
 
-  while (queue.length > 0) {
-    const { key, depth } = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const { key, depth } = queue[_qi]!
+    _qi++
     const node = graph.nodes.get(key)
     if (!node) continue
 

@@ -1,5 +1,6 @@
 // ─── Imports ───────────────────────────────────────────────────────
 import chalk from 'chalk'
+import type { ChalkInstance } from 'chalk'
 import type { FrostCrystal, WinterLandscape, WinterFrostResult } from './winter-frost-helpers.js'
 
 // ─── Color Palette (frost) ─────────────────────────────────────────
@@ -41,7 +42,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, ChalkInstance> = {
     'ice-crystal': best, 'antifreeze-grade': best, 'diamond-ice': best,
     'unique-crystal': best, 'deep-permafrost': best, 'ice-palace': best,
     'arctic-tundra': best, 'pristine-winter': best, 'ice-archmage': best,
@@ -56,7 +57,7 @@ export function colorGrade(grade: string): string {
 
     'cloudy-ice': poor, 'brittle-in-cold': poor, 'slush': poor,
     'generic-template': poor, 'thawing': poor, 'slush-puddle': poor,
-    'frost-morning': poor, 'thawing': poor, 'cold-acolyte': poor,
+    'frost-morning': poor, 'cold-acolyte': poor,
 
     'foggy-glass': worst, 'freezing': worst, 'thin-ice': worst,
     'cookie-cutter': worst, 'sinking': worst, 'ice-shard': worst,

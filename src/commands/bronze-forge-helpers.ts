@@ -822,22 +822,22 @@ export function buildBronzeForgeResult(
   const scrapBronzeCount = artifacts.filter((a) => a.condition === 'scrap-bronze').length
 
   const bestArtifact = totalFiles > 0
-    ? artifacts.reduce((best, a) => (a.qualityScore > best.qualityScore ? a : best), artifacts[0]).file
+    ? artifacts.reduce((best, a) => (a.qualityScore > best.qualityScore ? a : best), artifacts[0] as typeof artifacts[number]).file
     : ''
   const bestCrafted = totalFiles > 0
-    ? artifacts.reduce((best, a) => (a.craftsmanship > best.craftsmanship ? a : best), artifacts[0]).file
+    ? artifacts.reduce((best, a) => (a.craftsmanship > best.craftsmanship ? a : best), artifacts[0] as typeof artifacts[number]).file
     : ''
   const strongest = totalFiles > 0
-    ? artifacts.reduce((best, a) => (a.alloyStrength > best.alloyStrength ? a : best), artifacts[0]).file
+    ? artifacts.reduce((best, a) => (a.alloyStrength > best.alloyStrength ? a : best), artifacts[0] as typeof artifacts[number]).file
     : ''
   const bestTested = totalFiles > 0
-    ? artifacts.reduce((best, a) => (a.heatTreatment > best.heatTreatment ? a : best), artifacts[0]).file
+    ? artifacts.reduce((best, a) => (a.heatTreatment > best.heatTreatment ? a : best), artifacts[0] as typeof artifacts[number]).file
     : ''
   const wisest = totalFiles > 0
-    ? artifacts.reduce((best, a) => (a.patinaWisdom > best.patinaWisdom ? a : best), artifacts[0]).file
+    ? artifacts.reduce((best, a) => (a.patinaWisdom > best.patinaWisdom ? a : best), artifacts[0] as typeof artifacts[number]).file
     : ''
   const bestFormed = totalFiles > 0
-    ? artifacts.reduce((best, a) => (a.castingQuality > best.castingQuality ? a : best), artifacts[0]).file
+    ? artifacts.reduce((best, a) => (a.castingQuality > best.castingQuality ? a : best), artifacts[0] as typeof artifacts[number]).file
     : ''
 
   const stats: BronzeForgeStats = {

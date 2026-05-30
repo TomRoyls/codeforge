@@ -50,8 +50,9 @@ export class SkewHeap3<T> {
     const result: T[] = [];
     const queue: SkewNode<T>[] = [];
     if (this.root) queue.push(this.root);
-    while (queue.length > 0) {
-      const node = queue.shift()!;
+    let _qi = 0;
+    while (_qi < queue.length) {
+      const node = queue[_qi++]!;
       result.push(node.value);
       if (node.left) queue.push(node.left);
       if (node.right) queue.push(node.right);

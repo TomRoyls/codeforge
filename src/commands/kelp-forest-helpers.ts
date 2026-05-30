@@ -9,7 +9,6 @@ const INTERFACE_REGEX = /\binterface\s+\w+/g
 const TYPE_REGEX = /\btype\s+\w+/g
 const ENUM_REGEX = /\benum\s+\w+/g
 const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
-const BLOCK_COMMENT_REGEX = /\/\*[\s\S]*?\*\//g
 const ASYNC_REGEX = /\basync\s+/g
 const TRY_CATCH_REGEX = /\btry\s*\{/g
 const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
@@ -25,11 +24,7 @@ const READONLY_REGEX = /\breadonly\b/g
 const ANY_REGEX = /\bany\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
 const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
-const RETURN_REGEX = /\breturn\b/g
-const AWAIT_REGEX = /\bawait\b/g
 const PROMISE_REGEX = /\bPromise\b/g
-const DEFAULT_EXPORT_REGEX = /\bexport\s+default\b/g
-const NAMED_EXPORT_REGEX = /\bexport\s+(?:const|let|var|function|class|interface|type|enum)\b/g
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
@@ -328,9 +323,6 @@ export function countReexports(content: string): number {
 
 // ─── Internal Helpers ───────────────────────────────────────────────────────
 
-function deepNestedCount(content: string): number {
-  return (content.match(DEEP_NESTED_REGEX) ?? []).length
-}
 
 function accessModsCount(content: string): number {
   return (
@@ -344,25 +336,13 @@ function enumCount(content: string): number {
   return (content.match(ENUM_REGEX) ?? []).length
 }
 
-function returnCount(content: string): number {
-  return (content.match(RETURN_REGEX) ?? []).length
-}
 
-function awaitCount(content: string): number {
-  return (content.match(AWAIT_REGEX) ?? []).length
-}
 
 function promiseCount(content: string): number {
   return (content.match(PROMISE_REGEX) ?? []).length
 }
 
-function defaultExportCount(content: string): number {
-  return (content.match(DEFAULT_EXPORT_REGEX) ?? []).length
-}
 
-function namedExportCount(content: string): number {
-  return (content.match(NAMED_EXPORT_REGEX) ?? []).length
-}
 
 // ─── Measure Functions ──────────────────────────────────────────────────────
 
@@ -379,7 +359,6 @@ export function measureGrowth(content: string): GrowthMeasure {
   const anyCount = countAny(content)
   const consoleCount = countConsole(content)
   const deepNested = countDeepNested(content)
-  const jsdoc = countJSDoc(content)
 
   const stuntingCount = consoleCount + anyCount
   const diebackCount = deepNested
@@ -506,11 +485,9 @@ export function measureCanopy(content: string): CanopyMeasure {
   const importCount = countImportKeywords(content)
   const functionCount = countFunctions(content)
   const arrowCount = countArrows(content)
-  const generics = countGenerics(content)
   const anyCount = countAny(content)
   const consoleCount = countConsole(content)
   const deepNested = countDeepNested(content)
-  const jsdoc = countJSDoc(content)
 
   const gapCount = anyCount + consoleCount
   const canopyLossCount = deepNested
@@ -702,8 +679,6 @@ export function measureHealth(content: string): HealthMeasure {
   const classCount = countClasses(content)
   const interfaceCount = countInterfaces(content)
   const typeCount = countTypeAliases(content)
-  const functionCount = countFunctions(content)
-  const arrowCount = countArrows(content)
   const asyncCount = countAsync(content)
   const tryCatch = countTryCatch(content)
   const anyCount = countAny(content)

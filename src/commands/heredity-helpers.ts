@@ -97,9 +97,9 @@ export function extractTraits(content: string, filePath: string): CodeTrait[] {
 
   const methods = Array.from(content.matchAll(/(?:(?:public|private|protected|static|async|abstract)\s+)*(\w+)\s*\([^)]*\)\s*(?::\s*[^{]+)?\s*\{/g))
   for (const m of methods) {
-    if (['if', 'for', 'while', 'switch', 'catch', 'function', 'constructor'].includes(m[1])) continue
+    if (['if', 'for', 'while', 'switch', 'catch', 'function', 'constructor'].includes(m[1] ?? '')) continue
     traits.push({
-      name: m[1],
+      name: m[1] ?? '',
       type: 'method',
       origin: filePath,
       carriers: [filePath],
@@ -112,7 +112,7 @@ export function extractTraits(content: string, filePath: string): CodeTrait[] {
   const props = Array.from(content.matchAll(/(?:(?:public|private|protected|readonly|static)\s+)+(\w+)\s*:\s*\w+/g))
   for (const p of props) {
     traits.push({
-      name: p[1],
+      name: p[1] ?? '',
       type: 'property',
       origin: filePath,
       carriers: [filePath],
@@ -125,7 +125,7 @@ export function extractTraits(content: string, filePath: string): CodeTrait[] {
   const exports = Array.from(content.matchAll(/^export\s+(?:const|let|var|function|class|type|interface|enum)\s+(\w+)/gm))
   for (const e of exports) {
     traits.push({
-      name: e[1],
+      name: e[1] ?? '',
       type: 'convention',
       origin: filePath,
       carriers: [filePath],
@@ -178,7 +178,7 @@ export function detectMutations(content: string, _parentTraits: CodeTrait[]): Co
   const mutations: CodeMutation[] = []
 
   const overrides = Array.from(content.matchAll(/(?:\/\/\s*override|@override|super\.\w+)/g))
-  for (const o of overrides) {
+  for (const _o of overrides) {
     mutations.push({
       trait: 'override',
       type: 'override',
@@ -248,11 +248,11 @@ export function traceLineages(files: string[], contents: string[]): Lineage[] {
     const classMatches = Array.from(content.matchAll(/class\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([\w,\s]+))?/g))
     for (const m of classMatches) {
       const className = m[1]
-      classToFile.set(className, files[i])
+      classToFile.set(className ?? '',files[i] ?? '')
 
       if (m[2]) {
         const existing = extendsMap.get(m[2]) ?? []
-        existing.push(className)
+        existing.push(className ?? '')
         extendsMap.set(m[2], existing)
       }
 
@@ -260,7 +260,7 @@ export function traceLineages(files: string[], contents: string[]): Lineage[] {
         const ifaces = m[3].split(',').map(s => s.trim()).filter(Boolean)
         for (const iface of ifaces) {
           const existing = implementsMap.get(iface) ?? []
-          existing.push(className)
+          existing.push(className ?? '')
           implementsMap.set(iface, existing)
         }
       }
@@ -268,7 +268,7 @@ export function traceLineages(files: string[], contents: string[]): Lineage[] {
 
     const ifaceMatches = Array.from(content.matchAll(/(?:export\s+)?interface\s+(\w+)/g))
     for (const m of ifaceMatches) {
-      classToFile.set(m[1], files[i])
+      classToFile.set(m[1] ?? '',files[i] ?? '')
     }
   }
 
@@ -288,8 +288,10 @@ export function traceLineages(files: string[], contents: string[]): Lineage[] {
     const queue = [...children]
     const visited = new Set<string>()
 
-    while (queue.length > 0) {
-      const current = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const current = queue[_qi]!
+      _qi++
       if (visited.has(current)) continue
       visited.add(current)
       descendants.push(current)
@@ -427,7 +429,7 @@ export function computeMutationRate(totalMutations: number, totalTraits: number)
  */
 export function generateRecommendations(
   _pools: GenePool[],
-  traits: CodeTrait[],
+  _traits: CodeTrait[],
   mutations: CodeMutation[],
   lineages: Lineage[],
   stats: HeredityStats,
@@ -490,8 +492,8 @@ export function buildHeredityResult(files: string[], contents: string[], _option
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    const file = files[i]
-    const traits = extractTraits(content, file)
+    const file = files[i] ?? ''
+    const traits = extractTraits(content, file ?? '')
     const mutations = detectMutations(content, traits)
 
     for (const m of mutations) m.file = file
@@ -503,7 +505,7 @@ export function buildHeredityResult(files: string[], contents: string[], _option
     const recessive = traits.filter(t => !t.isDominant).map(t => t.name)
 
     const pool: GenePool = {
-      file,
+      file: file ?? '',
       traits,
       dominantTraits: dominant,
       recessiveTraits: recessive,

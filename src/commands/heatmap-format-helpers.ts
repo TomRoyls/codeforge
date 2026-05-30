@@ -118,7 +118,7 @@ function formatDailyView(result: HeatmapResult): string {
       if (cell === null) {
         rowStr += '  '
       } else {
-        const level = getHeatLevel(cell.commits, maxCommits)
+        const level = getHeatLevel(cell?.commits ?? 0, maxCommits)
         const char = HEAT_CHARS[level]!
         const coloredChar = HEAT_COLORS[level]!(char)
         rowStr += coloredChar
@@ -141,7 +141,7 @@ function formatDailyView(result: HeatmapResult): string {
   const legendParts = [
     'Less',
     HEAT_COLORS[0]!(HEAT_CHARS[0]!),
-    HEAT_COLORS[1]!(HEAT_CHARS[1]!),
+    (HEAT_COLORS[1] ?? ((_t: string) => ''))(HEAT_CHARS[1] ?? ''),
     HEAT_COLORS[2]!(HEAT_CHARS[2]!),
     HEAT_COLORS[4]!(HEAT_CHARS[4]!),
     'More',
@@ -298,7 +298,6 @@ function formatAuthorView(result: HeatmapResult): string {
     return lines.join('\n')
   }
 
-  const maxCommits = result.authors[0]!.commits
 
   for (const authorData of result.authors) {
     const percentage =

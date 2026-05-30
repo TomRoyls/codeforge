@@ -138,7 +138,7 @@ export default class AlchemyLab extends Command {
           contents.push(content)
         } catch {
           // Skip unreadable files
-        },
+        }
       }),
     )
 

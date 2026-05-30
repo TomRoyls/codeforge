@@ -59,9 +59,7 @@ export default class Symgraph extends Command {
     const spinner = ora('Analyzing call graph...').start()
 
     try {
-      const files = await discoverFiles(targetPath, {
-        extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs'],
-      })
+      const files = await discoverFiles({ cwd: targetPath, patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'], ignore: [] })
 
       if (files.length === 0) {
         spinner.warn('No source files found.')

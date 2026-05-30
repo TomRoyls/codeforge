@@ -653,7 +653,7 @@ export async function buildAmberBlazeResult(
 export function generateRecommendations(
   embers: AmberEmber[],
   hearths: AmberHearth[],
-  fire: AmberBlazeResult['fire'],
+  _fire: AmberBlazeResult['fire'],
   stats: AmberBlazeResult['stats'],
 ): string[] {
   const recs: string[] = []

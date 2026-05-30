@@ -32,7 +32,7 @@ export class BinaryLifting {
         rootCandidates.add(i)
       }
       for (let i = 0; i < n; i++) {
-        const p = options.parents[i]
+        const p = options.parents[i]!
         if (p !== undefined && p >= 0) {
           rootCandidates.delete(i)
         }
@@ -41,7 +41,7 @@ export class BinaryLifting {
       if (options.root === undefined) {
         const parentMap = new Map<number, number>()
         for (let i = 0; i < n; i++) {
-          const p = options.parents[i]
+          const p = options.parents[i]!
           if (p !== undefined && p >= 0) {
             parentMap.set(i, p)
           }
@@ -59,7 +59,7 @@ export class BinaryLifting {
           if (!visited.has(cur) && cur >= 0) {
             rootCandidates.add(cur)
           }
-          for (const node of path) {
+          for (const node of Array.from(path)) {
             visited.add(node)
           }
         }
@@ -67,7 +67,7 @@ export class BinaryLifting {
 
       let actualRoot = this._root
       if (options.root === undefined) {
-        for (const r of rootCandidates) {
+        for (const r of Array.from(rootCandidates)) {
           actualRoot = r
           break
         }
@@ -75,7 +75,7 @@ export class BinaryLifting {
       this._root = actualRoot
 
       for (let i = 0; i < n; i++) {
-        const p = options.parents[i]
+        const p = options.parents[i]!
         this._up[0]![i] = (p !== undefined && p >= 0) ? p : -1
       }
       this._up[0]![this._root] = -1
@@ -84,8 +84,9 @@ export class BinaryLifting {
       const queue: number[] = [this._root]
       const seen = new Set<number>([this._root])
 
-      while (queue.length > 0) {
-        const node = queue.shift()!
+      let _qi = 0;
+      while (_qi < queue.length) {
+        const node = queue[_qi++]
         const p = this._up[0]![node]!
         this._depth[node] = p === -1 ? 0 : (this._depth[p]! + 1)
         for (let i = 0; i < n; i++) {

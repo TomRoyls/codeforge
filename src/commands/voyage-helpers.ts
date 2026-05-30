@@ -92,7 +92,7 @@ export function extractImports(content: string): string[] {
   for (const pat of patterns) {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
-      paths.push(m[1])
+      if (m[1] !== undefined) paths.push(m[1])
     }
   }
   return [...new Set(paths)]
@@ -114,10 +114,12 @@ export function extractExports(content: string): string[] {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
       if (pat.source.startsWith('export\\s+\\{')) {
-        const names = m[1].split(',').map((n) => n.trim().split(/\s+as\s+/).pop()!.trim()).filter(Boolean)
+        const match = m[1]
+        if (match === undefined) continue
+        const names = match.split(',').map((n) => { const parts = n.trim().split(/\s+as\s+/); const last = parts[parts.length - 1]; return last !== undefined ? last.trim() : ''; }).filter(Boolean)
         exports.push(...names)
       } else {
-        exports.push(m[1])
+        if (m[1] !== undefined) exports.push(m[1])
       }
     }
   }
@@ -286,7 +288,7 @@ export function chartRoutes(
   return routes
 }
 
-function extractCargo(imp: string, fileImports: Map<string, string[]>): string[] {
+function extractCargo(imp: string, _fileImports: Map<string, string[]>): string[] {
   return [imp]
 }
 
@@ -342,8 +344,10 @@ export function planJourney(from: string, to: string, ports: Port[]): Journey | 
   const queue: Array<{ file: string; path: string[] }> = [{ file: from, path: [from] }]
   visited.add(from)
 
-  while (queue.length > 0) {
-    const current = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const current = queue[_qi]!
+    _qi++
     const port = portMap.get(current.file)
     if (!port) continue
 
@@ -392,7 +396,7 @@ function buildJourney(from: string, to: string, route: string[], ports: Port[]):
  * @example
  * estimateReadingTime('mod.ts', content)
  */
-export function estimateReadingTime(file: string, content: string): string {
+export function estimateReadingTime(_file: string, content: string): string {
   const lines = content ? content.split('\n').length : 50
   const minutes = Math.max(1, Math.round(lines / 50))
   return `${minutes} min`
@@ -424,9 +428,8 @@ function identifyJourneyHazards(route: string[], ports: Port[]): Hazard[] {
  * @example
  * identifyHazards(ports, routes)
  */
-export function identifyHazards(ports: Port[], routes: TradeRoute[]): Hazard[] {
+export function identifyHazards(ports: Port[], _routes: TradeRoute[]): Hazard[] {
   const hazards: Hazard[] = []
-  const portMap = new Map(ports.map((p) => [p.file, p]))
 
   for (const port of ports) {
     if (port.seaConditions > 70) {
@@ -462,7 +465,7 @@ export function identifyHazards(ports: Port[], routes: TradeRoute[]): Hazard[] {
   const circularDeps = findCircularDependencies(ports)
   for (const cycle of circularDeps) {
     hazards.push({
-      file: cycle[0],
+      file: cycle[0] ?? '',
       type: 'maelstrom',
       severity: 'extreme',
       description: `Circular dependency: ${cycle.join(' → ')} → ${cycle[0]}`,
@@ -545,7 +548,7 @@ export function computeNavigability(journeys: Journey[], routes: TradeRoute[]): 
  * @example
  * computeChartCompleteness(ports, routes)
  */
-export function computeChartCompleteness(ports: Port[], routes: TradeRoute[]): number {
+export function computeChartCompleteness(ports: Port[], _routes: TradeRoute[]): number {
   if (ports.length === 0) return 0
 
   const documentedPorts = ports.filter((p) => p.supplies > 20).length
@@ -566,8 +569,8 @@ export function computeChartCompleteness(ports: Port[], routes: TradeRoute[]): n
  * generateRecommendations(ports, routes, journeys, hazards, stats)
  */
 export function generateRecommendations(
-  ports: Port[],
-  routes: TradeRoute[],
+  _ports: Port[],
+  _routes: TradeRoute[],
   journeys: Journey[],
   hazards: Hazard[],
   stats: VoyageStats,
@@ -620,7 +623,7 @@ export function generateRecommendations(
 export function buildVoyageResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): VoyageResult {
   if (files.length === 0) {
     const emptyStats: VoyageStats = {
@@ -672,8 +675,12 @@ export function buildVoyageResult(
   }
 
   if (journeys.length === 0 && ports.length >= 2) {
-    const journey = planJourney(ports[0].file, ports[ports.length - 1].file, ports)
-    if (journey) journeys.push(journey)
+    const firstPort = ports[0]
+    const lastPort = ports[ports.length - 1]
+    if (firstPort && lastPort) {
+      const journey = planJourney(firstPort.file, lastPort.file, ports)
+      if (journey) journeys.push(journey)
+    }
   }
 
   const hazards = identifyHazards(ports, routes)
@@ -689,7 +696,6 @@ export function buildVoyageResult(
     : 0
   const hazardousRoutes = routes.filter((r) => r.type === 'treacherous').length
 
-  const portImportance = new Map(ports.map((p) => [p.file, p.importance]))
   const mostIsolated = ports.length > 0
     ? ports.reduce((a, b) => (a.connections.length === 0 && b.connections.length === 0)
         ? (a.importance < b.importance ? a : b)

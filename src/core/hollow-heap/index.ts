@@ -117,9 +117,10 @@ export class HollowHeap<T> {
     const result: T[] = [];
     const visited = new Set<HollowHeapNode<T>>();
     const queue: HollowHeapNode<T>[] = [...this.roots];
+    let _qi = 0;
 
-    while (queue.length > 0) {
-      const node = queue.shift();
+    while (_qi < queue.length) {
+      const node = queue[_qi++];
       if (!node) {
         break;
       }
@@ -166,8 +167,9 @@ export class HollowHeap<T> {
       }
     }
 
-    while (toProcess.length > 0) {
-      const node = toProcess.shift()!;
+    let _qi = 0;
+    while (_qi < toProcess.length) {
+      const node = toProcess[_qi++];
 
       if (node.isHollow) {
         for (const child of node.children) {
@@ -196,7 +198,7 @@ export class HollowHeap<T> {
       }
     }
 
-    for (const node of rankBuckets.values()) {
+    for (const node of Array.from(rankBuckets.values())) {
       newRoots.push(node);
     }
 

@@ -245,7 +245,7 @@ export function extractImportPaths(content: string): string[] {
   const regex = /import\s+.*?from\s+['"]([^'"]+)['"]/g
   let match: RegExpExecArray | null
   while ((match = regex.exec(content)) !== null) {
-    paths.push(match[1]!)
+    paths.push(match[1] ?? '')
   }
   return paths
 }
@@ -557,7 +557,7 @@ export function generateLayerRecommendations(violations: LayerViolation[], stats
 export function buildLayerMapResult(
   files: string[],
   contents: string[],
-  options: LayerMapOptions = {},
+  _options: LayerMapOptions = {},
 ): LayerMapResult {
   const layers = buildLayers(files, contents)
   const dependencies = analyzeLayerDependencies(layers, files, contents)

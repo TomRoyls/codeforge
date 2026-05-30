@@ -880,7 +880,7 @@ export async function buildOnyxTempleResult(
 export function generateRecommendations(
   pillars: OnyxPillar[],
   naves: OnyxNave[],
-  sanctuary: OnyxTempleResult['sanctuary'],
+  _sanctuary: OnyxTempleResult['sanctuary'],
   stats: OnyxTempleResult['stats'],
 ): string[] {
   const recs: string[] = []

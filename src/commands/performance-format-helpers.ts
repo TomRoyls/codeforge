@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { PerfResult } from './performance-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Severity formatting ────────────────────────────────
 
 /**
@@ -49,16 +51,6 @@ export function formatPerfCategory(category: string): string {
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /**
  * Formats a PerfResult as a human-readable table.

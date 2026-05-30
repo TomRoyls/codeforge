@@ -167,11 +167,11 @@ export function extractImportPaths(content: string): string[] {
   const staticRegex = /import\s+(?:type\s+)?(?:[\w{}*,\s]+?)\s*(?:from\s+)?['"]([^'"]+)['"]/g
   let match: RegExpExecArray | null
   while ((match = staticRegex.exec(content)) !== null) {
-    imports.push(match[1])
+if (match[1] !== undefined) imports.push(match[1])
   }
   const dynamicRegex = /import\(\s*['"]([^'"]+)['"]\s*\)/g
   while ((match = dynamicRegex.exec(content)) !== null) {
-    imports.push(match[1])
+if (match[1] !== undefined) imports.push(match[1])
   }
   return [...new Set(imports)]
 }

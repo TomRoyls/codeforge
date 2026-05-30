@@ -63,9 +63,10 @@ export class XorFilter2 {
     let iterations = 0;
     const maxIterations = items.length * 10;
 
-    while (queue.length > 0 && iterations < maxIterations) {
+    let _qi = 0
+    while (_qi < queue.length && iterations < maxIterations) {
       iterations++;
-      const pos = queue.shift()!;
+      const pos = queue[_qi++]!;
       if (counts[pos] === 0) continue;
 
       let foundIdx = -1;

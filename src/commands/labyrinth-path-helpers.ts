@@ -27,8 +27,6 @@ const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
 const TERNARY_REGEX = /\?[^:]+:/g
 const LOGICAL_AND_REGEX = /&&/g
 const LOGICAL_OR_REGEX = /\|\|/g
-const NULLISH_REGEX = /\?\?/g
-const OPTIONAL_CHAIN_REGEX = /\?\./g
 const CONSOLE_LOG_REGEX = /\bconsole\.log\b/g
 const CONSOLE_REGEX = /\bconsole\.\w+/g
 const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
@@ -40,8 +38,6 @@ const DEFAULT_PARAM_REGEX = /\w+\s*=\s*[^,)]+/g
 const SPREAD_REGEX = /\.\.\./g
 const DESTRUCTURE_REGEX = /\{[^{}]*\}\s*=/g
 const GENERICS_REGEX = /<[^>]+>/g
-const UNION_TYPE_REGEX = /\w+\s*\|\s*\w+/g
-const UTILITY_TYPE_REGEX = /\b(?:Partial|Required|Readonly|Record|Pick|Omit|Exclude|Extract|NonNullable|ReturnType|InstanceType|Parameters)\b/g
 const DECORATOR_REGEX = /@\w+/g
 const ENUM_REGEX = /\benum\s+\w+/g
 const NAMESPACE_REGEX = /\bnamespace\s+\w+/g
@@ -53,8 +49,6 @@ const PUBLIC_REGEX = /public\s+/g
 const READONLY_REGEX = /\breadonly\b/g
 const OVERRIDE_REGEX = /\boverride\b/g
 const PROMISE_REGEX = /\bPromise\b/g
-const SET_REGEX = /\bSet\b/g
-const MAP_REGEX = /\bMap\b/g
 const TYPE_GUARD_REGEX = /\b(?:typeof|instanceof)\b/g
 const CONST_ASSERTION_REGEX = /\bas\s+const\b/g
 const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
@@ -63,7 +57,6 @@ const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
 const ANY_REGEX = /\bany\b/g
 const NEVER_REGEX = /\bnever\b/g
-const UNKNOWN_REGEX = /\bunknown\b/g
 const ASSERT_REGEX = /\bassert\b/g
 const YIELD_REGEX = /\byield\b/g
 const REGEX_LITERAL_REGEX = /\/[^/\n]+\//g
@@ -532,19 +525,15 @@ export function countTypeGuards(content: string): number {
 export function measurePath(content: string): PathMeasure {
   const commentCount = countComments(content)
   const jsdocCount = countJSDoc(content)
-  const functionCount = countFunctions(content)
   const arrowCount = countArrows(content)
   const returnCount = countReturns(content)
   const tryCatchCount = countTryCatch(content)
   const catchCount = countCatches(content)
   const finallyCount = countFinallys(content)
   const throwCount = countThrows(content)
-  const consoleLogCount = countConsoleLog(content)
   const nestedCount = countNestedBlocks(content)
   const deepNestedCount = countDeepNested(content)
   const ternaryCount = countTernaries(content)
-  const ifCount = countIfs(content)
-  const elseCount = countElses(content)
   const lineCount = content.split('\n').length
 
   const obstacleCount = nestedCount + deepNestedCount * 2 + ternaryCount
@@ -598,9 +587,7 @@ export function measureMaze(content: string): MazeMeasure {
   const classCount = countClasses(content)
   const interfaceCount = countInterfaces(content)
   const typeCount = countTypeAliases(content)
-  const genericCount = countGenerics(content)
   const anyCount = countAny(content)
-  const neverCount = countNever(content)
   const consoleCount = countConsole(content)
 
   const trapCount = anyCount + consoleCount + breakCount
@@ -702,9 +689,7 @@ export function measureThread(content: string): ThreadMeasure {
   const consoleLogCount = countConsoleLog(content)
   const todoCount = countTodos(content)
   const errorCount = countErrors(content)
-  const throwCount = countThrows(content)
   const tryCatchCount = countTryCatch(content)
-  const catchCount = countCatches(content)
   const functionCount = countFunctions(content)
   const interfaceCount = countInterfaces(content)
   const typeCount = countTypeAliases(content)
@@ -753,7 +738,6 @@ export function measureMinotaur(content: string): MinotaurMeasure {
   const anyCount = countAny(content)
   const neverCount = countNever(content)
   const todoCount = countTodos(content)
-  const errorCount = countErrors(content)
   const throwCount = countThrows(content)
   const tryCatchCount = countTryCatch(content)
   const catchCount = countCatches(content)
@@ -805,20 +789,15 @@ export function measureMinotaur(content: string): MinotaurMeasure {
 /** @example measureExit('export function foo() {}') returns ExitMeasure */
 export function measureExit(content: string): ExitMeasure {
   const exportCount = countExports(content)
-  const importCount = countImports(content)
   const functionCount = countFunctions(content)
-  const arrowCount = countArrows(content)
-  const classCount = countClasses(content)
   const interfaceCount = countInterfaces(content)
   const typeCount = countTypeAliases(content)
   const spreadCount = countSpreads(content)
   const destructureCount = countDestructures(content)
   const defaultParamCount = countDefaultParams(content)
-  const genericCount = countGenerics(content)
   const readonlyCount = countReadonly(content)
   const accessModCount = countAccessModifiers(content)
   const abstractCount = countAbstracts(content)
-  const overrideCount = countOverrides(content)
   const nestedCount = countNestedBlocks(content)
   const deepNestedCount = countDeepNested(content)
   const anyCount = countAny(content)
@@ -962,7 +941,7 @@ export function analyzeLabyrinthWing(cells: LabyrinthCell[], dirPath: string): L
 // ─── Generate Recommendations ───────────────────────────────────────────────
 
 /** @example generateRecommendations(cells, [], labyrinth, stats) returns string[] */
-export function generateRecommendations(cells: LabyrinthCell[], wings: LabyrinthWing[], labyrinth: LabyrinthPathResult['labyrinth'], stats: LabyrinthPathResult['stats']): string[] {
+export function generateRecommendations(_cells: LabyrinthCell[], wings: LabyrinthWing[], labyrinth: LabyrinthPathResult['labyrinth'], stats: LabyrinthPathResult['stats']): string[] {
   const recs: string[] = []
 
   if (labyrinth.overallNavigability < 40) {
@@ -1049,19 +1028,19 @@ export function buildLabyrinthPathResult(
   const architectGrade = classifyArchitectGrade(overallNavigability)
 
   const bestCell = cells.length > 0
-    ? cells.reduce((best, c) => c.qualityScore > best.qualityScore ? c : best, cells[0]).file
+    ? cells.reduce((best, c) => c.qualityScore > best.qualityScore ? c : best, cells[0] as typeof cells[number]).file
     : ''
   const clearestPath = cells.length > 0
-    ? cells.reduce((best, c) => c.path.clarity > best.path.clarity ? c : best, cells[0]).file
+    ? cells.reduce((best, c) => c.path.clarity > best.path.clarity ? c : best, cells[0] as typeof cells[number]).file
     : ''
   const simplestMaze = cells.length > 0
-    ? cells.reduce((best, c) => c.maze.complexity < best.maze.complexity ? c : best, cells[0]).file
+    ? cells.reduce((best, c) => c.maze.complexity < best.maze.complexity ? c : best, cells[0] as typeof cells[number]).file
     : ''
   const bestGuided = cells.length > 0
-    ? cells.reduce((best, c) => c.thread.guidance > best.thread.guidance ? c : best, cells[0]).file
+    ? cells.reduce((best, c) => c.thread.guidance > best.thread.guidance ? c : best, cells[0] as typeof cells[number]).file
     : ''
   const safest = cells.length > 0
-    ? cells.reduce((best, c) => c.minotaur.danger < best.minotaur.danger ? c : best, cells[0]).file
+    ? cells.reduce((best, c) => c.minotaur.danger < best.minotaur.danger ? c : best, cells[0] as typeof cells[number]).file
     : ''
 
   void options

@@ -452,14 +452,15 @@ export class ImportGraphBuilder {
 
     const visited = new Set<string>()
     const queue: Array<{ path: string; depth: number }> = []
+    let _qi = 0
 
     for (const ep of this.entryPoints) {
       queue.push({ path: ep, depth: 0 })
       visited.add(ep)
     }
 
-    while (queue.length > 0) {
-      const item = queue.shift()!
+    while (_qi < queue.length) {
+      const item = queue[_qi++]!
       const module = this.graph.modules.get(item.path)
       if (module) {
         module.depth = item.depth

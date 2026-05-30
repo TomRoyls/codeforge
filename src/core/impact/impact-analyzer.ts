@@ -128,8 +128,9 @@ export class ImpactAnalyzer {
       visited.add(dep);
     }
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    let _qi = 0
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
       result.push({
         filePath: current.file,
         impactType:
@@ -221,8 +222,9 @@ export class ImpactAnalyzer {
     const queue: Array<{ file: string; path: string[] }> = [{ file: from, path: [from] }];
     const visited = new Set<string>([from]);
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    let _qi = 0
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
       const neighbors = adjacency.get(current.file) ?? [];
       for (const neighbor of neighbors) {
         if (neighbor === to) {

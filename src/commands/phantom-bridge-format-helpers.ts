@@ -51,11 +51,11 @@ export function colorGrade(grade: string): string {
     'proper-crossing': good, 'sturdy-bridge': good, 'bridge-engineer': good,
 
     'suspension-cable': okay, 'proper-handler': okay, 'proper-compass': okay,
-    'proper-visibility': okay, 'proper-endurance': okay, 'proper-bridge': okay,
+    'proper-visibility': okay, 'proper-endurance': okay,
     'decent-bridge': okay, 'decent-crossing': okay, 'skilled-builder': okay,
 
     'rope-bridge': poor, 'ghost-ignorer': poor, 'lost-in-fog': poor,
-    'translucent': poor, 'crumbling-arch': poor, 'crumbling-arch': poor,
+    'translucent': poor, 'crumbling-arch': poor,
     'narrow-footbridge': poor, 'rickety-planks': poor, 'apprentice': poor,
 
     'rotting-planks': worst, 'haunted-code': worst, 'blind-wandering': worst,

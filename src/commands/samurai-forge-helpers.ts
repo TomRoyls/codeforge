@@ -709,10 +709,8 @@ export function measureSaya(content: string): SayaMeasure {
   const imports = countImports(content)
   const jsdoc = countJSDoc(content)
   const blockComments = countBlockComments(content)
-  const classes = countClasses(content)
   const generics = countGenerics(content)
   const interfaces = countInterfaces(content)
-  const types = countTypeAliases(content)
   const anyCount = countAny(content)
   const consoleCount = countConsole(content)
 

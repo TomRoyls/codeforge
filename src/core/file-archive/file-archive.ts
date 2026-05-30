@@ -54,11 +54,10 @@ export class FileArchive {
 
   private enforceMaxVersions(path: string): void {
     const versions = this.store.getVersions(path)
-    while (versions.length > this.config.maxVersions) {
-      const oldest = versions.shift()
-      if (oldest !== undefined) {
-        this.store.remove(path, oldest)
-      }
+    const toRemove = versions.length - this.config.maxVersions
+    for (let i = 0; i < toRemove; i++) {
+      const oldest = versions[i]
+      this.store.remove(path, oldest)
     }
   }
 

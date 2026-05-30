@@ -181,7 +181,7 @@ function parseImports(content: string): ImportInfo[] {
     // Side-effect import: import 'mod'
     const sideEffectMatch = /^import\s+['"]([^'"]+)['"]/.exec(line)
     if (sideEffectMatch) {
-      const source = sideEffectMatch[1]!
+      const source = sideEffectMatch[1] ?? ''
       imports.push({ isTypeOnly: false, items: [], line: i + 1, source })
       continue
     }
@@ -239,7 +239,7 @@ function parseExports(content: string): ExportInfo[] {
     // export { A, B }
     const exportBlockMatch = /^export\s+\{([^}]+)\}/.exec(line)
     if (exportBlockMatch) {
-      const items = exportBlockMatch[1]!.split(',').map((s) => {
+      const items = exportBlockMatch[1] ?? ''.split(',').map((s) => {
         const trimmed = s.trim()
         // Handle "X as Y" - take original name
         const parts = trimmed.split(/\s+as\s+/)
@@ -264,7 +264,7 @@ function parseExports(content: string): ExportInfo[] {
       exports.push({
         isExported: true,
         line: i + 1,
-        name: `* from '${reExportMatch[1]!}'`,
+        name: `* from '${reExportMatch[1] ?? ''}'`,
         type: 'const',
       })
     }

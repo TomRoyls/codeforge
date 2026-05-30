@@ -38,6 +38,7 @@ export interface ApiClass {
   exportType: 'named' | 'default'
   description: string
   examples: string[]
+  see: string[]
   since: string
   deprecated: boolean
   methods: ApiFunction[]
@@ -296,7 +297,6 @@ const FUNC_REGEX = /(?:\/\/[^\n]*\n|\/\*\*[\s\S]*?\*\/\n)?(export\s+(?:async\s+)
  */
 export function extractFunctions(content: string, filePath: string): ApiFunction[] {
   const functions: ApiFunction[] = []
-  const lines = content.split('\n')
 
   let match: RegExpExecArray | null
   const regex = new RegExp(FUNC_REGEX.source, 'g')

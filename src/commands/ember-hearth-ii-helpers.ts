@@ -777,22 +777,22 @@ export function buildEmberHearthIiResult(
   }
 
   const bestEmber = totalFiles > 0
-    ? embers.reduce((best, e) => (e.qualityScore > best.qualityScore ? e : best), embers[0]).file
+    ? embers.reduce((best, e) => (e.qualityScore > best.qualityScore ? e : best), embers[0] as typeof embers[number]).file
     : ''
   const warmest = totalFiles > 0
-    ? embers.reduce((best, e) => (e.warmthDeep > best.warmthDeep ? e : best), embers[0]).file
+    ? embers.reduce((best, e) => (e.warmthDeep > best.warmthDeep ? e : best), embers[0] as typeof embers[number]).file
     : ''
   const mostEfficient = totalFiles > 0
-    ? embers.reduce((best, e) => (e.burnQuality > best.burnQuality ? e : best), embers[0]).file
+    ? embers.reduce((best, e) => (e.burnQuality > best.burnQuality ? e : best), embers[0] as typeof embers[number]).file
     : ''
   const wisest = totalFiles > 0
-    ? embers.reduce((best, e) => (e.ashWisdom > best.ashWisdom ? e : best), embers[0]).file
+    ? embers.reduce((best, e) => (e.ashWisdom > best.ashWisdom ? e : best), embers[0] as typeof embers[number]).file
     : ''
   const bestMaintained = totalFiles > 0
-    ? embers.reduce((best, e) => (e.fireTending > best.fireTending ? e : best), embers[0]).file
+    ? embers.reduce((best, e) => (e.fireTending > best.fireTending ? e : best), embers[0] as typeof embers[number]).file
     : ''
   const mostInnovative = totalFiles > 0
-    ? embers.reduce((best, e) => (e.sparkGeneration > best.sparkGeneration ? e : best), embers[0]).file
+    ? embers.reduce((best, e) => (e.sparkGeneration > best.sparkGeneration ? e : best), embers[0] as typeof embers[number]).file
     : ''
 
   const stats: EmberHearthIiStats = {

@@ -11,7 +11,7 @@ import type {
   CallGraphNode,
   CallGraphEdge,
 } from './types.js'
-import { escapeRegex } from '../../utils/string-helpers.js'
+import { escapeRegex as _escapeRegex } from '../../utils/string-helpers.js'
 
 interface RawSymbol {
   name: string

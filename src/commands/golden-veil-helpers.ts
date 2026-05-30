@@ -891,7 +891,7 @@ export async function buildGoldenVeilResult(
 export function generateRecommendations(
   threads: GoldenThread[],
   looms: GoldenLoom[],
-  tapestry: GoldenVeilResult['tapestry'],
+  _tapestry: GoldenVeilResult['tapestry'],
   stats: GoldenStats,
 ): string[] {
   const recs: string[] = []

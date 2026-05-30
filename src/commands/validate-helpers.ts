@@ -81,12 +81,12 @@ export function checkNoConsole(content: string, filePath: string): Violation[] {
   const pattern = /\bconsole\.(log|warn|error|debug|info)\s*\(/
 
   for (let i = 0; i < lines.length; i++) {
-    if (pattern.test(lines[i])) {
+      if (pattern.test(lines[i] ?? '')) {
       violations.push({
         file: filePath,
         fix: 'Use a proper logging library instead',
         line: i + 1,
-        message: `Unexpected console.${lines[i].match(/\bconsole\.(\w+)/)?.[1] ?? 'call'}`,
+        message: `Unexpected console.${(lines[i] ?? '').match(/\bconsole\.(\w+)/)?.[1] ?? 'call'}`,
         rule: 'NO_CONSOLE',
         severity: 'warning',
       })
@@ -110,12 +110,12 @@ export function checkRequireJSDoc(content: string, filePath: string): Violation[
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (
       trimmed.startsWith('export function') ||
       trimmed.startsWith('export async function')
     ) {
-      const prevLine = i > 0 ? lines[i - 1].trim() : ''
+      const prevLine = i > 0 ? (lines[i - 1] ?? '').trim() : ''
       if (!prevLine.endsWith('*/')) {
         const fnName = trimmed.match(/function\s+(\w+)/)?.[1] ?? 'unknown'
         violations.push({
@@ -148,7 +148,7 @@ export function checkNoTodo(content: string, filePath: string): Violation[] {
   const pattern = /\b(TODO|FIXME)\b/
 
   for (let i = 0; i < lines.length; i++) {
-    const match = lines[i].match(pattern)
+    const match = (lines[i] ?? '').match(pattern)
     if (match) {
       violations.push({
         file: filePath,
@@ -181,7 +181,7 @@ export function checkMaxFunctionLength(content: string, filePath: string): Viola
   let inFunction = false
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
 
     const isFnStart =
       trimmed.includes('function ') ||
@@ -236,10 +236,10 @@ export function checkMaxParams(content: string, filePath: string): Violation[] {
   const arrowPattern = /(?:const|let)\s+\w+\s*=\s*(?:async\s+)?\(([^)]*)\)\s*(?::|=>)/
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     const fnMatch = line.match(fnPattern) ?? line.match(arrowPattern)
     if (fnMatch) {
-      const params = fnMatch[1].split(',').filter((p) => p.trim().length > 0)
+      const params = (fnMatch[1] ?? '').split(',').filter((p) => p.trim().length > 0)
       if (params.length > 5) {
         violations.push({
           file: filePath,
@@ -270,7 +270,7 @@ export function checkNamingConvention(content: string, filePath: string): Violat
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
 
     const classMatch = trimmed.match(/^class\s+([a-z])/)
     if (classMatch) {
@@ -322,9 +322,9 @@ export function checkImportOrder(content: string, filePath: string): Violation[]
   }
 
   for (let i = 0; i < lines.length; i++) {
-    const match = lines[i].match(importPattern)
+    const match = (lines[i] ?? '').match(importPattern)
     if (match) {
-      const category = categoryOrder(match[1])
+      const category = categoryOrder(match[1] ?? '')
       if (category < lastCategory) {
         violations.push({
           file: filePath,
@@ -357,7 +357,7 @@ export function checkNoTypeAny(content: string, filePath: string): Violation[] {
   const pattern = /:\s*any\b/
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (pattern.test(trimmed) && !trimmed.startsWith('//') && !trimmed.startsWith('*')) {
       violations.push({
         file: filePath,
@@ -387,7 +387,7 @@ export function checkExplicitReturnTypes(content: string, filePath: string): Vio
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (
       trimmed.startsWith('export function') &&
       !trimmed.includes(': ') &&
@@ -423,7 +423,7 @@ export function checkNoHardcodedStrings(content: string, filePath: string): Viol
   const stringPattern = /['"`]([^'"`]{50,})['"`]/
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (
       stringPattern.test(trimmed) &&
       !trimmed.startsWith('const') &&

@@ -85,7 +85,7 @@ export function observeNear(content: string): Pick<Perspective, 'observations' |
   let totalParams = 0
   let fnWithParams = 0
   while ((paramMatch = paramPattern.exec(content)) !== null) {
-    const params = paramMatch[1].split(',').filter(p => p.trim().length > 0)
+    const params = (paramMatch[1] ?? '').split(',').filter(p => p.trim().length > 0)
     if (params.length > 0) {
       totalParams += params.length
       fnWithParams++
@@ -274,11 +274,15 @@ export function observeFar(files: string[], contents: string[]): Pick<Perspectiv
   // Inter-module coupling (shared imports across directories)
   const dirImports = new Map<string, Set<string>>()
   for (let i = 0; i < files.length; i++) {
-    const parts = files[i].split('/')
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const parts = file.split('/')
     const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '<root>'
     if (!dirImports.has(dir)) dirImports.set(dir, new Set())
-    const importDirs = dirImports.get(dir)!
-    const importMatches = contents[i].match(/from\s+['"]([^'"]+)['"]/g) ?? []
+    const importDirs = dirImports.get(dir)
+    if (importDirs === undefined) continue
+    const importMatches = content.match(/from\s+['"]([^'"]+)['"]/g) ?? []
     for (const m of importMatches) {
       const importPath = m.match(/from\s+['"]([^'"]+)['"]/)?.[1] ?? ''
       if (importPath.startsWith('.')) {
@@ -303,9 +307,12 @@ export function observeFar(files: string[], contents: string[]): Pick<Perspectiv
   // Module responsibility clarity
   const avgExportsPerDir = new Map<string, number>()
   for (let i = 0; i < files.length; i++) {
-    const parts = files[i].split('/')
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const parts = file.split('/')
     const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '<root>'
-    const exp = (contents[i].match(/export\s+/g) ?? []).length
+    const exp = (content.match(/export\s+/g) ?? []).length
     avgExportsPerDir.set(dir, (avgExportsPerDir.get(dir) ?? 0) + exp)
   }
   const exportCounts = Array.from(avgExportsPerDir.values())
@@ -353,7 +360,6 @@ export function computeNearDepth(nearMetrics: Record<string, number>): number {
   const fnCount = nearMetrics.functionCount ?? 0
   const complexity = nearMetrics.complexity ?? 1
   const maxNesting = nearMetrics.maxNesting ?? 0
-  const avgParams = nearMetrics.avgParams ?? 0
   const returnCov = nearMetrics.returnCoverage ?? 100
   const avgFnLen = nearMetrics.avgFnLength ?? 0
 
@@ -413,7 +419,6 @@ export function computeFarDepth(farMetrics: Record<string, number>): number {
   const layerCount = farMetrics.layerCount ?? 0
   const avgCoupling = farMetrics.avgCoupling ?? 0
   const fileCount = farMetrics.fileCount ?? 0
-  const avgFilesPerDir = farMetrics.avgFilesPerDir ?? 0
 
   // Directory organization (0-25)
   const dirScore = Math.min(25, dirCount * 3)
@@ -555,7 +560,7 @@ export function generateRecommendations(perspectives: Perspective[], layers: Dep
  * buildParallaxResult(files, contents, {})
  * // => { perspectives: [...], layers: [...], stats: {...}, recommendations: [...] }
  */
-export function buildParallaxResult(files: string[], contents: string[], options: ParallaxOptions): ParallaxResult {
+export function buildParallaxResult(files: string[], contents: string[], _options: ParallaxOptions): ParallaxResult {
   // Near perspective
   const nearObs: Observation[] = []
   const nearAggMetrics: Record<string, number> = { avgFnLength: 0, avgParams: 0, complexity: 0, functionCount: 0, maxNesting: 0, returnCoverage: 0, ternaryCount: 0 }
@@ -567,7 +572,7 @@ export function buildParallaxResult(files: string[], contents: string[], options
     }
   }
   for (const k of Object.keys(nearAggMetrics)) {
-    nearAggMetrics[k] = Math.round((nearAggMetrics[k] / contents.length) * 10) / 10
+    nearAggMetrics[k] = Math.round(((nearAggMetrics[k] ?? 0) / contents.length) * 10) / 10
   }
   const nearPerspective: Perspective = { depth: 'near', description: 'Function-level detail view', observations: nearObs, metrics: nearAggMetrics }
 
@@ -575,14 +580,17 @@ export function buildParallaxResult(files: string[], contents: string[], options
   const midObs: Observation[] = []
   const midAggMetrics: Record<string, number> = { lineCount: 0, importCount: 0, exportCount: 0, commentRatio: 0, hasTest: 0, classCount: 0, interfaceCount: 0, typeCount: 0, docComments: 0, importExportRatio: 0 }
   for (let i = 0; i < files.length; i++) {
-    const { observations, metrics } = observeMid(files[i], contents[i], files)
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const { observations, metrics } = observeMid(file, content, files)
     midObs.push(...observations)
     for (const [k, v] of Object.entries(metrics)) {
       midAggMetrics[k] = (midAggMetrics[k] ?? 0) + v
     }
   }
   for (const k of Object.keys(midAggMetrics)) {
-    midAggMetrics[k] = Math.round((midAggMetrics[k] / contents.length) * 10) / 10
+    midAggMetrics[k] = Math.round(((midAggMetrics[k] ?? 0) / contents.length) * 10) / 10
   }
   const midPerspective: Perspective = { depth: 'mid', description: 'File-level structural view', observations: midObs, metrics: midAggMetrics }
 
@@ -594,7 +602,7 @@ export function buildParallaxResult(files: string[], contents: string[], options
 
   // Build depth layers
   const layers: DepthLayer[] = files.map((file, i) => {
-    const content = contents[i]
+    const content = contents[i] ?? ''
     const nearResult = observeNear(content)
     const midResult = observeMid(file, content, files)
     const farResult = observeFar(files, contents)
@@ -623,8 +631,8 @@ export function buildParallaxResult(files: string[], contents: string[], options
   const avgFar = layers.length > 0 ? layers.reduce((s, l) => s + l.farDepth, 0) / layers.length : 0
 
   const sorted = [...layers].sort((a, b) => b.parallaxScore - a.parallaxScore)
-  const deepestFile = sorted.length > 0 ? sorted[0].file : ''
-  const shallowestFile = sorted.length > 0 ? sorted[sorted.length - 1].file : ''
+  const deepestFile = sorted.length > 0 ? sorted[0]?.file ?? '' : ''
+  const shallowestFile = sorted.length > 0 ? sorted[sorted.length - 1]?.file ?? '' : ''
 
   const stats: ParallaxStats = {
     totalFiles: files.length,

@@ -877,7 +877,7 @@ export async function buildCrystalBlizzardResult(
 export function generateRecommendations(
   shards: CrystalShard[],
   storms: CrystalStorm[],
-  winter: CrystalBlizzardResult['winter'],
+  _winter: CrystalBlizzardResult['winter'],
   stats: CrystalBlizzardResult['stats'],
 ): string[] {
   const recs: string[] = []

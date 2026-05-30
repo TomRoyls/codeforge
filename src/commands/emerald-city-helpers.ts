@@ -825,22 +825,22 @@ export function buildEmeraldCityResult(
   }
 
   const bestTower = totalFiles > 0
-    ? towers.reduce((best, t) => (t.qualityScore > best.qualityScore ? t : best), towers[0]).file
+    ? towers.reduce((best, t) => (t.qualityScore > best.qualityScore ? t : best), towers[0] as typeof towers[number]).file
     : ''
   const mostBrilliant = totalFiles > 0
-    ? towers.reduce((best, t) => (t.brilliance > best.brilliance ? t : best), towers[0]).file
+    ? towers.reduce((best, t) => (t.brilliance > best.brilliance ? t : best), towers[0] as typeof towers[number]).file
     : ''
   const bestGateway = totalFiles > 0
-    ? towers.reduce((best, t) => (t.gatewayQuality > best.gatewayQuality ? t : best), towers[0]).file
+    ? towers.reduce((best, t) => (t.gatewayQuality > best.gatewayQuality ? t : best), towers[0] as typeof towers[number]).file
     : ''
   const clearestPath = totalFiles > 0
-    ? towers.reduce((best, t) => (t.yellowBrickRoad > best.yellowBrickRoad ? t : best), towers[0]).file
+    ? towers.reduce((best, t) => (t.yellowBrickRoad > best.yellowBrickRoad ? t : best), towers[0] as typeof towers[number]).file
     : ''
   const mostClever = totalFiles > 0
-    ? towers.reduce((best, t) => (t.ozWizardry > best.ozWizardry ? t : best), towers[0]).file
+    ? towers.reduce((best, t) => (t.ozWizardry > best.ozWizardry ? t : best), towers[0] as typeof towers[number]).file
     : ''
   const mostSplendid = totalFiles > 0
-    ? towers.reduce((best, t) => (t.emeraldSplendor > best.emeraldSplendor ? t : best), towers[0]).file
+    ? towers.reduce((best, t) => (t.emeraldSplendor > best.emeraldSplendor ? t : best), towers[0] as typeof towers[number]).file
     : ''
 
   const stats: EmeraldCityStats = {

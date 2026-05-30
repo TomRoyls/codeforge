@@ -87,7 +87,7 @@ function extractVariableAnnotations(
   let match: RegExpExecArray | null
   VARIABLE_TYPE_RE.lastIndex = 0
   while ((match = VARIABLE_TYPE_RE.exec(line)) !== null) {
-    const name = match[1]!
+    const name = match[1] ?? ''
     const typeString = cleanTypeString(match[2]!)
     annotations.push({
       complexity: computeTypeComplexity(typeString),
@@ -117,7 +117,7 @@ function extractParameterAnnotations(
   let match: RegExpExecArray | null
   PARAM_TYPE_RE.lastIndex = 0
   while ((match = PARAM_TYPE_RE.exec(line)) !== null) {
-    const rawName = match[1]!
+    const rawName = match[1] ?? ''
     const name = rawName.replace(/\?$/, '')
     const isOptional = rawName.endsWith('?')
     const typeString = cleanTypeString(match[2]!)
@@ -155,7 +155,7 @@ function extractReturnAnnotations(
   let match: RegExpExecArray | null
   RETURN_TYPE_RE.lastIndex = 0
   while ((match = RETURN_TYPE_RE.exec(line)) !== null) {
-    const typeString = cleanTypeString(match[1]!)
+    const typeString = cleanTypeString(match[1] ?? '')
     // Derive a name from context: look for function/method name before the parens
     const name = extractFunctionName(line) || '<anonymous>'
     annotations.push({
@@ -181,8 +181,8 @@ function extractFunctionName(line: string): string {
   }
   // Match: methodName(
   const methodMatch = line.match(/^\s*(?:async\s+)?(\w+)\s*[\(<]/)
-  if (methodMatch && !['if', 'for', 'while', 'switch', 'catch'].includes(methodMatch[1]!)) {
-    return methodMatch[1]!
+  if (methodMatch && !['if', 'for', 'while', 'switch', 'catch'].includes(methodMatch[1] ?? '')) {
+    return methodMatch[1] ?? ''
   }
   return '<anonymous>'
 }
@@ -229,7 +229,7 @@ function extractPropertyAnnotations(
   let match: RegExpExecArray | null
   PROPERTY_TYPE_RE.lastIndex = 0
   while ((match = PROPERTY_TYPE_RE.exec(line)) !== null) {
-    const rawName = match[1]!
+    const rawName = match[1] ?? ''
     const name = rawName.replace(/\?$/, '')
     const isOptional = rawName.endsWith('?')
     const typeString = cleanTypeString(match[2]!)
@@ -283,7 +283,7 @@ export function extractTypeDefs(content: string, filePath: string): TypeInfo[] {
     // Interface extraction
     const ifaceMatch = trimmed.match(/^interface\s+(\w+)(?:\s*<([^>]*)>)?\s*\{?/)
     if (ifaceMatch) {
-      const name = ifaceMatch[1]!
+      const name = ifaceMatch[1] ?? ''
       const generics = countGenerics(ifaceMatch[2])
       const body = extractBlockBody(lines, i)
       const properties = countProperties(body)
@@ -302,7 +302,7 @@ export function extractTypeDefs(content: string, filePath: string): TypeInfo[] {
     // Type alias extraction
     const typeMatch = trimmed.match(/^type\s+(\w+)(?:\s*<([^>]*)>)?\s*=\s*(.+)$/)
     if (typeMatch) {
-      const name = typeMatch[1]!
+      const name = typeMatch[1] ?? ''
       const generics = countGenerics(typeMatch[2])
       const typeDef = typeMatch[3] || ''
       // For type aliases, "properties" is the complexity of the definition
@@ -322,7 +322,7 @@ export function extractTypeDefs(content: string, filePath: string): TypeInfo[] {
     // Enum extraction
     const enumMatch = trimmed.match(/^enum\s+(\w+)\s*\{?/)
     if (enumMatch) {
-      const name = enumMatch[1]!
+      const name = enumMatch[1] ?? ''
       const body = extractBlockBody(lines, i)
       const properties = countEnumMembers(body)
       defs.push({
@@ -503,7 +503,6 @@ export function computeTypeCoverage(content: string): number {
     const varMatches = trimmed.matchAll(/\b(?:const|let|var)\s+(\w+)/g)
     for (const match of varMatches) {
       totalDeclarations++
-      const varName = match[1]!
       // Check if this variable has a type annotation
       const afterName = trimmed.slice(match.index! + match[0]!.length)
       if (/^\s*:/.test(afterName)) {

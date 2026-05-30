@@ -3,6 +3,7 @@ import type { PagodaOptions } from './types.js'
 export class Pagoda<T = number> {
   private items: T[] = []
   private compare: (a: T, b: T) => number
+  private _head = 0
 
   constructor(options?: PagodaOptions<T>) {
     this.compare =
@@ -16,42 +17,48 @@ export class Pagoda<T = number> {
 
   insert(value: T): void {
     let lo = 0
-    let hi = this.items.length
+    let hi = this.items.length - this._head
     while (lo < hi) {
       const mid = (lo + hi) >> 1
-      if (this.compare(this.items[mid]!, value) < 0) {
+      if (this.compare(this.items[mid + this._head]!, value) < 0) {
         lo = mid + 1
       } else {
         hi = mid
       }
     }
-    this.items.splice(lo, 0, value)
+    this.items.splice(lo + this._head, 0, value)
   }
 
   extractMin(): T {
-    if (this.items.length === 0) {
+    if (this.items.length - this._head === 0) {
       throw new Error('Pagoda is empty')
     }
-    return this.items.shift()!
+    const result = this.items[this._head]!
+    this._head++
+    if (this._head > (this.items.length / 2)) {
+      this._compact()
+    }
+    return result
   }
 
   peek(): T {
-    if (this.items.length === 0) {
+    if (this.items.length - this._head === 0) {
       throw new Error('Pagoda is empty')
     }
-    return this.items[0]!
+    return this.items[this._head]!
   }
 
   get size(): number {
-    return this.items.length
+    return this.items.length - this._head
   }
 
   get isEmpty(): boolean {
-    return this.items.length === 0
+    return this.items.length - this._head === 0
   }
 
   clear(): void {
     this.items = []
+    this._head = 0
   }
 
   merge(other: Pagoda<T>): void {
@@ -59,45 +66,56 @@ export class Pagoda<T = number> {
     const merged: T[] = []
     let i = 0
     let j = 0
-    while (i < this.items.length && j < other.items.length) {
-      if (this.compare(this.items[i]!, other.items[j]!) <= 0) {
-        merged.push(this.items[i]!)
+    const thisLength = this.items.length - this._head
+    const otherLength = other.items.length - other._head
+    while (i < thisLength && j < otherLength) {
+      if (this.compare(this.items[i + this._head]!, other.items[j + other._head]!) <= 0) {
+        merged.push(this.items[i + this._head]!)
         i++
       } else {
-        merged.push(other.items[j]!)
+        merged.push(other.items[j + other._head]!)
         j++
       }
     }
-    while (i < this.items.length) {
-      merged.push(this.items[i]!)
+    while (i < thisLength) {
+      merged.push(this.items[i + this._head]!)
       i++
     }
-    while (j < other.items.length) {
-      merged.push(other.items[j]!)
+    while (j < otherLength) {
+      merged.push(other.items[j + other._head]!)
       j++
     }
     this.items = merged
+    this._head = 0
     this._size += other._size
     other.items = []
     other._size = 0
+    other._head = 0
   }
 
   private _size = 0
 
+  private _compact(): void {
+    if (this._head > 0) {
+      this.items = this.items.slice(this._head)
+      this._head = 0
+    }
+  }
+
   toArray(): T[] {
-    return [...this.items]
+    return this.items.slice(this._head)
   }
 
   toSortedArray(): T[] {
-    return [...this.items]
+    return this.items.slice(this._head)
   }
 
   contains(value: T): boolean {
     let lo = 0
-    let hi = this.items.length - 1
+    let hi = this.items.length - this._head - 1
     while (lo <= hi) {
       const mid = (lo + hi) >> 1
-      const cmp = this.compare(this.items[mid]!, value)
+      const cmp = this.compare(this.items[mid + this._head]!, value)
       if (cmp === 0) return true
       if (cmp < 0) lo = mid + 1
       else hi = mid - 1
@@ -107,7 +125,8 @@ export class Pagoda<T = number> {
 
   clone(): Pagoda<T> {
     const cloned = new Pagoda<T>({ comparator: this.compare })
-    cloned.items = [...this.items]
+    cloned.items = [...this.items.slice(this._head)]
+    cloned._head = 0
     cloned._size = this._size
     return cloned
   }
@@ -127,13 +146,13 @@ export class Pagoda<T = number> {
   }
 
   forEach(callback: (item: T) => void): void {
-    for (let i = 0; i < this.items.length; i++) {
+    for (let i = this._head; i < this.items.length; i++) {
       callback(this.items[i]!)
     }
   }
 
   *[Symbol.iterator](): Iterator<T> {
-    for (let i = 0; i < this.items.length; i++) {
+    for (let i = this._head; i < this.items.length; i++) {
       yield this.items[i]!
     }
   }

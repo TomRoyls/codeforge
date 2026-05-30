@@ -311,7 +311,7 @@ async function readFileData(
 
 export async function collectMetrics(
   files: Array<{ absolutePath: string; path: string }>,
-  verbose = false,
+  _verbose = false,
 ): Promise<CodebaseMetrics> {
   const fileData = await readFileData(files)
 

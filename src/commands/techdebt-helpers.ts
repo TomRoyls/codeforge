@@ -87,7 +87,7 @@ export function assessComplexity(files: FileContent[]): DebtCategory {
     let fnLineCount = 0
 
     for (let i = 0; i < lines.length; i++) {
-      const trimmed = lines[i].trim()
+      const trimmed = (lines[i] ?? '').trim()
 
       for (const ch of trimmed) {
         if (ch === '{') {
@@ -267,7 +267,7 @@ export function assessDocumentation(files: FileContent[]): DebtCategory {
     let documentedFns = 0
 
     for (let i = 0; i < lines.length; i++) {
-      const trimmed = lines[i].trim()
+      const trimmed = (lines[i] ?? '').trim()
       if (
         (trimmed.startsWith('export function') ||
           trimmed.startsWith('export async function') ||
@@ -275,10 +275,10 @@ export function assessDocumentation(files: FileContent[]): DebtCategory {
         !trimmed.includes('//')
       ) {
         exportedFns++
-        if (i > 0 && lines[i - 1].trim().endsWith('*/')) {
+        if (i > 0 && (lines[i - 1] ?? '').trim().endsWith('*/')) {
           documentedFns++
         }
-        if (i > 1 && lines[i - 2].trim().endsWith('*/')) {
+        if (i > 1 && (lines[i - 2] ?? '').trim().endsWith('*/')) {
           documentedFns++
         }
       }
@@ -345,14 +345,14 @@ export function assessTodos(files: FileContent[]): DebtCategory {
     const lines = file.content.split('\n')
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
-      const matches = line.match(todoPattern)
+      const matches = line?.match(todoPattern)
       if (matches) {
         for (const match of matches) {
           let priority: DebtItem['priority'] = 'medium'
           if (match === 'FIXME' || match === 'HACK') priority = 'high'
           if (match === 'XXX') priority = 'high'
 
-          const descMatch = line.match(new RegExp(`\\b${match}\\b[:\\s]*(.*)`))
+          const descMatch = line?.match(new RegExp(`\\b${match}\\b[:\\s]*(.*)`))
           const description = descMatch?.[1]?.trim() ?? match
 
           items.push({
@@ -407,7 +407,7 @@ export function assessCoupling(files: FileContent[]): DebtCategory {
     const content = file.content
     importPattern.lastIndex = 0
     while ((match = importPattern.exec(content)) !== null) {
-      imports.push(match[1])
+if (match[1] !== undefined) imports.push(match[1])
     }
 
     if (imports.length > 10) {
@@ -453,7 +453,7 @@ export function assessStaleCode(files: FileContent[]): DebtCategory {
     let consecutiveCommentedCode = 0
 
     for (let i = 0; i < lines.length; i++) {
-      const trimmed = lines[i].trim()
+      const trimmed = (lines[i] ?? '').trim()
 
       if (trimmed.startsWith('// ') && looksLikeCode(trimmed.slice(3))) {
         consecutiveCommentedCode++
@@ -477,7 +477,7 @@ export function assessStaleCode(files: FileContent[]): DebtCategory {
     let match: RegExpExecArray | null
     exportPattern.lastIndex = 0
     while ((match = exportPattern.exec(file.content)) !== null) {
-      exports.push(match[0])
+if (match[0] !== undefined) exports.push(match[0])
     }
 
     if (exports.length > 15) {
@@ -672,7 +672,7 @@ export function generateRepaymentPlan(categories: DebtCategory[]): RepaymentActi
   }
 
   const priorityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 }
-  actions.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+  actions.sort((a, b) => (priorityOrder[a.priority] ?? 0) - (priorityOrder[b.priority] ?? 0))
 
   return actions.slice(0, 10)
 }
@@ -692,7 +692,7 @@ export async function buildDebtScore(
   cwd: string,
   files: string[],
   contents: Map<string, string>,
-  options: TechDebtOptions,
+  _options: TechDebtOptions,
 ): Promise<DebtScore> {
   const fileContents: FileContent[] = files.map((f) => ({
     content: contents.get(f) ?? '',

@@ -206,7 +206,6 @@ const hasEnum = (c: string) => has(/\benum\b/, c)
 const hasUnionType = (c: string) => has(/\|\s*['"]/, c)
 const hasConditional = (c: string) => has(/\bif\b/, c)
 const hasMapFunction = (c: string) => has(/\b(?:map|filter|reduce|forEach)\b/, c)
-const hasArrowFunction = (c: string) => has(/=>/, c)
 const hasReadonly = (c: string) => has(/\breadonly\b/, c)
 const hasThrow = (c: string) => has(/\bthrow\b/, c)
 

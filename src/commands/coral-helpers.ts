@@ -168,14 +168,13 @@ function countClasses(content: string): number {
  * @example
  * classifyPolyp('export const a = 1; export const b = 2;', 'f.ts', []) // PolypType
  */
-export function classifyPolyp(content: string, filePath: string): PolypType {
+export function classifyPolyp(content: string): PolypType {
   const lines = content.split('\n').length
   const exports = countExports(content)
   const imports = countImports(content)
   const funcs = countFns(content)
   const ifaces = countIfaces(content)
   const nesting = getMaxNesting(content)
-  const classes = countClasses(content)
 
   if (exports >= 5 && nesting <= 2) return 'branching'
   if (lines > 300 && exports <= 2) return 'massive'
@@ -215,7 +214,7 @@ export function buildPolyp(content: string, filePath: string): CoralPolyp {
   const comments = countComments(content)
   const hasAny = /:\s*any\b|as\s+any\b/.test(content)
 
-  const polypType = classifyPolyp(content, filePath)
+  const polypType = classifyPolyp(content)
   const connections = exports + imports
   const growthPattern = classifyGrowthPattern(polypType, exports)
 
@@ -300,7 +299,11 @@ export function analyzeColony(files: string[], contents: string[], dirPath: stri
   const diversity = Math.max(0, Math.min(100, patternTypes.length * 14))
 
   const avgHealth = files.length > 0
-    ? Math.round(contents.reduce((s, c, i) => s + buildPolyp(c, files[i]).health, 0) / files.length)
+    ? Math.round(contents.reduce((s, c, i) => {
+        const file = files[i]
+        if (!file) return s
+        return s + buildPolyp(c, file).health
+      }, 0) / files.length)
     : 50
 
   const health: ColonyHealth = avgHealth >= 80 ? 'thriving'
@@ -312,10 +315,13 @@ export function analyzeColony(files: string[], contents: string[], dirPath: stri
   const symbionts: string[] = []
   const parasites: string[] = []
   for (let i = 0; i < files.length; i++) {
-    const exp = countExports(contents[i])
-    const imp = countImports(contents[i])
-    if (exp > 0 && imp > 0) symbionts.push(files[i])
-    else if (imp > 0 && exp === 0) parasites.push(files[i])
+    const content = contents[i]
+    const file = files[i]
+    if (content === undefined || file === undefined) continue
+    const exp = countExports(content)
+    const imp = countImports(content)
+    if (exp > 0 && imp > 0) symbionts.push(file)
+    else if (imp > 0 && exp === 0) parasites.push(file)
   }
 
   return {
@@ -351,10 +357,6 @@ export function mapReefZones(files: string[], polyps: CoralPolyp[]): ReefZone[] 
 
   for (const [dir, dirFiles] of byDir) {
     const dirPolyps = polyps.filter(p => dirFiles.includes(p.file))
-    const exports = dirPolyps.reduce((s, p) => {
-      const poly = polyps.find(pp => pp.file === dirFiles[0])
-      return s + (poly?.connections || 0)
-    }, 0)
     const avgComplexity = dirPolyps.length > 0
       ? Math.round(dirPolyps.reduce((s, p) => s + p.complexity, 0) / dirPolyps.length)
       : 50
@@ -408,7 +410,7 @@ export function mapReefZones(files: string[], polyps: CoralPolyp[]): ReefZone[] 
  * @example
  * detectSymbiosis(polyps, files, contents) // SymbioticRelation[]
  */
-export function detectSymbiosis(polyps: CoralPolyp[], files: string[], contents: string[]): SymbioticRelation[] {
+export function detectSymbiosis(_polyps: CoralPolyp[], files: string[], contents: string[]): SymbioticRelation[] {
   const relations: SymbioticRelation[] = []
 
   for (let i = 0; i < files.length; i++) {
@@ -417,9 +419,10 @@ export function detectSymbiosis(polyps: CoralPolyp[], files: string[], contents:
       const contentJ = contents[j]
       const fileI = files[i]
       const fileJ = files[j]
+      if (contentI === undefined || contentJ === undefined || fileI === undefined || fileJ === undefined) continue
 
-      const basenameI = fileI.split('/').pop()?.replace(/\.\w+$/, '') || fileI
-      const basenameJ = fileJ.split('/').pop()?.replace(/\.\w+$/, '') || fileJ
+      const basenameI = fileI.split('/').pop()?.replace(/\.\w+$/, '') ?? fileI
+      const basenameJ = fileJ.split('/').pop()?.replace(/\.\w+$/, '') ?? fileJ
 
       const iImportsJ = contentI.includes(basenameJ)
       const jImportsI = contentJ.includes(basenameI)
@@ -466,7 +469,7 @@ export function detectSymbiosis(polyps: CoralPolyp[], files: string[], contents:
  * @example
  * computeReefHealth(colonies, polyps) // 72
  */
-export function computeReefHealth(colonies: CoralColony[], polyps: CoralPolyp[]): number {
+export function computeReefHealth(_colonies: CoralColony[], polyps: CoralPolyp[]): number {
   if (polyps.length === 0) return 50
   const avgPolypHealth = polyps.reduce((s, p) => s + p.health, 0) / polyps.length
   const invasivePenalty = polyps.filter(p => p.isInvasive).length * 5
@@ -581,16 +584,24 @@ export function buildCoralResult(
 ): CoralResult {
   const polyps: CoralPolyp[] = []
   for (let i = 0; i < files.length; i++) {
-    polyps.push(buildPolyp(contents[i], files[i]))
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    polyps.push(buildPolyp(content, file))
   }
 
   const byDir = new Map<string, { files: string[]; contents: string[] }>()
   for (let i = 0; i < files.length; i++) {
-    const parts = files[i].split('/')
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const parts = file.split('/')
     const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
     if (!byDir.has(dir)) byDir.set(dir, { files: [], contents: [] })
-    byDir.get(dir)!.files.push(files[i])
-    byDir.get(dir)!.contents.push(contents[i])
+    const entry = byDir.get(dir)
+    if (!entry) continue
+    entry.files.push(file)
+    entry.contents.push(content)
   }
 
   const colonies: CoralColony[] = []

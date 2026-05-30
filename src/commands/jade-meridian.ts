@@ -1,5 +1,5 @@
 // ─── Imports ───────────────────────────────────────────────────────
-import { Command, Flags } from '@oclif/core'
+import { Command, Flags, Args } from '@oclif/core'
 import fg from 'fast-glob'
 import ora from 'ora'
 import {
@@ -45,7 +45,9 @@ export default class JadeMeridian extends Command {
     }),
   }
 
-  static override args = [{ name: 'path', description: 'Directory to analyze', required: true }]
+  static override args = {
+    path: Args.string({ description: 'Directory to analyze', required: true }),
+  }
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(JadeMeridian)

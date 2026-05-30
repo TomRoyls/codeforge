@@ -314,7 +314,7 @@ export function excavateUnusedImports(content: string, filePath: string): Fossil
     const importMatch = line.match(/^import\s+(?:type\s+)?\{([^}]+)\}\s+from\s+['"][^'"]+['"]/)
     if (!importMatch) continue
 
-    const imports = importMatch[1]!.split(',').map((s) => s.trim().split(/\s+as\s+/).pop()!.trim())
+    const imports = importMatch[1] ?? ''.split(',').map((s) => s.trim().split(/\s+as\s+/).at(-1) ?? ''.trim())
 
     for (const name of imports) {
       const regex = new RegExp(`\\b${name}\\b`)
@@ -409,7 +409,7 @@ export function excavateOrphanReferences(content: string, filePath: string): Fos
     const match = line.match(/from\s+['"](\.\/[^'"]+)['"]/)
     if (!match) continue
 
-    const importPath = match[1]!
+    const importPath = match[1] ?? ''
     if (importPath.includes('.test.') || importPath.includes('.spec.')) continue
 
     const hasTypeImport = /import\s+type/.test(line)
@@ -493,7 +493,7 @@ export function excavateZombieConstants(content: string, filePath: string): Foss
     const constMatch = line.match(/^\s*(?:export\s+)?const\s+([A-Z_][A-Z_0-9]*)\s*=/)
     if (!constMatch) continue
 
-    const name = constMatch[1]!
+    const name = constMatch[1] ?? ''
     if (name.startsWith('_')) continue
 
     const isExported = line.includes('export ')

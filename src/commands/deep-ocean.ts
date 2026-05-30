@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Command, Flags, Args } from '@oclif/core'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
@@ -31,13 +31,15 @@ export default class DeepOcean extends Command {
     verbose: Flags.boolean({ char: 'v', description: 'Show per-file details' }),
   }
 
-  static override args = [{ name: 'path', description: 'Path to analyze', default: '.' }]
+  static override args = {
+    path: Args.string({ description: 'Path to analyze', default: '.' }),
+  }
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(DeepOcean)
     const spinner = ora('Analyzing ocean depths...').start()
 
-    const discovered = await discoverFiles(args.path, FILE_PATTERNS)
+    const discovered = await discoverFiles({ cwd: args.path, ...{ ignore: [], patterns: FILE_PATTERNS } })
     const files = discovered.map((f) => f.path)
     const contents: string[] = []
 

@@ -893,7 +893,7 @@ export function classifyAcousticianGrade(avgAcoustics: number): AmphitheaterAcou
  * generateRecommendations(readings, venues, festival, stats) // ['Add JSDoc...']
  */
 export function generateRecommendations(
-  readings: AcousticReading[],
+  _readings: AcousticReading[],
   _venues: AcousticVenue[],
   _festival: FestivalMeasure,
   stats: AmphitheaterAcousticsStats,
@@ -978,19 +978,19 @@ export function buildAmphitheaterAcousticsResult(
   }
 
   const bestReading = readings.length > 0
-    ? readings.reduce((best, r) => r.qualityScore > best.qualityScore ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.qualityScore > best.qualityScore ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const clearestVoice = readings.length > 0
-    ? readings.reduce((best, r) => r.voiceProjection > best.voiceProjection ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.voiceProjection > best.voiceProjection ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const bestResonance = readings.length > 0
-    ? readings.reduce((best, r) => r.acousticResonance > best.acousticResonance ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.acousticResonance > best.acousticResonance ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const widestReach = readings.length > 0
-    ? readings.reduce((best, r) => r.audienceReach > best.audienceReach ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.audienceReach > best.audienceReach ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const bestPresence = readings.length > 0
-    ? readings.reduce((best, r) => r.stagePresence > best.stagePresence ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.stagePresence > best.stagePresence ? r : best, readings[0] as typeof readings[number]).file
     : ''
 
   const stats: AmphitheaterAcousticsStats = {

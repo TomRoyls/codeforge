@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { FileResult, SearchResult } from './search-helpers.js'
+import type { SearchResult } from './search-helpers.js'
 import { getMatchMarkers } from './search-helpers.js'
 
 // ─── Text formatting ───────────────────────────────────

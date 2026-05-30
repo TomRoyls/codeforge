@@ -8,6 +8,7 @@ export class BoundedStack<T = unknown> {
   private _totalPopped: number = 0
   private _totalEvicted: number = 0
   private items: T[] = []
+  private bottom: number = 0
 
   constructor(options?: Partial<BoundedStackOptions>) {
     const resolved = { ...DEFAULT_BOUNDED_STACK_OPTIONS, ...options }
@@ -17,7 +18,8 @@ export class BoundedStack<T = unknown> {
   push(value: T): T | undefined {
     let evicted: T | undefined
     if (this._size === this._capacity) {
-      evicted = this.items.shift()
+      evicted = this.items[this.bottom]
+      this.bottom++
       this._size--
       this._totalEvicted++
     }
@@ -37,12 +39,12 @@ export class BoundedStack<T = unknown> {
 
   peek(): T | undefined {
     if (this._size === 0) return undefined
-    return this.items[this._size - 1]
+    return this.items[this.items.length - 1]
   }
 
   peekBottom(): T | undefined {
     if (this._size === 0) return undefined
-    return this.items[0]
+    return this.items[this.bottom]
   }
 
   get size(): number {
@@ -63,20 +65,21 @@ export class BoundedStack<T = unknown> {
 
   clear(): void {
     this.items = []
+    this.bottom = 0
     this._size = 0
   }
 
   clone(): BoundedStack<T> {
     const result = new BoundedStack<T>({ capacity: this._capacity })
-    for (const item of this.items) {
-      result.items.push(item)
+    for (let i = this.bottom; i < this.items.length; i++) {
+      result.items.push(this.items[i]!)
     }
     result._size = this._size
     return result
   }
 
   toArray(): T[] {
-    return [...this.items]
+    return this.items.slice(this.bottom)
   }
 
   static from<T>(items: Iterable<T>, options?: Partial<BoundedStackOptions>): BoundedStack<T> {
@@ -89,7 +92,7 @@ export class BoundedStack<T = unknown> {
   }
 
   contains(value: T): boolean {
-    for (let i = 0; i < this._size; i++) {
+    for (let i = this.bottom; i < this.items.length; i++) {
       if (this.items[i] === value) {
         return true
       }
@@ -98,9 +101,9 @@ export class BoundedStack<T = unknown> {
   }
 
   indexOf(value: T): number {
-    for (let i = this._size - 1; i >= 0; i--) {
+    for (let i = this.items.length - 1; i >= this.bottom; i--) {
       if (this.items[i] === value) {
-        return this._size - 1 - i
+        return this._size - 1 - (i - this.bottom)
       }
     }
     return -1

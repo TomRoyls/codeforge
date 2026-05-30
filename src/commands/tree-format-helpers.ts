@@ -38,16 +38,16 @@ function renderChildren(
     const continuation = isLast ? '    ' : '│   '
 
     const displayName =
-      child.type === 'directory' ? chalk.bold.blue(child.name) : child.name
+      child?.type === 'directory' ? chalk.bold.blue(child?.name) : child?.name
 
     let suffix = ''
-    if (child.type === 'file') {
+    if (child?.type === 'file') {
       const parts: string[] = []
-      if (options.showSize && child.size !== undefined) {
-        parts.push(`(${formatFileSize(child.size)})`)
+      if (options.showSize && child?.size !== undefined) {
+        parts.push(`(${formatFileSize(child?.size)})`)
       }
-      if (options.showLines && child.lines !== undefined) {
-        parts.push(`[${child.lines} lines]`)
+      if (options.showLines && child?.lines !== undefined) {
+        parts.push(`[${child?.lines} lines]`)
       }
       if (parts.length > 0) {
         suffix = '  ' + chalk.dim(parts.join('  '))
@@ -56,8 +56,8 @@ function renderChildren(
 
     lines.push(`${prefix}${connector}${displayName}${suffix}`)
 
-    if (child.type === 'directory' && child.children && child.children.length > 0) {
-      renderChildren(child.children, lines, prefix + continuation, options)
+    if (child?.type === 'directory' && child?.children && child?.children.length > 0) {
+      renderChildren(child?.children, lines, prefix + continuation, options)
     }
   }
 }

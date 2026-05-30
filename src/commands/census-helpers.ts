@@ -198,7 +198,6 @@ export function computeIncome(content: string, citizen: Citizen): number {
 
   const body = match[0]
   const branches = (body.match(/\bif\b|\belse\b|\bfor\b|\bwhile\b|\bswitch\b|\bcase\b|\bcatch\b|\?\s*[^:]*:/g) || []).length
-  const lines = body.split('\n').length
 
   if (branches <= 3) return Math.min(30, branches * 10)
   if (branches <= 10) return Math.min(70, 30 + (branches - 3) * 6)
@@ -223,9 +222,9 @@ export function computeGiniCoefficient(citizens: Citizen[]): number {
 
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n; j++) {
-      numerator += Math.abs(incomes[i] - incomes[j])
+      numerator += Math.abs((incomes[i] ?? 0) - (incomes[j] ?? 0))
     }
-    denominator += incomes[i]
+    denominator += (incomes[i] ?? 0)
   }
 
   if (denominator === 0) return 0
@@ -333,7 +332,7 @@ export function computeOverallHealth(demographics: Demographics, cities: CityPro
  * generateCensusRecommendations(citizens, cities, demographics, stats)
  */
 export function generateCensusRecommendations(
-  citizens: Citizen[],
+  _citizens: Citizen[],
   cities: CityProfile[],
   demographics: Demographics,
   stats: CensusStats,
@@ -384,7 +383,7 @@ export function generateCensusRecommendations(
 export function buildCensusResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): CensusResult {
   if (files.length === 0) {
     const emptyDemo: Demographics = {
@@ -410,7 +409,7 @@ export function buildCensusResult(
     const lines = content.split('\n').filter((l) => l.trim().length > 0).length
 
     const fileCitizens = rawCitizens.map((c) => {
-      const citizen = { ...c, residence: file }
+      const citizen = { ...c, residence: file ?? '' }
       citizen.occupation = classifyCitizen(citizen.name, citizen.type, content)
       citizen.education = computeEducation(content, citizen)
       citizen.income = computeIncome(content, citizen)
@@ -442,12 +441,12 @@ export function buildCensusResult(
     }
 
     cities.push({
-      name: file,
+      name: file ?? '',
       population: fileCitizens.length,
       density,
       demographics: cityDemo,
       classification,
-      growthRate: computeGrowthRate(file, []),
+      growthRate: computeGrowthRate(file ?? '', []),
     })
   }
 

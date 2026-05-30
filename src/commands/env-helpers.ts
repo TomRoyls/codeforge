@@ -60,7 +60,6 @@ const VERSION_REGEX = /(\d+\.\d+\.\d+)/
  * ```
  */
 export function parseVersion(output: string): string | null {
-  const match = output.match(VERSION_REGEX)
   const m = output.match(VERSION_REGEX)
   return m?.[1] !== undefined ? m[1] : null
 }

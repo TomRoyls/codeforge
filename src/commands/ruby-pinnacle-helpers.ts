@@ -651,7 +651,7 @@ export async function buildRubyPinnacleResult(
 export function generateRecommendations(
   facets: RubyFacet[],
   mountains: RubyMountain[],
-  crown: RubyPinnacleResult['crown'],
+  _crown: RubyPinnacleResult['crown'],
   stats: RubyPinnacleResult['stats'],
 ): string[] {
   const recs: string[] = []

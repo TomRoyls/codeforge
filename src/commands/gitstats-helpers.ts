@@ -121,7 +121,7 @@ export function parseShortlog(output: string): { name: string; email: string; co
     const match = trimmed.match(/^(\d+)\s+(.+?)\s*<([^>]+)>/)
     if (match) {
       results.push({
-        commits: Number.parseInt(match[1]!, 10),
+        commits: Number.parseInt(match[1] ?? '', 10),
         email: match[3]!.trim(),
         name: match[2]!.trim(),
       })
@@ -171,7 +171,7 @@ export function parseLogStats(
     const numstatMatch = line.match(/^(\d+|-)\t(\d+|-)\t/)
     if (numstatMatch) {
       files++
-      const addVal = numstatMatch[1]!
+      const addVal = numstatMatch[1] ?? ''
       const delVal = numstatMatch[2]!
       additions += addVal === '-' ? 0 : Number.parseInt(addVal, 10)
       deletions += delVal === '-' ? 0 : Number.parseInt(delVal, 10)
@@ -613,7 +613,7 @@ export function parseAuthorLog(
 
     const numstatMatch = line.match(/^(\d+|-)\t(\d+|-)\t/)
     if (numstatMatch) {
-      const addVal = numstatMatch[1]!
+      const addVal = numstatMatch[1] ?? ''
       const delVal = numstatMatch[2]!
       additions += addVal === '-' ? 0 : Number.parseInt(addVal, 10)
       deletions += delVal === '-' ? 0 : Number.parseInt(delVal, 10)

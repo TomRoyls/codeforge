@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { CoverageResult, CoverageStats } from './coverage-helpers.js'
+import type { CoverageResult } from './coverage-helpers.js'
 
 // ─── Color helpers ──────────────────────────────────────
 

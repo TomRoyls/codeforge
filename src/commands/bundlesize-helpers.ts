@@ -1,5 +1,7 @@
 // ─── Interfaces ──────────────────────────────────────────
 
+import { formatBytesCompact as formatBytes } from '../utils/format-utils.js'
+
 export interface FileBundleInfo {
   file: string
   rawSize: number
@@ -244,12 +246,6 @@ export function generateSizeSuggestions(analysis: BundleAnalysis): BundleSuggest
   }
 
   return suggestions
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`
 }
 
 // ─── Build result ───────────────────────────────────────

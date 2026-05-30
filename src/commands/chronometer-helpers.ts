@@ -84,6 +84,7 @@ export function detectTemporalPatterns(content: string, filePath: string): Tempo
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     if (/await\s+\w+/.test(line) && !/Promise\.(all|allSettled|race|any)/.test(line)) {
@@ -180,7 +181,9 @@ export function detectTemporalPatterns(content: string, filePath: string): Tempo
 
   let chainDepth = 0
   for (let i = 0; i < lines.length; i++) {
-    if (/await\s+/.test(lines[i])) chainDepth++
+    const chainLine = lines[i]
+    if (!chainLine) continue
+    if (/await\s+/.test(chainLine)) chainDepth++
     if (chainDepth >= 3) {
       patterns.push({
         type: 'async-chain',
@@ -192,7 +195,7 @@ export function detectTemporalPatterns(content: string, filePath: string): Tempo
       })
       chainDepth = 0
     }
-    if (!/await\s+/.test(lines[i]) && !/^\s*$/.test(lines[i]) && chainDepth > 0) {
+    if (!/await\s+/.test(chainLine) && !/^\s*$/.test(chainLine) && chainDepth > 0) {
       chainDepth = 0
     }
   }
@@ -246,12 +249,15 @@ export function detectTimeDependencies(content: string, filePath: string): TimeD
 
   const varAssigns = new Map<string, number>()
   for (let i = 0; i < lines.length; i++) {
-    const match = lines[i].match(/(?:const|let|var)\s+(\w+)\s*=/)
-    if (match) varAssigns.set(match[1], i + 1)
+    const declLine = lines[i]
+    if (!declLine) continue
+    const match = declLine.match(/(?:const|let|var)\s+(\w+)\s*=/)
+    if (match?.[1]) varAssigns.set(match[1], i + 1)
   }
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     for (const [varName, defLine] of varAssigns) {
       if (defLine >= i + 1) continue
       const re = new RegExp(`\\b${varName}\\b`)
@@ -302,7 +308,7 @@ export function detectTimeDependencies(content: string, filePath: string): TimeD
  */
 export function detectTemporalAnomalies(patterns: TemporalPattern[], content: string): TemporalAnomaly[] {
   const anomalies: TemporalAnomaly[] = []
-  const filePath = patterns.length > 0 ? patterns[0].file : 'unknown'
+  const filePath = patterns[0]?.file ?? 'unknown'
 
   const hasAsync = patterns.some(p => p.type === 'sequential' || p.type === 'async-chain')
   const hasMutableState = /\b(let|var)\s+\w+/.test(content) && /\w+\s*[\+\-\*\/]?=/.test(content)
@@ -673,6 +679,7 @@ export function buildChronometerResult(
   for (let i = 0; i < files.length; i++) {
     const filePath = files[i]
     const content = contents[i]
+    if (filePath === undefined || content === undefined) continue
 
     const patterns = detectTemporalPatterns(content, filePath)
     const deps = detectTimeDependencies(content, filePath)

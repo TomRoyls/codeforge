@@ -118,11 +118,14 @@ export function computeCenterOfMass(content: string): number {
   const lines = content.split('\n')
   const nonBlank: number[] = []
   for (let i = 0; i < lines.length; i++) {
-    if (lines[i].trim().length > 0) nonBlank.push(i + 1)
+    const line = lines[i]
+    if (line && line.trim().length > 0) nonBlank.push(i + 1)
   }
   if (nonBlank.length === 0) return 0
   const mid = Math.floor(nonBlank.length / 2)
-  return nonBlank.length % 2 !== 0 ? nonBlank[mid] : Math.round((nonBlank[mid - 1] + nonBlank[mid]) / 2)
+  const lo = nonBlank[mid - 1] ?? 0
+  const hi = nonBlank[mid] ?? 0
+  return nonBlank.length % 2 !== 0 ? hi : Math.round((lo + hi) / 2)
 }
 
 // ─── Attraction (Import Pull) ──────────────────────────────────────────────────
@@ -139,11 +142,12 @@ export function computeAttraction(files: string[], contents: string[]): number {
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
     const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/')) : ''
     const matches = content.matchAll(/import\s+.*?from\s+['"](\.\/[^'"]+)['"]/g)
     for (const m of matches) {
-      const base = m[1].replace(/^\.\//, '')
+      const base = (m[1] ?? '').replace(/^\.\//, '')
       const resolved = dir ? dir + '/' + base : base
       const candidates = [resolved, resolved + '.ts', resolved + '.js']
       if (candidates.some((c) => fileSet.has(c))) totalImports++
@@ -161,7 +165,7 @@ export function computeAttraction(files: string[], contents: string[]): number {
  * @example
  * computeRepulsion(['a.ts', 'b.ts'], ['const myVar', 'const my_var'])
  */
-export function computeRepulsion(files: string[], contents: string[]): number {
+export function computeRepulsion(_files: string[], contents: string[]): number {
   let conflicts = 0
 
   const styles = new Set<string>()
@@ -235,8 +239,8 @@ export function computeTension(files: string[], contents: string[]): number {
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
-    const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/')) : ''
     const matches = [...content.matchAll(/import\s+.*?from\s+['"](\.\/[^'"]+)['"]/g)]
     const importCount = matches.length
     if (importCount > 8) tension += 15
@@ -330,7 +334,7 @@ export function classifyTrajectory(velocity: number, acceleration: number): Traj
  * @example
  * computeEntropy(['a.ts', 'b.ts'], ['const x', 'var y'])
  */
-export function computeEntropy(files: string[], contents: string[]): number {
+export function computeEntropy(_files: string[], contents: string[]): number {
   if (contents.length === 0) return 50
 
   let entropy = 30
@@ -402,7 +406,9 @@ export function computePressure(masses: CodeMass[]): number {
 export function computeEnergy(masses: CodeMass[], kinematics: Kinematics[]): number {
   let total = 0
   for (let i = 0; i < masses.length; i++) {
-    const mass = masses[i].mass
+    const m = masses[i]
+    if (!m) continue
+    const mass = m.mass
     const ke = kinematics[i]?.kineticEnergy ?? 0
     total += mass + ke
   }
@@ -438,7 +444,7 @@ export function findCenterOfGravity(masses: CodeMass[], forces: Forces): string 
     score: m.mass * 0.4 + m.density * 0.3 + forces.attraction * 0.3,
   }))
   scored.sort((a, b) => b.score - a.score)
-  return scored[0].file
+  return scored[0]?.file ?? 'none'
 }
 
 // ─── System Stability ──────────────────────────────────────────────────────────
@@ -527,7 +533,7 @@ export function generateRecommendations(
  * @example
  * buildPhysicsResult(['a.ts'], ['code'], {})
  */
-export function buildPhysicsResult(files: string[], contents: string[], options: Record<string, unknown>): PhysicsResult {
+export function buildPhysicsResult(files: string[], contents: string[], _options: Record<string, unknown>): PhysicsResult {
   if (files.length === 0) {
     const emptyForces: Forces = { attraction: 0, repulsion: 0, friction: 0, tension: 0, gravity: 0 }
     const emptyThermo: Thermodynamics = { entropy: 0, temperature: 0, pressure: 0, energy: 0, heatCapacity: 0 }
@@ -563,7 +569,8 @@ export function buildPhysicsResult(files: string[], contents: string[], options:
 
   const kinematics: Kinematics[] = files.map((file, i) => {
     const content = contents[i] ?? ''
-    const mass = masses[i].mass
+    const m = masses[i]
+    const mass = m ? m.mass : 0
     const velocity = computeVelocity(content)
     const acceleration = computeAcceleration(velocity, 0)
     const momentum = computeMomentum(mass, velocity)

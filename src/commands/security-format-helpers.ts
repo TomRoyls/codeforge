@@ -2,12 +2,9 @@ import chalk from 'chalk'
 
 import type { Category, SecurityResult, Severity } from './security-helpers.js'
 
-// ─── Helpers ─────────────────────────────────────────────
+import { padRight } from '../utils/format-utils.js'
 
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
+// ─── Helpers ─────────────────────────────────────────────
 
 // ─── Severity formatting ────────────────────────────────
 

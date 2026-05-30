@@ -720,7 +720,7 @@ export function analyzeAmberHearth(glows: AmberGlow[], dirPath: string): AmberHe
 export function generateRecommendations(
   glows: AmberGlow[],
   hearths: AmberHearth[],
-  fire: AmberEmberResult['fire'],
+  _fire: AmberEmberResult['fire'],
   stats: AmberEmberResult['stats'],
 ): string[] {
   const recs: string[] = []

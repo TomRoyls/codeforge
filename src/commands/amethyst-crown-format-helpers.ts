@@ -50,7 +50,7 @@ export function colorGrade(grade: string): string {
     'deep-violet': good, 'clean-refactor': good, 'bishop-ring': good,
     'bishop-mitre': good, 'crown-jewels': good, 'king': good,
 
-    'proper-amethyst': okay, 'proper-lucidity': okay, 'decent-structure': okay,
+    'proper-lucidity': okay, 'decent-structure': okay,
     'proper-amethyst-purple': okay, 'proper-evolution': okay, 'proper-amethyst': okay,
     'proper-tiara': okay, 'decent-collection': okay, 'prince': okay,
 

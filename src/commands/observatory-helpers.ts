@@ -1,4 +1,3 @@
-import type { ora } from 'ora'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -89,11 +88,11 @@ export function extractExports(content: string): string[] {
   const names: string[] = []
   const namedExport = content.matchAll(/export\s+(?:function|class|const|let|var|interface|type|enum)\s+(\w+)/g)
   for (const m of namedExport) {
-    names.push(m[1])
+if (m[1] !== undefined) names.push(m[1])
   }
   const defaultExport = content.matchAll(/export\s+default\s+(?:function|class)\s+(\w+)/g)
   for (const m of defaultExport) {
-    names.push(m[1])
+if (m[1] !== undefined) names.push(m[1])
   }
   return Array.from(new Set(names))
 }
@@ -107,11 +106,11 @@ export function extractImports(content: string): string[] {
   const paths: string[] = []
   const staticImports = content.matchAll(/import\s+.*?from\s+['"]([^'"]+)['"]/g)
   for (const m of staticImports) {
-    paths.push(m[1])
+if (m[1] !== undefined) paths.push(m[1])
   }
   const dynamicImports = content.matchAll(/import\s*\(\s*['"]([^'"]+)['"]\s*\)/g)
   for (const m of dynamicImports) {
-    paths.push(m[1])
+if (m[1] !== undefined) paths.push(m[1])
   }
   return Array.from(new Set(paths))
 }
@@ -126,7 +125,8 @@ export function countGravity(filePath: string, allFiles: string[], contents: str
   let count = 0
   for (let i = 0; i < allFiles.length; i++) {
     if (allFiles[i] === filePath) continue
-    if (contents[i].includes(baseName)) count++
+    const c = contents[i]
+    if (c !== undefined && c.includes(baseName)) count++
   }
   return count
 }
@@ -185,7 +185,7 @@ export function classifyBodyType(
   magnitude: number,
   mass: number,
   gravity: number,
-  temperature: number,
+  _temperature: number,
   isDocumentedFlag: boolean,
   hasPurpose: boolean,
   isComplexForSize: boolean,
@@ -234,7 +234,6 @@ export function classifyBody(content: string, filePath: string, allFiles: string
   const mass = countLines(content)
   const gravity = countGravity(filePath, allFiles, contents)
   const exports = extractExports(content)
-  const imports = extractImports(content)
   const temperature = computeComplexity(content)
   const distance = computeDistance(filePath)
   const documented = isDocumented(content)
@@ -275,18 +274,21 @@ export function mapConstellations(bodies: CelestialBody[], files: string[], cont
   const constellationMap = new Map<string, { files: string[]; connections: [string, string][] }>()
 
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].split('/').slice(0, -1).join('/') || 'root'
+    const currentFile = files[i]
+    const currentContent = contents[i]
+    if (currentFile === undefined || currentContent === undefined) continue
+    const dir = currentFile.split('/').slice(0, -1).join('/') || 'root'
     if (!constellationMap.has(dir)) {
       constellationMap.set(dir, { files: [], connections: [] })
     }
-    const group = constellationMap.get(dir)!
-    group.files.push(files[i])
+    const group = constellationMap.get(dir)
+    if (group) group.files.push(currentFile)
 
-    const imports = extractImports(contents[i])
+    const imports = extractImports(currentContent)
     for (const imp of imports) {
       const resolved = resolveImport(imp, dir, files)
-      if (resolved && resolved !== files[i]) {
-        group.connections.push([files[i], resolved])
+      if (resolved && resolved !== currentFile) {
+        group?.connections.push([currentFile, resolved])
       }
     }
   }
@@ -577,9 +579,9 @@ export function generateRecommendations(
 export function buildObservatoryResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): ObservatoryResult {
-  const bodies = files.map((f, i) => classifyBody(contents[i], f, files, contents))
+  const bodies = files.map((f, i) => classifyBody(contents[i] ?? '', f, files, contents))
   const constellations = mapConstellations(bodies, files, contents)
   const events = detectCelestialEvents(bodies, constellations)
   const web = mapCosmicWeb(bodies, constellations)

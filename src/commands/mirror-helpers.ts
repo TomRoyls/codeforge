@@ -443,7 +443,7 @@ export function detectHiddenComplexity(content: string): Distortion | null {
   const lines = content.split('\n')
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    if (/function\s+\w+|const\s+\w+\s*=\s*(?:async\s+)?\(/.test(line)) {
+    if (/function\s+\w+|const\s+\w+\s*=\s*(?:async\s+)?\(/.test(line ?? '')) {
       const funcStart = i
       let depth = 0
       let funcLines = 0
@@ -452,9 +452,9 @@ export function detectHiddenComplexity(content: string): Distortion | null {
       for (; j < lines.length && j < funcStart + 20; j++) {
         const l = lines[j]
         funcLines++
-        depth += (l.match(/\{/g) || []).length
-        depth -= (l.match(/\}/g) || []).length
-        branches += (l.match(/\bif\b|\belse\b|\bswitch\b|\bcase\b|\?\s*[^:]*:/g) || []).length
+        depth += (l?.match(/\{/g) || []).length
+        depth -= (l?.match(/\}/g) || []).length
+        branches += (l?.match(/\bif\b|\belse\b|\bswitch\b|\bcase\b|\?\s*[^:]*:/g) || []).length
         if (depth <= 0 && funcLines > 1) break
       }
 
@@ -498,7 +498,7 @@ export function computeOverallClarity(intentions: Intention[]): number {
  */
 export function generateMirrorRecommendations(
   reflections: Reflection[],
-  distortions: Distortion[],
+  _distortions: Distortion[],
   stats: MirrorStats,
 ): string[] {
   const recs: string[] = []
@@ -554,7 +554,7 @@ export function generateMirrorRecommendations(
 export function buildMirrorResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): MirrorResult {
   if (files.length === 0) {
     const emptyStats: MirrorStats = {
@@ -571,7 +571,7 @@ export function buildMirrorResult(
   const allDistortions: Distortion[] = []
 
   for (let i = 0; i < files.length; i++) {
-    const file = files[i]
+    const file = files[i] ?? ''
     const content = contents[i] ?? ''
 
     const stated = extractStatedIntentions(content)

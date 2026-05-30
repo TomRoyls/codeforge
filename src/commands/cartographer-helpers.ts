@@ -76,7 +76,7 @@ export function extractImports(content: string, _file: string): string[] {
   for (const pat of patterns) {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
-      imports.push(m[1]!)
+      imports.push(m[1] ?? '')
     }
   }
   return imports
@@ -108,7 +108,7 @@ export function extractExports(content: string): string[] {
   for (const pat of patterns) {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
-      const match = m[1]!
+      const match = m[1] ?? ''
       if (match.includes(',')) {
         for (const item of match.split(',')) {
           const trimmed = item.trim().split(/\s+as\s+/)[0]!.trim()

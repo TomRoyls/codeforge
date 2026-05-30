@@ -48,7 +48,7 @@ export function colorGrade(grade: string): string {
 
     'iron-seat': good, 'long-burning': good, 'wise-cinders': good,
     'bright-beacon': good, 'even-warmth': good, 'warrior-seat': good,
-    'throne-room': good, 'grand-hall': good, 'king': good,
+    'throne-room': good, 'king': good,
 
     'proper-throne': okay, 'proper-coal': okay, 'proper-ash': okay,
     'proper-fire': okay, 'proper-distribution': okay, 'proper-chair': okay,

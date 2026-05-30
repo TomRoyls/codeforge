@@ -102,20 +102,14 @@ function countParams(content: string): number {
   let total = 0
   for (const m of matches) {
     const inner = m.match(/\(([^)]*)\)/)
-    if (inner && inner[1].trim().length > 0) {
-      total += inner[1].split(',').length
+    if (inner) {
+      const innerGroup = inner[1]
+      if (innerGroup && innerGroup.trim().length > 0) {
+        total += innerGroup.split(',').length
+      }
     }
   }
   return total
-}
-
-/**
- * Count const/let/var declarations
- * @example
- * countDeclarations('const x = 1; let y = 2') // 2
- */
-function countDeclarations(content: string): number {
-  return (content.match(/\b(const|let|var)\s+\w+/g) || []).length
 }
 
 /**
@@ -134,15 +128,6 @@ function countAssignments(content: string): number {
  */
 function countReturns(content: string): number {
   return (content.match(/\breturn\b/g) || []).length
-}
-
-/**
- * Count function calls
- * @example
- * countCalls('foo(); bar(1)') // 2
- */
-function countCalls(content: string): number {
-  return (content.match(/\w+\s*\(/g) || []).length
 }
 
 /**
@@ -172,22 +157,24 @@ function hasAny(content: string): boolean {
  */
 export function identifySources(content: string, filePath: string): WaterSource[] {
   const sources: WaterSource[] = []
-  const lines = content.split('\n')
 
   const funcParams = content.match(/function\s+(\w+)\s*\(([^)]*)\)/g) || []
   for (const fp of funcParams) {
     const nameMatch = fp.match(/function\s+(\w+)/)
     const paramsMatch = fp.match(/\(([^)]*)\)/)
-    if (nameMatch && paramsMatch && paramsMatch[1].trim().length > 0) {
-      const params = paramsMatch[1].split(',').map(p => p.trim().split(':')[0].trim()).filter(p => p.length > 0)
-      for (const p of params) {
-        sources.push({
-          name: p,
-          file: filePath,
-          type: 'parameter',
-          flowRate: 1,
-          reliability: 80,
-        })
+    if (nameMatch && paramsMatch) {
+      const paramGroup = paramsMatch[1]
+      if (paramGroup && paramGroup.trim().length > 0) {
+        const params = paramGroup.split(',').map(p => p.trim().split(':')[0]?.trim() ?? '').filter((p): p is string => p.length > 0)
+        for (const p of params) {
+          sources.push({
+            name: p,
+            file: filePath,
+            type: 'parameter',
+            flowRate: 1,
+            reliability: 80,
+          })
+        }
       }
     }
   }
@@ -363,7 +350,6 @@ function countExports(content: string): number {
  */
 export function findReservoirs(content: string, filePath: string): Reservoir[] {
   const reservoirs: Reservoir[] = []
-  const lines = content.split('\n')
 
   const constDecls = content.match(/const\s+(\w+)(?::\s*\w+)?\s*=/g) || []
   for (const decl of constDecls) {
@@ -524,7 +510,6 @@ export function detectLeaks(content: string, filePath: string): Leak[] {
  */
 export function computeFlowEfficiency(sources: number, channels: number, leaks: number): number {
   if (sources === 0 && channels === 0) return 50
-  const total = sources + channels
   const leakPenalty = Math.min(40, leaks * 5)
   const channelBonus = Math.min(20, channels * 5)
   const score = 60 + channelBonus - leakPenalty
@@ -692,6 +677,7 @@ export function buildAqueductResult(
   for (let i = 0; i < files.length; i++) {
     const content = contents[i]
     const filePath = files[i]
+    if (content === undefined || filePath === undefined) continue
 
     const sources = identifySources(content, filePath)
     const channels = mapChannels(content, filePath)

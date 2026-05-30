@@ -162,8 +162,9 @@ export class GraphAdjMatrix<T extends string | number> {
     const visited = new Set<number>()
     const queue: number[] = [startIdx]
     visited.add(startIdx)
-    while (queue.length > 0) {
-      const idx = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const idx = queue[_qi++]!
       callback(this.indices[idx]!)
       for (let i = 0; i < this.connectionMatrix[idx]!.length; i++) {
         if (this.connectionMatrix[idx]![i] && !visited.has(i)) {
@@ -218,8 +219,9 @@ export class GraphAdjMatrix<T extends string | number> {
     const visited = new Set<number>()
     const queue: number[] = [fromIdx]
     visited.add(fromIdx)
-    while (queue.length > 0) {
-      const idx = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const idx = queue[_qi++]!
       if (idx === toIdx) return true
       for (let i = 0; i < this.connectionMatrix[idx]!.length; i++) {
         if (this.connectionMatrix[idx]![i] && !visited.has(i)) {

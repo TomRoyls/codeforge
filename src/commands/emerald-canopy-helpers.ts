@@ -654,7 +654,7 @@ export async function buildEmeraldCanopyResult(
 export function generateRecommendations(
   leaves: CanopyLeaf[],
   layers: CanopyLayer[],
-  forest: EmeraldCanopyResult['forest'],
+  _forest: EmeraldCanopyResult['forest'],
   stats: EmeraldCanopyResult['stats'],
 ): string[] {
   const recs: string[] = []

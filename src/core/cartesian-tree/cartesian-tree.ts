@@ -50,7 +50,7 @@ export class CartesianTree<T> {
       }
 
       stack.push(node)
-      this.nodeMap.set(i, node)
+      this.nodeMap.set(i, node!)
     }
 
     this.root = stack[0] ?? null
@@ -87,7 +87,7 @@ export class CartesianTree<T> {
       }
       current = stack.pop()!
       result.push(current.value)
-      current = current.right
+      current = current.right!
     }
     return result
   }
@@ -131,8 +131,9 @@ export class CartesianTree<T> {
     if (this.root === null) return []
     const result: T[] = []
     const queue: CartesianNode<T>[] = [this.root]
-    while (queue.length > 0) {
-      const node = queue.shift()!
+    let _qi = 0;
+    while (_qi < queue.length) {
+      const node = queue[_qi++]!
       result.push(node.value)
       if (node.left !== null) queue.push(node.left)
       if (node.right !== null) queue.push(node.right)
@@ -157,8 +158,9 @@ export class CartesianTree<T> {
     if (this.root === null) return -1
     let height = -1
     const queue: Array<{ node: CartesianNode<T>; level: number }> = [{ node: this.root, level: 0 }]
-    while (queue.length > 0) {
-      const { node, level } = queue.shift()!
+    let _qi = 0;
+    while (_qi < queue.length) {
+      const { node, level } = queue[_qi++]!
       height = Math.max(height, level)
       if (node.left !== null) queue.push({ node: node.left, level: level + 1 })
       if (node.right !== null) queue.push({ node: node.right, level: level + 1 })

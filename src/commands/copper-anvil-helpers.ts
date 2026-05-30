@@ -884,7 +884,7 @@ export async function buildBronzeAnvilResult(
 export function generateRecommendations(
   ingots: BronzeIngot[],
   workshops: BronzeWorkshop[],
-  foundry: BronzeAnvilResult['foundry'],
+  _foundry: BronzeAnvilResult['foundry'],
   stats: BronzeAnvilResult['stats'],
 ): string[] {
   const recs: string[] = []

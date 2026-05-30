@@ -651,7 +651,7 @@ export function analyzeObservatoryBay(elements: LensElement[], dirPath: string):
  * generateRecommendations(elements, bays, observatory, stats) // string[]
  */
 export function generateRecommendations(
-  elements: LensElement[],
+  _elements: LensElement[],
   bays: ObservatoryBay[],
   observatory: Observatory,
   stats: TelescopeLensStats,
@@ -699,7 +699,7 @@ export function generateRecommendations(
 export function buildTelescopeLensResult(files: string[], contents: string[], _options: Record<string, unknown>): TelescopeLensResult {
   const elements: LensElement[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeLensElement(content, file)
+    return analyzeLensElement(content ?? '', file)
   })
 
   const dirMap = new Map<string, LensElement[]>()

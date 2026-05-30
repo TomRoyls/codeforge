@@ -654,7 +654,7 @@ export async function buildMoonstoneEclipseResult(
 export function generateRecommendations(
   rays: MoonstoneRay[],
   phases: MoonstonePhase[],
-  eclipse: MoonstoneEclipseResult['eclipse'],
+  _eclipse: MoonstoneEclipseResult['eclipse'],
   stats: MoonstoneEclipseResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -1,13 +1,15 @@
 export class RunLengthQueue2<T> {
   private runs: { value: T; count: number }[];
+  private _frontIdx: number = 0;
 
   constructor() {
     this.runs = [];
   }
 
   enqueue(value: T): void {
-    if (this.runs.length > 0 && this.runs[this.runs.length - 1]!.value === value) {
-      this.runs[this.runs.length - 1]!.count++;
+    const lastIdx = this.runs.length - 1
+    if (lastIdx >= this._frontIdx && this.runs[lastIdx]!.value === value) {
+      this.runs[lastIdx]!.count++;
     } else {
       this.runs.push({ value, count: 1 });
     }
@@ -18,36 +20,50 @@ export class RunLengthQueue2<T> {
       return undefined;
     }
     
-    const run = this.runs[0]!;
+    const run = this.runs[this._frontIdx]!;
     run.count--;
     
     if (run.count === 0) {
-      this.runs.shift()!;
+      this._frontIdx++;
+      if (this._frontIdx > this.runs.length / 2) {
+        this.runs = this.runs.slice(this._frontIdx)
+        this._frontIdx = 0
+      }
     }
     
     return run.value;
   }
 
   get peek(): T | undefined {
-    return this.isEmpty ? undefined : this.runs[0]!.value;
+    return this.isEmpty ? undefined : this.runs[this._frontIdx]!.value;
   }
 
   get size(): number {
-    return this.runs.reduce((total, run) => total + run.count, 0);
+    let total = 0
+    for (let i = this._frontIdx; i < this.runs.length; i++) {
+      total += this.runs[i]!.count
+    }
+    return total;
   }
 
   get isEmpty(): boolean {
-    return this.size === 0;
+    if (this._frontIdx >= this.runs.length) return true
+    for (let i = this._frontIdx; i < this.runs.length; i++) {
+      if (this.runs[i]!.count > 0) return false
+    }
+    return true
   }
 
   clear(): void {
     this.runs = [];
+    this._frontIdx = 0;
   }
 
   toArray(): T[] {
     const result: T[] = [];
-    for (const run of this.runs) {
-      for (let i = 0; i < run.count; i++) {
+    for (let i = this._frontIdx; i < this.runs.length; i++) {
+      const run = this.runs[i]!
+      for (let j = 0; j < run.count; j++) {
         result.push(run.value);
       }
     }
@@ -58,8 +74,9 @@ export class RunLengthQueue2<T> {
     if (count <= 0) {
       return;
     }
-    if (this.runs.length > 0 && this.runs[this.runs.length - 1]!.value === value) {
-      this.runs[this.runs.length - 1]!.count += count;
+    const lastIdx = this.runs.length - 1
+    if (lastIdx >= this._frontIdx && this.runs[lastIdx]!.value === value) {
+      this.runs[lastIdx]!.count += count;
     } else {
       this.runs.push({ value, count });
     }
@@ -69,15 +86,24 @@ export class RunLengthQueue2<T> {
     if (this.isEmpty) {
       return undefined;
     }
-    const run = this.runs.shift()!;
-    return { value: run!.value, count: run!.count };
+    const run = this.runs[this._frontIdx]!;
+    this._frontIdx++
+    if (this._frontIdx > this.runs.length / 2) {
+      this.runs = this.runs.slice(this._frontIdx)
+      this._frontIdx = 0
+    }
+    return { value: run.value, count: run.count };
   }
 
   get uniqueValues(): T[] {
-    return this.runs.map(run => run.value);
+    const result: T[] = []
+    for (let i = this._frontIdx; i < this.runs.length; i++) {
+      result.push(this.runs[i]!.value)
+    }
+    return result;
   }
 
   get totalRuns(): number {
-    return this.runs.length;
+    return this.runs.length - this._frontIdx;
   }
 }

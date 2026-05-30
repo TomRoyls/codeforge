@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, typeof best> = {
     'legendary-phoenix': best, 'ancient-wisdom': best, 'white-flame': best,
     'majestic-wings': best, 'immortal': best, 'immortal-phoenix': best,
     'golden-nest': best, 'eternal-flame': best, 'phoenix-lord': best,
@@ -52,19 +52,19 @@ export function colorGrade(grade: string): string {
 
     'reborn-bird': okay, 'proper-learning': okay, 'proper-blaze': okay,
     'proper-span': okay, 'proper-recovery': okay, 'steady-glow': okay,
-    'twig-nest': okay, 'steady-glow': okay, 'flame-guardian': okay,
+    'twig-nest': okay, 'flame-guardian': okay,
 
     'struggling-chick': poor, 'shallow-wisdom': poor, 'smoky-fire': poor,
     'narrow-wings': poor, 'slow-revival': poor, 'flickering': poor,
     'ground-nest': poor, 'fading-light': poor, 'ember-tender': poor,
 
     'sinking-ash': worst, 'unlearned': worst, 'dying-ember': worst,
-    'clipped-wings': worst, 'near-death': worst, 'dying-ember': worst,
+    'clipped-wings': worst, 'near-death': worst,
     'ash-pile': worst, 'dying-embers': worst, 'ash-collector': worst,
 
     'extinguished': worst, 'ignorant': worst, 'cold-ash': worst,
-    'broken-wings': worst, 'terminal': worst, 'cold-ash': worst,
-    'empty-hearth': worst, 'extinguished': worst, 'fire-extinguisher': worst,
+    'broken-wings': worst, 'terminal': worst,
+    'empty-hearth': worst, 'fire-extinguisher': worst,
   }
   return (tierMap[g] ?? low)(grade)
 }

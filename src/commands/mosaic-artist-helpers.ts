@@ -117,28 +117,28 @@ export function extractTiles(content: string, filePath: string): MosaicTile[] {
   for (const m of classMatches) {
     const name = m[1]
     const startLine = content.substring(0, m.index).split('\n').length
-    tiles.push(buildTile(filePath, name, 'class', startLine, content))
+    tiles.push(buildTile(filePath, name ?? '', 'class', startLine, content))
   }
 
   const ifaceMatches = content.matchAll(/\binterface\s+(\w+)/g)
   for (const m of ifaceMatches) {
     const name = m[1]
     const startLine = content.substring(0, m.index).split('\n').length
-    tiles.push(buildTile(filePath, name, 'interface', startLine, content))
+    tiles.push(buildTile(filePath, name ?? '', 'interface', startLine, content))
   }
 
   const typeMatches = content.matchAll(/\btype\s+(\w+)\s*=/g)
   for (const m of typeMatches) {
     const name = m[1]
     const startLine = content.substring(0, m.index).split('\n').length
-    tiles.push(buildTile(filePath, name, 'type', startLine, content))
+    tiles.push(buildTile(filePath, name ?? '', 'type', startLine, content))
   }
 
   const enumMatches = content.matchAll(/\benum\s+(\w+)/g)
   for (const m of enumMatches) {
     const name = m[1]
     const startLine = content.substring(0, m.index).split('\n').length
-    tiles.push(buildTile(filePath, name, 'enum', startLine, content))
+    tiles.push(buildTile(filePath, name ?? '', 'enum', startLine, content))
   }
 
   const constMatches = content.matchAll(/\bexport\s+const\s+(\w+)\s*=/g)
@@ -146,7 +146,7 @@ export function extractTiles(content: string, filePath: string): MosaicTile[] {
     const name = m[1]
     if (!tiles.some(t => t.name === name)) {
       const startLine = content.substring(0, m.index).split('\n').length
-      tiles.push(buildTile(filePath, name, 'constant', startLine, content))
+      tiles.push(buildTile(filePath, name ?? '', 'constant', startLine, content))
     }
   }
 
@@ -234,9 +234,9 @@ export function analyzeEdges(content: string, _tileName: string): TileEdge[] {
   for (const m of importMatches) {
     edges.push({
       direction: 'imports-from',
-      target: m[1],
-      quality: m[1].startsWith('.') ? 'clean' : 'rough',
-      groutWidth: m[1].split('/').length,
+      target: m[1] ?? '',
+      quality: m?.[1]?.startsWith('.') ? 'clean' : 'rough',
+      groutWidth: m?.[1]?.split('/').length ?? 1,
     })
   }
 
@@ -244,7 +244,7 @@ export function analyzeEdges(content: string, _tileName: string): TileEdge[] {
   for (const m of exportMatches) {
     edges.push({
       direction: 'exports-to',
-      target: m[1],
+      target: m[1] ?? '',
       quality: 'clean',
       groutWidth: 1,
     })
@@ -254,7 +254,7 @@ export function analyzeEdges(content: string, _tileName: string): TileEdge[] {
   for (const m of extendsMatches) {
     edges.push({
       direction: 'extends',
-      target: m[1],
+      target: m[1] ?? '',
       quality: 'clean',
       groutWidth: 2,
     })
@@ -264,7 +264,7 @@ export function analyzeEdges(content: string, _tileName: string): TileEdge[] {
   for (const m of implementsMatches) {
     edges.push({
       direction: 'implements',
-      target: m[1],
+      target: m[1] ?? '',
       quality: 'clean',
       groutWidth: 2,
     })
@@ -545,7 +545,7 @@ export function generateRecommendations(
   }
 
   if (stats.groutQuality < 50) {
-    recs.append ? recs.push('Improve grout quality by simplifying interfaces between modules') : recs.push('Improve grout quality by simplifying interfaces between modules')
+    recs.push('Improve grout quality by simplifying interfaces between modules')
   }
 
   if (recs.length === 0) return []
@@ -606,7 +606,7 @@ export function getDominantColor(tiles: MosaicTile[]): string {
   for (const t of tiles) {
     counts.set(t.color, (counts.get(t.color) ?? 0) + 1)
   }
-  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0]
+  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? ''
 }
 
 /**
@@ -631,13 +631,13 @@ export function countOverlaps(tiles: MosaicTile[]): number {
  * @example
  * buildMosaicArtistResult(['a.ts'], ['code'], {}) // => MosaicArtistResult
  */
-export function buildMosaicArtistResult(files: string[], contents: string[], options: MosaicArtistOptions): MosaicArtistResult {
+export function buildMosaicArtistResult(files: string[], contents: string[], _options: MosaicArtistOptions): MosaicArtistResult {
   const allTiles: MosaicTile[] = []
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
     const content = contents[i] ?? ''
-    const tiles = extractTiles(content, file)
+    const tiles = extractTiles(content, file ?? '')
     allTiles.push(...tiles)
   }
 

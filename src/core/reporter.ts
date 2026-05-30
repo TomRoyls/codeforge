@@ -38,6 +38,7 @@ export interface AnalysisReport {
   summary: {
     duration: number
     errors: number
+    filesWithViolations?: number
     info: number
     totalFiles: number
     totalViolations: number

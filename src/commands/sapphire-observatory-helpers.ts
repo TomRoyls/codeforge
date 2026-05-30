@@ -651,7 +651,7 @@ export async function buildSapphireObservatoryResult(
 export function generateRecommendations(
   readings: SapphireReading[],
   domes: SapphireDome[],
-  cosmos: SapphireObservatoryResult['cosmos'],
+  _cosmos: SapphireObservatoryResult['cosmos'],
   stats: SapphireObservatoryResult['stats'],
 ): string[] {
   const recs: string[] = []

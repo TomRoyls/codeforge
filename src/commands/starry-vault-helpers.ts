@@ -772,22 +772,22 @@ export function buildStarryVaultResult(
   }
 
   const bestSystem = totalFiles > 0
-    ? systems.reduce((best, sys) => (sys.qualityScore > best.qualityScore ? sys : best), systems[0]).file
+    ? systems.reduce((best, sys) => (sys.qualityScore > best.qualityScore ? sys : best), systems[0] as typeof systems[number]).file
     : ''
   const bestArchitected = totalFiles > 0
-    ? systems.reduce((best, sys) => (sys.cosmicArchitecture > best.cosmicArchitecture ? sys : best), systems[0]).file
+    ? systems.reduce((best, sys) => (sys.cosmicArchitecture > best.cosmicArchitecture ? sys : best), systems[0] as typeof systems[number]).file
     : ''
   const bestOrganized = totalFiles > 0
-    ? systems.reduce((best, sys) => (sys.constellationQuality > best.constellationQuality ? sys : best), systems[0]).file
+    ? systems.reduce((best, sys) => (sys.constellationQuality > best.constellationQuality ? sys : best), systems[0] as typeof systems[number]).file
     : ''
   const brightest = totalFiles > 0
-    ? systems.reduce((best, sys) => (sys.stellarBrightness > best.stellarBrightness ? sys : best), systems[0]).file
+    ? systems.reduce((best, sys) => (sys.stellarBrightness > best.stellarBrightness ? sys : best), systems[0] as typeof systems[number]).file
     : ''
   const richest = totalFiles > 0
-    ? systems.reduce((best, sys) => (sys.nebulaRichness > best.nebulaRichness ? sys : best), systems[0]).file
+    ? systems.reduce((best, sys) => (sys.nebulaRichness > best.nebulaRichness ? sys : best), systems[0] as typeof systems[number]).file
     : ''
   const mostStable = totalFiles > 0
-    ? systems.reduce((best, sys) => (sys.gravityStability > best.gravityStability ? sys : best), systems[0]).file
+    ? systems.reduce((best, sys) => (sys.gravityStability > best.gravityStability ? sys : best), systems[0] as typeof systems[number]).file
     : ''
 
   const stats: StarryVaultStats = {

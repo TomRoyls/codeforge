@@ -92,7 +92,7 @@ export function extractImportPaths(content: string): string[] {
   for (const pat of patterns) {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
-      paths.push(m[1])
+if (m[1] !== undefined) paths.push(m[1])
     }
   }
   return [...new Set(paths)]
@@ -161,6 +161,7 @@ export function extractCookingSteps(content: string): CookingStep[] {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
       const name = m[1]
+      if (name === undefined) continue
       if (['if', 'for', 'while', 'switch', 'catch', 'constructor'].includes(name)) continue
       const funcBody = extractFunctionBody(content, m.index)
       const complexity = classifyComplexity(funcBody)
@@ -265,10 +266,17 @@ export function extractExportNames(content: string): string[] {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
       if (pat.source.startsWith('export\\s+\\{')) {
-        const names = m[1].split(',').map((n) => n.trim().split(/\s+as\s+/).pop()!.trim()).filter(Boolean)
-        exports.push(...names)
+        const matchGroup = m[1]
+        if (matchGroup !== undefined) {
+          const names = matchGroup.split(',').map((n) => {
+            const parts = n.trim().split(/\s+as\s+/)
+            const last = parts.at(-1)
+            return last !== undefined ? last.trim() : ''
+          }).filter(Boolean)
+          exports.push(...names)
+        }
       } else {
-        exports.push(m[1])
+        if (m[1] !== undefined) exports.push(m[1])
       }
     }
   }
@@ -464,7 +472,7 @@ export function buildRecipeBook(name: string, recipes: Recipe[]): RecipeBook {
   const avgRating = recipes.length > 0
     ? Math.round(recipes.reduce((s, r) => s + r.overallRating, 0) / recipes.length)
     : 0
-  const best = recipes.reduce((a, b) => a.overallRating >= b.overallRating ? a : b, recipes[0])
+  const best = recipes.reduce((a, b) => a.overallRating >= b.overallRating ? a : b, recipes[0] as typeof recipes[number])
   return {
     name,
     recipes,
@@ -554,7 +562,7 @@ function resolveImportToFileName(imp: string, allFiles: string[]): string {
  */
 export function generateRecommendations(
   recipes: Recipe[],
-  books: RecipeBook[],
+  _books: RecipeBook[],
   stats: RecipeStats,
 ): string[] {
   const recs: string[] = []
@@ -605,7 +613,7 @@ export function generateRecommendations(
 export function buildRecipeResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): RecipeResult {
   if (files.length === 0) {
     const emptyStats: RecipeStats = {
@@ -649,9 +657,9 @@ export function buildRecipeResult(
   const avgRating = totalRecipes > 0 ? Math.round(recipes.reduce((s, r) => s + r.overallRating, 0) / totalRecipes) : 0
   const beginnerCount = recipes.filter((r) => r.difficulty === 'beginner').length
   const expertCount = recipes.filter((r) => r.difficulty === 'expert' || r.difficulty === 'advanced').length
-  const mostPopular = recipes.reduce((a, b) => a.servingSize >= b.servingSize ? a : b, recipes[0])
-  const bestRated = recipes.reduce((a, b) => a.overallRating >= b.overallRating ? a : b, recipes[0])
-  const worstRated = recipes.reduce((a, b) => a.overallRating <= b.overallRating ? a : b, recipes[0])
+  const mostPopular = recipes.reduce((a, b) => a.servingSize >= b.servingSize ? a : b, recipes[0] as typeof recipes[number])
+  const bestRated = recipes.reduce((a, b) => a.overallRating >= b.overallRating ? a : b, recipes[0] as typeof recipes[number])
+  const worstRated = recipes.reduce((a, b) => a.overallRating <= b.overallRating ? a : b, recipes[0] as typeof recipes[number])
   const avgIngredients = totalRecipes > 0 ? Math.round(recipes.reduce((s, r) => s + r.ingredients.length, 0) / totalRecipes * 10) / 10 : 0
   const avgSteps = totalRecipes > 0 ? Math.round(recipes.reduce((s, r) => s + r.steps.length, 0) / totalRecipes * 10) / 10 : 0
   const expiredIngredients = recipes.reduce((s, r) => s + r.ingredients.filter((i) => i.type === 'expired').length, 0)

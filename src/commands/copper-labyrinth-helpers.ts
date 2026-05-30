@@ -726,7 +726,7 @@ export function analyzeCopperChamber(paths: CopperPath[], dirPath: string): Copp
 export function generateRecommendations(
   paths: CopperPath[],
   chambers: CopperChamber[],
-  maze: CopperLabyrinthResult['maze'],
+  _maze: CopperLabyrinthResult['maze'],
   stats: CopperLabyrinthResult['stats'],
 ): string[] {
   const recs: string[] = []

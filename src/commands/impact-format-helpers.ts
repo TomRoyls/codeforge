@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { ImpactChain, ImpactNode, ImpactResult } from './impact-helpers.js'
 
+import { padRight } from '../utils/format-utils.js'
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function riskColor(level: 'low' | 'medium' | 'high'): (s: string) => string {
@@ -19,10 +21,6 @@ function effortColor(effort: string): (s: string) => string {
     case 'medium': return chalk.yellow
     default: return chalk.green
   }
-}
-
-function padRight(str: string, len: number): string {
-  return str.length >= len ? str : str + ' '.repeat(len - str.length)
 }
 
 // ─── ASCII Impact Tree ────────────────────────────────────────────────────────

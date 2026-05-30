@@ -277,7 +277,6 @@ const hasAsync = (c: string) => has(/\basync\b/, c)
 const hasImport = (c: string) => has(/\bimport\b/, c)
 const hasNamedExport = (c: string) => has(/\bexport\s+(?:const|function|class|interface|type)\b/, c)
 const hasTypeAlias = (c: string) => has(/\btype\s+[A-Z]/, c)
-const hasPrivate = (c: string) => has(/(?:private|#)\b/, c)
 const hasReadonly = (c: string) => has(/\breadonly\b/, c)
 const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
 const hasStrictEq = (c: string) => has(/===/, c)
@@ -824,7 +823,6 @@ export async function buildQuartzDreamResult(
     ? Math.round(vibrations.reduce((s, v) => s + v.vibrationQuality, 0) / vibrations.length) : 0
   const avgPrismDiversity = vibrations.length > 0
     ? Math.round(vibrations.reduce((s, v) => s + v.prismDiversity, 0) / vibrations.length) : 0
-  const avgTuningPrecision = vibrations.length > 0
     ? Math.round(vibrations.reduce((s, v) => s + v.tuningPrecision, 0) / vibrations.length) : 0
 
   const bestVibration = vibrations.length > 0

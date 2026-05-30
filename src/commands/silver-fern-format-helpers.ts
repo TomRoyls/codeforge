@@ -58,7 +58,7 @@ export function colorGrade(grade: string): string {
     'shallow-roots': poor, 'partial-pattern': poor, 'wilted-frond': poor,
     'small-patch': poor, 'sparse-patch': poor, 'apprentice': poor,
 
-    'wilting-leaf': worst, 'wilted-frond': worst, 'dropped-locally': worst,
+    'wilting-leaf': worst, 'dropped-locally': worst,
     'surface-root': worst, 'irregular': worst, 'brown-leaf': worst,
     'single-frond': worst, 'barren-ground': worst, 'novice': worst,
 

@@ -186,7 +186,6 @@ const SWITCH_RE = /\bswitch\s*\(/g
 const TRY_CATCH_RE = /try\s*\{/g
 const TYPE_ANNOTATION_RE = /:\s*(?:string|number|boolean|void|Promise|Record|Map|Set|Array|Date|RegExp|Error|[A-Z]\w+)/
 const INTERFACE_RE = /(?:interface|type)\s+\w+\s*(?:<[^>]+>)?\s*\{/
-const CLASS_RE = /\bclass\s+\w+/
 const CONST_RE = /\bconst\s+/g
 const LET_RE = /\blet\s+/g
 const MUTATION_RE = /\.\s*(push|pop|shift|unshift|splice|sort|reverse)\s*\(/g
@@ -196,7 +195,6 @@ const COMMENT_RE = /\/\/.*$/gm
 const PIPE_RE = /[.\s](map|filter|reduce|forEach|flatMap|find|some|every)\s*\(/g
 const RETURN_RE = /\breturn\b/g
 const ASYNC_RE = /\basync\s+/
-const GENERIC_RE = /<\w+>/
 const DEAD_CODE_RE = /\b(debugger|with)\s*[(;]/
 const ANY_TYPE_RE = /:\s*any\b/
 
@@ -370,7 +368,6 @@ export function measureAnemometer(content: string): AnemometerMeasure {
   }
 
   const lets = (content.match(LET_RE) ?? []).length
-  const consts = (content.match(CONST_RE) ?? []).length
   const mutations = (content.match(MUTATION_RE) ?? []).length
   const asyncs = (content.match(ASYNC_RE) ?? []).length
   const pipes = (content.match(PIPE_RE) ?? []).length
@@ -682,7 +679,7 @@ export function generateRecommendations(
   }
 
   const worst = readings.length > 0
-    ? readings.reduce((w, r) => r.qualityScore < w.qualityScore ? r : w, readings[0])
+    ? readings.reduce((w, r) => r.qualityScore < w.qualityScore ? r : w, readings[0] as typeof readings[number])
     : null
   if (worst && worst.qualityScore < 20) {
     recs.push(`Severe conditions in "${worst.file}" (score: ${worst.qualityScore}) — immediate attention needed`)
@@ -743,19 +740,19 @@ export function buildWeatherStationResult(
 
   const conditions = readings.map((r) => r.condition)
   const bestConditions = readings.length > 0
-    ? readings.reduce((b, r) => r.qualityScore > b.qualityScore ? r : b, readings[0])
+    ? readings.reduce((b, r) => r.qualityScore > b.qualityScore ? r : b, readings[0] as typeof readings[number])
     : null
   const clearestSkies = readings.length > 0
-    ? readings.reduce((b, r) => r.visibilityMeasure.reading > b.visibilityMeasure.reading ? r : b, readings[0])
+    ? readings.reduce((b, r) => r.visibilityMeasure.reading > b.visibilityMeasure.reading ? r : b, readings[0] as typeof readings[number])
     : null
   const mostStable = readings.length > 0
-    ? readings.reduce((b, r) => r.barometer.reading < b.barometer.reading ? r : b, readings[0])
+    ? readings.reduce((b, r) => r.barometer.reading < b.barometer.reading ? r : b, readings[0] as typeof readings[number])
     : null
   const bestDrainage = readings.length > 0
-    ? readings.reduce((b, r) => r.rainGauge.hasDrainage && !b.rainGauge.hasDrainage ? r : b, readings[0])
+    ? readings.reduce((b, r) => r.rainGauge.hasDrainage && !b.rainGauge.hasDrainage ? r : b, readings[0] as typeof readings[number])
     : null
   const calmestWinds = readings.length > 0
-    ? readings.reduce((b, r) => r.anemometer.reading < b.anemometer.reading ? r : b, readings[0])
+    ? readings.reduce((b, r) => r.anemometer.reading < b.anemometer.reading ? r : b, readings[0] as typeof readings[number])
     : null
 
   const stats: WeatherStationStats = {

@@ -877,7 +877,7 @@ export async function buildSapphireStormResult(
 export function generateRecommendations(
   bolts: SapphireBolt[],
   clouds: SapphireCloud[],
-  weather: SapphireStormResult['weather'],
+  _weather: SapphireStormResult['weather'],
   stats: SapphireStormStats,
 ): string[] {
   const recs: string[] = []

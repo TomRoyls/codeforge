@@ -182,7 +182,7 @@ export function computeNamingEntropy(content: string): number {
   let match: RegExpExecArray | null
   IDENTIFIER_PATTERN.lastIndex = 0
   while ((match = IDENTIFIER_PATTERN.exec(content)) !== null) {
-    const name = match[1]!
+    const name = match[1] ?? ''
     if (!KEYWORDS.has(name)) {
       names.push(name)
     }
@@ -370,7 +370,7 @@ export function generateEntropyRecommendations(anomalous: FileEntropy[], stats: 
 export function buildEntropyResult(
   files: string[],
   contents: string[],
-  options: EntropyOptions = {},
+  _options: EntropyOptions = {},
 ): EntropyResult {
   const fileEntropies: FileEntropy[] = []
 

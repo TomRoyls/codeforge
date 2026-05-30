@@ -9,6 +9,7 @@ export interface SoftHeapNode<T> {
   rank: number
   child: SoftHeapNode<T> | null
   next: SoftHeapNode<T> | null
+  _itemOffset?: number
 }
 
 export const DEFAULT_SOFT_HEAP_OPTIONS: SoftHeapOptions<unknown> = {

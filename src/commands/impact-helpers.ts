@@ -85,7 +85,7 @@ export function extractImports(content: string): string[] {
   const regex = /import\s+.*?from\s+['"]([^'"]+)['"]/g
   let match: RegExpExecArray | null
   while ((match = regex.exec(content)) !== null) {
-    paths.push(match[1]!)
+    paths.push(match[1] ?? '')
   }
   return paths
 }
@@ -102,20 +102,20 @@ export function extractImportsFrom(content: string, source: string): string[] {
   let match: RegExpExecArray | null
   while ((match = regex.exec(content)) !== null) {
     if (match[2] === source) {
-      const specifiers = match[1]!.split(',').map((s) => s.trim().split(/\s+as\s+/)[0]!.trim()).filter(Boolean)
+      const specifiers = match[1] ?? ''.split(',').map((s) => s.trim().split(/\s+as\s+/)[0]!.trim()).filter(Boolean)
       names.push(...specifiers)
     }
   }
   const defaultRegex = /import\s+(\w+)\s+from\s+['"]([^'"]+)['"]/g
   while ((match = defaultRegex.exec(content)) !== null) {
     if (match[2] === source) {
-      names.push(match[1]!)
+      names.push(match[1] ?? '')
     }
   }
   const starRegex = /import\s+\*\s+as\s+(\w+)\s+from\s+['"]([^'"]+)['"]/g
   while ((match = starRegex.exec(content)) !== null) {
     if (match[2] === source) {
-      names.push(`* as ${match[1]!}`)
+      names.push(`* as ${match[1] ?? ''}`)
     }
   }
   return names
@@ -132,20 +132,20 @@ export function extractExports(content: string): string[] {
 
   const funcRegex = /export\s+(?:async\s+)?function\s+(\w+)/g
   let match: RegExpExecArray | null
-  while ((match = funcRegex.exec(content)) !== null) names.push(match[1]!)
+  while ((match = funcRegex.exec(content)) !== null) names.push(match[1] ?? '')
 
   const constRegex = /export\s+const\s+(\w+)/g
-  while ((match = constRegex.exec(content)) !== null) names.push(match[1]!)
+  while ((match = constRegex.exec(content)) !== null) names.push(match[1] ?? '')
 
   const classRegex = /export\s+class\s+(\w+)/g
-  while ((match = classRegex.exec(content)) !== null) names.push(match[1]!)
+  while ((match = classRegex.exec(content)) !== null) names.push(match[1] ?? '')
 
   const typeRegex = /export\s+(?:type|interface)\s+(\w+)/g
-  while ((match = typeRegex.exec(content)) !== null) names.push(match[1]!)
+  while ((match = typeRegex.exec(content)) !== null) names.push(match[1] ?? '')
 
   const namedRegex = /export\s+\{\s*([^}]+)\s*\}/g
   while ((match = namedRegex.exec(content)) !== null) {
-    const items = match[1]!.split(',').map((s) => s.trim().split(/\s+as\s+/)[0]!.trim()).filter(Boolean)
+    const items = match[1] ?? ''.split(',').map((s) => s.trim().split(/\s+as\s+/)[0]!.trim()).filter(Boolean)
     names.push(...items)
   }
 
@@ -279,8 +279,10 @@ export function computeIndirectDependents(
   const result: ImpactNode[] = []
   const queue: { file: string; depth: number }[] = directDependents.map((d) => ({ file: d.file, depth: 1 }))
 
-  while (queue.length > 0) {
-    const current = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const current = queue[_qi]!
+    _qi++
     const nextDepth = current.depth + 1
     if (nextDepth > maxDepth) continue
 

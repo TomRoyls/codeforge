@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { ComplexityResult, RiskLevel } from './complexity-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Risk coloring ─────────────────────────────────────
 
 /**
@@ -21,16 +23,6 @@ export function getRiskColor(level: RiskLevel): (text: string) => string {
     case 'high': return chalk.red
     case 'very-high': return chalk.bold.red
   }
-}
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
 }
 
 // ─── Table formatting ───────────────────────────────────

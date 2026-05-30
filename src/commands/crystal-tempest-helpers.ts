@@ -283,7 +283,6 @@ export function measureForming(content: string): FormingMeasure {
     hasPrecise,
   ]
 
-  const count = positiveBooleans.filter(Boolean).length
   const total = positiveBooleans.length
   const perFeature = total > 0 ? Math.floor(100 / total) : 0
   const remainder = total > 0 ? 100 - perFeature * total : 0
@@ -353,7 +352,6 @@ export function measureWeathering(content: string): WeatheringMeasure {
     hasEnduring,
   ]
 
-  const count = positiveBooleans.filter(Boolean).length
   const total = positiveBooleans.length
   const perFeature = total > 0 ? Math.floor(100 / total) : 0
   const remainder = total > 0 ? 100 - perFeature * total : 0
@@ -422,7 +420,6 @@ export function measureRefracting(content: string): RefractingMeasure {
     hasExplained,
   ]
 
-  const count = positiveBooleans.filter(Boolean).length
   const total = positiveBooleans.length
   const perFeature = total > 0 ? Math.floor(100 / total) : 0
   const remainder = total > 0 ? 100 - perFeature * total : 0
@@ -491,7 +488,6 @@ export function measureSculpting(content: string): SculptingMeasure {
     hasBeautiful,
   ]
 
-  const count = positiveBooleans.filter(Boolean).length
   const total = positiveBooleans.length
   const perFeature = total > 0 ? Math.floor(100 / total) : 0
   const remainder = total > 0 ? 100 - perFeature * total : 0
@@ -560,7 +556,6 @@ export function measureRemembering(content: string): RememberingMeasure {
     hasStrategic,
   ]
 
-  const count = positiveBooleans.filter(Boolean).length
   const total = positiveBooleans.length
   const perFeature = total > 0 ? Math.floor(100 / total) : 0
   const remainder = total > 0 ? 100 - perFeature * total : 0
@@ -925,7 +920,7 @@ export async function buildCrystalTempestResult(
 export function generateRecommendations(
   shards: CrystalShard[],
   fields: CrystalField[],
-  blizzard: CrystalTempestResult['blizzard'],
+  _blizzard: CrystalTempestResult['blizzard'],
   stats: CrystalStats,
 ): string[] {
   const recs: string[] = []

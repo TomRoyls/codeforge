@@ -1,4 +1,3 @@
-import type { EntropyOptions } from './entropy-helpers.js'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -57,7 +56,7 @@ const EFFORT_MINUTES: Record<string, number> = { trivial: 2, easy: 5, medium: 15
 
 function meetsSeverity(findingSeverity: string, filter: string): boolean {
   if (filter === 'all') return true
-  return SEVERITY_ORDER[findingSeverity] >= SEVERITY_ORDER[filter]
+  return (SEVERITY_ORDER[findingSeverity] ?? 0) >= (SEVERITY_ORDER[filter] ?? 0)
 }
 
 let findingCounter = 0
@@ -525,7 +524,7 @@ export function checkPreferConst(content: string, filePath: string): ReviewFindi
   for (let i = 0; i < lines.length; i++) {
     const match = lines[i]!.match(/\blet\s+(\w+)\s*=/)
     if (match) {
-      letBindings.set(match[1]!, i)
+      letBindings.set(match[1] ?? '', i)
     }
   }
   for (const [name, lineIdx] of letBindings) {
@@ -576,7 +575,7 @@ export function checkNoHardcodedStrings(content: string, filePath: string): Revi
     const line = lines[i]!
     const strings = line.matchAll(/['"`]([^'"`]{20,})['"`]/g)
     for (const match of strings) {
-      if (match[1]!.match(/^[\w./\\:-]+$/)) continue
+      if (match[1] ?? ''.match(/^[\w./\\:-]+$/)) continue
       findings.push({
         id: makeId(),
         rule: 'no-hardcoded-strings',
@@ -662,7 +661,7 @@ export function checkConsistentReturn(content: string, filePath: string): Review
  * @example
  * computeFileScore([], 100) // 100
  */
-export function computeFileScore(findings: ReviewFinding[], lines: number): number {
+export function computeFileScore(findings: ReviewFinding[], _lines: number): number {
   let penalty = 0
   for (const f of findings) {
     if (f.severity === 'error') penalty += 10
@@ -828,7 +827,7 @@ export function buildReviewResult(files: string[], contents: string[], options?:
     categoryBreakdown[f.category] = (categoryBreakdown[f.category] ?? 0) + 1
   }
 
-  const topIssues = [...allFindings].sort((a, b) => SEVERITY_ORDER[b.severity] - SEVERITY_ORDER[a.severity]).slice(0, 10)
+  const topIssues = [...allFindings].sort((a, b) => (SEVERITY_ORDER[b.severity] ?? 0) - (SEVERITY_ORDER[a.severity] ?? 0)).slice(0, 10)
 
   const stats: ReviewStats = {
     totalFiles,

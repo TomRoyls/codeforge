@@ -914,7 +914,7 @@ export async function buildEmeraldNexusResult(
 export function generateRecommendations(
   nodes: EmeraldNode[],
   clusters: EmeraldCluster[],
-  network: EmeraldNexusResult['network'],
+  _network: EmeraldNexusResult['network'],
   stats: EmeraldNexusResult['stats'],
 ): string[] {
   const recs: string[] = []

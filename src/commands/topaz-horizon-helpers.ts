@@ -656,7 +656,7 @@ export async function buildTopazHorizonResult(
 export function generateRecommendations(
   rays: TopazRay[],
   skylines: TopazSkyline[],
-  sunset: TopazHorizonResult['sunset'],
+  _sunset: TopazHorizonResult['sunset'],
   stats: TopazHorizonResult['stats'],
 ): string[] {
   const recs: string[] = []

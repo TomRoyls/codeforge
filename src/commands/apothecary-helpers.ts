@@ -128,9 +128,9 @@ export function detectSymptoms(content: string, filePath: string): Symptom[] {
   }
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    const stripped = line.trimStart()
-    const indent = line.length - stripped.length
+    const line = lines[i] ?? ''
+    const stripped = line?.trimStart()
+    const indent = line?.length - stripped?.length
 
     if (indent > 24) {
       symptoms.push({
@@ -172,7 +172,7 @@ export function detectSymptoms(content: string, filePath: string): Symptom[] {
 
   const anyUsage = Array.from(content.matchAll(/:\s*any\b/g))
   if (anyUsage.length > 0) {
-    const lineNum = (content.substring(0, anyUsage[0].index ?? 0).match(/\n/g) ?? []).length + 1
+    const lineNum = (content.substring(0, anyUsage[0]?.index ?? 0).match(/\n/g) ?? []).length + 1
     symptoms.push({
       name: 'missing-types', file: filePath, line: lineNum,
       severity: anyUsage.length > 3 ? 'severe' : 'moderate',
@@ -184,7 +184,7 @@ export function detectSymptoms(content: string, filePath: string): Symptom[] {
 
   const todoFixme = Array.from(content.matchAll(/(?:TODO|FIXME|HACK|XXX)[\s:]/gi))
   if (todoFixme.length > 0) {
-    const lineNum = (content.substring(0, todoFixme[0].index ?? 0).match(/\n/g) ?? []).length + 1
+    const lineNum = (content.substring(0, todoFixme[0]?.index ?? 0).match(/\n/g) ?? []).length + 1
     symptoms.push({
       name: 'debt-accumulation', file: filePath, line: lineNum,
       severity: todoFixme.length > 5 ? 'severe' : 'moderate',
@@ -549,7 +549,7 @@ export function classifyOverallHealth(healthIndex: number): OverallHealth {
 export function determineTreatmentPriority(remedies: Remedy[]): string {
   if (remedies.length === 0) return 'none'
   const sorted = [...remedies].sort((a, b) => b.effectiveness - a.effectiveness)
-  return sorted[0].name
+  return sorted[0]?.name ?? ''
 }
 
 /**
@@ -634,9 +634,9 @@ export function buildApothecaryResult(files: string[], contents: string[], _opti
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    const symptoms = detectSymptoms(content, files[i])
+    const symptoms = detectSymptoms(content, files[i] ?? '')
     allSymptoms.push(...symptoms)
-    cabinet.push(evaluateMedicineCabinet(content, files[i]))
+    cabinet.push(evaluateMedicineCabinet(content, files[i] ?? ''))
   }
 
   const ailments = diagnoseAilments(allSymptoms)

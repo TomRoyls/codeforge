@@ -651,7 +651,7 @@ export async function buildDiamondAtlasResult(
 export function generateRecommendations(
   pages: DiamondPage[],
   volumes: DiamondVolume[],
-  cartography: DiamondAtlasResult['cartography'],
+  _cartography: DiamondAtlasResult['cartography'],
   stats: DiamondAtlasResult['stats'],
 ): string[] {
   const recs: string[] = []

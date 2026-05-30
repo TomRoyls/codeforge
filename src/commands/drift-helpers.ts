@@ -120,7 +120,7 @@ export function inferModuleBoundaries(files: string[]): ModuleBoundary[] {
   const boundaries: ModuleBoundary[] = []
   const allNames = [...moduleMap.keys()]
 
-  for (const [name, moduleFiles] of moduleMap) {
+  for (const [name] of moduleMap) {
     const purpose = PURPOSE_MAP[name] ?? `${name} module`
     boundaries.push({
       name,
@@ -407,7 +407,7 @@ export function generateRecommendations(
 export function buildDriftResult(
   files: string[],
   contents: string[],
-  options?: DriftOptions,
+  _options?: DriftOptions,
 ): DriftResult {
   const boundaries = inferModuleBoundaries(files)
 

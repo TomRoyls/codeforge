@@ -879,7 +879,7 @@ export async function buildBronzeForgeResult(
 export function generateRecommendations(
   ingots: BronzeIngot[],
   workshops: BronzeWorkshop[],
-  foundry: BronzeForgeResult['foundry'],
+  _foundry: BronzeForgeResult['foundry'],
   stats: BronzeForgeStats,
 ): string[] {
   const recs: string[] = []

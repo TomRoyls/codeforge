@@ -1,16 +1,35 @@
 export class WindowHeap2 {
   private windowSize: number;
   private values: number[];
+  private _head = 0;
 
   constructor(windowSize: number) {
     this.windowSize = windowSize;
     this.values = [];
   }
 
+  private _size(): number {
+    return this.values.length - this._head;
+  }
+
+  private _compact(): void {
+    if (this._head > 0) {
+      this.values = this.values.slice(this._head);
+      this._head = 0;
+    }
+  }
+
+  private _getValues(): number[] {
+    return this.values.slice(this._head);
+  }
+
   push(value: number): void {
     this.values.push(value);
-    if (this.values.length > this.windowSize) {
-      this.values.shift();
+    if (this._size() > this.windowSize) {
+      this._head++;
+      if (this._head > this.values.length / 2) {
+        this._compact();
+      }
     }
   }
 
@@ -20,11 +39,11 @@ export class WindowHeap2 {
   }
 
   getMedian(): number {
-    if (this.values.length === 0) {
+    if (this._size() === 0) {
       throw new Error('Window is empty');
     }
 
-    const sorted = [...this.values].sort((a, b) => a - b);
+    const sorted = [...this._getValues()].sort((a, b) => a - b);
     const mid = Math.floor(sorted.length / 2);
 
     if (sorted.length % 2 === 0) {
@@ -35,51 +54,56 @@ export class WindowHeap2 {
   }
 
   getMin(): number {
-    if (this.values.length === 0) {
+    if (this._size() === 0) {
       throw new Error('Window is empty');
     }
-    let min = this.values[0]!;
-    for (let i = 1; i < this.values.length; i++) {
+    let min = this.values[this._head]!;
+    for (let i = this._head + 1; i < this.values.length; i++) {
       if (this.values[i]! < min) min = this.values[i]!;
     }
     return min;
   }
 
   getMax(): number {
-    if (this.values.length === 0) {
+    if (this._size() === 0) {
       throw new Error('Window is empty');
     }
-    let max = this.values[0]!;
-    for (let i = 1; i < this.values.length; i++) {
+    let max = this.values[this._head]!;
+    for (let i = this._head + 1; i < this.values.length; i++) {
       if (this.values[i]! > max) max = this.values[i]!;
     }
     return max;
   }
 
   getSum(): number {
-    return this.values.reduce((sum, val) => sum + val, 0);
+    let sum = 0;
+    for (let i = this._head; i < this.values.length; i++) {
+      sum += this.values[i]!;
+    }
+    return sum;
   }
 
   getAverage(): number {
-    if (this.values.length === 0) {
+    if (this._size() === 0) {
       throw new Error('Window is empty');
     }
-    return this.getSum() / this.values.length;
+    return this.getSum() / this._size();
   }
 
   get size(): number {
-    return this.values.length;
+    return this._size();
   }
 
   isEmpty(): boolean {
-    return this.values.length === 0;
+    return this._size() === 0;
   }
 
   getWindow(): number[] {
-    return [...this.values];
+    return this._getValues();
   }
 
   clear(): void {
     this.values = [];
+    this._head = 0;
   }
 }

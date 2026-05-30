@@ -651,7 +651,7 @@ export async function buildIronCrownResult(
 export function generateRecommendations(
   jewels: CrownJewel[],
   realms: CrownRealm[],
-  kingdom: IronCrownResult['kingdom'],
+  _kingdom: IronCrownResult['kingdom'],
   stats: IronCrownResult['stats'],
 ): string[] {
   const recs: string[] = []

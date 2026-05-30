@@ -95,7 +95,7 @@ export function generateCodename(file: string): string {
  * @example
  * assignClearance('complex code...', 90) // 'top-secret'
  */
-export function assignClearance(content: string, strategicValue: number): Clearance {
+export function assignClearance(_content: string, strategicValue: number): Clearance {
   if (strategicValue >= 80) return 'top-secret'
   if (strategicValue >= 50) return 'secret'
   if (strategicValue >= 20) return 'confidential'
@@ -187,7 +187,6 @@ export function classifyAgentStatus(
 export function computeReliability(content: string): number {
   if (!content || content.trim().length === 0) return 0
 
-  const lines = content.split('\n').length
   const docComments = (content.match(/\/\*\*[\s\S]*?\*\//g) || []).length
   const jsdocParams = (content.match(/@param|@returns|@example/g) || []).length
   const complexity = computeCyclomaticComplexity(content)
@@ -368,7 +367,7 @@ export function buildNetwork(file: string, files: string[], contents: string[]):
     const content = contents[i] || ''
     for (const imp of extractImports(content)) {
       const resolved = resolveImportPath(imp, knownSet)
-      if (resolved === file) network.add(files[i])
+      if (resolved === file) network.add(files[i] ?? '')
     }
   }
 
@@ -446,7 +445,7 @@ export function computeOverallThreatLevel(agents: Agent[], matrix: ThreatMatrix)
  * @example
  * generateDossierRecommendations(agents, matrix, stats)
  */
-export function generateDossierRecommendations(agents: Agent[], matrix: ThreatMatrix, stats: DossierStats): string[] {
+export function generateDossierRecommendations(_agents: Agent[], matrix: ThreatMatrix, stats: DossierStats): string[] {
   const recs: string[] = []
 
   if (stats.criticalVulnerabilities > 0) {
@@ -488,7 +487,7 @@ export function generateDossierRecommendations(agents: Agent[], matrix: ThreatMa
  * @example
  * buildDossierResult(['a.ts'], ['export const x = 1'], {})
  */
-export function buildDossierResult(files: string[], contents: string[], options: DossierOptions): DossierResult {
+export function buildDossierResult(files: string[], contents: string[], _options: DossierOptions): DossierResult {
   const knownSet = new Set(files)
 
   const importedByCounts: Record<string, number> = {}
@@ -512,8 +511,8 @@ export function buildDossierResult(files: string[], contents: string[], options:
     const threatLevel = assessThreatLevel(content, importCount, importedBy)
     const network = buildNetwork(file, files, contents)
     const vulnerabilities = scanVulnerabilities(content, file)
-    const lastActivity = new Date().toISOString().split('T')[0]
-    const status = classifyAgentStatus(content, lastActivity, importCount, exportCount)
+    const lastActivity = new Date().toISOString().split('T')[0] ?? ''
+    const status = classifyAgentStatus(content, lastActivity ?? '', importCount, exportCount)
 
     return { file, codename, clearance, reliability, threatLevel, network, strategicValue, vulnerabilities, lastActivity, status }
   })

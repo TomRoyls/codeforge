@@ -8,15 +8,6 @@ import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildStainedGlassPatternResult,
   type StainedGlassPatternResult,
-  type GlassPiece,
-  type Workshop,
-  type PatternStats,
-  type GlassMeasure,
-  type LeadMeasure,
-  type ColorMeasure,
-  type PatternMeasure,
-  type LightMeasure,
-  type StructureMeasure,
 } from './stained-glass-pattern-helpers.js'
 import { formatStainedGlassPatternJson, formatStainedGlassPatternTable } from './stained-glass-pattern-format-helpers.js'
 

@@ -256,7 +256,6 @@ export function assessImpression(content: string): Impression {
   const hasConsole = /console\.\w+\s*\(/.test(content)
   const hasEval = /\beval\s*\(/.test(content)
   const hasTsIgnore = /@ts-ignore|@ts-expect-error/.test(content)
-  const hasTodo = /\/\/\s*(TODO|FIXME|HACK)/.test(content)
 
   const airBubbleCount = (content.match(/TODO|FIXME|HACK/gi) ?? []).length
   const smudgeCount = (hasConsole ? 1 : 0) + (hasTsIgnore ? 1 : 0)
@@ -356,15 +355,15 @@ export function analyzeSealMark(content: string, filePath: string): SealMark {
   const sealColor = classifySealColor(sealQuality)
   const stampDesign = classifyStampDesign(exportCount, functionCount, classCount)
 
-  const docTypeCounts: [string, number][] = [
-    ['charter', interfaceCount + typeCount],
-    ['decree', exportCount],
-    ['contract', classCount],
-    ['letter', functionCount],
-    ['record', importCount],
-    ['draft', testCount],
+  const docTypeCounts = [
+    ['charter', interfaceCount + typeCount] as [string, number],
+    ['decree', exportCount] as [string, number],
+    ['contract', classCount] as [string, number],
+    ['letter', functionCount] as [string, number],
+    ['record', importCount] as [string, number],
+    ['draft', testCount] as [string, number],
   ].sort((a, b) => b[1] - a[1])
-  const docType = (totalLines === 0 ? 'scrap' : docTypeCounts[0]?.[1] > 0 ? docTypeCounts[0][0] : 'scrap') as Document['type']
+  const docType = (totalLines === 0 ? 'scrap' : (docTypeCounts[0]?.[1] ?? 0) > 0 ? (docTypeCounts[0]?.[0] ?? 'scrap') : 'scrap') as Document['type']
 
   let authority: Document['authority']
   if (sealQuality >= 80) authority = 'royal'
@@ -633,14 +632,15 @@ export function buildWaxSealResult(
   const certificationRate = files.length > 0 ? Math.round((certifiedFiles / files.length) * 100) : 0
   const overallAuthenticity = avgAuthenticity
 
-  const bestSeal = seals.length > 0
-    ? seals.reduce((b, s) => s.sealQuality > b.sealQuality ? s : b, seals[0]).file : 'none'
-  const worstSeal = seals.length > 0
-    ? seals.reduce((w, s) => s.sealQuality < w.sealQuality ? s : w, seals[0]).file : 'none'
-  const mostAuthentic = seals.length > 0
-    ? seals.reduce((m, s) => s.authenticity > m.authenticity ? s : m, seals[0]).file : 'none'
-  const mostSuspect = seals.length > 0
-    ? seals.reduce((m, s) => s.forgeries.copyIndicators > m.forgeries.copyIndicators ? s : m, seals[0]).file : 'none'
+  const firstSeal = seals[0]
+  const bestSeal = seals.length > 0 && firstSeal
+    ? seals.reduce((b, s) => s.sealQuality > b.sealQuality ? s : b, firstSeal).file : 'none'
+  const worstSeal = seals.length > 0 && firstSeal
+    ? seals.reduce((w, s) => s.sealQuality < w.sealQuality ? s : w, firstSeal).file : 'none'
+  const mostAuthentic = seals.length > 0 && firstSeal
+    ? seals.reduce((m, s) => s.authenticity > m.authenticity ? s : m, firstSeal).file : 'none'
+  const mostSuspect = seals.length > 0 && firstSeal
+    ? seals.reduce((m, s) => s.forgeries.copyIndicators > m.forgeries.copyIndicators ? s : m, firstSeal).file : 'none'
 
   const stats: WaxSealStats = {
     totalFiles: files.length, totalCollections: collections.length,

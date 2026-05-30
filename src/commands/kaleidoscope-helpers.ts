@@ -261,7 +261,7 @@ export function applyTemporalLens(files: string[]): LensView {
 
   const exts = files.map((f) => { const p = f.split('.'); return p.length > 1 ? p[p.length - 1] : '' })
   const extCounts = new Map<string, number>()
-  for (const e of exts) extCounts.set(e, (extCounts.get(e) || 0) + 1)
+  for (const e of exts) extCounts.set(e ?? '', (extCounts.get(e ?? '') || 0) + 1)
   const dominant = [...extCounts.entries()].sort((a, b) => b[1] - a[1])[0]
 
   findings.push({
@@ -307,7 +307,7 @@ export function applyRelationalLens(files: string[], contents: string[]): LensVi
     const refs = content.match(/from\s+['"](\.\.?\/[^'"]+)['"]/g) || []
     for (const ref of refs) {
       const match = ref.match(/from\s+['"](\.[^'"]+)['"]/)
-      if (match) referencedFiles.add(match[1])
+      if (match) referencedFiles.add(match[1] ?? '')
     }
   }
 
@@ -321,7 +321,7 @@ export function applyRelationalLens(files: string[], contents: string[]): LensVi
   const hubThreshold = importCounts.length > 0 ? Math.max(...importCounts) : 0
   const hubs: string[] = []
   for (let i = 0; i < importCounts.length; i++) {
-    if (importCounts[i] >= hubThreshold * 0.8 && importCounts[i] > 3) hubs.push(files[i])
+    if ((importCounts[i] ?? 0) >= hubThreshold * 0.8 && (importCounts[i] ?? 0) > 3) hubs.push(((files[i] ?? '') ?? '') ?? '')
   }
   if (hubs.length > 0) {
     findings.push({
@@ -631,7 +631,7 @@ export function generateRecommendations(views: LensView[], stats: KaleidoscopeSt
  * @example
  * buildKaleidoscopeResult(['a.ts'], ['code'], {})
  */
-export function buildKaleidoscopeResult(files: string[], contents: string[], options: Record<string, unknown>): KaleidoscopeResult {
+export function buildKaleidoscopeResult(files: string[], contents: string[], _options: Record<string, unknown>): KaleidoscopeResult {
   if (files.length === 0) {
     const emptyStats: KaleidoscopeStats = {
       totalLenses: 0, totalFindings: 0, avgSymmetry: 0, avgBeauty: 0,

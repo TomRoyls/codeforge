@@ -652,7 +652,7 @@ export async function buildNeonGardenResult(
 export function generateRecommendations(
   blooms: NeonBloom[],
   beds: NeonBed[],
-  ecosystem: NeonGardenResult['ecosystem'],
+  _ecosystem: NeonGardenResult['ecosystem'],
   stats: NeonGardenResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -651,7 +651,7 @@ export async function buildObsidianTempleResult(
 export function generateRecommendations(
   blocks: ObsidianBlock[],
   shrines: ObsidianShrine[],
-  volcano: ObsidianTempleResult['volcano'],
+  _volcano: ObsidianTempleResult['volcano'],
   stats: ObsidianTempleResult['stats'],
 ): string[] {
   const recs: string[] = []

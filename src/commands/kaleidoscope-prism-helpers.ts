@@ -98,8 +98,6 @@ const EXPORT_RE = /export\s+(?:default\s+)?(?:function|class|const|let|interface
 const IMPORT_RE = /import\s+.*?from\s+['"][^'"]+['"]/g
 const FUNCTION_RE = /(?:export\s+)?(?:async\s+)?function\s+\w+/g
 const CLASS_RE = /(?:export\s+)?(?:abstract\s+)?class\s+\w+/g
-const INTERFACE_RE = /(?:export\s+)?interface\s+\w+/g
-const TYPE_RE = /(?:export\s+)?type\s+\w+/g
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
 const COMMENT_RE = /\/\/.*$/gm
 const TODO_RE = /\/\/\s*(TODO|FIXME|HACK)/gi
@@ -161,8 +159,6 @@ export function analyzeLightRay(content: string, filePath: string): LightRay {
   const imports = (content.match(IMPORT_RE) ?? []).length
   const functions = (content.match(FUNCTION_RE) ?? []).length
   const classes = (content.match(CLASS_RE) ?? []).length
-  const interfaces = (content.match(INTERFACE_RE) ?? []).length
-  const types = (content.match(TYPE_RE) ?? []).length
   const jsdoc = (content.match(JSDOC_RE) ?? []).length
   const comments = (content.match(COMMENT_RE) ?? []).length
   const todos = (content.match(TODO_RE) ?? []).length
@@ -183,7 +179,7 @@ export function analyzeLightRay(content: string, filePath: string): LightRay {
   const isMonochromatic = bandwidth < 25
   const isPolychromatic = bandwidth >= 50
   const isUltraviolet = todos > 0 || anys > 0
-  const isInfrared = comments.length === 0 && jsdoc.length === 0 && codeLines.length > 5
+  const isInfrared = comments === 0 && jsdoc === 0 && codeLines.length > 5
 
   const lightType = classifyLightType(clarity, focalPower, dispersion)
   const refractions = imports + nestedCalls
@@ -466,7 +462,7 @@ export function computeOpticalGrade(avgClarity: number): KaleidoscopePrismStats[
  * generateRecommendations(rays, spectra, stats) // string[]
  */
 export function generateRecommendations(
-  rays: LightRay[],
+  _rays: LightRay[],
   _spectra: LightSpectrum[],
   stats: KaleidoscopePrismStats,
 ): string[] {
@@ -500,7 +496,7 @@ export function buildKaleidoscopePrismResult(
 ): KaleidoscopePrismResult {
   const rays: LightRay[] = []
   for (let i = 0; i < files.length; i++) {
-    rays.push(analyzeLightRay(contents[i], files[i]))
+    rays.push(analyzeLightRay(contents[i] ?? '',files[i] ?? ''))
   }
 
   const dirMap = new Map<string, LightRay[]>()
@@ -571,8 +567,9 @@ function computeStats(rays: LightRay[], spectra: LightSpectrum[]): KaleidoscopeP
   const opticalGrade = computeOpticalGrade(avgClarity)
 
   const sortedByClarity = [...rays].sort((a, b) => b.clarity - a.clarity)
-  const brightestFile = sortedByClarity.length > 0 ? sortedByClarity[0].file : 'none'
-  const darkestFile = sortedByClarity.length > 0 ? sortedByClarity[sortedByClarity.length - 1].file : 'none'
+
+  const brightestFile = sortedByClarity.length > 0 ? (sortedByClarity[0] ?? { file: '' }).file : 'none'
+  const darkestFile = sortedByClarity.length > 0 ? sortedByClarity[sortedByClarity.length - 1]?.file : 'none'
 
   return {
     totalFiles,
@@ -602,6 +599,6 @@ function computeStats(rays: LightRay[], spectra: LightSpectrum[]): KaleidoscopeP
     overallClarity,
     opticalGrade,
     brightestFile,
-    darkestFile,
+    darkestFile: darkestFile ?? '',
   }
 }

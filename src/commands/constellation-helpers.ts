@@ -68,11 +68,11 @@ export function extractImports(content: string): string[] {
   const imports: string[] = []
   for (const line of content.split('\n')) {
     const staticImport = line.match(/import\s+(?:type\s+)?(?:\{[^}]+\}|\*\s+as\s+\w+|\w+)\s+from\s+['"]([^'"]+)['"]/)
-    if (staticImport) imports.push(staticImport[1]!)
+    if (staticImport) imports.push(staticImport[1] ?? '')
     const reExport = line.match(/export\s+\{[^}]+\}\s+from\s+['"]([^'"]+)['"]/)
-    if (reExport) imports.push(reExport[1]!)
+    if (reExport) imports.push(reExport[1] ?? '')
     const dynamicImport = line.match(/import\s*\(\s*['"]([^'"]+)['"]\s*\)/)
-    if (dynamicImport) imports.push(dynamicImport[1]!)
+    if (dynamicImport) imports.push(dynamicImport[1] ?? '')
   }
   return imports
 }
@@ -129,7 +129,7 @@ export function computeBrightness(dependentCount: number, maxDependents: number)
  * @example
  * classifyStar(80, 5)
  */
-export function classifyStar(brightness: number, connections: number, isBinary: boolean): StarType {
+export function classifyStar(brightness: number, _connections: number, isBinary: boolean): StarType {
   if (isBinary) return 'binary'
   if (brightness === 0) return 'dark'
   if (brightness > 70) return 'giant'
@@ -287,7 +287,7 @@ export function findConstellations(stars: Star[], links: ConstellationLink[]): C
     const group: string[] = []
     const queue = [star.file]
     while (queue.length > 0) {
-      const current = queue.pop()!
+      const current = queue.pop() ?? ''
       if (visited.has(current)) continue
       visited.add(current)
       group.push(current)

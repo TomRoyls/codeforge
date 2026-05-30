@@ -1,6 +1,13 @@
 import { type BinaryExpression, Node, type SourceFile } from 'ts-morph'
 
-import type { CodeStructures } from './stats-helpers.js'
+export interface CodeStructures {
+  classes: number
+  enums: number
+  functions: number
+  interfaces: number
+  methods: number
+  typeAliases: number
+}
 
 export function isLogicalOperator(node: BinaryExpression): boolean {
   const operator = node.getOperatorToken().getKind()

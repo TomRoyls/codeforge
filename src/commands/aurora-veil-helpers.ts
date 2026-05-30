@@ -827,23 +827,24 @@ export function buildAuroraVeilResult(
   const dimLightCount = ribbons.filter((r) => r.condition === 'dim-light').length
   const darkSkyCount = ribbons.filter((r) => r.condition === 'dark-sky').length
 
-  const bestRibbon = totalFiles > 0
-    ? ribbons.reduce((best, r) => (r.qualityScore > best.qualityScore ? r : best), ribbons[0]).file
+  const firstRibbon = ribbons[0]
+  const bestRibbon = totalFiles > 0 && firstRibbon
+    ? ribbons.reduce((best, r) => (r.qualityScore > best.qualityScore ? r : best), firstRibbon).file
     : ''
-  const mostBeautiful = totalFiles > 0
-    ? ribbons.reduce((best, r) => (r.etherealBeauty > best.etherealBeauty ? r : best), ribbons[0]).file
+  const mostBeautiful = totalFiles > 0 && firstRibbon
+    ? ribbons.reduce((best, r) => (r.etherealBeauty > best.etherealBeauty ? r : best), firstRibbon).file
     : ''
-  const bestAligned = totalFiles > 0
-    ? ribbons.reduce((best, r) => (r.magneticAlignment > best.magneticAlignment ? r : best), ribbons[0]).file
+  const bestAligned = totalFiles > 0 && firstRibbon
+    ? ribbons.reduce((best, r) => (r.magneticAlignment > best.magneticAlignment ? r : best), firstRibbon).file
     : ''
-  const mostDiverse = totalFiles > 0
-    ? ribbons.reduce((best, r) => (r.spectralRichness > best.spectralRichness ? r : best), ribbons[0]).file
+  const mostDiverse = totalFiles > 0 && firstRibbon
+    ? ribbons.reduce((best, r) => (r.spectralRichness > best.spectralRichness ? r : best), firstRibbon).file
     : ''
-  const mostFocused = totalFiles > 0
-    ? ribbons.reduce((best, r) => (r.polarClarity > best.polarClarity ? r : best), ribbons[0]).file
+  const mostFocused = totalFiles > 0 && firstRibbon
+    ? ribbons.reduce((best, r) => (r.polarClarity > best.polarClarity ? r : best), firstRibbon).file
     : ''
-  const deepest = totalFiles > 0
-    ? ribbons.reduce((best, r) => (r.atmosphericDepth > best.atmosphericDepth ? r : best), ribbons[0]).file
+  const deepest = totalFiles > 0 && firstRibbon
+    ? ribbons.reduce((best, r) => (r.atmosphericDepth > best.atmosphericDepth ? r : best), firstRibbon).file
     : ''
 
   const stats: AuroraVeilStats = {

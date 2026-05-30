@@ -19,13 +19,13 @@ export class TaskScheduler {
     const completedIds = new Set<string>()
     const ready: Task[] = []
     for (let i = 0; i < all.length; i++) {
-      const t = all[i]
+      const t = all[i]!
       if (t.status === 'completed') {
         completedIds.add(t.id)
       }
     }
     for (let i = 0; i < all.length; i++) {
-      const t = all[i]
+      const t = all[i]!
       if (
         t.status === 'pending' &&
         t.dependencies.every((dep) => completedIds.has(dep))
@@ -114,8 +114,9 @@ export class TaskScheduler {
     const all = this.queue.getAll()
     const completedIds = new Set<string>()
     for (let i = 0; i < all.length; i++) {
-      if (all[i].status === 'completed') {
-        completedIds.add(all[i].id)
+      const t = all[i]!
+      if (t.status === 'completed') {
+        completedIds.add(t.id)
       }
     }
     return task.dependencies.filter((dep) => !completedIds.has(dep))
@@ -125,8 +126,9 @@ export class TaskScheduler {
     const all = this.queue.getAll()
     const dependents: string[] = []
     for (let i = 0; i < all.length; i++) {
-      if (all[i].dependencies.includes(taskId)) {
-        dependents.push(all[i].id)
+      const t = all[i]!
+      if (t.dependencies.includes(taskId)) {
+        dependents.push(t.id)
       }
     }
     return dependents

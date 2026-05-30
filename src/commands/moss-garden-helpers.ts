@@ -42,12 +42,10 @@ function countTryCatch(content: string): number { return countMatches(content, T
 function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
 function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
 function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
-function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
 function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
 function countProtectedMembers(content: string): number { return countMatches(content, PROTECTED_REGEX) }
 function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
 function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
-function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -376,7 +374,6 @@ export function measureCushion(content: string): CushionMeasure {
   const importCount = countImportKeywords(content)
   const privateCount = countPrivateMembers(content)
   const protectedCount = countProtectedMembers(content)
-  const asyncCount = countAsyncKeywords(content)
   const tryCatchCount = countTryCatch(content)
   const anyCount = countAnyUsage(content)
   const consoleCount = countConsoleUsage(content)
@@ -443,7 +440,6 @@ export function measureSporophyte(content: string): SporophyteMeasure {
   const asyncCount = countAsyncKeywords(content)
   const tryCatchCount = countTryCatch(content)
   const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
   const consoleCount = countConsoleUsage(content)
   const anyCount = countAnyUsage(content)
   const todoCount = countTodoComments(content)

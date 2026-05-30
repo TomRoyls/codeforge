@@ -188,7 +188,6 @@ const countMatches = (pattern: RegExp, content: string): number => {
 // ─── Boolean Detectors ─────────────────────────────────────────────
 
 const hasExport = (c: string) => has(/\bexport\b/, c)
-const hasImport = (c: string) => has(/\bimport\b/, c)
 const hasInterface = (c: string) => has(/\binterface\b/, c)
 const hasTypeAlias = (c: string) => has(/\btype\s+[A-Z]/, c)
 const hasReturnType = (c: string) => has(/:\s*(?:string|number|boolean|void|Promise|unknown|never)\b/, c)

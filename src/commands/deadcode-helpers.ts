@@ -95,13 +95,6 @@ export interface DeadCodeOptions {
 
 // ─── Helpers ─────────────────────────────────────────────
 
-/** Get a line of code by 1-based line number, returns empty string if out of range. */
-function getLine(content: string, lineNum: number): string {
-  const lines = content.split('\n')
-  const idx = lineNum - 1
-  if (idx < 0 || idx >= lines.length) return ''
-  return lines[idx] ?? ''
-}
 
 /** Get surrounding context lines around a given line number. */
 function getContext(content: string, lineNum: number, radius = 1): string {
@@ -179,7 +172,7 @@ export function detectUnusedExports(content: string, filePath: string): DeadCode
     reExportPattern.lastIndex = 0
     const match = reExportPattern.exec(line)
     while (match !== null) {
-      const names = match[1].split(',').map((n) => n.trim().split(/\s+as\s+/).pop()?.trim() ?? '')
+      const names = match?.[1]?.split(',').map((n) => n.trim().split(/\s+as\s+/).pop()?.trim() ?? '') ?? []
       for (const n of names) {
         if (n) importNames.add(n)
       }
@@ -462,7 +455,7 @@ export function detectShadowedDeclarations(content: string, filePath: string): D
     match = varPattern.exec(trimmed)
     while (match !== null) {
       const name = match[1]
-      if (name.startsWith('_')) {
+      if (name?.startsWith('_')) {
         match = varPattern.exec(trimmed)
         continue
       }
@@ -470,13 +463,13 @@ export function detectShadowedDeclarations(content: string, filePath: string): D
       // Check if this name exists in any outer scope
       for (let d = 0; d < depth; d++) {
         const scopeDecls = declarationsByScope.get(d)
-        if (scopeDecls && scopeDecls.has(name)) {
+        if (scopeDecls && scopeDecls.has(name ?? '')) {
           items.push({
             confidence: 60,
             context: getContext(content, i + 1),
             file: filePath,
             line: i + 1,
-            name,
+            name: name ?? '',
             reason: `Variable '${name}' shadows declaration in outer scope`,
             type: 'shadowed-decl',
           })
@@ -490,7 +483,7 @@ export function detectShadowedDeclarations(content: string, filePath: string): D
         currentScope = new Map()
         declarationsByScope.set(depth, currentScope)
       }
-      currentScope.set(name, i + 1)
+      currentScope.set(name ?? '', i + 1)
 
       match = varPattern.exec(trimmed)
     }

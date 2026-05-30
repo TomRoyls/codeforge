@@ -132,9 +132,10 @@ export class GraphBuilder {
     const subEdges: GraphEdge[] = []
     const visited = new Set<string>()
     const queue: Array<{ id: string; currentDepth: number }> = [{ id: rootId, currentDepth: 0 }]
+    let _qi = 0
 
-    while (queue.length > 0) {
-      const item = queue.shift()!
+    while (_qi < queue.length) {
+      const item = queue[_qi++]!
       if (item.currentDepth > depth || visited.has(item.id)) continue
       visited.add(item.id)
 

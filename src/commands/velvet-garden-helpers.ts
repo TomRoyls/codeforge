@@ -691,19 +691,19 @@ export function buildVelvetGardenResult(
   }
 
   const bestPetal = totalFiles > 0
-    ? petals.reduce((best, p) => (p.qualityScore > best.qualityScore ? p : best), petals[0]).file
+    ? petals.reduce((best, p) => (p.qualityScore > best.qualityScore ? p : best), petals[0] as typeof petals[number]).file
     : ''
   const softest = totalFiles > 0
-    ? petals.reduce((best, p) => (p.softness > best.softness ? p : best), petals[0]).file
+    ? petals.reduce((best, p) => (p.softness > best.softness ? p : best), petals[0] as typeof petals[number]).file
     : ''
   const mostBeautiful = totalFiles > 0
-    ? petals.reduce((best, p) => (p.petalQuality > best.petalQuality ? p : best), petals[0]).file
+    ? petals.reduce((best, p) => (p.petalQuality > best.petalQuality ? p : best), petals[0] as typeof petals[number]).file
     : ''
   const deepestRooted = totalFiles > 0
-    ? petals.reduce((best, p) => (p.rootDepth > best.rootDepth ? p : best), petals[0]).file
+    ? petals.reduce((best, p) => (p.rootDepth > best.rootDepth ? p : best), petals[0] as typeof petals[number]).file
     : ''
   const mostFragrant = totalFiles > 0
-    ? petals.reduce((best, p) => (p.fragranceLevel > best.fragranceLevel ? p : best), petals[0]).file
+    ? petals.reduce((best, p) => (p.fragranceLevel > best.fragranceLevel ? p : best), petals[0] as typeof petals[number]).file
     : ''
 
   const stats: VelvetGardenStats = {

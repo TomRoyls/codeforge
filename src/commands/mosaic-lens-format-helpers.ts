@@ -12,11 +12,6 @@ function lensColor(lens: string, text: string): string {
   return chalk.white(text)
 }
 
-function severityColor(s: string): string {
-  if (s === 'error') return chalk.red(s)
-  if (s === 'warning') return chalk.yellow(s)
-  return chalk.dim(s)
-}
 
 function classificationColor(c: string): string {
   if (c === 'resilient') return chalk.green(c)

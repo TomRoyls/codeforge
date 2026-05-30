@@ -880,7 +880,7 @@ export async function buildRubyFirebirdResult(
 export function generateRecommendations(
   feathers: RubyFeather[],
   nests: RubyNest[],
-  flame: RubyFirebirdResult['flame'],
+  _flame: RubyFirebirdResult['flame'],
   stats: RubyFirebirdResult['stats'],
 ): string[] {
   const recs: string[] = []

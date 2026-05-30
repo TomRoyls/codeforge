@@ -98,13 +98,13 @@ export function identifyGears(content: string, filePath: string): Gear[] {
   const funcMatches = content.match(/(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)/g) || []
   const classMatches = content.match(/(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/g) || []
   const arrowMatches = content.match(/(?:export\s+)?const\s+(\w+)\s*=\s*(?:async\s*)?\(([^)]*)\)\s*=>/g) || []
-  const methodMatches = content.match(/(?:(?:public|private|protected|static)\s+)*(?:async\s+)?(\w+)\s*\(([^)]*)\)\s*(?::\s*\w+)?\s*[{]/g) || []
 
   for (const fm of funcMatches) {
     const nameMatch = fm.match(/function\s+(\w+)/)
     const paramMatch = fm.match(/\(([^)]*)\)/)
-    const name = nameMatch ? nameMatch[1] : 'anonymous'
-    const params = paramMatch && paramMatch[1].trim() ? paramMatch[1].split(',').length : 0
+    const name = nameMatch?.[1] ?? 'anonymous'
+    const paramStr = paramMatch?.[1] ?? ''
+    const params = paramStr.trim() ? paramStr.split(',').length : 0
     const isExported = fm.includes('export')
 
     const lineIdx = content.indexOf(fm)
@@ -133,7 +133,7 @@ export function identifyGears(content: string, filePath: string): Gear[] {
 
   for (const cm of classMatches) {
     const nameMatch = cm.match(/class\s+(\w+)/)
-    const name = nameMatch ? nameMatch[1] : 'anonymous'
+    const name = nameMatch?.[1] ?? 'anonymous'
     const isExported = cm.includes('export')
 
     const lineIdx = content.indexOf(cm)
@@ -160,8 +160,9 @@ export function identifyGears(content: string, filePath: string): Gear[] {
   for (const am of arrowMatches) {
     const nameMatch = am.match(/const\s+(\w+)/)
     const paramMatch = am.match(/\(([^)]*)\)/)
-    const name = nameMatch ? nameMatch[1] : 'anonymous'
-    const params = paramMatch && paramMatch[1].trim() ? paramMatch[1].split(',').length : 0
+    const name = nameMatch?.[1] ?? 'anonymous'
+    const paramStr = paramMatch?.[1] ?? ''
+    const params = paramStr.trim() ? paramStr.split(',').length : 0
     const isExported = am.includes('export')
 
     const lineIdx = content.indexOf(am)
@@ -194,6 +195,7 @@ function extractBodyLines(lines: string[], startIdx: number): number {
   let started = false
   for (let i = startIdx; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     for (const ch of line) {
       if (ch === '{') { depth++; started = true }
       if (ch === '}') depth--
@@ -253,8 +255,8 @@ export function analyzeMeshPoints(content: string, filePath: string, gears: Gear
   for (let i = 0; i < gears.length - 1; i++) {
     const a = gears[i]
     const b = gears[i + 1]
+    if (!a || !b) continue
 
-    const hasParams = a.teeth > 0 || b.teeth > 0
     const hasCallback = /callback|handler|listener/i.test(a.name + b.name)
     const hasInheritance = /extends|implements/.test(content)
 
@@ -277,15 +279,17 @@ export function analyzeMeshPoints(content: string, filePath: string, gears: Gear
   }
 
   if (imports.length > 0 && gears.length > 0) {
-    const mainGear = gears.find(g => g.type === 'drive') || gears[0]
-    meshPoints.push({
-      gearA: `${filePath}:${mainGear.name}`,
-      gearB: `${filePath}:imports`,
-      alignment: imports.length < 5 ? 'aligned' : 'misaligned',
-      type: 'event',
-      friction: Math.min(100, imports.length * 8),
-      lubrication: 60,
-    })
+    const mainGear = gears.find(g => g.type === 'drive') ?? gears[0]
+    if (mainGear) {
+      meshPoints.push({
+        gearA: `${filePath}:${mainGear.name}`,
+        gearB: `${filePath}:imports`,
+        alignment: imports.length < 5 ? 'aligned' : 'misaligned',
+        type: 'event',
+        friction: Math.min(100, imports.length * 8),
+        lubrication: 60,
+      })
+    }
   }
 
   return meshPoints
@@ -624,8 +628,8 @@ export function buildClockworkResult(
   const inspections: MechanismInspection[] = []
 
   for (let i = 0; i < files.length; i++) {
-    const content = contents[i]
-    const filePath = files[i]
+    const content = contents[i] ?? ''
+    const filePath = files[i] ?? ''
 
     const gears = identifyGears(content, filePath)
     const meshes = analyzeMeshPoints(content, filePath, gears)

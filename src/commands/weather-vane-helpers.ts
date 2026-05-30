@@ -905,15 +905,15 @@ export function buildWeatherVaneResult(
     overallConditions,
     meteorologistGrade: classifyMeteorologistGrade(overallConditions),
     bestConditions: readings.length > 0
-      ? readings.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, readings[0]).file : 'none',
+      ? readings.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, readings[0] as typeof readings[number]).file : 'none',
     worstConditions: readings.length > 0
-      ? readings.reduce((a, b) => b.qualityScore < a.qualityScore ? b : a, readings[0]).file : 'none',
+      ? readings.reduce((a, b) => b.qualityScore < a.qualityScore ? b : a, readings[0] as typeof readings[number]).file : 'none',
     mostActive: readings.length > 0
-      ? readings.reduce((a, b) => b.temperature > a.temperature ? b : a, readings[0]).file : 'none',
+      ? readings.reduce((a, b) => b.temperature > a.temperature ? b : a, readings[0] as typeof readings[number]).file : 'none',
     mostStable: readings.length > 0
-      ? readings.reduce((a, b) => b.wind.isSteady && !a.wind.isSteady ? b : a, readings[0]).file : 'none',
+      ? readings.reduce((a, b) => b.wind.isSteady && !a.wind.isSteady ? b : a, readings[0] as typeof readings[number]).file : 'none',
     stormiest: readings.length > 0
-      ? readings.reduce((a, b) => b.atmosphere.pressure > a.atmosphere.pressure ? b : a, readings[0]).file : 'none',
+      ? readings.reduce((a, b) => b.atmosphere.pressure > a.atmosphere.pressure ? b : a, readings[0] as typeof readings[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(readings, stations, climate, stats)

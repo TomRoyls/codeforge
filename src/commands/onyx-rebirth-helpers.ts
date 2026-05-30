@@ -650,7 +650,7 @@ export async function buildOnyxPhoenixResult(
 export function generateRecommendations(
   feathers: OnyxFeather[],
   nests: OnyxNest[],
-  pyre: OnyxPhoenixResult['pyre'],
+  _pyre: OnyxPhoenixResult['pyre'],
   stats: OnyxPhoenixResult['stats'],
 ): string[] {
   const recs: string[] = []

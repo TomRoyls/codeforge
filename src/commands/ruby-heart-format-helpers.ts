@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'pigeon-blood': best, 'deep-crimson': best, 'eye-clean': best,
     'sapphire-hard': best, 'eternal-fire': best, 'pigeon-blood-ruby': best,
     'burma-mine': best, 'premium-vein': best, 'master-jeweler': best,

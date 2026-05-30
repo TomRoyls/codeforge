@@ -70,7 +70,7 @@ function countLines(contents: string[]): number {
  * @example
  * computeComplexityScore(['a.ts'], ['if (x) { if (y) {} }']) // 0-100
  */
-export function computeComplexityScore(files: string[], contents: string[]): RadarDimension {
+export function computeComplexityScore(_files: string[], contents: string[]): RadarDimension {
   const findings: string[] = []
   const totalLines = countLines(contents) || 1
   const ifCount = countPatterns(contents, [/\bif\s*\(/g])
@@ -121,7 +121,7 @@ export function computeComplexityScore(files: string[], contents: string[]): Rad
  * @example
  * computeDocumentationScore(['a.ts'], ['// docs\nfunction f() {}']) // 0-100
  */
-export function computeDocumentationScore(files: string[], contents: string[]): RadarDimension {
+export function computeDocumentationScore(_files: string[], contents: string[]): RadarDimension {
   const findings: string[] = []
   let totalLines = 0
   let commentLines = 0
@@ -206,12 +206,11 @@ export function computeTestingScore(files: string[], contents: string[]): RadarD
  * @example
  * computeSecurityScore(['a.ts'], ['eval("x")']) // 0-100
  */
-export function computeSecurityScore(files: string[], contents: string[]): RadarDimension {
+export function computeSecurityScore(_files: string[], contents: string[]): RadarDimension {
   const findings: string[] = []
   const evalCount = countPatterns(contents, [/\beval\s*\(/g])
   const innerHtmlCount = countPatterns(contents, [/\.innerHTML\s*=/g])
   const hardcodedSecrets = countPatterns(contents, [/password\s*=\s*['"]/gi])
-  const dangerousFlags = evalCount + innerHtmlCount + hardcodedSecrets
 
   let score = 100
   score -= evalCount * 25
@@ -235,12 +234,11 @@ export function computeSecurityScore(files: string[], contents: string[]): Radar
  * @example
  * computePerformanceScore(['a.ts'], ['for (let i = 0; i < 10000; i++) {}']) // 0-100
  */
-export function computePerformanceScore(files: string[], contents: string[]): RadarDimension {
+export function computePerformanceScore(_files: string[], contents: string[]): RadarDimension {
   const findings: string[] = []
   const syncReadCount = countPatterns(contents, [/\breadFileSync\b/g, /\bwriteFileSync\b/g])
   const deepCopyCount = countPatterns(contents, [/JSON\.parse\(JSON\.stringify/g])
   const largeLoopCount = countPatterns(contents, [/\bfor\s*\(.*10000/g, /\bfor\s*\(.*100000/g])
-  const blockingCount = syncReadCount + deepCopyCount
 
   let score = 100
   score -= syncReadCount * 10
@@ -263,7 +261,7 @@ export function computePerformanceScore(files: string[], contents: string[]): Ra
  * @example
  * computeMaintainabilityScore(['a.ts'], ['function f() {}']) // 0-100
  */
-export function computeMaintainabilityScore(files: string[], contents: string[]): RadarDimension {
+export function computeMaintainabilityScore(_files: string[], contents: string[]): RadarDimension {
   const findings: string[] = []
   let longFunctions = 0
   let totalFunctions = 0
@@ -347,10 +345,8 @@ export function computeCouplingScore(files: string[], contents: string[]): Radar
  * @example
  * computeConsistencyScore(['a.ts'], ['const fooBar = 1\nconst bazQux = 2']) // 0-100
  */
-export function computeConsistencyScore(files: string[], contents: string[]): RadarDimension {
+export function computeConsistencyScore(_files: string[], contents: string[]): RadarDimension {
   const findings: string[] = []
-  const camelCase = countPatterns(contents, [/\b[a-z][a-zA-Z0-9]*\b/g])
-  const snakeCase = countPatterns(contents, [/\b[a-z][a-z0-9_]*\b/g])
   const importStyles = { esm: 0, commonjs: 0 }
   let quotesSingle = 0
   let quotesDouble = 0

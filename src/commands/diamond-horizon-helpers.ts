@@ -214,12 +214,8 @@ const hasThrow = (c: string) => has(/\bthrow\b/, c)
 const hasOptional = (c: string) => has(/\?\s*:/, c)
 const hasReadonly = (c: string) => has(/\breadonly\b/, c)
 const hasPrivate = (c: string) => has(/\bprivate\b/, c)
-const hasConditional = (c: string) => has(/\bif\b/, c)
 const hasMapFunction = (c: string) => has(/\b(?:map|filter|reduce|forEach)\b/, c)
-const hasClass = (c: string) => has(/\bclass\b/, c)
-const hasDefaultParam = (c: string) => has(/=\s*[^=]/, c)
 const hasUnionType = (c: string) => has(/\|\s*['"]/, c)
-const hasArrowFunction = (c: string) => has(/=>/, c)
 
 // ─── Measure Functions ─────────────────────────────────────────────
 

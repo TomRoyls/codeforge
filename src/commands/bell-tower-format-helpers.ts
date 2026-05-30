@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { BellTowerResult, Bell, BellChamber } from './bell-tower-helpers.js'
+import type { BellTowerResult, Bell } from './bell-tower-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

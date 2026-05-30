@@ -45,8 +45,9 @@ export class AhoCorasick2 {
       queue.push(next);
     }
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    let _qi = 0;
+    while (_qi < queue.length) {
+      const current = queue[_qi++];
       const currentNode = this.nodes[current]!;
       const childrenKeys = Array.from(currentNode.children.keys());
 

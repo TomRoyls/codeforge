@@ -1,5 +1,5 @@
 // ─── Imports ───────────────────────────────────────────────────────
-import { Command, Flags } from '@oclif/core'
+import { Command, Flags, Args } from '@oclif/core'
 import fs from 'node:fs'
 import path from 'node:path'
 import {
@@ -35,7 +35,9 @@ export default class CoralReef extends Command {
     verbose: Flags.boolean({ default: false, description: 'Show verbose output' }),
   }
 
-  static override args = [{ name: 'path', description: 'Path to analyze', default: '.' }]
+  static override args = {
+    path: Args.string({ description: 'Path to analyze', default: '.' }),
+  }
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(CoralReef)

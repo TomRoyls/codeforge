@@ -141,10 +141,10 @@ function buildLanguageBarHtml(languages: { lang: string; percentage: number }[])
 
   for (let i = 0; i < languages.length; i++) {
     const lang = languages[i]
-    if (lang.percentage <= 0) continue
+    if ((lang?.percentage ?? 0) <= 0) continue
     const color = colors[i % colors.length]
-    segments.push(`<div class="lang-bar-segment" style="width:${lang.percentage}%;background:${color}" title="${escapeHtml(lang.lang)}: ${lang.percentage.toFixed(1)}%"></div>`)
-    labels.push(`<span style="color:${color}">■</span> ${escapeHtml(lang.lang)} ${lang.percentage.toFixed(1)}%`)
+    segments.push(`<div class="lang-bar-segment" style="width:${lang?.percentage}%;background:${color}" title="${escapeHtml(lang?.lang ?? '')}: ${lang?.percentage.toFixed(1)}%"></div>`)
+    labels.push(`<span style="color:${color}">■</span> ${escapeHtml(lang?.lang ?? '')} ${lang?.percentage.toFixed(1)}%`)
   }
 
   const bar = `<div class="lang-bar">${segments.join('')}</div>`

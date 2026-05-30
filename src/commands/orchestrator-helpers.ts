@@ -1,5 +1,3 @@
-import type { FileEntry } from '../core/file-discovery.js'
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type FunctionType = 'orchestrator' | 'worker' | 'pipeline' | 'adapter' | 'hybrid'
@@ -72,7 +70,6 @@ export interface OrchestratorOptions {
 
 // ─── Regex helpers ────────────────────────────────────────────────────────────
 
-const FUNC_DECLARATION = /(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?(?:\([^)]*\)|[^=])\s*=>|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?function)/g
 const CALL_EXPRESSION = /(?<!\w)(\w+)\s*\(/g
 const IMPORT_LINE = /^\s*(?:import|export)\s/
 const COMMENT_LINE = /^\s*(?:\/\/|\/\*|\*)/
@@ -183,7 +180,7 @@ export function extractFunctions(content: string, filePath: string): RawFunction
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     if (COMMENT_LINE.test(line) || IMPORT_LINE.test(line)) continue
 
     const funcMatch = line.match(/(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?(?:\([^)]*\)|[^=])\s*=>|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?function)/)
@@ -196,7 +193,7 @@ export function extractFunctions(content: string, filePath: string): RawFunction
     let braceDepth = 0
     let started = false
     for (let j = i; j < lines.length; j++) {
-      for (const ch of lines[j]) {
+      for (const ch of lines[j] ?? '') {
         if (ch === '{') { braceDepth++; started = true }
         if (ch === '}') braceDepth--
       }
@@ -301,7 +298,7 @@ export function detectOrchestrationPatterns(content: string, filePath: string): 
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     if (COMMENT_LINE.test(line) || IMPORT_LINE.test(line)) continue
 
     if (/Promise\.all\s*\(/.test(line)) {
@@ -329,7 +326,8 @@ export function detectOrchestrationPatterns(content: string, filePath: string): 
     }
 
     if (/\bif\s*\(/.test(line) && /\belse\b/.test(lines[i + 1] ?? '')) {
-      const funcs = extractCalls(line + ' ' + (lines[i + 1] ?? ''))
+      const combinedLine = line + ' ' + (lines[i + 1] ?? '')
+      const funcs = extractCalls(combinedLine)
       if (funcs.length >= 2) {
         patterns.push({
           type: 'conditional',
@@ -380,8 +378,11 @@ export function detectOrchestrationPatterns(content: string, filePath: string): 
   }
 
   for (let i = 0; i < lines.length - 1; i++) {
-    const stripped = lines[i].trim()
-    const nextStripped = lines[i + 1]?.trim() ?? ''
+    const currentLine = lines[i]
+    const nextLine = lines[i + 1]
+    if (!currentLine || !nextLine) continue
+    const stripped = currentLine.trim()
+    const nextStripped = nextLine.trim()
     if (
       stripped && nextStripped &&
       !COMMENT_LINE.test(stripped) && !COMMENT_LINE.test(nextStripped) &&
@@ -406,7 +407,7 @@ export function detectOrchestrationPatterns(content: string, filePath: string): 
 
 function extractCallsFromPromiseAll(line: string): string[] {
   const match = line.match(/Promise\.all\s*\(\s*\[([^\]]*)\]\s*\)/)
-  if (!match) return []
+  if (!match || match[1] === undefined) return []
   return extractCalls(match[1])
 }
 
@@ -524,8 +525,12 @@ export function buildOrchestratorResult(
 
       for (const call of calls) {
         const calleeKey = `${filePath}:${call}`
-        if (!reverseGraph.has(calleeKey)) reverseGraph.set(calleeKey, new Set())
-        reverseGraph.get(calleeKey)!.add(key)
+        const reverseSet = reverseGraph.get(calleeKey)
+        if (!reverseSet) {
+          reverseGraph.set(calleeKey, new Set([key]))
+        } else {
+          reverseSet.add(key)
+        }
       }
     }
   }
@@ -556,7 +561,7 @@ export function buildOrchestratorResult(
       callsCount,
       calledByCount,
       orchestrates: [...calls],
-      orchestratedBy: [...calledBy].map((k) => k.split(':').pop()!),
+      orchestratedBy: [...calledBy].map((k) => k.split(':').pop() ?? ''),
       coordinationPatterns,
       complexity,
       linesOfCode: raw.linesOfCode,

@@ -318,11 +318,11 @@ export function measureClay(content: string): ClayMeasure {
   const imports = countImports(content)
   const exports = countExports(content)
   const errors = countErrorHandling(content)
-  const loc = countLoc(content)
   const classes = countClasses(content)
   const branches = countBranches(content)
   const consoleCount = countConsole(content)
   const todos = countTodos(content)
+  const loc = countLoc(content)
 
   const quality = Math.min(100, Math.max(0, Math.round(
     (types > 0 ? 20 : 0) +
@@ -400,7 +400,6 @@ export function measureBisque(content: string): BisqueMeasure {
   const errors = countErrorHandling(content)
   const exports = countExports(content)
   const branches = countBranches(content)
-  const loc = countLoc(content)
 
   const isFired = testIndicators > 0
   const isBisque = testIndicators >= 3
@@ -438,9 +437,8 @@ export function measureGlaze(content: string): GlazeMeasure {
   const comments = countComments(content)
   const exports = countExports(content)
   const functions = countFunctions(content)
-  const loc = countLoc(content)
-  const descriptive = countDescriptiveNames(content)
   const errors = countErrorHandling(content)
+  const loc = countLoc(content)
 
   const hasBaseCoat = comments > 0 || jsdoc > 0
   const hasDecorative = jsdoc > 0 && exports > 0
@@ -475,7 +473,6 @@ export function measureFiring(content: string): FiringMeasure {
   const functions = countFunctions(content)
   const errors = countErrorHandling(content)
   const types = countTypeAnnotations(content)
-  const loc = countLoc(content)
   const nesting = maxNesting(content)
   const exports = countExports(content)
 
@@ -527,8 +524,6 @@ export function measureFinished(content: string): FinishedMeasure {
   const exports = countExports(content)
   const imports = countImports(content)
   const functions = countFunctions(content)
-  const loc = countLoc(content)
-  const comments = countComments(content)
   const jsdoc = countJSDoc(content)
   const descriptive = countDescriptiveNames(content)
   const branches = countBranches(content)
@@ -845,15 +840,15 @@ export function buildKilnFireResult(
     overallHardness,
     potterGrade: classifyPotterGrade(overallHardness),
     bestPiece: pieces.length > 0
-      ? pieces.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
     hardestPiece: pieces.length > 0
-      ? pieces.reduce((a, b) => b.finalHardness > a.finalHardness ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.finalHardness > a.finalHardness ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
     bestGlazed: pieces.length > 0
-      ? pieces.reduce((a, b) => b.glazeQuality > a.glazeQuality ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.glazeQuality > a.glazeQuality ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
     mostFragile: pieces.length > 0
-      ? pieces.reduce((a, b) => b.finalHardness < a.finalHardness ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.finalHardness < a.finalHardness ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
     needsFiring: pieces.length > 0
-      ? pieces.reduce((a, b) => b.firingTemperature < a.firingTemperature ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.firingTemperature < a.firingTemperature ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(pieces, loads, studio, stats)

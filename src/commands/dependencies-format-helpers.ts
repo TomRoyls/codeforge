@@ -1,21 +1,13 @@
 import chalk from 'chalk'
 
 import type { DependenciesResult, DependencyTree } from './dependencies-helpers.js'
-import { categorizeVersionType } from './dependencies-helpers.js'
+import { categorizeVersionType, type SemverRange } from './dependencies-helpers.js'
+
+import { padRight } from '../utils/format-utils.js'
 
 // ─── Table formatting ───────────────────────────────────
 
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
-
-function colorizeConstraint(parsedRange: { operator: string }, value: string): string {
+function colorizeConstraint(parsedRange: SemverRange, value: string): string {
   const vType = categorizeVersionType(parsedRange)
   switch (vType) {
     case 'exact':

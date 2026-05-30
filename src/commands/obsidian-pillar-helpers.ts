@@ -569,7 +569,12 @@ export function analyzePillarSegment(content: string, filePath: string): PillarS
     supportQuality * 0.2,
   )
 
-  const condition = classifySegmentCondition(qualityScore)
+  let condition: PillarSegment['condition'] = 'rubble'
+  if (qualityScore >= 90) condition = 'monolithic-pillar'
+  else if (qualityScore >= 75) condition = 'strong-column'
+  else if (qualityScore >= 60) condition = 'reliable-post'
+  else if (qualityScore >= 45) condition = 'weathered-pillar'
+  else if (qualityScore >= 30) condition = 'cracked-column'
 
   return {
     file: filePath, compressiveStrength, volcanicResilience, darkClarity, pillarAlignment, foundationAnchoring, supportQuality,

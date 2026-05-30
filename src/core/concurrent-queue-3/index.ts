@@ -1,5 +1,6 @@
 export class ConcurrentQueue3<T> {
   private _items: T[] = [];
+  private _head: number = 0;
   private _dequeueWaiters: ((value: T) => void)[] = [];
   private _enqueueWaiters: (() => void)[] = [];
   private readonly _maxSize?: number;
@@ -8,8 +9,19 @@ export class ConcurrentQueue3<T> {
     this._maxSize = maxSize;
   }
 
+  private get _count(): number {
+    return this._items.length - this._head;
+  }
+
+  private _compact(): void {
+    if (this._head > 64 && this._head > this._items.length >> 1) {
+      this._items = this._items.slice(this._head)
+      this._head = 0
+    }
+  }
+
   async enqueue(item: T): Promise<void> {
-    while (this._maxSize !== undefined && this._items.length >= this._maxSize) {
+    while (this._maxSize !== undefined && this._count >= this._maxSize) {
       await new Promise<void>(resolve => {
         this._enqueueWaiters.push(resolve);
       });
@@ -26,8 +38,11 @@ export class ConcurrentQueue3<T> {
   }
 
   async dequeue(): Promise<T> {
-    if (this._items.length > 0) {
-      const item = this._items.shift()!;
+    if (this._head < this._items.length) {
+      const item = this._items[this._head]!
+      this._items[this._head] = undefined as T
+      this._head++
+      this._compact()
       this._resolveEnqueueWaiters();
       return item;
     }
@@ -38,29 +53,30 @@ export class ConcurrentQueue3<T> {
   }
 
   peek(): T | undefined {
-    if (this._items.length === 0) {
+    if (this._head >= this._items.length) {
       return undefined;
     }
-    return this._items[0];
+    return this._items[this._head];
   }
 
   get size(): number {
-    return this._items.length;
+    return this._count;
   }
 
   isEmpty(): boolean {
-    return this._items.length === 0;
+    return this._head >= this._items.length;
   }
 
   clear(): void {
     this._items = [];
+    this._head = 0;
     this._dequeueWaiters = [];
     this._enqueueWaiters = [];
   }
 
   private _resolveEnqueueWaiters(): void {
     while (this._enqueueWaiters.length > 0) {
-      if (this._maxSize !== undefined && this._items.length >= this._maxSize) {
+      if (this._maxSize !== undefined && this._count >= this._maxSize) {
         break;
       }
       const resolve = this._enqueueWaiters.shift()!;

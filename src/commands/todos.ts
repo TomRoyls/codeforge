@@ -9,7 +9,6 @@ import {
   aggregateTodos,
   scanFileForTodos,
   sortTodos,
-  type TodoResult,
 } from './todos-helpers.js'
 import { formatTodoOutput } from './todos-format-helpers.js'
 

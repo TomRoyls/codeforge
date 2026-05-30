@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { QuartzCrystal, QuartzMeridianResult, QuartzStratum, StratumCondition } from './quartz-vein-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -28,16 +30,6 @@ export function colorStratumCondition(condition: StratumCondition | string): str
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatCrystalTable(crystal) */
 export function formatCrystalTable(crystal: QuartzCrystal): string {

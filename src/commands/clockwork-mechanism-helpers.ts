@@ -496,7 +496,6 @@ export function measureTicking(content: string): TickingMeasure {
  * measureFace('export function f(x: number): number { return x }') // { isReadable, ... }
  */
 export function measureFace(content: string): FaceMeasure {
-  const loc = countLoc(content)
   const exports = countExports(content)
   const types = countTypeAnnotations(content)
   const jsdoc = countJSDoc(content)
@@ -630,7 +629,7 @@ export function analyzeClockTower(gears: ClockworkGear[], dirPath: string): Cloc
  * generateRecommendations(gears, towers, atelier, stats) // string[]
  */
 export function generateRecommendations(
-  gears: ClockworkGear[],
+  _gears: ClockworkGear[],
   towers: ClockTower[],
   atelier: AtelierMeasure,
   stats: ClockworkMechanismStats,
@@ -678,7 +677,7 @@ export function generateRecommendations(
 export function buildClockworkMechanismResult(files: string[], contents: string[], _options: Record<string, unknown>): ClockworkMechanismResult {
   const gears: ClockworkGear[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeClockworkGear(content, file)
+    return analyzeClockworkGear(content ?? '', file)
   })
 
   const dirMap = new Map<string, ClockworkGear[]>()

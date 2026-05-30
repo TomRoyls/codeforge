@@ -880,7 +880,7 @@ export async function buildCopperMorningResult(
 export function generateRecommendations(
   rays: CopperRay[],
   hearths: CopperHearth[],
-  morning: CopperMorningResult['morning'],
+  _morning: CopperMorningResult['morning'],
   stats: CopperMorningStats,
 ): string[] {
   const recs: string[] = []

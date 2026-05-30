@@ -600,7 +600,7 @@ export function identifyDissonance(tubes: ChimeTube[]): string[] {
  * @example
  * computeSymphony(tubes, clusters) // Symphony
  */
-export function computeSymphony(tubes: ChimeTube[], clusters: ChimeCluster[]): Symphony {
+export function computeSymphony(tubes: ChimeTube[], _clusters: ChimeCluster[]): Symphony {
   const totalAmplitude = tubes.reduce((s, t) => s + t.amplitude, 0)
   const avgResonance = tubes.length > 0 ? Math.round(tubes.reduce((s, t) => s + t.resonance, 0) / tubes.length) : 0
   const avgHarmony = tubes.length > 0 ? Math.round(tubes.reduce((s, t) => s + t.harmony, 0) / tubes.length) : 0
@@ -681,13 +681,13 @@ export function buildWindChimeResult(
   const dependentMap = new Map<string, string[]>()
 
   for (let i = 0; i < files.length; i++) {
-    const matches = contents[i].matchAll(IMPORT_RE)
+    const matches = (contents[i] ?? '').matchAll(IMPORT_RE)
     const importedPaths: string[] = []
     for (const m of matches) {
-      importedPaths.push(m[1])
+if (m[1] !== undefined) importedPaths.push(m[1])
     }
-    importMap.set(files[i], importedPaths)
-    dependentMap.set(files[i], [])
+    importMap.set(files[i] ?? '', importedPaths)
+    dependentMap.set(files[i] ?? '', [])
   }
 
   for (const [file, impList] of importMap) {
@@ -703,9 +703,9 @@ export function buildWindChimeResult(
 
   const tubes: ChimeTube[] = []
   for (let i = 0; i < files.length; i++) {
-    const fileImports = importMap.get(files[i]) ?? []
-    const fileDependents = dependentMap.get(files[i]) ?? []
-    tubes.push(analyzeChimeTube(contents[i], files[i], fileImports, fileDependents))
+    const fileImports = importMap.get(files[i] ?? '') ?? []
+    const fileDependents = dependentMap.get(files[i] ?? '') ?? []
+    tubes.push(analyzeChimeTube(contents[i] ?? '',files[i] ?? '', fileImports, fileDependents))
   }
 
   const dirMap = new Map<string, ChimeTube[]>()
@@ -774,14 +774,14 @@ function computeStats(tubes: ChimeTube[], clusters: ChimeCluster[]): WindChimeSt
   const harmonyGrade = classifyHarmonyGrade(avgHarmony)
 
   const sortedByHarmony = [...tubes].sort((a, b) => b.harmony - a.harmony)
-  const bestTube = sortedByHarmony.length > 0 ? sortedByHarmony[0].file : 'none'
-  const worstTube = sortedByHarmony.length > 0 ? sortedByHarmony[sortedByHarmony.length - 1].file : 'none'
+  const bestTube = sortedByHarmony.length > 0 ? sortedByHarmony[0]?.file : 'none'
+  const worstTube = sortedByHarmony.length > 0 ? sortedByHarmony[sortedByHarmony.length - 1]?.file : 'none'
 
   const sortedByResonance = [...tubes].sort((a, b) => b.resonance - a.resonance)
-  const mostResonant = sortedByResonance.length > 0 ? sortedByResonance[0].file : 'none'
+  const mostResonant = sortedByResonance.length > 0 ? sortedByResonance[0]?.file : 'none'
 
   const sortedByDissonance = [...tubes].sort((a, b) => b.dissonance - a.dissonance)
-  const mostDissonant = sortedByDissonance.length > 0 ? sortedByDissonance[0].file : 'none'
+  const mostDissonant = sortedByDissonance.length > 0 ? sortedByDissonance[0]?.file : 'none'
 
   return {
     totalFiles,
@@ -806,9 +806,9 @@ function computeStats(tubes: ChimeTube[], clusters: ChimeCluster[]): WindChimeSt
     overallHarmony,
     overallResonance,
     harmonyGrade,
-    bestTube,
-    worstTube,
-    mostResonant,
-    mostDissonant,
+    bestTube: bestTube ?? '',
+    worstTube: worstTube ?? '',
+    mostResonant: mostResonant ?? '',
+    mostDissonant: mostDissonant ?? '',
   }
 }

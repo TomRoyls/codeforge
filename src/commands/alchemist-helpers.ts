@@ -127,7 +127,7 @@ export function measureClarity(content: string): Element {
   for (const fn of allFns) {
     const nameMatch = fn.match(/(\w+)\s*(?:\(|=)/)
     if (nameMatch) {
-      const name = nameMatch[1]!
+      const name = nameMatch[1] ?? ''
       if (name.length > 2 && /^[a-z]/.test(name) && name !== 'function') goodNames++
     }
   }
@@ -312,7 +312,7 @@ export function computePurity(elements: Element[]): number {
  * generateTransmutationSteps('a.ts', elements, content)
  */
 export function generateTransmutationSteps(
-  file: string,
+  _file: string,
   elements: Element[],
   _content: string,
 ): TransmutationStep[] {
@@ -467,7 +467,7 @@ export function getMasterElements(): { symbol: string; name: string; property: s
 export function buildAlchemistResult(
   files: string[],
   contents: string[],
-  options: { maxDepth: number },
+  _options: { maxDepth: number },
 ): AlchemistResult {
   const transmutations: Transmutation[] = files.map((file, i) => {
     const content = contents[i] ?? ''

@@ -1,43 +1,56 @@
 export class ElasticQueue2<T> {
   private items: T[] = [];
+  private head = 0;
   private readonly maxSize: number | undefined;
 
   constructor(options?: { minSize?: number; maxSize?: number }) {
     this.maxSize = options?.maxSize;
   }
 
+  private get logicalLength(): number {
+    return this.items.length - this.head;
+  }
+
   enqueue(item: T): void {
-    if (this.maxSize !== undefined && this.items.length >= this.maxSize) {
+    if (this.maxSize !== undefined && this.logicalLength >= this.maxSize) {
       throw new Error('Queue is full');
     }
     this.items.push(item);
   }
 
   dequeue(): T | undefined {
-    return this.items.shift();
+    if (this.head >= this.items.length) return undefined
+    const value = this.items[this.head]!
+    this.head++
+    if (this.head >= this.items.length) {
+      this.items = []
+      this.head = 0
+    }
+    return value
   }
 
   peek(): T | undefined {
-    if (this.items.length === 0) {
+    if (this.logicalLength === 0) {
       return undefined;
     }
-    return this.items[0]!;
+    return this.items[this.head]!;
   }
 
   get size(): number {
-    return this.items.length;
+    return this.logicalLength;
   }
 
   isEmpty(): boolean {
-    return this.items.length === 0;
+    return this.logicalLength === 0;
   }
 
   isFull(): boolean {
-    return this.maxSize !== undefined && this.items.length >= this.maxSize;
+    return this.maxSize !== undefined && this.logicalLength >= this.maxSize;
   }
 
   clear(): void {
     this.items = [];
+    this.head = 0;
   }
 
   capacity(): number | undefined {

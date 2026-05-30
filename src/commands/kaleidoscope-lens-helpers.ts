@@ -196,10 +196,8 @@ const NESTED_TERNARY_RE = /\?.*:.*\?.*:/
 const CONSOLE_RE = /\bconsole\.\w+/g
 const ANY_RE = /:\s*any\b/g
 const EVAL_RE = /\beval\s*\(/g
-const TODO_RE = /\bTODO\b/gi
 const HACK_RE = /\bHACK\b/gi
 const FIXME_RE = /\bFIXME\b/gi
-const DEPRECATED_RE = /@deprecated/g
 const DOC_COMMENT_RE = /\/\*\*[\s\S]*?\*\//g
 const EMPTY_CATCH_RE = /catch\s*\(\w*\)\s*\{\s*\}/g
 
@@ -266,7 +264,6 @@ export function measureColor(content: string): ColorMeasure {
   const hasNoFlatness = (content.match(GENERIC_RE) || []).length > 0 || (content.match(OPTIONAL_RE) || []).length > 0
   const hasVaried = TRY_RE.test(content) && CATCH_RE.test(content)
   const hasNoUniformity = !NESTED_TERNARY_RE.test(content)
-  const hasColorful = (content.match(DOC_COMMENT_RE) || []).length > 0
 
   if (content.length > 0) score += 5
   if (hasVibrant) score += 12
@@ -360,7 +357,6 @@ export function measureOptical(content: string): OpticalMeasure {
   const hasCorrectWavelength = TRY_RE.test(content) && CATCH_RE.test(content)
   const hasNoRefraction = (content.match(EMPTY_CATCH_RE) || []).length === 0
   const hasSharp = (content.match(DOC_COMMENT_RE) || []).length > 0
-  const hasNoRefract = (content.match(CONSOLE_RE) || []).length === 0
 
   if (content.length > 0) score += 5
   if (hasAccurate) score += 12
@@ -454,7 +450,6 @@ export function measureHarmony(content: string): HarmonyMeasure {
   const hasHarmonious = TRY_RE.test(content) && CATCH_RE.test(content)
   const hasComplete = (content.match(DOC_COMMENT_RE) || []).length > 0
   const hasNoMissing = !NESTED_TERNARY_RE.test(content)
-  const hasTranquil = (content.match(CONSOLE_RE) || []).length === 0
 
   if (content.length > 0) score += 5
   if (hasAesthetic) score += 12

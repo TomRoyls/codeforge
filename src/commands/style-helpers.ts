@@ -289,13 +289,13 @@ export function detectTrailingCommas(content: string): StyleChoice['trailingComm
   let opportunities = 0
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (trimmed.length === 0) continue
     if (trimmed.startsWith('//') || trimmed.startsWith('/*')) continue
 
     // A trailing comma: line ends with , and next line starts with ], }, or )
     if (i + 1 < lines.length) {
-      const nextTrimmed = lines[i + 1].trim()
+      const nextTrimmed = (lines[i + 1] ?? '').trim()
       if (/,\s*$/.test(trimmed) && /^[}\])]/.test(nextTrimmed)) {
         trailingCommaCount++
       }
@@ -337,15 +337,15 @@ export function detectBraceStyle(content: string): StyleChoice['braceStyle'] {
     const line = lines[idx]
 
     // Same-line: `) {` or `else {` or `class Name {` or `function name() {`
-    if (/\)\s*\{/.test(line) || /else\s*\{/.test(line) || /\bclass\s+\w+\s*\{/.test(line)) {
+    if (/\)\s*\{/.test(line ?? '') || /else\s*\{/.test(line ?? '') || /\bclass\s+\w+\s*\{/.test(line ?? '')) {
       sameLine++
     }
 
     // Next-line: line ends with `)` and next line starts with `{`
     if (idx + 1 < lines.length) {
-      const trimmedCurrent = line.trim()
-      const trimmedNext = lines[idx + 1].trim()
-      if (trimmedCurrent.endsWith(')') && trimmedNext === '{') {
+      const trimmedCurrent = line?.trim()
+      const trimmedNext = (lines[idx + 1] ?? '').trim()
+      if (trimmedCurrent?.endsWith(')') && trimmedNext === '{') {
         nextLine++
       }
     }

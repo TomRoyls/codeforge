@@ -714,7 +714,7 @@ export function analyzeAmberShore(waves: AmberWave[], dirPath: string): AmberSho
 export function generateRecommendations(
   waves: AmberWave[],
   shores: AmberShore[],
-  ocean: AmberTideResult['ocean'],
+  _ocean: AmberTideResult['ocean'],
   stats: AmberTideResult['stats'],
 ): string[] {
   const recs: string[] = []

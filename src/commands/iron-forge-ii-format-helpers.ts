@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'pure-steel': best, 'perfect-temper': best, 'titan-anvil': best,
     'master-rhythm': best, 'unbreakable-chain': best, 'masterwork-iron': best,
     'grand-forge': best, 'white-hot': best, 'master-blacksmith': best,

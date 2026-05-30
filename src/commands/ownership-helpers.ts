@@ -123,7 +123,7 @@ export function computeFileOwnership(
       file,
       lines: totalLines,
       owners,
-      primaryOwner: owners[0].name,
+      primaryOwner: owners[0]?.name ?? '',
     })
   }
 
@@ -287,8 +287,8 @@ export function findKnowledgeMonopolies(
   for (const fo of fileOwnership) {
     if (fo.owners.length === 0) continue
     const top = fo.owners[0]
-    if (top.percentage >= 80) {
-      monopolies.push(`${fo.file} (${top.name}: ${top.percentage}%)`)
+    if ((top?.percentage ?? 0) >= 80) {
+      monopolies.push(`${fo.file} (${top?.name}: ${top?.percentage}%)`)
     }
   }
 

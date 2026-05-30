@@ -1,4 +1,5 @@
 import { basename, extname } from 'node:path'
+import { formatBytesCompact as formatBytes } from '../utils/format-utils.js'
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -157,7 +158,7 @@ export function classifyFile(filePath: string, content: string): FileClassificat
 }
 
 function resolveCategory(
-  filePath: string,
+  _filePath: string,
   fileName: string,
   ext: string,
   lower: string,
@@ -263,7 +264,7 @@ function resolveCategory(
   return { category: 'unknown', subcategory: 'unclassified', role: 'Unclassified File' }
 }
 
-function isTestFile(lower: string, fileName: string): boolean {
+function isTestFile(lower: string, _fileName: string): boolean {
   return /\.(?:test|spec)\.[jt]sx?$/.test(lower) ||
     lower.includes('/test/') ||
     lower.includes('/tests/') ||
@@ -348,7 +349,7 @@ export function buildCategories(files: FileClassification[]): ClassCategory[] {
 
     const totalSize = group.reduce((s, f) => s + f.size, 0)
     const totalLines = group.reduce((s, f) => s + f.lines, 0)
-    const meta = CATEGORY_META[name]
+    const meta = CATEGORY_META[name]!
 
     categories.push({
       count: group.length,
@@ -385,13 +386,13 @@ export function computeClassificationStats(categories: ClassCategory[]): Classif
 
   const sorted = [...categories].sort((a, b) => b.count - a.count)
   const largestCategory = sorted[0]?.name ?? ''
-  const smallestCategory = sorted.length > 0 ? sorted[sorted.length - 1].name : ''
+  const smallestCategory = sorted.length > 0 ? sorted[sorted.length - 1]!.name : ''
 
   return {
     categoryCounts,
     essentialFiles,
     largestCategory,
-    smallestCategory,
+    smallestCategory: smallestCategory ?? '',
     totalFiles,
     totalLines,
     totalSize,
@@ -465,19 +466,6 @@ export function buildClassificationResult(
   return { categories, files: classified, recommendations, stats }
 }
 
-// ─── formatBytes ────────────────────────────────────────
-
-/**
- * @example
- * const text = formatBytes(1024)
- * console.log(text)
- */
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`
-}
-
 // ─── sourceBaseName ─────────────────────────────────────
 
 /**
@@ -488,3 +476,5 @@ export function formatBytes(bytes: number): string {
 export function sourceBaseName(filePath: string): string {
   return basename(filePath).replace(/\.ts$/, '')
 }
+
+export { formatBytes }

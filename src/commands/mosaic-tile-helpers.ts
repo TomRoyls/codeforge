@@ -138,8 +138,9 @@ export function analyzeEdges(content: string, _filePath: string, _allFiles: stri
 
   const importMatches = content.matchAll(/import\s+.*?from\s+['"](.+?)['"]/g) || []
   for (const m of importMatches) {
-    const target = m[1]
-    const hasTypes = /import\s+type\s/.test(content.slice(m.index, m.index + 200))
+    const target = m[1] ?? ''
+    const idx = m.index ?? 0
+    const hasTypes = /import\s+type\s/.test(content.slice(idx, idx + 200))
     edges.push({
       direction: 'top',
       type: 'imports',
@@ -151,11 +152,12 @@ export function analyzeEdges(content: string, _filePath: string, _allFiles: stri
 
   const exportMatches = content.matchAll(/export\s+(?:function|class|const|interface|type)\s+(\w+)/g) || []
   for (const m of exportMatches) {
-    const hasDocs = content.slice(Math.max(0, m.index - 50), m.index).includes('/**')
+    const idx = m.index ?? 0
+    const hasDocs = content.slice(Math.max(0, idx - 50), idx).includes('/**')
     edges.push({
       direction: 'bottom',
       type: 'exports',
-      target: m[1],
+      target: m[1] ?? '',
       quality: hasDocs ? 'clean' : 'chipped',
       groutWidth: 1,
     })
@@ -166,7 +168,7 @@ export function analyzeEdges(content: string, _filePath: string, _allFiles: stri
     edges.push({
       direction: 'left',
       type: 'inherits',
-      target: m[1],
+      target: m[1] ?? '',
       quality: 'clean',
       groutWidth: 1,
     })
@@ -177,7 +179,7 @@ export function analyzeEdges(content: string, _filePath: string, _allFiles: stri
     edges.push({
       direction: 'right',
       type: 'implements',
-      target: m[1],
+      target: m[1] ?? '',
       quality: 'clean',
       groutWidth: 1,
     })
@@ -274,7 +276,7 @@ export function detectTileIssues(content: string, _filePath: string): TileIssue[
 
 // ─── computeFitScore ────────────────────────────────────────────────────────────
 
-function computeFitScore(edges: TileEdge[], content: string): number {
+function computeFitScore(edges: TileEdge[], _content: string): number {
   let score = 40
   const imports = edges.filter(e => e.type === 'imports').length
   const exports = edges.filter(e => e.type === 'exports').length
@@ -599,19 +601,23 @@ export function buildMosaicTileResult(
   const tiles: Tile[] = []
 
   for (let i = 0; i < files.length; i++) {
-    tiles.push(analyzeTile(contents[i], files[i], files))
+    tiles.push(analyzeTile(contents[i] ?? '', files[i] ?? '', files))
   }
 
   const patterns = findTilePatterns(tiles)
 
   const grout: GroutAnalysis[] = []
   for (let i = 0; i < tiles.length; i++) {
+    const tileA = tiles[i]
+    if (!tileA) continue
     for (let j = i + 1; j < tiles.length; j++) {
-      const hasConnection = tiles[i].edges.some(e =>
-        tiles[j].edges.some(e2 => e.target === e2.target)
+      const tileB = tiles[j]
+      if (!tileB) continue
+      const hasConnection = tileA.edges.some(e =>
+        tileB.edges.some(e2 => e.target === e2.target)
       )
       if (hasConnection) {
-        grout.push(analyzeGrout(tiles[i], tiles[j]))
+        grout.push(analyzeGrout(tileA, tileB))
       }
     }
   }

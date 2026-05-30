@@ -822,22 +822,22 @@ export function buildQuicksilverFlowResult(
   }
 
   const bestDrop = totalFiles > 0
-    ? drops.reduce((best, d) => (d.qualityScore > best.qualityScore ? d : best), drops[0]).file
+    ? drops.reduce((best, d) => (d.qualityScore > best.qualityScore ? d : best), drops[0] as typeof drops[number]).file
     : ''
   const mostFluid = totalFiles > 0
-    ? drops.reduce((best, d) => (d.fluidity > best.fluidity ? d : best), drops[0]).file
+    ? drops.reduce((best, d) => (d.fluidity > best.fluidity ? d : best), drops[0] as typeof drops[number]).file
     : ''
   const mostAdaptable = totalFiles > 0
-    ? drops.reduce((best, d) => (d.adaptability > best.adaptability ? d : best), drops[0]).file
+    ? drops.reduce((best, d) => (d.adaptability > best.adaptability ? d : best), drops[0] as typeof drops[number]).file
     : ''
   const fastest = totalFiles > 0
-    ? drops.reduce((best, d) => (d.mercurySpeed > best.mercurySpeed ? d : best), drops[0]).file
+    ? drops.reduce((best, d) => (d.mercurySpeed > best.mercurySpeed ? d : best), drops[0] as typeof drops[number]).file
     : ''
   const bestTransitions = totalFiles > 0
-    ? drops.reduce((best, d) => (d.stateTransitions > best.stateTransitions ? d : best), drops[0]).file
+    ? drops.reduce((best, d) => (d.stateTransitions > best.stateTransitions ? d : best), drops[0] as typeof drops[number]).file
     : ''
   const mostCohesive = totalFiles > 0
-    ? drops.reduce((best, d) => (d.surfaceTension > best.surfaceTension ? d : best), drops[0]).file
+    ? drops.reduce((best, d) => (d.surfaceTension > best.surfaceTension ? d : best), drops[0] as typeof drops[number]).file
     : ''
 
   const stats: QuicksilverFlowStats = {

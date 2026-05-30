@@ -132,7 +132,7 @@ export function discoverModules(files: string[], contents: string[]): ModuleDefi
 
     const exportMatches = content.matchAll(/export\s+(?:function|class|const|interface|type|enum)\s+(\w+)/g)
     for (const match of exportMatches) {
-      entry.exports.push(match[1]!)
+      entry.exports.push(match[1] ?? '')
     }
   }
 
@@ -161,7 +161,6 @@ export function discoverModules(files: string[], contents: string[]): ModuleDefi
  */
 export function inferBoundaryRules(modules: ModuleDefinition[]): BoundaryRule[] {
   const rules: BoundaryRule[] = []
-  const names = modules.map((m) => m.name)
 
   for (const source of modules) {
     for (const target of modules) {
@@ -291,14 +290,13 @@ export function getModuleForFile(filePath: string): string {
  * checkBoundaries(modules, files, contents, rules) // [BoundaryCheck, ...]
  */
 export function checkBoundaries(
-  modules: ModuleDefinition[],
+  _modules: ModuleDefinition[],
   files: string[],
   contents: string[],
   rules: BoundaryRule[],
 ): BoundaryCheck[] {
   const checks: BoundaryCheck[] = []
   const fileSet = new Set(files)
-  const moduleNames = new Set(modules.map((m) => m.name))
 
   for (let i = 0; i < files.length; i++) {
     const filePath = files[i]!
@@ -478,7 +476,7 @@ export function generateRecommendations(
 export function buildBoundariesResult(
   files: string[],
   contents: string[],
-  options?: BoundariesOptions,
+  _options?: BoundariesOptions,
 ): BoundariesResult {
   const modules = discoverModules(files, contents)
   const rules = inferBoundaryRules(modules)

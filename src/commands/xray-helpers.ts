@@ -302,7 +302,7 @@ export function detectHiddenDependencies(files: string[], contents: string[]): H
     const content = contents[i] ?? ''
     const matches = content.matchAll(/process\.env\.(\w+)/g)
     for (const m of matches) {
-      const varName = m[1]!
+      const varName = m[1] ?? ''
       const fileList = envVars.get(varName) ?? []
       if (!fileList.includes(files[i]!)) fileList.push(files[i]!)
       envVars.set(varName, fileList)
@@ -397,9 +397,9 @@ export function computeStructuralHealth(
  */
 export function generateXrayRecommendations(
   stats: XrayStats,
-  contracts: ImplicitContract[],
+  _contracts: ImplicitContract[],
   duplications: HiddenDuplication[],
-  deps: HiddenDependency[],
+  _deps: HiddenDependency[],
 ): string[] {
   const recs: string[] = []
 

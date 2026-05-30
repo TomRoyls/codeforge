@@ -1,18 +1,10 @@
 import chalk from 'chalk'
 
-import type { DebtCategory, DebtItem, DebtScore, RepaymentAction } from './techdebt-helpers.js'
+import type { DebtScore } from './techdebt-helpers.js'
+
+import { padRight, padLeft } from '../utils/format-utils.js'
 
 // ─── Utility ──────────────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 // ─── Debt meter ───────────────────────────────────────────
 
@@ -29,13 +21,6 @@ export function formatDebtMeter(score: number): string {
   const barWidth = 30
   const filled = Math.round((score / 100) * barWidth)
   const empty = barWidth - filled
-
-  let color: (s: string) => string
-  if (score <= 20) color = chalk.green
-  else if (score <= 35) color = chalk.green
-  else if (score <= 55) color = chalk.yellow
-    else if (score <= 75) color = chalk.rgb(255, 165, 0)
-  else color = chalk.red
 
   const filledBar = '█'.repeat(filled)
   const emptyBar = '░'.repeat(empty)

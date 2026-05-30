@@ -824,15 +824,15 @@ export function buildGearTrainResult(
     overallEfficiency,
     mechanicGrade: classifyMechanicGrade(overallEfficiency),
     bestMeshed: gears.length > 0
-      ? gears.reduce((a, b) => b.meshQuality > a.meshQuality ? b : a, gears[0]).file : 'none',
+      ? gears.reduce((a, b) => b.meshQuality > a.meshQuality ? b : a, gears[0] as typeof gears[number]).file : 'none',
     worstMeshed: gears.length > 0
-      ? gears.reduce((a, b) => b.meshQuality < a.meshQuality ? b : a, gears[0]).file : 'none',
+      ? gears.reduce((a, b) => b.meshQuality < a.meshQuality ? b : a, gears[0] as typeof gears[number]).file : 'none',
     mostEfficient: gears.length > 0
-      ? gears.reduce((a, b) => b.transmission.efficiency > a.transmission.efficiency ? b : a, gears[0]).file : 'none',
+      ? gears.reduce((a, b) => b.transmission.efficiency > a.transmission.efficiency ? b : a, gears[0] as typeof gears[number]).file : 'none',
     mostWorn: gears.length > 0
-      ? gears.reduce((a, b) => b.wear > a.wear ? b : a, gears[0]).file : 'none',
+      ? gears.reduce((a, b) => b.wear > a.wear ? b : a, gears[0] as typeof gears[number]).file : 'none',
     mostComplex: gears.length > 0
-      ? gears.reduce((a, b) => b.gearRatio > a.gearRatio ? b : a, gears[0]).file : 'none',
+      ? gears.reduce((a, b) => b.gearRatio > a.gearRatio ? b : a, gears[0] as typeof gears[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(gears, gearboxes, drivetrain, stats)

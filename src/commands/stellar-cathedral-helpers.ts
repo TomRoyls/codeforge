@@ -1,7 +1,6 @@
 // ─── Interfaces ────────────────────────────────────────────
 
-import { resolve, dirname } from 'node:path'
-import { readFile } from 'node:fs/promises'
+import {dirname} from 'node:path'
 import fg from 'fast-glob'
 
 export type Pillar = 'quantum-pillar' | 'stellar-column' | 'proper-support' | 'crumbling-base' | 'collapsed-pillar' | 'no-architecture'

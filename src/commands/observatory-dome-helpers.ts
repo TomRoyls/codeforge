@@ -111,8 +111,6 @@ export interface ObservatoryDomeResult {
 
 const EXPORT_RE = /export\s+(?:default\s+)?(?:function|class|const|let|interface|type)/g
 const IMPORT_RE = /import\s+.*?from\s+['"]([^'"]+)['"]/g
-const FUNCTION_RE = /(?:export\s+)?(?:async\s+)?function\s+\w+/g
-const CLASS_RE = /(?:export\s+)?(?:abstract\s+)?class\s+\w+/g
 const INTERFACE_RE = /(?:export\s+)?interface\s+\w+/g
 const TYPE_RE = /(?:export\s+)?type\s+\w+/g
 const TODO_RE = /\/\/\s*(TODO|FIXME|HACK|XXX)/gi
@@ -249,8 +247,6 @@ export function analyzeCelestialBody(content: string, filePath: string, imports:
   const codeLines = lines.filter(l => l.trim().length > 0)
 
   const exports = (content.match(EXPORT_RE) ?? []).length
-  const functions = (content.match(FUNCTION_RE) ?? []).length
-  const classes = (content.match(CLASS_RE) ?? []).length
   const interfaces = (content.match(INTERFACE_RE) ?? []).length
   const types = (content.match(TYPE_RE) ?? []).length
   const todos = (content.match(TODO_RE) ?? []).length
@@ -519,7 +515,7 @@ function findGravitationalCenter(bodies: CelestialBody[]): string {
     const score = b.gravity + b.influencedBy.length * 3
     if (score > maxGravity) { maxGravity = score; best = b }
   }
-  return best.file
+  return best?.file ?? ''
 }
 
 // ─── Cosmic Map ──────────────────────────────────────────────────────────────
@@ -617,7 +613,7 @@ export function identifySupernovae(bodies: CelestialBody[]): CelestialBody[] {
  * generateObservatoryDomeRecommendations(bodies, constellations, stats) // string[]
  */
 export function generateObservatoryDomeRecommendations(
-  bodies: CelestialBody[],
+  _bodies: CelestialBody[],
   _constellations: Constellation[],
   stats: ObservatoryDomeStats,
 ): string[] {
@@ -656,9 +652,9 @@ export function buildObservatoryDomeResult(
 
   const bodies: CelestialBody[] = []
   for (let i = 0; i < files.length; i++) {
-    const fileImports = importMap.get(files[i]) ?? []
-    const fileDependents = dependentMap.get(files[i]) ?? []
-    bodies.push(analyzeCelestialBody(contents[i], files[i], fileImports, fileDependents))
+    const fileImports = importMap.get(files[i] ?? '') ?? []
+    const fileDependents = dependentMap.get(files[i] ?? '') ?? []
+    bodies.push(analyzeCelestialBody(contents[i] ?? '',files[i] ?? '', fileImports, fileDependents))
   }
 
   const dirMap = new Map<string, CelestialBody[]>()
@@ -683,12 +679,12 @@ export function buildObservatoryDomeResult(
 function buildImportMap(files: string[], contents: string[]): Map<string, string[]> {
   const map = new Map<string, string[]>()
   for (let i = 0; i < files.length; i++) {
-    const matches = contents[i].matchAll(IMPORT_RE)
+    const matches = (contents[i] ?? '').matchAll(IMPORT_RE)
     const importedPaths: string[] = []
     for (const m of matches) {
-      importedPaths.push(m[1])
+if (m[1] !== undefined) importedPaths.push(m[1])
     }
-    map.set(files[i], importedPaths)
+    map.set(files[i] ?? '', importedPaths)
   }
   return map
 }
@@ -734,14 +730,14 @@ function computeStats(bodies: CelestialBody[], constellations: Constellation[], 
   const dominantBodyType = totalFiles > 0 ? findDominant(bodies.map(b => b.bodyType)) : 'asteroid'
 
   const sortedByLum = [...bodies].sort((a, b) => b.luminosity - a.luminosity)
-  const brightestBody = sortedByLum.length > 0 ? sortedByLum[0].file : 'none'
-  const dimmestBody = sortedByLum.length > 0 ? sortedByLum[sortedByLum.length - 1].file : 'none'
+  const brightestBody = sortedByLum.length > 0 ? (sortedByLum[0] ?? { file: '' }).file : 'none'
+  const dimmestBody = sortedByLum.length > 0 ? sortedByLum[sortedByLum.length - 1]?.file : 'none'
 
   const sortedByMass = [...bodies].sort((a, b) => b.mass - a.mass)
-  const heaviestBody = sortedByMass.length > 0 ? sortedByMass[0].file : 'none'
+  const heaviestBody = sortedByMass.length > 0 ? (sortedByMass[0] ?? { file: '' }).file : 'none'
 
   const sortedByInfluence = [...bodies].sort((a, b) => b.influencedBy.length - a.influencedBy.length)
-  const mostInfluential = sortedByInfluence.length > 0 ? sortedByInfluence[0].file : 'none'
+  const mostInfluential = sortedByInfluence.length > 0 ? (sortedByInfluence[0] ?? { file: '' }).file : 'none'
 
   const gravitationalCenter = findGlobalGravitationalCenter(bodies)
 
@@ -768,7 +764,7 @@ function computeStats(bodies: CelestialBody[], constellations: Constellation[], 
     dominantSpectralType,
     dominantBodyType,
     brightestBody,
-    dimmestBody,
+    dimmestBody: dimmestBody ?? '',
     heaviestBody,
     mostInfluential,
     gravitationalCenter,
@@ -786,5 +782,5 @@ function findGlobalGravitationalCenter(bodies: CelestialBody[]): string {
     const score = b.gravity + b.influencedBy.length * 5 + b.luminosity
     if (score > maxScore) { maxScore = score; best = b }
   }
-  return best.file
+  return best?.file ?? ''
 }

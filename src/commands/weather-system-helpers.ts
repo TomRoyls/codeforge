@@ -348,7 +348,6 @@ function computeUvIndex(exports: number, anys: number, lines: number): number {
 }
 
 function computeForecast(pressure: number, visibility: number, temperature: number): Forecast {
-  const comfort = (visibility + (100 - pressure)) / 2
   let trend: Forecast['trend'] = 'stable'
   let shortTerm = 'Conditions holding steady'
   let confidence = 60
@@ -500,7 +499,7 @@ function buildZoneForecast(avgPressure: number, avgVisibility: number, dominantW
  * @example
  * computeGlobalForecast(conditions, zones) // GlobalForecast
  */
-export function computeGlobalForecast(conditions: AtmosphericCondition[], zones: WeatherZone[]): GlobalForecast {
+export function computeGlobalForecast(conditions: AtmosphericCondition[], _zones: WeatherZone[]): GlobalForecast {
   if (conditions.length === 0) {
     return {
       overallWeather: 'clear',
@@ -588,7 +587,7 @@ export function computeAirQualityIndex(conditions: AtmosphericCondition[]): numb
  * generateWeatherSystemRecommendations(conditions, zones, stats) // string[]
  */
 export function generateWeatherSystemRecommendations(
-  conditions: AtmosphericCondition[],
+  _conditions: AtmosphericCondition[],
   zones: WeatherZone[],
   stats: WeatherSystemStats,
 ): string[] {
@@ -624,7 +623,7 @@ export function buildWeatherSystemResult(
 ): WeatherSystemResult {
   const conditions: AtmosphericCondition[] = []
   for (let i = 0; i < files.length; i++) {
-    conditions.push(analyzeAtmosphericCondition(contents[i], files[i]))
+    conditions.push(analyzeAtmosphericCondition(contents[i] ?? '',files[i] ?? ''))
   }
 
   const dirMap = new Map<string, AtmosphericCondition[]>()
@@ -676,12 +675,12 @@ function computeWeatherSystemStats(conditions: AtmosphericCondition[], zones: We
   const climateGrade = globalForecast.climateGrade
 
   const sortedByComfort = [...conditions].sort((a, b) => b.comfort - a.comfort)
-  const bestWeather = sortedByComfort.length > 0 ? sortedByComfort[0].file : 'none'
-  const worstWeather = sortedByComfort.length > 0 ? sortedByComfort[sortedByComfort.length - 1].file : 'none'
+  const bestWeather = sortedByComfort.length > 0 ? (sortedByComfort[0] ?? { file: '' }).file : 'none'
+  const worstWeather = sortedByComfort.length > 0 ? sortedByComfort[sortedByComfort.length - 1]?.file : 'none'
 
   const sortedZones = [...zones].sort((a, b) => b.avgComfort - a.avgComfort)
-  const safestZone = sortedZones.length > 0 ? sortedZones[0].directory : 'none'
-  const riskiestZone = sortedZones.length > 0 ? sortedZones[sortedZones.length - 1].directory : 'none'
+  const safestZone = sortedZones.length > 0 ? (sortedZones[0] ?? { directory: '' }).directory : 'none'
+  const riskiestZone = sortedZones.length > 0 ? sortedZones[sortedZones.length - 1]?.directory : 'none'
 
   return {
     totalFiles,
@@ -705,8 +704,8 @@ function computeWeatherSystemStats(conditions: AtmosphericCondition[], zones: We
     stormRisk,
     climateGrade,
     bestWeather,
-    worstWeather,
+    worstWeather: worstWeather ?? '',
     safestZone,
-    riskiestZone,
+    riskiestZone: riskiestZone ?? '',
   }
 }

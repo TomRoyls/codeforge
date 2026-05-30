@@ -7,9 +7,6 @@ import ora from 'ora'
 import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildThunderAnvilResult,
-  type ForgedBlade,
-  type ForgeWorkshop,
-  type ThunderAnvilResult,
 } from './thunder-anvil-helpers.js'
 import { formatResultJson, formatResultTable } from './thunder-anvil-format-helpers.js'
 
@@ -84,7 +81,6 @@ export default class ThunderAnvil extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
 
     const spinner = ora('Lighting the forge...').start()
 

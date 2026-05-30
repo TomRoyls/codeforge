@@ -359,28 +359,37 @@ export function detectBinarySystems(files: string[], contents: string[]): Set<st
   const importMap = new Map<string, Set<string>>()
 
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    const content = contents[i]
+    if (!file || !content) continue
     const imports = new Set<string>()
-    const matches = contents[i].matchAll(/import\s+.*?from\s+['"]\.\/?([^'"]+)['"]/g) || []
+    const matches = content.matchAll(/import\s+.*?from\s+['"]\.\/?([^'"]+)['"]/g)
     for (const m of matches) {
-      const imported = m[1].replace(/\.(ts|js)$/, '')
+      const imported = (m[1] ?? '').replace(/\.(ts|js)$/, '')
       for (let j = 0; j < files.length; j++) {
-        const baseName = files[j].replace(/\.(ts|tsx|js|jsx)$/, '').split('/').pop() || ''
-        if (imported === baseName || files[j].includes(imported)) {
-          imports.add(files[j])
+        const otherFile = files[j]
+        if (!otherFile) continue
+        const baseName = otherFile.replace(/\.(ts|tsx|js|jsx)$/, '').split('/').pop() ?? ''
+        if (imported === baseName || otherFile.includes(imported)) {
+          imports.add(otherFile)
         }
       }
     }
-    importMap.set(files[i], imports)
+    importMap.set(file, imports)
   }
 
   for (let i = 0; i < files.length; i++) {
-    const importsI = importMap.get(files[i])
+    const fileI = files[i]
+    if (!fileI) continue
+    const importsI = importMap.get(fileI)
     if (!importsI) continue
     for (let j = i + 1; j < files.length; j++) {
-      const importsJ = importMap.get(files[j])
+      const fileJ = files[j]
+      if (!fileJ) continue
+      const importsJ = importMap.get(fileJ)
       if (!importsJ) continue
-      if (importsI.has(files[j]) && importsJ.has(files[i])) {
-        pairs.push(new Set([files[i], files[j]]))
+      if (importsI.has(fileJ) && importsJ.has(fileI)) {
+        pairs.push(new Set([fileI, fileJ]))
       }
     }
   }
@@ -400,10 +409,13 @@ export function identifyNebulae(files: string[], contents: string[]): Nebula[] {
   const dirMap = new Map<string, { files: string[]; contents: string[] }>()
 
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].split('/').slice(0, -1).join('/') || '.'
+    const file = files[i]
+    const content = contents[i]
+    if (!file || !content) continue
+    const dir = file.split('/').slice(0, -1).join('/') || '.'
     const group = dirMap.get(dir) || { files: [], contents: [] }
-    group.files.push(files[i])
-    group.contents.push(contents[i])
+    group.files.push(file)
+    group.contents.push(content)
     dirMap.set(dir, group)
   }
 
@@ -425,15 +437,15 @@ export function identifyNebulae(files: string[], contents: string[]): Nebula[] {
     if (hasAny && hasVar) {
       type = 'dark'
       description = 'Obscured by any types and var declarations'
-      obscures.push(...group.files.filter((_, idx) => /:\s*any\b/.test(group.contents[idx])))
+      obscures.push(...group.files.filter((_, idx) => /:\s*any\b/.test(group.contents[idx] ?? '')))
     } else if (hasOldPatterns) {
       type = 'planetary'
       description = 'Legacy patterns cloud modern understanding'
-      obscures.push(...group.files.filter((_, idx) => /\bvar\b|\barguments\b|\.prototype\./.test(group.contents[idx])))
+      obscures.push(...group.files.filter((_, idx) => /\bvar\b|\barguments\b|\.prototype\./.test(group.contents[idx] ?? '')))
     } else if (!hasDocs && avgBrightness < 50) {
       type = 'reflection'
       description = 'Clarity depends on surrounding code context'
-      obscures.push(...group.files.filter((_, idx) => !/\/\*\*/.test(group.contents[idx])))
+      obscures.push(...group.files.filter((_, idx) => !/\/\*\*/.test(group.contents[idx] ?? '')))
     } else {
       description = 'Internally active but external clarity varies'
     }
@@ -567,8 +579,9 @@ export function buildStarlightResult(
   const stellarFiles: StellarFile[] = []
 
   for (let i = 0; i < files.length; i++) {
-    const content = contents[i] || ''
-    const filePath = files[i]
+    const content = contents[i] ?? ''
+    const filePath = files[i] ?? ''
+    if (!filePath) continue
 
     const brightness = measureBrightness(content)
     const surfaceDetail = measureSurfaceDetail(content)
@@ -606,7 +619,9 @@ export function buildStarlightResult(
 
   const allFactors: LuminosityFactor[] = []
   for (let i = 0; i < files.length; i++) {
-    allFactors.push(...analyzeLuminosityFactors(contents[i] || '', files[i]))
+    const filePath = files[i] ?? ''
+    if (!filePath) continue
+    allFactors.push(...analyzeLuminosityFactors(contents[i] ?? '', filePath))
   }
 
   const nebulae = identifyNebulae(files, contents)
@@ -627,21 +642,21 @@ export function buildStarlightResult(
 
   const luminosityBuckets: Record<string, number> = { '0-20': 0, '21-40': 0, '41-60': 0, '61-80': 0, '81-100': 0 }
   for (const f of stellarFiles) {
-    if (f.luminosity <= 20) luminosityBuckets['0-20']++
-    else if (f.luminosity <= 40) luminosityBuckets['21-40']++
-    else if (f.luminosity <= 60) luminosityBuckets['41-60']++
-    else if (f.luminosity <= 80) luminosityBuckets['61-80']++
-    else luminosityBuckets['81-100']++
+    if (f.luminosity <= 20) luminosityBuckets['0-20'] = (luminosityBuckets['0-20'] ?? 0) + 1
+    else if (f.luminosity <= 40) luminosityBuckets['21-40'] = (luminosityBuckets['21-40'] ?? 0) + 1
+    else if (f.luminosity <= 60) luminosityBuckets['41-60'] = (luminosityBuckets['41-60'] ?? 0) + 1
+    else if (f.luminosity <= 80) luminosityBuckets['61-80'] = (luminosityBuckets['61-80'] ?? 0) + 1
+    else luminosityBuckets['81-100'] = (luminosityBuckets['81-100'] ?? 0) + 1
   }
 
   const spectralDist: Record<string, number> = { O: 0, B: 0, A: 0, F: 0, G: 0, K: 0, M: 0 }
   for (const f of stellarFiles) {
-    spectralDist[f.spectralType]++
+    spectralDist[f.spectralType] = (spectralDist[f.spectralType] ?? 0) + 1
   }
 
   const sorted = [...stellarFiles].sort((a, b) => b.luminosity - a.luminosity)
-  const brightestFile = sorted.length > 0 ? sorted[0].file : ''
-  const dimmestFile = sorted.length > 0 ? sorted[sorted.length - 1].file : ''
+  const brightestFile = sorted[0]?.file ?? ''
+  const dimmestFile = sorted[sorted.length - 1]?.file ?? ''
 
   const stats: StarlightStats = {
     totalFiles: stellarFiles.length,

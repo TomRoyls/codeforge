@@ -52,7 +52,7 @@ export function colorGrade(grade: string): string {
 
     'proper-lining': okay, 'proper-safe': okay, 'decent-wrap': okay,
     'proper-stone': okay, 'proper-lock': okay, 'proper-vault': okay,
-    'proper-vault': okay, 'decent-safe': okay, 'skilled-guardian': okay,
+    'decent-safe': okay, 'skilled-guardian': okay,
 
     'rough-cloth': poor, 'weak-lock': poor, 'thin-layer': poor,
     'cloudy-crystal': poor, 'sticky-latch': poor, 'basic-locker': poor,

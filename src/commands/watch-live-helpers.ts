@@ -1,4 +1,4 @@
-import { basename, extname } from 'node:path'
+import {extname} from 'node:path'
 
 // ─── Interfaces ──────────────────────────────────────────
 
@@ -170,7 +170,7 @@ export function computeWatchSummary(session: WatchSession): WatchSummary {
 export function debounce<T extends (...args: unknown[]) => void>(
   fn: T,
   delay: number,
-): { (args: Parameters<T>): void; cancel: () => void } {
+): { (...args: Parameters<T>): void; cancel: () => void } {
   let timer: ReturnType<typeof setTimeout> | null = null
 
   const debounced = (...args: Parameters<T>) => {

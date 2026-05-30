@@ -172,16 +172,12 @@ function countAbstractions(content: string): number {
   return ifaces + types + abstracts
 }
 
-/**
- * Count control flow branches
- * @example
- * countBranches('if (a) {} else if (b) {} switch(x) {}') // 3
- */
 function countBranches(content: string): number {
   const ifs = (content.match(/if\s*\(/g) || []).length
   const cases = (content.match(/case\s+/g) || []).length
   return ifs + cases
 }
+
 
 /**
  * Count comment lines
@@ -244,8 +240,6 @@ export function evaluateBlueprint(content: string, filePath: string, allFiles: s
   const functions = countFunctions(content)
   const abstractions = countAbstractions(content)
   const errorHandling = countErrorHandling(content)
-  const branches = countBranches(content)
-  const comments = countComments(content)
   const hasTypes = /:\s*\w+|interface\s|type\s+\w+/.test(content)
 
   const structuralScore = Math.max(0, Math.min(100, Math.round(
@@ -276,6 +270,8 @@ export function evaluateBlueprint(content: string, filePath: string, allFiles: s
 
   const hasReturnTypes = /\)\s*:\s*\w+/.test(content)
   const hasParams = /\(\s*\w+\s*:/.test(content)
+  const branches = countBranches(content)
+  const comments = countComments(content)
   const plumbing = Math.max(0, Math.min(100, Math.round(
     35 +
     (hasTypes ? 15 : 0) +
@@ -360,7 +356,7 @@ interface ContentMetrics {
  */
 export function detectStructuralIssues(
   content: string,
-  filePath: string,
+  _filePath: string,
   structure: StructureType,
   metrics: ContentMetrics,
 ): StructuralIssue[] {
@@ -450,10 +446,10 @@ export function detectStructuralIssues(
   const unusedImports = content.match(/import\s+.*from\s+['"].*['"]/g)
   const importNames = unusedImports?.flatMap(m => {
     const match = m.match(/import\s+\{([^}]+)\}/)
-    return match ? match[1].split(',').map(s => s.trim()) : []
+    return match ? match?.[1]?.split(',').map(s => s.trim()) : []
   }) || []
   const deadImports = importNames.filter(name => {
-    const identifier = name.replace(/\s+as\s+\w+/, '').trim()
+    const identifier = name?.replace(/\s+as\s+\w+/, '').trim()
     return identifier && !content.slice(content.indexOf('}') + 1).includes(identifier)
   })
   if (deadImports.length > 2) {
@@ -630,7 +626,7 @@ export function buildArchitectResult(
 ): ArchitectResult {
   const blueprints: Blueprint[] = []
   for (let i = 0; i < files.length; i++) {
-    blueprints.push(evaluateBlueprint(contents[i], files[i], files))
+    blueprints.push(evaluateBlueprint(contents[i] ?? '',files[i] ?? '', files))
   }
 
   const byDir = new Map<string, string[]>()

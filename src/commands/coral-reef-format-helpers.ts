@@ -45,7 +45,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'great-barrier': best, 'vibrant-colony': best, 'giant-polyp': best,
     'massive-reef': best, 'deep-current': best, 'barrier-reef': best,
     'pristine-reef': best, 'marine-biologist': best,
@@ -60,7 +60,6 @@ export function colorGrade(grade: string): string {
 
     'stressed-reef': poor, 'stressed-colony': poor, 'weak-polyp': poor,
     'encrusting': poor, 'weak-current': poor, 'patch-reef': poor,
-    'stressed-reef': poor, 'beachcomber': poor,
 
     'bleached-coral': worst, 'declining-colony': worst, 'fragile-polyp': worst,
     'fragile-framework': worst, 'stagnant': worst, 'dead-coral': worst,

@@ -669,7 +669,7 @@ export async function buildSapphireTideResult(
 export function generateRecommendations(
   waves: SapphireWave[],
   oceans: SapphireOcean[],
-  sea: SapphireTideResult['sea'],
+  _sea: SapphireTideResult['sea'],
   stats: SapphireTideResult['stats'],
 ): string[] {
   const recs: string[] = []

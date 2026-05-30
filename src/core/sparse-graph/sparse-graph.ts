@@ -182,10 +182,11 @@ class SparseGraph<V extends Vertex = Vertex> {
 
     const visited = new Set<V>();
     const queue: V[] = [start];
+    let _qi = 0;
     visited.add(start);
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
       callback(current);
 
       const neighbors = this._adjacency.get(current);
@@ -240,10 +241,11 @@ class SparseGraph<V extends Vertex = Vertex> {
     const visited = new Set<V>();
     const parent = new Map<V, V>();
     const queue: V[] = [from];
+    let _qi = 0;
     visited.add(from);
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
 
       if (current === to) {
         const path: V[] = [];

@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { WindmillSailResult, WindmillSail, MillComplex } from './windmill-sail-helpers.js'
+import type { WindmillSailResult, WindmillSail } from './windmill-sail-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

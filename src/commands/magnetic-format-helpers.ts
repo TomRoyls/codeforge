@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { MagneticResult, MagneticFile, MagneticConnection, FieldLine, MagneticPole, MagneticAnomaly, MagneticStats } from './magnetic-helpers.js'
+import type { MagneticResult, MagneticFile, MagneticPole, MagneticAnomaly, MagneticStats } from './magnetic-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────────
 

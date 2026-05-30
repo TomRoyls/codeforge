@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { RidgeCondition, PeakCondition, AmberPeak, AmberRidge, AmberSummitStats, AmberSummitResult } from './amber-summit-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorRidgeCondition(condition: RidgeCondition | string): string 
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatPeakTable(peak) */
 export function formatPeakTable(peak: AmberPeak): string {

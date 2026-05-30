@@ -58,7 +58,7 @@ export function colorGrade(grade: string): string {
     'drying-out': poor, 'clashing-pattern': poor, 'common-opal': poor,
     'proper-field': poor, 'faint-glow': poor, 'apprentice': poor,
 
-    'hazy-image': worst, 'barely-visible': worst, 'white-body': worst,
+    'hazy-image': worst, 'white-body': worst,
     'cracking': worst, 'random-mix': worst, 'potch': worst,
     'dry-bed': worst, 'barely-visible': worst, 'novice': worst,
 

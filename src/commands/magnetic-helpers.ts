@@ -122,15 +122,6 @@ function countImports(content: string): number {
 }
 
 /**
- * Count type references in content
- * @example
- * countTypeReferences(': number | string') // 2
- */
-function countTypeReferences(content: string): number {
-  return (content.match(/:\s*\w+/g) || []).length
-}
-
-/**
  * Compute directory distance between two file paths
  * @example
  * directoryDistance('src/a.ts', 'src/b.ts') // 0
@@ -158,13 +149,17 @@ export function mapConnections(files: string[], contents: string[]): MagneticCon
   const fileSet = new Set(files)
 
   for (let i = 0; i < files.length; i++) {
-    const imports = extractLocalImports(contents[i], files[i])
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const imports = extractLocalImports(content, file)
     for (const dep of imports) {
       const matchingFile = files.find(f => f.startsWith(dep) || dep.startsWith(f.replace(/\.\w+$/, '')))
       if (matchingFile && fileSet.has(matchingFile)) {
-        const dist = directoryDistance(files[i], matchingFile)
-        const sharedSymbols = (contents[i].match(/\w+/g) || []).filter(w =>
-          (contents[files.indexOf(matchingFile)] || '').includes(w)
+        const dist = directoryDistance(file, matchingFile)
+        const matchingContent = contents[files.indexOf(matchingFile)]
+        const sharedSymbols = (content.match(/\w+/g) || []).filter(w =>
+          (matchingContent ?? '').includes(w)
         ).length
         const strength = Math.min(100, Math.max(10, Math.round(sharedSymbols / 5)))
 
@@ -172,7 +167,7 @@ export function mapConnections(files: string[], contents: string[]): MagneticCon
         const isAnomalous = dist > 3 || !isExpected
 
         connections.push({
-          from: files[i],
+          from: file,
           to: matchingFile,
           type: 'attract',
           strength,
@@ -185,16 +180,20 @@ export function mapConnections(files: string[], contents: string[]): MagneticCon
   }
 
   for (let i = 0; i < files.length; i++) {
+    const fileA = files[i]
+    if (fileA === undefined) continue
     for (let j = i + 1; j < files.length; j++) {
+      const fileB = files[j]
+      if (fileB === undefined) continue
       const alreadyConnected = connections.some(
-        c => (c.from === files[i] && c.to === files[j]) || (c.from === files[j] && c.to === files[i])
+        c => (c.from === fileA && c.to === fileB) || (c.from === fileB && c.to === fileA)
       )
       if (!alreadyConnected) {
-        const dist = directoryDistance(files[i], files[j])
+        const dist = directoryDistance(fileA, fileB)
         if (dist <= 1) {
           connections.push({
-            from: files[i],
-            to: files[j],
+            from: fileA,
+            to: fileB,
             type: 'repel',
             strength: 10,
             distance: dist,
@@ -346,6 +345,7 @@ export function identifyPoles(files: MagneticFile[]): MagneticPole[] {
 
   for (let i = 0; i < Math.min(topCount, sorted.length); i++) {
     const f = sorted[i]
+    if (!f) continue
     if (f.fieldStrength < 20) continue
 
     const affectedBy = f.connections
@@ -563,9 +563,11 @@ export function buildMagneticResult(
 ): MagneticResult {
   const connections = mapConnections(files, contents)
 
-  const magneticFiles: MagneticFile[] = files.map((file, i) =>
-    measureMagneticField(contents[i], file, files, connections),
-  )
+  const magneticFiles: MagneticFile[] = files.map((file, i) => {
+    const content = contents[i]
+    if (content === undefined) return measureMagneticField('', file, files, connections)
+    return measureMagneticField(content, file, files, connections)
+  })
 
   const fieldLines = traceFieldLines(connections)
   const poles = identifyPoles(magneticFiles)

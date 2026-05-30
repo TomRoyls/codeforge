@@ -55,8 +55,9 @@ export class CentroidDecomposition {
     originalParent[0] = -1
     originalDepth[0] = 0
 
-    while (bfsQueue.length > 0) {
-      const node = bfsQueue.shift()!
+    let _qi = 0;
+    while (_qi < bfsQueue.length) {
+      const node = bfsQueue[_qi++]!
       for (let i = 0; i < this.adj[node]!.length; i++) {
         const child = this.adj[node]![i]!
         if (!visited[child]) {

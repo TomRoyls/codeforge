@@ -52,14 +52,14 @@ export function colorGrade(grade: string): string {
 
     'proper-aging': okay, 'proper-coating': okay, 'proper-flow': okay,
     'proper-mix': okay, 'proper-color': okay, 'proper-copper': okay,
-    'decent-workshop': okay, 'decent-workshop': okay, 'skilled-craftsman': okay,
+    'decent-workshop': okay, 'skilled-craftsman': okay,
 
     'premature-aging': poor, 'corroding-surface': poor, 'resistive-wire': poor,
     'weak-bond': poor, 'patchy-surface': poor, 'tarnished-metal': poor,
     'small-anvil': poor, 'rusty-shed': poor, 'apprentice': poor,
 
     'raw-copper': worst, 'rusting-metal': worst, 'insulated': worst,
-    'brittle-composite': worst, 'tarnished-metal': worst, 'raw-wire': worst,
+    'brittle-composite': worst, 'raw-wire': worst,
     'cold-hearth': worst, 'abandoned': worst, 'novice': worst,
 
     'no-patina': worst, 'no-resistance': worst, 'no-conductivity': worst,

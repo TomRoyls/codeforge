@@ -703,8 +703,8 @@ export function analyzeTowerFloor(levels: TowerLevel[], dirPath: string): TowerF
 
 /** @example generateRecommendations(levels, floors, campus, stats) returns string[] */
 export function generateRecommendations(
-  levels: TowerLevel[],
-  floors: TowerFloor[],
+  _levels: TowerLevel[],
+  _floors: TowerFloor[],
   campus: IvoryTowerResult['campus'],
   stats: IvoryTowerResult['stats'],
 ): string[] {

@@ -284,8 +284,6 @@ const hasStrictEq = (c: string) => has(/===/, c)
 const hasClass = (c: string) => has(/\bclass\b/, c)
 const hasTryCatch = (c: string) => has(/\btry\s*\{/, c)
 const hasOptional = (c: string) => has(/\?\s*:/, c)
-const hasNullishCoalescing = (c: string) => has(/\?\?/, c)
-const hasDefaultParam = (c: string) => has(/=\s*[^>]/, c)
 
 // ─── Measure Functions ─────────────────────────────────────────────
 

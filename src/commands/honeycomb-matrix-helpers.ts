@@ -184,7 +184,6 @@ const EXPORT_RE = /\bexport\b/g
 const IMPORT_RE = /\bimport\b/g
 const RETURN_RE = /\breturn\b/g
 const CONST_RE = /\bconst\b/g
-const LET_RE = /\blet\b/g
 const VAR_RE = /\bvar\b/g
 const IF_RE = /\bif\s*\(/g
 const ELSE_RE = /\belse\b/g
@@ -192,9 +191,6 @@ const FOR_RE = /\bfor\s*\(/g
 const WHILE_RE = /\bwhile\s*\(/g
 const TRY_RE = /\btry\s*\{/g
 const CATCH_RE = /\bcatch\b/g
-const FINALLY_RE = /\bfinally\b/g
-const THROW_RE = /\bthrow\b/g
-const ERROR_RE = /\bError\b/g
 const ANY_RE = /:\s*any\b/g
 const CONSOLE_RE = /\bconsole\.\w+/g
 const DEBUGGER_RE = /\bdebugger\b/g
@@ -206,7 +202,6 @@ const GENERIC_RE = /<\w+>/g
 const PRIVATE_RE = /\bprivate\b/g
 const PROTECTED_RE = /\bprotected\b/g
 const PUBLIC_RE = /\bpublic\b/g
-const STATIC_RE = /\bstatic\b/g
 
 // ─── measureStructure ───────────────────────────────────────────────────────
 
@@ -281,10 +276,8 @@ function returns(content: string): number {
 export function measureDensity(content: string): DensityMeasure {
   const functions = (content.match(FUNCTION_RE) ?? []).length
   const arrows = (content.match(ARROW_RE) ?? []).length
-  const classes = (content.match(CLASS_RE) ?? []).length
   const exports = (content.match(EXPORT_RE) ?? []).length
   const consts = (content.match(CONST_RE) ?? []).length
-  const lets = (content.match(LET_RE) ?? []).length
   const vars = (content.match(VAR_RE) ?? []).length
   const anys = (content.match(ANY_RE) ?? []).length
   const debuggers = (content.match(DEBUGGER_RE) ?? []).length
@@ -337,9 +330,7 @@ export function measureWall(content: string): WallMeasure {
   const privates = (content.match(PRIVATE_RE) ?? []).length
   const protecteds = (content.match(PROTECTED_RE) ?? []).length
   const publics = (content.match(PUBLIC_RE) ?? []).length
-  const statics = (content.match(STATIC_RE) ?? []).length
   const exports = (content.match(EXPORT_RE) ?? []).length
-  const imports = (content.match(IMPORT_RE) ?? []).length
   const anys = (content.match(ANY_RE) ?? []).length
   const debuggers = (content.match(DEBUGGER_RE) ?? []).length
   const tries = (content.match(TRY_RE) ?? []).length
@@ -509,7 +500,6 @@ export function measureHexagon(content: string): HexagonMeasure {
   const types = (content.match(TYPE_RE) ?? []).length
   const exports = (content.match(EXPORT_RE) ?? []).length
   const imports = (content.match(IMPORT_RE) ?? []).length
-  const consts = (content.match(CONST_RE) ?? []).length
   const vars = (content.match(VAR_RE) ?? []).length
   const anys = (content.match(ANY_RE) ?? []).length
   const totalFunctions = functions + arrows
@@ -668,8 +658,8 @@ export function analyzeHoneycombFrame(cells: HoneycombCell[], dirPath: string): 
  * generateRecommendations(cells, frames, apiary, stats) // string[]
  */
 export function generateRecommendations(
-  cells: HoneycombCell[],
-  frames: HoneycombFrame[],
+  _cells: HoneycombCell[],
+  _frames: HoneycombFrame[],
   apiary: HoneycombMatrixResult['apiary'],
   stats: HoneycombMatrixStats,
 ): string[] {
@@ -729,7 +719,7 @@ export function generateRecommendations(
 export function buildHoneycombMatrixResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): HoneycombMatrixResult {
   const cells = files.map((file, i) => analyzeHoneycombCell(contents[i] ?? '', file))
 

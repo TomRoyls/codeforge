@@ -156,7 +156,7 @@ export function extractCodons(content: string): Codon[] {
 
   const codonMap = new Map<string, { bases: string[]; count: number }>()
   for (let i = 0; i <= tokens.length - 3; i++) {
-    const trio = [tokens[i], tokens[i + 1], tokens[i + 2]]
+    const trio = [tokens[i], tokens[i + 1], tokens[i + 2]].filter((s): s is string => typeof s === 'string')
     const key = trio.join('|')
     const existing = codonMap.get(key)
     if (existing) {
@@ -436,7 +436,7 @@ export function generateRecommendations(
  * @example
  * buildDnaResult(['a.ts'], ['code'], {})
  */
-export function buildDnaResult(files: string[], contents: string[], options: Record<string, unknown>): DnaResult {
+export function buildDnaResult(files: string[], contents: string[], _options: Record<string, unknown>): DnaResult {
   if (files.length === 0) {
     const emptyStats: DnaStats = {
       totalStrands: 0, totalBasePairs: 0, totalCodons: 0, dominantSequence: 'none',
@@ -458,16 +458,16 @@ export function buildDnaResult(files: string[], contents: string[], options: Rec
     allBasePairs.push(...bp)
 
     const codons = extractCodons(content)
-    fileCodons.set(files[i], codons)
+    fileCodons.set(files[i] ?? '', codons)
     allCodons.push(...codons)
 
-    const strand = buildStrand(files[i], content, codons)
+    const strand = buildStrand(files[i] ?? '', content, codons)
     strands.push(strand)
   }
 
   const dominantSeq = identifyDominantSequence(allCodons)
 
-  const dominantStrand = strands.reduce((a, b) => a.length >= b.length ? a : b, strands[0])
+  const dominantStrand = strands.reduce((a, b) => a.length >= b.length ? a : b, strands[0] as typeof strands[number])
   for (const strand of strands) {
     strand.similarity = computeSimilarity(strand, dominantStrand)
   }

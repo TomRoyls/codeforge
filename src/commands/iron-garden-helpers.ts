@@ -756,7 +756,7 @@ export function analyzeIronPlot(blooms: IronBloom[], dirPath: string): IronPlot 
 export function generateRecommendations(
   blooms: IronBloom[],
   plots: IronPlot[],
-  estate: IronGardenResult['estate'],
+  _estate: IronGardenResult['estate'],
   stats: IronGardenResult['stats'],
 ): string[] {
   const recs: string[] = []

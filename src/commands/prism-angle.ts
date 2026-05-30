@@ -138,7 +138,7 @@ export default class PrismAngle extends Command {
           contents.push(content)
         } catch {
           // Skip unreadable files
-        },
+        }
       }),
     )
 

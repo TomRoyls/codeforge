@@ -48,7 +48,7 @@ export function colorGrade(grade: string): string {
 
     'deep-resonance': good, 'clear-tone': good, 'clean-chain': good,
     'clear-transmission': good, 'balanced-mix': good, 'resonant-chamber': good,
-    'concert-hall': good, 'excellent-sound': good, 'virtuoso': good,
+    'excellent-sound': good, 'virtuoso': good,
 
     'proper-echo': okay, 'proper-acoustics': okay, 'proper-ripple': okay,
     'proper-signal': okay, 'proper-equalization': okay, 'proper-well': okay,

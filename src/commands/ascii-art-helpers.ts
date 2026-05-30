@@ -255,7 +255,7 @@ export function renderText(text: string, charMap: CharMap): string[] {
   const chars = text.split('')
   const rendered = chars.map((c) => renderChar(c, charMap))
 
-  const height = rendered[0].length
+  const height = rendered[0]?.length ?? 0
   const lines: string[] = []
 
   for (let row = 0; row < height; row++) {

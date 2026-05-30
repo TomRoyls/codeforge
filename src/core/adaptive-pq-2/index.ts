@@ -1,6 +1,7 @@
 export class AdaptivePQ2<T> {
   private threshold: number
   private items: {priority: number, value: T}[] = []
+  private _head = 0
 
   constructor(threshold?: number) {
     this.threshold = threshold ?? 64
@@ -15,39 +16,45 @@ export class AdaptivePQ2<T> {
   }
 
   pop(): {priority: number, value: T} | undefined {
-    if (this.items.length === 0) {
+    if (this.items.length - this._head === 0) {
       return undefined
     }
 
     if (this.shouldUseHeap()) {
       return this.heapPop()
     } else {
-      return this.items.shift()
+      const result = this.items[this._head]!
+      this._head++
+      if (this._head > (this.items.length / 2)) {
+        this._compact()
+      }
+      return result
     }
   }
 
   peek(): {priority: number, value: T} | undefined {
-    if (this.items.length === 0) {
+    if (this.items.length - this._head === 0) {
       return undefined
     }
 
     if (this.shouldUseHeap()) {
       return this.items[0]
     } else {
-      return this.items[0]
+      return this.items[this._head]
     }
   }
 
   get size(): number {
-    return this.items.length
+    return this.items.length - this._head
   }
 
   isEmpty(): boolean {
-    return this.items.length === 0
+    return this.items.length - this._head === 0
   }
 
   clear(): void {
     this.items = []
+    this._head = 0
   }
 
   toArray(): {priority: number, value: T}[] {
@@ -67,7 +74,7 @@ export class AdaptivePQ2<T> {
 
       return sorted
     } else {
-      return [...this.items]
+      return this.items.slice(this._head)
     }
   }
 
@@ -77,7 +84,7 @@ export class AdaptivePQ2<T> {
 
   remove(value: T): boolean {
     const index = this.items.findIndex((item) => item.value === value)
-    if (index === -1) {
+    if (index === -1 || index < this._head) {
       return false
     }
 
@@ -92,7 +99,7 @@ export class AdaptivePQ2<T> {
 
   update(value: T, newPriority: number): boolean {
     const index = this.items.findIndex((item) => item.value === value)
-    if (index === -1) {
+    if (index === -1 || index < this._head) {
       return false
     }
 
@@ -118,18 +125,18 @@ export class AdaptivePQ2<T> {
 
   private sortedInsert(priority: number, value: T): void {
     let low = 0
-    let high = this.items.length
+    let high = this.items.length - this._head
 
     while (low < high) {
       const mid = Math.floor((low + high) / 2)
-      if (this.items[mid]!.priority < priority) {
+      if (this.items[mid + this._head]!.priority < priority) {
         low = mid + 1
       } else {
         high = mid
       }
     }
 
-    this.items.splice(low, 0, { priority, value })
+    this.items.splice(low + this._head, 0, { priority, value })
   }
 
   private heapPush(priority: number, value: T): void {
@@ -241,6 +248,13 @@ export class AdaptivePQ2<T> {
 
   private heapRight(index: number): number {
     return 2 * index + 2
+  }
+
+  private _compact(): void {
+    if (this._head > 0) {
+      this.items = this.items.slice(this._head)
+      this._head = 0
+    }
   }
 
   private heapSwap(arr: {priority: number, value: T}[], i: number, j: number): void {

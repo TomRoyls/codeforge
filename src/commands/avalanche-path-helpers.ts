@@ -786,15 +786,15 @@ export function buildAvalanchePathResult(
     overallRisk,
     patrollerGrade: classifyPatrollerGrade(overallRisk),
     mostStable: layers.length > 0
-      ? layers.reduce((a, b) => b.snowpackStability > a.snowpackStability ? b : a, layers[0]).file : 'none',
+      ? layers.reduce((a, b) => b.snowpackStability > a.snowpackStability ? b : a, layers[0] as typeof layers[number]).file : 'none',
     mostUnstable: layers.length > 0
-      ? layers.reduce((a, b) => b.snowpackStability < a.snowpackStability ? b : a, layers[0]).file : 'none',
+      ? layers.reduce((a, b) => b.snowpackStability < a.snowpackStability ? b : a, layers[0] as typeof layers[number]).file : 'none',
     mostSensitive: layers.length > 0
-      ? layers.reduce((a, b) => b.triggerSensitivity > a.triggerSensitivity ? b : a, layers[0]).file : 'none',
+      ? layers.reduce((a, b) => b.triggerSensitivity > a.triggerSensitivity ? b : a, layers[0] as typeof layers[number]).file : 'none',
     bestRescueReady: layers.length > 0
-      ? layers.reduce((a, b) => b.rescue.rescueReadiness > a.rescue.rescueReadiness ? b : a, layers[0]).file : 'none',
+      ? layers.reduce((a, b) => b.rescue.rescueReadiness > a.rescue.rescueReadiness ? b : a, layers[0] as typeof layers[number]).file : 'none',
     worstCascader: layers.length > 0
-      ? layers.reduce((a, b) => b.propagationSpeed > a.propagationSpeed ? b : a, layers[0]).file : 'none',
+      ? layers.reduce((a, b) => b.propagationSpeed > a.propagationSpeed ? b : a, layers[0] as typeof layers[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(layers, faces, mountain, stats)

@@ -50,7 +50,7 @@ export function formatRegionTree(region: AtlasRegion, prefix: string = '', isLas
   for (let i = 0; i < region.subregions.length; i++) {
     const child = region.subregions[i]
     const childIsLast = i === region.subregions.length - 1
-    lines.push(formatRegionTree(child, prefix + childPrefix, childIsLast))
+    if (child) lines.push(formatRegionTree(child, prefix + childPrefix, childIsLast))
   }
 
   return lines.join('\n')
@@ -63,7 +63,7 @@ export function formatFullTree(root: AtlasRegion): string {
   for (let i = 0; i < root.subregions.length; i++) {
     const child = root.subregions[i]
     const isLast = i === root.subregions.length - 1
-    lines.push(formatRegionTree(child, '', isLast))
+    if (child) lines.push(formatRegionTree(child, '', isLast))
   }
 
   return lines.join('\n')

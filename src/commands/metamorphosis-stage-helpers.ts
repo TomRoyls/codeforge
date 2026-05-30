@@ -207,12 +207,12 @@ export function classifyStage(content: string, filePath: string): StageName {
   const lines = content.split('\n').length
   if (lines === 0 || content.trim() === '') return 'egg'
 
-  if (scores.fossil >= 40) return 'fossil'
-  if (scores.egg >= 50) return 'egg'
-  if (scores.butterfly >= 60) return 'butterfly'
-  if (scores.chrysalis >= 40) return 'chrysalis'
-  if (scores.pupa >= 30) return 'pupa'
-  if (scores.larva >= 20) return 'larva'
+  if ((scores.fossil ?? 0) >= 40) return 'fossil'
+  if ((scores.egg ?? 0) >= 50) return 'egg'
+  if ((scores.butterfly ?? 0) >= 60) return 'butterfly'
+  if ((scores.chrysalis ?? 0) >= 40) return 'chrysalis'
+  if ((scores.pupa ?? 0) >= 30) return 'pupa'
+  if ((scores.larva ?? 0) >= 20) return 'larva'
 
   const exportCount = (content.match(/export\s+/g) || []).length
   const hasDocs = /\/\*\*/.test(content)
@@ -281,10 +281,10 @@ export function predictNextStage(stage: StageName, maturity: number, _content: s
   }
   if (stage === 'fossil') return null
   if (maturity >= 50 && idx < STAGE_ORDER.length - 1) {
-    return STAGE_ORDER[idx + 1]
+    return STAGE_ORDER[idx + 1] ?? null
   }
   if (idx < STAGE_ORDER.length - 1) {
-    return STAGE_ORDER[idx + 1]
+    return STAGE_ORDER[idx + 1] ?? null
   }
   return null
 }
@@ -503,8 +503,8 @@ export function computeTransitionVelocity(stages: LifecycleStage[], transitions:
  * generateRecommendations(stages, transitions, maturity, stats) // string[]
  */
 export function generateRecommendations(
-  stages: LifecycleStage[],
-  transitions: StageTransition[],
+  _stages: LifecycleStage[],
+  _transitions: StageTransition[],
   maturity: CodebaseMaturity,
   stats: MetamorphosisStageStats,
 ): string[] {
@@ -566,18 +566,18 @@ export function buildMetamorphosisStageResult(
   for (let i = 0; i < files.length; i++) {
     const content = contents[i]
     const filePath = files[i]
-    const indicators = identifyIndicators(content, filePath)
-    const stage = classifyStage(content, filePath)
-    const maturity = computeMaturity(content, stage)
+    const indicators = identifyIndicators(content ?? '',filePath ?? '')
+    const stage = classifyStage(content ?? '',filePath ?? '')
+    const maturity = computeMaturity(content ?? '', stage)
     const stageProgress = computeStageProgress(indicators)
-    const nextStage = predictNextStage(stage, maturity, content)
+    const nextStage = predictNextStage(stage, maturity, content ?? '')
     const blockers = identifyBlockersForFile(stage, indicators)
     const readiness = computeReadiness(stage, maturity, blockers)
     const stuck = isStuck(stage, maturity, indicators)
     const timeInStage = estimateTimeInStage(stage, maturity)
 
     stages.push({
-      file: filePath,
+      file: filePath ?? '',
       stage,
       maturity,
       stageProgress,

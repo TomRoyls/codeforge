@@ -124,10 +124,6 @@ const CONCERN_KEYS: (keyof SpectrumMeasure)[] = [
 export function measureConcern(content: string, concern: keyof SpectrumMeasure): number {
   let score = 0
   const lines = content.split('\n')
-  const codeLines = lines.filter(l => {
-    const t = l.trim()
-    return t.length > 0 && !t.startsWith('//') && !t.startsWith('*')
-  })
 
   switch (concern) {
     case 'business': {
@@ -456,7 +452,7 @@ export function analyzeSpectrumReading(bands: SpectralBand[], dirPath: string): 
  * generateRecommendations(bands, readings, stats) // string[]
  */
 export function generateRecommendations(
-  bands: SpectralBand[],
+  _bands: SpectralBand[],
   readings: SpectrumReading[],
   stats: PrismSpectrumStats,
 ): string[] {
@@ -608,17 +604,17 @@ export function buildPrismSpectrumResult(
     dominantConcern,
     spectroscopistGrade: classifySpectroscopistGrade(avgPurity),
     purestFile: bands.length > 0
-      ? bands.reduce((p, b) => b.spectralPurity > p.spectralPurity ? b : p, bands[0]).file : 'none',
+      ? bands.reduce((p, b) => b.spectralPurity > p.spectralPurity ? b : p, bands[0] as typeof bands[number]).file : 'none',
     mostContaminated: bands.length > 0
-      ? bands.reduce((c, b) => b.crossContamination.totalCrossContamination > c.crossContamination.totalCrossContamination ? b : c, bands[0]).file : 'none',
+      ? bands.reduce((c, b) => b.crossContamination.totalCrossContamination > c.crossContamination.totalCrossContamination ? b : c, bands[0] as typeof bands[number]).file : 'none',
     mostMonochromatic: bands.length > 0
-      ? bands.reduce((m, b) => b.concernCount < m.concernCount ? b : m, bands[0]).file : 'none',
+      ? bands.reduce((m, b) => b.concernCount < m.concernCount ? b : m, bands[0] as typeof bands[number]).file : 'none',
     mostWhiteLight: bands.length > 0
-      ? bands.reduce((w, b) => b.concernCount > w.concernCount ? b : w, bands[0]).file : 'none',
+      ? bands.reduce((w, b) => b.concernCount > w.concernCount ? b : w, bands[0] as typeof bands[number]).file : 'none',
     cleanestReading: readings.length > 0
-      ? readings.reduce((c, r) => r.separationQuality > c.separationQuality ? r : c, readings[0]).directory : 'none',
+      ? readings.reduce((c, r) => r.separationQuality > c.separationQuality ? r : c, readings[0] as typeof readings[number]).directory : 'none',
     dirtiestReading: readings.length > 0
-      ? readings.reduce((d, r) => r.separationQuality < d.separationQuality ? r : d, readings[0]).directory : 'none',
+      ? readings.reduce((d, r) => r.separationQuality < d.separationQuality ? r : d, readings[0] as typeof readings[number]).directory : 'none',
   }
 
   const recommendations = generateRecommendations(bands, readings, stats)

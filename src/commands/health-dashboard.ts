@@ -110,7 +110,6 @@ export default class HealthDashboard extends Command {
         })
       : discoveredFiles
 
-    const filePaths = filteredFiles.map((f) => f.absolutePath)
     const fileNames = filteredFiles.map((f) => f.path)
 
     const contents: Record<string, string> = {}

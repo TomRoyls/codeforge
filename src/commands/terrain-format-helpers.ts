@@ -56,7 +56,7 @@ export function getDangerColor(level: DangerLevel): (t: string) => string {
 export function getElevationChar(elevation: number): string {
   if (elevation >= 75) return ELEVATION_CHARS[3]!
   if (elevation >= 50) return ELEVATION_CHARS[2]!
-  if (elevation >= 25) return ELEVATION_CHARS[1]!
+  if (elevation >= 25) return ELEVATION_CHARS[1] ?? ''
   return ELEVATION_CHARS[0]!
 }
 

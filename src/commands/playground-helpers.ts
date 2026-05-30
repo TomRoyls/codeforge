@@ -217,18 +217,19 @@ export function extractFunctions(content: string): FunctionInfo[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
 
     const fnMatch = line.match(
       /(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)/,
     )
     if (fnMatch) {
-      const params = fnMatch[2].split(',').filter((p) => p.trim().length > 0).length
+      const params = (fnMatch[2] ?? '').split(',').filter((p) => p.trim().length > 0).length
       functions.push({
         async: line.includes('async'),
         complexity: 1,
         endLine: findBlockEnd(lines, i),
         line: i + 1,
-        name: fnMatch[1],
+        name: fnMatch[1] ?? '',
         params,
       })
     }
@@ -245,7 +246,7 @@ export function extractFunctions(content: string): FunctionInfo[] {
         complexity: 1,
         endLine: i + 1,
         line: i + 1,
-        name: arrowMatch[1],
+        name: arrowMatch[1] ?? '',
         params: Math.max(params - 1, 0),
       })
     }
@@ -261,12 +262,14 @@ export function extractClasses(content: string): ClassInfo[] {
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const match = lines[i].match(/(?:export\s+)?(?:default\s+)?class\s+(\w+)/)
+    const line = lines[i]
+    if (!line) continue
+    const match = line.match(/(?:export\s+)?(?:default\s+)?class\s+(\w+)/)
     if (match) {
       const block = extractBlock(lines, i)
       const methods = (block.match(/\b(?:public|private|protected)?\s*(?:async\s+)?(\w+)\s*\(/g) ?? []).length
       const properties = (block.match(/\b(?:public|private|protected|readonly)\s+\w+\s*[:=]/g) ?? []).length
-      classes.push({ line: i + 1, methods, name: match[1], properties })
+      classes.push({ line: i + 1, methods, name: match[1] ?? '', properties })
     }
   }
 
@@ -280,26 +283,28 @@ export function extractImports(content: string): ImportInfo[] {
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim()
+    const rawLine = lines[i]
+    if (!rawLine) continue
+    const line = rawLine.trim()
 
     const esmMatch = line.match(/^import\s+(?:\{([^}]*)\}|(\w+))\s+from\s+['"]([^'"]+)['"]/)
     if (esmMatch) {
       const items = esmMatch[1]
         ? esmMatch[1].split(',').filter((s) => s.trim().length > 0).length
         : 1
-      imports.push({ items, line: i + 1, source: esmMatch[3], type: 'esm' })
+      imports.push({ items, line: i + 1, source: esmMatch[3] ?? '', type: 'esm' })
       continue
     }
 
     const cjsMatch = line.match(/(?:const|let|var)\s+\w+\s*=\s*require\s*\(\s*['"]([^'"]+)['"]\s*\)/)
     if (cjsMatch) {
-      imports.push({ items: 1, line: i + 1, source: cjsMatch[1], type: 'cjs' })
+      imports.push({ items: 1, line: i + 1, source: cjsMatch[1] ?? '', type: 'cjs' })
       continue
     }
 
     const dynamicMatch = line.match(/import\s*\(\s*['"]([^'"]+)['"]\s*\)/)
     if (dynamicMatch) {
-      imports.push({ items: 1, line: i + 1, source: dynamicMatch[1], type: 'dynamic' })
+      imports.push({ items: 1, line: i + 1, source: dynamicMatch[1] ?? '', type: 'dynamic' })
     }
   }
 
@@ -314,6 +319,7 @@ export function extractExports(content: string): ExportInfo[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
 
     if (/export\s+default\s+/.test(line) && !/export\s+default\s+\{/.test(line)) {
       const nameMatch = line.match(/export\s+default\s+(?:class|function)\s+(\w+)/)
@@ -326,7 +332,7 @@ export function extractExports(content: string): ExportInfo[] {
 
     const namedMatches = line.matchAll(/export\s+(?:const|let|var|function|class|interface|type|enum)\s+(\w+)/g)
     for (const m of namedMatches) {
-      exports.push({ line: i + 1, name: m[1], type: 'named' })
+      exports.push({ line: i + 1, name: m[1] ?? '', type: 'named' })
     }
 
     const reExportMatch = line.match(/export\s*\{[^}]*\}\s*from\s*['"]/)
@@ -345,11 +351,13 @@ export function extractInterfaces(content: string): InterfaceInfo[] {
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const match = lines[i].match(/(?:export\s+)?interface\s+(\w+)/)
+    const line = lines[i]
+    if (!line) continue
+    const match = line.match(/(?:export\s+)?interface\s+(\w+)/)
     if (match) {
       const block = extractBlock(lines, i)
       const properties = (block.match(/^\s+(?:readonly\s+)?\w+\s*[?:]/gm) ?? []).length
-      interfaces.push({ line: i + 1, name: match[1], properties })
+      interfaces.push({ line: i + 1, name: match[1] ?? '', properties })
     }
   }
 
@@ -363,9 +371,11 @@ export function extractTypes(content: string): TypeInfo[] {
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const match = lines[i].match(/(?:export\s+)?type\s+(\w+)\s*[=<]/)
+    const line = lines[i]
+    if (!line) continue
+    const match = line.match(/(?:export\s+)?type\s+(\w+)\s*[=<]/)
     if (match) {
-      types.push({ line: i + 1, name: match[1] })
+      types.push({ line: i + 1, name: match[1] ?? '' })
     }
   }
 
@@ -424,10 +434,11 @@ export function analyzeFileIssues(content: string, _filePath: string): {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
 
     const todoMatch = line.match(/\/\/\s*(TODO|FIXME|HACK|XXX|BUG)[\s:]*(.*)/i)
     if (todoMatch) {
-      todos.push({ line: i + 1, text: todoMatch[2].trim(), type: todoMatch[1].toUpperCase() })
+      todos.push({ line: i + 1, text: (todoMatch[2] ?? '').trim(), type: (todoMatch[1] ?? '').toUpperCase() })
     }
 
     if (/eval\s*\(/.test(line)) {
@@ -449,8 +460,10 @@ export function analyzeFileIssues(content: string, _filePath: string): {
 
   const unusedVarPattern = /(?:const|let|var)\s+_(\w+)\s*[=:]/
   for (let i = 0; i < lines.length; i++) {
-    if (unusedVarPattern.test(lines[i])) {
-      const name = lines[i].match(unusedVarPattern)?.[1] ?? ''
+    const line = lines[i]
+    if (!line) continue
+    if (unusedVarPattern.test(line)) {
+      const name = line.match(unusedVarPattern)?.[1] ?? ''
       if (name.startsWith('_')) {
         deadCode.push({ confidence: 80, line: i + 1, name: `_${name}`, type: 'unused-variable' })
       }
@@ -569,8 +582,9 @@ export function computeFileScore(analysis: FileAnalysis): number {
 function findBlockEnd(lines: string[], startLine: number): number {
   let depth = 0
   for (let i = startLine; i < lines.length; i++) {
-    depth += (lines[i].match(/\{/g) ?? []).length
-    depth -= (lines[i].match(/\}/g) ?? []).length
+    const line = lines[i] ?? ''
+    depth += (line.match(/\{/g) ?? []).length
+    depth -= (line.match(/\}/g) ?? []).length
     if (depth <= 0 && i > startLine) return i + 1
   }
   return lines.length
@@ -580,9 +594,10 @@ function extractBlock(lines: string[], startLine: number): string {
   let depth = 0
   const blockLines: string[] = []
   for (let i = startLine; i < lines.length; i++) {
-    depth += (lines[i].match(/\{/g) ?? []).length
-    depth -= (lines[i].match(/\}/g) ?? []).length
-    blockLines.push(lines[i])
+    const line = lines[i] ?? ''
+    depth += (line.match(/\{/g) ?? []).length
+    depth -= (line.match(/\}/g) ?? []).length
+    blockLines.push(line)
     if (depth <= 0 && i > startLine) break
   }
   return blockLines.join('\n')
@@ -621,7 +636,7 @@ function computeFunctionComplexity(content: string, startLine: number): number {
   let started = false
 
   for (let i = startLine - 1; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     depth += (line.match(/\{/g) ?? []).length
     depth -= (line.match(/\}/g) ?? []).length
     if (depth > 0) started = true

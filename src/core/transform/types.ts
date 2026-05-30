@@ -1,32 +1,32 @@
 export interface TextChange {
-  startLine: number
+  description: string
   endLine: number
   original: string
   replacement: string
-  description: string
+  startLine: number
 }
 
 export interface TransformResult {
-  source: string
-  changes: TextChange[]
   applied: boolean
+  changes: TextChange[]
   errors: string[]
+  source: string
 }
 
 export interface Transform {
+  apply: (source: string, filePath: string) => TransformResult
+  category: 'migration' | 'modernize' | 'refactor' | 'safety'
+  description: string
   id: string
   name: string
-  description: string
-  category: 'refactor' | 'migration' | 'modernize' | 'safety'
-  apply: (source: string, filePath: string) => TransformResult
 }
 
 export interface TransformRecipe {
+  description: string
+  filePatterns: string[]
   id: string
   name: string
-  description: string
   transforms: string[]
-  filePatterns: string[]
 }
 
 export interface TransformConfig {
@@ -40,12 +40,12 @@ export const DEFAULT_TRANSFORM_CONFIG: TransformConfig = {
   dryRun: false,
   filePatterns: ['**/*.ts', '**/*.js'],
   ignorePatterns: ['node_modules/**', 'dist/**'],
-  maxFileSize: 100000,
+  maxFileSize: 100_000,
 }
 
 export interface TransformReport {
-  transformsApplied: number
   filesModified: number
-  totalChanges: number
   results: Map<string, TransformResult[]>
+  totalChanges: number
+  transformsApplied: number
 }

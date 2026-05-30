@@ -352,7 +352,6 @@ export function detectFalseAlarms(content: string): number {
  * measureSignals('export function a() { return 1 }') // SignalsInfo
  */
 export function measureSignals(content: string): SignalsInfo {
-  const loc = countLoc(content)
   const exports = countExports(content)
   const errors = countErrorHandling(content)
   const events = (content.match(/\bemit\s*\(|\.on\s*\(|\.addEventListener\s*\(/g) ?? []).length
@@ -381,7 +380,6 @@ export function measureSignals(content: string): SignalsInfo {
  * assessRinging('export function a() { return 1 }') // RingingInfo
  */
 export function assessRinging(content: string): RingingInfo {
-  const loc = countLoc(content)
   const funcs = countFunctions(content)
   const exports = countExports(content)
   const errors = countErrorHandling(content)
@@ -464,10 +462,10 @@ export function assessAcoustics(content: string): AcousticsInfo {
  * analyzeBell('export function calc() { return 1 }', 'calc.ts') // Bell
  */
 export function analyzeBell(content: string, filePath: string): Bell {
-  const loc = countLoc(content)
   const signals = measureSignals(content)
   const ringing = assessRinging(content)
   const acoustics = assessAcoustics(content)
+  const loc = countLoc(content)
 
   const bellQuality = Math.min(100, Math.round(
     signals.signalClarity * 0.35 +
@@ -576,7 +574,7 @@ export function analyzeBellChamber(bells: Bell[], dirPath: string): BellChamber 
     const count = typeMap.get(b.bellType) ?? 0
     typeMap.set(b.bellType, count + 1)
   }
-  const dominantBellType = Array.from(typeMap.entries()).sort((a, b) => b[1] - a[1])[0][0]
+  const dominantBellType = Array.from(typeMap.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ?? ''
 
   const totalSignals = bells.reduce((s, b) => s + b.signals.totalSignals, 0)
   const falseAlarmCount = bells.reduce((s, b) => s + b.ringing.falseAlarmCount, 0)
@@ -728,15 +726,15 @@ export function buildBellTowerResult(
     overallAcoustics,
     campanologistGrade: classifyCampanologistGrade(overallAcoustics),
     bestBell: bells.length > 0
-      ? bells.reduce((b, c) => c.qualityScore > b.qualityScore ? c : b, bells[0]).file : 'none',
+      ? bells.reduce((b, c) => c.qualityScore > b.qualityScore ? c : b, bells[0] as typeof bells[number]).file : 'none',
     worstBell: bells.length > 0
-      ? bells.reduce((b, c) => c.qualityScore < b.qualityScore ? c : b, bells[0]).file : 'none',
+      ? bells.reduce((b, c) => c.qualityScore < b.qualityScore ? c : b, bells[0] as typeof bells[number]).file : 'none',
     loudestBell: bells.length > 0
-      ? bells.reduce((b, c) => c.volume > b.volume ? c : b, bells[0]).file : 'none',
+      ? bells.reduce((b, c) => c.volume > b.volume ? c : b, bells[0] as typeof bells[number]).file : 'none',
     quietestBell: bells.length > 0
-      ? bells.reduce((b, c) => c.volume < b.volume ? c : b, bells[0]).file : 'none',
+      ? bells.reduce((b, c) => c.volume < b.volume ? c : b, bells[0] as typeof bells[number]).file : 'none',
     bestChamber: chambers.length > 0
-      ? chambers.reduce((b, c) => c.chamberAcoustics > b.chamberAcoustics ? c : b, chambers[0]).directory : 'none',
+      ? chambers.reduce((b, c) => c.chamberAcoustics > b.chamberAcoustics ? c : b, chambers[0] as typeof chambers[number]).directory : 'none',
   }
 
   const recommendations = generateRecommendations(bells, chambers, city, stats)

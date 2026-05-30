@@ -653,7 +653,7 @@ export async function buildEmeraldThroneResult(
 export function generateRecommendations(
   decrees: EmeraldDecree[],
   kingdoms: EmeraldKingdom[],
-  empire: EmeraldThroneResult['empire'],
+  _empire: EmeraldThroneResult['empire'],
   stats: EmeraldThroneResult['stats'],
 ): string[] {
   const recs: string[] = []

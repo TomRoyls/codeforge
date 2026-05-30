@@ -77,8 +77,8 @@ export function formatChangelogText(result: ChangelogResult, verbose: boolean): 
   lines.push('')
 
   for (const group of result.groups) {
-    const colorFn = TYPE_COLORS[group.type] ?? chalk.white
-    lines.push(colorFn.bold(group.title))
+    const colorFn = TYPE_COLORS[group.type] ?? ((text: string) => chalk.white(text))
+    lines.push(chalk.bold(colorFn(group.title)))
     lines.push('')
 
     for (const commit of group.commits) {

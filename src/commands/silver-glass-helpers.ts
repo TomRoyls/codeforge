@@ -889,7 +889,7 @@ export async function buildSilverMirrorResult(
 export function generateRecommendations(
   reflections: SilverReflection[],
   galleries: SilverGallery[],
-  mirror: SilverMirrorResult['mirror'],
+  _mirror: SilverMirrorResult['mirror'],
   stats: SilverMirrorResult['stats'],
 ): string[] {
   const recs: string[] = []

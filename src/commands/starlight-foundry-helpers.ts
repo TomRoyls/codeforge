@@ -892,7 +892,7 @@ export async function buildStarlightForgeResult(
 export function generateRecommendations(
   ingots: StarIngot[],
   clusters: StarCluster[],
-  cosmos: StarlightForgeResult['cosmos'],
+  _cosmos: StarlightForgeResult['cosmos'],
   stats: StarlightForgeStats,
 ): string[] {
   const recs: string[] = []

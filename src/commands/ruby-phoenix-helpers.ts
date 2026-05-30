@@ -878,7 +878,7 @@ export async function buildRubyPhoenixResult(
 export function generateRecommendations(
   feathers: RubyFeather[],
   nests: RubyNest[],
-  blaze: RubyPhoenixResult['blaze'],
+  _blaze: RubyPhoenixResult['blaze'],
   stats: RubyPhoenixStats,
 ): string[] {
   const recs: string[] = []

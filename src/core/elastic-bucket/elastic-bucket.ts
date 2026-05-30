@@ -10,6 +10,7 @@ interface Chunk<T> {
 
 export class ElasticBucket<T = unknown> {
   private chunks: Chunk<T>[] = []
+  private _frontChunkIdx = 0
   private chunkSize: number
   private _size = 0
   private stats: ElasticBucketStatistics = {
@@ -39,22 +40,37 @@ export class ElasticBucket<T = unknown> {
   }
 
   private ensureFirstChunk(): void {
-    if (this.chunks.length === 0) {
+    if (this.chunks.length === this._frontChunkIdx) {
       this.chunks.push(this.createChunk())
       this.stats.resizes++
     }
   }
 
+  private get _firstChunk(): Chunk<T> {
+    return this.chunks[this._frontChunkIdx]!
+  }
+
+  private get _lastChunk(): Chunk<T> {
+    return this.chunks[this.chunks.length - 1]!
+  }
+
+  private _maybeCompactChunks(): void {
+    if (this._frontChunkIdx > 16 && this._frontChunkIdx > this.chunks.length >> 1) {
+      this.chunks = this.chunks.slice(this._frontChunkIdx)
+      this._frontChunkIdx = 0
+    }
+  }
+
   pushFront(value: T): void {
     this.ensureFirstChunk()
-    let first = this.chunks[0]!
+    const first = this._firstChunk
     if (first.count === this.chunkSize) {
       const newChunk = this.createChunk()
       newChunk.data[this.chunkSize - 1] = value
       newChunk.head = this.chunkSize - 1
       newChunk.tail = this.chunkSize
       newChunk.count = 1
-      this.chunks.unshift(newChunk)
+      this.chunks.splice(this._frontChunkIdx, 0, newChunk)
       this.stats.resizes++
     } else if (first.count === 0) {
       first.data[0] = value
@@ -72,7 +88,7 @@ export class ElasticBucket<T = unknown> {
 
   pushBack(value: T): void {
     this.ensureFirstChunk()
-    let last = this.chunks[this.chunks.length - 1]!
+    const last = this._lastChunk
     if (last.count === this.chunkSize) {
       const newChunk = this.createChunk()
       newChunk.data[0] = value
@@ -99,14 +115,15 @@ export class ElasticBucket<T = unknown> {
     if (this._size === 0) {
       throw new RangeError('Cannot pop from empty ElasticBucket')
     }
-    const first = this.chunks[0]!
+    const first = this._firstChunk
     const value = first.data[first.head]!
     first.data[first.head] = undefined
     first.head = (first.head + 1) % this.chunkSize
     first.count--
     this._size--
-    if (first.count === 0 && this.chunks.length > 1) {
-      this.chunks.shift()
+    if (first.count === 0 && this.chunks.length - this._frontChunkIdx > 1) {
+      this._frontChunkIdx++
+      this._maybeCompactChunks()
     }
     this.stats.pops++
     return value
@@ -116,13 +133,13 @@ export class ElasticBucket<T = unknown> {
     if (this._size === 0) {
       throw new RangeError('Cannot pop from empty ElasticBucket')
     }
-    const last = this.chunks[this.chunks.length - 1]!
+    const last = this._lastChunk
     last.tail = (last.tail - 1 + this.chunkSize) % this.chunkSize
     const value = last.data[last.tail]!
     last.data[last.tail] = undefined
     last.count--
     this._size--
-    if (last.count === 0 && this.chunks.length > 1) {
+    if (last.count === 0 && this.chunks.length - this._frontChunkIdx > 1) {
       this.chunks.pop()
     }
     this.stats.pops++
@@ -133,7 +150,7 @@ export class ElasticBucket<T = unknown> {
     if (this._size === 0) {
       throw new RangeError('Cannot peek empty ElasticBucket')
     }
-    const first = this.chunks[0]!
+    const first = this._firstChunk
     return first.data[first.head]!
   }
 
@@ -141,7 +158,7 @@ export class ElasticBucket<T = unknown> {
     if (this._size === 0) {
       throw new RangeError('Cannot peek empty ElasticBucket')
     }
-    const last = this.chunks[this.chunks.length - 1]!
+    const last = this._lastChunk
     const idx = (last.tail - 1 + this.chunkSize) % this.chunkSize
     return last.data[idx]!
   }
@@ -151,7 +168,7 @@ export class ElasticBucket<T = unknown> {
       throw new RangeError(`Index ${index} out of bounds [0, ${this._size})`)
     }
     let remaining = index
-    for (let ci = 0; ci < this.chunks.length; ci++) {
+    for (let ci = this._frontChunkIdx; ci < this.chunks.length; ci++) {
       const chunk = this.chunks[ci]!
       if (remaining < chunk.count) {
         const posInChunk = (chunk.head + remaining) % this.chunkSize
@@ -239,7 +256,7 @@ export class ElasticBucket<T = unknown> {
 
   private sumCountsBefore(chunkIdx: number): number {
     let sum = 0
-    for (let i = 0; i < chunkIdx; i++) {
+    for (let i = this._frontChunkIdx; i < chunkIdx; i++) {
       sum += this.chunks[i]!.count
     }
     return sum
@@ -271,7 +288,7 @@ export class ElasticBucket<T = unknown> {
     if (elements.length > 0) {
       this.packChunkFromArray(chunk, elements)
       chunk.count = elements.length
-    } else if (this.chunks.length > 1) {
+    } else if (this.chunks.length - this._frontChunkIdx > 1) {
       this.chunks.splice(chunkIdx, 1)
     }
 
@@ -290,6 +307,7 @@ export class ElasticBucket<T = unknown> {
 
   clear(): void {
     this.chunks = []
+    this._frontChunkIdx = 0
     this._size = 0
     this.stats = {
       pushes: 0,
@@ -304,7 +322,7 @@ export class ElasticBucket<T = unknown> {
 
   toArray(): T[] {
     const result: T[] = []
-    for (let ci = 0; ci < this.chunks.length; ci++) {
+    for (let ci = this._frontChunkIdx; ci < this.chunks.length; ci++) {
       const chunk = this.chunks[ci]!
       for (let i = 0; i < chunk.count; i++) {
         const pos = (chunk.head + i) % this.chunkSize
@@ -316,7 +334,7 @@ export class ElasticBucket<T = unknown> {
 
   forEach(callback: (value: T, index: number) => void): void {
     let idx = 0
-    for (let ci = 0; ci < this.chunks.length; ci++) {
+    for (let ci = this._frontChunkIdx; ci < this.chunks.length; ci++) {
       const chunk = this.chunks[ci]!
       for (let i = 0; i < chunk.count; i++) {
         const pos = (chunk.head + i) % this.chunkSize
@@ -327,7 +345,7 @@ export class ElasticBucket<T = unknown> {
   }
 
   [Symbol.iterator](): Iterator<T> {
-    let ci = 0
+    let ci = this._frontChunkIdx
     let i = 0
     const chunks = this.chunks
     const chunkSize = this.chunkSize
@@ -351,7 +369,7 @@ export class ElasticBucket<T = unknown> {
 
   capacity(): number {
     let total = 0
-    for (let i = 0; i < this.chunks.length; i++) {
+    for (let i = this._frontChunkIdx; i < this.chunks.length; i++) {
       total += this.chunkSize
     }
     return total
@@ -360,6 +378,7 @@ export class ElasticBucket<T = unknown> {
   compact(): void {
     if (this._size === 0) {
       this.chunks = []
+      this._frontChunkIdx = 0
       this.stats.compactions++
       return
     }
@@ -367,6 +386,7 @@ export class ElasticBucket<T = unknown> {
     const values = this.toArray()
     const numChunks = Math.ceil(values.length / this.chunkSize)
     this.chunks = []
+    this._frontChunkIdx = 0
 
     for (let ci = 0; ci < numChunks; ci++) {
       const chunk = this.createChunk()
@@ -385,10 +405,10 @@ export class ElasticBucket<T = unknown> {
   }
 
   chunkCount(): number {
-    return this.chunks.length
+    return this.chunks.length - this._frontChunkIdx
   }
 
   getStatistics(): ElasticBucketStatistics {
-    return { ...this.stats, chunks: this.chunks.length }
+    return { ...this.stats, chunks: this.chunks.length - this._frontChunkIdx }
   }
 }

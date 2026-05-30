@@ -1,4 +1,4 @@
-import { dirname, normalize, relative, resolve } from 'node:path'
+import {dirname} from 'node:path'
 
 // ─── Interfaces ──────────────────────────────────────────
 
@@ -89,25 +89,25 @@ export function extractImports(content: string, _filePath: string): string[] {
   const esmFrom = /import\s+(?:type\s+)?(?:[\s\S]*?)\s+from\s+['"]([^'"]+)['"]/g
   let match: RegExpExecArray | null
   while ((match = esmFrom.exec(content)) !== null) {
-    imports.push(match[1])
+if (match[1] !== undefined) imports.push(match[1])
   }
 
   // ESM: import '...' (bare imports)
   const esmBare = /import\s+['"]([^'"]+)['"]/g
   while ((match = esmBare.exec(content)) !== null) {
-    imports.push(match[1])
+if (match[1] !== undefined) imports.push(match[1])
   }
 
   // Dynamic imports: import('...')
   const dynamicImport = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g
   while ((match = dynamicImport.exec(content)) !== null) {
-    imports.push(match[1])
+if (match[1] !== undefined) imports.push(match[1])
   }
 
   // CommonJS: require('...')
   const requireRe = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g
   while ((match = requireRe.exec(content)) !== null) {
-    imports.push(match[1])
+if (match[1] !== undefined) imports.push(match[1])
   }
 
   return imports
@@ -343,9 +343,6 @@ export function detectCircularDependencies(
 
         // Only record unique cycles (avoid recording same cycle from different starting points)
         const normalizedCycle = cyclePath.slice(0, -1)
-        const minIdx = normalizedCycle.indexOf([...normalizedCycle].sort()[0]!)
-        const rotated = [...normalizedCycle.slice(minIdx), ...normalizedCycle.slice(0, minIdx)]
-        const cycleKey = rotated.join('→')
 
         // Check if we've seen this cycle before
         const existingKey = cycles.find((c) => {

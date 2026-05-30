@@ -529,7 +529,6 @@ export function measureCarving(content: string): CarvingMeasure {
   const anyCount = countAny(content)
   const consoleCount = countConsole(content)
   const deepNested = countDeepNested(content)
-  const defaults = countDefaultExports(content)
 
   const avalancheCount = deepNested
   const rockfallCount = anyCount + consoleCount
@@ -784,7 +783,6 @@ export function measureAdvance(content: string): AdvanceMeasure {
   const exports = countExports(content)
   const imports = countImports(content)
   const asyncCount = countAsync(content)
-  const tryCatch = countTryCatch(content)
   const anyCount = countAny(content)
   const consoleCount = countConsole(content)
   const todos = countTodos(content)

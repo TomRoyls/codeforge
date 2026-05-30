@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { PotteryPiece, KilnLoad, Studio, KilnFireStats, KilnFireResult } from './kiln-fire-helpers.js'
+import type { PotteryPiece, KilnLoad, KilnFireResult } from './kiln-fire-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

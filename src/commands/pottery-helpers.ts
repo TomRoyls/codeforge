@@ -268,11 +268,11 @@ export function evaluateGlaze(content: string): number {
 
   const indentations = lines.filter(l => l.trim().length > 0).map(l => {
     const match = l.match(/^(\s*)/)
-    return match ? match[1].length : 0
+    return match ? match?.[1]?.length : 0
   })
 
   const hasConsistentIndent = indentations.length <= 1 || Array.from(new Set(
-    indentations.filter(i => i > 0).map(i => i % 2 === 0 ? 'even' : 'odd')
+    indentations.filter((i): i is number => (i ?? 0) > 0).map(i => i % 2 === 0 ? 'even' : 'odd')
   )).length <= 1
 
   const camelCase = (content.match(/[a-z][a-zA-Z0-9]*/g) || []).length
@@ -301,7 +301,7 @@ export function evaluateGlaze(content: string): number {
  * @example
  * classifyShape('export function foo() {}', 'a.ts') // 'cup'
  */
-export function classifyShape(content: string, filePath: string): CeramicShape {
+export function classifyShape(content: string, _filePath: string): CeramicShape {
   const lines = content.split('\n').length
   const exports = countExports(content)
   const nesting = getMaxNesting(content)
@@ -325,7 +325,7 @@ export function classifyShape(content: string, filePath: string): CeramicShape {
  * @example
  * detectDefects('try { } catch(e) { }', 'a.ts') // CeramicDefect[]
  */
-export function detectDefects(content: string, filePath: string): CeramicDefect[] {
+export function detectDefects(content: string, _filePath: string): CeramicDefect[] {
   const defects: CeramicDefect[] = []
   const lines = content.split('\n')
 
@@ -589,9 +589,9 @@ export function buildPotteryResult(
     const content = contents[i]
     const filePath = files[i]
 
-    pieces.push(buildPiece(content, filePath))
-    wheels.push(...evaluateWheelwork(content, filePath))
-    kiln.push(evaluateFiring(content, filePath))
+    pieces.push(buildPiece(content ?? '',filePath ?? ''))
+    wheels.push(...evaluateWheelwork(content ?? '',filePath ?? ''))
+    kiln.push(evaluateFiring(content ?? '',filePath ?? ''))
   }
 
   const avg = (arr: number[]) => arr.length > 0

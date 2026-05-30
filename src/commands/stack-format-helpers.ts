@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { StackResult } from './stack-helpers.js'
 
+import { padRight } from '../utils/format-utils.js'
+
 // ─── Category colors ────────────────────────────────────
 
 const CATEGORY_COLORS: Record<string, (text: string) => string> = {
@@ -93,11 +95,6 @@ export function formatStackJson(result: StackResult): string {
 }
 
 // ─── Helpers ────────────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
 
 function groupByCategory(technologies: StackResult['technologies']): Map<string, StackResult['technologies']> {
   const map = new Map<string, StackResult['technologies']>()

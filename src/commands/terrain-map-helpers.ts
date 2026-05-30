@@ -384,25 +384,30 @@ export function identifyFeatures(points: TerrainPoint[], contours: ContourLine[]
   for (const [dir, pts] of dirGroups) {
     if (pts.length >= 4) {
       const sorted = [...pts].sort((a, b) => a.elevation - b.elevation)
-      let isGradual = true
-      for (let i = 1; i < sorted.length; i++) {
-        const diff = sorted[i].elevation - sorted[i - 1].elevation
-        if (diff > 20 || diff < 0) {
-          isGradual = false
-          break
+        let isGradual = true
+        for (let i = 1; i < sorted.length; i++) {
+          const curr = sorted[i]
+          const prev = sorted[i - 1]
+          if (!curr || !prev) continue
+          const diff = curr.elevation - prev.elevation
+          if (diff > 20 || diff < 0) {
+            isGradual = false
+            break
+          }
         }
-      }
-      if (isGradual && sorted[sorted.length - 1].elevation - sorted[0].elevation >= 30) {
-        features.push({
-          name: `${dir} Foothills`,
-          type: 'foothills',
-          files: sorted.map(p => p.file),
-          avgElevation: Math.round(pts.reduce((s, p) => s + p.elevation, 0) / pts.length),
-          maxElevation: sorted[sorted.length - 1].elevation,
-          description: `Gradually increasing complexity from ${sorted[0].elevation} to ${sorted[sorted.length - 1].elevation}`,
-          difficulty: 'moderate',
-        })
-      }
+        const first = sorted[0]
+        const last = sorted[sorted.length - 1]
+        if (isGradual && first && last && last.elevation - first.elevation >= 30) {
+          features.push({
+            name: `${dir} Foothills`,
+            type: 'foothills',
+            files: sorted.map(p => p.file),
+            avgElevation: Math.round(pts.reduce((s, p) => s + p.elevation, 0) / pts.length),
+            maxElevation: last.elevation,
+            description: `Gradually increasing complexity from ${first.elevation} to ${last.elevation}`,
+            difficulty: 'moderate',
+          })
+        }
     }
   }
 
@@ -430,7 +435,7 @@ export function classifyFeatureDifficulty(avgElevation: number): FeatureDifficul
  * @example
  * buildElevationProfiles(points, files) // => [{ directory: 'src', profile: [...], ... }]
  */
-export function buildElevationProfiles(points: TerrainPoint[], files: string[]): ElevationProfile[] {
+export function buildElevationProfiles(points: TerrainPoint[], _files: string[]): ElevationProfile[] {
   const dirMap = new Map<string, TerrainPoint[]>()
   for (const p of points) {
     const dir = getDirectory(p.file)
@@ -477,7 +482,10 @@ export function computeGradient(profile: [string, number][]): number {
   if (profile.length < 2) return 0
   let totalChange = 0
   for (let i = 1; i < profile.length; i++) {
-    totalChange += Math.abs(profile[i][1] - profile[i - 1][1])
+    const curr = profile[i]
+    const prev = profile[i - 1]
+    if (!curr || !prev) continue
+    totalChange += Math.abs(curr[1] - prev[1])
   }
   return Math.round(totalChange / (profile.length - 1))
 }
@@ -511,7 +519,9 @@ export function findDominant<T extends string>(values: T[]): T {
   for (const v of values) {
     counts.set(v, (counts.get(v) ?? 0) + 1)
   }
-  let dominant = values[0]
+  const first = values[0]
+  if (!first) return 'plain' as T
+  let dominant = first
   let maxCount = 0
   for (const [val, count] of counts) {
     if (count > maxCount) {
@@ -580,12 +590,13 @@ export function generateRecommendations(
  * buildTerrainMapResult(['app.ts'], ['const x = 1'], {})
  * // => { points: [...], contours: [...], features: [...], ... }
  */
-export function buildTerrainMapResult(files: string[], contents: string[], options: TerrainMapOptions): TerrainMapResult {
+export function buildTerrainMapResult(files: string[], contents: string[], _options: TerrainMapOptions): TerrainMapResult {
   // build terrain points
   const elevations: number[] = contents.map(c => computeElevation(c))
 
   const points: TerrainPoint[] = files.map((file, idx) => {
-    const elevation = elevations[idx]
+    const elevation = elevations[idx] ?? 0
+    const content = contents[idx] ?? ''
     const contourLevel = computeContourLevel(elevation)
     const latitude = computeLatitude(file)
     const longitude = computeLongitude(file, files)
@@ -594,10 +605,10 @@ export function buildTerrainMapResult(files: string[], contents: string[], optio
     const dir = getDirectory(file)
     const neighborElevations = files
       .filter((f, i) => i !== idx && getDirectory(f) === dir)
-      .map((_, i) => elevations[i])
+      .map((_, i) => elevations[i] ?? 0)
 
     // crater: low complexity but large file
-    const lines = countNonBlankLines(contents[idx])
+    const lines = countNonBlankLines(content)
     let terrainType = classifyTerrainType(elevation, neighborElevations)
     if (terrainType !== 'peak' && terrainType !== 'cliff' && elevation < 20 && lines > 100) {
       terrainType = 'crater'
@@ -630,9 +641,9 @@ export function buildTerrainMapResult(files: string[], contents: string[], optio
   const dominantTerrain = points.length > 0 ? findDominant(points.map(p => p.terrainType)) : 'plain'
 
   const sortedProfiles = [...profiles].sort((a, b) => b.gradient - a.gradient)
-  const steepestGradient = sortedProfiles.length > 0 ? sortedProfiles[0].directory : ''
+  const steepestGradient = sortedProfiles.length > 0 ? (sortedProfiles[0]?.directory ?? '') : ''
   const flattestProfiles = [...profiles].sort((a, b) => a.gradient - b.gradient)
-  const flattestArea = flattestProfiles.length > 0 ? flattestProfiles[0].directory : ''
+  const flattestArea = flattestProfiles.length > 0 ? (flattestProfiles[0]?.directory ?? '') : ''
 
   const contourDensity = contours.length > 0
     ? Math.round(points.length / contours.length)

@@ -54,7 +54,7 @@ export function colorGrade(grade: string): string {
     'proper-flow': okay, 'proper-depth': okay, 'proper-sea': okay,
     'proper-ocean': okay, 'decent-sea': okay, 'skilled-sailor': okay,
 
-    'murky-waters': poor, 'irregular-wave': poor, 'bleached-coral': poor,
+    'irregular-wave': poor, 'bleached-coral': poor,
     'sluggish-creek': poor, 'pressure-crack': poor, 'murky-puddle': poor,
     'shallow-sea': poor, 'murky-waters': poor, 'apprentice': poor,
 

@@ -886,7 +886,7 @@ export function classifyCommanderGrade(avgDefense: number): FortressWallStats['c
  * generateRecommendations(readings, zones, kingdom, stats) // ['Add error handling...']
  */
 export function generateRecommendations(
-  readings: FortificationReading[],
+  _readings: FortificationReading[],
   _zones: DefenseZone[],
   _kingdom: KingdomMeasure,
   stats: FortressWallStats,
@@ -968,19 +968,19 @@ export function buildFortressWallResult(
   }
 
   const bestReading = readings.length > 0
-    ? readings.reduce((best, r) => r.qualityScore > best.qualityScore ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.qualityScore > best.qualityScore ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const strongestWall = readings.length > 0
-    ? readings.reduce((best, r) => r.wallStrength > best.wallStrength ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.wallStrength > best.wallStrength ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const deepestMoat = readings.length > 0
-    ? readings.reduce((best, r) => r.moatDepth > best.moatDepth ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.moatDepth > best.moatDepth ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const securestGate = readings.length > 0
-    ? readings.reduce((best, r) => r.gateSecurity > best.gateSecurity ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.gateSecurity > best.gateSecurity ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const mostReady = readings.length > 0
-    ? readings.reduce((best, r) => r.siegeReadiness > best.siegeReadiness ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.siegeReadiness > best.siegeReadiness ? r : best, readings[0] as typeof readings[number]).file
     : ''
 
   const stats: FortressWallStats = {

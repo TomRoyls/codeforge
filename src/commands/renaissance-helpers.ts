@@ -468,7 +468,7 @@ export function identifyDarkAges(files: PolymathFile[], _disciplines: Discipline
       avgScores[dName] = vals.reduce((s, v) => s + v, 0) / vals.length
     }
 
-    const neglected = DISCIPLINE_NAMES.filter(d => avgScores[d] < 30)
+    const neglected = DISCIPLINE_NAMES.filter(d => (avgScores[d] ?? 0) < 30)
     if (neglected.length > 0) {
       const minAvg = Math.min(...Object.values(avgScores))
       const severity: DarkAge['severity'] = neglected.length >= 4 ? 'dark' : neglected.length >= 3 ? 'major' : neglected.length >= 2 ? 'moderate' : 'minor'
@@ -593,13 +593,14 @@ export function buildRenaissanceResult(
   contents: string[],
   _options: Record<string, unknown>,
 ): RenaissanceResult {
-  const fileDisciplines = contents.map((c, i) => evaluateAllDisciplines(c, files[i]))
+  const fileDisciplines = contents.map((c, i) => evaluateAllDisciplines(c, files[i] ?? ''))
 
   const allDisciplineScores: Record<string, number[]> = {}
   for (const dList of fileDisciplines) {
     for (const d of dList) {
-      if (!allDisciplineScores[d.name]) allDisciplineScores[d.name] = []
-      allDisciplineScores[d.name].push(d.score)
+      const name = d.name ?? ''
+      if (!allDisciplineScores[name]) allDisciplineScores[name] = []
+      allDisciplineScores[name].push(d.score)
     }
   }
 
@@ -616,7 +617,7 @@ export function buildRenaissanceResult(
     }
   })
 
-  const polyFiles = files.map((f, i) => createPolymathFile(f, fileDisciplines[i]))
+  const polyFiles = files.map((f, i) => createPolymathFile(f, fileDisciplines[i] ?? []))
 
   const darkAges = identifyDarkAges(polyFiles, disciplines)
 

@@ -46,11 +46,11 @@ export function colorGrade(grade: string): string {
     'eternal-sentinel': best, 'seamless-crossing': best, 'divine-portal': best,
     'grand-portal': best, 'magnificent-gateway': best, 'gatekeeper-supreme': best,
 
-    'master-threshold': good, 'strong-portal': good, 'smooth-traversal': good,
+    'master-threshold': good, 'smooth-traversal': good,
     'watchful-guardian': good, 'graceful-passage': good, 'phantom-gateway': good,
     'proper-archway': good, 'strong-portal': good, 'master-guardian': good,
 
-    'proper-gate': okay, 'proper-gate': okay, 'proper-flow': okay,
+    'proper-flow': okay,
     'proper-watch': okay, 'proper-transition': okay, 'proper-gate': okay,
     'decent-gate': okay, 'decent-entrance': okay, 'skilled-watchman': okay,
 

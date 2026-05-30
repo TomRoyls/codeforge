@@ -654,7 +654,7 @@ export async function buildAlexandriteDuskResult(
 export function generateRecommendations(
   shifts: AlexandriteShift[],
   pairs: AlexandritePair[],
-  twilight: AlexandriteDuskResult['twilight'],
+  _twilight: AlexandriteDuskResult['twilight'],
   stats: AlexandriteDuskResult['stats'],
 ): string[] {
   const recs: string[] = []

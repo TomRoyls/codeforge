@@ -101,7 +101,6 @@ export function inspectFoundation(files: string[], contents: string[]): Inspecti
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!
     const content = contents[i] ?? ''
-    const lines = content.split('\n')
     const isEntry = /index|main|app|cli|server/.test(file.toLowerCase())
 
     if (isEntry) {
@@ -181,7 +180,6 @@ export function inspectPlumbing(files: string[], contents: string[]): Inspection
     const content = contents[i] ?? ''
 
     const asyncFuncs = (content.match(/async\s+function/g) ?? []).length
-    const awaitUsage = (content.match(/\bawait\b/g) ?? []).length
     if (asyncFuncs > 0) {
       checks++
       const syncReads = (content.match(/readFileSync|writeFileSync|existsSync/g) ?? []).length
@@ -307,7 +305,7 @@ export function inspectRoofing(files: string[], contents: string[]): InspectionA
 
   for (const src of sourceFiles) {
     const base = src.replace(/\.\w+$/, '')
-    const hasTest = testFiles.some((t) => t.includes(base) || t.includes(base.split('/').pop()!))
+    const hasTest = testFiles.some((t) => t.includes(base) || t.includes(base.split('/').at(-1) ?? ''))
     if (!hasTest) {
       violations.push({ file: src, line: 1, area: 'Roofing', severity: 'minor', code: 'RF-001', message: 'No test file found', fix: `Create a test file for ${src}` })
     }

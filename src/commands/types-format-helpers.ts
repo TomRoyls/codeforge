@@ -2,17 +2,9 @@ import chalk from 'chalk'
 
 import type { TypesResult } from './types-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 function complexityColor(complexity: number): string {
   if (complexity <= 3) return chalk.green(String(complexity))

@@ -8,16 +8,6 @@ import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildFortressWallResult,
   type FortressWallResult,
-  type FortificationReading,
-  type DefenseZone,
-  type KingdomMeasure,
-  type FortressWallStats,
-  type WallMeasure,
-  type MoatMeasure,
-  type TowerMeasure,
-  type GateMeasure,
-  type SiegeMeasure,
-  type StructureMeasure,
 } from './fortress-wall-helpers.js'
 import { formatFortressWallJson, formatFortressWallTable } from './fortress-wall-format-helpers.js'
 

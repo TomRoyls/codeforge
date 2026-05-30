@@ -357,7 +357,6 @@ export function measureDeclination(content: string): DeclinationMeasure {
   const hasConfigurable = (content.match(GENERIC_RE) || []).length > 0 || (content.match(OPTIONAL_RE) || []).length > 0
   const hasNoOverfitting = (content.match(EMPTY_CATCH_RE) || []).length === 0
   const hasFlexible = ASYNC_RE.test(content) && AWAIT_RE.test(content)
-  const hasTypeAdaptation = CLASS_RE.test(content) && INTERFACE_RE.test(content)
 
   if (content.length > 0) score += 5
   if (hasProperAdaptation) score += 12
@@ -404,7 +403,6 @@ export function measureBearing(content: string): BearingMeasure {
   const hasNoDegradation = !NESTED_TERNARY_RE.test(content)
   const hasLongTerm = (content.match(DOC_COMMENT_RE) || []).length > 0
   const hasNoRegression = (content.match(EMPTY_CATCH_RE) || []).length === 0
-  const hasSolidBase = CLASS_RE.test(content) && INTERFACE_RE.test(content)
 
   if (content.length > 0) score += 5
   if (hasConsistent) score += 12

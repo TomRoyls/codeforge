@@ -864,7 +864,7 @@ export async function buildAmberPeakResult(
 export function generateRecommendations(
   artifacts: AmberArtifact[],
   mountains: AmberMountain[],
-  range: AmberPeakResult['range'],
+  _range: AmberPeakResult['range'],
   stats: AmberPeakResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -189,6 +189,7 @@ export function findAdaptations(content: string): Adaptation[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     if (/interface\s+\w+/.test(line)) {
@@ -233,6 +234,7 @@ export function findRigidPoints(content: string): RigidPoint[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     const hardcodedUrls = line.match(/['"][A-Z]\w+['"]\s*[;)\]]/g)
@@ -314,10 +316,13 @@ export function detectColorShifts(files: string[], contents: string[]): ColorShi
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i]
-    if (/process\.env|NODE_ENV/.test(content)) envFiles.push(files[i])
-    if (/platform|os\.|typeof\s+window/.test(content)) platformFiles.push(files[i])
-    if (/feature.?flag|toggle|isEnabled|isDisabled/i.test(content)) featureFlagFiles.push(files[i])
-    if (/options|config|settings/i.test(content)) configFiles.push(files[i])
+    if (!content) continue
+    const file = files[i]
+    if (!file) continue
+    if (/process\.env|NODE_ENV/.test(content)) envFiles.push(file)
+    if (/platform|os\.|typeof\s+window/.test(content)) platformFiles.push(file)
+    if (/feature.?flag|toggle|isEnabled|isDisabled/i.test(content)) featureFlagFiles.push(file)
+    if (/options|config|settings/i.test(content)) configFiles.push(file)
   }
 
   if (envFiles.length > 0) {
@@ -532,7 +537,9 @@ export function buildChameleonResult(
 ): ChameleonResult {
   const scores: AdaptabilityScore[] = []
   for (let i = 0; i < files.length; i++) {
-    scores.push(buildScore(contents[i], files[i]))
+    const content = contents[i]
+    if (!content) continue
+    scores.push(buildScore(content, files[i] ?? ''))
   }
 
   const colorShifts = detectColorShifts(files, contents)

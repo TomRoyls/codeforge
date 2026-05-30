@@ -253,7 +253,7 @@ export function computeMaturationScore(file: string, content: string, allFiles: 
  * @example
  * determineNextStage('larva', 25) // => 'pupa'
  */
-export function determineNextStage(currentStage: StageName, maturationScore: number): string {
+export function determineNextStage(currentStage: StageName, _maturationScore: number): string {
   if (currentStage === 'egg') return 'larva'
   if (currentStage === 'larva') return 'pupa'
   if (currentStage === 'pupa') return 'chrysalis'
@@ -323,9 +323,12 @@ export function detectEvolutionaryPressures(files: string[], contents: string[])
   const todoFiles: string[] = []
   let todoTotal = 0
   for (let i = 0; i < files.length; i++) {
-    const count = countTodos(contents[i])
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const count = countTodos(content)
     if (count > 0) {
-      todoFiles.push(files[i])
+      todoFiles.push(file)
       todoTotal += count
     }
   }
@@ -341,7 +344,10 @@ export function detectEvolutionaryPressures(files: string[], contents: string[])
   // modernization: files using deprecated patterns
   const deprecFiles: string[] = []
   for (let i = 0; i < files.length; i++) {
-    if (hasDeprecatedPatterns(contents[i])) deprecFiles.push(files[i])
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    if (hasDeprecatedPatterns(content)) deprecFiles.push(file)
   }
   if (deprecFiles.length > 0) {
     pressures.push({
@@ -356,9 +362,12 @@ export function detectEvolutionaryPressures(files: string[], contents: string[])
   const complexFiles: string[] = []
   let maxComplexity = 0
   for (let i = 0; i < files.length; i++) {
-    const c = computeComplexity(contents[i])
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const c = computeComplexity(content)
     if (c > 15) {
-      complexFiles.push(files[i])
+      complexFiles.push(file)
       maxComplexity = Math.max(maxComplexity, c)
     }
   }
@@ -372,7 +381,10 @@ export function detectEvolutionaryPressures(files: string[], contents: string[])
   }
 
   // feature-demand: large, actively growing files
-  const largeFiles = files.filter((_, i) => countLines(contents[i]) > 200)
+  const largeFiles = files.filter((_, i) => {
+    const content = contents[i]
+    return content !== undefined && countLines(content) > 200
+  })
   if (largeFiles.length > 0) {
     pressures.push({
       type: 'feature-demand',
@@ -385,9 +397,12 @@ export function detectEvolutionaryPressures(files: string[], contents: string[])
   // bug-pressure: files with many error handling patterns (proxy for bug history)
   const errorHeavy: string[] = []
   for (let i = 0; i < files.length; i++) {
-    const tryCount = (contents[i].match(/\btry\s*\{/g) ?? []).length
-    const catchCount = (contents[i].match(/\.catch\s*\(/g) ?? []).length
-    if (tryCount + catchCount > 5) errorHeavy.push(files[i])
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const tryCount = (content.match(/\btry\s*\{/g) ?? []).length
+    const catchCount = (content.match(/\.catch\s*\(/g) ?? []).length
+    if (tryCount + catchCount > 5) errorHeavy.push(file)
   }
   if (errorHeavy.length > 0) {
     pressures.push({
@@ -485,9 +500,9 @@ export function generateMetamorphosisRecommendations(transformations: Transforma
  * buildMetamorphosisResult(files, contents, {})
  * // => { transformations: [...], pressures: [...], stats: {...}, recommendations: [...] }
  */
-export function buildMetamorphosisResult(files: string[], contents: string[], options: MetamorphosisOptions): MetamorphosisResult {
+export function buildMetamorphosisResult(files: string[], contents: string[], _options: MetamorphosisOptions): MetamorphosisResult {
   const transformations: Transformation[] = files.map((file, idx) => {
-    const content = contents[idx]
+    const content = contents[idx] ?? ''
     const stage = classifyLifeStage(file, content, files, false)
     const maturation = computeMaturationScore(file, content, files)
 
@@ -516,8 +531,8 @@ export function buildMetamorphosisResult(files: string[], contents: string[], op
     : 0
 
   const sorted = [...transformations].sort((a, b) => b.maturationScore - a.maturationScore)
-  const mostMature = sorted.length > 0 ? sorted[0].file : ''
-  const leastMature = sorted.length > 0 ? sorted[sorted.length - 1].file : ''
+  const mostMature = sorted[0]?.file ?? ''
+  const leastMature = sorted[sorted.length - 1]?.file ?? ''
 
   const mostTransformed = [...transformations].sort((a, b) => b.transformations - a.transformations)[0]?.file ?? ''
 

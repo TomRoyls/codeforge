@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'blinding-neon': best, 'autobahn': best, 'perfect-lane': best, 'green-wave': best, 'optimal-path': best,
     'neon-boulevard': best, 'interstate': best, 'highway-engineer': best,
 
@@ -52,7 +52,7 @@ export function colorGrade(grade: string): string {
     'county-road': okay, 'road-designer': okay,
 
     'dim-lights': poor, 'city-street': poor, 'wobbly-lane': poor, 'flickering-signals': poor, 'detour': poor,
-    'dark-alley': poor, 'dirt-road': poor, 'surveyor': poor,
+    'dark-alley': poor, 'surveyor': poor,
 
     'flickering': worst, 'dirt-road': worst, 'weaving': worst, 'mixed-signals': worst, 'scenic-route': worst,
     'abandoned-road': worst, 'no-road': worst, 'impassable': worst, 'pothole': worst,

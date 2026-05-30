@@ -528,7 +528,7 @@ export function computeDurability(threads: Thread[]): number {
  * generateLoomRecommendations(threads, fabrics, stats) // string[]
  */
 export function generateLoomRecommendations(
-  threads: Thread[],
+  _threads: Thread[],
   fabrics: Fabric[],
   stats: LoomStats,
 ): string[] {
@@ -566,13 +566,13 @@ export function buildLoomResult(
   const dependentMap = new Map<string, string[]>()
 
   for (let i = 0; i < files.length; i++) {
-    const matches = contents[i].matchAll(IMPORT_RE)
+    const matches = (contents[i] ?? '').matchAll(IMPORT_RE)
     const importedPaths: string[] = []
     for (const m of matches) {
-      importedPaths.push(m[1])
+if (m[1] !== undefined) importedPaths.push(m[1])
     }
-    importMap.set(files[i], importedPaths)
-    dependentMap.set(files[i], [])
+    importMap.set(files[i] ?? '', importedPaths)
+    dependentMap.set(files[i] ?? '', [])
   }
 
   for (const [file, imports] of importMap) {
@@ -588,9 +588,9 @@ export function buildLoomResult(
 
   const threads: Thread[] = []
   for (let i = 0; i < files.length; i++) {
-    const fileImports = importMap.get(files[i]) ?? []
-    const fileDependents = dependentMap.get(files[i]) ?? []
-    threads.push(analyzeThread(contents[i], files[i], fileImports, fileDependents))
+    const fileImports = importMap.get(files[i] ?? '') ?? []
+    const fileDependents = dependentMap.get(files[i] ?? '') ?? []
+    threads.push(analyzeThread(contents[i] ?? '',files[i] ?? '', fileImports, fileDependents))
   }
 
   const dirMap = new Map<string, Thread[]>()
@@ -662,8 +662,8 @@ function computeStats(threads: Thread[], fabrics: Fabric[]): LoomStats {
   const overallWeaveQuality = totalFiles > 0 ? Math.round(threads.reduce((s, t) => s + t.quality, 0) / totalFiles) : 0
 
   const sortedByQuality = [...threads].sort((a, b) => b.quality - a.quality)
-  const masterWeaver = sortedByQuality.length > 0 ? sortedByQuality[0].file : 'none'
-  const apprenticeWork = sortedByQuality.length > 0 ? sortedByQuality[sortedByQuality.length - 1].file : 'none'
+  const masterWeaver = sortedByQuality.length > 0 ? sortedByQuality[0]?.file : 'none'
+  const apprenticeWork = sortedByQuality.length > 0 ? sortedByQuality[sortedByQuality.length - 1]?.file : 'none'
 
   const weaveCounts = new Map<string, number>()
   for (const f of fabrics) {
@@ -710,8 +710,8 @@ function computeStats(threads: Thread[], fabrics: Fabric[]): LoomStats {
     pristineFabrics,
     tornFabrics,
     overallWeaveQuality,
-    masterWeaver,
-    apprenticeWork,
+    masterWeaver: masterWeaver ?? '',
+    apprenticeWork: apprenticeWork ?? '',
     dominantWeave,
     dominantMaterial,
     weaverGrade,

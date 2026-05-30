@@ -106,7 +106,7 @@ export class GraphVisualizer {
     }
 
     let roots: string[] = []
-    for (const [id, degree] of inDegree) {
+    for (const [id, degree] of Array.from(inDegree)) {
       if (degree === 0) {
         roots.push(id)
       }
@@ -127,8 +127,9 @@ export class GraphVisualizer {
       const queue: Array<{ id: string; depth: number }> = [
         { id: startId, depth: startDepth },
       ]
-      while (queue.length > 0) {
-        const item = queue.shift()!
+      let _qi = 0
+      while (_qi < queue.length) {
+        const item = queue[_qi++]!
         if (visited.has(item.id)) continue
         visited.add(item.id)
         order.push(item.id)
@@ -172,9 +173,10 @@ export class GraphVisualizer {
     const stack: Array<{ id: string; depth: number }> = [
       { id: rootId, depth: 0 },
     ]
+    let _qi = 0
 
-    while (stack.length > 0) {
-      const item = stack.shift()!
+    while (_qi < stack.length) {
+      const item = stack[_qi++]
       if (visited.has(item.id)) continue
       visited.add(item.id)
       order.push(item.id)
@@ -217,15 +219,16 @@ export class GraphVisualizer {
     }
 
     const queue: string[] = []
-    for (const [id, degree] of inDegree) {
+    for (const [id, degree] of Array.from(inDegree)) {
       if (degree === 0) {
         queue.push(id)
       }
     }
 
     const result: string[] = []
-    while (queue.length > 0) {
-      const nodeId = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const nodeId = queue[_qi++]!
       result.push(nodeId)
       const neighbors = adj.get(nodeId) ?? []
       for (const neighbor of neighbors) {
@@ -258,7 +261,7 @@ export class GraphVisualizer {
       nodeGroups.get(group)!.push(node)
     }
 
-    for (const [group, nodes] of nodeGroups) {
+    for (const [group, nodes] of Array.from(nodeGroups)) {
       if (nodeGroups.size > 1) {
         lines.push('  subgraph "cluster_' + group + '" {')
         lines.push('    label="' + group + '";')

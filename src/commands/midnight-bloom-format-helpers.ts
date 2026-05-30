@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { FlowerCondition, GardenCondition, Moonflower, MoonGarden, MidnightBloomStats, MidnightBloomResult } from './midnight-bloom-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorGardenCondition(condition: GardenCondition | string): strin
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatFlowerTable(flower) */
 export function formatFlowerTable(flower: Moonflower): string {

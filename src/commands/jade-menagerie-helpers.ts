@@ -658,7 +658,7 @@ export async function buildJadeMenagerieResult(
 export function generateRecommendations(
   creatures: JadeCreature[],
   galleries: JadeGallery[],
-  palace: JadeMenagerieResult['palace'],
+  _palace: JadeMenagerieResult['palace'],
   stats: JadeMenagerieResult['stats'],
 ): string[] {
   const recs: string[] = []

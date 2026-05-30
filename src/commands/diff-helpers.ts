@@ -116,7 +116,7 @@ function parseFileChunk(chunk: string): FileDiff | null {
     if (rawLine.startsWith('--- ')) {
       const match = rawLine.match(/^--- (?:a\/)?(.*)$/)
       if (match) {
-        const path = match[1]!
+        const path = match[1] ?? ''
         if (path === '/dev/null') {
           status = 'added'
         } else if (!filePath) {
@@ -130,7 +130,7 @@ function parseFileChunk(chunk: string): FileDiff | null {
     if (rawLine.startsWith('+++ ')) {
       const match = rawLine.match(/^\+\+\+ (?:b\/)?(.*)$/)
       if (match) {
-        const path = match[1]!
+        const path = match[1] ?? ''
         if (path === '/dev/null') {
           status = 'deleted'
         } else {

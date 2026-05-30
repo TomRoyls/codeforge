@@ -159,8 +159,8 @@ export function parseGitLogForPeriods(logOutput: string, period: PeriodType): Pe
       if (parts.length >= 3) {
         const a = parts[0]
         const d = parts[1]
-        const linesAdded = a === '-' ? 0 : (parseInt(a, 10) || 0)
-        const linesDeleted = d === '-' ? 0 : (parseInt(d, 10) || 0)
+        const linesAdded = a === '-' ? 0 : (parseInt(a ?? '', 10) || 0)
+        const linesDeleted = d === '-' ? 0 : (parseInt(d ?? '', 10) || 0)
         added += linesAdded
         deleted += linesDeleted
         files++
@@ -237,8 +237,8 @@ export function parseFileChurn(numstatOutput: string): FileChurn[] {
 
         if (!filePath) continue
 
-        const linesAdded = a === '-' ? 0 : (parseInt(a, 10) || 0)
-        const linesDeleted = d === '-' ? 0 : (parseInt(d, 10) || 0)
+        const linesAdded = a === '-' ? 0 : (parseInt(a ?? '', 10) || 0)
+        const linesDeleted = d === '-' ? 0 : (parseInt(d ?? '', 10) || 0)
 
         filesInCommit.add(filePath)
 

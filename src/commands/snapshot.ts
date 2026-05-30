@@ -1,7 +1,5 @@
 import { Args, Command, Flags } from '@oclif/core'
-import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { resolve } from 'node:path'
 import ora from 'ora'
 
 import {

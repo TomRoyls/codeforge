@@ -654,7 +654,7 @@ export async function buildCrystalSentinelResult(
 export function generateRecommendations(
   watches: CrystalWatch[],
   towers: CrystalTower[],
-  garrison: CrystalSentinelResult['garrison'],
+  _garrison: CrystalSentinelResult['garrison'],
   stats: CrystalSentinelResult['stats'],
 ): string[] {
   const recs: string[] = []

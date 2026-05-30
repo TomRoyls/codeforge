@@ -242,7 +242,7 @@ function computeJsDocCoverage(lines: string[]): number {
 
   let documented = 0
   for (let i = 0; i < lines.length; i++) {
-    if (/^\s*export\s/.test(lines[i]) && !/^\s*\/\//.test(lines[i])) {
+    if (/^\s*export\s/.test(lines[i] ?? '') && !/^\s*\/\//.test(lines[i] ?? '')) {
       if (i > 0 && /\*\//.test(lines[i - 1] ?? '')) documented++
       else if (i > 1 && /\*\//.test(lines[i - 2] ?? '') && /^\s*\*\s*$/.test(lines[i - 1] ?? '')) documented++
     }
@@ -325,7 +325,7 @@ export function generateFileRecommendations(
     recs.push('High priority: file needs significant stabilization effort')
   }
 
-  const weakest = factors.reduce((w, f) => f.score < w.score ? f : w, factors[0])
+  const weakest = factors.reduce((w, f) => f.score < w.score ? f : w, factors[0] as typeof factors[number])
   if (weakest && weakest.score < 50) {
     recs.push(`Weakest factor: ${weakest.name} (${weakest.score}/100) — ${weakest.evidence}`)
   }

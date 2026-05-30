@@ -882,7 +882,7 @@ export async function buildEmeraldThroneResult(
 export function generateRecommendations(
   seats: EmeraldSeat[],
   courts: EmeraldCourt[],
-  kingdom: EmeraldThroneResult['kingdom'],
+  _kingdom: EmeraldThroneResult['kingdom'],
   stats: EmeraldThroneStats,
 ): string[] {
   const recs: string[] = []

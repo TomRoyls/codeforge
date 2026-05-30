@@ -1,20 +1,9 @@
 import chalk from 'chalk'
 
+import { formatNumber, padRight, padLeft } from '../utils/format-utils.js'
 import type { GitStatsResult } from './gitstats-helpers.js'
 
 // ─── Number formatting ───────────────────────────────────
-
-/**
- * Format a number with comma separators.
- *
- * @example
- * ```ts
- * formatNumber(1234567) // '1,234,567'
- * ```
- */
-export function formatNumber(n: number): string {
-  return n.toLocaleString('en-US')
-}
 
 // ─── Bar chart ───────────────────────────────────────────
 
@@ -62,16 +51,6 @@ export function formatGitStatsJson(result: GitStatsResult): string {
 }
 
 // ─── Table formatting ────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /**
  * Format GitStatsResult as a colored table with sections.

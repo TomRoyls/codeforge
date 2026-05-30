@@ -181,7 +181,7 @@ export function buildInteractiveMenu(entries: CommandEntry[], recentCommands: st
     if (commands && commands.length > 0) {
       categories.push({
         commands,
-        icon: CATEGORY_MAP[catName].icon,
+        icon: CATEGORY_MAP[catName]?.icon ?? '',
         name: catName,
       })
     }
@@ -296,7 +296,7 @@ export function getCommandsByCategory(entries: CommandEntry[], category: string)
  * result.menu.totalCommands // 50
  * ```
  */
-export function buildInteractiveResult(cwd: string, options: InteractiveMenuOptions): InteractiveResult {
+export function buildInteractiveResult(cwd: string, _options: InteractiveMenuOptions): InteractiveResult {
   const commandsDir = resolve(cwd, 'src', 'commands')
   const rawEntries = buildCommandEntries(commandsDir)
   const entries = categorizeCommands(rawEntries)

@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'golden-ratio': best, 'golden-section': best, 'elegant-curve': best, 'logarithmic-perfection': best, 'symphonic-growth': best,
     'golden-masterpiece': best, 'spiral-galaxy': best, 'golden-age': best, 'golden-architect': best,
 
@@ -58,7 +58,7 @@ export function colorGrade(grade: string): string {
     'broken-coil': worst, 'irregular': worst, 'primitive': worst, 'novice': worst,
 
     'no-growth': worst, 'distorted': worst, 'no-expansion': worst, 'broken-path': worst, 'implosion': worst,
-    'straight-line': worst, 'void': worst, 'void': worst, 'square-peg': worst,
+    'straight-line': worst, 'void': worst, 'square-peg': worst,
   }
   return (tierMap[g] ?? low)(grade)
 }

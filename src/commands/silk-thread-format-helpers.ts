@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'spider-silk': best, 'damask': best, 'uniform-color': best, 'master-loom': best, 'egyptian-cotton': best,
     'master-weaver': best, 'silk-mill': best, 'luxury-fabric': best,
 

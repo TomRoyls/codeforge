@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { NestCondition, FeatherCondition, RubyFeather, RubyNest, RubyPhoenixStats, RubyPhoenixResult } from './ruby-phoenix-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorNestCondition(condition: NestCondition | string): string {
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatFeatherTable(feather) */
 export function formatFeatherTable(feather: RubyFeather): string {

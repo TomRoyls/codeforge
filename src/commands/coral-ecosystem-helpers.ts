@@ -9,19 +9,12 @@ const INTERFACE_REGEX = /\binterface\s+\w+/g
 const TYPE_REGEX = /\btype\s+\w+/g
 const ENUM_REGEX = /\benum\s+\w+/g
 const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
-const BLOCK_COMMENT_REGEX = /\/\*[\s\S]*?\*\//g
 const ASYNC_REGEX = /\basync\s+/g
 const TRY_CATCH_REGEX = /\btry\s*\{/g
-const CATCH_REGEX = /\bcatch\b/g
-const FINALLY_REGEX = /\bfinally\b/g
-const THROW_REGEX = /\bthrow\b/g
-const IF_REGEX = /\bif\s*\(/g
-const FOR_REGEX = /\bfor\s*[\(;]/g
 const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
 const TERNARY_REGEX = /\?[^:]+:/g
 const CONSOLE_REGEX = /\bconsole\.\w+/g
 const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
-const ERROR_REGEX = /\bnew\s+Error\b/g
 const GENERICS_REGEX = /<[^>]+>/g
 const PRIVATE_REGEX = /private\s+/g
 const PROTECTED_REGEX = /protected\s+/g
@@ -31,8 +24,6 @@ const READONLY_REGEX = /\breadonly\b/g
 const ANY_REGEX = /\bany\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
 const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
-const COMMENT_REGEX = /\/\/.*$/gm
-const DEFAULT_EXPORT_REGEX = /\bexport\s+default\b/g
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
@@ -343,7 +334,6 @@ export function measurePolyp(content: string): PolypMeasure {
   const classes = countClasses(content)
   const interfaces = countInterfaces(content)
   const enums = countEnums(content)
-  const jsdoc = countJSDoc(content)
   const accessMods = countAccessModifiers(content)
   const readonlyCount = countReadonly(content)
 

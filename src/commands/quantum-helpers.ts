@@ -95,16 +95,20 @@ export function detectSuperpositions(content: string): SuperPosition[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     const unionTypes = Array.from(line.matchAll(/(\w+)\s*:\s*([\w\s|]+?)(?:\s*[=;,\)\n]|$)/g))
     for (const m of unionTypes) {
-      if (!m[2].includes('|')) continue
-      const typeParts = m[2].split('|').map(s => s.trim()).filter(Boolean)
+      const element = m[1]
+      const typeStr = m[2]
+      if (!element || !typeStr) continue
+      if (!typeStr.includes('|')) continue
+      const typeParts = typeStr.split('|').map(s => s.trim()).filter(Boolean)
       if (typeParts.length >= 2) {
         const prob = Math.round(100 / typeParts.length)
         superpositions.push({
-          element: m[1],
+          element,
           possibleStates: typeParts,
           probability: typeParts.map(() => prob),
           isCollapsed: false,
@@ -116,8 +120,10 @@ export function detectSuperpositions(content: string): SuperPosition[] {
 
     const optionalChains = Array.from(line.matchAll(/(\w+)\?\./g))
     for (const m of optionalChains) {
+      const element = m[1]
+      if (!element) continue
       superpositions.push({
-        element: m[1],
+        element,
         possibleStates: ['defined', 'undefined'],
         probability: [70, 30],
         isCollapsed: false,
@@ -128,8 +134,10 @@ export function detectSuperpositions(content: string): SuperPosition[] {
 
     const ternaryMatches = Array.from(line.matchAll(/(\w+)\s*=\s*[^?]+\?/g))
     for (const m of ternaryMatches) {
+      const element = m[1]
+      if (!element) continue
       superpositions.push({
-        element: m[1],
+        element,
         possibleStates: ['truthy-branch', 'falsy-branch'],
         probability: [50, 50],
         isCollapsed: false,
@@ -140,8 +148,10 @@ export function detectSuperpositions(content: string): SuperPosition[] {
 
     const overloadedReturns = Array.from(line.matchAll(/(\w+)\s*\([^)]*\)\s*:\s*\(/g))
     for (const m of overloadedReturns) {
+      const element = m[1]
+      if (!element) continue
       superpositions.push({
-        element: m[1],
+        element,
         possibleStates: ['overload-a', 'overload-b'],
         probability: [50, 50],
         isCollapsed: false,
@@ -221,28 +231,36 @@ export function detectEntanglements(files: string[], contents: string[]): Entang
   const globals = new Map<string, string[]>()
 
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
 
     const exportMatches = Array.from(content.matchAll(/export\s+(?:const|let|var|function|class|type|interface)\s+(\w+)/g))
     for (const m of exportMatches) {
-      const existing = exports.get(m[1]) ?? []
-      existing.push(files[i])
-      exports.set(m[1], existing)
+      const name = m[1]
+      if (!name) continue
+      const existing = exports.get(name) ?? []
+      existing.push(file)
+      exports.set(name, existing)
     }
 
     const importMatches = Array.from(content.matchAll(/import\s+.*?\{([^}]+)\}/g))
     for (const m of importMatches) {
-      const names = m[1].split(',').map(s => s.trim()).filter(Boolean)
-      const existing = imports.get(files[i]) ?? []
+      const importStr = m[1]
+      if (!importStr) continue
+      const names = importStr.split(',').map(s => s.trim()).filter(Boolean)
+      const existing = imports.get(file) ?? []
       existing.push(...names)
-      imports.set(files[i], existing)
+      imports.set(file, existing)
     }
 
     const globalMatches = Array.from(content.matchAll(/(?:globalThis|window|global)\.(\w+)/g))
     for (const m of globalMatches) {
-      const existing = globals.get(m[1]) ?? []
-      if (!existing.includes(files[i])) existing.push(files[i])
-      globals.set(m[1], existing)
+      const name = m[1]
+      if (!name) continue
+      const existing = globals.get(name) ?? []
+      if (!existing.includes(file)) existing.push(file)
+      globals.set(name, existing)
     }
   }
 
@@ -250,8 +268,11 @@ export function detectEntanglements(files: string[], contents: string[]): Entang
     if (filesSharing.length >= 2) {
       for (let a = 0; a < filesSharing.length; a++) {
         for (let b = a + 1; b < filesSharing.length; b++) {
+          const fileA = filesSharing[a]
+          const fileB = filesSharing[b]
+          if (!fileA || !fileB) continue
           entanglements.push({
-            pair: [filesSharing[a], filesSharing[b]],
+            pair: [fileA, fileB],
             strength: 90,
             type: 'state',
             isQuantum: true,
@@ -267,8 +288,11 @@ export function detectEntanglements(files: string[], contents: string[]): Entang
     if (exporterFiles.length > 1) {
       for (let a = 0; a < exporterFiles.length; a++) {
         for (let b = a + 1; b < exporterFiles.length; b++) {
+          const fileA = exporterFiles[a]
+          const fileB = exporterFiles[b]
+          if (!fileA || !fileB) continue
           entanglements.push({
-            pair: [exporterFiles[a], exporterFiles[b]],
+            pair: [fileA, fileB],
             strength: 40,
             type: 'data',
             isQuantum: false,
@@ -280,15 +304,17 @@ export function detectEntanglements(files: string[], contents: string[]): Entang
     }
 
     for (let i = 0; i < files.length; i++) {
-      const importedNames = imports.get(files[i]) ?? []
-      if (importedNames.includes(name) && !exporterFiles.includes(files[i])) {
+      const file = files[i]
+      if (!file) continue
+      const importedNames = imports.get(file) ?? []
+      if (importedNames.includes(name) && !exporterFiles.includes(file)) {
         for (const exporter of exporterFiles) {
           const existing = entanglements.find(e =>
-            e.pair[0] === exporter && e.pair[1] === files[i] && e.description.includes(name),
+            e.pair[0] === exporter && e.pair[1] === file && e.description.includes(name),
           )
           if (!existing) {
             entanglements.push({
-              pair: [exporter, files[i]],
+              pair: [exporter, file],
               strength: 60,
               type: 'behavior',
               isQuantum: false,
@@ -322,10 +348,9 @@ export function detectTunnelingPaths(content: string): TunnelingPath[] {
   if (content.trim().length === 0) return []
 
   const tunnels: TunnelingPath[] = []
-  const lines = content.split('\n')
 
   const catchContinue = Array.from(content.matchAll(/catch\s*\([^)]*\)\s*\{[^}]*\bcontinue\b/g))
-  for (const m of catchContinue) {
+  for (const _m of catchContinue) {
     tunnels.push({
       from: 'try-catch',
       to: 'loop-continue',
@@ -336,7 +361,7 @@ export function detectTunnelingPaths(content: string): TunnelingPath[] {
   }
 
   const catchBreak = Array.from(content.matchAll(/catch\s*\([^)]*\)\s*\{[^}]*\bbreak\b/g))
-  for (const m of catchBreak) {
+  for (const _m of catchBreak) {
     tunnels.push({
       from: 'try-catch',
       to: 'loop-break',
@@ -347,7 +372,7 @@ export function detectTunnelingPaths(content: string): TunnelingPath[] {
   }
 
   const catchReturn = Array.from(content.matchAll(/catch\s*\([^)]*\)\s*\{[^}]*\breturn\b/g))
-  for (const m of catchReturn) {
+  for (const _m of catchReturn) {
     tunnels.push({
       from: 'try-catch',
       to: 'early-return',
@@ -369,7 +394,7 @@ export function detectTunnelingPaths(content: string): TunnelingPath[] {
   }
 
   const nestedReturns = Array.from(content.matchAll(/\b(?:finally)\s*\{[^}]*\breturn\b/g))
-  for (const m of nestedReturns) {
+  for (const _m of nestedReturns) {
     tunnels.push({
       from: 'finally',
       to: 'return-override',
@@ -380,7 +405,7 @@ export function detectTunnelingPaths(content: string): TunnelingPath[] {
   }
 
   const emptyCatch = Array.from(content.matchAll(/catch\s*\([^)]*\)\s*\{\s*\}/g))
-  for (const m of emptyCatch) {
+  for (const _m of emptyCatch) {
     tunnels.push({
       from: 'try',
       to: 'swallowed-error',
@@ -391,7 +416,7 @@ export function detectTunnelingPaths(content: string): TunnelingPath[] {
   }
 
   const throwInCatch = Array.from(content.matchAll(/catch\s*\([^)]*\)\s*\{[^}]*\bthrow\b/g))
-  for (const m of throwInCatch) {
+  for (const _m of throwInCatch) {
     tunnels.push({
       from: 'catch',
       to: 'rethrown-error',
@@ -530,8 +555,10 @@ export function buildQuantumResult(files: string[], contents: string[], _options
   const allTunnels: TunnelingPath[] = []
 
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
-    const state = analyzeState(content, files[i])
+    const state = analyzeState(content, file)
     const tunnels = detectTunnelingPaths(content)
     allTunnels.push(...tunnels)
     states.push(state)

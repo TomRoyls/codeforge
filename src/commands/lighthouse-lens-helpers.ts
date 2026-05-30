@@ -915,7 +915,7 @@ export function classifyKeeperGrade(avgIllumination: number): LighthouseLensStat
  * generateRecommendations(readings, stations, service, stats) // ['Add JSDoc...']
  */
 export function generateRecommendations(
-  readings: LensReading[],
+  _readings: LensReading[],
   _stations: CoastalStation[],
   _service: LighthouseService,
   stats: LighthouseLensStats,
@@ -997,19 +997,19 @@ export function buildLighthouseLensResult(
   }
 
   const bestReading = readings.length > 0
-    ? readings.reduce((best, r) => r.qualityScore > best.qualityScore ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.qualityScore > best.qualityScore ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const brightestBeam = readings.length > 0
-    ? readings.reduce((best, r) => r.beamIntensity > best.beamIntensity ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.beamIntensity > best.beamIntensity ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const clearestLens = readings.length > 0
-    ? readings.reduce((best, r) => r.lensQuality > best.lensQuality ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.lensQuality > best.lensQuality ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const sharpestFocus = readings.length > 0
-    ? readings.reduce((best, r) => r.focalPrecision > best.focalPrecision ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.focalPrecision > best.focalPrecision ? r : best, readings[0] as typeof readings[number]).file
     : ''
   const bestWarning = readings.length > 0
-    ? readings.reduce((best, r) => r.warningSystem > best.warningSystem ? r : best, readings[0]).file
+    ? readings.reduce((best, r) => r.warningSystem > best.warningSystem ? r : best, readings[0] as typeof readings[number]).file
     : ''
 
   const stats: LighthouseLensStats = {

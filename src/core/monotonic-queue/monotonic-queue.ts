@@ -3,6 +3,7 @@ import { defaultComparator } from './types.js'
 
 export class MonotonicQueue<T> {
   private deque: T[] = []
+  private _frontIdx = 0
   private compare: (a: T, b: T) => number
   private dir: 'increasing' | 'decreasing'
 
@@ -11,17 +12,28 @@ export class MonotonicQueue<T> {
     this.dir = options?.direction ?? 'decreasing'
   }
 
+  private get _size(): number {
+    return this.deque.length - this._frontIdx
+  }
+
+  private _maybeCompact(): void {
+    if (this._frontIdx > 64 && this._frontIdx > this.deque.length >> 1) {
+      this.deque = this.deque.slice(this._frontIdx)
+      this._frontIdx = 0
+    }
+  }
+
   push(value: T): void {
     if (this.dir === 'decreasing') {
       while (
-        this.deque.length > 0 &&
+        this.deque.length > this._frontIdx &&
         this.compare(this.deque[this.deque.length - 1]!, value) < 0
       ) {
         this.deque.pop()
       }
     } else {
       while (
-        this.deque.length > 0 &&
+        this.deque.length > this._frontIdx &&
         this.compare(this.deque[this.deque.length - 1]!, value) > 0
       ) {
         this.deque.pop()
@@ -31,39 +43,45 @@ export class MonotonicQueue<T> {
   }
 
   pop(): T | undefined {
-    return this.deque.shift()
+    if (this._frontIdx >= this.deque.length) return undefined
+    const value = this.deque[this._frontIdx]!
+    this._frontIdx++
+    this._maybeCompact()
+    return value
   }
 
   popIfFront(value: T): boolean {
-    if (this.deque.length > 0 && this.compare(this.deque[0]!, value) === 0) {
-      this.deque.shift()
+    if (this._frontIdx < this.deque.length && this.compare(this.deque[this._frontIdx]!, value) === 0) {
+      this._frontIdx++
+      this._maybeCompact()
       return true
     }
     return false
   }
 
   front(): T | undefined {
-    return this.deque[0]
+    return this._frontIdx < this.deque.length ? this.deque[this._frontIdx] : undefined
   }
 
   back(): T | undefined {
-    return this.deque[this.deque.length - 1]
+    return this.deque.length > this._frontIdx ? this.deque[this.deque.length - 1] : undefined
   }
 
   size(): number {
-    return this.deque.length
+    return this._size
   }
 
   isEmpty(): boolean {
-    return this.deque.length === 0
+    return this._frontIdx >= this.deque.length
   }
 
   clear(): void {
     this.deque = []
+    this._frontIdx = 0
   }
 
   toArray(): T[] {
-    return [...this.deque]
+    return this.deque.slice(this._frontIdx)
   }
 
   clone(): MonotonicQueue<T> {
@@ -71,13 +89,14 @@ export class MonotonicQueue<T> {
       comparator: this.compare,
       direction: this.dir,
     })
-    q.deque = [...this.deque]
+    q.deque = this.deque.slice(this._frontIdx)
+    q._frontIdx = 0
     return q
   }
 
   *[Symbol.iterator](): Iterator<T> {
-    for (const item of this.deque) {
-      yield item
+    for (let i = this._frontIdx; i < this.deque.length; i++) {
+      yield this.deque[i]!
     }
   }
 

@@ -46,14 +46,17 @@ export function ruleConsoleLog(content: string, filePath: string): Suggestion[] 
   const pattern = /console\.(log|warn|error|debug)\s*\(/
 
   for (let i = 0; i < lines.length; i++) {
-    const match = pattern.exec(lines[i])
+    const line = lines[i]
+    if (!line) continue
+    const match = pattern.exec(line)
     if (match) {
+      const kind = match[1] ?? 'log'
       suggestions.push({
         rule: 'console-log',
         category: 'quality',
         severity: 'medium',
-        title: `Console statement (${match[1]}) detected`,
-        description: `Use of console.${match[1]} found in production code. Consider replacing with a proper logging library.`,
+        title: `Console statement (${kind}) detected`,
+        description: `Use of console.${kind} found in production code. Consider replacing with a proper logging library.`,
         filePath,
         line: i + 1,
         suggestion: 'Remove or replace with proper logging library',
@@ -84,6 +87,7 @@ export function ruleAnyType(content: string, filePath: string): Suggestion[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     // Skip comments
     const trimmed = line.trim()
     if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) {
@@ -130,6 +134,7 @@ export function ruleTsIgnore(content: string, filePath: string): Suggestion[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/@ts-ignore/.exec(line) || /@ts-expect-error/.exec(line)) {
       const kind = /@ts-ignore/.exec(line) ? '@ts-ignore' : '@ts-expect-error'
       suggestions.push({
@@ -206,7 +211,9 @@ export function ruleLongFunction(content: string, filePath: string): Suggestion[
     /(?:function\s+\w+|(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?(?:\([^)]*\)|[^=])\s*=>|(?:(?:public|private|protected|static|async)\s+)*\w+\s*\([^)]*\)\s*(?::\s*[^{]+)?\s*\{)/
 
   for (let i = 0; i < lines.length; i++) {
-    if (functionStartPattern.exec(lines[i])) {
+    const lineI = lines[i]
+    if (!lineI) continue
+    if (functionStartPattern.exec(lineI)) {
       const startLine = i
       let depth = 0
       let endLine = i
@@ -214,6 +221,7 @@ export function ruleLongFunction(content: string, filePath: string): Suggestion[
 
       for (let j = i; j < lines.length; j++) {
         const line = lines[j]
+        if (!line) continue
         for (const ch of line) {
           if (ch === '{') {
             depth++
@@ -273,6 +281,7 @@ export function ruleDeepNesting(content: string, filePath: string): Suggestion[]
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const trimmed = line.trim()
 
     // Skip blank lines and comments
@@ -307,7 +316,8 @@ export function ruleDeepNesting(content: string, filePath: string): Suggestion[]
   // Deduplicate by keeping only first per consecutive group
   const deduped: Suggestion[] = []
   for (const s of suggestions) {
-    if (deduped.length === 0 || s.line - deduped[deduped.length - 1].line > 5) {
+    const last = deduped[deduped.length - 1]
+    if (deduped.length === 0 || (last && s.line - last.line > 5)) {
       deduped.push(s)
     }
   }
@@ -338,6 +348,7 @@ export function ruleMagicNumbers(content: string, filePath: string): Suggestion[
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const trimmed = line.trim()
 
     // Skip comments, imports, exports, strings
@@ -353,8 +364,8 @@ export function ruleMagicNumbers(content: string, filePath: string): Suggestion[
 
     const matches = line.matchAll(numberPattern)
     for (const match of matches) {
-      const num = match[1]
-      if (skipNumbers.has(num)) continue
+      const num = match[1] ?? ''
+      if (!num || skipNumbers.has(num)) continue
       // Skip numbers that look like port numbers (4-5 digits starting with common ranges)
       const numVal = Number.parseFloat(num)
       if (Number.isInteger(numVal) && numVal >= 1024 && numVal <= 65535) continue
@@ -395,6 +406,7 @@ export function ruleEmptyCatch(content: string, filePath: string): Suggestion[] 
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     // Match catch blocks that are empty or contain only whitespace
     const inlinePattern = /catch\s*(?:\([^)]*\))?\s*\{\s*\}/
     if (inlinePattern.exec(line)) {
@@ -414,10 +426,12 @@ export function ruleEmptyCatch(content: string, filePath: string): Suggestion[] 
 
     // Multi-line empty catch: catch (e) { \n }
     const catchStart = /catch\s*(?:\([^)]*\))?\s*\{\s*$/
-    if (catchStart.exec(lines[i])) {
+    if (catchStart.exec(line)) {
       // Check if the next non-empty line is just }
       for (let j = i + 1; j < lines.length && j <= i + 3; j++) {
-        const nextTrimmed = lines[j].trim()
+        const nextLine = lines[j]
+        if (!nextLine) continue
+        const nextTrimmed = nextLine.trim()
         if (nextTrimmed.length === 0) continue
         if (nextTrimmed === '}') {
           suggestions.push({
@@ -461,14 +475,16 @@ export function ruleTodoComments(content: string, filePath: string): Suggestion[
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const todoMatch = todoPattern.exec(line)
     if (todoMatch && !issuePattern.exec(line)) {
+      const kind = (todoMatch[1] ?? 'TODO').toUpperCase()
       suggestions.push({
         rule: 'todo-no-issue',
         category: 'maintenance',
         severity: 'low',
-        title: `${todoMatch[1].toUpperCase()} without issue reference`,
-        description: `A ${todoMatch[1].toUpperCase()} comment was found without a linked issue number. This makes it hard to track.`,
+        title: `${kind} without issue reference`,
+        description: `A ${kind} comment was found without a linked issue number. This makes it hard to track.`,
         filePath,
         line: i + 1,
         suggestion: 'Link to an issue tracker',
@@ -500,6 +516,7 @@ export function ruleEvalUsage(content: string, filePath: string): Suggestion[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const trimmed = line.trim()
     if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
 
@@ -558,6 +575,7 @@ export function ruleHardcodedStrings(content: string, filePath: string): Suggest
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const trimmed = line.trim()
     if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('import ')) continue
 

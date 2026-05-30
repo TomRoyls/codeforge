@@ -131,16 +131,16 @@ export function parseGitLog(output: string): CommitChange[] {
     const parts = line.split('|')
     if (parts.length < 4) continue
 
-    const hash = parts[0].trim()
+    const hash = parts[0]?.trim()
     commits.push({
       additions: 0,
-      author: parts[1].trim(),
-      date: parts[2].trim(),
+      author: parts[1]?.trim() ?? '',
+      date: parts[2]?.trim() ?? '',
       deletions: 0,
       filesChanged: 0,
-      hash,
+      hash: hash ?? '',
       message: parts.slice(3).join('|').trim(),
-      shortHash: hash.slice(0, 7),
+      shortHash: hash?.slice(0, 7) ?? '',
     })
   }
 

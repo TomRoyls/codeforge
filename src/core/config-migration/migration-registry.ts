@@ -202,9 +202,10 @@ export class MigrationRegistry {
 
     const visited = new Set<string>();
     const queue: { version: ConfigVersion; path: ConfigMigration[] }[] = [{ version: from, path: [] }];
+    let _qi = 0
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
       if (semverCompare(current.version, to) === 0) {
         return current.path;
       }

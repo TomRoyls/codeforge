@@ -278,10 +278,10 @@ export function detectChimeras(file: string, content: string): CreatureSighting[
   for (const imp of imports) {
     const sourceMatch = imp.match(/from\s+['"]([^'"]+)['"]/)
     if (sourceMatch) {
-      const source = sourceMatch[1]!
+      const source = sourceMatch[1] ?? ''
       if (source.startsWith('.')) {
         const parts = source.split('/')
-        if (parts.length > 1) domains.add(parts[1]!)
+        if (parts.length > 1) domains.add(parts[1] ?? '')
       } else {
         const top = source.split('/')[0]!
         domains.add(top)
@@ -497,7 +497,7 @@ export function computeBiodiversity(creatures: Creature[]): number {
  */
 export function generateRecommendations(
   creatures: Creature[],
-  sightings: CreatureSighting[],
+  _sightings: CreatureSighting[],
   stats: BestiaryStats,
 ): string[] {
   const recs: string[] = []
@@ -554,7 +554,7 @@ export function generateRecommendations(
 export function buildBestiaryResult(
   files: string[],
   contents: string[],
-  options: { maxDepth: number },
+  _options: { maxDepth: number },
 ): BestiaryResult {
   const allSightings: CreatureSighting[] = []
 

@@ -7,7 +7,10 @@ import { DEFAULT_SLIDING_AGGREGATE_OPTIONS } from './types.js'
 export class SlidingAggregate<T extends number = number> {
   private _windowSize: number
   private _aggregateFn: NonNullable<SlidingAggregateOptions['aggregateFn']>
-  private buffer: T[] = []
+  private buf: T[] = []
+  private head = 0
+  private tail = 0
+  private count_ = 0
   private _valuesAdded: number = 0
   private _valuesEvicted: number = 0
 
@@ -24,15 +27,23 @@ export class SlidingAggregate<T extends number = number> {
     }
     this._windowSize = merged.windowSize
     this._aggregateFn = merged.aggregateFn ?? 'sum'
+    this.buf = new Array<T>(this._windowSize)
+  }
+
+  private circIndex(i: number): number {
+    return ((i % this._windowSize) + this._windowSize) % this._windowSize
   }
 
   push(value: T): void {
-    this.buffer.push(value)
     this._valuesAdded++
-    if (this.buffer.length > this._windowSize) {
-      this.buffer.shift()
+    if (this.count_ >= this._windowSize) {
+      this.head = this.circIndex(this.head + 1)
+      this.count_--
       this._valuesEvicted++
     }
+    this.buf[this.circIndex(this.tail)] = value
+    this.tail = this.circIndex(this.tail + 1)
+    this.count_++
   }
 
   getAggregate(): T | number | undefined {
@@ -51,49 +62,49 @@ export class SlidingAggregate<T extends number = number> {
   }
 
   getSum(): number {
-    if (this.buffer.length === 0) return 0
+    if (this.count_ === 0) return 0
     let sum = 0
-    for (let i = 0; i < this.buffer.length; i++) {
-      sum += this.buffer[i]!
+    for (let i = 0; i < this.count_; i++) {
+      sum += this.buf[this.circIndex(this.head + i)]!
     }
     return sum
   }
 
   getAvg(): number | undefined {
-    if (this.buffer.length === 0) return undefined
-    return this.getSum() / this.buffer.length
+    if (this.count_ === 0) return undefined
+    return this.getSum() / this.count_
   }
 
   getMin(): T | undefined {
-    if (this.buffer.length === 0) return undefined
-    let min = this.buffer[0]!
-    for (let i = 1; i < this.buffer.length; i++) {
-      const v = this.buffer[i]!
+    if (this.count_ === 0) return undefined
+    let min = this.buf[this.circIndex(this.head)]!
+    for (let i = 1; i < this.count_; i++) {
+      const v = this.buf[this.circIndex(this.head + i)]!
       if (v < min) min = v
     }
     return min
   }
 
   getMax(): T | undefined {
-    if (this.buffer.length === 0) return undefined
-    let max = this.buffer[0]!
-    for (let i = 1; i < this.buffer.length; i++) {
-      const v = this.buffer[i]!
+    if (this.count_ === 0) return undefined
+    let max = this.buf[this.circIndex(this.head)]!
+    for (let i = 1; i < this.count_; i++) {
+      const v = this.buf[this.circIndex(this.head + i)]!
       if (v > max) max = v
     }
     return max
   }
 
   getCount(): number {
-    return this.buffer.length
+    return this.count_
   }
 
   getWindow(): T[] {
-    return [...this.buffer]
+    return this.toArray()
   }
 
   get size(): number {
-    return this.buffer.length
+    return this.count_
   }
 
   get windowSize(): number {
@@ -101,32 +112,44 @@ export class SlidingAggregate<T extends number = number> {
   }
 
   get isEmpty(): boolean {
-    return this.buffer.length === 0
+    return this.count_ === 0
   }
 
   clear(): void {
-    this.buffer = []
+    this.buf = new Array<T>(this._windowSize)
+    this.head = 0
+    this.tail = 0
+    this.count_ = 0
     this._valuesAdded = 0
     this._valuesEvicted = 0
   }
 
   toArray(): T[] {
-    return [...this.buffer]
+    const result: T[] = []
+    for (let i = 0; i < this.count_; i++) {
+      result.push(this.buf[this.circIndex(this.head + i)]!)
+    }
+    return result
   }
 
   forEach(callback: (value: T, index: number) => void): void {
-    for (let i = 0; i < this.buffer.length; i++) {
-      callback(this.buffer[i]!, i)
+    for (let i = 0; i < this.count_; i++) {
+      callback(this.buf[this.circIndex(this.head + i)]!, i)
     }
   }
 
   [Symbol.iterator](): Iterator<T> {
     let index = 0
-    const buf = this.buffer
+    const count = this.count_
+    const head = this.head
+    const buf = this.buf
+    const ws = this._windowSize
     return {
       next(): IteratorResult<T> {
-        if (index < buf.length) {
-          return { value: buf[index++]!, done: false }
+        if (index < count) {
+          const idx = ((head + index) % ws + ws) % ws
+          index++
+          return { value: buf[idx]!, done: false }
         }
         return { value: undefined as unknown as T, done: true }
       },
@@ -137,14 +160,25 @@ export class SlidingAggregate<T extends number = number> {
     if (!Number.isInteger(n) || n < 1) {
       throw new RangeError('windowSize must be a positive integer')
     }
+    const oldData = this.toArray()
     this._windowSize = n
-    while (this.buffer.length > this._windowSize) {
-      this.buffer.shift()
+    this.buf = new Array<T>(n)
+    this.head = 0
+    this.tail = 0
+    this.count_ = 0
+    const start = oldData.length > n ? oldData.length - n : 0
+    for (let i = start; i < oldData.length; i++) {
+      this.buf[this.tail] = oldData[i]!
+      this.tail = this.circIndex(this.tail + 1)
+      this.count_++
     }
   }
 
   reset(): void {
-    this.buffer = []
+    this.buf = new Array<T>(this._windowSize)
+    this.head = 0
+    this.tail = 0
+    this.count_ = 0
     this._valuesAdded = 0
     this._valuesEvicted = 0
   }
@@ -154,7 +188,7 @@ export class SlidingAggregate<T extends number = number> {
       valuesAdded: this._valuesAdded,
       valuesEvicted: this._valuesEvicted,
       windowSize: this._windowSize,
-      currentSize: this.buffer.length,
+      currentSize: this.count_,
     }
   }
 }

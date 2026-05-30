@@ -880,7 +880,7 @@ export async function buildVelvetDarknessResult(
 export function generateRecommendations(
   folds: VelvetFold[],
   curtains: VelvetCurtain[],
-  evening: VelvetDarknessResult['evening'],
+  _evening: VelvetDarknessResult['evening'],
   stats: VelvetDarknessStats,
 ): string[] {
   const recs: string[] = []

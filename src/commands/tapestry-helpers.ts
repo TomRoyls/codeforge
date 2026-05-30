@@ -70,14 +70,14 @@ export function extractThreads(files: string[], contents: string[]): Thread[] {
     const importMatches = content.matchAll(/^import\s+(?:(?:type\s+)?(?:\{[^}]*\}|\*\s+as\s+\w+|\w+))\s+from\s+['"](\.\.?\/[^'"]+)['"]/gm)
     for (const m of importMatches) {
       const importPath = m[1]
-      const resolvedTo = resolveModule(importPath, files)
-      const type = classifyThreadType(file, resolvedTo, files, content)
-      const thickness = computeThreadThickness(content, importPath)
+      const resolvedTo = resolveModule(importPath ?? '', files)
+      const type = classifyThreadType(file ?? '', resolvedTo, files, content)
+      const thickness = computeThreadThickness(content, importPath ?? '')
       const strength = computeThreadStrength(type, thickness)
 
       threads.push({
-        from: file,
-        to: resolvedTo ?? importPath,
+        from: file ?? '',
+        to: resolvedTo ?? importPath ?? '',
         type,
         strength,
         color: threadColor(type),
@@ -88,13 +88,13 @@ export function extractThreads(files: string[], contents: string[]): Thread[] {
     const reExports = content.matchAll(/^export\s+\{[^}]*\}\s+from\s+['"](\.\.?\/[^'"]+)['"]/gm)
     for (const m of reExports) {
       const importPath = m[1]
-      const resolvedTo = resolveModule(importPath, files)
+      const resolvedTo = resolveModule(importPath ?? '', files)
       const type = resolvedTo ? 'weft' : 'broken'
-      const thickness = computeThreadThickness(content, importPath)
+      const thickness = computeThreadThickness(content, importPath ?? '')
 
       threads.push({
-        from: file,
-        to: resolvedTo ?? importPath,
+        from: file ?? '',
+        to: resolvedTo ?? importPath ?? '',
         type,
         strength: computeThreadStrength(type, thickness),
         color: threadColor(type),
@@ -192,7 +192,7 @@ export function computeThreadThickness(content: string, importPath: string): num
   const escaped = importPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const match = content.match(new RegExp(`import\\s+\\{([^}]+)\\}\\s+from\\s+['"]${escaped}['"]`))
   if (match) {
-    return match[1].split(',').filter((s) => s.trim().length > 0).length
+    return (match?.[1]?.split(',').filter((s) => s.trim().length > 0).length ?? 0)
   }
 
   const defaultMatch = content.match(new RegExp(`import\\s+(\\w+)\\s*,?\\s*(?:\\{([^}]*)\\})?\\s+from\\s+['"]${escaped}['"]`))
@@ -482,7 +482,7 @@ export function generateRecommendations(threads: Thread[], sections: TapestrySec
  * @example
  * buildTapestryResult(['a.ts'], ['code'], {})
  */
-export function buildTapestryResult(files: string[], contents: string[], options: Record<string, unknown>): TapestryResult {
+export function buildTapestryResult(files: string[], contents: string[], _options: Record<string, unknown>): TapestryResult {
   if (files.length === 0) {
     const emptyStats: TapestryStats = {
       totalThreads: 0, warpCount: 0, weftCount: 0, looseCount: 0, brokenCount: 0,
@@ -539,7 +539,7 @@ export function buildTapestryResult(files: string[], contents: string[], options
   const tightestSection = sortedByIntegrity[sortedByIntegrity.length - 1]?.name ?? 'none'
 
   const dominantPattern = patterns.length > 0
-    ? patterns.sort((a, b) => b.quality - a.quality)[0].name
+    ? patterns.sort((a, b) => b.quality - a.quality)[0]?.name
     : 'none'
 
   const stats: TapestryStats = {
@@ -551,7 +551,7 @@ export function buildTapestryResult(files: string[], contents: string[], options
     sectionCount: sections.length,
     avgDensity,
     avgIntegrity: overallIntegrity,
-    dominantPattern,
+    dominantPattern: dominantPattern ?? '',
     overallIntegrity,
     tapestryCompleteness,
     loosestSection,

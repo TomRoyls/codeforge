@@ -256,10 +256,10 @@ export function getFunctionSizes(content: string): number[] {
   let depth = 0
   let funcStart = -1
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     for (const ch of line) {
       if (ch === '{') {
-        if (depth === 0 && (/\bfunction\b/.test(lines[i]) || /=>\s*\{/.test(lines[i]) || /=\s*function/.test(lines[i]))) {
+        if (depth === 0 && (/\bfunction\b/.test(lines[i] ?? '') || /=>\s*\{/.test(lines[i] ?? '') || /=\s*function/.test(lines[i] ?? ''))) {
           funcStart = i
         }
         depth++
@@ -329,7 +329,6 @@ export function measureSpacing(content: string): SpacingMeasure {
   const loc = countLoc(content)
   const functions = countFunctions(content)
   const blankGroups = countBlankLineGroups(content)
-  const funcSizes = getFunctionSizes(content)
 
   const betweenFunctions = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
     (functions > 1 && blankGroups >= functions - 1 ? 30 : functions <= 1 ? 20 : 10) +
@@ -609,7 +608,7 @@ export function analyzeBuildingFloor(cells: GridCell[], dirPath: string): Buildi
  * generateRecommendations(cells, floors, building, stats) // string[]
  */
 export function generateRecommendations(
-  cells: GridCell[],
+  _cells: GridCell[],
   floors: BuildingFloor[],
   building: BuildingMeasure,
   stats: BlueprintGridStats,
@@ -657,7 +656,7 @@ export function generateRecommendations(
 export function buildBlueprintGridResult(files: string[], contents: string[], _options: Record<string, unknown>): BlueprintGridResult {
   const cells: GridCell[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeGridCell(content, file)
+    return analyzeGridCell(content ?? '', file)
   })
 
   const dirMap = new Map<string, GridCell[]>()

@@ -77,30 +77,30 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     const lineNum = i + 1
 
     const defaultFunc = line.match(/^export\s+default\s+function\s+(\w+)/)
     if (defaultFunc) {
-      exports.push({ name: defaultFunc[1], file: filePath, line: lineNum, type: 'function', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: defaultFunc[1] ?? '', file: filePath, line: lineNum, type: 'function', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const defaultClass = line.match(/^export\s+default\s+class\s+(\w+)/)
     if (defaultClass) {
-      exports.push({ name: defaultClass[1], file: filePath, line: lineNum, type: 'class', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: defaultClass[1] ?? '', file: filePath, line: lineNum, type: 'class', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const defaultExpr = line.match(/^export\s+default\s+(\w+)/)
     if (defaultExpr && !defaultFunc && !defaultClass) {
-      exports.push({ name: defaultExpr[1], file: filePath, line: lineNum, type: 'default', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: defaultExpr[1] ?? '', file: filePath, line: lineNum, type: 'default', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const reExport = line.match(/^export\s+\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]/);
     if (reExport) {
-      const names = reExport[1].split(',').map((s) => s.trim().split(/\s+as\s+/).pop()!.trim()).filter(Boolean)
+      const names = (reExport[1] ?? '').split(',').map((s) => (s.trim().split(/\s+as\s+/).at(-1) ?? '').trim()).filter(Boolean)
       for (const name of names) {
         exports.push({ name, file: filePath, line: lineNum, type: 'const', isReExport: true, importers: [], importCount: 0 })
       }
@@ -109,55 +109,55 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
 
     const reExportAll = line.match(/^export\s+\*\s+from\s+['"]([^'"]+)['"]/)
     if (reExportAll) {
-      exports.push({ name: `* from ${reExportAll[1]}`, file: filePath, line: lineNum, type: 'const', isReExport: true, importers: [], importCount: 0 })
+      exports.push({ name: `* from ${reExportAll[1] ?? ''}`, file: filePath, line: lineNum, type: 'const', isReExport: true, importers: [], importCount: 0 })
       continue
     }
 
     const namedFunc = line.match(/^export\s+function\s+(\w+)/)
     if (namedFunc) {
-      exports.push({ name: namedFunc[1], file: filePath, line: lineNum, type: 'function', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: namedFunc[1] ?? '', file: filePath, line: lineNum, type: 'function', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const namedClass = line.match(/^export\s+class\s+(\w+)/)
     if (namedClass) {
-      exports.push({ name: namedClass[1], file: filePath, line: lineNum, type: 'class', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: namedClass[1] ?? '', file: filePath, line: lineNum, type: 'class', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const namedInterface = line.match(/^export\s+interface\s+(\w+)/)
     if (namedInterface) {
-      exports.push({ name: namedInterface[1], file: filePath, line: lineNum, type: 'interface', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: namedInterface[1] ?? '', file: filePath, line: lineNum, type: 'interface', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const namedType = line.match(/^export\s+type\s+(\w+)/)
     if (namedType) {
-      exports.push({ name: namedType[1], file: filePath, line: lineNum, type: 'type', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: namedType[1] ?? '', file: filePath, line: lineNum, type: 'type', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const namedEnum = line.match(/^export\s+enum\s+(\w+)/)
     if (namedEnum) {
-      exports.push({ name: namedEnum[1], file: filePath, line: lineNum, type: 'enum', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: namedEnum[1] ?? '', file: filePath, line: lineNum, type: 'enum', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const namedConst = line.match(/^export\s+const\s+(\w+)/)
     if (namedConst) {
-      exports.push({ name: namedConst[1], file: filePath, line: lineNum, type: 'const', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: namedConst[1] ?? '', file: filePath, line: lineNum, type: 'const', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const namedLet = line.match(/^export\s+let\s+(\w+)/)
     if (namedLet) {
-      exports.push({ name: namedLet[1], file: filePath, line: lineNum, type: 'const', isReExport: false, importers: [], importCount: 0 })
+      exports.push({ name: namedLet[1] ?? '', file: filePath, line: lineNum, type: 'const', isReExport: false, importers: [], importCount: 0 })
       continue
     }
 
     const namedExportList = line.match(/^export\s+\{([^}]+)\}/)
     if (namedExportList && !reExport) {
-      const names = namedExportList[1].split(',').map((s) => s.trim().split(/\s+as\s+/).pop()!.trim()).filter(Boolean)
+      const names = (namedExportList[1] ?? '').split(',').map((s) => (s.trim().split(/\s+as\s+/).at(-1) ?? '').trim()).filter(Boolean)
       for (const name of names) {
         exports.push({ name, file: filePath, line: lineNum, type: 'const', isReExport: false, importers: [], importCount: 0 })
       }
@@ -180,47 +180,47 @@ export function extractImports(content: string, filePath: string): ImportDetail[
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     const lineNum = i + 1
 
     const namedImport = line.match(/^import\s+(?:type\s+)?\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]/)
     if (namedImport) {
-      const names = namedImport[1].split(',').map((s) => s.trim().split(/\s+as\s+/)[0].trim()).filter(Boolean)
+      const names = (namedImport[1] ?? '').split(',').map((s) => (s.trim().split(/\s+as\s+/)[0] ?? '').trim()).filter(Boolean)
       for (const name of names) {
-        imports.push({ name, source: namedImport[2], file: filePath, line: lineNum, type: 'named' })
+        imports.push({ name, source: namedImport[2] ?? '', file: filePath, line: lineNum, type: 'named' })
       }
       continue
     }
 
     const defaultImport = line.match(/^import\s+(\w+)\s+from\s+['"]([^'"]+)['"]/)
     if (defaultImport) {
-      imports.push({ name: defaultImport[1], source: defaultImport[2], file: filePath, line: lineNum, type: 'default' })
+      imports.push({ name: defaultImport[1] ?? '', source: defaultImport[2] ?? '', file: filePath, line: lineNum, type: 'default' })
       continue
     }
 
     const nsImport = line.match(/^import\s+\*\s+as\s+(\w+)\s+from\s+['"]([^'"]+)['"]/)
     if (nsImport) {
-      imports.push({ name: nsImport[1], source: nsImport[2], file: filePath, line: lineNum, type: 'namespace' })
+      imports.push({ name: nsImport[1] ?? '', source: nsImport[2] ?? '', file: filePath, line: lineNum, type: 'namespace' })
       continue
     }
 
     const sideEffect = line.match(/^import\s+['"]([^'"]+)['"]/)
     if (sideEffect) {
-      imports.push({ name: '*', source: sideEffect[1], file: filePath, line: lineNum, type: 'named' })
+      imports.push({ name: '*', source: sideEffect[1] ?? '', file: filePath, line: lineNum, type: 'named' })
       continue
     }
 
     const dynamicImport = line.match(/import\s*\(\s*['"]([^'"]+)['"]\s*\)/)
     if (dynamicImport) {
-      imports.push({ name: '*', source: dynamicImport[1], file: filePath, line: lineNum, type: 'dynamic' })
+      imports.push({ name: '*', source: dynamicImport[1] ?? '', file: filePath, line: lineNum, type: 'dynamic' })
       continue
     }
 
     const requireCall = line.match(/(?:const|let|var)\s+\{([^}]+)\}\s*=\s*require\s*\(\s*['"]([^'"]+)['"]?\s*\)/)
     if (requireCall) {
-      const names = requireCall[1].split(',').map((s) => s.trim().split(/\s+as\s+/)[0].trim()).filter(Boolean)
+      const names = (requireCall[1] ?? '').split(',').map((s) => (s.trim().split(/\s+as\s+/)[0] ?? '').trim()).filter(Boolean)
       for (const name of names) {
-        imports.push({ name, source: requireCall[2], file: filePath, line: lineNum, type: 'named' })
+        imports.push({ name, source: requireCall[2] ?? '', file: filePath, line: lineNum, type: 'named' })
       }
     }
   }
@@ -357,7 +357,8 @@ export function computeExportGraphStats(graph: ExportGraph): ExportGraphStats {
   const sorted = [...graph.nodes.flatMap((n) => n.exports)]
     .sort((a, b) => b.importCount - a.importCount)
 
-  const mostUsedExport = sorted.length > 0 && sorted[0].importCount > 0 ? sorted[0] : null
+  const first = sorted[0]
+  const mostUsedExport = first && first.importCount > 0 ? first : null
   const leastUsedExports = sorted.filter((e) => e.importCount === 0 && !e.isReExport).slice(0, 5)
 
   return {

@@ -241,9 +241,10 @@ export class RandomizedMST<V> {
     const parentWeight = new Map<V, number>()
     const queue: V[] = [start]
     visited.add(start)
+    let _qi = 0
 
-    while (queue.length > 0) {
-      const current = queue.shift()!
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!
       if (current === end) break
       for (const { neighbor, weight } of adj.get(current) ?? []) {
         if (!visited.has(neighbor)) {

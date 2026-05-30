@@ -75,17 +75,17 @@ export function scanForTodos(
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
       todoPattern.lastIndex = 0
-      const match = todoPattern.exec(line)
+      const match = todoPattern.exec(line ?? '')
       if (match) {
-        const tag = match[1].toUpperCase()
-        const message = match[2].trim() || 'No description'
+        const tag = match?.[1]?.toUpperCase()
+        const message = match?.[2]?.trim() || 'No description'
         const isFixme = tag === 'FIXME' || tag === 'XXX'
         items.push({
           category: tag === 'HACK' ? 'quality' : 'feature',
           dependencies: [],
           description: `${tag}: ${message}`,
           effort: isFixme ? 4 : 2,
-          evidence: `Found in ${basename(file)}:${i + 1}: "${line.trim()}"`,
+          evidence: `Found in ${basename(file)}:${i + 1}: "${line?.trim()}"`,
           files: [file],
           id: `todo-${file}-${i}`,
           impact: isFixme ? 7 : 5,

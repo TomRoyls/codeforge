@@ -9,9 +9,7 @@ import type {
   SetType,
   SetCondition,
   HorologistGrade,
-  PileShape,
-  GrainSize,
-} from './hourglass-flow-helpers.js'
+  } from './hourglass-flow-helpers.js'
 
 // ─── Condition Colors ────────────────────────────────────
 

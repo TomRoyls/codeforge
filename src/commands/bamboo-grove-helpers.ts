@@ -643,7 +643,6 @@ export function measureRhizome(content: string): RhizomeMeasure {
 export function measureCanopy(content: string): CanopyMeasure {
   const jsdoc = countJSDoc(content)
   const blockComments = countBlockComments(content)
-  const comments = countComments(content)
   const types = countTypeAliases(content)
   const interfaces = countInterfaces(content)
   const generics = countGenerics(content)

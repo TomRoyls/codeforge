@@ -130,11 +130,6 @@ export function formatStats(stats: RoadmapStats): string {
 export function formatRoadmapTable(result: RoadmapResult): string {
   const parts: string[] = []
 
-  const maxEffort = Math.max(
-    ...result.phases.flatMap((p) => p.items.map((i) => i.effort)),
-    1,
-  )
-
   for (const phase of result.phases) {
     parts.push(formatPhase(phase))
   }

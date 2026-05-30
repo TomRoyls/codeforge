@@ -244,9 +244,9 @@ export function identifyPruningTargets(content: string): PruningTarget[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const trimmed = line.trim()
+    const trimmed = line?.trim()
 
-    if (/console\.(log|warn|error|debug|info)\s*\(/.test(trimmed)) {
+    if (/console\.(log|warn|error|debug|info)\s*\(/.test(trimmed ?? '')) {
       targets.push({
         type: 'sucker',
         location: `line ${i + 1}`,
@@ -258,7 +258,7 @@ export function identifyPruningTargets(content: string): PruningTarget[] {
       })
     }
 
-    if (/\bany\b/.test(trimmed) && !trimmed.startsWith('//') && !trimmed.startsWith('*')) {
+    if (/\bany\b/.test(trimmed ?? '') && !trimmed?.startsWith('//') && !trimmed?.startsWith('*')) {
       targets.push({
         type: 'water-sprout',
         location: `line ${i + 1}`,
@@ -270,11 +270,11 @@ export function identifyPruningTargets(content: string): PruningTarget[] {
       })
     }
 
-    if (/\/\/\s*(TODO|FIXME|HACK|XXX|TEMP)\b/i.test(trimmed)) {
+    if (/\/\/\s*(TODO|FIXME|HACK|XXX|TEMP)\b/i.test(trimmed ?? '')) {
       targets.push({
         type: 'deadwood',
         location: `line ${i + 1}`,
-        description: `Technical debt marker: ${trimmed.slice(0, 40)}`,
+        description: `Technical debt marker: ${trimmed?.slice(0, 40)}`,
         impact: 'medium',
         effort: 'easy',
         linesAffected: 1,
@@ -282,7 +282,7 @@ export function identifyPruningTargets(content: string): PruningTarget[] {
       })
     }
 
-    if (trimmed.startsWith('//') && i > 0 && lines[i - 1]?.trim().startsWith('//') && i + 1 < lines.length && lines[i + 1]?.trim().startsWith('//')) {
+    if (trimmed?.startsWith('//') && i > 0 && lines[i - 1]?.trim().startsWith('//') && i + 1 < lines.length && lines[i + 1]?.trim().startsWith('//')) {
       if (!targets.some(t => t.location === `line ${i}`)) {
         targets.push({
           type: 'thinning',
@@ -296,7 +296,7 @@ export function identifyPruningTargets(content: string): PruningTarget[] {
       }
     }
 
-    if (/\b(eval|Function)\s*\(/.test(trimmed)) {
+    if (/\b(eval|Function)\s*\(/.test(trimmed ?? '')) {
       targets.push({
         type: 'dead-branch',
         location: `line ${i + 1}`,
@@ -308,11 +308,11 @@ export function identifyPruningTargets(content: string): PruningTarget[] {
       })
     }
 
-    if (trimmed.length > 150) {
+    if ((trimmed?.length ?? 0) > 150) {
       targets.push({
         type: 'crown-lift',
         location: `line ${i + 1}`,
-        description: `Long line (${trimmed.length} chars): needs abstraction`,
+        description: `Long line (${trimmed?.length} chars): needs abstraction`,
         impact: 'low',
         effort: 'moderate',
         linesAffected: 1,
@@ -751,16 +751,16 @@ export function buildBonsaiTrimResult(
   const deadwood = branches.filter(b => b.condition === 'deadwood').length
 
   const bestBranch = branches.length > 0
-    ? branches.reduce((best, b) => b.qualityScore > best.qualityScore ? b : best, branches[0]).file
+    ? branches.reduce((best, b) => b.qualityScore > best.qualityScore ? b : best, branches[0] as typeof branches[number]).file
     : 'none'
   const worstBranch = branches.length > 0
-    ? branches.reduce((worst, b) => b.qualityScore < worst.qualityScore ? b : worst, branches[0]).file
+    ? branches.reduce((worst, b) => b.qualityScore < worst.qualityScore ? b : worst, branches[0] as typeof branches[number]).file
     : 'none'
   const mostPruningNeeded = branches.length > 0
-    ? branches.reduce((m, b) => b.pruningOpportunities > m.pruningOpportunities ? b : m, branches[0]).file
+    ? branches.reduce((m, b) => b.pruningOpportunities > m.pruningOpportunities ? b : m, branches[0] as typeof branches[number]).file
     : 'none'
   const mostElegant = branches.length > 0
-    ? branches.reduce((m, b) => b.aesthetic.elegance > m.aesthetic.elegance ? b : m, branches[0]).file
+    ? branches.reduce((m, b) => b.aesthetic.elegance > m.aesthetic.elegance ? b : m, branches[0] as typeof branches[number]).file
     : 'none'
 
   const stats: BonsaiTrimStats = {

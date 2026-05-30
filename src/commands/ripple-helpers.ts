@@ -89,7 +89,7 @@ export function buildDependencyGraph(files: string[], contents: string[]): FileD
       const match = line.match(IMPORT_RE)
       if (match) {
         const rawTarget = match[1]
-        const resolved = resolveImportPath(rawTarget, file, fileSet)
+        const resolved = resolveImportPath(rawTarget ?? '', file, fileSet)
         if (resolved && imports.has(file)) {
           imports.get(file)!.add(resolved)
           if (!importedBy.has(resolved)) {
@@ -194,8 +194,10 @@ export function computeTransitiveDependents(file: string, graph: FileDepGraph): 
   const queue = [file]
   visited.add(file)
 
-  while (queue.length > 0) {
-    const current = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const current = queue[_qi]!
+    _qi++
     const deps = graph.importedBy.get(current)
     if (deps) {
       for (const dep of deps) {
@@ -373,7 +375,7 @@ export function simulateRipple(file: string, graph: FileDepGraph): RippleSimulat
 
 function extractModule(file: string): string {
   const parts = file.split('/')
-  return parts.length > 1 ? parts[0] : '.'
+  return parts.length > 1 ? (parts[0] ?? '') : '.'
 }
 
 // ─── generateRecommendations ──────────────────────────────────────────────────
@@ -449,8 +451,8 @@ export function buildRippleResult(
     criticalFiles: hotspots.filter((h) => h.riskLevel === 'critical').length,
     highRiskFiles: hotspots.filter((h) => h.riskLevel === 'high').length,
     lowRiskFiles: hotspots.filter((h) => h.riskLevel === 'minimal' || h.riskLevel === 'low').length,
-    mostIsolatedFile: hotspots.length > 0 ? hotspots[hotspots.length - 1].file : '',
-    mostConnectedFile: hotspots.length > 0 ? hotspots[0].file : '',
+    mostIsolatedFile: hotspots.length > 0 ? (hotspots[hotspots.length - 1]?.file ?? '') : '',
+    mostConnectedFile: hotspots.length > 0 ? (hotspots[0]?.file ?? '') : '',
   }
 
   const recommendations = generateRecommendations(hotspots, stats)

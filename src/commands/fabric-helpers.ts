@@ -427,6 +427,7 @@ export function detectSnags(content: string): FabricDefect[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     // missing null check before property access (simplified heuristic)
@@ -469,6 +470,7 @@ export function detectHoles(content: string): FabricDefect[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     // JSON.parse without try
@@ -522,6 +524,7 @@ export function detectLooseThreads(content: string): FabricDefect[] {
   const imports: { name: string; line: number }[] = []
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const importMatch = line.match(/import\s+(?:\{([^}]+)\}|(\w+))\s+from/)
     if (importMatch) {
       const names = importMatch[1]
@@ -599,13 +602,14 @@ export function detectThinSpots(content: string): FabricDefect[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     // export without preceding JSDoc
     if (/^\s*export\s+(function|class|const|interface|type)\s/.test(line)) {
       const prevLine = i > 0 ? lines[i - 1] : ''
       const twoPrev = i > 1 ? lines[i - 2] : ''
-      const hasDoc = prevLine.includes('*/') || twoPrev.includes('*/')
+      const hasDoc = (prevLine?.includes('*/') ?? false) || (twoPrev?.includes('*/') ?? false)
       if (!hasDoc) {
         defects.push({
           type: 'thin-spot',
@@ -683,9 +687,12 @@ export function groupIntoBatches(samples: FabricSample[], files: string[]): Fabr
   const dirMap = new Map<string, FabricSample[]>()
 
   for (let i = 0; i < samples.length; i++) {
-    const dir = files[i].includes('/') ? files[i].substring(0, files[i].lastIndexOf('/')) : '.'
+    const file = files[i]
+    const sample = samples[i]
+    if (!file || !sample) continue
+    const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/')) : '.'
     const existing = dirMap.get(dir) ?? []
-    existing.push(samples[i])
+    existing.push(sample)
     dirMap.set(dir, existing)
   }
 
@@ -790,19 +797,19 @@ export function computeOverallFabricQuality(samples: FabricSample[]): number {
  * findDominant(['silk', 'cotton', 'silk']) // => 'silk'
  */
 export function findDominant<T extends string>(values: T[]): T {
+  if (values.length === 0) throw new Error('Cannot find dominant of empty array')
   const counts = new Map<T, number>()
   for (const v of values) {
     counts.set(v, (counts.get(v) ?? 0) + 1)
   }
-  let dominant = values[0]
-  let maxCount = 0
-  for (const [val, count] of counts) {
-    if (count > maxCount) {
-      maxCount = count
-      dominant = val
+  const entries = [...counts.entries()]
+  let result = entries[0] as [T, number]
+  for (const entry of entries) {
+    if (entry[1] > result[1]) {
+      result = entry
     }
   }
-  return dominant
+  return result[0]
 }
 
 // ─── Recommendations ───────────────────────────────────────────────────────────
@@ -861,9 +868,9 @@ export function generateRecommendations(samples: FabricSample[], batches: Fabric
  * buildFabricResult(['app.ts'], ['const x = 1'], {})
  * // => { samples: [...], batches: [...], stats: {...}, recommendations: [...] }
  */
-export function buildFabricResult(files: string[], contents: string[], options: FabricOptions): FabricResult {
+export function buildFabricResult(files: string[], contents: string[], _options: FabricOptions): FabricResult {
   const samples: FabricSample[] = files.map((file, idx) => {
-    const content = contents[idx]
+    const content = contents[idx] ?? ''
     const threadCount = computeThreadCount(content)
     const weavePattern = classifyWeavePattern(content)
     const material = classifyMaterial(content)
@@ -913,8 +920,8 @@ export function buildFabricResult(files: string[], contents: string[], options: 
     : 0
 
   const sortedBatches = [...batches].sort((a, b) => b.batchQuality - a.batchQuality)
-  const bestBatch = sortedBatches.length > 0 ? sortedBatches[0].name : ''
-  const worstBatch = sortedBatches.length > 0 ? sortedBatches[sortedBatches.length - 1].name : ''
+  const bestBatch = sortedBatches.length > 0 ? (sortedBatches[0]?.name ?? '') : ''
+  const worstBatch = sortedBatches.length > 0 ? (sortedBatches[sortedBatches.length - 1]?.name ?? '') : ''
 
   const stats: FabricStats = {
     totalSamples: samples.length,

@@ -1,12 +1,10 @@
 import chalk from 'chalk'
 
+import { formatNumber, padRight } from '../utils/format-utils.js'
+
 import type { Contributor, ContributorResult, KnowledgeSilos } from './contributor-helpers.js'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  return str.length >= len ? str : str + ' '.repeat(len - str.length)
-}
 
 function riskIcon(risk: 'low' | 'medium' | 'high'): string {
   switch (risk) {
@@ -14,10 +12,6 @@ function riskIcon(risk: 'low' | 'medium' | 'high'): string {
     case 'medium': return chalk.yellow('●')
     case 'low': return chalk.green('●')
   }
-}
-
-function formatNumber(n: number): string {
-  return n.toLocaleString()
 }
 
 // ─── Leaderboard Table ────────────────────────────────────────────────────────

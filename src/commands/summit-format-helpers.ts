@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { Camp, Expedition, Peak, PeakClassification, SummitStats, SummitResult } from './summit-helpers.js'
+import type { Camp, Peak, PeakClassification, SummitStats, SummitResult } from './summit-helpers.js'
 
 // ─── Classification Display ────────────────────────────────────────────────────
 

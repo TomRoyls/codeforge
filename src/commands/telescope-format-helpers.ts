@@ -132,17 +132,17 @@ export function formatLuminosityHistogram(bodies: CelestialBody[]): string {
 
   const buckets = [0, 0, 0, 0, 0]
   for (const b of bodies) {
-    if (b.luminosity < 20) buckets[0]++
-    else if (b.luminosity < 40) buckets[1]++
-    else if (b.luminosity < 60) buckets[2]++
-    else if (b.luminosity < 80) buckets[3]++
-    else buckets[4]++
+    if (b.luminosity < 20) buckets[0] = (buckets[0] ?? 0) + 1
+    else if (b.luminosity < 40) buckets[1] = (buckets[1] ?? 0) + 1
+    else if (b.luminosity < 60) buckets[2] = (buckets[2] ?? 0) + 1
+    else if (b.luminosity < 80) buckets[3] = (buckets[3] ?? 0) + 1
+    else buckets[4] = (buckets[4] ?? 0) + 1
   }
 
   const maxBucket = Math.max(...buckets, 1)
   const labels = ['  0-19', '20-39', '40-59', '60-79', '80-100']
   for (let i = 0; i < 5; i++) {
-    const barWidth = Math.round((buckets[i] / maxBucket) * 20)
+    const barWidth = Math.round(((buckets[i] ?? 0) / maxBucket) * 20)
     const bar = '\u2588'.repeat(Math.max(barWidth, 0))
     lines.push(`  ${labels[i]} ${chalk.rgb(241, 196, 15)(bar)} ${buckets[i]}`)
   }

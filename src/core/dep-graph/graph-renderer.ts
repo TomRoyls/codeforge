@@ -117,9 +117,10 @@ export class GraphRenderer {
 
     const queue: Array<{ id: string; d: number }> = roots.map((r) => ({ id: r, d: 0 }))
     const enqueued = new Set(roots)
+    let _qi = 0
 
-    while (queue.length > 0) {
-      const item = queue.shift()!
+    while (_qi < queue.length) {
+      const item = queue[_qi++]!
       depth.set(item.id, item.d)
 
       for (const edge of graph.edges) {

@@ -305,10 +305,13 @@ export function groupIntoRegions(conditions: WeatherCondition[], files: string[]
   const regionMap: Record<string, WeatherCondition[]> = {}
 
   for (let i = 0; i < files.length; i++) {
-    const parts = files[i].split('/')
+    const file = files[i]
+    if (!file) continue
+    const parts = file.split('/')
     const region = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
     if (!regionMap[region]) regionMap[region] = []
-    if (conditions[i]) regionMap[region].push(conditions[i])
+    const cond = conditions[i]
+    if (cond) regionMap[region].push(cond)
   }
 
   const forecasts: RegionalForecast[] = []
@@ -507,7 +510,7 @@ export function buildWeatherResult(files: string[], contents: string[], options:
   const conditions: WeatherCondition[] = []
 
   for (let i = 0; i < files.length; i++) {
-    const file = files[i]
+    const file = files[i] ?? ''
     const content = contents[i] || ''
 
     const temperature = computeTemperature(content)
@@ -520,7 +523,7 @@ export function buildWeatherResult(files: string[], contents: string[], options:
       if (j === i) continue
       const otherImports = extractImports(contents[j] || '')
       for (const imp of otherImports) {
-        if (resolveImportPath(imp, knownSet) === file) { importedBy.push(files[j]); break }
+        if (resolveImportPath(imp, knownSet) === file) { importedBy.push(files[j] ?? ''); break }
       }
     }
     const pressure = computePressure(file, imports, importedBy)
@@ -548,10 +551,10 @@ export function buildWeatherResult(files: string[], contents: string[], options:
   const coldestFile = sortedByTemp[sortedByTemp.length - 1]?.file || ''
 
   const calmestRegion = forecasts.length > 0
-    ? forecasts.sort((a, b) => a.avgTemperature - b.avgTemperature)[0].region
+    ? forecasts.sort((a, b) => a.avgTemperature - b.avgTemperature)[0]?.region ?? ''
     : ''
   const stormiestRegion = forecasts.length > 0
-    ? forecasts.sort((a, b) => b.avgTemperature - a.avgTemperature)[0].region
+    ? forecasts.sort((a, b) => b.avgTemperature - a.avgTemperature)[0]?.region ?? ''
     : ''
 
   const overallClimate = classifyClimate(avgTemperature, avgVisibility)

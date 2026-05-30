@@ -2,6 +2,8 @@ import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
+import { formatBytes } from '../utils/format-utils.js'
+
 // ─── Interfaces ──────────────────────────────────────────
 
 export interface FileContent {
@@ -106,8 +108,6 @@ export function detectLanguage(filePath: string): string {
 }
 
 // ─── Section filtering ──────────────────────────────────
-
-const ALL_SECTIONS = ['summary', 'files', 'complexity', 'todos', 'deps', 'suggestions']
 
 /**
  * Determines whether a section should be included in the report.
@@ -500,7 +500,7 @@ export async function buildFullReport(
     const lines: string[] = []
     lines.push(`Total Files: ${summary.totalFiles}`)
     lines.push(`Total Lines: ${summary.totalLines.toLocaleString()}`)
-    lines.push(`Total Size: ${formatBytes(summary.totalSize)}`)
+    lines.push(`Total Size: ${formatBytes(summary.totalSize, 2)}`)
     lines.push('')
     if (summary.languages.length > 0) {
       lines.push('Language Breakdown:')
@@ -616,10 +616,4 @@ export async function buildFullReport(
  * formatBytes(1024)       // '1.00 KB'
  * formatBytes(1048576)    // '1.00 MB'
  */
-export function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B'
-  const units = ['B', 'KB', 'MB', 'GB']
-  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1)
-  const value = bytes / Math.pow(1024, i)
-  return `${value.toFixed(2)} ${units[i]}`
-}
+export { formatBytes } from '../utils/format-utils.js'

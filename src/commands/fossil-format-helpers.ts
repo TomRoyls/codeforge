@@ -8,7 +8,6 @@ import {
   type FossilLayer,
   type FossilSeverity,
   type FossilStats,
-  type FossilType,
 } from './fossil-helpers.js'
 
 // ─── Color Map ────────────────────────────────────────────────────────────────

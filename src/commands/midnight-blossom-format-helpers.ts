@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { PetalCondition, GardenCondition, NightPetal, NightGarden, MidnightBlossomResult } from './midnight-blossom-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorGardenCondition(condition: GardenCondition | string): strin
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatPetalTable(petal) */
 export function formatPetalTable(petal: NightPetal): string {

@@ -824,22 +824,22 @@ export function buildCrystalPrismResult(
   }
 
   const bestFacet = totalFiles > 0
-    ? facets.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), facets[0]).file
+    ? facets.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), facets[0] as typeof facets[number]).file
     : ''
   const bestRefraction = totalFiles > 0
-    ? facets.reduce((best, f) => (f.refraction > best.refraction ? f : best), facets[0]).file
+    ? facets.reduce((best, f) => (f.refraction > best.refraction ? f : best), facets[0] as typeof facets[number]).file
     : ''
   const mostDiverse = totalFiles > 0
-    ? facets.reduce((best, f) => (f.spectrumAnalysis > best.spectrumAnalysis ? f : best), facets[0]).file
+    ? facets.reduce((best, f) => (f.spectrumAnalysis > best.spectrumAnalysis ? f : best), facets[0] as typeof facets[number]).file
     : ''
   const clearest = totalFiles > 0
-    ? facets.reduce((best, f) => (f.lightDecomposition > best.lightDecomposition ? f : best), facets[0]).file
+    ? facets.reduce((best, f) => (f.lightDecomposition > best.lightDecomposition ? f : best), facets[0] as typeof facets[number]).file
     : ''
   const mostDistinct = totalFiles > 0
-    ? facets.reduce((best, f) => (f.colorClarity > best.colorClarity ? f : best), facets[0]).file
+    ? facets.reduce((best, f) => (f.colorClarity > best.colorClarity ? f : best), facets[0] as typeof facets[number]).file
     : ''
   const bestInterface = totalFiles > 0
-    ? facets.reduce((best, f) => (f.facetQuality > best.facetQuality ? f : best), facets[0]).file
+    ? facets.reduce((best, f) => (f.facetQuality > best.facetQuality ? f : best), facets[0] as typeof facets[number]).file
     : ''
 
   const stats: CrystalPrismStats = {

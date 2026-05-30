@@ -50,7 +50,7 @@ export function colorGrade(grade: string): string {
     'precise-strike': good, 'strong-undercurrent': good, 'crimson-wave': good,
     'crimson-harbor': good, 'crimson-shore': good, 'sea-commander': good,
 
-    'proper-current': okay, 'proper-pulse': okay, 'proper-value': okay,
+    'proper-pulse': okay, 'proper-value': okay,
     'proper-aim': okay, 'proper-current': okay, 'proper-tide': okay,
     'proper-basin': okay, 'decent-coast': okay, 'skilled-sailor': okay,
 

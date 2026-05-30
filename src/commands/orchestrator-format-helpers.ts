@@ -2,7 +2,7 @@ import chalk from 'chalk'
 
 import type {
   OrchestratorFunction,
-  OrchestratorLayer,
+  OrchestrationLayer,
   OrchestrationPattern,
   OrchestratorResult,
   OrchestratorStats,
@@ -119,7 +119,7 @@ export function formatPatternsTable(patterns: OrchestrationPattern[]): string {
  * @example
  * formatLayersTable(layers)
  */
-export function formatLayersTable(layers: OrchestratorLayer[]): string {
+export function formatLayersTable(layers: OrchestrationLayer[]): string {
   if (layers.length === 0) return chalk.dim('  (no layers)')
 
   const rows = layers.map((layer, i) => {

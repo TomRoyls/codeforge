@@ -648,7 +648,7 @@ export async function buildCopperSundialResult(
 export function generateRecommendations(
   marks: CopperMark[],
   gardens: CopperGarden[],
-  meridian: CopperSundialResult['meridian'],
+  _meridian: CopperSundialResult['meridian'],
   stats: CopperSundialResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -823,22 +823,22 @@ export function buildVelvetCurtainResult(
   }
 
   const bestFold = totalFiles > 0
-    ? folds.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), folds[0]).file
+    ? folds.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), folds[0] as typeof folds[number]).file
     : ''
   const mostPrivate = totalFiles > 0
-    ? folds.reduce((best, f) => (f.privacy > best.privacy ? f : best), folds[0]).file
+    ? folds.reduce((best, f) => (f.privacy > best.privacy ? f : best), folds[0] as typeof folds[number]).file
     : ''
   const bestBoundary = totalFiles > 0
-    ? folds.reduce((best, f) => (f.envelopeQuality > best.envelopeQuality ? f : best), folds[0]).file
+    ? folds.reduce((best, f) => (f.envelopeQuality > best.envelopeQuality ? f : best), folds[0] as typeof folds[number]).file
     : ''
   const mostElegant = totalFiles > 0
-    ? folds.reduce((best, f) => (f.drapeElegance > best.drapeElegance ? f : best), folds[0]).file
+    ? folds.reduce((best, f) => (f.drapeElegance > best.drapeElegance ? f : best), folds[0] as typeof folds[number]).file
     : ''
   const bestDocumented = totalFiles > 0
-    ? folds.reduce((best, f) => (f.backstageAccess > best.backstageAccess ? f : best), folds[0]).file
+    ? folds.reduce((best, f) => (f.backstageAccess > best.backstageAccess ? f : best), folds[0] as typeof folds[number]).file
     : ''
   const bestAPI = totalFiles > 0
-    ? folds.reduce((best, f) => (f.curtainCall > best.curtainCall ? f : best), folds[0]).file
+    ? folds.reduce((best, f) => (f.curtainCall > best.curtainCall ? f : best), folds[0] as typeof folds[number]).file
     : ''
 
   const stats: VelvetCurtainStats = {

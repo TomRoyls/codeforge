@@ -92,99 +92,10 @@ function getCommentStyle(language: string): CommentStyle {
   }
 }
 
-function isInBlockComment(line: string, style: CommentStyle): { inBlock: boolean; isComment: boolean } {
-  if (style === 'html') {
-    return checkHtmlBlockComment(line)
-  }
-  return checkCStyleBlockComment(line)
-}
 
-let cStyleBlockDepth = 0
 
-function checkCStyleBlockComment(line: string): { inBlock: boolean; isComment: boolean } {
-  let idx = 0
-  let isCommentOnly = cStyleBlockDepth > 0
-  let hasCode = false
 
-  while (idx < line.length) {
-    if (cStyleBlockDepth > 0) {
-      const endIdx = line.indexOf('*/', idx)
-      if (endIdx === -1) {
-        return { inBlock: true, isComment: true }
-      }
-      idx = endIdx + 2
-      cStyleBlockDepth--
-      isCommentOnly = true
-    } else {
-      const commentStart = line.indexOf('/*', idx)
-      const lineCommentStart = line.indexOf('//', idx)
 
-      if (lineCommentStart !== -1 && (commentStart === -1 || lineCommentStart < commentStart)) {
-        const beforeComment = line.slice(idx, lineCommentStart).trim()
-        if (beforeComment.length > 0) hasCode = true
-        isCommentOnly = !hasCode
-        return { inBlock: false, isComment: isCommentOnly && !hasCode }
-      }
-
-      if (commentStart !== -1) {
-        const beforeComment = line.slice(idx, commentStart).trim()
-        if (beforeComment.length > 0) hasCode = true
-        cStyleBlockDepth++
-        idx = commentStart + 2
-        isCommentOnly = true
-      } else {
-        const remaining = line.slice(idx).trim()
-        if (remaining.length > 0) hasCode = true
-        break
-      }
-    }
-  }
-
-  if (cStyleBlockDepth > 0 && !hasCode) {
-    return { inBlock: true, isComment: true }
-  }
-
-  return { inBlock: cStyleBlockDepth > 0, isComment: isCommentOnly && !hasCode }
-}
-
-let htmlBlockDepth = 0
-
-function checkHtmlBlockComment(line: string): { inBlock: boolean; isComment: boolean } {
-  let idx = 0
-  let isCommentOnly = htmlBlockDepth > 0
-  let hasCode = false
-
-  while (idx < line.length) {
-    if (htmlBlockDepth > 0) {
-      const endIdx = line.indexOf('-->', idx)
-      if (endIdx === -1) {
-        return { inBlock: true, isComment: true }
-      }
-      idx = endIdx + 3
-      htmlBlockDepth--
-      isCommentOnly = true
-    } else {
-      const commentStart = line.indexOf('<!--', idx)
-      if (commentStart !== -1) {
-        const beforeComment = line.slice(idx, commentStart).trim()
-        if (beforeComment.length > 0) hasCode = true
-        htmlBlockDepth++
-        idx = commentStart + 4
-        isCommentOnly = true
-      } else {
-        const remaining = line.slice(idx).trim()
-        if (remaining.length > 0) hasCode = true
-        break
-      }
-    }
-  }
-
-  if (htmlBlockDepth > 0 && !hasCode) {
-    return { inBlock: true, isComment: true }
-  }
-
-  return { inBlock: htmlBlockDepth > 0, isComment: isCommentOnly && !hasCode }
-}
 
 export interface LineCounts {
   code: number
@@ -193,9 +104,6 @@ export interface LineCounts {
 }
 
 export function countLineTypes(content: string, language: string): LineCounts {
-  // Reset block comment state for each file
-  cStyleBlockDepth = 0
-  htmlBlockDepth = 0
 
   const style = getCommentStyle(language)
 

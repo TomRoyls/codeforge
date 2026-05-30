@@ -744,7 +744,7 @@ export function analyzeOnyxNest(feathers: OnyxFeather[], dirPath: string): OnyxN
 export function generateRecommendations(
   feathers: OnyxFeather[],
   nests: OnyxNest[],
-  flight: OnyxPhoenixResult['flight'],
+  _flight: OnyxPhoenixResult['flight'],
   stats: OnyxPhoenixResult['stats'],
 ): string[] {
   const recs: string[] = []

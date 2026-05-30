@@ -130,7 +130,7 @@ export function classifyClass(file: string, content: string, phylum: string): st
  * @example
  * classifyOrder('src/commands/count.ts', content, 'Analysis')
  */
-export function classifyOrder(file: string, content: string, classRank: string): string {
+export function classifyOrder(_file: string, content: string, classRank: string): string {
   if (classRank === 'Analysis') {
     if (content.includes('regex') || content.includes('match') || content.includes('pattern')) return 'Pattern'
     if (content.includes('score') || content.includes('metric') || content.includes('count')) return 'Metric'
@@ -192,7 +192,7 @@ export function classifyGenus(content: string): string {
  * @example
  * detectTraits(file, content)
  */
-export function detectTraits(file: string, content: string): string[] {
+export function detectTraits(_file: string, content: string): string[] {
   const traits: string[] = []
 
   if (/export\s+default\s/.test(content)) traits.push('has-default-export')

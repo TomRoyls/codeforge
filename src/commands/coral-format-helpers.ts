@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { CoralResult, CoralColony, CoralPolyp, ReefZone, SymbioticRelation, CoralStats } from './coral-helpers.js'
+import type { CoralResult, CoralColony, CoralPolyp, CoralStats } from './coral-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────────
 

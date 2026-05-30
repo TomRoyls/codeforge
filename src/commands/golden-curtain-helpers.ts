@@ -874,7 +874,7 @@ export async function buildGoldenCurtainResult(
 export function generateRecommendations(
   threads: GoldenThread[],
   palaces: GoldenPalace[],
-  treasury: GoldenCurtainResult['treasury'],
+  _treasury: GoldenCurtainResult['treasury'],
   stats: GoldenCurtainResult['stats'],
 ): string[] {
   const recs: string[] = []

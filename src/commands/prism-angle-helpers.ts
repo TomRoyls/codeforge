@@ -469,21 +469,21 @@ export function evaluatePerspective(content: string, perspective: string): Persp
   }
 
   const exports = countExports(content)
-  const functions = countFunctions(content)
   const types = countTypeAnnotations(content)
   const errors = countErrorHandling(content)
-  const comments = countComments(content)
   const jsdoc = countJSDoc(content)
   const descriptive = countDescriptiveNames(content)
-  const branches = countBranches(content)
   const tests = countTestIndicators(content)
-  const classes = countClasses(content)
-  const imports = countImports(content)
   const todos = countTodos(content)
 
   let score = 0
   const blindSpots: string[] = []
   const highlights: string[] = []
+  const branches = countBranches(content)
+  const classes = countClasses(content)
+  const comments = countComments(content)
+  const functions = countFunctions(content)
+  const imports = countImports(content)
 
   switch (perspective) {
     case 'user': {
@@ -752,7 +752,7 @@ export function analyzeOpticalBench(rays: LightRay[], dirPath: string): OpticalB
  * generateRecommendations(rays, benches, lab, stats) // string[]
  */
 export function generateRecommendations(
-  rays: LightRay[],
+  _rays: LightRay[],
   benches: OpticalBench[],
   laboratory: Laboratory,
   stats: PrismAngleStats,
@@ -806,7 +806,7 @@ export function generateRecommendations(
 export function buildPrismAngleResult(files: string[], contents: string[], _options: Record<string, unknown>): PrismAngleResult {
   const rays: LightRay[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeLightRay(content, file)
+    return analyzeLightRay(content ?? '', file)
   })
 
   const dirMap = new Map<string, LightRay[]>()

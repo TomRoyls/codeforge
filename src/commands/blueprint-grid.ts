@@ -75,7 +75,6 @@ export default class BlueprintGrid extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
 
     const spinner = ora('Discovering files...').start()
 

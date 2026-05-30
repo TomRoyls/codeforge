@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'rainbow-fire': best, 'white-fire': best, 'flawless-opal': best,
     'perfectly-hydrated': best, 'master-cut': best, 'black-opal': best,
     'lightning-ridge': best, 'gem-quality': best, 'master-lapidary': best,
@@ -58,8 +58,7 @@ export function colorGrade(grade: string): string {
     'dehydrated': poor, 'rough-cut': poor, 'common-opal': poor,
     'surface-find': poor, 'low-grade': poor, 'apprentice': poor,
 
-    'common-opal': poor, 'dull-stone': poor, 'fractured': poor,
-    'waterlogged': poor, 'chipped': poor, 'cracked-opal': poor,
+    'dull-stone': poor, 'fractured': poor,    'waterlogged': poor, 'chipped': poor, 'cracked-opal': poor,
     'dry-dig': poor, 'mine-tailings': poor, 'novice': poor,
 
     'no-color': worst, 'dead-opal': worst, 'shattered': worst,

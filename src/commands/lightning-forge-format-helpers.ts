@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { AnvilCondition, BoltCondition, ThunderAnvil, ThunderBolt, ThunderStats, ThunderForgeResult } from './lightning-forge-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorAnvilCondition(condition: AnvilCondition | string): string 
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatBoltTable(bolt) */
 export function formatBoltTable(bolt: ThunderBolt): string {

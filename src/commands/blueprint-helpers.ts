@@ -265,8 +265,8 @@ export function extractImportPaths(content: string): string[] {
   const matches = content.match(/from\s+['"]([^'"]+)['"]/g) ?? []
   return matches.map(m => {
     const inner = m.match(/['"]([^'"]+)['"]/)
-    return inner ? inner[1] : ''
-  }).filter(Boolean)
+    return inner?.[1] ?? ''
+  }).filter((s): s is string => s.length > 0)
 }
 
 // ─── Core Measurements ───────────────────────────────────────────────────────
@@ -568,7 +568,6 @@ export function analyzeBlueprintRoom(content: string, filePath: string): Bluepri
 
   const loc = countLoc(content)
   const exports = countExports(content)
-  const imports = countImports(content)
   const funcs = countFunctions(content)
   const nesting = maxNesting(content)
 
@@ -612,6 +611,7 @@ export function analyzeBlueprintRoom(content: string, filePath: string): Bluepri
   const zoning = assessZoning(content)
   const codeCompliance = inspectCodeCompliance(content)
 
+  const imports = countImports(content)
   const connections: ConnectionInfo = {
     connectsTo: importPaths,
     hasHallway: imports > 0 && exports > 0,
@@ -701,8 +701,8 @@ export function analyzeBlueprintFloor(rooms: BlueprintRoom[], dirPath: string, f
  * generateRecommendations(rooms, floors, building, stats) // string[]
  */
 export function generateRecommendations(
-  rooms: BlueprintRoom[],
-  floors: BlueprintFloor[],
+  _rooms: BlueprintRoom[],
+  _floors: BlueprintFloor[],
   _building: BuildingInfo,
   stats: BlueprintStats,
 ): string[] {
@@ -823,13 +823,13 @@ export function buildBlueprintResult(
     overallBlueprintQuality: structuralHealth,
     architectGrade: classifyArchitectGrade(structuralHealth),
     bestRoom: rooms.length > 0
-      ? rooms.reduce((b, r) => r.qualityScore > b.qualityScore ? r : b, rooms[0]).file : 'none',
+      ? rooms.reduce((b, r) => r.qualityScore > b.qualityScore ? r : b, rooms[0] as typeof rooms[number]).file : 'none',
     worstRoom: rooms.length > 0
-      ? rooms.reduce((w, r) => r.qualityScore < w.qualityScore ? r : w, rooms[0]).file : 'none',
+      ? rooms.reduce((w, r) => r.qualityScore < w.qualityScore ? r : w, rooms[0] as typeof rooms[number]).file : 'none',
     bestFloor: floors.length > 0
-      ? floors.reduce((b, f) => f.floorQuality > b.floorQuality ? f : b, floors[0]).directory : 'none',
+      ? floors.reduce((b, f) => f.floorQuality > b.floorQuality ? f : b, floors[0] as typeof floors[number]).directory : 'none',
     worstFloor: floors.length > 0
-      ? floors.reduce((w, f) => f.floorQuality < w.floorQuality ? f : w, floors[0]).directory : 'none',
+      ? floors.reduce((w, f) => f.floorQuality < w.floorQuality ? f : w, floors[0] as typeof floors[number]).directory : 'none',
   }
 
   const recommendations = generateRecommendations(rooms, floors, building, stats)

@@ -158,7 +158,7 @@ export function findFunctions(content: string, filePath: string): RawFunction[] 
     // Named function declaration: function foo(
     const funcMatch = trimmed.match(/^function\s+([A-Za-z_$][\w$]*)\s*\(/)
     if (funcMatch) {
-      const name = funcMatch[1]!
+      const name = funcMatch[1] ?? ''
       const startLine = i + 1
       const endLine = findFunctionEnd(lines, i)
       const body = lines.slice(i, endLine).join('\n')
@@ -169,7 +169,7 @@ export function findFunctions(content: string, filePath: string): RawFunction[] 
     // Arrow function: const foo = ( or const foo = (
     const arrowMatch = trimmed.match(/^(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>/)
     if (arrowMatch) {
-      const name = arrowMatch[1]!
+      const name = arrowMatch[1] ?? ''
       const startLine = i + 1
       const endLine = findFunctionEnd(lines, i)
       const body = lines.slice(i, endLine).join('\n')
@@ -180,7 +180,7 @@ export function findFunctions(content: string, filePath: string): RawFunction[] 
     // Function expression: const foo = function
     const funcExprMatch = trimmed.match(/^(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*function/)
     if (funcExprMatch) {
-      const name = funcExprMatch[1]!
+      const name = funcExprMatch[1] ?? ''
       const startLine = i + 1
       const endLine = findFunctionEnd(lines, i)
       const body = lines.slice(i, endLine).join('\n')
@@ -192,7 +192,7 @@ export function findFunctions(content: string, filePath: string): RawFunction[] 
     const methodMatch = trimmed.match(/^(?:async\s+)?([A-Za-z_$][\w$]*)\s*(?:<(?:[^>]|<[^>]*>)*>)?\s*\(/)
     if (methodMatch) {
       // Check it's not a control keyword
-      const name = methodMatch[1]!
+      const name = methodMatch[1] ?? ''
       const controlKeywords = new Set(['if', 'for', 'while', 'switch', 'catch', 'class', 'interface', 'type', 'import', 'export', 'return', 'throw', 'new', 'typeof', 'instanceof', 'delete', 'void'])
       if (!controlKeywords.has(name)) {
         // Only if this line contains a { or => indicating a function body

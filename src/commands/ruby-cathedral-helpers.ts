@@ -654,7 +654,7 @@ export async function buildRubyCathedralResult(
 export function generateRecommendations(
   prayers: RubyPrayer[],
   parishes: RubyParish[],
-  diocese: RubyCathedralResult['diocese'],
+  _diocese: RubyCathedralResult['diocese'],
   stats: RubyCathedralResult['stats'],
 ): string[] {
   const recs: string[] = []

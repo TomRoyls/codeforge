@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { ReadmeCommand, ReadmeData, ReadmeResult, ReadmeSection } from './readme-generator-helpers.js'
+import type { ReadmeResult } from './readme-generator-helpers.js'
 
 // ─── Format Preview Table ───────────────────────────────
 

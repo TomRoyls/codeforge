@@ -130,7 +130,7 @@ export function classifyMetal(content: string, _filePath: string): Metal {
 export function nextMetalUp(metal: Metal): string {
   const order: Metal[] = ['lead', 'iron', 'copper', 'bronze', 'silver', 'gold']
   const idx = order.indexOf(metal)
-  return idx < order.length - 1 ? order[idx + 1] : 'gold'
+  return idx < order.length - 1 ? order[idx + 1] ?? 'gold' : 'gold'
 }
 
 // ─── Transformations ──────────────────────────────────────────────────────────
@@ -519,10 +519,10 @@ export function buildAlchemyResult(
 ): AlchemyResult {
   const targets: TransmutationTarget[] = files.map((file, i) => {
     const content = contents[i]
-    const metal = classifyMetal(content, file)
-    const transformations = identifyTransformations(content, file, metal)
+    const metal = classifyMetal(content ?? '', file)
+    const transformations = identifyTransformations(content ?? '', file, metal)
     const transmutability = computeTransmutability(metal, transformations.length)
-    const essence = computeEssence(content)
+    const essence = computeEssence(content ?? '')
     const readiness = classifyReadiness(metal, transformations.length)
     return {
       file,
@@ -537,7 +537,7 @@ export function buildAlchemyResult(
 
   const catalysts = findCatalysts(files, contents)
 
-  const elements: Element[] = contents.flatMap((c, i) => analyzeElements(c, files[i]))
+  const elements: Element[] = contents.flatMap((c, i) => analyzeElements(c, files[i] ?? ''))
 
   const allTransformations = targets.flatMap(t => t.transformations)
   const transmutationPotential = computeTransmutationPotential(targets)

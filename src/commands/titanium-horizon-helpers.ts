@@ -875,7 +875,7 @@ export async function buildTitaniumHorizonResult(
 export function generateRecommendations(
   plates: TitaniumPlate[],
   stations: TitaniumStation[],
-  mission: TitaniumHorizonResult['mission'],
+  _mission: TitaniumHorizonResult['mission'],
   stats: TitaniumHorizonResult['stats'],
 ): string[] {
   const recs: string[] = []

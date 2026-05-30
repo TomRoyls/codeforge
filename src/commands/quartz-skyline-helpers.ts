@@ -895,7 +895,7 @@ export async function buildQuartzHorizonResult(
 export function generateRecommendations(
   prisms: QuartzPrism[],
   layers: QuartzLayer[],
-  geology: QuartzHorizonResult['geology'],
+  _geology: QuartzHorizonResult['geology'],
   stats: QuartzHorizonStats,
 ): string[] {
   const recs: string[] = []

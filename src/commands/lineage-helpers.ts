@@ -72,7 +72,6 @@ export interface LineageGraph {
 // ─── buildLineageGraph ────────────────────────────────────────────────────────
 
 const FUNC_RE = /(?:export\s+)?(?:async\s+)?function\s+(\w+)|(?:export\s+)?const\s+(\w+)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[^=])\s*=>|(?:export\s+)?const\s+(\w+)\s*=\s*(?:async\s+)?function|(?:export\s+)?class\s+(\w+)|(?:export\s+)?interface\s+(\w+)|(?:export\s+)?type\s+(\w+)\s*[=<]/
-const IMPORT_RE = /import\s+(?:\{([^}]+)\}|(\w+))\s+from\s+['"]([^'"]+)['"]/
 const CALL_RE = /(?<!\w)(\w+)\s*\(/
 const KEYWORDS = new Set(['if','else','for','while','do','switch','case','return','try','catch','finally','throw','new','typeof','instanceof','void','delete','in','of','async','await','yield','import','export','const','let','var','function','class','extends','super','this','true','false','null','undefined','console','Math','JSON','Object','Array','String','Number','Boolean','Promise','Error','Map','Set','Symbol','RegExp','Date','parseInt','parseFloat','isNaN','isFinite','NaN','Infinity','require'])
 
@@ -95,10 +94,10 @@ export function buildLineageGraph(files: string[], contents: string[]): LineageG
 
     for (let li = 0; li < lines.length; li++) {
       const line = lines[li]
-      if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
-      if (/^\s*import\s/.test(line)) continue
+      if (/^\s*(?:\/\/|\/\*|\*)/.test(line ?? '')) continue
+      if (/^\s*import\s/.test(line ?? '')) continue
 
-      const m = line.match(FUNC_RE)
+      const m = line?.match(FUNC_RE)
       if (m) {
         const name = m[1] ?? m[2] ?? m[3] ?? m[4] ?? m[5] ?? m[6]
         if (name) {
@@ -127,16 +126,16 @@ export function buildLineageGraph(files: string[], contents: string[]): LineageG
     const file = files[fi] ?? ''
 
     const localFunctions = new Set<string>()
-    for (const [key, node] of nodeMap) {
+    for (const [, node] of nodeMap) {
       if (node.file === file) localFunctions.add(node.name)
     }
 
     const lines = content.split('\n')
     for (let li = 0; li < lines.length; li++) {
       const line = lines[li]
-      if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
+      if (/^\s*(?:\/\/|\/\*|\*)/.test(line ?? '')) continue
 
-      const funcMatch = line.match(FUNC_RE)
+      const funcMatch = line?.match(FUNC_RE)
       if (!funcMatch) continue
 
       const fnName = funcMatch[1] ?? funcMatch[2] ?? funcMatch[3] ?? funcMatch[4] ?? funcMatch[5] ?? funcMatch[6]
@@ -147,7 +146,7 @@ export function buildLineageGraph(files: string[], contents: string[]): LineageG
       let braceDepth = 0
       let started = false
       for (let j = li; j < lines.length; j++) {
-        for (const ch of lines[j]) {
+        for (const ch of (lines[j] ?? '')) {
           if (ch === '{') { braceDepth++; started = true }
           if (ch === '}') braceDepth--
         }
@@ -201,8 +200,10 @@ export function computeAncestors(key: string, graph: LineageGraph): string[] {
   const queue = [key]
   visited.add(key)
 
-  while (queue.length > 0) {
-    const current = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const current = queue[_qi]!
+    _qi++
     const deps = graph.adjacency.get(current)
     if (deps) {
       for (const dep of deps) {
@@ -232,8 +233,10 @@ export function computeDescendants(key: string, graph: LineageGraph): string[] {
   const queue = [key]
   visited.add(key)
 
-  while (queue.length > 0) {
-    const current = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const current = queue[_qi]!
+    _qi++
     const rev = graph.reverse.get(current)
     if (rev) {
       for (const dep of rev) {
@@ -337,8 +340,8 @@ export function findLineagePaths(graph: LineageGraph): LineagePath[] {
     if (!deps || deps.size === 0) {
       if (chain.length > 1) {
         paths.push({
-          from: chain[0],
-          to: chain[chain.length - 1],
+          from: chain[0] ?? '',
+          to: chain[chain.length - 1] ?? '',
           chain: [...chain],
           length: chain.length - 1,
           files: [...files],
@@ -417,7 +420,7 @@ export function findLineageClusters(nodes: LineageNode[], graph: LineageGraph): 
 
     clusters.push({
       root: root.name,
-      descendants: desc.map((d) => d.split(':').pop()!),
+      descendants: desc.map((d) => d.split(':').at(-1) ?? ''),
       depth: computeDepth(rootKey, graph),
       breadth: desc.length,
       description: `${root.name} lineage: ${desc.length} descendant(s)`,
@@ -444,7 +447,7 @@ export function generateRecommendations(
 
   if (criticalPaths.length > 0) {
     const longest = criticalPaths[0]
-    recs.push(`Longest lineage chain is ${longest.length} levels deep — consider introducing abstraction layers`)
+    recs.push(`Longest lineage chain is ${longest?.length} levels deep — consider introducing abstraction layers`)
   }
 
   if (fragileNodes.length > 0) {
@@ -498,8 +501,8 @@ export function buildLineageResult(
       file: node.file,
       line: node.line,
       type: node.type,
-      ancestors: ancestors.map((a) => a.split(':').pop()!),
-      descendants: descendants.map((d) => d.split(':').pop()!),
+      ancestors: ancestors.map((a) => a.split(':').at(-1) ?? ''),
+      descendants: descendants.map((d) => d.split(':').at(-1) ?? ''),
       depth,
       breadth,
       criticality,

@@ -243,13 +243,13 @@ function computeBalance(content: string): number {
 
 function detectTerroirName(filePath: string): string {
   const parts = filePath.split('/')
-  if (parts.length > 1) return parts[0]
+  if (parts.length > 1) return parts[0] ?? 'root'
   return 'root'
 }
 
 // ─── estimateYear ───────────────────────────────────────────────────────────────
 
-function estimateYear(content: string, quality: number): string {
+function estimateYear(_content: string, quality: number): string {
   if (quality >= 80) return 'reserve'
   if (quality >= 65) return 'current'
   if (quality >= 50) return 'recent'
@@ -339,7 +339,6 @@ export function detectVinegar(content: string, _filePath: string): boolean {
   const hasDeprecated = /@deprecated|DEPRECATED|obsolete|legacy/i.test(content)
   const hasCallbackHell = /\}\s*,\s*function\s*\(/.test(content)
   const hasRequire = /\brequire\s*\(/.test(content) && !/import/.test(content)
-  const hasNoStrict = /"use\s+strict"/.test(content) === false && /\.ts$/.test(_filePath) === false
 
   let vinegarCount = 0
   if (hasVar) vinegarCount++
@@ -378,10 +377,10 @@ export function analyzeBlend(files: string[], contents: string[], dirPath: strin
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i]
-    const contribution = detectContribution(content)
-    const strength = computeStrength(content)
-    const harmony = computeHarmony(content, contents)
-    components.push({ file: files[i], contribution, strength, harmony })
+    const contribution = detectContribution(content ?? '')
+    const strength = computeStrength(content ?? '')
+    const harmony = computeHarmony(content ?? '', contents)
+    components.push({ file: files[i] ?? '', contribution, strength, harmony })
   }
 
   const harmony = components.length > 0
@@ -637,18 +636,18 @@ export function buildVineyardResult(
   const vintages: Vintage[] = []
 
   for (let i = 0; i < files.length; i++) {
-    vintages.push(evaluateVintage(contents[i], files[i]))
+    vintages.push(evaluateVintage(contents[i] ?? '',files[i] ?? ''))
   }
 
   const dirMap = new Map<string, { files: string[]; contents: string[] }>()
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].split('/').slice(0, -1).join('/') || 'root'
+    const dir = (files[i] ?? '').split('/').slice(0, -1).join('/') || 'root'
     const existing = dirMap.get(dir)
     if (existing) {
-      existing.files.push(files[i])
-      existing.contents.push(contents[i])
+      existing.files.push(files[i] ?? '')
+      existing.contents.push(contents[i] ?? '')
     } else {
-      dirMap.set(dir, { files: [files[i]], contents: [contents[i]] })
+      dirMap.set(dir, { files: [files[i] ?? ''], contents: [contents[i] ?? ''] })
     }
   }
 

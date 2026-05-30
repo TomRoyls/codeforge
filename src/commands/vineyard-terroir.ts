@@ -8,16 +8,6 @@ import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildVineyardTerroirResult,
   type VineyardTerroirResult,
-  type VineyardPlot,
-  type WineRegion,
-  type VineyardTerroirStats,
-  type EstateMeasure,
-  type SoilMeasure,
-  type GrapeMeasure,
-  type VintageMeasure,
-  type AgingMeasure,
-  type AromaMeasure,
-  type BodyMeasure,
 } from './vineyard-terroir-helpers.js'
 import { formatVineyardTerroirJson, formatVineyardTerroirTable } from './vineyard-terroir-format-helpers.js'
 

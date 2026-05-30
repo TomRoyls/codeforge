@@ -293,13 +293,11 @@ export function measurePreserving(content: string): PreservingMeasure {
   const hasConserved = !/\bany\b/.test(content)
   const hasProtected = (content.match(/\b(global|window|document)\b/g) ?? []).length === 0
   const hasSafeguarded = /\b(async|await|Promise)\b/.test(content)
-  const hasLasting2 = /\b(function|=>|return)\b/.test(content)
 
   const positiveBooleans = [
     hasStable, hasNoFragile, hasMaintainable, hasNoVolatile, hasTested,
     hasNoUntested, hasDocumented, hasNoUndocumented, hasPreserved, hasEnduring,
-    hasPermanent, hasLasting, hasTimeless, hasConserved, hasProtected, hasSafeguarded, hasLasting2,
-  ]
+    hasPermanent, hasLasting, hasTimeless, hasConserved, hasProtected, hasSafeguarded,   ]
 
   const power = computeScore(positiveBooleans)
   const hasHighPower = power >= 60
@@ -315,8 +313,7 @@ export function measurePreserving(content: string): PreservingMeasure {
     power, fossil, hasHighPower,
     hasStable, hasNoFragile, hasMaintainable, hasNoVolatile, hasTested,
     hasNoUntested, hasDocumented, hasNoUndocumented, hasPreserved, hasEnduring,
-    hasPermanent, hasLasting, hasTimeless, hasConserved, hasProtected, hasSafeguarded, hasLasting2,
-    fragileCount, volatileCount,
+    hasPermanent, hasLasting, hasTimeless, hasConserved, hasProtected, hasSafeguarded,     fragileCount, volatileCount,
   }
 }
 
@@ -339,13 +336,11 @@ export function measureSheltering(content: string): ShelteringMeasure {
   const hasArmored = /\/\*\*[\s\S]*?\*\//.test(content)
   const hasImpervious = (content.match(/\b(monolithic|god\.object|mega)\b/gi) ?? []).length === 0
   const hasInvulnerable = /\b(const|readonly)\b/.test(content)
-  const hasInvulnerable2 = /\b(function|=>|return)\b/.test(content)
 
   const positiveBooleans = [
     hasErrorHandled, hasNoUnhandled, hasDefensive, hasRobust, hasSecure,
     hasNoVulnerable, hasProtected, hasGuarded, hasSafe, hasSheltered,
-    hasFortified, hasShielded, hasArmored, hasImpervious, hasInvulnerable, hasInvulnerable2,
-  ]
+    hasFortified, hasShielded, hasArmored, hasImpervious, hasInvulnerable,   ]
 
   const sanctuary = computeScore(positiveBooleans)
   const hasHighSanctuary = sanctuary >= 60
@@ -361,8 +356,7 @@ export function measureSheltering(content: string): ShelteringMeasure {
     sanctuary, haven, hasHighSanctuary,
     hasErrorHandled, hasNoUnhandled, hasDefensive, hasRobust, hasSecure,
     hasNoVulnerable, hasProtected, hasGuarded, hasSafe, hasSheltered,
-    hasFortified, hasShielded, hasArmored, hasImpervious, hasInvulnerable, hasInvulnerable2,
-    unhandledCount, vulnerableCount,
+    hasFortified, hasShielded, hasArmored, hasImpervious, hasInvulnerable,     unhandledCount, vulnerableCount,
   }
 }
 
@@ -430,13 +424,11 @@ export function measureRevealing(content: string): RevealingMeasure {
   const hasOpen = (content.match(/\b(ugly|clunky|crude)\b/gi) ?? []).length === 0
   const hasExposed = /\b(try|catch|if)\b/.test(content)
   const hasRevealed = /\b(const|readonly)\b/.test(content)
-  const hasRevealed2 = /\b(function|=>|return)\b/.test(content)
 
   const positiveBooleans = [
     hasReadable, hasNoCryptic, hasSelfDocumenting, hasNoMystery, hasClear,
     hasTransparent, hasVisible, hasUnderstandable, hasObvious, hasEvident,
-    hasManifest, hasApparent, hasOpen, hasExposed, hasRevealed, hasRevealed2,
-  ]
+    hasManifest, hasApparent, hasOpen, hasExposed, hasRevealed,   ]
 
   const clarity = computeScore(positiveBooleans)
   const hasHighClarity = clarity >= 60
@@ -452,8 +444,7 @@ export function measureRevealing(content: string): RevealingMeasure {
     clarity, transparency, hasHighClarity,
     hasReadable, hasNoCryptic, hasSelfDocumenting, hasNoMystery, hasClear,
     hasTransparent, hasVisible, hasUnderstandable, hasObvious, hasEvident,
-    hasManifest, hasApparent, hasOpen, hasExposed, hasRevealed, hasRevealed2,
-    crypticCount, mysteryCount,
+    hasManifest, hasApparent, hasOpen, hasExposed, hasRevealed,     crypticCount, mysteryCount,
   }
 }
 
@@ -663,7 +654,7 @@ export async function buildAmberSanctumResult(
 export function generateRecommendations(
   specimens: AmberSpecimen[],
   collections: AmberCollection[],
-  sanctum: AmberSanctumResult['sanctum'],
+  _sanctum: AmberSanctumResult['sanctum'],
   stats: AmberSanctumResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -128,8 +128,9 @@ export class GraphTree<T = unknown> {
 
   private _traverseLevel(result: GraphTree<T>[]): void {
     const queue: GraphTree<T>[] = [this]
-    while (queue.length > 0) {
-      const node = queue.shift()!
+    let _qi = 0;
+    while (_qi < queue.length) {
+      const node = queue[_qi++]
       result.push(node)
       for (const child of node._children) {
         queue.push(child)

@@ -75,7 +75,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         hasJSDoc: false,
         jsDocQuality: { ...emptyQuality },
         line: lineNum,
-        name: funcMatch[1]!,
+        name: funcMatch[1] ?? '',
         type: 'function',
       })
       continue
@@ -89,7 +89,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         hasJSDoc: false,
         jsDocQuality: { ...emptyQuality },
         line: lineNum,
-        name: asyncFuncMatch[1]!,
+        name: asyncFuncMatch[1] ?? '',
         type: 'function',
       })
       continue
@@ -103,7 +103,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         hasJSDoc: false,
         jsDocQuality: { ...emptyQuality },
         line: lineNum,
-        name: classMatch[1]!,
+        name: classMatch[1] ?? '',
         type: 'class',
       })
 
@@ -127,7 +127,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
           break
         }
       }
-      classRanges.push({ endLine, name: classMatch[1]!, startLine: i })
+      classRanges.push({ endLine, name: classMatch[1] ?? '', startLine: i })
       continue
     }
 
@@ -139,7 +139,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         hasJSDoc: false,
         jsDocQuality: { ...emptyQuality },
         line: lineNum,
-        name: ifaceMatch[1]!,
+        name: ifaceMatch[1] ?? '',
         type: 'interface',
       })
       continue
@@ -153,7 +153,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         hasJSDoc: false,
         jsDocQuality: { ...emptyQuality },
         line: lineNum,
-        name: typeMatch[1]!,
+        name: typeMatch[1] ?? '',
         type: 'type',
       })
       continue
@@ -167,7 +167,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         hasJSDoc: false,
         jsDocQuality: { ...emptyQuality },
         line: lineNum,
-        name: constMatch[1]!,
+        name: constMatch[1] ?? '',
         type: 'const',
       })
       continue
@@ -176,7 +176,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
     // export { name1, name2 }
     const namedExportMatch = line.match(/^export\s*\{([^}]+)\}/)
     if (namedExportMatch) {
-      const names = namedExportMatch[1]!.split(',').map((n) => n.trim().split(/\s+as\s+/).pop()!.trim())
+      const names = namedExportMatch[1] ?? ''.split(',').map((n) => n.trim().split(/\s+as\s+/).at(-1) ?? ''.trim())
       for (const name of names) {
         if (name.length > 0) {
           items.push({
@@ -200,7 +200,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         hasJSDoc: false,
         jsDocQuality: { ...emptyQuality },
         line: lineNum,
-        name: defaultClassMatch[1]!,
+        name: defaultClassMatch[1] ?? '',
         type: 'class',
       })
       let braceCount = 0
@@ -222,7 +222,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
           break
         }
       }
-      classRanges.push({ endLine, name: defaultClassMatch[1]!, startLine: i })
+      classRanges.push({ endLine, name: defaultClassMatch[1] ?? '', startLine: i })
       continue
     }
 
@@ -234,7 +234,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         hasJSDoc: false,
         jsDocQuality: { ...emptyQuality },
         line: lineNum,
-        name: defaultFuncMatch[1]!,
+        name: defaultFuncMatch[1] ?? '',
         type: 'function',
       })
       continue
@@ -251,7 +251,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         /^(?:(?:public|private|protected|readonly|static|abstract|override|async)\s+)*(?:async\s+)?(\w+)\s*[<(]/,
       )
       if (methodMatch && !line.startsWith('//') && !line.startsWith('*') && !line.startsWith('/*')) {
-        const methodName = methodMatch[1]!
+        const methodName = methodMatch[1] ?? ''
         if (methodName !== 'constructor' && methodName !== 'new' && methodName !== 'get' && methodName !== 'set') {
           items.push({
             filePath,
@@ -269,7 +269,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
         /^(?:public|private|protected|readonly|static|abstract|override)\s+(\w+)\s*[=:]/,
       )
       if (propMatch && !line.startsWith('//') && !line.startsWith('*') && !line.startsWith('/*')) {
-        const propName = propMatch[1]!
+        const propName = propMatch[1] ?? ''
         if (propName !== 'constructor' && propName !== 'function' && propName !== 'class') {
           items.push({
             filePath,

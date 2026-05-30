@@ -708,8 +708,8 @@ export function analyzeGlassInstallation(panes: GlassPane[], dirPath: string): G
 
 /** @example generateRecommendations(panes, installations, building, stats) returns string[] */
 export function generateRecommendations(
-  panes: GlassPane[],
-  installations: GlassInstallation[],
+  _panes: GlassPane[],
+  _installations: GlassInstallation[],
   building: FrostedGlassResult['building'],
   stats: FrostedGlassResult['stats'],
 ): string[] {

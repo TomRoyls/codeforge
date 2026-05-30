@@ -156,12 +156,12 @@ export function groupByHour(commits: CommitEntry[]): HourActivity[] {
   for (const commit of commits) {
     const date = new Date(commit.timestamp * 1000)
     const hour = date.getUTCHours()
-    hourCounts[hour] += 1
+    hourCounts[hour] = (hourCounts[hour] ?? 0) + 1
   }
 
   const result: HourActivity[] = []
   for (let i = 0; i < 24; i++) {
-    result.push({ commits: hourCounts[i], hour: i })
+    result.push({ commits: hourCounts[i] ?? 0, hour: i })
   }
 
   return result

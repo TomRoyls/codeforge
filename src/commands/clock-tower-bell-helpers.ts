@@ -203,7 +203,6 @@ const TRY_REGEX = /\btry\s*{/g
 const CATCH_REGEX = /\bcatch\s*\(/g
 const FINALLY_REGEX = /\bfinally\s*{/g
 const IF_REGEX = /\bif\s*\(/g
-const ELSE_REGEX = /\belse\b/g
 const FOR_REGEX = /\bfor\s*\(/g
 const WHILE_REGEX = /\bwhile\s*\(/g
 const SWITCH_REGEX = /\bswitch\s*\(/g
@@ -508,7 +507,6 @@ export function measureChime(content: string): ChimeMeasure {
   const conditionals = countConditionals(content)
   const loops = countLoops(content)
   const functions = countFunctions(content)
-  const classes = countClasses(content)
   const exports = countExports(content)
   const errorHandling = countErrorHandling(content)
   const returns = countMatches(content, RETURN_REGEX)
@@ -516,7 +514,6 @@ export function measureChime(content: string): ChimeMeasure {
   const asyncs = countMatches(content, ASYNC_REGEX)
 
   const hasCode = functions > 0 || lines > 0
-  const complexity = conditionals + loops
 
   // Pattern: event pattern quality — well-structured flow, proper returns
   const basePattern = lines === 0 ? 10 : Math.min(40, functions * 8 + lines)
@@ -904,9 +901,8 @@ export function generateRecommendations(
 export function buildClockTowerBellResult(
   files: string[],
   contents: string[],
-  options?: { ignore?: string[]; ext?: string[] },
+  _options?: { ignore?: string[]; ext?: string[] },
 ): ClockTowerBellResult {
-  const _opts = options ?? {}
 
   const readings: BellReading[] = files.map((file, i) =>
     analyzeBellReading(contents[i] ?? '', file),

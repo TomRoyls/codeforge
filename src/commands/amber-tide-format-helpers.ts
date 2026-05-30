@@ -8,7 +8,6 @@ import type { AmberTideResult, AmberWave, AmberShore } from './amber-tide-helper
 const AMBER = chalk.rgb(255, 191, 0)
 const GOLD = chalk.rgb(255, 215, 0)
 const TIDE = chalk.rgb(100, 180, 255)
-const SHORE = chalk.rgb(210, 180, 140)
 const DIM = chalk.rgb(130, 130, 170)
 const BULLET = '\u{1F525}'
 

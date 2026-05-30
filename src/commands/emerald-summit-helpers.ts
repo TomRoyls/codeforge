@@ -753,7 +753,7 @@ export function analyzeEmeraldRange(peaks: EmeraldPeak[], dirPath: string): Emer
 export function generateRecommendations(
   peaks: EmeraldPeak[],
   ranges: EmeraldRange[],
-  massif: EmeraldSummitResult['massif'],
+  _massif: EmeraldSummitResult['massif'],
   stats: EmeraldSummitResult['stats'],
 ): string[] {
   const recs: string[] = []
@@ -891,7 +891,7 @@ export async function buildEmeraldSummitResult(
   }
 
   const celebration = {
-    milestone: 540,
+    milestone: 540 as const,
     name: 'emerald-summit' as const,
     message: 'Command #540 — The Emerald Summit. 540 commands climbed to reach this peak. From the foothills of count to the summit of emerald-wisdom, every step was earned. The view from here encompasses 104,000+ tests, all passing, all green as emerald.',
     previousMilestones: [420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530],

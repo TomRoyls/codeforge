@@ -3,6 +3,7 @@ import { DEFAULT_RUN_LENGTH_QUEUE_OPTIONS } from './types.js'
 
 export class RunLengthQueue<T = unknown> {
   private runs: RunLengthPair<T>[] = []
+  private _frontIdx = 0
   private _size: number = 0
   private equals: (a: T, b: T) => boolean
 
@@ -11,8 +12,15 @@ export class RunLengthQueue<T = unknown> {
     this.equals = resolved.equals ?? Object.is
   }
 
+  private _maybeCompact(): void {
+    if (this._frontIdx > 32 && this._frontIdx > this.runs.length >> 1) {
+      this.runs = this.runs.slice(this._frontIdx)
+      this._frontIdx = 0
+    }
+  }
+
   enqueue(value: T): void {
-    if (this.runs.length > 0) {
+    if (this.runs.length > this._frontIdx) {
       const last = this.runs[this.runs.length - 1]!
       if (this.equals(last.value, value)) {
         last.count++
@@ -28,12 +36,13 @@ export class RunLengthQueue<T = unknown> {
     if (this._size === 0) {
       return undefined
     }
-    const first = this.runs[0]!
+    const first = this.runs[this._frontIdx]!
     const value = first.value
     first.count--
     this._size--
     if (first.count === 0) {
-      this.runs.shift()
+      this._frontIdx++
+      this._maybeCompact()
     }
     return value
   }
@@ -42,7 +51,7 @@ export class RunLengthQueue<T = unknown> {
     if (this._size === 0) {
       return undefined
     }
-    return this.runs[0]!.value
+    return this.runs[this._frontIdx]!.value
   }
 
   peekBack(): T | undefined {
@@ -57,7 +66,7 @@ export class RunLengthQueue<T = unknown> {
   }
 
   runCount(): number {
-    return this.runs.length
+    return this.runs.length - this._frontIdx
   }
 
   isEmpty(): boolean {
@@ -66,12 +75,13 @@ export class RunLengthQueue<T = unknown> {
 
   clear(): void {
     this.runs = []
+    this._frontIdx = 0
     this._size = 0
   }
 
   toArray(): T[] {
     const result: T[] = []
-    for (let i = 0; i < this.runs.length; i++) {
+    for (let i = this._frontIdx; i < this.runs.length; i++) {
       const run = this.runs[i]!
       for (let j = 0; j < run.count; j++) {
         result.push(run.value)
@@ -84,7 +94,7 @@ export class RunLengthQueue<T = unknown> {
     if (count <= 0) {
       return
     }
-    if (this.runs.length > 0) {
+    if (this.runs.length > this._frontIdx) {
       const last = this.runs[this.runs.length - 1]!
       if (this.equals(last.value, value)) {
         last.count += count
@@ -117,7 +127,7 @@ export class RunLengthQueue<T = unknown> {
 
     let remaining = position
 
-    for (let i = 0; i < this.runs.length; i++) {
+    for (let i = this._frontIdx; i < this.runs.length; i++) {
       const run = this.runs[i]!
       if (remaining <= 0) {
         right.compress(run.value, run.count)
@@ -138,18 +148,20 @@ export class RunLengthQueue<T = unknown> {
 
   clone(): RunLengthQueue<T> {
     const copy = new RunLengthQueue<T>({ equals: this.equals })
-    for (const run of this.runs) {
+    for (let i = this._frontIdx; i < this.runs.length; i++) {
+      const run = this.runs[i]!
       copy.compress(run.value, run.count)
     }
     return copy
   }
 
   getRuns(): ReadonlyArray<Readonly<RunLengthPair<T>>> {
-    return this.runs
+    return this.runs.slice(this._frontIdx)
   }
 
   contains(value: T): boolean {
-    for (const run of this.runs) {
+    for (let i = this._frontIdx; i < this.runs.length; i++) {
+      const run = this.runs[i]!
       if (this.equals(run.value, value)) {
         return true
       }
@@ -158,11 +170,12 @@ export class RunLengthQueue<T = unknown> {
   }
 
   stats(): RunLengthQueueStats {
+    const runCount = this.runs.length - this._frontIdx
     return {
       size: this._size,
-      runCount: this.runs.length,
+      runCount,
       isEmpty: this._size === 0,
-      compressionRatio: this._size === 0 ? 1 : this.runs.length / this._size,
+      compressionRatio: this._size === 0 ? 1 : runCount / this._size,
     }
   }
 }

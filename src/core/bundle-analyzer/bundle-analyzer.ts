@@ -137,9 +137,10 @@ export class BundleAnalyzer {
 
     const queue: Array<{ path: string; depth: number }> = [{ path: entryPath, depth: 0 }]
     const visited = new Set<string>()
+    let _qi = 0
 
-    while (queue.length > 0) {
-      const item = queue.shift()!
+    while (_qi < queue.length) {
+      const item = queue[_qi++]!
       if (visited.has(item.path)) continue
       visited.add(item.path)
       depthMap.set(item.path, item.depth)

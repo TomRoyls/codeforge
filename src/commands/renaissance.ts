@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Command, Flags, Args } from '@oclif/core'
 import chalk from 'chalk'
 import ora from 'ora'
 import { discoverFiles } from '../core/file-discovery.js'
@@ -21,7 +21,9 @@ export default class Renaissance extends Command {
     verbose: Flags.boolean({ default: false, description: 'Show detailed output' }),
   }
 
-  static override args = [{ name: 'path', default: '.', description: 'Path to analyze' }]
+  static override args = {
+    path: Args.string({ description: 'Path to analyze', default: '.' }),
+  }
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Renaissance)
@@ -31,7 +33,7 @@ export default class Renaissance extends Command {
       const ignorePatterns = flags.ignore.split(',').map((p: string) => p.trim())
       const extensions = flags.ext.split(',').map((e: string) => e.trim())
 
-      const discovered = await discoverFiles(args.path, { ignore: ignorePatterns, extensions })
+      const discovered = await discoverFiles({ cwd: args.path, patterns: extensions.map((e: string) => `**/*${e}`), ignore: ignorePatterns })
       const files = discovered.map((f: { path: string }) => f.path)
       const { readFileSync } = await import('fs')
       const contents = files.map((f: string) => {

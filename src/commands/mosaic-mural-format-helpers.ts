@@ -55,13 +55,6 @@ function styleColor(s: string): string {
   return chalk.yellow(s)
 }
 
-function gradeColor(g: string): string {
-  if (g === 'A') return chalk.green(g)
-  if (g === 'B') return chalk.blue(g)
-  if (g === 'C') return chalk.yellow(g)
-  if (g === 'D') return chalk.rgb(255, 165, 0)(g)
-  return chalk.red(g)
-}
 
 // ─── Panel Formatting ──────────────────────────────────────────────────────
 

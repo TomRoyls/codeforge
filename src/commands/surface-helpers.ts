@@ -119,7 +119,7 @@ export function extractJSDoc(
 
   const block = lines.slice(jsdocStart, jsdocEnd + 1).join('\n')
   const descMatch = block.match(/\/\*\*\s*\n?\s*\*\s*([^@\n*]+)/)
-  const description = descMatch ? descMatch[1].trim() : null
+  const description = descMatch?.[1]?.trim() ?? null
   return { hasJSDoc: true, description }
 }
 
@@ -152,7 +152,7 @@ export function extractParameters(line: string): ApiParameter[] {
   if (!match) return params
 
   const raw = match[1]
-  if (!raw.trim()) return params
+  if (!raw || !raw.trim()) return params
 
   const parts = splitParams(raw)
   for (const part of parts) {
@@ -166,8 +166,8 @@ export function extractParameters(line: string): ApiParameter[] {
     const nameMatch = cleaned.match(/^(\.\.\.)?(\w+)\??/)
     const typeMatch = cleaned.match(/:\s*([^,?]+)/)
 
-    const name = nameMatch ? nameMatch[2] : cleaned
-    const type = typeMatch ? typeMatch[1].trim() : 'unknown'
+    const name = nameMatch?.[2] ?? cleaned
+    const type = typeMatch?.[1]?.trim() ?? 'unknown'
     const defaultMatch = trimmed.match(/=\s*([^,)]+)/)
 
     params.push({
@@ -175,7 +175,7 @@ export function extractParameters(line: string): ApiParameter[] {
       type,
       isOptional: optional,
       hasDefault,
-      defaultValue: defaultMatch ? defaultMatch[1].trim() : null,
+      defaultValue: defaultMatch?.[1]?.trim() ?? null,
     })
   }
 
@@ -211,7 +211,7 @@ function splitParams(raw: string): string[] {
  */
 export function extractReturnType(line: string): string | null {
   const match = line.match(/\)\s*:\s*([^{;\n]+)/)
-  return match ? match[1].trim() : null
+  return match?.[1]?.trim() ?? null
 }
 
 // ─── extractExports ───────────────────────────────────────────────────────────
@@ -226,87 +226,87 @@ const EXPORT_PATTERNS: Array<{
   {
     regex: /^export\s+default\s+function\s+(\w+)/,
     type: 'function',
-    extractName: (m) => m[1],
-    isDefault: true,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+default\s+class\s+(\w+)/,
-    type: 'class',
-    extractName: (m) => m[1],
-    isDefault: true,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+function\s+(\w+)/,
-    type: 'function',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+(?:async\s+)?function\s+(\w+)/,
-    type: 'function',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+class\s+(\w+)/,
-    type: 'class',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+interface\s+(\w+)/,
-    type: 'interface',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+type\s+(\w+)\s*[=<]/,
-    type: 'type',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+enum\s+(\w+)/,
-    type: 'enum',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+namespace\s+(\w+)/,
-    type: 'namespace',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+const\s+(\w+)/,
-    type: 'constant',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+let\s+(\w+)/,
-    type: 'constant',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
-  {
-    regex: /^export\s+var\s+(\w+)/,
-    type: 'constant',
-    extractName: (m) => m[1],
-    isDefault: false,
-    isReExport: false,
-  },
+  extractName: (m) => m[1] ?? '',
+  isDefault: true,
+  isReExport: false,
+},
+{
+  regex: /^export\s+default\s+class\s+(\w+)/,
+  type: 'class',
+  extractName: (m) => m[1] ?? '',
+  isDefault: true,
+  isReExport: false,
+},
+{
+  regex: /^export\s+function\s+(\w+)/,
+  type: 'function',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+(?:async\s+)?function\s+(\w+)/,
+  type: 'function',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+class\s+(\w+)/,
+  type: 'class',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+interface\s+(\w+)/,
+  type: 'interface',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+type\s+(\w+)\s*[=<]/,
+  type: 'type',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+enum\s+(\w+)/,
+  type: 'enum',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+namespace\s+(\w+)/,
+  type: 'namespace',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+const\s+(\w+)/,
+  type: 'constant',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+let\s+(\w+)/,
+  type: 'constant',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
+{
+  regex: /^export\s+var\s+(\w+)/,
+  type: 'constant',
+  extractName: (m) => m[1] ?? '',
+  isDefault: false,
+  isReExport: false,
+},
 ]
 
 /**
@@ -321,7 +321,8 @@ export function extractExports(content: string, filePath: string): ApiExport[] {
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim()
+    const line = lines[i]?.trim()
+    if (!line) continue
     if (!line.startsWith('export')) continue
     if (line.startsWith('//')) continue
 
@@ -361,7 +362,8 @@ export function extractExports(content: string, filePath: string): ApiExport[] {
     if (!matched) {
       const typeOnlyMatch = line.match(/^export\s+type\s+\{([^}]+)\}/)
       if (typeOnlyMatch) {
-        const names = typeOnlyMatch[1].split(',').map((n) => n.trim().split(/\s+as\s+/).pop()!.trim())
+        const captured = typeOnlyMatch[1] ?? ''
+        const names = captured.split(',').map((n) => n.trim().split(/\s+as\s+/).pop() ?? '')
         for (const name of names) {
           results.push({
             name, type: 'type', file: filePath, line: i + 1,
@@ -376,7 +378,8 @@ export function extractExports(content: string, filePath: string): ApiExport[] {
 
       const reExportMatch = line.match(/^export\s+\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]/)
       if (reExportMatch) {
-        const names = reExportMatch[1].split(',').map((n) => n.trim().split(/\s+as\s+/).pop()!.trim())
+        const captured = reExportMatch[1] ?? ''
+        const names = captured.split(',').map((n) => n.trim().split(/\s+as\s+/).pop() ?? '')
         for (const name of names) {
           results.push({
             name, type: 'constant', file: filePath, line: i + 1,
@@ -391,7 +394,8 @@ export function extractExports(content: string, filePath: string): ApiExport[] {
 
       const namedMatch = line.match(/^export\s+\{([^}]+)\}/)
       if (namedMatch) {
-        const names = namedMatch[1].split(',').map((n) => n.trim().split(/\s+as\s+/).pop()!.trim())
+        const captured = namedMatch[1] ?? ''
+        const names = captured.split(',').map((n) => n.trim().split(/\s+as\s+/).pop() ?? '')
         for (const name of names) {
           results.push({
             name, type: 'constant', file: filePath, line: i + 1,
@@ -406,7 +410,7 @@ export function extractExports(content: string, filePath: string): ApiExport[] {
 
       const defaultExprMatch = line.match(/^export\s+default\s+(\w+)/)
       if (defaultExprMatch) {
-        const name = defaultExprMatch[1]
+        const name = defaultExprMatch[1] ?? ''
         results.push({
           name, type: 'constant', file: filePath, line: i + 1,
           isDefaultExport: true, isNamedExport: false, isReExport: false, isTypeOnly: false,

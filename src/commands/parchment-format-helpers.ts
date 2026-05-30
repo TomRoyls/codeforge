@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { ParchmentResult, Scroll, ParchmentStats, ScrollSection } from './parchment-helpers.js'
+import type { ParchmentResult, Scroll, ParchmentStats } from './parchment-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────
 

@@ -172,10 +172,11 @@ class RingGraph {
 
     const visited = new Set<number>();
     const queue: number[] = [start];
+    let _qi = 0;
     visited.add(start);
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
       callback(current);
 
       const nbrs = this._adjacency.get(current);
@@ -223,10 +224,11 @@ class RingGraph {
     const visited = new Set<number>();
     const parent = new Map<number, number>();
     const queue: number[] = [from];
+    let _qi = 0;
     visited.add(from);
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
 
       if (current === to) {
         const path: number[] = [];
@@ -272,10 +274,11 @@ class RingGraph {
 
     const dist = new Map<number, number>();
     const queue: number[] = [v];
+    let _qi = 0;
     dist.set(v, 0);
 
-    while (queue.length > 0) {
-      const current = queue.shift()!;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
       const currentDist = dist.get(current)!;
 
       const nbrs = this._adjacency.get(current);

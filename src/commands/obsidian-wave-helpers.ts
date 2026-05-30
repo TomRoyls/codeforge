@@ -873,7 +873,7 @@ export async function buildObsidianTideResult(
 export function generateRecommendations(
   shards: ObsidianShard[],
   reefs: ObsidianReef[],
-  volcano: ObsidianTideResult['volcano'],
+  _volcano: ObsidianTideResult['volcano'],
   stats: ObsidianTideResult['stats'],
 ): string[] {
   const recs: string[] = []

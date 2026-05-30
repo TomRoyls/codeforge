@@ -83,7 +83,7 @@ const PATTERN_DEFS = [
  * @example
  * detectPatterns('import { x } from "y"; export const z = x', 'a.ts') // Map<string, number>
  */
-export function detectPatterns(content: string, filePath: string): Map<string, number> {
+export function detectPatterns(content: string, _filePath: string): Map<string, number> {
   const scores = new Map<string, number>()
 
   const hasImports = /import\s+/.test(content)
@@ -184,11 +184,11 @@ export function analyzePatterns(files: string[], contents: string[]): BioPattern
   const patternScores = new Map<string, number[]>()
 
   for (let i = 0; i < files.length; i++) {
-    const scores = detectPatterns(contents[i], files[i])
+    const scores = detectPatterns(contents[i] ?? '',files[i] ?? '')
     for (const [pattern, score] of scores) {
       if (!patternFiles.has(pattern)) patternFiles.set(pattern, [])
       if (!patternScores.has(pattern)) patternScores.set(pattern, [])
-      patternFiles.get(pattern)!.push(files[i])
+      patternFiles.get(pattern)!.push(files[i] ?? '')
       patternScores.get(pattern)!.push(score)
     }
   }
@@ -334,12 +334,12 @@ export function analyzeEcosystem(
   const foodWeb: [string, string][] = []
   const fileSet = new Set(files)
   for (let i = 0; i < files.length; i++) {
-    const imports = contents[i].match(/from\s+['"]\.\/([^'"]+)['"]/g) || []
+    const imports = (contents[i] ?? '').match(/from\s+['"]\.\/([^'"]+)['"]/g) || []
     for (const imp of imports) {
       const depName = imp.replace(/from\s+['"]\.\/([^'"]+)['"]/, '$1')
       const depFile = files.find(f => f.includes(depName))
       if (depFile && fileSet.has(depFile)) {
-        foodWeb.push([files[i], depFile])
+        foodWeb.push([files[i] ?? '', depFile])
       }
     }
   }
@@ -499,15 +499,15 @@ export function buildBiomimicryResult(
 
   const lifestyles: BioLifestyle[] = []
   for (let i = 0; i < files.length; i++) {
-    const scores = detectPatterns(contents[i], files[i])
-    lifestyles.push(classifyLifestyle(scores, contents[i], files[i]))
+    const scores = detectPatterns(contents[i] ?? '',files[i] ?? '')
+    lifestyles.push(classifyLifestyle(scores, contents[i] ?? '',files[i] ?? ''))
   }
 
   const byDir = new Map<string, Array<{ file: string; content: string }>>()
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].split('/').slice(0, -1).join('/') || 'root'
+    const dir = (files[i] ?? '').split('/').slice(0, -1).join('/') || 'root'
     if (!byDir.has(dir)) byDir.set(dir, [])
-    byDir.get(dir)!.push({ file: files[i], content: contents[i] })
+    byDir.get(dir)!.push({ file: files[i] ?? '', content: contents[i] ?? '' })
   }
 
   const ecosystems: BioEcosystem[] = []

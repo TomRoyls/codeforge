@@ -910,7 +910,7 @@ export async function buildStellarCathedralResult(
 export function generateRecommendations(
   pillars: StellarPillar[],
   naves: StellarNave[],
-  cosmos: StellarCathedralResult['cosmos'],
+  _cosmos: StellarCathedralResult['cosmos'],
   stats: StellarCathedralResult['stats'],
 ): string[] {
   const recs: string[] = []

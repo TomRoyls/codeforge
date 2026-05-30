@@ -347,7 +347,7 @@ export function classifyCryologistGrade(avgStability: number): CryologistGrade {
 export function measureChainDepth(content: string): ChainInfo {
   const imports = countImports(content)
   const exports = countExports(content)
-  const importPaths = Array.from(content.matchAll(/import\s+.*?\s+from\s+['"]([^'"]+)['"]/g)).map(m => m[1])
+  const importPaths = Array.from(content.matchAll(/import\s+.*?\s+from\s+['"]([^'"]+)['"]/g)).map(m => m[1] ?? '').filter((s): s is string => s !== '')
 
   const depth = Math.min(100, Math.round(
     imports * 8 + maxNesting(content) * 3,
@@ -721,15 +721,15 @@ export function buildIcicleResult(
     overallStability,
     cryologistGrade: classifyCryologistGrade(overallStability),
     deepestChain: drops.length > 0
-      ? drops.reduce((b, d) => d.icicleLength > b.icicleLength ? d : b, drops[0]).file : 'none',
+      ? drops.reduce((b, d) => d.icicleLength > b.icicleLength ? d : b, drops[0] as typeof drops[number]).file : 'none',
     thinnestChain: drops.length > 0
-      ? drops.reduce((b, d) => d.thickness < b.thickness ? d : b, drops[0]).file : 'none',
+      ? drops.reduce((b, d) => d.thickness < b.thickness ? d : b, drops[0] as typeof drops[number]).file : 'none',
     clearestChain: drops.length > 0
-      ? drops.reduce((b, d) => d.clarity > b.clarity ? d : b, drops[0]).file : 'none',
+      ? drops.reduce((b, d) => d.clarity > b.clarity ? d : b, drops[0] as typeof drops[number]).file : 'none',
     mostFragile: drops.length > 0
-      ? drops.reduce((b, d) => d.fragility > b.fragility ? d : b, drops[0]).file : 'none',
+      ? drops.reduce((b, d) => d.fragility > b.fragility ? d : b, drops[0] as typeof drops[number]).file : 'none',
     mostStable: drops.length > 0
-      ? drops.reduce((b, d) => d.temperature < b.temperature ? d : b, drops[0]).file : 'none',
+      ? drops.reduce((b, d) => d.temperature < b.temperature ? d : b, drops[0] as typeof drops[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(drops, sheets, glacier, stats)

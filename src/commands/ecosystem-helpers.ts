@@ -87,7 +87,8 @@ export function extractImports(content: string): string[] {
   for (const pat of patterns) {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
-      imports.push(m[1])
+      const match = m[1]
+      if (match) imports.push(match)
     }
   }
   return [...new Set(imports)]
@@ -109,10 +110,17 @@ export function extractExports(content: string): string[] {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
       if (pat.source.startsWith('export\\s+\\{')) {
-        const names = m[1].split(',').map((n) => n.trim().split(/\s+as\s+/).pop()!.trim()).filter(Boolean)
-        exports.push(...names)
+        const captured = m[1]
+        if (captured) {
+          const names = captured.split(',').map((n) => {
+            const parts = n.trim().split(/\s+as\s+/)
+            return (parts.at(-1) ?? '').trim()
+          }).filter(Boolean)
+          exports.push(...names)
+        }
       } else {
-        exports.push(m[1])
+        const match = m[1]
+        if (match) exports.push(match)
       }
     }
   }
@@ -139,7 +147,7 @@ export function getHabitat(filePath: string): string {
  * classifySpecies('test.ts', ['a', 'b'], ['x'], ['c'], true)
  */
 export function classifySpecies(
-  file: string,
+  _file: string,
   imports: string[],
   exports: string[],
   importedBy: string[],
@@ -554,7 +562,7 @@ export function generateRecommendations(
 export function buildEcosystemResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options?: Record<string, unknown>,
 ): EcosystemResult {
   if (files.length === 0) {
     const emptyStats: EcosystemStats = {
@@ -572,8 +580,8 @@ export function buildEcosystemResult(
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    fileImports.set(files[i], extractImports(content))
-    fileExports.set(files[i], extractExports(content))
+    fileImports.set(files[i] ?? '', extractImports(content))
+    fileExports.set(files[i] ?? '', extractExports(content))
   }
 
   const exportedBy = new Map<string, string[]>()

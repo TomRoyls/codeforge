@@ -251,18 +251,17 @@ export function extractFunctions(content: string, filePath: string): FunctionInf
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     if (line === undefined) continue
-    const lineNum = i + 1
     const trimmed = line.trim()
 
     // Skip lines inside multi-line strings or comments
     if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) continue
 
-    let match: RegExpExecArray | null
+    let match: RegExpMatchArray | null
 
     // Regular functions: function name(...)
     match = trimmed.match(/^(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*(?:<[^>]*>)?\s*\(/)
     if (match) {
-      const fn = buildFunctionInfo(lines, i, filePath, match[1], 'function', trimmed)
+      const fn = buildFunctionInfo(lines, i, filePath, match[1] ?? '', 'function', trimmed)
       if (fn) functions.push(fn)
       continue
     }
@@ -270,7 +269,7 @@ export function extractFunctions(content: string, filePath: string): FunctionInf
     // Arrow functions: const name = (...) =>
     match = trimmed.match(/^(?:export\s+)?(?:const|let|var)\s+(\w+)\s*(?::\s*[^=]+?)?\s*=\s*(?:async\s+)?\(/)
     if (match) {
-      const fn = buildFunctionInfo(lines, i, filePath, match[1], 'arrow', trimmed)
+      const fn = buildFunctionInfo(lines, i, filePath, match[1] ?? '', 'arrow', trimmed)
       if (fn) functions.push(fn)
       continue
     }
@@ -278,7 +277,7 @@ export function extractFunctions(content: string, filePath: string): FunctionInf
     // Arrow with single param: const name = x =>
     match = trimmed.match(/^(?:export\s+)?(?:const|let|var)\s+(\w+)\s*(?::\s*[^=]+?)?\s*=\s*(?:async\s+)?(\w+)\s*=>/)
     if (match) {
-      const fn = buildFunctionInfo(lines, i, filePath, match[1], 'arrow', trimmed)
+      const fn = buildFunctionInfo(lines, i, filePath, match[1] ?? '', 'arrow', trimmed)
       if (fn) functions.push(fn)
       continue
     }
@@ -296,7 +295,7 @@ export function extractFunctions(content: string, filePath: string): FunctionInf
     if (match && match[1] !== 'if' && match[1] !== 'for' && match[1] !== 'while' && match[1] !== 'switch' && match[1] !== 'catch' && match[1] !== 'class' && match[1] !== 'function' && match[1] !== 'return' && match[1] !== 'new' && match[1] !== 'throw' && match[1] !== 'delete' && match[1] !== 'type' && match[1] !== 'interface' && match[1] !== 'export' && match[1] !== 'import') {
       // Only if indented (inside a class)
       if (line !== trimmed && trimmed.includes('{')) {
-        const fn = buildFunctionInfo(lines, i, filePath, match[1], 'method', trimmed)
+        const fn = buildFunctionInfo(lines, i, filePath, match[1] ?? '', 'method', trimmed)
         if (fn) functions.push(fn)
       }
     }

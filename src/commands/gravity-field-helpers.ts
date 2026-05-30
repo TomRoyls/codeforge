@@ -188,7 +188,6 @@ const FUNCTION_REGEX = /\b(function|const\s+\w+\s*=\s*(\(|[^=]=>))\b/g
 const ASYNC_REGEX = /\basync\b/g
 const AWAIT_REGEX = /\bawait\b/g
 const RETURN_REGEX = /\breturn\b/g
-const THROW_REGEX = /\bthrow\b/g
 const TRY_CATCH_REGEX = /\btry\s*\{/g
 const IF_REGEX = /\bif\s*\(/g
 const FOR_REGEX = /\bfor\s*\(/g
@@ -211,10 +210,7 @@ const NULLISH_REGEX = /\?\?/g
 const PRIVATE_REGEX = /\bprivate\s/g
 const PROTECTED_REGEX = /\bprotected\s/g
 const PUBLIC_REGEX = /\bpublic\s/g
-const STATIC_REGEX = /\bstatic\s/g
-const READONLY_REGEX = /\breadonly\s/g
 const ABSTRACT_REGEX = /\babstract\s/g
-const OVERRIDE_REGEX = /\boverride\s/g
 const EMIT_REGEX = /\.emit\s*\(/g
 const LISTEN_REGEX = /\.on\s*\(/g
 const SUBSCRIBE_REGEX = /\.subscribe\s*\(/g
@@ -225,7 +221,6 @@ const INJECT_REGEX = /@inject|inject\s*\(/g
 const PLUGIN_REGEX = /plugin|Plugin/g
 const STRATEGY_REGEX = /strategy|Strategy/g
 const FACTORY_REGEX = /factory|Factory/g
-const SINGLETON_REGEX = /singleton|Singleton/g
 const OBSERVER_REGEX = /observer|Observer|subscribe|Subscribe/g
 
 // ─── Helper Counting Functions ─────────────────────────────────────────────
@@ -480,9 +475,7 @@ export function measureEscape(content: string): EscapeMeasure {
   const plugins = countMatches(content, PLUGIN_REGEX)
   const strategies = countMatches(content, STRATEGY_REGEX)
   const factories = countMatches(content, FACTORY_REGEX)
-  const singletons = countMatches(content, SINGLETON_REGEX)
   const abstracts = countMatches(content, ABSTRACT_REGEX)
-  const overrides = countMatches(content, OVERRIDE_REGEX)
   const defaultExports = countMatches(content, DEFAULT_EXPORT_REGEX)
   const reExports = countMatches(content, RE_EXPORT_REGEX)
   const lines = countNonEmptyLines(content)
@@ -842,9 +835,8 @@ export function generateRecommendations(
 export function buildGravityFieldResult(
   files: string[],
   contents: string[],
-  options?: { ignore?: string[]; ext?: string[] },
+  _options?: { ignore?: string[]; ext?: string[] },
 ): GravityFieldResult {
-  const _opts = options ?? {}
 
   const bodies: GravitationalBody[] = files.map((file, i) =>
     analyzeGravitationalBody(contents[i] ?? '', file),
@@ -920,11 +912,11 @@ export function buildGravityFieldResult(
     hasSlowDecayCount: bodies.filter((b) => b.decay.hasSlowDecay).length,
     overallStability,
     astrophysicistGrade: classifyAstrophysicistGrade(overallStability),
-    bestBody: count > 0 ? bestBy(bodies, (b) => b.qualityScore).file : '',
-    mostStable: count > 0 ? bestBy(bodies, (b) => b.orbitalStability).file : '',
-    mostDecouplable: count > 0 ? Array.from(bodies).sort((a, b) => a.escapeVelocity - b.escapeVelocity)[0].file : '',
-    strongestField: count > 0 ? bestBy(bodies, (b) => b.fieldStrength).file : '',
-    healthiestDecay: count > 0 ? bestBy(bodies, (b) => b.orbitalDecay).file : '',
+    bestBody: count > 0 ? bestBy(bodies, (b) => b.qualityScore)?.file ?? '' : '',
+    mostStable: count > 0 ? bestBy(bodies, (b) => b.orbitalStability)?.file ?? '' : '',
+    mostDecouplable: count > 0 ? (Array.from(bodies).sort((a, b) => a.escapeVelocity - b.escapeVelocity)[0]?.file ?? '') : '',
+    strongestField: count > 0 ? bestBy(bodies, (b) => b.fieldStrength)?.file ?? '' : '',
+    healthiestDecay: count > 0 ? bestBy(bodies, (b) => b.orbitalDecay)?.file ?? '' : '',
   }
 
   const recommendations = generateRecommendations(bodies, regions, cosmos, stats)

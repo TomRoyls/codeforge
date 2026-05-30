@@ -656,7 +656,7 @@ export async function buildPlatinumForgeResult(
 export function generateRecommendations(
   ingots: PlatinumIngot[],
   foundries: PlatinumFoundry[],
-  furnace: PlatinumForgeResult['furnace'],
+  _furnace: PlatinumForgeResult['furnace'],
   stats: PlatinumForgeResult['stats'],
 ): string[] {
   const recs: string[] = []

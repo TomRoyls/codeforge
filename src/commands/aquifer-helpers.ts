@@ -753,7 +753,7 @@ export function analyzeAquiferLayer(tables: WaterTable[], dirPath: string): Aqui
  * generateAquiferRecommendations(tables, layers, basin, stats) // string[]
  */
 export function generateAquiferRecommendations(
-  tables: WaterTable[],
+  _tables: WaterTable[],
   layers: AquiferLayer[],
   _basin: BasinInfo,
   stats: AquiferStats,
@@ -895,17 +895,17 @@ export function buildAquiferResult(
     overallWaterQuality,
     hydrologistGrade: classifyHydrologistGrade(overallWaterQuality),
     cleanestFile: tables.length > 0
-      ? tables.reduce((b, t) => t.waterQuality > b.waterQuality ? t : b, tables[0]).file : 'none',
+      ? tables.reduce((b, t) => t.waterQuality > b.waterQuality ? t : b, tables[0] as typeof tables[number]).file : 'none',
     dirtiestFile: tables.length > 0
-      ? tables.reduce((d, t) => t.waterQuality < d.waterQuality ? t : d, tables[0]).file : 'none',
+      ? tables.reduce((d, t) => t.waterQuality < d.waterQuality ? t : d, tables[0] as typeof tables[number]).file : 'none',
     deepestFlow: tables.length > 0
-      ? tables.reduce((d, t) => t.tableDepth > d.tableDepth ? t : d, tables[0]).file : 'none',
+      ? tables.reduce((d, t) => t.tableDepth > d.tableDepth ? t : d, tables[0] as typeof tables[number]).file : 'none',
     shallowestFlow: tables.length > 0
-      ? tables.reduce((s, t) => t.tableDepth < s.tableDepth ? t : s, tables[0]).file : 'none',
+      ? tables.reduce((s, t) => t.tableDepth < s.tableDepth ? t : s, tables[0] as typeof tables[number]).file : 'none',
     bestSpring: tables.length > 0
-      ? tables.reduce((b, t) => t.springs.avgQuality > b.springs.avgQuality ? t : b, tables[0]).file : 'none',
+      ? tables.reduce((b, t) => t.springs.avgQuality > b.springs.avgQuality ? t : b, tables[0] as typeof tables[number]).file : 'none',
     worstSink: tables.length > 0
-      ? tables.reduce((w, t) => t.underground.sinkCount > w.underground.sinkCount ? t : w, tables[0]).file : 'none',
+      ? tables.reduce((w, t) => t.underground.sinkCount > w.underground.sinkCount ? t : w, tables[0] as typeof tables[number]).file : 'none',
   }
 
   const recommendations = generateAquiferRecommendations(tables, layers, basin, stats)

@@ -824,22 +824,22 @@ export function buildMidnightInkResult(
   }
 
   const bestStroke = totalFiles > 0
-    ? strokes.reduce((best, st) => (st.qualityScore > best.qualityScore ? st : best), strokes[0]).file
+    ? strokes.reduce((best, st) => (st.qualityScore > best.qualityScore ? st : best), strokes[0] as typeof strokes[number]).file
     : ''
   const deepest = totalFiles > 0
-    ? strokes.reduce((best, st) => (st.depth > best.depth ? st : best), strokes[0]).file
+    ? strokes.reduce((best, st) => (st.depth > best.depth ? st : best), strokes[0] as typeof strokes[number]).file
     : ''
   const clearest = totalFiles > 0
-    ? strokes.reduce((best, st) => (st.darkClarity > best.darkClarity ? st : best), strokes[0]).file
+    ? strokes.reduce((best, st) => (st.darkClarity > best.darkClarity ? st : best), strokes[0] as typeof strokes[number]).file
     : ''
   const bestWorkspace = totalFiles > 0
-    ? strokes.reduce((best, st) => (st.scriptoriumQuality > best.scriptoriumQuality ? st : best), strokes[0]).file
+    ? strokes.reduce((best, st) => (st.scriptoriumQuality > best.scriptoriumQuality ? st : best), strokes[0] as typeof strokes[number]).file
     : ''
   const bestDocumented = totalFiles > 0
-    ? strokes.reduce((best, st) => (st.manuscriptPreservation > best.manuscriptPreservation ? st : best), strokes[0]).file
+    ? strokes.reduce((best, st) => (st.manuscriptPreservation > best.manuscriptPreservation ? st : best), strokes[0] as typeof strokes[number]).file
     : ''
   const bestStructured = totalFiles > 0
-    ? strokes.reduce((best, st) => (st.illuminatedText > best.illuminatedText ? st : best), strokes[0]).file
+    ? strokes.reduce((best, st) => (st.illuminatedText > best.illuminatedText ? st : best), strokes[0] as typeof strokes[number]).file
     : ''
 
   const stats: MidnightInkStats = {

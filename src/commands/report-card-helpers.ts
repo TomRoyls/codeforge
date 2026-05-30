@@ -100,7 +100,7 @@ function extractImports(content: string): string[] {
   const imports: string[] = []
   for (const line of content.split('\n')) {
     const m = line.match(/import\s+(?:type\s+)?(?:\{[^}]+\}|\*\s+as\s+\w+|\w+)\s+from\s+['"]([^'"]+)['"]/)
-    if (m) imports.push(m[1])
+    if (m) imports.push(m[1] ?? '')
   }
   return imports
 }
@@ -455,8 +455,8 @@ export function buildReportCardResult(
     averageScore: overallScore,
     subjectsAbove80: subjects.filter((s) => s.score >= 80).length,
     subjectsBelow50: subjects.filter((s) => s.score < 50).length,
-    highestSubject: subjects.reduce((best, s) => s.score > best.score ? s : best, subjects[0])?.name ?? '',
-    lowestSubject: subjects.reduce((worst, s) => s.score < worst.score ? s : worst, subjects[0])?.name ?? '',
+    highestSubject: subjects.reduce((best, s) => s.score > best.score ? s : best, subjects[0] as typeof subjects[number])?.name ?? '',
+    lowestSubject: subjects.reduce((worst, s) => s.score < worst.score ? s : worst, subjects[0] as typeof subjects[number])?.name ?? '',
   }
 
   const recommendations = generateRecommendations(card, stats)

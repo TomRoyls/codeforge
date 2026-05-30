@@ -311,9 +311,10 @@ export class TaskRunner {
     const all = this.queue.getAll()
     const failedIds = new Set<string>()
     for (let i = 0; i < all.length; i++) {
-      const status = all[i].status
+      const t = all[i]!
+      const status = t.status
       if (status === 'failed' || status === 'timeout') {
-        failedIds.add(all[i].id)
+        failedIds.add(t.id)
       }
     }
     for (const task of all) {

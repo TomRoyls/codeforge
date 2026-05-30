@@ -4,6 +4,7 @@ import { DEFAULT_AMORTIZED_QUEUE_OPTIONS } from './types.js'
 export class AmortizedQueue<T = unknown> {
   private front: T[] = []
   private rear: T[] = []
+  private head = 0
   private _size: number = 0
   private options: AmortizedQueueOptions
   private frozen: boolean = false
@@ -12,10 +13,15 @@ export class AmortizedQueue<T = unknown> {
     this.options = { ...DEFAULT_AMORTIZED_QUEUE_OPTIONS, ...options }
   }
 
+  private get frontLength(): number {
+    return this.front.length - this.head
+  }
+
   private ensureInvariant(): void {
-    if (this.front.length === 0 && this.rear.length > 0) {
+    if (this.frontLength === 0 && this.rear.length > 0) {
       this.front = this.rear
       this.rear = []
+      this.head = 0
     }
   }
 
@@ -28,7 +34,7 @@ export class AmortizedQueue<T = unknown> {
   private enforceMaxSize(): void {
     if (this.options.maxSize > 0 && this._size > this.options.maxSize) {
       this.ensureInvariant()
-      this.front.shift()
+      this.head++
       this._size--
     }
   }
@@ -46,8 +52,13 @@ export class AmortizedQueue<T = unknown> {
       return undefined
     }
     this.ensureInvariant()
-    const value = this.front.shift()!
+    const value = this.front[this.head]!
+    this.head++
     this._size--
+    if (this.head >= this.front.length) {
+      this.front = []
+      this.head = 0
+    }
     return value
   }
 
@@ -55,8 +66,8 @@ export class AmortizedQueue<T = unknown> {
     if (this._size === 0) {
       return undefined
     }
-    if (this.front.length > 0) {
-      return this.front[0]
+    if (this.frontLength > 0) {
+      return this.front[this.head]
     }
     return this.rear[0]
   }
@@ -87,11 +98,15 @@ export class AmortizedQueue<T = unknown> {
     this.checkMutable()
     this.front = []
     this.rear = []
+    this.head = 0
     this._size = 0
   }
 
   toArray(): T[] {
-    return [...this.front, ...this.rear]
+    if (this.head === 0) {
+      return [...this.front, ...this.rear]
+    }
+    return [...this.front.slice(this.head), ...this.rear]
   }
 
   fromArray(items: T[]): void {
@@ -102,16 +117,16 @@ export class AmortizedQueue<T = unknown> {
   }
 
   forEach(callback: (value: T, index: number) => void): void {
-    for (let i = 0; i < this.front.length; i++) {
-      callback(this.front[i]!, i)
+    for (let i = this.head; i < this.front.length; i++) {
+      callback(this.front[i]!, i - this.head)
     }
     for (let i = 0; i < this.rear.length; i++) {
-      callback(this.rear[i]!, this.front.length + i)
+      callback(this.rear[i]!, this.frontLength + i)
     }
   }
 
   [Symbol.iterator](): Iterator<T> {
-    const copy = [...this.front, ...this.rear]
+    const copy = this.toArray()
     let index = 0
     return {
       next(): IteratorResult<T> {
@@ -138,15 +153,20 @@ export class AmortizedQueue<T = unknown> {
     const actualCount = Math.min(count, this._size)
     for (let i = 0; i < actualCount; i++) {
       this.ensureInvariant()
-      result.push(this.front.shift()!)
+      result.push(this.front[this.head]!)
+      this.head++
       this._size--
+    }
+    if (this.head >= this.front.length) {
+      this.front = []
+      this.head = 0
     }
     return result
   }
 
   reverse(): AmortizedQueue<T> {
     const queue = new AmortizedQueue<T>({ maxSize: this.options.maxSize })
-    const all = [...this.front, ...this.rear]
+    const all = this.toArray()
     queue.front = all.reverse()
     queue._size = this._size
     return queue
@@ -154,7 +174,7 @@ export class AmortizedQueue<T = unknown> {
 
   map<U>(fn: (value: T, index: number) => U): AmortizedQueue<U> {
     const queue = new AmortizedQueue<U>({ maxSize: this.options.maxSize })
-    const all = [...this.front, ...this.rear]
+    const all = this.toArray()
     queue.front = all.map((val, idx) => fn(val, idx))
     queue._size = this._size
     return queue
@@ -162,7 +182,7 @@ export class AmortizedQueue<T = unknown> {
 
   filter(fn: (value: T, index: number) => boolean): AmortizedQueue<T> {
     const queue = new AmortizedQueue<T>({ maxSize: this.options.maxSize })
-    const all = [...this.front, ...this.rear]
+    const all = this.toArray()
     const filtered = all.filter((val, idx) => fn(val, idx))
     queue.front = filtered
     queue._size = filtered.length
@@ -171,7 +191,7 @@ export class AmortizedQueue<T = unknown> {
 
   clone(): AmortizedQueue<T> {
     const queue = new AmortizedQueue<T>({ maxSize: this.options.maxSize })
-    queue.front = [...this.front]
+    queue.front = this.head === 0 ? [...this.front] : this.front.slice(this.head)
     queue.rear = [...this.rear]
     queue._size = this._size
     return queue
@@ -179,7 +199,7 @@ export class AmortizedQueue<T = unknown> {
 
   persist(): AmortizedQueue<T> {
     const snapshot = new AmortizedQueue<T>({ maxSize: this.options.maxSize })
-    snapshot.front = [...this.front]
+    snapshot.front = this.head === 0 ? [...this.front] : this.front.slice(this.head)
     snapshot.rear = [...this.rear]
     snapshot._size = this._size
     snapshot.frozen = true

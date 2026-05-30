@@ -314,11 +314,10 @@ export function detectDissonance(files: string[], contents: string[], sections: 
   const dissonances: Dissonance[] = []
 
   for (let i = 0; i < files.length; i++) {
-    const file = files[i]
+    const file = files[i] ?? ''
     const content = contents[i] ?? ''
 
     const hasAsync = /\basync\b/.test(content)
-    const hasSync = /\bfunction\s+\w+\s*\([^)]*\)\s*\{/.test(content) && !hasAsync
     const hasCallback = /\bcallback\b|\bcb\b/.test(content)
 
     if (hasAsync && hasCallback) {
@@ -449,7 +448,7 @@ export function generateRecommendations(
  * @example
  * buildSymphonyResult(['a.ts'], ['code'], {})
  */
-export function buildSymphonyResult(files: string[], contents: string[], options: Record<string, unknown>): SymphonyResult {
+export function buildSymphonyResult(files: string[], contents: string[], _options: Record<string, unknown>): SymphonyResult {
   if (files.length === 0) {
     const emptyStats: SymphonyStats = {
       totalInstruments: 0, sectionCount: 0, perfectHarmonies: 0, dissonantCount: 0,
@@ -461,9 +460,9 @@ export function buildSymphonyResult(files: string[], contents: string[], options
 
   const dirMap = new Map<string, { files: string[]; contents: string[] }>()
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].includes('/') ? files[i].substring(0, files[i].lastIndexOf('/')) : '.'
+    const dir = (files[i] ?? '').includes('/') ? (files[i] ?? '').substring(0, (files[i] ?? '').lastIndexOf('/')) : '.'
     if (!dirMap.has(dir)) dirMap.set(dir, { files: [], contents: [] })
-    dirMap.get(dir)!.files.push(files[i])
+    dirMap.get(dir)!.files.push(files[i] ?? '')
     dirMap.get(dir)!.contents.push(contents[i] ?? '')
   }
 
@@ -481,9 +480,9 @@ export function buildSymphonyResult(files: string[], contents: string[], options
       const exports = (content.match(/^export\s/gm) || []).length
 
       const instrument: Instrument = {
-        file,
+        file: file ?? '',
         section: dir,
-        role: classifyRole(file, content, imports, exports),
+        role: classifyRole(file ?? '', content, imports, exports),
         skill: computeSkill(content),
         range: computeRange(content),
         tuning: computeTuning(content),
@@ -509,7 +508,9 @@ export function buildSymphonyResult(files: string[], contents: string[], options
   const harmonies: Harmony[] = []
   for (let i = 0; i < sections.length; i++) {
     for (let j = i + 1; j < sections.length; j++) {
-      harmonies.push(measureHarmony(sections[i], sections[j]))
+      const si = sections[i]
+      const sj = sections[j]
+      if (si && sj) harmonies.push(measureHarmony(si, sj))
     }
   }
 

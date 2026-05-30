@@ -880,7 +880,7 @@ export async function buildEmeraldDawnResult(
 export function generateRecommendations(
   rays: EmeraldRay[],
   gardens: EmeraldGarden[],
-  sunrise: EmeraldDawnResult['sunrise'],
+  _sunrise: EmeraldDawnResult['sunrise'],
   stats: EmeraldDawnStats,
 ): string[] {
   const recs: string[] = []

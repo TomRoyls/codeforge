@@ -84,11 +84,11 @@ export function getModuleForFile(file: string): string {
 export function extractImports(content: string): string[] {
   const imports: string[] = []
   const namedMatch = content.matchAll(/import\s+\{[^}]+\}\s+from\s+['"]([^'"]+)['"]/g)
-  for (const m of namedMatch) imports.push(m[1]!)
+  for (const m of namedMatch) imports.push(m[1] ?? '')
   const defaultMatch = content.matchAll(/import\s+\w+\s+from\s+['"]([^'"]+)['"]/g)
-  for (const m of defaultMatch) imports.push(m[1]!)
+  for (const m of defaultMatch) imports.push(m[1] ?? '')
   const sideEffectMatch = content.matchAll(/import\s+['"]([^'"]+)['"]/g)
-  for (const m of sideEffectMatch) imports.push(m[1]!)
+  for (const m of sideEffectMatch) imports.push(m[1] ?? '')
   return imports
 }
 
@@ -101,7 +101,7 @@ export function extractImports(content: string): string[] {
 export function extractReExports(content: string): string[] {
   const reExports: string[] = []
   const match = content.matchAll(/export\s+\{[^}]+\}\s+from\s+['"]([^'"]+)['"]/g)
-  for (const m of match) reExports.push(m[1]!)
+  for (const m of match) reExports.push(m[1] ?? '')
   return reExports
 }
 
@@ -114,15 +114,15 @@ export function extractReExports(content: string): string[] {
 export function extractExportedNames(content: string): string[] {
   const names: string[] = []
   const constMatch = content.matchAll(/export\s+const\s+(\w+)/g)
-  for (const m of constMatch) names.push(m[1]!)
+  for (const m of constMatch) names.push(m[1] ?? '')
   const funcMatch = content.matchAll(/export\s+function\s+(\w+)/g)
-  for (const m of funcMatch) names.push(m[1]!)
+  for (const m of funcMatch) names.push(m[1] ?? '')
   const classMatch = content.matchAll(/export\s+class\s+(\w+)/g)
-  for (const m of classMatch) names.push(m[1]!)
+  for (const m of classMatch) names.push(m[1] ?? '')
   const interfaceMatch = content.matchAll(/export\s+interface\s+(\w+)/g)
-  for (const m of interfaceMatch) names.push(m[1]!)
+  for (const m of interfaceMatch) names.push(m[1] ?? '')
   const typeMatch = content.matchAll(/export\s+type\s+(\w+)/g)
-  for (const m of typeMatch) names.push(m[1]!)
+  for (const m of typeMatch) names.push(m[1] ?? '')
   return names
 }
 
@@ -261,7 +261,6 @@ export function findBridgeFiles(
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!
     const content = contents[i] ?? ''
-    const fileModule = getModuleForFile(file)
 
     const outgoing = boundaries.filter((b) => b.from === file)
     const targetModules = new Set(outgoing.map((b) => getModuleForFile(b.to)))
@@ -305,7 +304,7 @@ export function findBridgeFiles(
  */
 export function findSharedFiles(
   files: string[],
-  contents: string[],
+  _contents: string[],
   boundaries: Boundary[],
 ): TwilightZone[] {
   const zones: TwilightZone[] = []
@@ -376,7 +375,7 @@ export function findOrphanFiles(
  */
 export function findChimeraFiles(
   files: string[],
-  contents: string[],
+  _contents: string[],
   boundaries: Boundary[],
 ): TwilightZone[] {
   const zones: TwilightZone[] = []

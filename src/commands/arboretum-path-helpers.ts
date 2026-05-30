@@ -202,10 +202,7 @@ const GENERIC_RE = /<\w+>/g
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
 const COMMENT_RE = /\/\/.*$/gm
 const TRY_CATCH_RE = /try\s*\{/g
-const IF_RE = /\bif\s*\(/g
 const PIPE_RE = /[.\s](map|filter|reduce|forEach|flatMap|find|some|every)\s*\(/g
-const RETURN_RE = /\breturn\b/g
-const THROW_RE = /\bthrow\b/g
 const CONST_RE = /\bconst\s+/g
 const LET_RE = /\blet\s+/g
 const MUTATION_RE = /\.\s*(push|pop|shift|unshift|splice|sort|reverse)\s*\(/g
@@ -213,8 +210,6 @@ const SIDE_EFFECT_RE = /\b(console|process|fs|fetch|http|writeFile|readFile)\b/g
 const ANY_TYPE_RE = /:\s*any\b/g
 const DEAD_CODE_RE = /\b(debugger|with)\s*[(;]/
 const ASYNC_RE = /\basync\s+/
-const SEMICOLON_RE = /;\s*$/gm
-const BLANK_LINE_RE = /\n\s*\n/g
 
 // ─── measureTrunk ───────────────────────────────────────────────────────────
 
@@ -769,7 +764,7 @@ export function generateRecommendations(
   }
 
   const worst = specimens.length > 0
-    ? specimens.reduce((w, sp) => sp.qualityScore < w.qualityScore ? sp : w, specimens[0])
+    ? specimens.reduce((w, sp) => sp.qualityScore < w.qualityScore ? sp : w, specimens[0] as typeof specimens[number])
     : null
   if (worst && worst.qualityScore < 25) {
     recs.push(`Worst specimen "${worst.file}" needs replanting (score: ${worst.qualityScore})`)
@@ -828,19 +823,19 @@ export function buildArboretumPathResult(
 
   const conditions = specimens.map((sp) => sp.condition)
   const bestSpecimen = specimens.length > 0
-    ? specimens.reduce((b, sp) => sp.qualityScore > b.qualityScore ? sp : b, specimens[0])
+    ? specimens.reduce((b, sp) => sp.qualityScore > b.qualityScore ? sp : b, specimens[0] as typeof specimens[number])
     : null
   const strongestTrunk = specimens.length > 0
-    ? specimens.reduce((b, sp) => sp.trunkStrength > b.trunkStrength ? sp : b, specimens[0])
+    ? specimens.reduce((b, sp) => sp.trunkStrength > b.trunkStrength ? sp : b, specimens[0] as typeof specimens[number])
     : null
   const deepestRoots = specimens.length > 0
-    ? specimens.reduce((b, sp) => sp.rootDepth > b.rootDepth ? sp : b, specimens[0])
+    ? specimens.reduce((b, sp) => sp.rootDepth > b.rootDepth ? sp : b, specimens[0] as typeof specimens[number])
     : null
   const fullestCanopy = specimens.length > 0
-    ? specimens.reduce((b, sp) => sp.canopySpread > b.canopySpread ? sp : b, specimens[0])
+    ? specimens.reduce((b, sp) => sp.canopySpread > b.canopySpread ? sp : b, specimens[0] as typeof specimens[number])
     : null
   const healthiest = specimens.length > 0
-    ? specimens.reduce((b, sp) => sp.seasonalHealth > b.seasonalHealth ? sp : b, specimens[0])
+    ? specimens.reduce((b, sp) => sp.seasonalHealth > b.seasonalHealth ? sp : b, specimens[0] as typeof specimens[number])
     : null
 
   const stats: ArboretumPathStats = {

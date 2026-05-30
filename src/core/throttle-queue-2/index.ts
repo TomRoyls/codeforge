@@ -1,5 +1,6 @@
 export class ThrottleQueue2<T> {
   private queue: T[] = [];
+  private head: number = 0;
   private active: number = 0;
   private maxConcurrent: number;
   private delayMs: number = 0;
@@ -11,24 +12,37 @@ export class ThrottleQueue2<T> {
     }
   }
 
+  private maybeCompact(): void {
+    if (this.head > 256 && this.head > this.queue.length >> 1) {
+      this.queue = this.queue.slice(this.head)
+      this.head = 0
+    }
+  }
+
   enqueue(item: T): void {
     this.queue.push(item);
   }
 
   dequeue(): T | undefined {
-    return this.queue.shift();
+    if (this.head >= this.queue.length) return undefined
+    const item = this.queue[this.head]!
+    this.queue[this.head] = undefined as T
+    this.head++
+    this.maybeCompact()
+    return item
   }
 
   get size(): number {
-    return this.queue.length;
+    return this.queue.length - this.head;
   }
 
   isEmpty(): boolean {
-    return this.queue.length === 0;
+    return this.head >= this.queue.length;
   }
 
   clear(): void {
     this.queue = [];
+    this.head = 0;
     this.active = 0;
   }
 
@@ -37,10 +51,10 @@ export class ThrottleQueue2<T> {
       return undefined;
     }
 
-    const item = this.queue.shift();
-    if (item === undefined) {
-      return undefined;
-    }
+    const item = this.queue[this.head]!
+    this.queue[this.head] = undefined as T
+    this.head++
+    this.maybeCompact()
 
     this.active++;
     try {

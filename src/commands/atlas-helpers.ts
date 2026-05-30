@@ -131,15 +131,14 @@ export function computeRegionStats(filePaths: string[], contents: string[]): Omi
       if (trimmed.length > 0) codeLines++
     }
 
-    let m: RegExpExecArray | null
     const funcRe = new RegExp(FUNC_RE.source, 'g')
-    while ((m = funcRe.exec(content)) !== null) functions++
+    while (funcRe.exec(content) !== null) functions++
     const classRe = new RegExp(CLASS_RE.source, 'g')
-    while ((m = classRe.exec(content)) !== null) classes++
+    while (classRe.exec(content) !== null) classes++
     const exportRe = new RegExp(EXPORT_RE.source, 'g')
-    while ((m = exportRe.exec(content)) !== null) exports++
+    while (exportRe.exec(content) !== null) exports++
     const importRe = new RegExp(IMPORT_RE.source, 'g')
-    while ((m = importRe.exec(content)) !== null) imports++
+    while (importRe.exec(content) !== null) imports++
 
     complexity += countComplexity(content)
 
@@ -308,12 +307,12 @@ export function buildAtlas(files: string[], contents: string[]): AtlasRegion {
   const allDirs = [...tree.keys()]
   const rootDir = allDirs.length === 1 ? allDirs[0] : '.'
 
-  if (tree.has(rootDir) || allDirs.some((d) => d.startsWith(rootDir + '/') || rootDir === '.')) {
-    if (!tree.has(rootDir)) tree.set(rootDir, { files: [], contents: [] })
-    return buildRegion(rootDir)
+  if (tree.has(rootDir ?? '') || allDirs.some((d) => d.startsWith(rootDir + '/') || rootDir === '.')) {
+    if (!tree.has(rootDir ?? '')) tree.set(rootDir ?? '', { files: [], contents: [] })
+    return buildRegion(rootDir ?? '')
   }
 
-  return buildRegion(rootDir)
+  return buildRegion(rootDir ?? '')
 }
 
 function allFilesInRegion(region: AtlasRegion): string[] {

@@ -393,9 +393,9 @@ export function extractFunctionLengths(content: string): number[] {
   let startLine = 0
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     if (!inFunction) {
-      if (/\bfunction\s+\w+|=>\s*\{|const\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/.test(line)) {
+      if (/\bfunction\s+\w+|=>\s*\{|const\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/.test(line ?? '')) {
         inFunction = true
         depth = 0
         startLine = i
@@ -499,14 +499,12 @@ export function measureDepth(content: string): DepthMeasure {
  */
 export function measureVolume(content: string): VolumeMeasure {
   const branches = countBranches(content)
-  const functions = countFunctions(content)
   const loc = countLoc(content)
 
   const cyclomaticComplexity = branches + 1
   const cognitiveComplexity = branches + Math.max(0, maxNestingDepth(content) - 1) * 2
 
   const operators = Math.max(countOperators(content), 1)
-  const uniqueOps = Math.max(countUniqueOperators(content), 1)
   const operands = Math.max(countOperands(content), 1)
   const halsteadVolume = Math.round(loc > 0 ? Math.log2(operators + operands) * (operators + operands) / 10 : 0)
 
@@ -529,14 +527,14 @@ export function measureVolume(content: string): VolumeMeasure {
  * measureDensity('if (a) { x }') // { branchesPerLine, ... }
  */
 export function measureDensity(content: string): DensityMeasure {
+const branches = countBranches(content)
   const loc = Math.max(countLoc(content), 1)
-  const branches = countBranches(content)
-  const functions = countFunctions(content)
-  const comments = countComments(content)
   const codeLines = countCodeLines(content)
 
   const branchesPerLine = Math.round((branches / loc) * 100) / 100
+  const functions = countFunctions(content)
   const functionsPerLine = Math.round((functions / loc) * 100) / 100
+  const comments = countComments(content)
   const commentsPerLine = Math.round((comments / loc) * 100) / 100
   const codeDensity = Math.min(100, Math.max(0, Math.round(
     (codeLines / loc) * 100,
@@ -632,7 +630,6 @@ export function measureScale(content: string): ScaleMeasure {
  */
 export function measureBlueprint(content: string): Blueprint {
   const lines = content.split('\n').filter(l => l.trim().length > 0)
-  const maxWidth = maxLineWidth(content)
   const avgWidth = avgLineWidth(content)
   const maxNest = maxNestingDepth(content)
 
@@ -650,8 +647,8 @@ export function measureBlueprint(content: string): Blueprint {
   const codeDensity = measureDensity(content)
   const hasWings = codeDensity.isDense && lines.length > 20
 
-  const hasTopSection = lines.length > 0 && (lines[0]?.trim().startsWith('import') || lines[0]?.trim().startsWith('//'))
-  const hasBottomSection = lines.length > 2 && (lines[lines.length - 1]?.trim().startsWith('}') || lines[lines.length - 1]?.trim().startsWith('export'))
+  const hasTopSection = lines.length > 0 && ((lines[0]?.trim().startsWith('import') ?? false) || (lines[0]?.trim().startsWith('//') ?? false))
+  const hasBottomSection = lines.length > 2 && ((lines[lines.length - 1]?.trim().startsWith('}') ?? false) || (lines[lines.length - 1]?.trim().startsWith('export') ?? false))
   const isSymmetric = hasTopSection && hasBottomSection && !hasTowers && !hasBasements
 
   return {
@@ -987,15 +984,15 @@ export function buildTapeMeasureResult(
     overallBalance,
     architectGrade: classifyArchitectGrade(overallBalance),
     bestProportioned: measurements.length > 0
-      ? measurements.reduce((a, b) => b.proportion > a.proportion ? b : a, measurements[0]).file : 'none',
+      ? measurements.reduce((a, b) => b.proportion > a.proportion ? b : a, measurements[0] as typeof measurements[number]).file : 'none',
     worstProportioned: measurements.length > 0
-      ? measurements.reduce((a, b) => b.proportion < a.proportion ? b : a, measurements[0]).file : 'none',
+      ? measurements.reduce((a, b) => b.proportion < a.proportion ? b : a, measurements[0] as typeof measurements[number]).file : 'none',
     deepestFile: measurements.length > 0
-      ? measurements.reduce((a, b) => b.depthMeasure.maxNesting > a.depthMeasure.maxNesting ? b : a, measurements[0]).file : 'none',
+      ? measurements.reduce((a, b) => b.depthMeasure.maxNesting > a.depthMeasure.maxNesting ? b : a, measurements[0] as typeof measurements[number]).file : 'none',
     widestFile: measurements.length > 0
-      ? measurements.reduce((a, b) => b.dimensions.maxLineWidth > a.dimensions.maxLineWidth ? b : a, measurements[0]).file : 'none',
+      ? measurements.reduce((a, b) => b.dimensions.maxLineWidth > a.dimensions.maxLineWidth ? b : a, measurements[0] as typeof measurements[number]).file : 'none',
     densestFile: measurements.length > 0
-      ? measurements.reduce((a, b) => b.densityMeasure.codeDensity > a.densityMeasure.codeDensity ? b : a, measurements[0]).file : 'none',
+      ? measurements.reduce((a, b) => b.densityMeasure.codeDensity > a.densityMeasure.codeDensity ? b : a, measurements[0] as typeof measurements[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(measurements, floors, building, stats)

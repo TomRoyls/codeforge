@@ -46,10 +46,6 @@ const TRY_CATCH_REGEX = /\btry\s*\{/g
 const PROMISE_REGEX = /\bPromise\b/g
 const SET_REGEX = /\bSet\b/g
 const MAP_REGEX = /\bMap\b/g
-const WEAKMAP_REGEX = /\bWeakMap\b/g
-const SYMBOL_REGEX = /\bSymbol\b/g
-const PROXY_REGEX = /\bProxy\b/g
-const REGEX_LITERAL_REGEX = /\/[^/\n]+\//g
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 

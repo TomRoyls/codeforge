@@ -458,7 +458,6 @@ export function measureReagents(content: string): AlchemistFlask['reagents'] {
   const imports = countImports(content)
   const functions = countFunctions(content)
   const exports = countExports(content)
-  const loc = countLoc(content)
 
   const count = imports + functions
   const isValidated = types > 0 && functions > 0
@@ -493,7 +492,6 @@ export function measureCrucible(content: string): AlchemistFlask['crucible'] {
   const branches = countBranches(content)
   const functions = countFunctions(content)
   const types = countTypeAnnotations(content)
-  const loc = countLoc(content)
 
   const isFired = errors > 0
   const temperature = Math.min(100, Math.max(0, Math.round(
@@ -525,7 +523,6 @@ export function measureAlembic(content: string): AlchemistFlask['alembic'] {
   const types = countTypeAnnotations(content)
   const branches = countBranches(content)
   const console = countConsole(content)
-  const loc = countLoc(content)
 
   const distillationStages = functions + imports
   const hasCleanSeparation = exports > 0 && imports > 0
@@ -838,15 +835,15 @@ export function buildAlchemyLabResult(
     overallMastery,
     alchemistGrade: classifyAlchemistGrade(overallMastery),
     bestTransmutation: flasks.length > 0
-      ? flasks.reduce((a, b) => b.transmutationQuality > a.transmutationQuality ? b : a, flasks[0]).file : 'none',
+      ? flasks.reduce((a, b) => b.transmutationQuality > a.transmutationQuality ? b : a, flasks[0] as typeof flasks[number]).file : 'none',
     purest: flasks.length > 0
-      ? flasks.reduce((a, b) => b.distillationPurity > a.distillationPurity ? b : a, flasks[0]).file : 'none',
+      ? flasks.reduce((a, b) => b.distillationPurity > a.distillationPurity ? b : a, flasks[0] as typeof flasks[number]).file : 'none',
     strongestCrucible: flasks.length > 0
-      ? flasks.reduce((a, b) => b.crucibleStrength > a.crucibleStrength ? b : a, flasks[0]).file : 'none',
+      ? flasks.reduce((a, b) => b.crucibleStrength > a.crucibleStrength ? b : a, flasks[0] as typeof flasks[number]).file : 'none',
     mostElegant: flasks.length > 0
-      ? flasks.reduce((a, b) => b.philosopherPotential > a.philosopherPotential ? b : a, flasks[0]).file : 'none',
+      ? flasks.reduce((a, b) => b.philosopherPotential > a.philosopherPotential ? b : a, flasks[0] as typeof flasks[number]).file : 'none',
     mostExplosive: flasks.length > 0
-      ? flasks.reduce((a, b) => b.transmutation.byproductCount > a.transmutation.byproductCount ? b : a, flasks[0]).file : 'none',
+      ? flasks.reduce((a, b) => b.transmutation.byproductCount > a.transmutation.byproductCount ? b : a, flasks[0] as typeof flasks[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(flasks, labs, guild, stats)

@@ -101,12 +101,6 @@ function getYear(dateStr: string): number {
   return parseDate(dateStr).getFullYear()
 }
 
-function formatDate(dateStr: string): string {
-  const d = parseDate(dateStr)
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
-}
-
 // ─── Git Log Parsing ───────────────────────────────────────────────────────────
 
 /**
@@ -141,9 +135,9 @@ export function parseGitLog(rawLog: string): GitCommit[] {
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i]!
       const insMatch = line.match(/(\d+) insertion/)
-      if (insMatch) insertions = parseInt(insMatch[1]!, 10)
+      if (insMatch) insertions = parseInt(insMatch[1] ?? '', 10)
       const delMatch = line.match(/(\d+) deletion/)
-      if (delMatch) deletions = parseInt(delMatch[1]!, 10)
+      if (delMatch) deletions = parseInt(delMatch[1] ?? '', 10)
       if (line.includes('file changed') || line.includes('files changed')) continue
     }
 
@@ -161,7 +155,7 @@ export function parseGitLog(rawLog: string): GitCommit[] {
  * @example
  * classifyEvent(commit, 0, 100)
  */
-export function classifyEvent(commit: GitCommit, index: number, total: number): EventType {
+export function classifyEvent(commit: GitCommit, index: number, _total?: number): EventType {
   const msg = commit.message.toLowerCase()
 
   if (index < 3 || /^(initial|first commit|init repo|bootstrap|scaffold project)/i.test(msg)) {
@@ -230,10 +224,10 @@ export function buildEvent(commit: GitCommit, type: EventType): Event {
  * assignCharacterRole('Alice', commits, 0, 100)
  */
 export function assignCharacterRole(
-  name: string,
+  _name: string,
   commits: GitCommit[],
   firstCommitIdx: number,
-  totalCommits: number,
+  _totalCommits: number,
 ): CharacterRole {
   if (commits.length <= 2) return 'phantom'
 
@@ -359,7 +353,7 @@ function chapterTitle(counts: Record<EventType, number>, isLast: boolean): strin
  * @example
  * writeNarrative(events, '2024-01-01', '2024-03-01', ['Alice'])
  */
-export function writeNarrative(events: Event[], startDate: string, endDate: string, characters: string[]): string {
+export function writeNarrative(events: Event[], startDate: string, _endDate: string, characters: string[]): string {
   if (events.length === 0) return 'A period of silence, with no recorded events.'
 
   const counts = countEventTypes(events)

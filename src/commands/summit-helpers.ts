@@ -141,7 +141,7 @@ export function computeEquipment(file: string): number {
  * @example
  * classifyWeather('mod.ts', 5)
  */
-export function classifyWeather(file: string, changeCount: number): WeatherType {
+export function classifyWeather(_file: string, changeCount: number): WeatherType {
   if (changeCount <= 3) return 'stable'
   if (changeCount <= 8) return 'changing'
   return 'volatile'
@@ -370,7 +370,7 @@ export function generateRecommendations(peaks: Peak[], expedition: Expedition, s
  * @example
  * buildSummitResult(['a.ts'], ['const x = 1'], {})
  */
-export function buildSummitResult(files: string[], contents: string[], options: Record<string, unknown>): SummitResult {
+export function buildSummitResult(files: string[], contents: string[], _options: Record<string, unknown>): SummitResult {
   if (files.length === 0) {
     const emptyStats: SummitStats = {
       totalPeaks: 0, summitCount: 0, valleyCount: 0, avgElevation: 0,

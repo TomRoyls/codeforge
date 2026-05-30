@@ -656,7 +656,7 @@ export async function buildOpalWhisperResult(
 export function generateRecommendations(
   murmurs: OpalMurmur[],
   choruses: OpalChorus[],
-  spectrum: OpalWhisperResult['spectrum'],
+  _spectrum: OpalWhisperResult['spectrum'],
   stats: OpalWhisperResult['stats'],
 ): string[] {
   const recs: string[] = []

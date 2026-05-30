@@ -145,6 +145,7 @@ export function findEdges(file: string, content: string, allFiles: string[]): Ed
   const importMatches = content.matchAll(/^import\s+.*from\s+['"](\.\.?\/[^'"]+)['"]/gm)
   for (const m of importMatches) {
     const target = m[1]
+    if (!target) continue
     const resolved = resolveImport(target, allFiles)
     if (resolved) {
       edges.push({ from: file, to: resolved, strength: 3, type: 'import' })
@@ -154,6 +155,7 @@ export function findEdges(file: string, content: string, allFiles: string[]): Ed
   const reExports = content.matchAll(/^export\s+\{[^}]*\}\s+from\s+['"](\.\.?\/[^'"]+)['"]/gm)
   for (const m of reExports) {
     const target = m[1]
+    if (!target) continue
     const resolved = resolveImport(target, allFiles)
     if (resolved) {
       edges.push({ from: file, to: resolved, strength: 2, type: 're-export' })
@@ -163,6 +165,7 @@ export function findEdges(file: string, content: string, allFiles: string[]): Ed
   const typeImports = content.matchAll(/^import\s+type\s+.*from\s+['"](\.\.?\/[^'"]+)['"]/gm)
   for (const m of typeImports) {
     const target = m[1]
+    if (!target) continue
     const resolved = resolveImport(target, allFiles)
     if (resolved) {
       edges.push({ from: file, to: resolved, strength: 1, type: 'type' })
@@ -172,6 +175,7 @@ export function findEdges(file: string, content: string, allFiles: string[]): Ed
   const dynamicImports = content.matchAll(/import\s*\(\s*['"](\.\.?\/[^'"]+)['"]\s*\)/g)
   for (const m of dynamicImports) {
     const target = m[1]
+    if (!target) continue
     const resolved = resolveImport(target, allFiles)
     if (resolved) {
       edges.push({ from: file, to: resolved, strength: 2, type: 'dynamic' })
@@ -418,7 +422,7 @@ export function generateRecommendations(tiles: Tile[], sections: MosaicSection[]
  * @example
  * buildMosaicResult(['a.ts'], ['code'], {})
  */
-export function buildMosaicResult(files: string[], contents: string[], options: Record<string, unknown>): MosaicResult {
+export function buildMosaicResult(files: string[], contents: string[], _options?: Record<string, unknown>): MosaicResult {
   if (files.length === 0) {
     const emptyStats: MosaicStats = {
       totalTiles: 0, pristineCount: 0, damagedCount: 0, missingCount: 0,

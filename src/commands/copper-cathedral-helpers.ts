@@ -656,7 +656,7 @@ export async function buildCopperCathedralResult(
 export function generateRecommendations(
   panels: CopperPanel[],
   spires: CopperSpire[],
-  nave: CopperCathedralResult['nave'],
+  _nave: CopperCathedralResult['nave'],
   stats: CopperCathedralResult['stats'],
 ): string[] {
   const recs: string[] = []

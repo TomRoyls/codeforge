@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'hadal-zone': best, 'titan-grade': best, 'angstrom-luminosity': best,
     'detailed-chart': best, 'pristine-abyss': best, 'mariana-trench': best,
     'deep-trench': best, 'pristine-depths': best, 'deep-sea-explorer': best,
@@ -64,7 +64,7 @@ export function colorGrade(grade: string): string {
 
     'surface-water': worst, 'imploded': worst, 'darkness': worst,
     'uncharted': worst, 'dead-zone': worst, 'dry-land': worst,
-    'dry-land': worst, 'dried-up': worst, 'landlubber': worst,
+    'dried-up': worst, 'landlubber': worst,
   }
   return (tierMap[g] ?? low)(grade)
 }

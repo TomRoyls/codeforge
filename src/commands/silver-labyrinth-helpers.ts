@@ -654,7 +654,7 @@ export async function buildSilverLabyrinthResult(
 export function generateRecommendations(
   corridors: SilverCorridor[],
   mazes: SilverMaze[],
-  labyrinth: SilverLabyrinthResult['labyrinth'],
+  _labyrinth: SilverLabyrinthResult['labyrinth'],
   stats: SilverLabyrinthResult['stats'],
 ): string[] {
   const recs: string[] = []

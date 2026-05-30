@@ -227,22 +227,36 @@ export class AdaptiveSet<T> {
 
   get min(): T | undefined {
     if (this.size === 0) return undefined
-    const arr = this.toArray()
-    let min = arr[0]!
-    for (let i = 1; i < arr.length; i++) {
-      if (this.compare(arr[i]!, min) < 0) min = arr[i]!
+    if (this.currentMode === 'sorted') {
+      return this.sortedData![0]
     }
-    return min
+    const source = this.currentMode === 'hashed'
+      ? this.hashedSet!
+      : this.data
+    let result: T | undefined
+    for (const item of source) {
+      if (result === undefined || this.compare(item, result) < 0) {
+        result = item
+      }
+    }
+    return result
   }
 
   get max(): T | undefined {
     if (this.size === 0) return undefined
-    const arr = this.toArray()
-    let max = arr[0]!
-    for (let i = 1; i < arr.length; i++) {
-      if (this.compare(arr[i]!, max) > 0) max = arr[i]!
+    if (this.currentMode === 'sorted') {
+      return this.sortedData![this.sortedData!.length - 1]
     }
-    return max
+    const source = this.currentMode === 'hashed'
+      ? this.hashedSet!
+      : this.data
+    let result: T | undefined
+    for (const item of source) {
+      if (result === undefined || this.compare(item, result) > 0) {
+        result = item
+      }
+    }
+    return result
   }
 
   private valuesEqual(a: T, b: T): boolean {

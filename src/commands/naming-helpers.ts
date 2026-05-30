@@ -100,7 +100,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
     // ─── Functions (check before variables to catch arrow/func-expr) ──
     const funcMatch = trimmed.match(/^(?:export\s+)?(?:async\s+)?function\s+(\w+)/)
     if (funcMatch) {
-      const name = funcMatch[1]!
+      const name = funcMatch[1] ?? ''
       items.push({
         convention: detectNamingConvention(name),
         filePath,
@@ -114,7 +114,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
 
     const funcExprMatch = trimmed.match(/^(?:export\s+)?const\s+(\w+)\s*=\s*(?:async\s+)?function/)
     if (funcExprMatch) {
-      const name = funcExprMatch[1]!
+      const name = funcExprMatch[1] ?? ''
       items.push({
         convention: detectNamingConvention(name),
         filePath,
@@ -128,7 +128,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
 
     const arrowFuncMatch = trimmed.match(/^(?:export\s+)?const\s+(\w+)\s*=\s*(?:async\s*)?\(/)
     if (arrowFuncMatch) {
-      const name = arrowFuncMatch[1]!
+      const name = arrowFuncMatch[1] ?? ''
       items.push({
         convention: detectNamingConvention(name),
         filePath,
@@ -143,7 +143,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
     // ─── Variables ────────────────────────────────────
     const varMatch = trimmed.match(/^(?:export\s+)?(?:const|let|var)\s+(\w+)/)
     if (varMatch) {
-      const name = varMatch[1]!
+      const name = varMatch[1] ?? ''
       const isConst = trimmed.startsWith('const')
       items.push({
         convention: detectNamingConvention(name),
@@ -159,7 +159,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
     // ─── Classes ──────────────────────────────────────
     const classMatch = trimmed.match(/^(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/)
     if (classMatch) {
-      const name = classMatch[1]!
+      const name = classMatch[1] ?? ''
       items.push({
         convention: detectNamingConvention(name),
         filePath,
@@ -174,7 +174,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
     // ─── Interfaces ───────────────────────────────────
     const ifaceMatch = trimmed.match(/^(?:export\s+)?interface\s+(\w+)/)
     if (ifaceMatch) {
-      const name = ifaceMatch[1]!
+      const name = ifaceMatch[1] ?? ''
       items.push({
         convention: detectNamingConvention(name),
         filePath,
@@ -189,7 +189,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
     // ─── Type aliases ─────────────────────────────────
     const typeMatch = trimmed.match(/^(?:export\s+)?type\s+(\w+)/)
     if (typeMatch) {
-      const name = typeMatch[1]!
+      const name = typeMatch[1] ?? ''
       items.push({
         convention: detectNamingConvention(name),
         filePath,
@@ -204,7 +204,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
     // ─── Methods ──────────────────────────────────────
     const methodMatch = trimmed.match(/^(?:public\s+|private\s+|protected\s+|static\s+|abstract\s+|readonly\s+)*(?:async\s+)?(\w+)\s*\(/)
     if (methodMatch && !trimmed.startsWith('//') && !trimmed.startsWith('*') && !trimmed.startsWith('/*')) {
-      const name = methodMatch[1]!
+      const name = methodMatch[1] ?? ''
       // Skip control flow keywords and common non-method patterns
       const skipNames = new Set([
         'if', 'for', 'while', 'switch', 'catch', 'return', 'throw', 'new',
@@ -228,7 +228,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
     // ─── Properties (name: type pattern) ──────────────
     const propMatch = trimmed.match(/^\s*(?:readonly\s+)?(\w+)\s*:/)
     if (propMatch) {
-      const name = propMatch[1]!
+      const name = propMatch[1] ?? ''
       const skipNames = new Set(['constructor', 'new', 'return', 'if', 'for'])
       if (!skipNames.has(name)) {
         items.push({
@@ -248,7 +248,7 @@ export function extractNames(content: string, filePath: string): NamedItem[] {
       // Extract all parameter-like names from function signatures
       const fullParamMatch = trimmed.match(/\(([^)]*)\)/)
       if (fullParamMatch) {
-        const paramStr = fullParamMatch[1]!
+        const paramStr = fullParamMatch[1] ?? ''
         const params = paramStr.split(',').map((p) => p.trim().split(/[:=]/)[0]!.trim()).filter(Boolean)
         for (const param of params) {
           const cleanParam = param.replace(/^\.{3}/, '').replace(/\?\s*$/, '').trim()

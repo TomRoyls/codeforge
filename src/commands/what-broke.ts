@@ -2,7 +2,7 @@ import { Command, Flags } from '@oclif/core'
 import { resolve } from 'node:path'
 import ora from 'ora'
 
-import { getCommitRange, getDiffSummary, buildWhatBrokeResult, execGit, type WhatBrokeOptions } from './what-broke-helpers.js'
+import { getCommitRange, getDiffSummary, buildWhatBrokeResult, execGit } from './what-broke-helpers.js'
 import { formatWhatBrokeJson, formatWhatBrokeTable } from './what-broke-format-helpers.js'
 
 /**

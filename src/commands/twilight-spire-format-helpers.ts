@@ -60,7 +60,7 @@ export function colorGrade(grade: string): string {
 
     'jarring-switch': worst, 'falling-stones': worst, 'hidden-star': worst,
     'over-implicit': worst, 'asleep-at-dawn': worst, 'shadow-ruin': worst,
-    'ruined-pillar': worst, 'shadow-ruin': worst, 'novice': worst,
+    'ruined-pillar': worst, 'novice': worst,
 
     'no-transition': worst, 'no-endurance': worst, 'no-light': worst,
     'no-balance': worst, 'no-readiness': worst, 'collapsed': worst,

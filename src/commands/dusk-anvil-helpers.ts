@@ -651,7 +651,7 @@ export async function buildTwilightForgeResult(
 export function generateRecommendations(
   sparks: TwilightSpark[],
   hearths: TwilightHearth[],
-  evening: TwilightForgeResult['evening'],
+  _evening: TwilightForgeResult['evening'],
   stats: TwilightForgeResult['stats'],
 ): string[] {
   const recs: string[] = []

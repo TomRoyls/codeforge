@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Command, Flags, Args } from '@oclif/core'
 import chalk from 'chalk'
 import ora from 'ora'
 import { discoverFiles } from '../core/file-discovery.js'
@@ -18,13 +18,15 @@ export default class Aqueduct extends Command {
     verbose: Flags.boolean({ char: 'v', default: false, description: 'Show all files' }),
   }
 
-  static override args = [{ name: 'path', description: 'Path to analyze', default: '.' }]
+  static override args = {
+    path: Args.string({ description: 'Path to analyze', default: '.' }),
+  }
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Aqueduct)
     const spinner = ora('Mapping water channels...').start()
     try {
-      const files = await discoverFiles(args.path)
+      const files = await discoverFiles({ cwd: args.path, patterns: ['**/*'], ignore: [] })
       const contents = await Promise.all(
         files.map(f => import('fs').then(fs => fs.promises.readFile(f.absolutePath, 'utf-8'))),
       )

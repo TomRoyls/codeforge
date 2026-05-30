@@ -11,8 +11,6 @@ const ENUM_REGEX = /\benum\s+\w+/g
 const COMMENT_REGEX = /\/\/.*$/gm
 const BLOCK_COMMENT_REGEX = /\/\*[\s\S]*?\*\//g
 const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
-const STRING_REGEX = /(["'`])(?:(?!\1|\\).|\\.)*\1/g
-const TEMPLATE_REGEX = /`[^`]*`/g
 const ASYNC_REGEX = /\basync\s+/g
 const AWAIT_REGEX = /\bawait\b/g
 const TRY_CATCH_REGEX = /\btry\s*\{/g
@@ -21,7 +19,6 @@ const FINALLY_REGEX = /\bfinally\b/g
 const THROW_REGEX = /\bthrow\b/g
 const IF_REGEX = /\bif\s*\(/g
 const ELSE_REGEX = /\belse\b/g
-const SWITCH_REGEX = /\bswitch\s*\(/g
 const FOR_REGEX = /\bfor\s*[\(;]/g
 const WHILE_REGEX = /\bwhile\s*\(/g
 const NESTED_BLOCK_REGEX = /\{[^{}]*\{[^{}]*\}/g
@@ -40,29 +37,14 @@ const GENERICS_REGEX = /<[^>]+>/g
 const UTILITY_TYPE_REGEX = /\b(?:Partial|Required|Readonly|Record|Pick|Omit|Exclude|Extract|NonNullable|ReturnType|InstanceType|Parameters)\b/g
 const DECORATOR_REGEX = /@\w+/g
 const NAMESPACE_REGEX = /\bnamespace\s+\w+/g
-const ABSTRACT_REGEX = /\babstract\s+/g
 const STATIC_REGEX = /\bstatic\s+/g
 const PRIVATE_REGEX = /private\s+/g
 const PROTECTED_REGEX = /protected\s+/g
 const PUBLIC_REGEX = /public\s+/g
 const READONLY_REGEX = /\breadonly\b/g
-const OVERRIDE_REGEX = /\boverride\b/g
 const PROMISE_REGEX = /\bPromise\b/g
-const TYPE_GUARD_REGEX = /\b(?:typeof|instanceof)\b/g
-const CONST_ASSERTION_REGEX = /\bas\s+const\b/g
-const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
-const DYNAMIC_IMPORT_REGEX = /\bimport\s*\(/g
 const ANY_REGEX = /\bany\b/g
-const NEVER_REGEX = /\bnever\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
-const ASSERT_REGEX = /\bassert\b/g
-const BREAK_REGEX = /\bbreak\b/g
-const CONTINUE_REGEX = /\bcontinue\b/g
-const YIELD_REGEX = /\byield\b/g
-const SET_REGEX = /\bSet\b/g
-const MAP_REGEX = /\bMap\b/g
-const LOGICAL_AND_REGEX = /&&/g
-const LOGICAL_OR_REGEX = /\|\|/g
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
@@ -840,7 +822,7 @@ export function analyzeConcertHall(movements: SymphonyMovement[], dirPath: strin
 // ─── Generate Recommendations ───────────────────────────────────────────────
 
 /** @example generateRecommendations(movements, [], festival, stats) returns string[] */
-export function generateRecommendations(movements: SymphonyMovement[], halls: ConcertHall[], festival: SymphonyHallResult['festival'], stats: SymphonyHallResult['stats']): string[] {
+export function generateRecommendations(_movements: SymphonyMovement[], halls: ConcertHall[], festival: SymphonyHallResult['festival'], stats: SymphonyHallResult['stats']): string[] {
   const recs: string[] = []
 
   if (festival.overallSymphony < 40) {
@@ -920,20 +902,21 @@ export function buildSymphonyHallResult(
 
   const conductorGrade = classifyConductorGrade(overallSymphony)
 
-  const bestMovement = movements.length > 0
-    ? movements.reduce((best, m) => m.qualityScore > best.qualityScore ? m : best, movements[0]).file
+  const first = movements[0]
+  const bestMovement = first
+    ? movements.reduce((best, m) => m.qualityScore > best.qualityScore ? m : best, first).file
     : ''
-  const mostHarmonious = movements.length > 0
-    ? movements.reduce((best, m) => m.harmonicCoordination > best.harmonicCoordination ? m : best, movements[0]).file
+  const mostHarmonious = first
+    ? movements.reduce((best, m) => m.harmonicCoordination > best.harmonicCoordination ? m : best, first).file
     : ''
-  const mostPrecise = movements.length > 0
-    ? movements.reduce((best, m) => m.rhythmicPrecision > best.rhythmicPrecision ? m : best, movements[0]).file
+  const mostPrecise = first
+    ? movements.reduce((best, m) => m.rhythmicPrecision > best.rhythmicPrecision ? m : best, first).file
     : ''
-  const bestBalanced = movements.length > 0
-    ? movements.reduce((best, m) => m.sectionBalance > best.sectionBalance ? m : best, movements[0]).file
+  const bestBalanced = first
+    ? movements.reduce((best, m) => m.sectionBalance > best.sectionBalance ? m : best, first).file
     : ''
-  const bestPerformed = movements.length > 0
-    ? movements.reduce((best, m) => m.performanceQuality > best.performanceQuality ? m : best, movements[0]).file
+  const bestPerformed = first
+    ? movements.reduce((best, m) => m.performanceQuality > best.performanceQuality ? m : best, first).file
     : ''
 
   void options

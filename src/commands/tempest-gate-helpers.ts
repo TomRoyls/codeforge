@@ -190,13 +190,10 @@ const ASYNC_RE = /\basync\b/
 const AWAIT_RE = /\bawait\b/
 const TRY_RE = /\btry\b/
 const CATCH_RE = /\bcatch\b/
-const GENERIC_RE = /<[A-Z]\w*[,>]/
-const OPTIONAL_RE = /\?\s*:/
 const NESTED_TERNARY_RE = /\?.*:.*\?.*:/
 const CONSOLE_RE = /\bconsole\.\w+/g
 const ANY_RE = /:\s*any\b/g
 const EVAL_RE = /\beval\s*\(/g
-const TODO_RE = /\bTODO\b/gi
 const HACK_RE = /\bHACK\b/gi
 const FIXME_RE = /\bFIXME\b/gi
 const DEPRECATED_RE = /@deprecated/g
@@ -266,7 +263,6 @@ export function measureThunder(content: string): ThunderMeasure {
   const hasNoInterference = interferenceCount === 0
   const hasPowerful = TRY_RE.test(content) && CATCH_RE.test(content)
   const hasNoMuffling = !NESTED_TERNARY_RE.test(content)
-  const hasClearDocs = (content.match(DOC_COMMENT_RE) || []).length > 0
 
   if (content.length > 0) score += 5
   if (hasCommanding) score += 12
@@ -313,7 +309,6 @@ export function measureLightning(content: string): LightningMeasure {
   const hasCleanStrike = (content.match(DOC_COMMENT_RE) || []).length > 0
   const hasNoWaste = (content.match(CONSOLE_RE) || []).length === 0
   const hasSwift = TRY_RE.test(content) && CATCH_RE.test(content)
-  const hasStreamlined = CLASS_RE.test(content) && (FUNCTION_RE.test(content) || ARROW_RE.test(content))
 
   if (content.length > 0) score += 5
   if (hasDirectPath) score += 12
@@ -360,7 +355,6 @@ export function measureFlood(content: string): FloodMeasure {
   const hasRecovery = ASYNC_RE.test(content) && AWAIT_RE.test(content)
   const hasNoFlooding = !NESTED_TERNARY_RE.test(content)
   const hasRetention = CLASS_RE.test(content) && INTERFACE_RE.test(content) && TYPE_RE.test(content)
-  const hasNoPollution = (content.match(CONSOLE_RE) || []).length === 0
 
   if (content.length > 0) score += 5
   if (hasCatchment) score += 12
@@ -407,7 +401,6 @@ export function measureWind(content: string): WindMeasure {
   const hasProperAnchoring = ASYNC_RE.test(content) && AWAIT_RE.test(content)
   const hasNoUplift = (content.match(EMPTY_CATCH_RE) || []).length === 0
   const hasStable = TRY_RE.test(content) && CATCH_RE.test(content)
-  const hasNoDrag = (content.match(CONSOLE_RE) || []).length === 0
 
   if (content.length > 0) score += 5
   if (hasAerodynamic) score += 12

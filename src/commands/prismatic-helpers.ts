@@ -214,8 +214,8 @@ export function computeSpectralPurity(concerns: ConcernName[]): number {
   let penalty = 0
   for (let i = 0; i < concerns.length; i++) {
     for (let j = i + 1; j < concerns.length; j++) {
-      const related = RELATED_CONCERNS[concerns[i]] ?? []
-      if (related.includes(concerns[j])) {
+      const related = RELATED_CONCERNS[concerns[i] ?? ''] ?? []
+      if (related.includes(concerns[j] ?? '')) {
         penalty += 5
       } else {
         penalty += 15
@@ -246,7 +246,7 @@ export function findRefractionPoints(content: string, filePath: string, concerns
 
     for (const concern of concerns) {
       const config = CONCERN_CONFIG[concern]
-      if (config.keywords.some(kw => kw.test(line))) {
+      if (config.keywords.some(kw => kw.test(line ?? ''))) {
         lineConcerns.push(concern)
       }
     }
@@ -276,7 +276,7 @@ export function findRefractionPoints(content: string, filePath: string, concerns
 export function classifyRefractionSeverity(concerns: string[]): RefractionSeverity {
   if (concerns.length <= 1) return 'clean'
 
-  const related = RELATED_CONCERNS[concerns[0]] ?? []
+  const related = RELATED_CONCERNS[concerns[0] ?? ''] ?? []
   const allRelated = concerns.slice(1).every(c => related.includes(c))
 
   if (concerns.length >= 4) return 'severe-mix'
@@ -480,17 +480,17 @@ export function buildPrismaticResult(files: string[], contents: string[], option
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    const sf = buildSpectralFile(files[i], content)
+    const sf = buildSpectralFile(files[i] ?? '', content)
     spectralFiles.push(sf)
 
-    const concerns = detectConcerns(content, files[i])
+    const concerns = detectConcerns(content, files[i] ?? '')
     for (const concern of concerns) {
       const existing = concernFileMap.get(concern) ?? []
-      existing.push(files[i])
+      existing.push(files[i] ?? '')
       concernFileMap.set(concern, existing)
     }
 
-    const points = findRefractionPoints(content, files[i], concerns)
+    const points = findRefractionPoints(content, files[i] ?? '', concerns)
     allRefractionPoints.push(...points)
   }
 

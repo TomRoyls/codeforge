@@ -181,7 +181,6 @@ const CLASS_RE = /\bclass\s+\w+/
 const TRY_CATCH_RE = /try\s*\{/g
 const IF_RE = /\bif\s*\(/g
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
-const COMMENT_RE = /\/\/.*$/gm
 const CONST_RE = /\bconst\s+/g
 const LET_RE = /\blet\s+/g
 const MUTATION_RE = /\.\s*(push|pop|shift|unshift|splice|sort|reverse)\s*\(/g
@@ -454,8 +453,6 @@ export function measureLoad(content: string): LoadMeasure {
   const ifs = (content.match(IF_RE) ?? []).length
   const pipes = (content.match(PIPE_RE) ?? []).length
   const asyncs = (content.match(ASYNC_RE) ?? []).length
-  const returns = (content.match(RETURN_RE) ?? []).length
-  const tryCatch = (content.match(TRY_CATCH_RE) ?? []).length
 
   const linesPerFunction = functions > 0 ? loc / functions : loc
   const hasOverloadedSection = functions > 0 && linesPerFunction > 30
@@ -735,7 +732,7 @@ export function generateRecommendations(
   }
 
   const worst = spans.length > 0
-    ? spans.reduce((w, s) => s.qualityScore < w.qualityScore ? s : w, spans[0])
+    ? spans.reduce((w, s) => s.qualityScore < w.qualityScore ? s : w, spans[0] as typeof spans[number])
     : null
   if (worst && worst.qualityScore < 25) {
     recs.push(`Weakest span "${worst.file}" needs urgent structural repair (score: ${worst.qualityScore})`)
@@ -796,19 +793,19 @@ export function buildSuspensionBridgeResult(
 
   const conditions = spans.map((s) => s.condition)
   const bestSpan = spans.length > 0
-    ? spans.reduce((b, s) => s.qualityScore > b.qualityScore ? s : b, spans[0])
+    ? spans.reduce((b, s) => s.qualityScore > b.qualityScore ? s : b, spans[0] as typeof spans[number])
     : null
   const strongestCable = spans.length > 0
-    ? spans.reduce((b, s) => s.cableStrength > b.cableStrength ? s : b, spans[0])
+    ? spans.reduce((b, s) => s.cableStrength > b.cableStrength ? s : b, spans[0] as typeof spans[number])
     : null
   const stablestDeck = spans.length > 0
-    ? spans.reduce((b, s) => s.deckStability > b.deckStability ? s : b, spans[0])
+    ? spans.reduce((b, s) => s.deckStability > b.deckStability ? s : b, spans[0] as typeof spans[number])
     : null
   const strongestTower = spans.length > 0
-    ? spans.reduce((b, s) => s.towerIntegrity > b.towerIntegrity ? s : b, spans[0])
+    ? spans.reduce((b, s) => s.towerIntegrity > b.towerIntegrity ? s : b, spans[0] as typeof spans[number])
     : null
   const clearest = spans.length > 0
-    ? spans.reduce((b, s) => s.spanClarity > b.spanClarity ? s : b, spans[0])
+    ? spans.reduce((b, s) => s.spanClarity > b.spanClarity ? s : b, spans[0] as typeof spans[number])
     : null
 
   const stats: SuspensionBridgeStats = {

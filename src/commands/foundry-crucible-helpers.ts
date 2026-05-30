@@ -51,7 +51,6 @@ const DYNAMIC_IMPORT_REGEX = /\bimport\s*\(/g
 const CALLBACK_NESTING_REGEX = /\bfunction\s*\([^)]*\)\s*\{[^{}]*\bfunction\s*\([^)]*\)\s*\{/g
 const PROMISE_CHAIN_REGEX = /\.then\s*\(/g
 const EARLY_RETURN_REGEX = /\bif\s*\([^)]*\)\s*\{[^}]*\breturn\b/g
-const GUARD_CLAUSE_REGEX = /\bif\s*\([^)]*\)\s*\{?\s*\n?\s*\breturn\b/g
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
@@ -477,7 +476,6 @@ export function countYields(content: string): number {
 /** @example measureMetal(content) returns MetalMeasure */
 export function measureMetal(content: string): MetalMeasure {
   const exports = countExports(content)
-  const imports = countImports(content)
   const funcs = countFunctions(content)
   const classes = countClasses(content)
   const interfaces = countInterfaces(content)
@@ -487,7 +485,6 @@ export function measureMetal(content: string): MetalMeasure {
   const todos = countTodos(content)
   const consoleCount = countConsole(content)
   const nestedBlocks = countNestedBlocks(content)
-  const deepNested = countDeepNested(content)
 
   const impurityCount = anyCount + commentedCode
   const blowholeCount = todos + consoleCount
@@ -612,14 +609,11 @@ export function measureCasting(content: string): CastingMeasure {
 export function measureForging(content: string): ForgingMeasure {
   const funcs = countFunctions(content)
   const arrows = countArrows(content)
-  const classes = countClasses(content)
   const interfaces = countInterfaces(content)
   const types = countTypeAliases(content)
   const asyncCount = countAsync(content)
   const awaitCount = countAwaits(content)
   const tryCatch = countTryCatch(content)
-  const earlyReturns = countEarlyReturns(content)
-  const nestedBlocks = countNestedBlocks(content)
   const deepNested = countDeepNested(content)
   const spreads = countSpreads(content)
   const destructures = countDestructures(content)
@@ -691,7 +685,6 @@ export function measureTemper(content: string): TemperMeasure {
   const defaults = countDefaultParams(content)
   const accessMods = countAccessModifiers(content)
   const readonly = countReadonly(content)
-  const staticCount = countStatic(content)
   const todos = countTodos(content)
   const consoleCount = countConsole(content)
 
@@ -760,7 +753,6 @@ export function measureHeat(content: string): HeatMeasure {
   const dynamicImports = countDynamicImports(content)
   const anyCount = countAny(content)
   const commentedCode = countCommentedCode(content)
-  const nestedBlocks = countNestedBlocks(content)
   const deepNested = countDeepNested(content)
 
   const hasProperAnnealing = blockComments > 0 && comments > 3
@@ -819,10 +811,6 @@ export function measureAlloy(content: string): AlloyMeasure {
   const classes = countClasses(content)
   const interfaces = countInterfaces(content)
   const types = countTypeAliases(content)
-  const enums = countEnums(content)
-  const exports = countExports(content)
-  const imports = countImports(content)
-  const accessMods = countAccessModifiers(content)
   const generics = countGenerics(content)
   const tryCatch = countTryCatch(content)
   const asyncCount = countAsync(content)

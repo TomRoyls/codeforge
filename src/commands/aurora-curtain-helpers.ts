@@ -42,12 +42,10 @@ function countTryCatch(content: string): number { return countMatches(content, T
 function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
 function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
 function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
-function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
 function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
 function countProtectedMembers(content: string): number { return countMatches(content, PROTECTED_REGEX) }
 function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
 function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
-function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
 
 function genericsCount_safe(content: string): number { return countMatches(content, GENERICS_REGEX) }
 function reExportCount_safe(content: string): number { return countMatches(content, REEXPORT_REGEX) }
@@ -443,9 +441,7 @@ export function measureColor(content: string): ColorMeasure {
   const jsdocCount = countJSDocBlocks(content)
   const genericsCount = genericsCount_safe(content)
   const asyncCount = countAsyncKeywords(content)
-  const tryCatchCount = countTryCatch(content)
   const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
   const consoleCount = countConsoleUsage(content)
   const anyCount = countAnyUsage(content)
   const todoCount = countTodoComments(content)

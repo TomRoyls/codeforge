@@ -1,5 +1,6 @@
 // ─── Imports ───────────────────────────────────────────────────────
 import chalk from 'chalk'
+import type { ChalkInstance } from 'chalk'
 import type { CompassBearing, NavigationChart, CompassRoseResult } from './compass-rose-helpers.js'
 
 // ─── Color Palette ─────────────────────────────────────────────────
@@ -41,7 +42,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, ChalkInstance> = {
     'true-north': best, 'gyroscopic': best, 'gps-grade': best, 'rock-steady': best, 'detailed-chart': best,
     'master-navigator': best, 'admiralty-chart': best, 'fleet-admiral': best, 'chart-room': best,
 

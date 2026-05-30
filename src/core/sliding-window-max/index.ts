@@ -9,8 +9,11 @@ interface DequeEntry<T> {
 export class SlidingWindowMax<T = number> {
   private _windowSize: number
   private window: T[] = []
+  private windowHead = 0
   private maxDeque: DequeEntry<T>[] = []
+  private maxDequeHead = 0
   private minDeque: DequeEntry<T>[] = []
+  private minDequeHead = 0
   private compare: (a: T, b: T) => number
   private _pushIndex: number = 0
   private history: T[] = []
@@ -25,12 +28,16 @@ export class SlidingWindowMax<T = number> {
     this.compare = options?.comparator ?? (defaultComparator as (a: T, b: T) => number)
   }
 
+  private get windowLength(): number {
+    return this.window.length - this.windowHead
+  }
+
   push(value: T): void {
     const idx = this._pushIndex++
     this.history.push(value)
 
     while (
-      this.maxDeque.length > 0 &&
+      this.maxDeque.length > this.maxDequeHead &&
       this.compare(this.maxDeque[this.maxDeque.length - 1]!.value, value) <= 0
     ) {
       this.maxDeque.pop()
@@ -38,7 +45,7 @@ export class SlidingWindowMax<T = number> {
     this.maxDeque.push({ value, index: idx })
 
     while (
-      this.minDeque.length > 0 &&
+      this.minDeque.length > this.minDequeHead &&
       this.compare(this.minDeque[this.minDeque.length - 1]!.value, value) >= 0
     ) {
       this.minDeque.pop()
@@ -47,32 +54,32 @@ export class SlidingWindowMax<T = number> {
 
     this.window.push(value)
 
-    if (this.window.length > this._windowSize) {
+    if (this.windowLength > this._windowSize) {
       const evictIndex = idx - this._windowSize
-      this.window.shift()
+      this.windowHead++
       while (
-        this.maxDeque.length > 0 &&
-        this.maxDeque[0]!.index <= evictIndex
+        this.maxDeque.length > this.maxDequeHead &&
+        this.maxDeque[this.maxDequeHead]!.index <= evictIndex
       ) {
-        this.maxDeque.shift()
+        this.maxDequeHead++
       }
       while (
-        this.minDeque.length > 0 &&
-        this.minDeque[0]!.index <= evictIndex
+        this.minDeque.length > this.minDequeHead &&
+        this.minDeque[this.minDequeHead]!.index <= evictIndex
       ) {
-        this.minDeque.shift()
+        this.minDequeHead++
       }
     }
   }
 
   max(): T | undefined {
-    if (this.maxDeque.length === 0) return undefined
-    return this.maxDeque[0]!.value
+    if (this.maxDeque.length === this.maxDequeHead) return undefined
+    return this.maxDeque[this.maxDequeHead]!.value
   }
 
   min(): T | undefined {
-    if (this.minDeque.length === 0) return undefined
-    return this.minDeque[0]!.value
+    if (this.minDeque.length === this.minDequeHead) return undefined
+    return this.minDeque[this.minDequeHead]!.value
   }
 
   top(): T | undefined {
@@ -80,7 +87,7 @@ export class SlidingWindowMax<T = number> {
   }
 
   get size(): number {
-    return this.window.length
+    return this.windowLength
   }
 
   get windowSize(): number {
@@ -88,13 +95,16 @@ export class SlidingWindowMax<T = number> {
   }
 
   get isEmpty(): boolean {
-    return this.window.length === 0
+    return this.windowLength === 0
   }
 
   clear(): void {
     this.window = []
+    this.windowHead = 0
     this.maxDeque = []
+    this.maxDequeHead = 0
     this.minDeque = []
+    this.minDequeHead = 0
   }
 
   reset(): void {
@@ -104,7 +114,7 @@ export class SlidingWindowMax<T = number> {
   }
 
   toArray(): T[] {
-    return [...this.window]
+    return this.window.slice(this.windowHead)
   }
 
   clone(): SlidingWindowMax<T> {
@@ -112,9 +122,9 @@ export class SlidingWindowMax<T = number> {
       windowSize: this._windowSize,
       comparator: this.compare,
     })
-    copy.window = [...this.window]
-    copy.maxDeque = this.maxDeque.map((e) => ({ ...e }))
-    copy.minDeque = this.minDeque.map((e) => ({ ...e }))
+    copy.window = this.window.slice(this.windowHead)
+    copy.maxDeque = this.maxDeque.slice(this.maxDequeHead).map((e) => ({ ...e }))
+    copy.minDeque = this.minDeque.slice(this.minDequeHead).map((e) => ({ ...e }))
     copy._pushIndex = this._pushIndex
     copy.history = [...this.history]
     return copy
@@ -137,41 +147,42 @@ export class SlidingWindowMax<T = number> {
     if (arr.length === 0 || k <= 0) return []
     const result: T[] = []
     const deque: number[] = []
+    let dequeHead = 0
     const effectiveK = Math.min(k, arr.length)
 
     for (let i = 0; i < arr.length; i++) {
-      while (deque.length > 0 && this.compare(arr[deque[deque.length - 1]!]!, arr[i]!) <= 0) {
+      while (deque.length > dequeHead && this.compare(arr[deque[deque.length - 1]!]!, arr[i]!) <= 0) {
         deque.pop()
       }
       deque.push(i)
-      while (deque.length > 0 && deque[0]! <= i - effectiveK) {
-        deque.shift()
+      while (deque.length > dequeHead && deque[dequeHead]! <= i - effectiveK) {
+        dequeHead++
       }
       if (i >= effectiveK - 1) {
-        result.push(arr[deque[0]!]!)
+        result.push(arr[deque[dequeHead]!]!)
       }
     }
     return result
   }
 
   forEach(callback: (value: T, index: number) => void): void {
-    for (let i = 0; i < this.window.length; i++) {
-      callback(this.window[i]!, i)
+    for (let i = this.windowHead; i < this.window.length; i++) {
+      callback(this.window[i]!, i - this.windowHead)
     }
   }
 
   *[Symbol.iterator](): Iterator<T> {
-    for (const item of this.window) {
-      yield item
+    for (let i = this.windowHead; i < this.window.length; i++) {
+      yield this.window[i]!
     }
   }
 
   first(): T | undefined {
-    return this.window[0]
+    return this.windowLength > 0 ? this.window[this.windowHead] : undefined
   }
 
   last(): T | undefined {
-    return this.window[this.window.length - 1]
+    return this.windowLength > 0 ? this.window[this.window.length - 1] : undefined
   }
 
   pushAll(values: Iterable<T>): void {

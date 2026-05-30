@@ -97,7 +97,7 @@ export function detectCommentedCode(content: string, filePath: string): DustItem
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (!trimmed.startsWith('//')) continue
     if (trimmed.startsWith('///')) continue
     if (trimmed.startsWith('// ───')) continue
@@ -134,14 +134,14 @@ export function detectUnusedImports(content: string, filePath: string): DustItem
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim()
+    const line = (lines[i] ?? '').trim()
     const namedMatch = line.match(/^import\s+\{([^}]+)\}\s+from\s+['"][^'"]+['"]/)
     if (!namedMatch) continue
 
-    const names = namedMatch[1].split(',').map((n) => {
+    const names = namedMatch[1]?.split(',').map((n) => {
       const trimmed = n.trim()
-      return trimmed.includes(' as ') ? trimmed.split(' as ').pop()!.trim() : trimmed
-    })
+      return trimmed.includes(' as ') ? trimmed.split(' as ').at(-1) ?? ''.trim() : trimmed
+    }) ?? []
 
     for (const name of names) {
       if (!name) continue
@@ -183,7 +183,7 @@ export function detectDeadExports(
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim()
+    const line = (lines[i] ?? '').trim()
     const funcMatch = line.match(/^export\s+(?:async\s+)?function\s+(\w+)/)
     const classMatch = line.match(/^export\s+class\s+(\w+)/)
     const constMatch = line.match(/^export\s+const\s+(\w+)/)
@@ -237,12 +237,12 @@ export function detectStaleTodos(content: string, filePath: string): DustItem[] 
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    if (/\b(TODO|FIXME|HACK|XXX)\b/.test(line)) {
+    if (/\b(TODO|FIXME|HACK|XXX)\b/.test(line ?? '')) {
       items.push({
         type: 'stale-todo',
         file: filePath,
         line: i + 1,
-        content: line.trim(),
+content: line?.trim() ?? '',
         severity: 'info',
         description: 'Stale TODO/FIXME comment',
         suggestion: 'Resolve or create an issue',
@@ -269,16 +269,16 @@ export function detectDeprecatedPatterns(content: string, filePath: string): Dus
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const trimmed = line.trim()
-    if (trimmed.startsWith('//')) continue
-    if (trimmed.startsWith('*')) continue
+    const trimmed = line?.trim()
+    if (trimmed?.startsWith('//')) continue
+    if (trimmed?.startsWith('*')) continue
 
-    if (/^\s*var\s+\w+/.test(trimmed) && !trimmed.includes('// var')) {
+    if (/^\s*var\s+\w+/.test(trimmed ?? '') && !trimmed?.includes('// var')) {
       items.push({
         type: 'deprecated-pattern',
         file: filePath,
         line: i + 1,
-        content: trimmed,
+        content: trimmed ?? '',
         severity: 'warning',
         description: 'Use of var (prefer const/let)',
         suggestion: 'Replace with const or let',
@@ -309,15 +309,15 @@ export function detectLeftoverDebug(content: string, filePath: string): DustItem
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const trimmed = line.trim()
-    if (trimmed.startsWith('//')) continue
+    const trimmed = line?.trim()
+    if (trimmed?.startsWith('//')) continue
 
-    if (/\bconsole\.(log|debug|info|warn|error)\s*\(/.test(trimmed)) {
+    if (/\bconsole\.(log|debug|info|warn|error)\s*\(/.test(trimmed ?? '')) {
       items.push({
         type: 'leftover-debug',
         file: filePath,
         line: i + 1,
-        content: trimmed,
+        content: trimmed ?? '',
         severity: 'cleanup',
         description: 'Leftover console statement',
         suggestion: 'Remove or replace with proper logging',
@@ -325,12 +325,12 @@ export function detectLeftoverDebug(content: string, filePath: string): DustItem
       })
     }
 
-    if (/^\s*debugger\s*;?\s*$/.test(trimmed)) {
+    if (/^\s*debugger\s*;?\s*$/.test(trimmed ?? '')) {
       items.push({
         type: 'leftover-debug',
         file: filePath,
         line: i + 1,
-        content: trimmed,
+        content: trimmed ?? '',
         severity: 'cleanup',
         description: 'Leftover debugger statement',
         suggestion: 'Remove debugger statement',
@@ -357,14 +357,14 @@ export function detectPlaceholders(content: string, filePath: string): DustItem[
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const trimmed = line.trim()
+    const trimmed = line?.trim()
 
-    if (/catch\s*\([^)]*\)\s*\{\s*\}/.test(trimmed) || /catch\s*\{\s*\}/.test(trimmed)) {
+    if (/catch\s*\([^)]*\)\s*\{\s*\}/.test(trimmed ?? '') || /catch\s*\{\s*\}/.test(trimmed ?? '')) {
       items.push({
         type: 'placeholder',
         file: filePath,
         line: i + 1,
-        content: trimmed,
+        content: trimmed ?? '',
         severity: 'warning',
         description: 'Empty catch block',
         suggestion: 'Add error handling or comment explaining why it is empty',
@@ -372,12 +372,12 @@ export function detectPlaceholders(content: string, filePath: string): DustItem[
       })
     }
 
-    if (/\bTODO\s*:?\s*$/.test(trimmed) || /\bFIXME\s*:?\s*$/.test(trimmed)) {
+    if (/\bTODO\s*:?\s*$/.test(trimmed ?? '') || /\bFIXME\s*:?\s*$/.test(trimmed ?? '')) {
       items.push({
         type: 'placeholder',
         file: filePath,
         line: i + 1,
-        content: trimmed,
+        content: trimmed ?? '',
         severity: 'warning',
         description: 'TODO without description',
         suggestion: 'Add details about what needs to be done',
@@ -580,7 +580,7 @@ export function buildDustResult(
     : 100
   const overallCleanliness = averageCleanliness
 
-  const mostCommonDust = categories.length > 0 ? categories[0].type : 'none'
+  const mostCommonDust = categories.length > 0 ? categories[0]?.type : 'none'
   const dustiestReport = reports.reduce((worst, r) =>
     r.dustCount > (worst?.dustCount ?? 0) ? r : worst, reports[0])
   const dustiestFile = dustiestReport ? dustiestReport.file : 'none'
@@ -590,7 +590,7 @@ export function buildDustResult(
     dustyFiles,
     cleanFiles,
     averageCleanliness,
-    mostCommonDust,
+    mostCommonDust: mostCommonDust ?? '',
     dustiestFile,
     overallCleanliness,
   }

@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Command, Flags, Args } from '@oclif/core'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
@@ -53,7 +53,9 @@ export default class SilverThread extends Command {
     }),
   }
 
-  static override args = [{ name: 'path', description: 'Path to analyze', default: '.' }]
+  static override args = {
+    path: Args.string({ description: 'Path to analyze', default: '.' }),
+  }
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(SilverThread)

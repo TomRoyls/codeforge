@@ -46,16 +46,11 @@ const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class
 const BREAK_REGEX = /\bbreak\b/g
 const CONTINUE_REGEX = /\bcontinue\b/g
 const YIELD_REGEX = /\byield\b/g
-const SET_REGEX = /\bSet\b/g
-const MAP_REGEX = /\bMap\b/g
-const LOGICAL_AND_REGEX = /&&/g
-const LOGICAL_OR_REGEX = /\|\|/g
 const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
 const DYNAMIC_IMPORT_REGEX = /\bimport\s*\(/g
 const CALLBACK_NESTING_REGEX = /\bfunction\s*\([^)]*\)\s*\{[^{}]*\bfunction\s*\([^)]*\)\s*\{/g
 const PROMISE_CHAIN_REGEX = /\.then\s*\(/g
 const EARLY_RETURN_REGEX = /\bif\s*\([^)]*\)\s*\{[^}]*\breturn\b/g
-const GUARD_CLAUSE_REGEX = /\bif\s*\([^)]*\)\s*\{?\s*\n?\s*\breturn\b/g
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
@@ -553,7 +548,6 @@ export function measureDepth(content: string): DepthMeasure {
   const ifs = countIfs(content)
   const forLoops = countForLoops(content)
   const whileLoops = countWhileLoops(content)
-  const switches = countSwitches(content)
   const ternaries = countTernaries(content)
   const callbackNesting = countCallbackNesting(content)
   const promiseChains = countPromiseChains(content)
@@ -746,7 +740,6 @@ export function measureIncubation(content: string): IncubationMeasure {
   const types = countTypeAliases(content)
   const accessMods = countAccessModifiers(content)
   const generics = countGenerics(content)
-  const tryCatch = countTryCatch(content)
   const readonly = countReadonly(content)
   const enums = countEnums(content)
 
@@ -814,14 +807,12 @@ export function measureFledging(content: string): FledgingMeasure {
   const tryCatch = countTryCatch(content)
   const catches = countCatches(content)
   const throws = countThrows(content)
-  const errors = countErrors(content)
   const ifs = countIfs(content)
   const ternaries = countTernaries(content)
   const nullish = (content.match(NULLISH_REGEX) ?? []).length
   const optionalChain = (content.match(OPTIONAL_CHAIN_REGEX) ?? []).length
   const defaults = countDefaultParams(content)
   const todos = countTodos(content)
-  const consoleCount = countConsole(content)
 
   const hasErrorHandling = tryCatch > 0 || catches > 0 || throws > 0
   const hasEdgeCaseHandling = ifs > 5 || ternaries > 2 || nullish > 0 || optionalChain > 0

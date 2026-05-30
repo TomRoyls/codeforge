@@ -120,7 +120,7 @@ export function assignCallNumber(file: string, content: string): string {
  * @example
  * classifyGenre('types.ts', 'export interface Foo {}', 1, 0)
  */
-export function classifyGenre(file: string, content: string, exports: number, imports: number): Genre {
+export function classifyGenre(file: string, content: string, exports: number, _imports: number): Genre {
   if (file.includes('test/') || file.includes('.test.') || file.includes('.spec.')) return 'journal'
   if (content.includes('interface ') || content.includes('export type ')) return 'reference'
   if (file.includes('commands/') && !file.includes('-helpers') && !file.includes('-format')) return 'manual'
@@ -338,7 +338,7 @@ export function computeCitedBy(file: string, files: string[], contents: string[]
  * @example
  * groupIntoShelves(catalog, ['src/a.ts', 'test/b.ts'])
  */
-export function groupIntoShelves(catalog: CatalogEntry[], files: string[]): Shelf[] {
+export function groupIntoShelves(catalog: CatalogEntry[], _files: string[]): Shelf[] {
   const dirGroups: Record<string, CatalogEntry[]> = {}
   const dirPrefixes: Record<string, string> = {}
 
@@ -347,7 +347,7 @@ export function groupIntoShelves(catalog: CatalogEntry[], files: string[]): Shel
     const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
     if (!dirGroups[dir]) dirGroups[dir] = []
     dirGroups[dir].push(entry)
-    dirPrefixes[dir] = entry.callNumber.split('.')[0]
+    dirPrefixes[dir] = entry.callNumber.split('.')[0] ?? ''
   }
 
   const shelves: Shelf[] = []
@@ -360,7 +360,7 @@ export function groupIntoShelves(catalog: CatalogEntry[], files: string[]): Shel
 
     shelves.push({
       name: dir,
-      callNumberPrefix: dirPrefixes[dir],
+      callNumberPrefix: dirPrefixes[dir] ?? '',
       entries,
       genre: inferShelfGenre(entries),
       totalPages,
@@ -422,7 +422,8 @@ export function groupIntoCollections(catalog: CatalogEntry[]): Collection[] {
 
   for (const entry of catalog) {
     if (!genreGroups[entry.genre]) genreGroups[entry.genre] = []
-    genreGroups[entry.genre].push(entry)
+    const group = genreGroups[entry.genre]
+    if (group) group.push(entry)
   }
 
   const collections: Collection[] = []
@@ -572,12 +573,10 @@ export function generateLibraryRecommendations(
  * @example
  * buildLibraryResult(['a.ts'], ['export const x = 1'], {})
  */
-export function buildLibraryResult(files: string[], contents: string[], options: LibraryOptions): LibraryResult {
+export function buildLibraryResult(files: string[], contents: string[], _options: LibraryOptions): LibraryResult {
   for (const key of Object.keys(assignedNumbers)) {
     delete assignedNumbers[key]
   }
-
-  const knownSet = new Set(files)
 
   const catalog: CatalogEntry[] = files.map((file, i) => {
     const content = contents[i] || ''
@@ -591,7 +590,7 @@ export function buildLibraryResult(files: string[], contents: string[], options:
     const citedBy = computeCitedBy(file, files, contents)
     const available = isAvailable(content)
     const condition = computeCondition(content)
-    const lastChecked = new Date().toISOString().split('T')[0]
+    const lastChecked = new Date().toISOString().split('T')[0] ?? ''
 
     return { file, callNumber, title, genre, readingLevel, pages, chapters, citations, citedBy, available, condition, lastChecked }
   })
@@ -608,7 +607,7 @@ export function buildLibraryResult(files: string[], contents: string[], options:
   const damagedCount = catalog.filter((e) => e.condition === 'damaged').length
 
   const sortedByCited = [...catalog].sort((a, b) => b.citedBy - a.citedBy)
-  const largestShelf = shelves.length > 0 ? [...shelves].sort((a, b) => b.entries.length - a.entries.length)[0].name : ''
+  const largestShelf = shelves.length > 0 ? ([...shelves].sort((a, b) => b.entries.length - a.entries.length)[0]?.name ?? '') : ''
   const catalogCompleteness = computeCatalogCompleteness(catalog, files)
   const organizationScore = computeOrganizationScore(shelves)
 
@@ -638,8 +637,8 @@ export function buildLibraryResult(files: string[], contents: string[], options:
 function inferTitle(file: string, content: string): string {
   const name = file.split('/').pop()?.replace(/\.\w+$/, '') || file
   const classMatch = content.match(/export\s+default\s+class\s+(\w+)/)
-  if (classMatch) return classMatch[1]
+  if (classMatch) return classMatch[1] ?? name
   const funcMatch = content.match(/export\s+function\s+(\w+)/)
-  if (funcMatch) return funcMatch[1]
+  if (funcMatch) return funcMatch[1] ?? name
   return name.replace(/[-_]/g, ' ')
 }

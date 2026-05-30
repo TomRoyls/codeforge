@@ -652,7 +652,7 @@ export async function buildJadeCascadeResult(
 export function generateRecommendations(
   drops: JadeDrop[],
   streams: JadeStream[],
-  garden: JadeCascadeResult['garden'],
+  _garden: JadeCascadeResult['garden'],
   stats: JadeCascadeResult['stats'],
 ): string[] {
   const recs: string[] = []

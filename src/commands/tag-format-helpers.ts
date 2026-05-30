@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { CodeTag, TagAuthor, TagResult, TagStats, TagSummary } from './tag-helpers.js'
 
+import { padRight } from '../utils/format-utils.js'
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function priorityBadge(priority: string): string {
@@ -26,10 +28,6 @@ function typeBadge(type: string): string {
     case 'NOTE': return chalk.gray('NOTE')
     default: return chalk.white(type)
   }
-}
-
-function padRight(str: string, len: number): string {
-  return str.length >= len ? str : str + ' '.repeat(len - str.length)
 }
 
 function truncate(str: string, maxLen: number): string {

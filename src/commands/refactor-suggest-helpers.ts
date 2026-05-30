@@ -62,7 +62,6 @@ export function detectLongFunctions(content: string, filePath: string): Refactor
     FUNC_REGEX.lastIndex = 0
 
     let depth = 0
-    let startLine = i
     for (let j = i; j < lines.length; j++) {
       const l = lines[j]
       if (l === undefined) break

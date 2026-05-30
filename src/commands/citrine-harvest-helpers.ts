@@ -650,7 +650,7 @@ export async function buildCitrineHarvestResult(
 export function generateRecommendations(
   sheaves: CitrineSheaf[],
   fields: CitrineField[],
-  sun: CitrineHarvestResult['sun'],
+  _sun: CitrineHarvestResult['sun'],
   stats: CitrineHarvestResult['stats'],
 ): string[] {
   const recs: string[] = []

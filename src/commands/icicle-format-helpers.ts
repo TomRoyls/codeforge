@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { IcicleResult, IcicleDrop, IceSheet } from './icicle-helpers.js'
+import type { IcicleResult, IcicleDrop } from './icicle-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

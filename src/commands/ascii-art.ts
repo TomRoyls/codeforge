@@ -32,10 +32,10 @@ export default class AsciiArt extends Command {
   ]
 
   static override flags = {
-    color: Flags.string({ default: null, description: 'ANSI color name or hex (#ff0000) or rgb (255,0,0)' }),
+    color: Flags.string({ description: 'ANSI color name or hex (#ff0000) or rgb (255,0,0)', required: false }),
     font: Flags.string({ default: 'standard', description: 'Font: standard, simple, block, shadow, banner', options: ['standard', 'simple', 'block', 'shadow', 'banner'] }),
     format: Flags.string({ default: 'text', description: 'Output format', options: ['text', 'json'] }),
-    output: Flags.string({ default: null, description: 'Output file path' }),
+    output: Flags.string({ description: 'Output file path', required: false }),
     stats: Flags.boolean({ default: true, description: 'Show project stats' }),
     width: Flags.integer({ default: 80, description: 'Terminal width for centering' }),
   }
@@ -46,7 +46,7 @@ export default class AsciiArt extends Command {
 
     try {
       const config = {
-        color: flags.color,
+        color: flags.color ?? '',
         font: flags.font as FontName,
         showStats: flags.stats,
         text: (args.text as string) ?? 'CODEFORGE',
@@ -69,8 +69,8 @@ export default class AsciiArt extends Command {
 
       if (flags.output) {
         const { writeFile } = await import('node:fs/promises')
-        await writeFile(flags.output, output, 'utf8')
-        this.log(chalk.gray(`Written to ${flags.output}`))
+        await writeFile(String(flags.output), output, 'utf8')
+        this.log(chalk.gray(`Written to ${String(flags.output)}`))
       } else {
         this.log(output)
       }

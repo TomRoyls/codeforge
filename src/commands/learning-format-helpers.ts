@@ -2,12 +2,9 @@ import chalk from 'chalk'
 
 import type { LearningGuide, ReadingItem } from './learning-helpers.js'
 
-// ─── Helpers ────────────────────────────────────────────
+import { padRight } from '../utils/format-utils.js'
 
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
+// ─── Helpers ────────────────────────────────────────────
 
 function complexityStars(level: number): string {
   const filled = '★'.repeat(level)

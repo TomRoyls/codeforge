@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-import { buildWatchConfig, buildFileWatcher, type WatchConfig } from './watch-live-helpers.js'
+import { buildWatchConfig, buildFileWatcher } from './watch-live-helpers.js'
 import { formatWatchHeader } from './watch-live-format-helpers.js'
 
 /**

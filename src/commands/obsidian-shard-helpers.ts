@@ -815,22 +815,22 @@ export function buildObsidianShardResult(
   const gravelCount = edges.filter((e) => e.condition === 'gravel').length
 
   const bestEdge = totalFiles > 0
-    ? edges.reduce((best, e) => (e.qualityScore > best.qualityScore ? e : best), edges[0]).file
+    ? edges.reduce((best, e) => (e.qualityScore > best.qualityScore ? e : best), edges[0] as typeof edges[number]).file
     : ''
   const sharpest = totalFiles > 0
-    ? edges.reduce((best, e) => (e.sharpness > best.sharpness ? e : best), edges[0]).file
+    ? edges.reduce((best, e) => (e.sharpness > best.sharpness ? e : best), edges[0] as typeof edges[number]).file
     : ''
   const bestEdgeCases = totalFiles > 0
-    ? edges.reduce((best, e) => (e.edgeCaseHandling > best.edgeCaseHandling ? e : best), edges[0]).file
+    ? edges.reduce((best, e) => (e.edgeCaseHandling > best.edgeCaseHandling ? e : best), edges[0] as typeof edges[number]).file
     : ''
   const bestErrorPatterns = totalFiles > 0
-    ? edges.reduce((best, e) => (e.fracturePattern > best.fracturePattern ? e : best), edges[0]).file
+    ? edges.reduce((best, e) => (e.fracturePattern > best.fracturePattern ? e : best), edges[0] as typeof edges[number]).file
     : ''
   const mostAccurate = totalFiles > 0
-    ? edges.reduce((best, e) => (e.cuttingPrecision > best.cuttingPrecision ? e : best), edges[0]).file
+    ? edges.reduce((best, e) => (e.cuttingPrecision > best.cuttingPrecision ? e : best), edges[0] as typeof edges[number]).file
     : ''
   const safest = totalFiles > 0
-    ? edges.reduce((best, e) => (e.dangerQuality > best.dangerQuality ? e : best), edges[0]).file
+    ? edges.reduce((best, e) => (e.dangerQuality > best.dangerQuality ? e : best), edges[0] as typeof edges[number]).file
     : ''
 
   const stats: ObsidianShardStats = {

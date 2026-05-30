@@ -1,7 +1,6 @@
 import chalk from 'chalk'
 import {
   type Grade,
-  type ReportCard,
   type ReportCardResult,
   type ReportCardStats,
   type Subject,

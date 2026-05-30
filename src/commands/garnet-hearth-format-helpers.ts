@@ -50,7 +50,7 @@ export function colorGrade(grade: string): string {
     'strong-commitment': good, 'deep-grounded': good, 'almandine-gem': good,
     'proper-hearth': good, 'warm-fire': good, 'fire-keeper': good,
 
-    'proper-fire': okay, 'proper-gem': okay, 'proper-garnet': okay,
+    'proper-fire': okay, 'proper-gem': okay,
     'proper-dedication': okay, 'proper-foundation': okay, 'proper-garnet': okay,
     'forge-fire': okay, 'steady-glow': okay, 'skilled-tender': okay,
 

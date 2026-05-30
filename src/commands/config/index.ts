@@ -2,16 +2,14 @@ import { Args, Command, Flags } from '@oclif/core'
 import ora from 'ora'
 
 import {
-  DEFAULT_CONFIG,
   getConfigValue,
   initConfig,
   loadConfig,
-  resetConfig,
   saveConfig,
   setConfigValue,
   validateConfig,
 } from '../config-helpers.js'
-import { formatConfigDiff, formatConfigJson, formatConfigTable } from '../config-format-helpers.js'
+import { formatConfigJson, formatConfigTable } from '../config-format-helpers.js'
 
 export default class Config extends Command {
   static override args = {

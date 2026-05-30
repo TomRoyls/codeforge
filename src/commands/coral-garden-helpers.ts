@@ -228,10 +228,6 @@ function countNonEmptyLines(content: string): number {
   return content.split('\n').filter((l) => l.trim().length > 0).length
 }
 
-function countEmptyLines(content: string): number {
-  if (content.length === 0) return 0
-  return content.split('\n').filter((l) => l.trim().length === 0).length
-}
 
 function countFunctions(content: string): number {
   return countMatches(content, FUNCTION_REGEX) + countMatches(content, ARROW_REGEX)
@@ -396,7 +392,6 @@ export function measurePolyp(content: string): PolypMeasure {
   const hasCommunication = imports > 0 && exports > 0
   const hasWasteRemoval = errorHandling > 0 && funcs > 0
   const hasRespiration = asyncs > 0
-  const hasPhotosynthesis = funcs > 0 && countTypeAnnotations(content) > 0
   const hasNematocyst = throws > 0
   const hasMucusProduction = classes > 0 && errorHandling > 0
   const activityScore = activity
@@ -625,10 +620,7 @@ export function measureGrowth(content: string): GrowthMeasure {
 /** @example measureEnvironment('export function clean(): string { return "pure"; }') returns EnvironmentMeasure */
 export function measureEnvironment(content: string): EnvironmentMeasure {
   const lines = countNonEmptyLines(content)
-  const emptyLines = countEmptyLines(content)
   const funcs = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
   const typeAnnotations = countTypeAnnotations(content)
   const comments = countComments(content)
   const errorHandling = countErrorHandling(content)
@@ -877,9 +869,8 @@ export function generateRecommendations(
 export function buildCoralGardenResult(
   files: string[],
   contents: string[],
-  options?: { ignore?: string[]; ext?: string[] },
+  _options?: { ignore?: string[]; ext?: string[] },
 ): CoralGardenResult {
-  const _opts = options ?? {}
 
   const specimens: CoralSpecimen[] = files.map((file, i) =>
     analyzeCoralSpecimen(contents[i] ?? '', file),

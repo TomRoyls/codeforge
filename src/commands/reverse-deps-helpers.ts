@@ -1,4 +1,4 @@
-import { basename, dirname, join, normalize, relative, resolve } from 'node:path'
+import {basename,dirname,join,normalize} from 'node:path'
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -70,13 +70,13 @@ export function extractImports(content: string, filePath: string): ImportInfo[] 
 
   let match: RegExpExecArray | null
   while ((match = importRegex.exec(content)) !== null) {
-    sources.add(match[1])
+    sources.add(match[1] ?? '')
   }
   while ((match = dynamicImportRegex.exec(content)) !== null) {
-    sources.add(match[1])
+    sources.add(match[1] ?? '')
   }
   while ((match = requireRegex.exec(content)) !== null) {
-    sources.add(match[1])
+    sources.add(match[1] ?? '')
   }
 
   for (const source of sources) {
@@ -161,7 +161,7 @@ export function buildReverseDependencyMap(
           (f) => f.endsWith(resolvedTarget) || normalize(f) === resolvedTarget,
         )
         if (candidates.length > 0) {
-          resolvedTarget = candidates[0]
+          resolvedTarget = candidates[0] ?? ''
         } else {
           continue
         }
@@ -213,8 +213,10 @@ export function findTransitiveDependents(
 
   const result: string[] = []
 
-  while (queue.length > 0) {
-    const { file, depth } = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const { file, depth } = queue[_qi]!
+    _qi++
     if (visited.has(file)) continue
     if (depth > maxDepth) continue
     visited.add(file)
@@ -315,8 +317,10 @@ function buildNodes(
     depth: 1, file: normalize(d),
   }))
 
-  while (queue.length > 0) {
-    const { file, depth } = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const { file, depth } = queue[_qi]!
+    _qi++
     if (visited.has(file) || depth > maxDepth) continue
     visited.add(file)
 
@@ -369,7 +373,7 @@ export async function buildReverseDepsResult(
         const candidates = files.filter(
           (f) => normalize(f) === imp.resolvedPath || f.endsWith(imp.resolvedPath),
         )
-        if (candidates.length > 0) depPaths.push(candidates[0])
+        if (candidates.length > 0) depPaths.push(candidates[0] ?? '')
       }
       forwardMap.set(file, depPaths)
     } catch {
@@ -391,7 +395,7 @@ export async function buildReverseDepsResult(
     criticalPaths,
     directImpact: direct,
     indirectImpact: indirect,
-    maxDepth: criticalPaths.length > 0 ? criticalPaths[0].length - 1 : 0,
+    maxDepth: criticalPaths.length > 0 ? ((criticalPaths[0] ?? [])?.length ?? 0) - 1 : 0,
     riskLevel,
     targetFile: norm,
     totalAffected,

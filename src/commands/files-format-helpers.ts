@@ -1,6 +1,8 @@
 import chalk from 'chalk'
 
-import type { FileGroup, FilesResult } from './files-helpers.js'
+import type { FilesResult } from './files-helpers.js'
+
+import { padRight, padLeft } from '../utils/format-utils.js'
 
 // ─── Utility formatters ──────────────────────────────────
 
@@ -23,19 +25,9 @@ export function formatDate(date: Date): string {
 
 // ─── Table helpers ───────────────────────────────────────
 
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
-
 // ─── Table formatting ────────────────────────────────────
 
-export function formatFilesTable(result: FilesResult, groupBy: string): string {
+export function formatFilesTable(result: FilesResult, _groupBy: string): string {
   const { files, groups, totalFiles, totalSize, totalLines, byExtension } = result
   const lines: string[] = [chalk.bold('\n📁 File Inventory'), '']
 

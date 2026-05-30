@@ -4,36 +4,58 @@ type Resolver<T> = (value: T) => void
 
 export class ConcurrentQueue<T = unknown> {
   private items: T[]
+  private _head: number
   private _capacity: number | undefined
   private waitingConsumers: Array<Resolver<T>>
+  private _consumerHead: number
   private waitingProducers: Array<Resolver<void>>
+  private _producerHead: number
   private closed: boolean
 
   constructor(options?: ConcurrentQueueOptions) {
     this.items = []
+    this._head = 0
     this._capacity = options?.capacity
     this.waitingConsumers = []
+    this._consumerHead = 0
     this.waitingProducers = []
+    this._producerHead = 0
     this.closed = false
   }
 
+  private _maybeCompact(): void {
+    if (this._head > this.items.length / 2) {
+      this.items = this.items.slice(this._head)
+      this._head = 0
+    }
+  }
+
+  private _maybeCompactProducers(): void {
+    if (this._producerHead > this.waitingProducers.length / 2) {
+      this.waitingProducers = this.waitingProducers.slice(this._producerHead)
+      this._producerHead = 0
+    }
+  }
+
   private signalConsumer(): void {
-    if (this.waitingConsumers.length > 0 && this.items.length > 0) {
-      const resolver = this.waitingConsumers.shift()
+    if (this.waitingConsumers.length - this._consumerHead > 0 && this.items.length - this._head > 0) {
+      const resolver = this.waitingConsumers[this._consumerHead++]
       if (resolver) {
-        const item = this.items.shift()!
+        const item = this.items[this._head++]!
         resolver(item)
+        this._maybeCompact()
         this.signalProducer()
       }
     }
   }
 
   private signalProducer(): void {
-    if (this.waitingProducers.length > 0) {
-      const isFull = this._capacity !== undefined && this.items.length >= this._capacity
+    if (this.waitingProducers.length - this._producerHead > 0) {
+      const isFull = this._capacity !== undefined && this.items.length - this._head >= this._capacity
       if (!isFull) {
-        const resolver = this.waitingProducers.shift()
+        const resolver = this.waitingProducers[this._producerHead++]
         if (resolver) {
+          this._maybeCompactProducers()
           resolver()
         }
       }
@@ -44,7 +66,7 @@ export class ConcurrentQueue<T = unknown> {
     if (this.closed) {
       throw new Error('Queue is closed')
     }
-    if (this._capacity !== undefined && this.items.length >= this._capacity) {
+    if (this._capacity !== undefined && this.items.length - this._head >= this._capacity) {
       throw new Error('Queue is full')
     }
     this.items.push(value)
@@ -52,25 +74,26 @@ export class ConcurrentQueue<T = unknown> {
   }
 
   dequeue(): T {
-    if (this.items.length === 0) {
+    if (this.items.length - this._head === 0) {
       throw new Error('Queue is empty')
     }
-    const item = this.items.shift()!
+    const item = this.items[this._head++]!
+    this._maybeCompact()
     this.signalProducer()
     return item
   }
 
   peek(): T | undefined {
-    if (this.items.length === 0) return undefined
-    return this.items[0]
+    if (this.items.length - this._head === 0) return undefined
+    return this.items[this._head]
   }
 
   get size(): number {
-    return this.items.length
+    return this.items.length - this._head
   }
 
   get isEmpty(): boolean {
-    return this.items.length === 0
+    return this.items.length - this._head === 0
   }
 
   get capacity(): number | undefined {
@@ -79,6 +102,7 @@ export class ConcurrentQueue<T = unknown> {
 
   clear(): void {
     this.items.length = 0
+    this._head = 0
     const producers = this.waitingProducers.splice(0)
     for (const resolver of producers) {
       resolver()
@@ -86,28 +110,35 @@ export class ConcurrentQueue<T = unknown> {
   }
 
   toArray(): T[] {
-    return [...this.items]
+    return [...this.items.slice(this._head)]
   }
 
   forEach(callback: (value: T, index: number) => void): void {
-    for (let i = 0; i < this.items.length; i++) {
-      callback(this.items[i]!, i)
+    for (let i = this._head; i < this.items.length; i++) {
+      callback(this.items[i]!, i - this._head)
     }
   }
 
   drain(count?: number): T[] {
     if (count === undefined) {
-      const result = this.items.splice(0)
+      const result = this.items.slice(this._head)
+      this.items.length = 0
+      this._head = 0
       const producers = this.waitingProducers.splice(0)
       for (const resolver of producers) {
         resolver()
       }
       return result
     }
-    const actualCount = Math.min(count, this.items.length)
-    const result = this.items.splice(0, actualCount)
-    for (let i = 0; i < actualCount && this.waitingProducers.length > 0; i++) {
-      const resolver = this.waitingProducers.shift()
+    const actualCount = Math.min(count, this.items.length - this._head)
+    const result = []
+    for (let i = 0; i < actualCount; i++) {
+      result.push(this.items[this._head + i]!)
+    }
+    this._head += actualCount
+    this._maybeCompact()
+    for (let i = 0; i < actualCount && this.waitingProducers.length - this._producerHead > 0; i++) {
+      const resolver = this.waitingProducers[this._producerHead++]
       if (resolver) resolver()
     }
     return result
@@ -115,7 +146,7 @@ export class ConcurrentQueue<T = unknown> {
 
   offer(value: T): boolean {
     if (this.closed) return false
-    if (this._capacity !== undefined && this.items.length >= this._capacity) {
+    if (this._capacity !== undefined && this.items.length - this._head >= this._capacity) {
       return false
     }
     this.items.push(value)
@@ -124,8 +155,9 @@ export class ConcurrentQueue<T = unknown> {
   }
 
   poll(): T | undefined {
-    if (this.items.length === 0) return undefined
-    const item = this.items.shift()!
+    if (this.items.length - this._head === 0) return undefined
+    const item = this.items[this._head++]!
+    this._maybeCompact()
     this.signalProducer()
     return item
   }
@@ -134,7 +166,7 @@ export class ConcurrentQueue<T = unknown> {
     if (this.closed) {
       return Promise.reject(new Error('Queue is closed'))
     }
-    if (this._capacity === undefined || this.items.length < this._capacity) {
+    if (this._capacity === undefined || this.items.length - this._head < this._capacity) {
       this.items.push(value)
       this.signalConsumer()
       return Promise.resolve()
@@ -149,8 +181,9 @@ export class ConcurrentQueue<T = unknown> {
   }
 
   take(): Promise<T> {
-    if (this.items.length > 0) {
-      const item = this.items.shift()!
+    if (this.items.length - this._head > 0) {
+      const item = this.items[this._head++]!
+      this._maybeCompact()
       this.signalProducer()
       return Promise.resolve(item)
     }
@@ -165,10 +198,12 @@ export class ConcurrentQueue<T = unknown> {
     for (const resolver of consumers) {
       resolver(undefined as T)
     }
+    this._consumerHead = 0
     const producers = this.waitingProducers.splice(0)
     for (const resolver of producers) {
       resolver()
     }
+    this._producerHead = 0
   }
 
   get isClosed(): boolean {
@@ -177,24 +212,33 @@ export class ConcurrentQueue<T = unknown> {
 
   get isFull(): boolean {
     if (this._capacity === undefined) return false
-    return this.items.length >= this._capacity
+    return this.items.length - this._head >= this._capacity
   }
 
   get remainingCapacity(): number | undefined {
     if (this._capacity === undefined) return undefined
-    return this._capacity - this.items.length
+    return this._capacity - (this.items.length - this._head)
   }
 
   contains(value: T): boolean {
-    return this.items.includes(value)
+    for (let i = this._head; i < this.items.length; i++) {
+      if (this.items[i] === value) return true
+    }
+    return false
   }
 
   remove(value: T): boolean {
-    const index = this.items.indexOf(value)
-    if (index === -1) return false
-    this.items.splice(index, 1)
-    this.signalProducer()
-    return true
+    for (let i = this._head; i < this.items.length; i++) {
+      if (this.items[i] === value) {
+        this.items.splice(i, 1)
+        if (i <= this._head) {
+          this._head = Math.max(0, this._head - 1)
+        }
+        this.signalProducer()
+        return true
+      }
+    }
+    return false
   }
 
   static fromArray<U>(arr: U[], options?: ConcurrentQueueOptions): ConcurrentQueue<U> {

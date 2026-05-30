@@ -616,7 +616,7 @@ export function analyzeGalleryWing(strokes: BrushStroke[], dirPath: string): Gal
  * generateRecommendations(strokes, wings, museum, stats) // string[]
  */
 export function generateRecommendations(
-  strokes: BrushStroke[],
+  _strokes: BrushStroke[],
   wings: GalleryWing[],
   museum: MuseumMeasure,
   stats: PaintingCanvasStats,
@@ -664,7 +664,7 @@ export function generateRecommendations(
 export function buildPaintingCanvasResult(files: string[], contents: string[], _options: Record<string, unknown>): PaintingCanvasResult {
   const strokes: BrushStroke[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeBrushStroke(content, file)
+    return analyzeBrushStroke(content ?? '', file)
   })
 
   const dirMap = new Map<string, BrushStroke[]>()

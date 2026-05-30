@@ -682,7 +682,7 @@ export async function buildDiamondSovereignResult(
 export function generateRecommendations(
   edicts: DiamondEdict[],
   empires: DiamondEmpire[],
-  throne: DiamondSovereignResult['throne'],
+  _throne: DiamondSovereignResult['throne'],
   stats: DiamondSovereignResult['stats'],
 ): string[] {
   const recs: string[] = []

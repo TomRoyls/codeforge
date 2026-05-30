@@ -79,7 +79,6 @@ export interface SemaphoreResult {
 // ─── Regex Helpers ───────────────────────────────────────
 
 const EXPORT_RE = /export\s+(?:default\s+)?(?:function|const|let|var|class|interface|type|enum|async\s+function)\s+(\w+)/g
-const IMPORT_RE = /import\s+(?:\{([^}]+)\}|(\w+))\s+from\s+['"]([^'"]+)['"]/g
 const NAMED_IMPORT_RE = /import\s*\{([^}]+)\}\s*from\s*['"]([^'"]+)['"]/g
 const DEFAULT_IMPORT_RE = /import\s+(\w+)\s+from\s+['"]([^'"]+)['"]/g
 const CALL_RE = /(\w+)\s*\(/g
@@ -103,13 +102,19 @@ export function extractExports(content: string): string[] {
   let m: RegExpExecArray | null
   EXPORT_RE.lastIndex = 0
   while ((m = EXPORT_RE.exec(content)) !== null) {
-    names.push(m[1])
+    const name = m[1]
+    if (name) names.push(name)
   }
   // Also match re-exports: export { foo, bar }
   const reExportRe = /export\s+\{([^}]+)\}/g
   reExportRe.lastIndex = 0
   while ((m = reExportRe.exec(content)) !== null) {
-    const items = m[1].split(',').map((s) => s.trim().split(/\s+as\s+/).pop()?.trim() ?? s.trim())
+    const rawGroup = m[1] ?? ''
+    const items = rawGroup.split(',').map((s) => {
+      const parts = s.trim().split(/\s+as\s+/)
+      const last = parts.pop()
+      return (last ?? s).trim()
+    })
     for (const item of items) {
       if (item.length > 0) names.push(item)
     }
@@ -130,22 +135,25 @@ export function extractImports(content: string): Array<{ symbols: string[]; sour
 
   NAMED_IMPORT_RE.lastIndex = 0
   while ((m = NAMED_IMPORT_RE.exec(content)) !== null) {
-    const symbols = m[1].split(',').map((s) => s.trim()).filter((s) => s.length > 0)
-    results.push({ source: m[2], symbols })
+    const group1 = m[1] ?? ''
+    const source = m[2] ?? ''
+    const symbols = group1.split(',').map((s) => s.trim()).filter((s) => s.length > 0)
+    results.push({ source, symbols })
   }
 
   DEFAULT_IMPORT_RE.lastIndex = 0
   while ((m = DEFAULT_IMPORT_RE.exec(content)) !== null) {
-    if (!m[1] || m[1] === 'type') continue
+    const ident = m[1]
+    if (!ident || ident === 'type') continue
     // Skip if already captured as named import
-    const source = m[2]
+    const source = m[2] ?? ''
     const existing = results.find((r) => r.source === source)
     if (existing) {
-      if (!existing.symbols.includes(m[1])) {
-        existing.symbols.push(m[1])
+      if (!existing.symbols.includes(ident)) {
+        existing.symbols.push(ident)
       }
     } else {
-      results.push({ source, symbols: [m[1]] })
+      results.push({ source, symbols: [ident] })
     }
   }
 
@@ -165,6 +173,7 @@ export function extractCalls(content: string): string[] {
   let m: RegExpExecArray | null
   while ((m = CALL_RE.exec(content)) !== null) {
     const name = m[1]
+    if (!name) continue
     // Skip keywords and common non-function identifiers
     if (!/^(if|for|while|switch|catch|return|throw|new|typeof|instanceof|delete|void|class|function|const|let|var|import|export|async|await|yield|true|false|null|undefined|this|super|console)$/.test(name)) {
       calls.push(name)
@@ -187,12 +196,14 @@ export function extractEvents(content: string): { emitted: string[]; listened: s
 
   EVENT_EMIT_RE.lastIndex = 0
   while ((m = EVENT_EMIT_RE.exec(content)) !== null) {
-    emitted.push(m[1])
+    const evt = m[1]
+    if (evt) emitted.push(evt)
   }
 
   EVENT_ON_RE.lastIndex = 0
   while ((m = EVENT_ON_RE.exec(content)) !== null) {
-    listened.push(m[1])
+    const evt = m[1]
+    if (evt) listened.push(evt)
   }
 
   return { emitted: Array.from(new Set(emitted)), listened: Array.from(new Set(listened)) }
@@ -210,7 +221,7 @@ export function extractTypeReferences(content: string): string[] {
   let m: RegExpExecArray | null
   TYPE_REF_RE.lastIndex = 0
   while ((m = TYPE_REF_RE.exec(content)) !== null) {
-    const name = m[1] || m[2] || m[3] || m[4]
+    const name = m[1] ?? m[2] ?? m[3] ?? m[4]
     if (name && !/^(string|number|boolean|any|void|null|undefined|never|unknown|object|bigint|symbol|Array|Promise|Record|Map|Set|Date|RegExp|Error)$/.test(name)) {
       types.push(name)
     }
@@ -225,7 +236,7 @@ export function extractTypeReferences(content: string): string[] {
  * @example
  * mapSignals(content, 'foo.ts', ['bar.ts']) // Signal[]
  */
-export function mapSignals(content: string, filePath: string, allFiles: string[]): Signal[] {
+export function mapSignals(content: string, filePath: string, _allFiles: string[]): Signal[] {
   const signals: Signal[] = []
 
   // Export signals
@@ -458,7 +469,7 @@ export function measureSignalStrength(signal: Signal, content: string): number {
  * @example
  * analyzeChannels(signals, ['foo.ts', 'bar.ts']) // Channel[]
  */
-export function analyzeChannels(signals: Signal[], files: string[]): Channel[] {
+export function analyzeChannels(signals: Signal[], _files: string[]): Channel[] {
   const channelMap = new Map<string, { signals: Signal[]; type: Channel['type'] }>()
 
   for (const signal of signals) {
@@ -519,22 +530,22 @@ export function analyzeChannels(signals: Signal[], files: string[]): Channel[] {
  * identifyDeadChannels(signals, ['foo.ts'], ['export function unused() {}']) // DeadChannel[]
  */
 export function identifyDeadChannels(
-  signals: Signal[],
+  _signals: Signal[],
   files: string[],
   contents: string[],
 ): DeadChannel[] {
   const dead: DeadChannel[] = []
-  const contentMap = new Map(files.map((f, i) => [f, contents[i] ?? '']))
 
   // Check for deprecated API usage
   for (let i = 0; i < files.length; i++) {
+    const file = files[i] ?? ''
     const content = contents[i] ?? ''
     if (DEPRECATED_RE.test(content)) {
       const exports = extractExports(content)
       for (const exp of exports) {
         dead.push({
-          description: `Deprecated API still exported: ${exp} in ${files[i]}`,
-          from: files[i],
+          description: `Deprecated API still exported: ${exp} in ${file}`,
+          from: file,
           reason: 'deprecated-api',
           to: '*',
           type: 'export',
@@ -547,10 +558,11 @@ export function identifyDeadChannels(
   const allExported = new Map<string, { file: string; symbol: string }>()
   const allImported = new Set<string>()
   for (let i = 0; i < files.length; i++) {
+    const file = files[i] ?? ''
     const content = contents[i] ?? ''
     const exports = extractExports(content)
     for (const exp of exports) {
-      allExported.set(`${files[i]}:${exp}`, { file: files[i], symbol: exp })
+      allExported.set(`${file}:${exp}`, { file, symbol: exp })
     }
     const imports = extractImports(content)
     for (const imp of imports) {
@@ -574,13 +586,14 @@ export function identifyDeadChannels(
 
   // Check for TODO markers indicating dead code paths
   for (let i = 0; i < files.length; i++) {
+    const file = files[i] ?? ''
     const content = contents[i] ?? ''
     if (TODO_RE.test(content)) {
       dead.push({
-        description: `Potential dead code path (TODO marker) in ${files[i]}`,
-        from: files[i],
+        description: `Potential dead code path (TODO marker) in ${file}`,
+        from: file,
         reason: 'dead-code-path',
-        to: files[i],
+        to: file,
         type: 'internal',
       })
     }
@@ -775,8 +788,8 @@ export function computeStats(
  * generateRecommendations(signals, channels, towers, dead, stats) // ['Fix broken signals...']
  */
 export function generateRecommendations(
-  signals: Signal[],
-  channels: Channel[],
+  _signals: Signal[],
+  _channels: Channel[],
   towers: SignalTower[],
   dead: DeadChannel[],
   stats: SemaphoreStats,
@@ -830,14 +843,15 @@ export function generateRecommendations(
 export function buildSemaphoreResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): SemaphoreResult {
   const allSignals: Signal[] = []
 
   // Map signals for each file
   for (let i = 0; i < files.length; i++) {
+    const file = files[i] ?? ''
     const content = contents[i] ?? ''
-    const fileSignals = mapSignals(content, files[i], files)
+    const fileSignals = mapSignals(content, file, files)
 
     // Measure clarity and strength for each signal
     for (const signal of fileSignals) {
@@ -854,8 +868,9 @@ export function buildSemaphoreResult(
   // Analyze towers
   const towers: SignalTower[] = []
   for (let i = 0; i < files.length; i++) {
+    const file = files[i] ?? ''
     const content = contents[i] ?? ''
-    const tower = analyzeTower(content, files[i], allSignals)
+    const tower = analyzeTower(content, file, allSignals)
     towers.push(tower)
   }
 

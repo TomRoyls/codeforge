@@ -705,9 +705,7 @@ export function analyzeCelestialObservation(content: string, filePath: string): 
     astronomicalLegacy * 0.2,
   )
 
-  const condition = classifyObservationCondition(qualityScore)
-
-  return {
+  const observation: CelestialObservation = {
     file: filePath,
     telescopeResolution,
     stellarCatalog,
@@ -721,9 +719,11 @@ export function analyzeCelestialObservation(content: string, filePath: string): 
     cosmic,
     foundation,
     legacy,
-    condition,
+    condition: 'darkness',
     qualityScore,
   }
+  observation.condition = classifyObservationCondition(observation)
+  return observation
 }
 
 // ─── classifyObservationCondition ────────────────────────────────────────────

@@ -657,7 +657,7 @@ export async function buildTitaniumFrontierResult(
 export function generateRecommendations(
   alloys: TitaniumAlloy[],
   stations: TitaniumStation[],
-  mission: TitaniumFrontierResult['mission'],
+  _mission: TitaniumFrontierResult['mission'],
   stats: TitaniumFrontierResult['stats'],
 ): string[] {
   const recs: string[] = []

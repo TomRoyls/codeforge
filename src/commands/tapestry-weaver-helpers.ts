@@ -102,7 +102,7 @@ export function extractImportThreads(content: string, filePath: string): Thread[
       id: makeThreadId(),
       source: filePath,
       type: 'import',
-      target,
+      target: target ?? '',
       material: symbols.length > 0 ? symbols.join(', ') : '*',
       tension: 50,
       isLoose: false,
@@ -127,7 +127,7 @@ export function extractExportThreads(content: string, filePath: string): Thread[
       source: filePath,
       type: 'export',
       target: 'external',
-      material: m[1],
+      material: m[1] ?? '',
       tension: 30,
       isLoose: false,
       isBroken: false,
@@ -149,14 +149,14 @@ export function extractCallThreads(content: string, filePath: string): Thread[] 
   const seen = new Set<string>()
   for (const m of calls) {
     const name = m[1]
-    if (keywords.has(name) || seen.has(name)) continue
-    seen.add(name)
+    if (keywords.has(name ?? '') || seen.has(name ?? '')) continue
+    seen.add(name ?? '')
     threads.push({
       id: makeThreadId(),
       source: filePath,
       type: 'function-call',
-      target: name,
-      material: name,
+      target: name ?? '',
+      material: name ?? '',
       tension: 40,
       isLoose: false,
       isBroken: false,
@@ -177,14 +177,14 @@ export function extractTypeThreads(content: string, filePath: string): Thread[] 
   const seen = new Set<string>()
   for (const m of typeRefs) {
     const typeName = m[1]
-    if (seen.has(typeName)) continue
-    seen.add(typeName)
+    if (seen.has(typeName ?? '')) continue
+    seen.add(typeName ?? '')
     threads.push({
       id: makeThreadId(),
       source: filePath,
       type: 'type-reference',
-      target: typeName,
-      material: typeName,
+      target: typeName ?? '',
+      material: typeName ?? '',
       tension: 35,
       isLoose: false,
       isBroken: false,
@@ -457,7 +457,7 @@ export function computeWeaveQuality(
  * generateRecommendations(threads, patterns, inspections, stats)
  */
 export function generateRecommendations(
-  threads: Thread[],
+  _threads: Thread[],
   _patterns: WeavePattern[],
   inspections: WeftInspection[],
   stats: TapestryWeaverStats,
@@ -513,7 +513,7 @@ export function buildTapestryWeaverResult(
 
   let allThreads: Thread[] = []
   for (let i = 0; i < files.length; i++) {
-    allThreads = allThreads.concat(extractThreads(contents[i], files[i], files))
+    allThreads = allThreads.concat(extractThreads(contents[i] ?? '',files[i] ?? '', files))
   }
 
   allThreads = detectLooseThreads(allThreads)
@@ -524,7 +524,7 @@ export function buildTapestryWeaverResult(
     t.tension = computeTensionForThread(t)
   }
 
-  const inspections = files.map((f, i) => inspectWeft(contents[i], f, allThreads))
+  const inspections = files.map((f, i) => inspectWeft(contents[i] ?? '', f, allThreads))
 
   const filePatterns = new Map<string, { threads: Thread[] }>()
   for (const t of allThreads) {

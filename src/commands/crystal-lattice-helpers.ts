@@ -259,7 +259,7 @@ export function extractImportPaths(content: string): string[] {
   if (!m) return []
   return m.map(s => {
     const inner = s.match(/['"]([^'"]+)['"]/)
-    return inner ? inner[1] : ''
+    return inner?.[1] ?? ''
   }).filter(Boolean)
 }
 
@@ -604,7 +604,7 @@ export function analyzeCrystalVein(atoms: CrystalAtom[], dirPath: string): Cryst
  * generateRecommendations(atoms, veins, mine, stats) // string[]
  */
 export function generateRecommendations(
-  atoms: CrystalAtom[],
+  _atoms: CrystalAtom[],
   veins: CrystalVein[],
   mine: MineMeasure,
   stats: CrystalLatticeStats,
@@ -655,7 +655,7 @@ export function generateRecommendations(
 export function buildCrystalLatticeResult(files: string[], contents: string[], _options: Record<string, unknown>): CrystalLatticeResult {
   const atoms: CrystalAtom[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeCrystalAtom(content, file)
+    return analyzeCrystalAtom(content ?? '', file)
   })
 
   const dirMap = new Map<string, CrystalAtom[]>()

@@ -255,8 +255,8 @@ export function extractImportPaths(content: string): string[] {
   if (!m) return []
   return m.map(imp => {
     const pathMatch = imp.match(/from\s+['"]([^'"]+)['"]/)
-    return pathMatch ? pathMatch[1] : ''
-  }).filter(Boolean)
+    return pathMatch?.[1] ?? ''
+  }).filter((s): s is string => s !== '')
 }
 
 // ─── Magnet Measurement ──────────────────────────────────
@@ -309,7 +309,6 @@ export function measureField(content: string): FieldMeasure {
   const imports = countImports(content)
   const exports = countExports(content)
   const functions = countFunctions(content)
-  const branches = countBranches(content)
 
   const range = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
     (imports * 15) +
@@ -623,7 +622,7 @@ export function analyzeMagneticField(poles: MagnetPole[], dirPath: string): Magn
  * generateRecommendations(poles, fields, lab, stats) // string[]
  */
 export function generateRecommendations(
-  poles: MagnetPole[],
+  _poles: MagnetPole[],
   fields: MagneticField[],
   lab: LabMeasure,
   stats: MagnetNeedleStats,
@@ -671,7 +670,7 @@ export function generateRecommendations(
 export function buildMagnetNeedleResult(files: string[], contents: string[], _options: Record<string, unknown>): MagnetNeedleResult {
   const poles: MagnetPole[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeMagnetPole(content, file)
+    return analyzeMagnetPole(content ?? '', file)
   })
 
   const dirMap = new Map<string, MagnetPole[]>()

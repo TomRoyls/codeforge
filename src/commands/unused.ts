@@ -8,7 +8,6 @@ import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildUsageMap,
   calculateStats,
-  extractAllImports,
   extractExports,
   findUnused,
 } from './unused-helpers.js'

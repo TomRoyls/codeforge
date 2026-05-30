@@ -1,4 +1,4 @@
-import { basename, dirname, extname, join, relative } from 'node:path'
+import {basename,dirname,extname} from 'node:path'
 
 // ─── Interfaces ──────────────────────────────────────────
 
@@ -42,7 +42,6 @@ export type ContentReader = (filePath: string) => Promise<string>
 
 // ─── Test file detection ────────────────────────────────
 
-const TEST_PATTERNS = ['.test.', '.spec.', '__tests__', 'test/', 'tests/']
 
 /**
  * Check if a file path looks like a test file.
@@ -194,6 +193,7 @@ export function computeCoverageStats(mappings: TestMapping[], allFiles: string[]
 
   for (const dir of Object.keys(byDirectory)) {
     const d = byDirectory[dir]
+    if (!d) continue
     d.percentage = d.source > 0 ? Math.round((d.test / d.source) * 1000) / 10 : 0
   }
 

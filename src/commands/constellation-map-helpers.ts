@@ -515,10 +515,15 @@ export function mapConstellation(
 
   const pattern = classifyConstellationPattern(starCount, maxLocalConn, cycleCount, hasSingleHub)
 
-  const brightestStar = stars.reduce((b, s) =>
-    s.brightness > b.brightness ? s : b, stars[0]).file
-  const hubStar = stars.reduce((h, s) =>
-    (s.connections.length > h.connections.length ? s : h), stars[0]).file
+  const first = stars[0]
+  const brightestStar = first
+    ? stars.reduce((b, s) =>
+        s.brightness > b.brightness ? s : b, first).file
+    : 'none'
+  const hubStar = first
+    ? stars.reduce((h, s) =>
+        (s.connections.length > h.connections.length ? s : h), first).file
+    : 'none'
 
   const health = classifyConstellationHealth(avgBrightness, coherence / 100)
   const mythologicalName = assignMythologicalName(pattern, starCount, health)
@@ -611,8 +616,8 @@ export function buildGalacticStructure(
  * generateRecommendations(stars, conns, consts, stats) // string[]
  */
 export function generateRecommendations(
-  stars: StarNode[],
-  connections: StarConnection[],
+  _stars: StarNode[],
+  _connections: StarConnection[],
   constellations: ConstellationGroup[],
   stats: ConstellationMapStats,
 ): string[] {
@@ -691,6 +696,8 @@ export function buildConstellationMapResult(
 
   const importMap = new Map<string, string[]>()
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
     const rawImports = extractImports(content)
     const resolvedImports: string[] = []
@@ -704,7 +711,7 @@ export function buildConstellationMapResult(
         }
       }
     }
-    importMap.set(files[i], resolvedImports)
+    importMap.set(file, resolvedImports)
   }
 
   const importedByMap = new Map<string, string[]>()
@@ -770,11 +777,12 @@ export function buildConstellationMapResult(
     : 0
   const bridgeCount = stars.filter(s => s.isBridge).length
 
-  const biggestConstellation = constellations.length > 0
-    ? constellations.reduce((b, c) => c.starCount > b.starCount ? c : b, constellations[0]).name
+  const firstConst = constellations[0]
+  const biggestConstellation = firstConst
+    ? constellations.reduce((b, c) => c.starCount > b.starCount ? c : b, firstConst).name
     : 'none'
-  const mostBridged = constellations.length > 0
-    ? constellations.reduce((b, c) => c.externalConnections > b.externalConnections ? c : b, constellations[0]).name
+  const mostBridged = firstConst
+    ? constellations.reduce((b, c) => c.externalConnections > b.externalConnections ? c : b, firstConst).name
     : 'none'
 
   const stats: ConstellationMapStats = {
@@ -798,18 +806,18 @@ export function buildConstellationMapResult(
     isWellStructured: galaxy.isWellStructured,
     structureType: galaxy.structureType,
     cartographerGrade: classifyCartographerGrade(galaxy.connectivity),
-    brightestStar: stars.length > 0
-      ? stars.reduce((b, s) => s.brightness > b.brightness ? s : b, stars[0]).file
+    brightestStar: stars[0]
+      ? stars.reduce((b, s) => s.brightness > b.brightness ? s : b, stars[0] as typeof stars[number]).file
       : 'none',
-    dimmestStar: stars.length > 0
-      ? stars.reduce((b, s) => s.brightness < b.brightness ? s : b, stars[0]).file
+    dimmestStar: stars[0]
+      ? stars.reduce((b, s) => s.brightness < b.brightness ? s : b, stars[0] as typeof stars[number]).file
       : 'none',
     biggestConstellation,
-    mostConnected: stars.length > 0
-      ? stars.reduce((h, s) => s.connections.length > h.connections.length ? s : h, stars[0]).file
+    mostConnected: stars[0]
+      ? stars.reduce((h, s) => s.connections.length > h.connections.length ? s : h, stars[0] as typeof stars[number]).file
       : 'none',
-    mostIsolated: stars.length > 0
-      ? stars.reduce((o, s) => s.connections.length < o.connections.length ? s : o, stars[0]).file
+    mostIsolated: stars[0]
+      ? stars.reduce((o, s) => s.connections.length < o.connections.length ? s : o, stars[0] as typeof stars[number]).file
       : 'none',
     mostBridged,
     cycleWarning: Array.from(cycleFileSet),

@@ -21,17 +21,6 @@ function aquiferTypeColor(t: string): string {
   }
 }
 
-function waterLevelColor(l: string): string {
-  switch (l) {
-    case 'flooded': return chalk.blue(l)
-    case 'high': return chalk.green(l)
-    case 'normal': return chalk.cyan(l)
-    case 'low': return chalk.yellow(l)
-    case 'critical': return chalk.rgb(255, 165, 0)(l)
-    case 'dry': return chalk.red(l)
-    default: return chalk.dim(l)
-  }
-}
 
 function conditionColor(c: string): string {
   switch (c) {

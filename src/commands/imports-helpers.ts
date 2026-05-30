@@ -74,12 +74,11 @@ export function parseImports(content: string, filePath: string): ImportInfo[] {
     if (trimmed.startsWith("'import ") || trimmed.startsWith('"import ')) continue
 
     // Check for type-only import
-    const isTypeOnly = /^import\s+type\s+/.test(trimmed)
 
     // ─── Side-effect: import 'module' or import "module" ───
     const sideEffectMatch = trimmed.match(/^import\s+['"]([^'"]+)['"]\s*;?\s*$/)
     if (sideEffectMatch) {
-      const mod = sideEffectMatch[1]!
+      const mod = sideEffectMatch[1] ?? ''
       imports.push({
         filePath,
         isExternal: !isRelativeModule(mod),

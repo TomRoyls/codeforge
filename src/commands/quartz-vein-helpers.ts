@@ -651,7 +651,7 @@ export async function buildQuartzMeridianResult(
 export function generateRecommendations(
   crystals: QuartzCrystal[],
   strata: QuartzStratum[],
-  geology: QuartzMeridianResult['geology'],
+  _geology: QuartzMeridianResult['geology'],
   stats: QuartzMeridianResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -524,44 +524,44 @@ export function detectInclusions(content: string): Inclusion[] {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const lineNum = i + 1
-    const t = line.trim()
+    const t = line?.trim()
 
-    if (/\bconsole\.\w+\s*\(/.test(t) && !/\bspec\b|\btest\b/.test(content.slice(Math.max(0, i - 5), i + 10))) {
+    if (/\bconsole\.\w+\s*\(/.test(t ?? '') && !/\bspec\b|\btest\b/.test(content.slice(Math.max(0, i - 5), i + 10))) {
       inclusions.push({
         type: 'pinpoint', severity: 'minor', location: `line ${lineNum}`,
         description: 'Console statement found', visible: 'loupe',
       })
     }
 
-    if (/\bvar\s+/.test(t)) {
+    if (/\bvar\s+/.test(t ?? '')) {
       inclusions.push({
         type: 'bruise', severity: 'moderate', location: `line ${lineNum}`,
         description: 'Var keyword used instead of const/let', visible: 'loupe',
       })
     }
 
-    if (/\bany\b/.test(t) && !/\/\/|\/\*/.test(t)) {
+    if (/\bany\b/.test(t ?? '') && !/\/\/|\/\*/.test(t ?? '')) {
       inclusions.push({
         type: 'cloud', severity: 'moderate', location: `line ${lineNum}`,
         description: 'Any type used', visible: 'magnification',
       })
     }
 
-    if (/@ts-ignore|@ts-expect-error/.test(t)) {
+    if (/@ts-ignore|@ts-expect-error/.test(t ?? '')) {
       inclusions.push({
         type: 'cavity', severity: 'significant', location: `line ${lineNum}`,
         description: 'TypeScript suppression directive', visible: 'naked-eye',
       })
     }
 
-    if (/\bcatch\s*\(\w*\)\s*\{\s*\}/.test(t)) {
+    if (/\bcatch\s*\(\w*\)\s*\{\s*\}/.test(t ?? '')) {
       inclusions.push({
         type: 'cavity', severity: 'severe', location: `line ${lineNum}`,
         description: 'Empty catch block', visible: 'naked-eye',
       })
     }
 
-    if (/TODO|FIXME|HACK|XXX/.test(t)) {
+    if (/TODO|FIXME|HACK|XXX/.test(t ?? '')) {
       inclusions.push({
         type: 'feather', severity: 'minor', location: `line ${lineNum}`,
         description: 'TODO/FIXME marker found', visible: 'magnification',
@@ -620,9 +620,9 @@ export function measureLoupeFindings(content: string): LoupeFindings {
     const lines = content.split('\n')
     let count = 0
     for (let i = 0; i < lines.length - 1; i++) {
-      const curr = lines[i].trim()
-      const next = lines[i + 1].trim()
-      if (curr.length > 0 && next.length > 0 && lines[i].endsWith(' ') !== lines[i + 1].endsWith(' ')) {
+      const curr = (lines[i] ?? '').trim()
+      const next = (lines[i + 1] ?? '').trim()
+      if (curr.length > 0 && next.length > 0 && (lines[i] ?? '').endsWith(' ') !== (lines[i + 1] ?? '').endsWith(' ')) {
         count++
       }
     }
@@ -850,7 +850,7 @@ export function analyzeGemDisplay(gems: GemstoneInspection[], dirPath: string): 
  * generateRecommendations(gems, displays, stats) // string[]
  */
 export function generateRecommendations(
-  gems: GemstoneInspection[],
+  _gems: GemstoneInspection[],
   displays: GemDisplay[],
   stats: MagnifyingLensStats,
 ): string[] {
@@ -980,13 +980,13 @@ export function buildMagnifyingLensResult(
     overallBrilliance,
     gemologistGrade: classifyGemologistGrade(overallBrilliance),
     finestGem: gems.length > 0
-      ? gems.reduce((f, g) => g.qualityScore > f.qualityScore ? g : f, gems[0]).file : 'none',
+      ? gems.reduce((f, g) => g.qualityScore > f.qualityScore ? g : f, gems[0] as typeof gems[number]).file : 'none',
     worstGem: gems.length > 0
-      ? gems.reduce((w, g) => g.qualityScore < w.qualityScore ? g : w, gems[0]).file : 'none',
+      ? gems.reduce((w, g) => g.qualityScore < w.qualityScore ? g : w, gems[0] as typeof gems[number]).file : 'none',
     heaviestGem: gems.length > 0
-      ? gems.reduce((h, g) => g.caratWeight > h.caratWeight ? g : h, gems[0]).file : 'none',
+      ? gems.reduce((h, g) => g.caratWeight > h.caratWeight ? g : h, gems[0] as typeof gems[number]).file : 'none',
     mostBrilliant: gems.length > 0
-      ? gems.reduce((b, g) => g.brilliance > b.brilliance ? g : b, gems[0]).file : 'none',
+      ? gems.reduce((b, g) => g.brilliance > b.brilliance ? g : b, gems[0] as typeof gems[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(gems, displays, stats)

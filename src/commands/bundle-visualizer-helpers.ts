@@ -1,4 +1,5 @@
-import { basename, dirname, normalize, relative } from 'node:path'
+import { basename, dirname, normalize } from 'node:path'
+import { formatBytesCompact as formatBytes } from '../utils/format-utils.js'
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -161,12 +162,13 @@ export function buildBundleTree(
   }
 
   const dirNodes: BundleNode[] = []
-  for (const [dirPath, children] of dirMap) {
+  for (const [dirPath, children] of Array.from(dirMap)) {
     dirNodes.push(makeDirNode(dirPath, children))
   }
 
-  const rootChildren = dirNodes.length === 1 && dirNodes[0].path === '.'
-    ? dirNodes[0].children
+  const firstDir = dirNodes[0]
+  const rootChildren = dirNodes.length === 1 && firstDir !== undefined && firstDir.path === '.'
+    ? firstDir.children
     : dirNodes
 
   const root = makeDirNode('', rootChildren)
@@ -245,7 +247,8 @@ function layoutChildren(
   if (childTotal === 0) return
 
   if (children.length === 1) {
-    const child = children[0]
+    const child = children[0]!
+    if (child === undefined) return
     if (child.children.length > 0 && depth < 2) {
       layoutChildren(child.children, x, y, width, height, totalSize, blocks, depth + 1)
     } else {
@@ -265,9 +268,10 @@ function layoutChildren(
   let offset = 0
 
   for (let i = 0; i < children.length; i++) {
-    const child = children[i]
+    const child = children[i]!
+    if (child === undefined) continue
     const ratio = child.rawSize / childTotal
-    const color = BLOCK_COLORS[i % BLOCK_COLORS.length]
+    const color = BLOCK_COLORS[i % BLOCK_COLORS.length]!
 
     if (horizontal) {
       const segW = Math.max(1, Math.round(width * ratio))
@@ -275,7 +279,7 @@ function layoutChildren(
         layoutChildren(child.children, x + offset, y, segW, height, totalSize, blocks, depth + 1)
       } else {
         blocks.push({
-          color,
+          color: color ?? 'gray',
           height,
           node: child,
           width: segW,
@@ -290,7 +294,7 @@ function layoutChildren(
         layoutChildren(child.children, x, y + offset, width, segH, totalSize, blocks, depth + 1)
       } else {
         blocks.push({
-          color,
+          color: color ?? 'gray',
           height: segH,
           node: child,
           width,
@@ -337,11 +341,11 @@ export function computeSizeDistribution(files: BundleNode[]): SizeBucket[] {
 
   for (const f of files) {
     const kb = f.rawSize / 1024
-    if (kb < 1) buckets[0].count++
-    else if (kb < 10) buckets[1].count++
-    else if (kb < 50) buckets[2].count++
-    else if (kb < 100) buckets[3].count++
-    else buckets[4].count++
+    if (kb < 1) { const b = buckets[0]; if (b) b.count++ }
+    else if (kb < 10) { const b = buckets[1]; if (b) b.count++ }
+    else if (kb < 50) { const b = buckets[2]; if (b) b.count++ }
+    else if (kb < 100) { const b = buckets[3]; if (b) b.count++ }
+    else { const b = buckets[4]; if (b) b.count++ }
   }
 
   return buckets
@@ -389,7 +393,7 @@ export function computeBundleVizStats(tree: BundleNode): BundleVizStats {
 
   const sorted = [...leaves].sort((a, b) => b.rawSize - a.rawSize)
   const largestFile = sorted[0] ?? null
-  const smallestFile = sorted.length > 0 ? sorted[sorted.length - 1] : null
+  const smallestFile = sorted.length > 0 ? (sorted[sorted.length - 1] ?? null) : null
   const avgFileSize = fileCount > 0 ? Math.round(totalSize / fileCount) : 0
 
   return {
@@ -415,19 +419,6 @@ export function computeBundleVizStats(tree: BundleNode): BundleVizStats {
 export function collectDirNodes(node: BundleNode): BundleNode[] {
   if (node.type === 'file') return []
   return [node, ...node.children.flatMap(collectDirNodes)]
-}
-
-// ─── formatBytes ────────────────────────────────────────
-
-/**
- * @example
- * const text = formatBytes(1024)
- * console.log(text)
- */
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`
 }
 
 // ─── buildBundleVisualization ───────────────────────────
@@ -460,3 +451,5 @@ export function buildBundleVisualization(
 export function sourceBaseName(filePath: string): string {
   return basename(filePath).replace(/\.ts$/, '')
 }
+
+export { formatBytes }

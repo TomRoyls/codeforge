@@ -1,18 +1,10 @@
 import chalk from 'chalk'
 
-import type { LanguagesResult, LanguageInfo } from './languages-helpers.js'
+import type { LanguagesResult } from './languages-helpers.js'
+
+import { padRight, padLeft } from '../utils/format-utils.js'
 
 // ─── Helpers ────────────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 function langColor(color: string): (text: string) => string {
   switch (color) {

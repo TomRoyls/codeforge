@@ -421,7 +421,6 @@ export function analyzeStarModule(content: string, filePath: string): StarModule
   const comments = countComments(content)
   const jsdoc = countJSDoc(content)
   const types = countTypeAnnotations(content)
-  const errors = countErrorHandling(content)
   const todos = countTodos(content)
   const descriptive = countDescriptiveNames(content)
   const nesting = maxNesting(content)
@@ -488,6 +487,8 @@ export function detectBinarySystems(stars: StarModule[]): void {
     for (let j = i + 1; j < stars.length; j++) {
       const a = stars[i]
       const b = stars[j]
+      if (!a || !b) continue
+
       const aBase = a.file.replace(/.*\//, '').replace(/\.[^.]+$/, '')
       const bBase = b.file.replace(/.*\//, '').replace(/\.[^.]+$/, '')
 
@@ -582,8 +583,11 @@ export function analyzeConstellation(stars: StarModule[], dirPath: string): Cons
     if (count > maxCount) { maxCount = count; dominantSpectralType = type }
   }
 
-  const coreStar = stars.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, stars[0])
-  const hasCore = coreStar.qualityScore >= 50
+  const first = stars[0]
+  const coreStar = first
+    ? stars.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, first)
+    : undefined
+  const hasCore = !!coreStar && coreStar.qualityScore >= 50
 
   const avgConnections = connectionCount / n
   const isBound = avgConnections >= 2
@@ -604,7 +608,7 @@ export function analyzeConstellation(stars: StarModule[], dirPath: string): Cons
     name: dirPath, stars,
     coherence, mythologyClarity, connectionCount,
     avgBrightness, avgMagnitude, dominantSpectralType,
-    hasCore, coreStar: coreStar.file,
+    hasCore, coreStar: coreStar?.file ?? '',
     isBound, isLoose,
     constellationType, condition,
   }
@@ -706,10 +710,12 @@ export function buildConstellationChartResult(
     totalConnections, isClear: overallClarity >= 60, overallClarity,
   }
 
+  const firstStar = stars[0]
   const strongestPair = stars.reduce((best, s) => {
+    if (!best) return s
     if (s.connectionStrength > best.connectionStrength) return s
     return best
-  }, stars[0])
+  }, firstStar)
   const strongestConnection = strongestPair
     ? `${strongestPair.file}(${strongestPair.connectionStrength})`
     : 'none'
@@ -742,15 +748,15 @@ export function buildConstellationChartResult(
     overallClarity,
     astronomerGrade: classifyAstronomerGrade(overallClarity),
     brightestStar: stars.length > 0
-      ? stars.reduce((a, b) => b.brightness > a.brightness ? b : a, stars[0]).file : 'none',
+      ? stars.reduce((a, b) => b.brightness > (a?.brightness ?? -1) ? b : a, stars[0] as typeof stars[number])?.file ?? 'none' : 'none',
     mostConnected: stars.length > 0
-      ? stars.reduce((a, b) => b.connections.length > a.connections.length ? b : a, stars[0]).file : 'none',
+      ? stars.reduce((a, b) => b.connections.length > (a?.connections.length ?? -1) ? b : a, stars[0] as typeof stars[number])?.file ?? 'none' : 'none',
     mostCoherent: constellations.length > 0
-      ? constellations.reduce((a, b) => b.coherence > a.coherence ? b : a, constellations[0]).name : 'none',
+      ? constellations.reduce((a, b) => b.coherence > (a?.coherence ?? -1) ? b : a, constellations[0] as typeof constellations[number])?.name ?? 'none' : 'none',
     bestMythology: constellations.length > 0
-      ? constellations.reduce((a, b) => b.mythologyClarity > a.mythologyClarity ? b : a, constellations[0]).name : 'none',
+      ? constellations.reduce((a, b) => b.mythologyClarity > (a?.mythologyClarity ?? -1) ? b : a, constellations[0] as typeof constellations[number])?.name ?? 'none' : 'none',
     darkestRegion: constellations.length > 0
-      ? constellations.reduce((a, b) => b.avgBrightness < a.avgBrightness ? b : a, constellations[0]).name : 'none',
+      ? constellations.reduce((a, b) => b.avgBrightness < (a?.avgBrightness ?? 101) ? b : a, constellations[0] as typeof constellations[number])?.name ?? 'none' : 'none',
   }
 
   const recommendations = generateRecommendations(stars, constellations, sky, stats)

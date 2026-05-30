@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { TapestryThreadResult, Thread, ThreadTangle, ThreadSpool, TapestryThreadStats } from './tapestry-thread-helpers.js'
+import type { TapestryThreadResult, Thread, TapestryThreadStats } from './tapestry-thread-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────────
 

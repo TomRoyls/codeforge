@@ -108,8 +108,8 @@ export function extractAnnotations(content: string, filePath: string): Annotatio
 
     regex.lastIndex = 0
 
-    while ((match = regex.exec(line)) !== null) {
-      const matchedType = match[1]!.toUpperCase()
+    while ((match = regex.exec(line ?? '')) !== null) {
+      const matchedType = match[1] ?? ''.toUpperCase()
       const matchedText = match[2]!.trim()
       const metadata = typeMap.get(matchedType)
 
@@ -145,7 +145,7 @@ export function getContext(lines: string[], targetLine: number, padding: number)
 
   const contextLines: string[] = []
   for (let i = start; i <= end; i++) {
-    contextLines.push(lines[i])
+    contextLines.push(lines[i] ?? '')
   }
 
   return contextLines.join('\n')

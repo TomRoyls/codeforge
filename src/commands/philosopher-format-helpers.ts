@@ -25,12 +25,6 @@ function eraColor(e: string): string {
   return chalk.red(e)
 }
 
-function severityColor(s: string): string {
-  if (s === 'heresy') return chalk.red(s)
-  if (s === 'major') return chalk.rgb(255, 100, 0)(s)
-  if (s === 'moderate') return chalk.yellow(s)
-  return chalk.dim(s)
-}
 
 function wisdomColor(w: number): string {
   if (w >= 80) return chalk.green(String(w))

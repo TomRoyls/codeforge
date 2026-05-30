@@ -200,16 +200,13 @@ const hasNamedExport = (c: string) => has(/\bexport\s+(?:const|function|class|in
 const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
 const hasStrictEq = (c: string) => has(/===/, c)
 const hasTryCatch = (c: string) => has(/\btry\s*\{/, c)
-const hasThrow = (c: string) => has(/\bthrow\b/, c)
 const hasOptional = (c: string) => has(/\?\s*:/, c)
 const hasNullishCoalescing = (c: string) => has(/\?\?/, c)
 const hasDefaultParam = (c: string) => has(/=\s*[^>]/, c)
 const hasReadonly = (c: string) => has(/\breadonly\b/, c)
 const hasPrivate = (c: string) => has(/\bprivate\b/, c)
-const hasConditional = (c: string) => has(/\bif\b/, c)
 const hasMapFunction = (c: string) => has(/\b(?:map|filter|reduce|forEach)\b/, c)
 const hasArrowFunction = (c: string) => has(/=>/, c)
-const hasUnionType = (c: string) => has(/\|\s*['"]/, c)
 const hasClass = (c: string) => has(/\bclass\b/, c)
 
 // ─── Measure Functions ─────────────────────────────────────────────

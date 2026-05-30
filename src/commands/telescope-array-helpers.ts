@@ -792,9 +792,11 @@ export function buildTelescopeArrayResult(
   const baselines: BaselinePair[] = []
   for (let i = 0; i < dishes.length; i++) {
     for (let j = i + 1; j < dishes.length; j++) {
-      if (dishes[i].file.split('/').slice(0, -1).join('/') ===
-          dishes[j].file.split('/').slice(0, -1).join('/')) {
-        baselines.push(computeBaseline(dishes[i], dishes[j]))
+      const di = dishes[i]
+      const dj = dishes[j]
+      if (di && dj && (di.file ?? '').split('/').slice(0, -1).join('/') ===
+          (dj.file ?? '').split('/').slice(0, -1).join('/')) {
+        baselines.push(computeBaseline(di, dj))
       }
     }
   }
@@ -867,15 +869,15 @@ export function buildTelescopeArrayResult(
     overallArrayPower: overallPower,
     astronomerGrade: classifyAstronomerGrade(overallPower),
     bestDish: dishes.length > 0
-      ? dishes.reduce((b, d) => d.qualityScore > b.qualityScore ? d : b, dishes[0]).file : 'none',
+      ? dishes.reduce((b, d) => d.qualityScore > b.qualityScore ? d : b, dishes[0] as typeof dishes[number]).file : 'none',
     worstDish: dishes.length > 0
-      ? dishes.reduce((w, d) => d.qualityScore < w.qualityScore ? d : w, dishes[0]).file : 'none',
+      ? dishes.reduce((w, d) => d.qualityScore < w.qualityScore ? d : w, dishes[0] as typeof dishes[number]).file : 'none',
     strongestPair: baselines.length > 0
-      ? baselines.reduce((b, p) => p.correlationQuality > b.correlationQuality ? p : b, baselines[0])
-        .dishA + ' <-> ' + baselines.reduce((b, p) => p.correlationQuality > b.correlationQuality ? p : b, baselines[0]).dishB
+      ? baselines.reduce((b, p) => p.correlationQuality > b.correlationQuality ? p : b, baselines[0] as typeof baselines[number])
+        .dishA + ' <-> ' + baselines.reduce((b, p) => p.correlationQuality > b.correlationQuality ? p : b, baselines[0] as typeof baselines[number]).dishB
       : 'none',
     noisiestDish: dishes.length > 0
-      ? dishes.reduce((n, d) => d.noiseLevel > n.noiseLevel ? d : n, dishes[0]).file : 'none',
+      ? dishes.reduce((n, d) => d.noiseLevel > n.noiseLevel ? d : n, dishes[0] as typeof dishes[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(dishes, configurations, interferometer, stats)

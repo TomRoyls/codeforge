@@ -92,8 +92,6 @@ export function formatVelocityGraph(layers: FossilLayer[]): string {
   const shown = layers.slice(0, 20)
   for (const layer of shown) {
     const eraFn = getEraColor(layer.era)
-    const totalChanges = layer.insertions + layer.deletions
-    const barLen = Math.min(Math.round(totalChanges / 10), 30)
     const bar = chalk.green('+'.repeat(Math.min(layer.insertions / 10, 30))) + chalk.red('-'.repeat(Math.min(layer.deletions / 10, 30)))
     const hash = layer.commitHash.slice(0, 7)
     lines.push(`  ${hash} ${eraFn(layer.era.padEnd(22))} ${bar.slice(0, 40)}`)

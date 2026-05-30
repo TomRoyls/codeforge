@@ -1,13 +1,11 @@
 import chalk from 'chalk'
 
 import type {
-  ClusterHealth,
   HyphaeConnection,
   HyphaeNode,
   MyceliumCluster,
   MyceliumResult,
   MyceliumStats,
-  NetworkHealth,
   NodeType,
   NutrientFlow,
 } from './mycelium-helpers.js'

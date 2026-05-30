@@ -654,7 +654,7 @@ export async function buildAmethystTwilightResult(
 export function generateRecommendations(
   glows: AmethystGlow[],
   skies: AmethystSky[],
-  dusk: AmethystTwilightResult['dusk'],
+  _dusk: AmethystTwilightResult['dusk'],
   stats: AmethystTwilightResult['stats'],
 ): string[] {
   const recs: string[] = []

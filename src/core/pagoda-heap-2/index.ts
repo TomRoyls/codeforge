@@ -54,8 +54,9 @@ export class PagodaHeap2<T> {
   toArray(): T[] {
     const result: T[] = [];
     const nodes: Array<Node<T> | null> = [this.root];
-    while (nodes.length > 0) {
-      const node = nodes.shift()!;
+    let _qi = 0
+    while (_qi < nodes.length) {
+      const node = nodes[_qi++]!;
       if (!node) continue;
       result.push(node.value);
       nodes.push(node.left);

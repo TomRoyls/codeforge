@@ -51,11 +51,14 @@ export class CodePrinter {
   }
 
   getResult(): string {
-    const allLines = [...this.lines]
+    let result: string
     if (this.currentLine.length > 0) {
-      allLines.push(this.currentLine)
+      result = this.lines.length > 0
+        ? this.lines.join('\n') + '\n' + this.currentLine
+        : this.currentLine
+    } else {
+      result = this.lines.join('\n')
     }
-    let result = allLines.join('\n')
     if (this.options.trailingNewline && !this.options.compress) {
       result += '\n'
     }

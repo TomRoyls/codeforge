@@ -2,17 +2,9 @@ import chalk from 'chalk'
 
 import type { TopResult } from './top-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 function rankColor(rank: number): (str: string) => string {
   if (rank === 1) return chalk.hex('#FFD700')

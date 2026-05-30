@@ -53,7 +53,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
         filePath,
         isDefault: false,
         line: lineNum,
-        name: funcMatch[1]!,
+        name: funcMatch[1] ?? '',
         type: 'function',
       })
       continue
@@ -66,7 +66,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
         filePath,
         isDefault: false,
         line: lineNum,
-        name: asyncFuncMatch[1]!,
+        name: asyncFuncMatch[1] ?? '',
         type: 'function',
       })
       continue
@@ -79,7 +79,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
         filePath,
         isDefault: false,
         line: lineNum,
-        name: classMatch[1]!,
+        name: classMatch[1] ?? '',
         type: 'class',
       })
       continue
@@ -92,7 +92,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
         filePath,
         isDefault: false,
         line: lineNum,
-        name: interfaceMatch[1]!,
+        name: interfaceMatch[1] ?? '',
         type: 'interface',
       })
       continue
@@ -105,7 +105,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
         filePath,
         isDefault: false,
         line: lineNum,
-        name: typeMatch[1]!,
+        name: typeMatch[1] ?? '',
         type: 'type',
       })
       continue
@@ -118,7 +118,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
         filePath,
         isDefault: false,
         line: lineNum,
-        name: constMatch[1]!,
+        name: constMatch[1] ?? '',
         type: 'const',
       })
       continue
@@ -147,7 +147,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
           filePath,
           isDefault: true,
           line: lineNum,
-          name: defaultNameMatch[1]!,
+          name: defaultNameMatch[1] ?? '',
           type: 'function',
         })
         continue
@@ -159,7 +159,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
           filePath,
           isDefault: true,
           line: lineNum,
-          name: defaultClassMatch[1]!,
+          name: defaultClassMatch[1] ?? '',
           type: 'class',
         })
         continue
@@ -179,7 +179,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
     // export { name1, name2 } — named re-exports (not from '...')
     const namedExportMatch = trimmed.match(/^export\s+\{([^}]+)\}\s*(?:;)?\s*$/)
     if (namedExportMatch) {
-      const names = namedExportMatch[1]!
+      const names = namedExportMatch[1] ?? ''
       for (const part of names.split(',')) {
         const trimmedPart = part.trim()
         // Handle "name as alias" — take the alias (exported name)
@@ -209,7 +209,7 @@ export function extractExports(content: string, filePath: string): ExportInfo[] 
     // We still extract these but they won't count as "own" exports for unused detection
     const reExportMatch = trimmed.match(/^export\s+\{([^}]+)\}\s+from\s+['"]/)
     if (reExportMatch) {
-      const names = reExportMatch[1]!
+      const names = reExportMatch[1] ?? ''
       for (const part of names.split(',')) {
         const trimmedPart = part.trim()
         if (trimmedPart) {
@@ -256,7 +256,7 @@ export function extractAllImports(content: string): Set<string> {
     // import { name1, name2 } from '...'
     const namedImportMatch = trimmed.match(/^import\s+\{([^}]+)\}\s+from\s+['"]/)
     if (namedImportMatch) {
-      const names = namedImportMatch[1]!
+      const names = namedImportMatch[1] ?? ''
       for (const part of names.split(',')) {
         const trimmedPart = part.trim()
         // Handle "a as b" — track original name 'a'
@@ -271,14 +271,14 @@ export function extractAllImports(content: string): Set<string> {
     // import Name from '...'
     const defaultImportMatch = trimmed.match(/^import\s+(\w+)\s+from\s+['"]/)
     if (defaultImportMatch) {
-      imports.add(defaultImportMatch[1]!)
+      imports.add(defaultImportMatch[1] ?? '')
       continue
     }
 
     // import * as Name from '...'
     const namespaceMatch = trimmed.match(/^import\s+\*\s+as\s+(\w+)\s+from\s+['"]/)
     if (namespaceMatch) {
-      imports.add(namespaceMatch[1]!)
+      imports.add(namespaceMatch[1] ?? '')
       continue
     }
 
@@ -291,7 +291,7 @@ export function extractAllImports(content: string): Set<string> {
     // import Name, { named } from '...'
     const combinedMatch = trimmed.match(/^import\s+(\w+)\s*,\s*\{([^}]+)\}\s+from\s+['"]/)
     if (combinedMatch) {
-      imports.add(combinedMatch[1]!)
+      imports.add(combinedMatch[1] ?? '')
       const names = combinedMatch[2]!
       for (const part of names.split(',')) {
         const trimmedPart = part.trim()

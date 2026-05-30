@@ -569,7 +569,7 @@ export function measurePersisting(content: string): PersistingMeasure {
   const hasPreserved = /\b(readonly|private|protected)\b/.test(content)
   const hasSustainable = /:\s*(string|number|boolean|void|unknown|never)\b/.test(content)
   const hasRenewable = /\b(import|export)\b/.test(content)
-  const hasAdaptable = /\b(function|=>)\b/.test(content)
+  const hasAdaptive = /\b(function|=>)\b/.test(content)
   const hasFlexible = !/\bany\b/.test(content)
   const hasTimeless = /\/\*\*[\s\S]*?\*\//.test(content)
   const hasLasting = /\b(try|catch|if)\b/.test(content)
@@ -587,7 +587,7 @@ export function measurePersisting(content: string): PersistingMeasure {
     hasPreserved,
     hasSustainable,
     hasRenewable,
-    hasAdaptable,
+    hasAdaptive,
     hasFlexible,
     hasTimeless,
     hasLasting,
@@ -618,7 +618,7 @@ export function measurePersisting(content: string): PersistingMeasure {
     hasPreserved,
     hasSustainable,
     hasRenewable,
-    hasAdaptable,
+    hasAdaptive,
     hasFlexible,
     hasTimeless,
     hasLasting,
@@ -882,7 +882,7 @@ export async function buildEmeraldThroneResult(
 export function generateRecommendations(
   decrees: EmeraldDecree[],
   kingdoms: EmeraldKingdom[],
-  empire: EmeraldThroneResult['empire'],
+  _empire: EmeraldThroneResult['empire'],
   stats: EmeraldThroneResult['stats'],
 ): string[] {
   const recs: string[] = []

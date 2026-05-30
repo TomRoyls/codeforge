@@ -362,13 +362,10 @@ export function classifyMaestroGrade(avgHarmony: number): MaestroGrade {
  */
 export function measureInstrument(content: string): InstrumentPart['instrument'] {
   const exports = countExports(content)
-  const imports = countImports(content)
   const functions = countFunctions(content)
   const classes = countClasses(content)
   const types = countTypeAnnotations(content)
-  const comments = countComments(content)
   const jsdoc = countJSDoc(content)
-  const descriptive = countDescriptiveNames(content)
   const loc = countLoc(content)
   const branches = countBranches(content)
 
@@ -402,6 +399,8 @@ export function measureInstrument(content: string): InstrumentPart['instrument']
     : type === 'keyboards' ? 'config'
     : 'entry'
 
+  const comments = countComments(content)
+  const descriptive = countDescriptiveNames(content)
   const pitchAccuracy = Math.min(100, Math.max(0, Math.round(
     (types > 0 ? 30 : 0) +
     (comments > 0 ? 20 : 0) +
@@ -410,6 +409,7 @@ export function measureInstrument(content: string): InstrumentPart['instrument']
   )))
 
   const isTuned = pitchAccuracy >= 60
+  const imports = countImports(content)
   const hasVibrato = imports > 0 && exports > 0
   const isMuted = exports === 0 && loc > 0
 
@@ -505,9 +505,6 @@ export function measureDynamics(content: string): InstrumentPart['dynamicsObj'] 
 export function measureEnsemble(content: string): InstrumentPart['ensemble'] {
   const exports = countExports(content)
   const imports = countImports(content)
-  const functions = countFunctions(content)
-  const loc = countLoc(content)
-  const errors = countErrorHandling(content)
   const types = countTypeAnnotations(content)
   const comments = countComments(content)
   const jsdoc = countJSDoc(content)
@@ -805,6 +802,7 @@ export function buildOrchestraPitResult(
     isInTune, overallHarmony,
   }
 
+  const firstInstrument = instruments[0]
   const stats: OrchestraPitStats = {
     totalFiles: files.length,
     totalSections: sections.length,
@@ -836,16 +834,16 @@ export function buildOrchestraPitResult(
     performanceReadyCount: instruments.filter(i => i.performance.performanceReady).length,
     overallHarmony,
     maestroGrade: classifyMaestroGrade(overallHarmony),
-    bestInstrument: instruments.length > 0
-      ? instruments.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, instruments[0]).file : 'none',
-    worstInstrument: instruments.length > 0
-      ? instruments.reduce((a, b) => b.qualityScore < a.qualityScore ? b : a, instruments[0]).file : 'none',
-    bestTuned: instruments.length > 0
-      ? instruments.reduce((a, b) => b.tuning > a.tuning ? b : a, instruments[0]).file : 'none',
-    bestTimed: instruments.length > 0
-      ? instruments.reduce((a, b) => b.timing > a.timing ? b : a, instruments[0]).file : 'none',
-    bestDynamic: instruments.length > 0
-      ? instruments.reduce((a, b) => b.dynamics > a.dynamics ? b : a, instruments[0]).file : 'none',
+    bestInstrument: instruments.length > 0 && firstInstrument
+      ? instruments.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, firstInstrument).file : 'none',
+    worstInstrument: instruments.length > 0 && firstInstrument
+      ? instruments.reduce((a, b) => b.qualityScore < a.qualityScore ? b : a, firstInstrument).file : 'none',
+    bestTuned: instruments.length > 0 && firstInstrument
+      ? instruments.reduce((a, b) => b.tuning > a.tuning ? b : a, firstInstrument).file : 'none',
+    bestTimed: instruments.length > 0 && firstInstrument
+      ? instruments.reduce((a, b) => b.timing > a.timing ? b : a, firstInstrument).file : 'none',
+    bestDynamic: instruments.length > 0 && firstInstrument
+      ? instruments.reduce((a, b) => b.dynamics > a.dynamics ? b : a, firstInstrument).file : 'none',
   }
 
   const recommendations = generateRecommendations(instruments, sections, symphony, stats)

@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { MosaicTileResult, Tile, TilePattern, GroutAnalysis, MosaicTileStats } from './mosaic-tile-helpers.js'
+import type { MosaicTileResult, Tile, MosaicTileStats } from './mosaic-tile-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────────
 

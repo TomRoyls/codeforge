@@ -882,7 +882,7 @@ export async function buildPlatinumSkylineResult(
 export function generateRecommendations(
   ingots: PlatinumIngot[],
   ridges: PlatinumRidge[],
-  vista: PlatinumSkylineResult['vista'],
+  _vista: PlatinumSkylineResult['vista'],
   stats: PlatinumSkylineResult['stats'],
 ): string[] {
   const recs: string[] = []

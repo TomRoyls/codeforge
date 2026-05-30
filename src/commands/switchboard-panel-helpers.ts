@@ -482,7 +482,6 @@ export function measureOperator(content: string): OperatorMeasure {
  * measureLines(codeString) // { utilization, hasPartyLines, ... }
  */
 export function measureLines(content: string): LinesMeasure {
-  const loc = countLoc(content)
   const functions = countFunctions(content)
   const classes = countClasses(content)
   const exports = countExports(content)
@@ -830,19 +829,19 @@ export function buildSwitchboardPanelResult(
   }
 
   const bestConnected = totalFiles > 0
-    ? lines.reduce((best, l) => l.connectionQuality > best.connectionQuality ? l : best, lines[0]).file
+    ? lines.reduce((best, l) => l.connectionQuality > best.connectionQuality ? l : best, lines[0] as typeof lines[number]).file
     : ''
   const cleanestWiring = totalFiles > 0
-    ? lines.reduce((best, l) => l.wireOrganization > best.wireOrganization ? l : best, lines[0]).file
+    ? lines.reduce((best, l) => l.wireOrganization > best.wireOrganization ? l : best, lines[0] as typeof lines[number]).file
     : ''
   const mostEfficient = totalFiles > 0
-    ? lines.reduce((best, l) => l.operatorEfficiency > best.operatorEfficiency ? l : best, lines[0]).file
+    ? lines.reduce((best, l) => l.operatorEfficiency > best.operatorEfficiency ? l : best, lines[0] as typeof lines[number]).file
     : ''
   const mostUtilized = totalFiles > 0
-    ? lines.reduce((best, l) => l.lineUtilization > best.lineUtilization ? l : best, lines[0]).file
+    ? lines.reduce((best, l) => l.lineUtilization > best.lineUtilization ? l : best, lines[0] as typeof lines[number]).file
     : ''
   const bestOrganized = totalFiles > 0
-    ? lines.reduce((best, l) => l.panelLayout > best.panelLayout ? l : best, lines[0]).file
+    ? lines.reduce((best, l) => l.panelLayout > best.panelLayout ? l : best, lines[0] as typeof lines[number]).file
     : ''
 
   const stats: SwitchboardPanelStats = {

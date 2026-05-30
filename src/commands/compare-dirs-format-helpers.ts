@@ -1,18 +1,9 @@
 import chalk from 'chalk'
 
 import type { DirComparison, FileDiff } from './compare-dirs-helpers.js'
+import { formatBytesCompact as formatBytes, padRight, padLeft } from '../utils/format-utils.js'
 
 // ─── Utility ──────────────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 // ─── Diff formatting ──────────────────────────────────────
 
@@ -174,12 +165,6 @@ function formatSizeDiff(bytes: number): string {
   if (bytes > 0) return chalk.green(`+${bytes}B`)
   if (bytes < 0) return chalk.red(`${bytes}B`)
   return chalk.dim('0B')
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`
 }
 
 // ─── JSON formatting ──────────────────────────────────────

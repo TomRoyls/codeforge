@@ -11,7 +11,7 @@
  * console.log(result.installedHooks) // number of installed hooks
  * ```
  */
-import { existsSync, lstatSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, lstatSync, readFileSync, readlinkSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 
@@ -301,7 +301,7 @@ export function analyzeHook(name: string, hooksDir: string): HookInfo {
 
     if (isSymlink) {
       try {
-        target = lstat.target
+        target = readlinkSync(hookPath)
       } catch {
         target = ''
       }
@@ -380,7 +380,7 @@ export function analyzeHook(name: string, hooksDir: string): HookInfo {
  * @param hook - The HookInfo to analyze
  * @returns Array of detected issues
  */
-export function findHookIssues(hook: HookInfo): HookIssue[] {
+export function findHookIssues(hook: Omit<HookInfo, 'issues' | 'recommendations'>): HookIssue[] {
   const issues: HookIssue[] = []
 
   if (!hook.installed) return issues

@@ -308,6 +308,7 @@ export function extractLandmarks(content: string, filePath: string): Landmark[] 
   const symbolMatches = content.matchAll(/(?:export\s+)?(?:const|function|class|interface|type|enum)\s+(\w+)/g)
   for (const m of symbolMatches) {
     const name = m[1]
+    if (!name) continue
     const type = detectLandmarkType(content, name)
     const visibility = detectVisibility(content, name)
     const documented = isDocumented(content, name)
@@ -447,7 +448,8 @@ export function extractImportSources(content: string): string[] {
   const sources: string[] = []
   const matches = content.matchAll(/import\s+.*?from\s+['"]([^'"]+)['"]/g)
   for (const m of matches) {
-    sources.push(m[1])
+    const source = m[1]
+    if (source !== undefined) sources.push(source)
   }
   return sources
 }
@@ -491,15 +493,18 @@ export function mapTradeRoutes(files: string[], contents: string[]): TradeRoute[
   }
 
   for (let i = 0; i < files.length; i++) {
-    const sources = extractImportSources(contents[i] ?? '')
+    const file = files[i]
+    const content = contents[i] ?? ''
+    if (!file) continue
+    const sources = extractImportSources(content)
     for (const source of sources) {
       if (!source.startsWith('.')) continue
 
-      const resolvedTarget = resolveImport(source, files[i])
+      const resolvedTarget = resolveImport(source, file)
 
       const existingReverse = routes.find(r => {
         const reverseTarget = resolveImport(r.to, r.from)
-        return pathsMatch(reverseTarget, files[i]) && pathsMatch(r.from, resolvedTarget)
+        return pathsMatch(reverseTarget, file) && pathsMatch(r.from, resolvedTarget)
       })
 
       if (existingReverse) {
@@ -508,14 +513,14 @@ export function mapTradeRoutes(files: string[], contents: string[]): TradeRoute[
       }
 
       const existing = routes.find(r =>
-        r.from === files[i] && pathsMatch(resolveImport(r.to, r.from), resolvedTarget),
+        r.from === file && pathsMatch(resolveImport(r.to, r.from), resolvedTarget),
       )
 
       if (existing) {
         existing.volume += 1
       } else {
         routes.push({
-          from: files[i],
+          from: file,
           to: source,
           imports: [source],
           volume: 1,
@@ -530,7 +535,7 @@ export function mapTradeRoutes(files: string[], contents: string[]): TradeRoute[
   // Mark heavily used routes (top 20% by volume)
   if (routes.length > 0) {
     const volumes = routes.map(r => r.volume).sort((a, b) => b - a)
-    const threshold = volumes[Math.max(0, Math.floor(volumes.length * 0.2))]
+    const threshold = volumes[Math.max(0, Math.floor(volumes.length * 0.2))] ?? 0
     for (const route of routes) {
       route.isHeavilyUsed = route.volume >= threshold && threshold > 0
     }
@@ -551,15 +556,18 @@ export function identifyPortsOfEntry(files: string[], contents: string[]): PortO
   const ports: PortOfEntry[] = []
 
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
     const content = contents[i] ?? ''
+    if (!file) continue
     const exportMatches = content.matchAll(/export\s+(?:const|function|class|interface|type|enum)\s+(\w+)/g)
     for (const m of exportMatches) {
       const name = m[1]
+      if (!name) continue
       const type = detectLandmarkType(content, name)
       const documented = isDocumented(content, name)
 
       ports.push({
-        file: files[i],
+        file,
         name,
         type,
         isDocumented: documented,
@@ -669,9 +677,11 @@ export function buildCartographyResult(files: string[], contents: string[], opti
   // Chart regions by directory
   const dirMap = new Map<string, { files: string[], contents: string[] }>()
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].includes('/') ? files[i].substring(0, files[i].lastIndexOf('/')) : '.'
+    const file = files[i]
+    if (!file) continue
+    const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/')) : '.'
     const entry = dirMap.get(dir) ?? { files: [], contents: [] }
-    entry.files.push(files[i])
+    entry.files.push(file)
     entry.contents.push(contents[i] ?? '')
     dirMap.set(dir, entry)
   }
@@ -686,9 +696,11 @@ export function buildCartographyResult(files: string[], contents: string[], opti
   const allHazards: Hazard[] = []
 
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
-    const landmarks = extractLandmarks(content, files[i])
-    const hazards = identifyHazards(content, files[i], landmarks)
+    const landmarks = extractLandmarks(content, file)
+    const hazards = identifyHazards(content, file, landmarks)
     allLandmarks.push(...landmarks)
     allHazards.push(...hazards)
   }

@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'perfect-mirror': best, 'glass-surface': best, 'crystal-clear': best, 'instant-calm': best, 'pristine-ecosystem': best,
     'mountain-lake': best, 'great-lake': best, 'pristine-waters': best, 'lake-guardian': best,
 

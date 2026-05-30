@@ -99,9 +99,13 @@ export function organizeGuideSections(files: string[], contents: string[]): Guid
   const byDir = new Map<string, Array<{ file: string; content: string }>>()
 
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].split('/').slice(0, -1).join('/') || 'root'
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const dir = file.split('/').slice(0, -1).join('/') || 'root'
     if (!byDir.has(dir)) byDir.set(dir, [])
-    byDir.get(dir)!.push({ file: files[i], content: contents[i] })
+    const entry = byDir.get(dir)
+    if (entry) entry.push({ file, content })
   }
 
   for (const [dir, dirFiles] of byDir) {
@@ -144,8 +148,10 @@ export function organizeGuideSections(files: string[], contents: string[]): Guid
   })
 
   for (let i = 1; i < sections.length; i++) {
-    if (sections[i].difficulty !== 'easy') {
-      sections[i].prerequisites.push(sections[0].title)
+    const section = sections[i]
+    const firstSection = sections[0]
+    if (section && firstSection && section.difficulty !== 'easy') {
+      section.prerequisites.push(firstSection.title)
     }
   }
 
@@ -163,9 +169,9 @@ export function identifyAttractions(files: string[], contents: string[]): Attrac
   const attractions: Attraction[] = []
 
   for (let i = 0; i < files.length; i++) {
-    const filePath = files[i]
-    const content = contents[i]
-    const name = filePath.split('/').pop() || filePath
+    const filePath = files[i] ?? ''
+    const content = contents[i] ?? ''
+    const name = filePath.split('/').pop() ?? filePath
     const lines = content.split('\n').length
     const exports = (content.match(/export\s+/g) || []).length
     const hasDocs = /\/\*\*/.test(content)
@@ -255,7 +261,7 @@ export function identifyAttractions(files: string[], contents: string[]): Attrac
  * @example
  * generateTourRoutes(sections, attractions) // TourRoute[]
  */
-export function generateTourRoutes(sections: GuideSection[], attractions: Attraction[]): TourRoute[] {
+export function generateTourRoutes(_sections: GuideSection[], attractions: Attraction[]): TourRoute[] {
   const routes: TourRoute[] = []
 
   const mustSee = attractions.filter(a => a.type === 'must-see')
@@ -354,9 +360,13 @@ export function detectConstructionZones(files: string[], contents: string[]): Co
   const byDir = new Map<string, Array<{ file: string; content: string }>>()
 
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].split('/').slice(0, -1).join('/') || 'root'
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const dir = file.split('/').slice(0, -1).join('/') || 'root'
     if (!byDir.has(dir)) byDir.set(dir, [])
-    byDir.get(dir)!.push({ file: files[i], content: contents[i] })
+    const entry = byDir.get(dir)
+    if (entry) entry.push({ file, content })
   }
 
   for (const [dir, dirFiles] of byDir) {

@@ -9,7 +9,6 @@ const INTERFACE_REGEX = /\binterface\s+\w+/g
 const TYPE_REGEX = /\btype\s+\w+/g
 const ENUM_REGEX = /\benum\s+\w+/g
 const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
-const BLOCK_COMMENT_REGEX = /\/\*[\s\S]*?\*\//g
 const ASYNC_REGEX = /\basync\s+/g
 const TRY_CATCH_REGEX = /\btry\s*\{/g
 const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
@@ -326,7 +325,6 @@ export function countReexports(content: string): number {
 /** @example measureElevation(content) returns ElevationMeasure */
 export function measureElevation(content: string): ElevationMeasure {
   const exportCount = countExports(content)
-  const importCount = countImportKeywords(content)
   const classCount = countClasses(content)
   const interfaceCount = countInterfaces(content)
   const typeCount = countTypeAliases(content)
@@ -399,7 +397,6 @@ export function measureLayering(content: string): LayeringMeasure {
   const anyCount = countAny(content)
   const deepNested = countDeepNested(content)
   const generics = countGenerics(content)
-  const accessMods = countAccessModifiers(content)
 
   const unconformityCount = anyCount
   const faultCount = deepNested
@@ -518,7 +515,6 @@ export function measureErosion(content: string): ErosionMeasure {
 /** @example measureCliff(content) returns CliffMeasure */
 export function measureCliff(content: string): CliffMeasure {
   const exportCount = countExports(content)
-  const importCount = countImportKeywords(content)
   const interfaceCount = countInterfaces(content)
   const typeCount = countTypeAliases(content)
   const classCount = countClasses(content)
@@ -652,10 +648,6 @@ export function measureHealth(content: string): HealthMeasure {
   const classCount = countClasses(content)
   const interfaceCount = countInterfaces(content)
   const typeCount = countTypeAliases(content)
-  const functionCount = countFunctions(content)
-  const arrowCount = countArrows(content)
-  const asyncCount = countAsync(content)
-  const tryCatch = countTryCatch(content)
   const anyCount = countAny(content)
   const consoleCount = countConsole(content)
   const commentedCode = countCommentedCode(content)

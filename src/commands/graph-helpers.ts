@@ -57,7 +57,7 @@ export function extractDependencies(
   const esmFromRegex = /import\s+(?:type\s+)?(?:[\w{},\s*]+\s+from\s+)?['"]([^'"]+)['"]/g
   let match: RegExpExecArray | null
   while ((match = esmFromRegex.exec(content)) !== null) {
-    const specifier = match[1]!
+    const specifier = match[1] ?? ''
     if (specifier.startsWith('.')) {
       const resolved = resolveImportPath(dir, specifier)
       if (resolved && !seen.has(resolved)) {
@@ -71,7 +71,7 @@ export function extractDependencies(
   // ── ESM: import '...' (side-effect) ──
   const esmSideEffectRegex = /import\s+['"]([^'"]+)['"]/g
   while ((match = esmSideEffectRegex.exec(content)) !== null) {
-    const specifier = match[1]!
+    const specifier = match[1] ?? ''
     if (specifier.startsWith('.')) {
       const resolved = resolveImportPath(dir, specifier)
       if (resolved && !seen.has(resolved)) {
@@ -85,7 +85,7 @@ export function extractDependencies(
   // ── CJS: require('...') ──
   const cjsRegex = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g
   while ((match = cjsRegex.exec(content)) !== null) {
-    const specifier = match[1]!
+    const specifier = match[1] ?? ''
     if (specifier.startsWith('.')) {
       const resolved = resolveImportPath(dir, specifier)
       if (resolved && !seen.has(resolved)) {
@@ -99,7 +99,7 @@ export function extractDependencies(
   // ── Dynamic import: import('...') ──
   const dynamicImportRegex = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g
   while ((match = dynamicImportRegex.exec(content)) !== null) {
-    const specifier = match[1]!
+    const specifier = match[1] ?? ''
     if (specifier.startsWith('.')) {
       const resolved = resolveImportPath(dir, specifier)
       if (resolved && !seen.has(resolved)) {
@@ -113,7 +113,7 @@ export function extractDependencies(
   // ── Re-export: export ... from '...' ──
   const reExportRegex = /export\s+(?:type\s+)?(?:[\w{},\s*]+\s+)?from\s+['"]([^'"]+)['"]/g
   while ((match = reExportRegex.exec(content)) !== null) {
-    const specifier = match[1]!
+    const specifier = match[1] ?? ''
     if (specifier.startsWith('.')) {
       const resolved = resolveImportPath(dir, specifier)
       if (resolved && !seen.has(resolved)) {
@@ -243,8 +243,10 @@ export async function buildDependencyGraph(
   const queue: Array<{ path: string; depth: number }> = [{ depth: 0, path: rootPath }]
   visited.add(rootPath)
 
-  while (queue.length > 0) {
-    const item = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const item = queue[_qi]!
+    _qi++
     const { depth, path: currentPath } = item
 
     const relativePath = files.get(currentPath) ?? currentPath
@@ -321,8 +323,10 @@ export function computeNodeDepths(
     rootNode.depth = 0
   }
 
-  while (queue.length > 0) {
-    const item = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const item = queue[_qi]!
+    _qi++
     const { depth, path: currentPath } = item
     const node = updated.get(currentPath)
     if (!node) continue

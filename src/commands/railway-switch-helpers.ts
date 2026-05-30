@@ -202,7 +202,6 @@ const DEFAULT_RE = /\bdefault\s*:/g
 const FOR_RE = /\bfor\s*\(/g
 const WHILE_RE = /\bwhile\s*\(/g
 const DO_RE = /\bdo\s*\{/g
-const FOREACH_RE = /\.forEach\s*\(/g
 const MAP_RE = /\.map\s*\(/g
 const FILTER_RE = /\.filter\s*\(/g
 const REDUCE_RE = /\.reduce\s*\(/g
@@ -212,7 +211,6 @@ const FINALLY_RE = /\bfinally\s*\{/g
 const THROW_RE = /\bthrow\b/g
 const ERROR_RE = /\bError\b/g
 const ASYNC_RE = /\basync\b/g
-const AWAIT_RE = /\bawait\b/g
 const PROMISE_RE = /\bPromise\b/g
 const CONSOLE_RE = /\bconsole\.\w+/g
 const DEBUGGER_RE = /\bdebugger\b/g
@@ -225,8 +223,6 @@ const TYPE_RE = /\btype\s+\w+\s*=/g
 const EXPORT_RE = /\bexport\b/g
 const IMPORT_RE = /\bimport\b/g
 const RETURN_RE = /\breturn\b/g
-const BREAK_RE = /\bbreak\b/g
-const CONTINUE_RE = /\bcontinue\b/g
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
 const COMMENT_RE = /\/\/.*$/gm
 const DEAD_END_RE = /\breturn\s*;?\s*\}(?:\s*\})*/g
@@ -241,11 +237,9 @@ const NESTED_IF_RE = /\bif\s*\([^)]*\)\s*\{[^}]*\bif\s*\(/g
  */
 export function measureTrack(content: string): TrackMeasure {
   const ifs = (content.match(IF_RE) ?? []).length
-  const elseIfs = (content.match(ELSE_IF_RE) ?? []).length
   const elses = (content.match(ELSE_RE) ?? []).length
   const ternaries = (content.match(TERNARY_RE) ?? []).length
   const switches = (content.match(SWITCH_RE) ?? []).length
-  const cases = (content.match(CASE_RE) ?? []).length
   const defaults = (content.match(DEFAULT_RE) ?? []).length
   const fors = (content.match(FOR_RE) ?? []).length
   const whiles = (content.match(WHILE_RE) ?? []).length
@@ -253,8 +247,6 @@ export function measureTrack(content: string): TrackMeasure {
   const nestedIfs = (content.match(NESTED_IF_RE) ?? []).length
   const deadEnds = (content.match(DEAD_END_RE) ?? []).length
   const returns = (content.match(RETURN_RE) ?? []).length
-  const breaks = (content.match(BREAK_RE) ?? []).length
-  const continues = (content.match(CONTINUE_RE) ?? []).length
   const functions = (content.match(FUNCTION_RE) ?? []).length
   const arrows = (content.match(ARROW_RE) ?? []).length
   const classes = (content.match(CLASS_RE) ?? []).length
@@ -381,7 +373,6 @@ export function measureSignal(content: string): SignalMeasure {
   const interfaces = (content.match(INTERFACE_RE) ?? []).length
   const exports = (content.match(EXPORT_RE) ?? []).length
   const ternaries = (content.match(TERNARY_RE) ?? []).length
-  const returns = (content.match(RETURN_RE) ?? []).length
   const functions = (content.match(FUNCTION_RE) ?? []).length
   const arrows = (content.match(ARROW_RE) ?? []).length
   const totalFunctions = functions + arrows
@@ -449,7 +440,6 @@ export function measureTimetable(content: string): TimetableMeasure {
   const functions = (content.match(FUNCTION_RE) ?? []).length
   const arrows = (content.match(ARROW_RE) ?? []).length
   const asyncs = (content.match(ASYNC_RE) ?? []).length
-  const awaits = (content.match(AWAIT_RE) ?? []).length
   const promises = (content.match(PROMISE_RE) ?? []).length
   const returns = (content.match(RETURN_RE) ?? []).length
   const types = (content.match(TYPE_RE) ?? []).length
@@ -734,8 +724,8 @@ export function analyzeRailwayDivision(segments: RailwaySegment[], dirPath: stri
  * generateRecommendations(segments, divisions, network, stats) // string[]
  */
 export function generateRecommendations(
-  segments: RailwaySegment[],
-  divisions: RailwayDivision[],
+  _segments: RailwaySegment[],
+  _divisions: RailwayDivision[],
   network: RailwaySwitchResult['network'],
   stats: RailwaySwitchStats,
 ): string[] {
@@ -801,7 +791,7 @@ export function generateRecommendations(
 export function buildRailwaySwitchResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): RailwaySwitchResult {
   const segments = files.map((file, i) => analyzeRailwaySegment(contents[i] ?? '', file))
 

@@ -603,7 +603,8 @@ export function analyzeMillComplex(sails: WindmillSail[], dirPath: string): Mill
     const count = typeMap.get(sa.millType) ?? 0
     typeMap.set(sa.millType, count + 1)
   }
-  const dominantMillType = Array.from(typeMap.entries()).sort((a, b) => b[1] - a[1])[0][0]
+  const sortedTypes = Array.from(typeMap.entries()).sort((a, b) => b[1] - a[1])
+  const dominantMillType = sortedTypes[0]?.[0] ?? 'standard'
 
   const operationalCount = sails.filter(sa => sa.condition === 'fully-operational' || sa.condition === 'operational').length
   const idleCount = sails.filter(sa => sa.condition === 'idle' || sa.condition === 'deteriorating').length
@@ -759,13 +760,13 @@ export function buildWindmillSailResult(
     overallEfficiency,
     millwrightGrade: classifyMillwrightGrade(overallEff),
     mostEfficient: sails.length > 0
-      ? sails.reduce((b, sa) => sa.sailEfficiency > b.sailEfficiency ? sa : b, sails[0]).file : 'none',
+      ? sails.reduce((b, sa) => sa.sailEfficiency > b.sailEfficiency ? sa : b, sails[0] as WindmillSail).file : 'none',
     leastEfficient: sails.length > 0
-      ? sails.reduce((b, sa) => sa.sailEfficiency < b.sailEfficiency ? sa : b, sails[0]).file : 'none',
+      ? sails.reduce((b, sa) => sa.sailEfficiency < b.sailEfficiency ? sa : b, sails[0] as WindmillSail).file : 'none',
     bestGrinding: sails.length > 0
-      ? sails.reduce((b, sa) => sa.grindingQuality > b.grindingQuality ? sa : b, sails[0]).file : 'none',
+      ? sails.reduce((b, sa) => sa.grindingQuality > b.grindingQuality ? sa : b, sails[0] as WindmillSail).file : 'none',
     mostStable: sails.length > 0
-      ? sails.reduce((b, sa) => sa.structuralStability > b.structuralStability ? sa : b, sails[0]).file : 'none',
+      ? sails.reduce((b, sa) => sa.structuralStability > b.structuralStability ? sa : b, sails[0] as WindmillSail).file : 'none',
   }
 
   const recommendations = generateRecommendations(sails, complexes, windFarm, stats)

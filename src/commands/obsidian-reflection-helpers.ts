@@ -656,7 +656,7 @@ export async function buildObsidianMirrorResult(
 export function generateRecommendations(
   shards: ObsidianShard[],
   caverns: ObsidianCavern[],
-  abyss: ObsidianMirrorResult['abyss'],
+  _abyss: ObsidianMirrorResult['abyss'],
   stats: ObsidianMirrorResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { BeaconSignal, CoastLine, LighthouseBeamResult } from './lighthouse-beam-helpers.js'
+import type { BeaconSignal, LighthouseBeamResult } from './lighthouse-beam-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

@@ -1,14 +1,10 @@
 import chalk from 'chalk'
 
+import { formatBytes } from '../utils/format-utils.js'
+
 import { computeAverages, type CodebaseMetrics } from './metrics-helpers.js'
 
 // ─── Helpers ──────────────────────────────────────────────
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
 
 function makeBar(ratio: number, width = 20): string {
   const filled = Math.round(ratio * width)

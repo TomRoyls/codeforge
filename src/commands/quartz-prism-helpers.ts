@@ -656,7 +656,7 @@ export async function buildQuartzPrismResult(
 export function generateRecommendations(
   facets: QuartzFacet[],
   geodes: QuartzGeode[],
-  spectrum: QuartzPrismResult['spectrum'],
+  _spectrum: QuartzPrismResult['spectrum'],
   stats: QuartzPrismResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -878,7 +878,7 @@ export async function buildLightningAnvilResult(
 export function generateRecommendations(
   bolts: LightningBolt[],
   forges: ThunderForge[],
-  storm: LightningAnvilResult['storm'],
+  _storm: LightningAnvilResult['storm'],
   stats: LightningAnvilResult['stats'],
 ): string[] {
   const recs: string[] = []

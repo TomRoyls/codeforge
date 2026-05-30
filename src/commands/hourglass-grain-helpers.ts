@@ -510,7 +510,8 @@ function maxFunctionLength(content: string): number {
   let maxLen = 0
 
   for (let i = 0; i < lines.length; i++) {
-    if (/function\s+\w+|(?:const|let)\s+\w+\s*=\s*(?:\([^)]*\)|[^=])\s*=>/.test(lines[i])) {
+    const lineText = lines[i]
+    if (lineText !== undefined && /function\s+\w+|(?:const|let)\s+\w+\s*=\s*(?:\([^)]*\)|[^=])\s*=>/.test(lineText)) {
       funcStarts.push(i)
     }
   }
@@ -521,6 +522,7 @@ function maxFunctionLength(content: string): number {
     let len = 0
     for (let i = start; i < lines.length; i++) {
       const line = lines[i]
+      if (line === undefined) continue
       depth += (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length
       if (depth > 0) started = true
       if (started) len++
@@ -634,9 +636,9 @@ export function analyzeSandLayer(grains: SandGrain[], dirPath: string): SandLaye
  * generateRecommendations(grains, layers, hg, stats) // string[]
  */
 export function generateRecommendations(
-  grains: SandGrain[],
+  _grains: SandGrain[],
   layers: SandLayer[],
-  hourglass: HourglassStructure,
+  _hourglass: HourglassStructure,
   stats: HourglassGrainStats,
 ): string[] {
   const recs: string[] = []
@@ -798,15 +800,15 @@ export function buildHourglassGrainResult(
     overallFlowHealth: flowHealth,
     timekeeperGrade: classifyTimekeeperGrade(flowHealth),
     bestFlow: grains.length > 0
-      ? grains.reduce((b, g) => g.flowRate > b.flowRate ? g : b, grains[0]).file : 'none',
+      ? grains.reduce((b, g) => g.flowRate > b.flowRate ? g : b, grains[0] as typeof grains[number]).file : 'none',
     worstFlow: grains.length > 0
-      ? grains.reduce((w, g) => g.flowRate < w.flowRate ? g : w, grains[0]).file : 'none',
+      ? grains.reduce((w, g) => g.flowRate < w.flowRate ? g : w, grains[0] as typeof grains[number]).file : 'none',
     finestGrain: grains.length > 0
-      ? grains.reduce((f, g) => g.grainSize > f.grainSize ? g : f, grains[0]).file : 'none',
+      ? grains.reduce((f, g) => g.grainSize > f.grainSize ? g : f, grains[0] as typeof grains[number]).file : 'none',
     coarsestGrain: grains.length > 0
-      ? grains.reduce((c, g) => g.grainSize < c.grainSize ? g : c, grains[0]).file : 'none',
+      ? grains.reduce((c, g) => g.grainSize < c.grainSize ? g : c, grains[0] as typeof grains[number]).file : 'none',
     biggestBottleneck: grains.length > 0
-      ? grains.reduce((b, g) => g.neck.width < b.neck.width ? g : b, grains[0]).file : 'none',
+      ? grains.reduce((b, g) => g.neck.width < b.neck.width ? g : b, grains[0] as typeof grains[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(grains, layers, hourglass, stats)

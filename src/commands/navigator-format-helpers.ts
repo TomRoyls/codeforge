@@ -1,7 +1,6 @@
 import chalk from 'chalk'
 
 import type {
-  NavigationMap,
   NavigationNode,
   NavigatorResult,
   NavigatorStats,

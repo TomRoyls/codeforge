@@ -64,6 +64,7 @@ export function findAsyncFunctions(content: string, file: string): AsyncPattern[
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     const asyncFuncMatch = line.match(/(?:export\s+)?(?:async\s+)?function\s*\*?\s*(\w+)/)
@@ -102,6 +103,7 @@ export function findPromises(content: string, file: string): AsyncPattern[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     if (/new\s+Promise|Promise\.(?:all|race|allSettled|any|resolve|reject)/.test(line)) {
@@ -136,6 +138,7 @@ export function findCallbacks(content: string, file: string): AsyncPattern[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     if (cbMethods.test(line) && /(?:function\s*\(|=>)/.test(line)) {
@@ -170,6 +173,7 @@ export function findEventHandlers(content: string, file: string): AsyncPattern[]
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     if (/\.on\s*\(|\.addEventListener\s*\(|\.once\s*\(|\.prependEventListener\s*\(/.test(line)) {
@@ -203,6 +207,7 @@ export function findTimers(content: string, file: string): AsyncPattern[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     if (/\b(?:setTimeout|setInterval|setImmediate|process\.nextTick)\s*\(/.test(line)) {
@@ -236,6 +241,7 @@ export function findGenerators(content: string, file: string): AsyncPattern[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     if (/function\s*\*/.test(line) || /yield\s/.test(line)) {
@@ -269,6 +275,7 @@ export function detectUnhandledPromises(content: string, file: string): AsyncAnt
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     if (/\bfetch\s*\(|new\s+Promise|Promise\.(?:all|race|allSettled|any)/.test(line)) {
@@ -303,6 +310,7 @@ export function detectCallbackHell(content: string, file: string): AsyncAntiPatt
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     const nesting = computeNesting(line)
@@ -336,6 +344,7 @@ export function detectNestedPromises(content: string, file: string): AsyncAntiPa
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     const thenCount = (line.match(/\.then\s*\(/g) || []).length
@@ -371,6 +380,7 @@ export function detectSequentialParallelizable(content: string, file: string): A
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     if (/^\s*await\s/.test(line) || /\bawait\s+\w+\s*\(/.test(line)) {
@@ -411,6 +421,7 @@ export function detectFloatingPromises(content: string, file: string): AsyncAnti
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
     if (/=\s*(?:await\s+)?(?:new\s+Promise|fetch\s*\(|Promise\.)/.test(line)) {
@@ -451,6 +462,7 @@ export function detectSyncInAsync(content: string, file: string): AsyncAntiPatte
 
     for (let i = 0; i < bodyLines.length; i++) {
       const line = bodyLines[i]
+      if (!line) continue
       if (/^\s*(?:\/\/|\/\*|\*)/.test(line)) continue
 
       if (syncMethods.test(line)) {
@@ -602,11 +614,12 @@ function extractBody(lines: string[], startLine: number): string {
   const bodyLines: string[] = []
 
   for (let i = startLine; i < lines.length; i++) {
-    for (const ch of lines[i]) {
+    const currentLine = lines[i] ?? ''
+    for (const ch of currentLine) {
       if (ch === '{') { depth++; started = true }
       if (ch === '}') depth--
     }
-    bodyLines.push(lines[i])
+    bodyLines.push(currentLine)
     if (started && depth <= 0) break
   }
 
@@ -638,7 +651,7 @@ function findAsyncFunctionRanges(content: string): FuncRange[] {
   let offset = 0
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     if (/async\s+(?:function|(\w+)\s*=\s*(?:async\s+)?)/.test(line) || /async\s+function\s/.test(line)) {
       const funcStart = offset
       let depth = 0
@@ -646,7 +659,8 @@ function findAsyncFunctionRanges(content: string): FuncRange[] {
       let funcEnd = content.length
 
       for (let j = i; j < lines.length; j++) {
-        for (const ch of lines[j]) {
+        const innerLine = lines[j] ?? ''
+        for (const ch of innerLine) {
           if (ch === '{') { depth++; started = true }
           if (ch === '}') depth--
         }

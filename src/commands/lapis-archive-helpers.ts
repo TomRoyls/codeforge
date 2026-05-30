@@ -650,7 +650,7 @@ export async function buildLapisArchiveResult(
 export function generateRecommendations(
   tablets: LapisTablet[],
   collections: LapisCollection[],
-  library: LapisArchiveResult['library'],
+  _library: LapisArchiveResult['library'],
   stats: LapisArchiveResult['stats'],
 ): string[] {
   const recs: string[] = []

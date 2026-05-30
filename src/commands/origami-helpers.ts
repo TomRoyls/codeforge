@@ -91,7 +91,6 @@ export interface OrigamiOptions {
 
 const OPEN_BRACES = /[{(]/g
 const CLOSE_BRACES = /[})]/g
-const KEYWORD_PATTERN = /\b(if|else|for|while|switch|try|catch|finally|class|function|=>)\b/g
 
 /**
  * Detect fold type from a line of code.
@@ -157,7 +156,7 @@ export function hasArrowFunction(content: string): boolean {
  * @example
  * extractFolds('if (x) {\n  foo()\n}', 'a.ts') // => [Fold]
  */
-export function extractFolds(content: string, filePath: string): Fold[] {
+export function extractFolds(content: string, _filePath: string): Fold[] {
   const folds: Fold[] = []
 
   if (content.length === 0) return folds
@@ -168,10 +167,10 @@ export function extractFolds(content: string, filePath: string): Fold[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const balance = countBraceBalance(line)
+    const balance = countBraceBalance(line ?? '')
 
     if (balance > 0) {
-      const foldType = detectFoldType(line, depth)
+      const foldType = detectFoldType(line ?? '', depth)
       for (let b = 0; b < balance; b++) {
         depthStack.push({ line: i + 1, type: foldType, openBraces: depth })
       }
@@ -179,10 +178,11 @@ export function extractFolds(content: string, filePath: string): Fold[] {
     }
 
     if (balance < 0) {
-      const closing = Math.abs(balance)
-      for (let c = 0; c < closing && depthStack.length > 0; c++) {
-        const entry = depthStack.pop()!
-        const foldLineCount = i + 1 - entry.line
+       const closing = Math.abs(balance)
+       for (let c = 0; c < closing && depthStack.length > 0; c++) {
+         const entry = depthStack.pop()
+         if (!entry) continue
+         const foldLineCount = i + 1 - entry.line
         const fold: Fold = {
           type: entry.type,
           depth: entry.openBraces + 1,
@@ -600,16 +600,16 @@ export function generateOrigamiRecommendations(
  * @example
  * buildOrigamiResult(['a.ts'], ['code'], {}) // => OrigamiResult
  */
-export function buildOrigamiResult(files: string[], contents: string[], options: OrigamiOptions): OrigamiResult {
+export function buildOrigamiResult(files: string[], contents: string[], _options: OrigamiOptions): OrigamiResult {
   const allFolds: Fold[] = []
   const scores: FoldScore[] = []
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
     const content = contents[i] ?? ''
-    const folds = extractFolds(content, file)
+    const folds = extractFolds(content, file ?? '')
     allFolds.push(...folds)
-    scores.push(scoreFile(folds, content, file))
+    scores.push(scoreFile(folds, content, file ?? ''))
   }
 
   const patterns = identifyAllPatterns(scores)

@@ -783,22 +783,22 @@ export function buildStormPetrelResult(
   }
 
   const bestFlight = totalFiles > 0
-    ? flights.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), flights[0]).file
+    ? flights.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), flights[0] as typeof flights[number]).file
     : ''
   const bestStormRider = totalFiles > 0
-    ? flights.reduce((best, f) => (f.stormRiding > best.stormRiding ? f : best), flights[0]).file
+    ? flights.reduce((best, f) => (f.stormRiding > best.stormRiding ? f : best), flights[0] as typeof flights[number]).file
     : ''
   const bestNavigator = totalFiles > 0
-    ? flights.reduce((best, f) => (f.windNavigation > best.windNavigation ? f : best), flights[0]).file
+    ? flights.reduce((best, f) => (f.windNavigation > best.windNavigation ? f : best), flights[0] as typeof flights[number]).file
     : ''
   const deepest = totalFiles > 0
-    ? flights.reduce((best, f) => (f.oceanResilience > best.oceanResilience ? f : best), flights[0]).file
+    ? flights.reduce((best, f) => (f.oceanResilience > best.oceanResilience ? f : best), flights[0] as typeof flights[number]).file
     : ''
   const mostEnduring = totalFiles > 0
-    ? flights.reduce((best, f) => (f.flightEndurance > best.flightEndurance ? f : best), flights[0]).file
+    ? flights.reduce((best, f) => (f.flightEndurance > best.flightEndurance ? f : best), flights[0] as typeof flights[number]).file
     : ''
   const mostCoordinated = totalFiles > 0
-    ? flights.reduce((best, f) => (f.flockCoordination > best.flockCoordination ? f : best), flights[0]).file
+    ? flights.reduce((best, f) => (f.flockCoordination > best.flockCoordination ? f : best), flights[0] as typeof flights[number]).file
     : ''
 
   const stats: StormPetrelStats = {

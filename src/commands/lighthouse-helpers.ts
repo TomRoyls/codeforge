@@ -409,7 +409,7 @@ export function runCorrectnessAudits(files: string[], contents: string[]): Audit
     for (const match of importMatches) {
       const named = match[1]
       const def = match[2]
-      const imports = named ? named.split(',').map((s) => s.trim().split(/\s+as\s+/).pop()!.trim()) : def ? [def] : []
+      const imports = named ? named.split(',').map((s) => s.trim().split(/\s+as\s+/).at(-1) ?? ''.trim()) : def ? [def] : []
       for (const imp of imports) {
         if (imp && !new RegExp(`\\b${imp}\\b`, 'g').test(content.replace(match[0], ''))) {
           if (!unusedImportFiles.includes(file)) unusedImportFiles.push(file)
@@ -620,7 +620,7 @@ export function detectDangerZones(files: string[], contents: string[]): DangerZo
       }
 
       const oneLetterVar = line.match(/(?:const|let|var)\s+([a-z])\s*[=:]/)
-      if (oneLetterVar && !['i', 'j', 'k', 'x', 'y', 'e', '_'].includes(oneLetterVar[1]!)) {
+      if (oneLetterVar && !['i', 'j', 'k', 'x', 'y', 'e', '_'].includes(oneLetterVar[1] ?? '')) {
         zones.push({ file, line: lineIdx + 1, type: 'fog', severity: 'info', message: `Single-letter variable '${oneLetterVar[1]}'`, fix: 'Use a descriptive variable name' })
       }
 

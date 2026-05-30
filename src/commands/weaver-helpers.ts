@@ -124,7 +124,7 @@ export function extractThreads(files: string[], contents: string[]): Thread[] {
 
       const reExport = trimmed.match(/^export\s+(?:\{[^}]*\}|\*)\s+from\s+['"]([^'"]+)['"]/)
       if (reExport) {
-        const specifier = resolveImport(reExport[1]!, file, files)
+        const specifier = resolveImport(reExport[1] ?? '', file, files)
         if (specifier) {
           threads.push({
             from: file,
@@ -139,7 +139,7 @@ export function extractThreads(files: string[], contents: string[]): Thread[] {
 
       const dynamicImports = [...trimmed.matchAll(/import\(['"]([^'"]+)['"]\)/g)]
       for (const di of dynamicImports) {
-        const specifier = resolveImport(di[1]!, file, files)
+        const specifier = resolveImport(di[1] ?? '', file, files)
         if (specifier) {
           threads.push({
             from: file,

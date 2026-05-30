@@ -292,8 +292,6 @@ const hasUnionType = (c: string) => has(/\|\s*['"]/, c)
 const hasConditional = (c: string) => has(/\bif\b/, c)
 const hasTernary = (c: string) => has(/\?[^?]*:/, c)
 const hasMapFunction = (c: string) => has(/\b(?:map|filter|reduce|forEach)\b/, c)
-const hasConstantPatterns = (c: string) => has(/\b(?:const|readonly|UPPER_CASE|[A-Z_]{3,})\b/, c)
-const hasFunctionDeclaration = (c: string) => has(/\bfunction\b/, c)
 const hasArrowFunction = (c: string) => has(/=>/, c)
 
 // ─── Measure Functions ─────────────────────────────────────────────
@@ -822,7 +820,6 @@ export async function buildStormGardenResult(
     ? Math.round(blooms.reduce((s, b) => s + b.stormAdaptation, 0) / blooms.length) : 0
   const avgRootTenacity = blooms.length > 0
     ? Math.round(blooms.reduce((s, b) => s + b.rootTenacity, 0) / blooms.length) : 0
-  const avgBloomRecovery = blooms.length > 0
     ? Math.round(blooms.reduce((s, b) => s + b.bloomRecovery, 0) / blooms.length) : 0
 
   const bestBloom = blooms.length > 0

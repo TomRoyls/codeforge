@@ -73,7 +73,7 @@ export interface TelescopeResult {
  */
 export function classifyBody(
   file: string,
-  content: string,
+  _content: string,
   imports: number,
   exportedTo: number,
   mass: number,
@@ -165,8 +165,10 @@ export function computeDistance(
   const visited = new Set<string>()
   const queue: Array<{ f: string; d: number }> = entryPoints.map((ep) => ({ f: ep, d: 0 }))
 
-  while (queue.length > 0) {
-    const { f, d } = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const { f, d } = queue[_qi]!
+    _qi++
     if (visited.has(f)) continue
     visited.add(f)
 
@@ -243,12 +245,13 @@ export function buildImportGraph(files: string[], contents: string[]): Map<strin
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
     const imports: string[] = []
 
     const importMatches = content.matchAll(/import\s+.*?from\s+['"](\.\/[^'"]+)['"]/g)
     for (const m of importMatches) {
-      const imported = m[1]
+      const imported = m[1] ?? ''
       const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/')) : ''
       const base = imported.replace(/^\.\//, '')
       const resolved = dir ? dir + '/' + base : base
@@ -280,7 +283,7 @@ export function findEntryPoints(files: string[]): string[] {
     }
   }
   if (entries.length === 0 && files.length > 0) {
-    entries.push(files[0])
+    entries.push(files[0] ?? '')
   }
   return entries
 }
@@ -297,8 +300,10 @@ export function computeObservableUniverse(entryPoints: string[], importGraph: Ma
   const reachable = new Set<string>()
   const queue = [...entryPoints]
 
-  while (queue.length > 0) {
-    const f = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const f = queue[_qi]!
+    _qi++
     if (reachable.has(f)) continue
     reachable.add(f)
 
@@ -339,12 +344,13 @@ export function countReverseCoupling(files: string[], contents: string[]): Map<s
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
     const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/')) : ''
 
     const importMatches = content.matchAll(/import\s+.*?from\s+['"](\.\/[^'"]+)['"]/g)
     for (const m of importMatches) {
-      const base = m[1].replace(/^\.\//, '')
+      const base = (m[1] ?? '').replace(/^\.\//, '')
       const resolved = dir ? dir + '/' + base : base
       const candidates = [resolved, resolved + '.ts', resolved + '.js', resolved + '.tsx', resolved + '.jsx']
       const matched = candidates.find((c) => fileSet.has(c))
@@ -442,7 +448,7 @@ export function observeAtZoom(
         observations.push({
           description: `${files[i]} has ${fns.length} functions — dense functional area`,
           significance: fns.length > 20 ? 'major' : 'notable',
-          body: files[i],
+          body: files[i] ?? '',
           detail: `Function count: ${fns.length}`,
         })
       }
@@ -538,7 +544,7 @@ export function generateRecommendations(
  * @example
  * buildTelescopeResult(['a.ts'], ['code'], {})
  */
-export function buildTelescopeResult(files: string[], contents: string[], options: Record<string, unknown>): TelescopeResult {
+export function buildTelescopeResult(files: string[], contents: string[], _options: Record<string, unknown>): TelescopeResult {
   if (files.length === 0) {
     const emptyStats: TelescopeStats = {
       totalBodies: 0, starCount: 0, blackholeCount: 0, nebulaCount: 0,

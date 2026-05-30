@@ -883,7 +883,7 @@ export async function buildPlatinumHorizonResult(
 export function generateRecommendations(
   rays: PlatinumRay[],
   towers: PlatinumTower[],
-  skyline: PlatinumHorizonResult['skyline'],
+  _skyline: PlatinumHorizonResult['skyline'],
   stats: PlatinumHorizonStats,
 ): string[] {
   const recs: string[] = []

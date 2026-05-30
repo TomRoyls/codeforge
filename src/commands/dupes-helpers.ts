@@ -115,8 +115,8 @@ export function findDuplicates(blocks: CodeBlock[], threshold: number): Duplicat
     if (groupBlocks.length < 2) continue
 
     const similarity = threshold <= 0
-      ? contentSimilarity(groupBlocks[0]!.content, groupBlocks[1]!.content)
-      : contentSimilarity(groupBlocks[0]!.content, groupBlocks[1]!.content)
+      ? contentSimilarity(groupBlocks[0]!.content, (groupBlocks[1] ?? { content: '' }).content)
+      : contentSimilarity(groupBlocks[0]!.content, (groupBlocks[1] ?? { content: '' }).content)
 
     if (similarity >= threshold) {
       groups.push({

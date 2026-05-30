@@ -513,9 +513,7 @@ export function measureHardiness(content: string): AdaptabilityInfo {
  * measureGermination('describe("a", () => { it("works", () => { expect(1).toBe(1) }) })') // GerminationInfo
  */
 export function measureGermination(content: string): GerminationInfo {
-  const loc = countLoc(content)
   const functions = countFunctions(content)
-  const imports = countImports(content)
   const nesting = maxNesting(content)
   const consoleStmts = countConsole(content)
 
@@ -536,6 +534,7 @@ export function measureGermination(content: string): GerminationInfo {
     : 0
 
   const isEasyToTest = !/console\.|document\.|window\.|fs\.\w+|require\(['"]fs/i.test(content)
+  const loc = countLoc(content)
 
   let testEnvironment: TestEnvironment = 'none'
   if (hasTests) {
@@ -548,6 +547,7 @@ export function measureGermination(content: string): GerminationInfo {
     testEnvironment = 'manual'
   }
 
+  const imports = countImports(content)
   const germinationTime = Math.min(100, Math.max(0, Math.round(
     (imports * 5) +
     (nesting * 8) +
@@ -615,7 +615,6 @@ export function measureCrossbreed(content: string): CrossbreedInfo {
   const comments = countComments(content)
   const jsdoc = countJSDoc(content)
   const classes = countClasses(content)
-  const functions = countFunctions(content)
 
   const barriers: string[] = []
   if (/console\.\w+/.test(content)) barriers.push('Side effects via console output')
@@ -651,7 +650,6 @@ export function measureCrossbreed(content: string): CrossbreedInfo {
  * classifyCatalogEntry('export function a() {}') // CatalogInfo
  */
 export function classifyCatalogEntry(content: string): CatalogInfo {
-  const loc = countLoc(content)
   const exports = countExports(content)
   const functions = countFunctions(content)
   const classes = countClasses(content)
@@ -660,6 +658,7 @@ export function classifyCatalogEntry(content: string): CatalogInfo {
   const comments = countComments(content)
   const types = countTypeAnnotations(content)
   const todos = countTodos(content)
+  const loc = countLoc(content)
   const nesting = maxNesting(content)
   const errors = countErrorHandling(content)
 
@@ -962,15 +961,15 @@ export function buildSeedCatalogResult(
     overallYield,
     gardenerGrade: classifyGardenerGrade(overallYield),
     bestVariety: varieties.length > 0
-      ? varieties.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, varieties[0]).file : 'none',
+      ? varieties.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, varieties[0] as typeof varieties[number]).file : 'none',
     mostIndependent: varieties.length > 0
-      ? varieties.reduce((a, b) => b.rootIndependence > a.rootIndependence ? b : a, varieties[0]).file : 'none',
+      ? varieties.reduce((a, b) => b.rootIndependence > a.rootIndependence ? b : a, varieties[0] as typeof varieties[number]).file : 'none',
     highestYield: varieties.length > 0
-      ? varieties.reduce((a, b) => b.yieldPotential > a.yieldPotential ? b : a, varieties[0]).file : 'none',
+      ? varieties.reduce((a, b) => b.yieldPotential > a.yieldPotential ? b : a, varieties[0] as typeof varieties[number]).file : 'none',
     mostCompatible: varieties.length > 0
-      ? varieties.reduce((a, b) => b.crossbreedCompat > a.crossbreedCompat ? b : a, varieties[0]).file : 'none',
+      ? varieties.reduce((a, b) => b.crossbreedCompat > a.crossbreedCompat ? b : a, varieties[0] as typeof varieties[number]).file : 'none',
     mostInvasive: varieties.length > 0
-      ? varieties.reduce((a, b) => b.root.isInvasive && !a.root.isInvasive ? b : a, varieties[0]).file : 'none',
+      ? varieties.reduce((a, b) => b.root.isInvasive && !a.root.isInvasive ? b : a, varieties[0] as typeof varieties[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(varieties, beds, garden, stats)

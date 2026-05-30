@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { StarlightResult, StellarFile, Nebula, StarlightStats } from './starlight-helpers.js'
+import type { StarlightResult, StellarFile, StarlightStats } from './starlight-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────
 

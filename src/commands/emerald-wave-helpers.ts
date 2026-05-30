@@ -654,7 +654,7 @@ export async function buildEmeraldTideResult(
 export function generateRecommendations(
   swells: EmeraldSwell[],
   bays: EmeraldBay[],
-  ocean: EmeraldTideResult['ocean'],
+  _ocean: EmeraldTideResult['ocean'],
   stats: EmeraldTideResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -92,9 +92,10 @@ export class ASTWalker {
 
     const queue: Array<{ node: ASTNode; depth: number; path: ASTNode[] }> = []
     queue.push({ node: root, depth: 0, path: [root] })
+    let _qi = 0
 
-    while (queue.length > 0) {
-      const item = queue.shift()
+    while (_qi < queue.length) {
+      const item = queue[_qi++]
       if (item === undefined) break
 
       const { node, depth, path } = item

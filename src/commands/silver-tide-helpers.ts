@@ -736,7 +736,7 @@ export function analyzeSilverShore(waves: SilverWave[], dirPath: string): Silver
 export function generateRecommendations(
   waves: SilverWave[],
   shores: SilverShore[],
-  ocean: SilverTideResult['ocean'],
+  _ocean: SilverTideResult['ocean'],
   stats: SilverTideResult['stats'],
 ): string[] {
   const recs: string[] = []

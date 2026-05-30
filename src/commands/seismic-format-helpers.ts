@@ -2,14 +2,12 @@ import chalk from 'chalk'
 
 import type {
   FaultLine,
-  OverallRisk,
   SeismicEvent,
   SeismicResult,
   SeismicStats,
   SeismicZone,
   TectonicPlate,
-  ZoneRisk,
-} from './seismic-helpers.js'
+  } from './seismic-helpers.js'
 
 // ─── Event Badges ──────────────────────────────────────────────────────────────
 

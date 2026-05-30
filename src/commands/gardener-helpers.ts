@@ -61,7 +61,7 @@ export interface GardenerResult {
  * classifyPlant('a.ts', content, 2, 3)
  */
 export function classifyPlant(
-  file: string,
+  _file: string,
   content: string,
   importCount: number,
   exportCount: number,
@@ -94,7 +94,7 @@ export function detectUnusedExports(content: string): string[] {
   if (!m) return []
   for (const exp of m) {
     const nameMatch = exp.match(/(\w+)$/)
-    if (nameMatch) exports.push(nameMatch[1]!)
+    if (nameMatch) exports.push(nameMatch[1] ?? '')
   }
 
   const internalRefs = content.replace(/^export\s+/gm, '')
@@ -193,7 +193,7 @@ export function countTodoMarkers(content: string): number {
  * @example
  * computePlantHealth(content, 2, 3)
  */
-export function computePlantHealth(content: string, importCount: number, exportCount: number): number {
+export function computePlantHealth(content: string, _importCount: number, exportCount: number): number {
   let score = 60
 
   const jsdoc = countJSDoc(content)

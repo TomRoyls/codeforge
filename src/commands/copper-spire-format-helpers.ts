@@ -52,7 +52,7 @@ export function colorGrade(grade: string): string {
 
     'proper-aging': okay, 'proper-flow': okay, 'proper-color': okay,
     'proper-mix': okay, 'proper-base': okay, 'proper-spire': okay,
-    'proper-spire': okay, 'decent-steeple': okay, 'skilled-craftsman': okay,
+    'decent-steeple': okay, 'skilled-craftsman': okay,
 
     'premature-wear': poor, 'resistive-wire': poor, 'patchy-surface': poor,
     'weak-bond': poor, 'shaky-ground': poor, 'rusty-pole': poor,

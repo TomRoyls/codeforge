@@ -877,7 +877,7 @@ export async function buildMidnightBlossomResult(
 export function generateRecommendations(
   petals: NightPetal[],
   gardens: NightGarden[],
-  night: MidnightBlossomResult['night'],
+  _night: MidnightBlossomResult['night'],
   stats: MidnightBlossomResult['stats'],
 ): string[] {
   const recs: string[] = []

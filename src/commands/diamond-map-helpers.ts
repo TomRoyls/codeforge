@@ -880,7 +880,7 @@ export async function buildDiamondMapResult(
 export function generateRecommendations(
   pages: DiamondPage[],
   volumes: DiamondVolume[],
-  cartography: DiamondMapResult['cartography'],
+  _cartography: DiamondMapResult['cartography'],
   stats: DiamondMapResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -27,7 +27,12 @@ export interface StringLiteral {
   startIndex: number
 }
 
-const _funcPatternCache = new Map<string, RegExp>()
+type CachedPattern = RegExp | [RegExp, RegExp]
+const _funcPatternCache = new Map<string, CachedPattern>()
+
+function isRegExpTuple(v: CachedPattern): v is [RegExp, RegExp] {
+  return Array.isArray(v)
+}
 
 export class TransformParser {
   findFunctionByName(source: string, name: string): FunctionLocation | null {
@@ -46,7 +51,8 @@ export class TransformParser {
       ]
       _funcPatternCache.set(cacheKey, cached)
     }
-    const patterns = [new RegExp(cached[0].source, cached[0].flags), new RegExp(cached[1].source, cached[1].flags)]
+    if (!isRegExpTuple(cached)) return null
+    const patterns = [new RegExp(cached[0]!.source, cached[0]!.flags), new RegExp(cached[1]!.source, cached[1]!.flags)]
 
     for (const pattern of patterns) {
       pattern.lastIndex = 0
@@ -66,15 +72,15 @@ export class TransformParser {
     }
 
     const arrowCacheKey = `arrow|${name}`
-    let arrowNoBrace = _funcPatternCache.get(arrowCacheKey)
-    if (!arrowNoBrace) {
-      arrowNoBrace = new RegExp(
+    let arrowCached = _funcPatternCache.get(arrowCacheKey)
+    if (!arrowCached || isRegExpTuple(arrowCached)) {
+      arrowCached = new RegExp(
         `(?:export\\s+)?(?:const|let|var)\\s+${escapeRegex(name)}\\s*=\\s*(?:async\\s+)?\\([^)]*\\)\\s*(?::\\s*[^=]+)?\\s*=>\\s*`,
         'g'
       )
-      _funcPatternCache.set(arrowCacheKey, arrowNoBrace)
+      _funcPatternCache.set(arrowCacheKey, arrowCached)
     }
-    const freshArrow = new RegExp(arrowNoBrace.source, arrowNoBrace.flags)
+    const freshArrow = new RegExp(arrowCached.source, arrowCached.flags)
     freshArrow.lastIndex = 0
     const arrowMatch = freshArrow.exec(source)
     if (arrowMatch) {
@@ -106,7 +112,7 @@ export class TransformParser {
   findClassByName(source: string, name: string): FunctionLocation | null {
     const cacheKey = `class|${name}`
     let cached = _funcPatternCache.get(cacheKey)
-    if (!cached) {
+    if (!cached || isRegExpTuple(cached)) {
       cached = new RegExp(
         `(?:export\\s+)?(?:abstract\\s+)?class\\s+${escapeRegex(name)}\\s*(?:extends\\s+\\S+\\s*)?(?:implements\\s+[^{]+)?\\{`,
         'g'

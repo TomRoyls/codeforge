@@ -12,24 +12,19 @@ const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
 const ASYNC_REGEX = /\basync\s+/g
 const TRY_CATCH_REGEX = /\btry\s*\{/g
 const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
-const TERNARY_REGEX = /\?[^:]+:/g
 const CONSOLE_REGEX = /\bconsole\.\w+/g
 const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
 const GENERICS_REGEX = /<[^>]+>/g
 const PRIVATE_REGEX = /private\s+/g
 const PROTECTED_REGEX = /protected\s+/g
-const PUBLIC_REGEX = /public\s+/g
 const STATIC_REGEX = /\bstatic\s+/g
 const READONLY_REGEX = /\breadonly\b/g
 const ANY_REGEX = /\bany\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
 const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
-const RETURN_TYPE_REGEX = /\)\s*:\s*\w+/g
 const CONDITIONAL_REGEX = /\bif\s*\(/g
 const LOOP_REGEX = /\b(for|while|do)\s*[\({]/g
-const ERROR_THROW_REGEX = /\bthrow\s+/g
 const PROMISE_REGEX = /\bPromise\b/g
-const STRING_TEMPLATE_REGEX = /`[^`]*\$\{/g
 const DESTRUCTURE_REGEX = /\{[^}]*\}\s*=/g
 const DECORATOR_REGEX = /@\w+/g
 
@@ -52,7 +47,6 @@ function countJSDocBlocks(content: string): number { return countMatches(content
 function countAsyncKeywords(content: string): number { return countMatches(content, ASYNC_REGEX) }
 function countTryCatch(content: string): number { return countMatches(content, TRY_CATCH_REGEX) }
 function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
-function countTernaryOps(content: string): number { return countMatches(content, TERNARY_REGEX) }
 function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
 function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
 function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
@@ -65,9 +59,7 @@ function countCommentedCode(content: string): number { return countMatches(conte
 function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
 function countConditionals(content: string): number { return countMatches(content, CONDITIONAL_REGEX) }
 function countLoops(content: string): number { return countMatches(content, LOOP_REGEX) }
-function countErrorThrows(content: string): number { return countMatches(content, ERROR_THROW_REGEX) }
 function countPromiseUsage(content: string): number { return countMatches(content, PROMISE_REGEX) }
-function countTemplateLiterals(content: string): number { return countMatches(content, STRING_TEMPLATE_REGEX) }
 function countDestructures(content: string): number { return countMatches(content, DESTRUCTURE_REGEX) }
 function countDecorators(content: string): number { return countMatches(content, DECORATOR_REGEX) }
 

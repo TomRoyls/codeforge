@@ -111,7 +111,7 @@ export function computeRegularity(content: string): number {
 
   const indentSizes = lines.map(l => {
     const match = l.match(/^(\s*)/)
-    return match ? match[1].length : 0
+    return match ? (match[1] ?? '').length : 0
   })
   const uniqueIndents = new Set(indentSizes)
   if (uniqueIndents.size <= Math.max(lines.length * 0.3, 3)) score += 5
@@ -243,12 +243,13 @@ export function computeMaxNesting(content: string): number {
  * @example
  * detectDefects('TODO: implement', 'file.ts') // => [CrystalDefect]
  */
-export function detectDefects(content: string, filePath: string): CrystalDefect[] {
+export function detectDefects(content: string, _filePath: string): CrystalDefect[] {
   const defects: CrystalDefect[] = []
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     if (/TODO|FIXME|HACK|XXX/.test(line)) {
@@ -264,7 +265,7 @@ export function detectDefects(content: string, filePath: string): CrystalDefect[
     if (/^\s*import\s.*\{[^}]*\}.*from/.test(line)) {
       const symbols = line.match(/\{([^}]*)\}/)
       if (symbols) {
-        const names = symbols[1].split(',').map(s => s.trim()).filter(Boolean)
+        const names = symbols[1]?.split(',').map(s => s.trim()).filter(Boolean) ?? []
         const unusedInRest = names.filter(name => {
           const rest = lines.slice(i + 1).join('\n')
           return !rest.includes(name)
@@ -291,7 +292,7 @@ export function detectDefects(content: string, filePath: string): CrystalDefect[
       })
     }
 
-    if (/^\t/.test(line) && lines.some(l => /^  [^\s]/.test(l))) {
+    if (/^\t/.test(line) && lines.some(l => l != null && /^  [^\s]/.test(l))) {
       defects.push({
         type: 'stacking-fault',
         location: lineNum,
@@ -336,12 +337,13 @@ export function detectDefects(content: string, filePath: string): CrystalDefect[
  * @example
  * analyzeFacets('export function add() {}', 'math.ts') // => [CrystalFacet]
  */
-export function analyzeFacets(content: string, filePath: string): CrystalFacet[] {
+export function analyzeFacets(content: string, _filePath: string): CrystalFacet[] {
   const facets: CrystalFacet[] = []
 
   const exportMatches = content.matchAll(/export\s+(?:const|function|class|interface|type|enum)\s+(\w+)/g)
   for (const m of exportMatches) {
-    const name = m[1]
+    const name = m[1] ?? ''
+    if (!name) continue
     const documented = new RegExp(`\\/\\*\\*[\\s\\S]*?\\*\\/\\s*export.*\\b${name}\\b`).test(content)
     const hasParams = new RegExp(`export\\s+(?:function|const)\\s+${name}\\s*[<(]`).test(content)
 
@@ -356,7 +358,7 @@ export function analyzeFacets(content: string, filePath: string): CrystalFacet[]
 
   const importMatches = content.matchAll(/import\s+\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]/g)
   for (const m of importMatches) {
-    const symbols = m[1].split(',').map(s => s.trim()).filter(Boolean)
+    const symbols = (m[1] ?? '').split(',').map(s => s.trim()).filter(Boolean)
     for (const sym of symbols) {
       facets.push({
         name: sym,
@@ -557,7 +559,7 @@ export function classifyOverallGrade(quality: number, purity: number, clarity: n
  * @example
  * generateRecommendations(lattices, systems, stats) // => ['Fix...']
  */
-export function generateRecommendations(lattices: CrystalLattice[], systems: CrystalSystemGroup[], stats: CrystalStats): string[] {
+export function generateRecommendations(lattices: CrystalLattice[], _systems: CrystalSystemGroup[], stats: CrystalStats): string[] {
   const recs: string[] = []
 
   const amorphous = lattices.filter(l => l.system === 'amorphous')
@@ -605,7 +607,7 @@ export function buildCrystalResult(files: string[], contents: string[], options:
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    lattices.push(analyzeLattice(content, files[i]))
+    lattices.push(analyzeLattice(content, files[i] ?? ''))
   }
 
   const systems = groupIntoSystems(lattices)

@@ -652,7 +652,7 @@ export async function buildCopperLabyrinthResult(
 export function generateRecommendations(
   paths: CopperPath[],
   mazes: CopperMaze[],
-  labyrinth: CopperLabyrinthResult['labyrinth'],
+  _labyrinth: CopperLabyrinthResult['labyrinth'],
   stats: CopperLabyrinthResult['stats'],
 ): string[] {
   const recs: string[] = []

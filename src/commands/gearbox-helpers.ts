@@ -620,13 +620,13 @@ export function buildGearboxResult(
   const isSynchronized = transmissions.every(t => t.isSynchronized) && transmissions.length > 0
 
   const bestUnit = units.length > 0
-    ? units.reduce((b, u) => u.efficiency > b.efficiency ? u : b, units[0]).file : 'none'
+    ? units.reduce((b, u) => u.efficiency > b.efficiency ? u : b, units[0] as typeof units[number]).file : 'none'
   const worstUnit = units.length > 0
-    ? units.reduce((w, u) => u.efficiency < w.efficiency ? u : w, units[0]).file : 'none'
+    ? units.reduce((w, u) => u.efficiency < w.efficiency ? u : w, units[0] as typeof units[number]).file : 'none'
   const mostPowerful = units.length > 0
-    ? units.reduce((m, u) => u.torque > m.torque ? u : m, units[0]).file : 'none'
+    ? units.reduce((m, u) => u.torque > m.torque ? u : m, units[0] as typeof units[number]).file : 'none'
   const smoothest = units.length > 0
-    ? units.reduce((m, u) => u.lubrication > m.lubrication ? u : m, units[0]).file : 'none'
+    ? units.reduce((m, u) => u.lubrication > m.lubrication ? u : m, units[0] as typeof units[number]).file : 'none'
 
   const stats: GearboxStats = {
     totalFiles: files.length,

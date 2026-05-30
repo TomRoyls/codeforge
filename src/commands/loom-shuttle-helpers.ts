@@ -785,7 +785,7 @@ export function analyzeWeavingWorkshop(threads: LoomThread[], dirPath: string): 
  * // recs.length > 0
  */
 export function generateRecommendations(
-  threads: LoomThread[],
+  _threads: LoomThread[],
   _workshops: WeavingWorkshop[],
   guild: WeavingGuild,
   stats: LoomShuttleStats,
@@ -927,14 +927,15 @@ export function buildLoomShuttleResult(
 
 function findMax(threads: LoomThread[], getter: (t: LoomThread) => number): string {
   if (threads.length === 0) return 'none'
-  let best = threads[0]
-  let bestVal = getter(threads[0])
+  let best = threads[0] as LoomThread
+  let bestVal = getter(best)
   for (let i = 1; i < threads.length; i++) {
-    const val = getter(threads[i])
+    const thread = threads[i] as LoomThread
+    const val = getter(thread)
     if (val > bestVal) {
-      best = threads[i]
+      best = thread
       bestVal = val
     }
   }
-  return best.file
+  return best?.file ?? ''
 }

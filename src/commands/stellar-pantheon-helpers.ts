@@ -660,7 +660,7 @@ export async function buildStellarPantheonResult(
 export function generateRecommendations(
   altars: StellarAltar[],
   temples: StellarTemple[],
-  cosmos: StellarPantheonResult['cosmos'],
+  _cosmos: StellarPantheonResult['cosmos'],
   stats: StellarPantheonResult['stats'],
 ): string[] {
   const recs: string[] = []

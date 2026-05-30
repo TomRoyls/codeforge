@@ -154,9 +154,10 @@ export class GraphTopoSort {
     }
 
     const result: number[] = [];
-    while (queue.length > 0) {
+    let _qi = 0;
+    while (_qi < queue.length) {
       queue.sort((a, b) => a - b);
-      const vertex = queue.shift()!;
+      const vertex = queue[_qi++]!;
       result.push(vertex);
 
       const neighbors = this.adjacencyList.get(vertex) ?? new Set();

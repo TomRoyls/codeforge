@@ -710,7 +710,7 @@ export function analyzeVelvetChamber(folds: VelvetFold[], dirPath: string): Velv
 export function generateRecommendations(
   folds: VelvetFold[],
   chambers: VelvetChamber[],
-  manor: VelvetNightResult['manor'],
+  _manor: VelvetNightResult['manor'],
   stats: VelvetNightResult['stats'],
 ): string[] {
   const recs: string[] = []

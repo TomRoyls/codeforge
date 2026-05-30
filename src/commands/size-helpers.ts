@@ -124,28 +124,7 @@ export function calculatePercentages(entries: SizeEntry[], totalSize: number): S
 
 // ─── Formatting utilities ────────────────────────────────
 
-/**
- * @example
- * formatBytes(500) // => '500.0 B'
- * formatBytes(1536) // => '1.5 KB'
- * formatBytes(1048576) // => '1.0 MB'
- * formatBytes(1073741824) // => '1.0 GB'
- */
-export function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0.0 B'
-
-  const units = ['B', 'KB', 'MB', 'GB']
-  const divisor = 1024
-  let unitIndex = 0
-
-  let size = bytes
-  while (size >= divisor && unitIndex < units.length - 1) {
-    size /= divisor
-    unitIndex++
-  }
-
-  return `${size.toFixed(1)} ${units[unitIndex]}`
-}
+export { formatBytes } from '../utils/format-utils.js'
 
 /**
  * @example

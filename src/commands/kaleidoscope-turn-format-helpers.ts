@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { KaleidoscopeShard, KaleidoscopeChamber, KaleidoscopeTurnResult } from './kaleidoscope-turn-helpers.js'
+import type { KaleidoscopeShard, KaleidoscopeTurnResult } from './kaleidoscope-turn-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

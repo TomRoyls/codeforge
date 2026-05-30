@@ -654,7 +654,7 @@ export async function buildPeridotGardenResult(
 export function generateRecommendations(
   blooms: PeridotBloom[],
   orchards: PeridotOrchard[],
-  harvest: PeridotGardenResult['harvest'],
+  _harvest: PeridotGardenResult['harvest'],
   stats: PeridotGardenResult['stats'],
 ): string[] {
   const recs: string[] = []

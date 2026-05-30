@@ -106,10 +106,10 @@ export function formatClusters(clusters: TangleCluster[]): string {
 export function formatScoreDistribution(files: TangleMetrics[]): string {
   const buckets = [0, 0, 0, 0]
   for (const f of files) {
-    if (f.tanglingScore < 20) buckets[0]!++
-    else if (f.tanglingScore < 40) buckets[1]!++
-    else if (f.tanglingScore < 65) buckets[2]!++
-    else buckets[3]!++
+    if (f.tanglingScore < 20) buckets[0] = (buckets[0] ?? 0) + 1
+    else if (f.tanglingScore < 40) buckets[1] = (buckets[1] ?? 0) + 1
+    else if (f.tanglingScore < 65) buckets[2] = (buckets[2] ?? 0) + 1
+    else buckets[3] = (buckets[3] ?? 0) + 1
   }
 
   const labels = [
@@ -213,7 +213,7 @@ export function formatTangleOutput(result: TangleResult, verbose: boolean): stri
  * formatTangleJson(result) // JSON string
  */
 export function formatTangleJson(result: TangleResult): string {
-  return JSON.stringify(result, (key, value) => {
+  return JSON.stringify(result, (_key, value) => {
     if (value instanceof Map) return Object.fromEntries(value)
     return value
   }, 2)

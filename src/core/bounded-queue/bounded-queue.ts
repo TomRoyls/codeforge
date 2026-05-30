@@ -20,8 +20,10 @@ export class BoundedQueue<T = unknown> {
   private tail: number = 0
 
   private lruItems: LruEntry<T>[] = []
+  private lruHead = 0
 
   private randomItems: T[] = []
+  private randomHead = 0
 
   constructor(options?: Partial<BoundedQueueOptions>) {
     const resolved = { ...DEFAULT_BOUNDED_QUEUE_OPTIONS, ...options }
@@ -97,8 +99,10 @@ export class BoundedQueue<T = unknown> {
       this.tail = 0
     } else if (this._policy === 'lru') {
       this.lruItems = []
+      this.lruHead = 0
     } else {
       this.randomItems = []
+      this.randomHead = 0
     }
   }
 
@@ -123,9 +127,17 @@ export class BoundedQueue<T = unknown> {
       return result
     }
     if (this._policy === 'lru') {
-      return this.lruItems.map(e => e.value)
+      const result: T[] = []
+      for (let i = this.lruHead; i < this.lruItems.length; i++) {
+        result.push(this.lruItems[i]!.value)
+      }
+      return result
     }
-    return [...this.randomItems]
+    const result: T[] = []
+    for (let i = this.randomHead; i < this.randomItems.length; i++) {
+      result.push(this.randomItems[i]!)
+    }
+    return result
   }
 
   static from<T>(items: Iterable<T>, options?: Partial<BoundedQueueOptions>): BoundedQueue<T> {
@@ -182,9 +194,9 @@ export class BoundedQueue<T = unknown> {
       return value
     }
     if (this._policy === 'lru') {
-      let minIdx = 0
-      let minTime = this.lruItems[0]!.accessTime
-      for (let i = 1; i < this._size; i++) {
+      let minIdx = this.lruHead
+      let minTime = this.lruItems[this.lruHead]!.accessTime
+      for (let i = this.lruHead + 1; i < this.lruItems.length; i++) {
         if (this.lruItems[i]!.accessTime < minTime) {
           minTime = this.lruItems[i]!.accessTime
           minIdx = i
@@ -195,9 +207,10 @@ export class BoundedQueue<T = unknown> {
       this._size--
       return evicted
     }
-    const idx = Math.floor(Math.random() * this._size)
+    const logicalLen = this.randomItems.length - this.randomHead
+    const idx = this.randomHead + Math.floor(Math.random() * logicalLen)
     const value = this.randomItems[idx]!
-    this.randomItems[idx] = this.randomItems[this._size - 1]!
+    this.randomItems[idx] = this.randomItems[this.randomItems.length - 1]!
     this.randomItems.pop()
     this._size--
     return value
@@ -226,12 +239,22 @@ export class BoundedQueue<T = unknown> {
       return value
     }
     if (this._policy === 'lru') {
-      const entry = this.lruItems.shift()!
+      const entry = this.lruItems[this.lruHead]!
+      this.lruHead++
       this._size--
+      if (this.lruHead >= this.lruItems.length) {
+        this.lruItems = []
+        this.lruHead = 0
+      }
       return entry.value
     }
-    const value = this.randomItems.shift()!
+    const value = this.randomItems[this.randomHead]!
+    this.randomHead++
     this._size--
+    if (this.randomHead >= this.randomItems.length) {
+      this.randomItems = []
+      this.randomHead = 0
+    }
     return value
   }
 }

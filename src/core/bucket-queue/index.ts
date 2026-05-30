@@ -9,6 +9,7 @@ export class BucketQueue<T> {
   private _maxPriority: number | undefined = undefined
   private _maxPriorityCap: number
   private valueToPriority: Map<T, number> = new Map()
+  private _bucketOffsets: Map<number, number> = new Map()
 
   constructor(options?: BucketQueueOptions) {
     this._maxPriorityCap = options?.maxPriority ?? DEFAULT_MAX_PRIORITY
@@ -51,13 +52,16 @@ export class BucketQueue<T> {
 
     const minP = this._minPriority!
     const bucket = this.buckets[minP]!
-    const value = bucket.shift()!
+    const offset = this._bucketOffsets.get(minP) ?? 0
+    const value = bucket[offset]!
+    this._bucketOffsets.set(minP, offset + 1)
     this.valueToPriority.delete(value)
     this._size--
 
-    if (bucket.length === 0) {
+    if (offset + 1 >= bucket.length) {
       this.buckets[minP] = undefined!
       delete this.buckets[minP]
+      this._bucketOffsets.delete(minP)
       this.recalculateMinPriority()
     }
 
@@ -67,7 +71,8 @@ export class BucketQueue<T> {
   peek(): T | undefined {
     if (this._size === 0) return undefined
     const bucket = this.buckets[this._minPriority!]!
-    return bucket[0]
+    const offset = this._bucketOffsets.get(this._minPriority!) ?? 0
+    return bucket[offset]
   }
 
   peekPriority(): number | undefined {
@@ -86,8 +91,11 @@ export class BucketQueue<T> {
   priorities(): number[] {
     const result: number[] = []
     for (let i = 0; i < this.buckets.length; i++) {
-      if (this.buckets[i] !== undefined && this.buckets[i]!.length > 0) {
-        result.push(i)
+      if (this.buckets[i] !== undefined) {
+        const offset = this._bucketOffsets.get(i) ?? 0
+        if (offset < this.buckets[i]!.length) {
+          result.push(i)
+        }
       }
     }
     return result
@@ -108,12 +116,17 @@ export class BucketQueue<T> {
 
     const oldBucket = this.buckets[oldPriority]
     if (oldBucket !== undefined) {
+      const offset = this._bucketOffsets.get(oldPriority) ?? 0
       const idx = oldBucket.indexOf(value)
       if (idx !== -1) {
         oldBucket.splice(idx, 1)
+        if (idx < offset) {
+          this._bucketOffsets.set(oldPriority, offset - 1)
+        }
         if (oldBucket.length === 0) {
           this.buckets[oldPriority] = undefined!
           delete this.buckets[oldPriority]
+          this._bucketOffsets.delete(oldPriority)
         }
       }
     }
@@ -134,6 +147,7 @@ export class BucketQueue<T> {
     this._minPriority = undefined
     this._maxPriority = undefined
     this.valueToPriority.clear()
+    this._bucketOffsets.clear()
   }
 
   toArray(): Array<{ value: T; priority: number }> {
@@ -141,7 +155,8 @@ export class BucketQueue<T> {
     for (let i = 0; i < this.buckets.length; i++) {
       const bucket = this.buckets[i]
       if (bucket !== undefined) {
-        for (let j = 0; j < bucket.length; j++) {
+        const offset = this._bucketOffsets.get(i) ?? 0
+        for (let j = offset; j < bucket.length; j++) {
           result.push({ value: bucket[j]!, priority: i })
         }
       }
@@ -172,12 +187,17 @@ export class BucketQueue<T> {
 
     const bucket = this.buckets[priority]
     if (bucket !== undefined) {
+      const offset = this._bucketOffsets.get(priority) ?? 0
       const idx = bucket.indexOf(value)
       if (idx !== -1) {
         bucket.splice(idx, 1)
+        if (idx < offset) {
+          this._bucketOffsets.set(priority, offset - 1)
+        }
         if (bucket.length === 0) {
           this.buckets[priority] = undefined!
           delete this.buckets[priority]
+          this._bucketOffsets.delete(priority)
         }
       }
     }
@@ -195,9 +215,12 @@ export class BucketQueue<T> {
       return
     }
     for (let i = 0; i < this.buckets.length; i++) {
-      if (this.buckets[i] !== undefined && this.buckets[i]!.length > 0) {
-        this._minPriority = i
-        return
+      if (this.buckets[i] !== undefined) {
+        const offset = this._bucketOffsets.get(i) ?? 0
+        if (offset < this.buckets[i]!.length) {
+          this._minPriority = i
+          return
+        }
       }
     }
     this._minPriority = undefined
@@ -212,9 +235,12 @@ export class BucketQueue<T> {
     let foundMin: number | undefined
     let foundMax: number | undefined
     for (let i = 0; i < this.buckets.length; i++) {
-      if (this.buckets[i] !== undefined && this.buckets[i]!.length > 0) {
-        if (foundMin === undefined) foundMin = i
-        foundMax = i
+      if (this.buckets[i] !== undefined) {
+        const offset = this._bucketOffsets.get(i) ?? 0
+        if (offset < this.buckets[i]!.length) {
+          if (foundMin === undefined) foundMin = i
+          foundMax = i
+        }
       }
     }
     this._minPriority = foundMin

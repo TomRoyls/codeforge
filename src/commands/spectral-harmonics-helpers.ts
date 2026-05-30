@@ -682,19 +682,19 @@ export function buildSpectralHarmonicsResult(
   }
 
   const bestWave = totalFiles > 0
-    ? waves.reduce((best, w) => (w.qualityScore > best.qualityScore ? w : best), waves[0]).file
+    ? waves.reduce((best, w) => (w.qualityScore > best.qualityScore ? w : best), waves[0] as typeof waves[number]).file
     : ''
   const purest = totalFiles > 0
-    ? waves.reduce((best, w) => (w.spectralPurity > best.spectralPurity ? w : best), waves[0]).file
+    ? waves.reduce((best, w) => (w.spectralPurity > best.spectralPurity ? w : best), waves[0] as typeof waves[number]).file
     : ''
   const mostResonant = totalFiles > 0
-    ? waves.reduce((best, w) => (w.harmonicResonance > best.harmonicResonance ? w : best), waves[0]).file
+    ? waves.reduce((best, w) => (w.harmonicResonance > best.harmonicResonance ? w : best), waves[0] as typeof waves[number]).file
     : ''
   const richest = totalFiles > 0
-    ? waves.reduce((best, w) => (w.overtoneRichness > best.overtoneRichness ? w : best), waves[0]).file
+    ? waves.reduce((best, w) => (w.overtoneRichness > best.overtoneRichness ? w : best), waves[0] as typeof waves[number]).file
     : ''
   const clearest = totalFiles > 0
-    ? waves.reduce((best, w) => (w.waveformClarity > best.waveformClarity ? w : best), waves[0]).file
+    ? waves.reduce((best, w) => (w.waveformClarity > best.waveformClarity ? w : best), waves[0] as typeof waves[number]).file
     : ''
 
   const stats: SpectralHarmonicsStats = {

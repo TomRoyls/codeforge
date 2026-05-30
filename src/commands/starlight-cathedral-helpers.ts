@@ -670,7 +670,7 @@ export async function buildStarlightCathedralResult(
 export function generateRecommendations(
   prayers: StarlightPrayer[],
   constellations: StarlightConstellation[],
-  cathedral: StarlightCathedralResult['cathedral'],
+  _cathedral: StarlightCathedralResult['cathedral'],
   stats: StarlightCathedralResult['stats'],
 ): string[] {
   const recs: string[] = []

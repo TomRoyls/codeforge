@@ -336,7 +336,6 @@ export function measureStone(content: string): StoneMeasure {
   const functions = (content.match(FUNCTION_RE) ?? []).length + (content.match(ARROW_RE) ?? []).length
   const returns = (content.match(RETURN_RE) ?? []).length
   const interfaces = (content.match(INTERFACE_RE) ?? []).length
-  const classes = (content.match(CLASS_RE) ?? []).length
   const types = (content.match(TYPE_ANNOTATION_RE) ?? []).length
   const generics = (content.match(GENERIC_RE) ?? []).length
   const tryCatch = (content.match(TRY_CATCH_RE) ?? []).length
@@ -476,7 +475,6 @@ export function measureProcess(content: string): ProcessMeasure {
   const imports = (content.match(IMPORT_RE) ?? []).length
   const exports = (content.match(EXPORT_RE) ?? []).length
   const tryCatch = (content.match(TRY_CATCH_RE) ?? []).length
-  const pipes = (content.match(PIPE_RE) ?? []).length
   const functions = (content.match(FUNCTION_RE) ?? []).length + (content.match(ARROW_RE) ?? []).length
   const ifs = (content.match(IF_RE) ?? []).length
   const consts = (content.match(CONST_RE) ?? []).length
@@ -765,7 +763,7 @@ export function generateRecommendations(
   }
 
   const worst = samples.length > 0
-    ? samples.reduce((w, s) => s.qualityScore < w.qualityScore ? s : w, samples[0])
+    ? samples.reduce((w, s) => s.qualityScore < w.qualityScore ? s : w, samples[0] as typeof samples[number])
     : null
   if (worst && worst.qualityScore < 30) {
     recs.push(`Lowest quality file "${worst.file}" needs urgent transmutation (score: ${worst.qualityScore})`)
@@ -827,19 +825,19 @@ export function buildAlchemistCrucibleResult(
 
   const conditions = samples.map((s) => s.condition)
   const bestSample = samples.length > 0
-    ? samples.reduce((b, s) => s.qualityScore > b.qualityScore ? s : b, samples[0])
+    ? samples.reduce((b, s) => s.qualityScore > b.qualityScore ? s : b, samples[0] as typeof samples[number])
     : null
   const purest = samples.length > 0
-    ? samples.reduce((b, s) => s.cruciblePurity > b.cruciblePurity ? s : b, samples[0])
+    ? samples.reduce((b, s) => s.cruciblePurity > b.cruciblePurity ? s : b, samples[0] as typeof samples[number])
     : null
   const bestAlgo = samples.length > 0
-    ? samples.reduce((b, s) => s.philosopherStone > b.philosopherStone ? s : b, samples[0])
+    ? samples.reduce((b, s) => s.philosopherStone > b.philosopherStone ? s : b, samples[0] as typeof samples[number])
     : null
   const mostBal = samples.length > 0
-    ? samples.reduce((b, s) => s.elementalBalance > b.elementalBalance ? s : b, samples[0])
+    ? samples.reduce((b, s) => s.elementalBalance > b.elementalBalance ? s : b, samples[0] as typeof samples[number])
     : null
   const highYield = samples.length > 0
-    ? samples.reduce((b, s) => s.goldYield > b.goldYield ? s : b, samples[0])
+    ? samples.reduce((b, s) => s.goldYield > b.goldYield ? s : b, samples[0] as typeof samples[number])
     : null
 
   const stats: AlchemistCrucibleStats = {

@@ -886,7 +886,7 @@ export async function buildThunderForgeResult(
 export function generateRecommendations(
   bolts: ThunderBolt[],
   anvils: ThunderAnvil[],
-  storm: ThunderForgeResult['storm'],
+  _storm: ThunderForgeResult['storm'],
   stats: ThunderStats,
 ): string[] {
   const recs: string[] = []

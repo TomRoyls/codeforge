@@ -5,6 +5,7 @@ type Node<T> = {
 
 export class TwoThreeHeap<T> {
   private heap: Node<T>[] = [];
+  private _frontIdx: number = 0;
   private compare: (a: T, b: T) => number;
 
   constructor(comparator?: (a: T, b: T) => number) {
@@ -22,54 +23,66 @@ export class TwoThreeHeap<T> {
   }
 
   extractMin(): T | undefined {
-    if (this.heap.length === 0) return undefined;
-    const minNode = this.heap.shift()!;
+    const effectiveLen = this.heap.length - this._frontIdx
+    if (effectiveLen <= 0) return undefined;
+    const minNode = this.heap[this._frontIdx]!;
+    this._frontIdx++
     const value = minNode.value;
     for (const child of minNode.children) {
       this.heap.push(child);
     }
     this.maintainHeap();
+    if (this._frontIdx > 0 && this._frontIdx > this.heap.length / 2) {
+      this.heap = this.heap.slice(this._frontIdx)
+      this._frontIdx = 0
+    }
     return value;
   }
 
   peek(): T | undefined {
-    if (this.heap.length === 0) return undefined;
-    return this.heap[0]!.value;
+    const effectiveLen = this.heap.length - this._frontIdx
+    if (effectiveLen <= 0) return undefined;
+    return this.heap[this._frontIdx]!.value;
   }
 
   get size(): number {
     let count = 0;
-    for (const node of this.heap) {
-      count += this.countNodes(node);
+    for (let i = this._frontIdx; i < this.heap.length; i++) {
+      count += this.countNodes(this.heap[i]!);
     }
     return count;
   }
 
   isEmpty(): boolean {
-    return this.heap.length === 0;
+    return this._frontIdx >= this.heap.length;
   }
 
   clear(): void {
     this.heap = [];
+    this._frontIdx = 0;
   }
 
   toArray(): T[] {
     const result: T[] = [];
-    for (const node of this.heap) {
-      this.collectNodes(node, result);
+    for (let i = this._frontIdx; i < this.heap.length; i++) {
+      this.collectNodes(this.heap[i]!, result);
     }
     return result.sort((a, b) => this.compare(a, b));
   }
 
   meld(other: TwoThreeHeap<T>): void {
-    for (const node of other.heap) {
-      this.heap.push(node);
+    for (let i = other._frontIdx; i < other.heap.length; i++) {
+      this.heap.push(other.heap[i]!);
     }
     other.clear();
     this.maintainHeap();
   }
 
   private maintainHeap(): void {
+    if (this._frontIdx > 0) {
+      this.heap = this.heap.slice(this._frontIdx)
+      this._frontIdx = 0
+    }
     if (this.heap.length <= 1) return;
     this.heap.sort((a, b) => this.compare(a.value, b.value));
   }

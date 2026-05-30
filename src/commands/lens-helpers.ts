@@ -361,8 +361,8 @@ export function classifyDistribution(scores: number[]): 'uniform' | 'normal' | '
   if (scores.length < 3) return 'uniform'
 
   const sorted = [...scores].sort((a, b) => a - b)
-  const min = sorted[0]
-  const max = sorted[sorted.length - 1]
+  const min = sorted[0] ?? 0
+  const max = sorted[sorted.length - 1] ?? 0
   const range = max - min
   if (range === 0) return 'uniform'
 
@@ -375,8 +375,8 @@ export function classifyDistribution(scores: number[]): 'uniform' | 'normal' | '
   const overallAvg = sorted.reduce((s, v) => s + v, 0) / sorted.length
 
   const median = sorted.length % 2 === 0
-    ? (sorted[mid - 1] + sorted[mid]) / 2
-    : sorted[mid]
+    ? ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2
+    : (sorted[mid] ?? 0)
 
   const deviationFromMedian = Math.abs(overallAvg - median) / range
   if (deviationFromMedian > 0.2) return 'skewed'
@@ -387,7 +387,7 @@ export function classifyDistribution(scores: number[]): 'uniform' | 'normal' | '
   const buckets = [0, 0, 0, 0, 0]
   for (const s of sorted) {
     const bucket = Math.min(4, Math.floor((s - min) / (range || 1) * 5))
-    buckets[bucket]++
+    if (buckets[bucket] !== undefined) buckets[bucket]++
   }
 
   const nonEmpty = buckets.filter((b) => b > 0).length
@@ -512,8 +512,9 @@ function findFileByVariance(views: LensView[], mode: 'best' | 'worst' | 'consist
   const fileScores: Record<string, number[]> = {}
   for (const view of views) {
     for (const r of view.results) {
-      if (!fileScores[r.file]) fileScores[r.file] = []
-      fileScores[r.file].push(r.score)
+      const file = r.file ?? ''
+      if (!fileScores[file]) fileScores[file] = []
+      fileScores[file].push(r.score)
     }
   }
 
@@ -604,25 +605,28 @@ export function buildLensResult(files: string[], contents: string[], options: Le
           const importedBy: string[] = []
           for (let j = 0; j < files.length; j++) {
             if (j === i) continue
-            const otherImports = extractImports(contents[j] || '')
+            const otherFile = files[j]
+            const otherContent = contents[j]
+            if (otherFile === undefined || otherContent === undefined) continue
+            const otherImports = extractImports(otherContent)
             for (const imp of otherImports) {
               if (resolveImportPath(imp, knownSet) === file) {
-                importedBy.push(files[j])
+                importedBy.push(otherFile)
                 break
               }
             }
           }
-          lensResult = applyCouplingLens(file, imports, importedBy)
+          lensResult = applyCouplingLens(file ?? '', imports, importedBy)
           break
         }
         case 'documentation':
           lensResult = applyDocumentationLens(content)
           break
         case 'testing':
-          lensResult = applyTestingLens(file, files)
+          lensResult = applyTestingLens(file ?? '', [...files])
           break
         case 'freshness':
-          lensResult = applyFreshnessLens(file, null)
+          lensResult = applyFreshnessLens(file ?? '', null)
           break
         case 'stability':
           lensResult = applyStabilityLens(content, null)
@@ -634,7 +638,7 @@ export function buildLensResult(files: string[], contents: string[], options: Le
       const sharpness = computeSharpness(lensResult.score, content)
 
       results.push({
-        file,
+        file: file ?? '',
         score: lensResult.score,
         rank: 0,
         highlights: lensResult.highlights,
@@ -645,8 +649,10 @@ export function buildLensResult(files: string[], contents: string[], options: Le
 
     const sorted = [...results].sort((a, b) => b.score - a.score)
     for (let i = 0; i < results.length; i++) {
-      const rank = sorted.findIndex((r) => r.file === results[i].file) + 1
-      results[i].rank = rank
+      const current = results[i]
+      if (current === undefined) continue
+      const rank = sorted.findIndex((r) => r.file === current.file) + 1
+      current.rank = rank
     }
 
     const scores = results.map((r) => r.score)

@@ -90,8 +90,8 @@ export function traceFeatureThreads(content: string, filePath: string): Thread[]
 
   const exportMatches: { line: number; symbol: string }[] = []
   for (let i = 0; i < lines.length; i++) {
-    const m = lines[i].match(/export\s+(?:async\s+)?function\s+(\w+)/)
-    if (m) exportMatches.push({ line: i + 1, symbol: m[1] })
+    const m = lines[i]?.match(/export\s+(?:async\s+)?function\s+(\w+)/)
+    if (m && m[1]) exportMatches.push({ line: i + 1, symbol: m[1] })
   }
 
   for (const exp of exportMatches) {
@@ -121,12 +121,15 @@ export function traceFeatureThreads(content: string, filePath: string): Thread[]
     const isComplete = path.some(p => p.role === 'exit')
     const isBroken = !isComplete && path.length > 1
 
+    const startPoint = path[0]
+    if (startPoint === undefined) continue
+
     threads.push({
       id: `feature-${filePath}-${exp.symbol}`,
       concern: exp.symbol,
       type: 'feature',
-      startPoint: path[0],
-      endPoint: path.find(p => p.role === 'exit') || null,
+      startPoint,
+      endPoint: path.find(p => p.role === 'exit') ?? null,
       path,
       continuity,
       visibility,
@@ -155,8 +158,8 @@ export function traceDataTypeThreads(content: string, filePath: string): Thread[
 
   const typeMatches: { line: number; symbol: string }[] = []
   for (let i = 0; i < lines.length; i++) {
-    const m = lines[i].match(/(?:interface|type)\s+(\w+)/)
-    if (m) typeMatches.push({ line: i + 1, symbol: m[1] })
+    const m = lines[i]?.match(/(?:interface|type)\s+(\w+)/)
+    if (m && m[1]) typeMatches.push({ line: i + 1, symbol: m[1] })
   }
 
   for (const tm of typeMatches) {
@@ -181,12 +184,15 @@ export function traceDataTypeThreads(content: string, filePath: string): Thread[
     const visibility = computeVisibility(content, path)
     const completeness = computeCompleteness(path)
 
+    const startPoint = path[0]
+    if (startPoint === undefined) continue
+
     threads.push({
       id: `datatype-${filePath}-${tm.symbol}`,
       concern: tm.symbol,
       type: 'data-type',
-      startPoint: path[0],
-      endPoint: path.find(p => p.role === 'exit') || null,
+      startPoint,
+      endPoint: path.find(p => p.role === 'exit') ?? null,
       path,
       continuity,
       visibility,
@@ -215,7 +221,7 @@ export function traceErrorPathThreads(content: string, filePath: string): Thread
 
   const tryMatches: { line: number }[] = []
   for (let i = 0; i < lines.length; i++) {
-    if (/\btry\s*\{/.test(lines[i])) tryMatches.push({ line: i + 1 })
+    if (/\btry\s*\{/.test(lines[i] ?? '')) tryMatches.push({ line: i + 1 })
   }
 
   for (const tm of tryMatches) {
@@ -240,12 +246,15 @@ export function traceErrorPathThreads(content: string, filePath: string): Thread
     const hasCatch = catchLine >= 0
     const hasFinalExit = hasCatch || hasThrow
 
+    const startPoint = path[0]
+    if (startPoint === undefined) continue
+
     threads.push({
       id: `error-${filePath}-${tm.line}`,
       concern: `error-path-L${tm.line}`,
       type: 'error-path',
-      startPoint: path[0],
-      endPoint: path.find(p => p.role === 'exit') || null,
+      startPoint,
+      endPoint: path.find(p => p.role === 'exit') ?? null,
       path,
       continuity,
       visibility,
@@ -274,17 +283,21 @@ export function traceLoggingThreads(content: string, filePath: string): Thread[]
 
   const logMatches: { line: number; symbol: string }[] = []
   for (let i = 0; i < lines.length; i++) {
-    const m = lines[i].match(/(console\.(log|warn|error|debug|info)|logger\.\w+)\(/)
-    if (m) logMatches.push({ line: i + 1, symbol: m[1] })
+    const m = lines[i]?.match(/(console\.(log|warn|error|debug|info)|logger\.\w+)\(/)
+    if (m && m[1]) logMatches.push({ line: i + 1, symbol: m[1] })
   }
 
   if (logMatches.length === 0) return threads
+
+  const firstLog = logMatches[0]
+  const lastLog = logMatches[logMatches.length - 1]
+  if (firstLog === undefined || lastLog === undefined) return threads
 
   const path: ThreadPoint[] = logMatches.map(lm => ({
     file: filePath,
     line: lm.line,
     symbol: lm.symbol,
-    role: lm.line === logMatches[0].line ? 'entry' : lm.line === logMatches[logMatches.length - 1].line ? 'exit' : 'pass-through',
+    role: lm.line === firstLog.line ? 'entry' : lm.line === lastLog.line ? 'exit' : 'pass-through',
     description: `Log call: ${lm.symbol}`,
   }))
 
@@ -292,12 +305,16 @@ export function traceLoggingThreads(content: string, filePath: string): Thread[]
   const visibility = computeVisibility(content, path)
   const completeness = computeCompleteness(path)
 
+  const startPoint = path[0]
+  const endPoint = path[path.length - 1]
+  if (startPoint === undefined || endPoint === undefined) return threads
+
   threads.push({
     id: `logging-${filePath}`,
     concern: 'logging',
     type: 'logging',
-    startPoint: path[0],
-    endPoint: path[path.length - 1],
+    startPoint,
+    endPoint,
     path,
     continuity,
     visibility,
@@ -606,6 +623,7 @@ export function buildTapestryThreadResult(
   for (let i = 0; i < files.length; i++) {
     const content = contents[i]
     const filePath = files[i]
+    if (content === undefined || filePath === undefined) continue
 
     allThreads.push(...traceFeatureThreads(content, filePath))
     allThreads.push(...traceDataTypeThreads(content, filePath))

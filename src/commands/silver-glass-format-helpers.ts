@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { ReflectionCondition, GalleryCondition, SilverReflection, SilverMirrorResult, SilverGallery } from './silver-glass-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorGalleryCondition(condition: GalleryCondition | string): str
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatReflectionTable(reflection) */
 export function formatReflectionTable(reflection: SilverReflection): string {

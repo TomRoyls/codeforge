@@ -170,8 +170,9 @@ export class GraphBuilder {
       { id: startId, depth: 0, parent: null },
     ]
     visited.add(startId)
-    while (queue.length > 0) {
-      const current = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!
       result.push({ nodeId: current.id, depth: current.depth, parent: current.parent })
       const neighbors = this.getAdjacentNodes(current.id)
       for (const neighbor of neighbors) {

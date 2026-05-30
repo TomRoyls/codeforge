@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { RayCondition, HearthCondition, CopperRay, CopperHearth, CopperMorningStats, CopperMorningResult } from './copper-morning-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorHearthCondition(condition: HearthCondition | string): strin
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatRayTable(ray) */
 export function formatRayTable(ray: CopperRay): string {

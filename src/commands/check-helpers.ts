@@ -100,7 +100,7 @@ export function checkTodos(content: string): CheckResult {
  * // result.score === 100, result.status === 'pass'
  * ```
  */
-export function checkComplexity(content: string, filePath: string): CheckResult {
+export function checkComplexity(content: string, _filePath: string): CheckResult {
   const lines = content.split('\n')
 
   // Find function boundaries
@@ -216,7 +216,7 @@ export function checkDocCoverage(content: string, _filePath: string): CheckResul
     const line = lines[i]!
     const match = line.match(exportRegex)
     if (match) {
-      const name = match[1]!
+      const name = match[1] ?? ''
       let documented = false
 
       // Check if there's a JSDoc comment above this line
@@ -403,14 +403,14 @@ export function checkDuplicates(lines: string[]): CheckResult {
  * ```
  */
 export function checkUnusedExports(file: FileContent): CheckResult {
-  const { content, filePath } = file
+  const { content} = file
 
   // Collect export names
   const exportNameRegex = /export\s+(?:function|class|const|let|var|interface|type|enum)\s+(\w+)/g
   const exportNames = new Set<string>()
   let match: RegExpExecArray | null
   while ((match = exportNameRegex.exec(content)) !== null) {
-    exportNames.add(match[1]!)
+    exportNames.add(match[1] ?? '')
   }
 
   // Collect named import names
@@ -582,7 +582,7 @@ export async function runHealthCheck(
     }, 0)
     const totalDocumented = docResults.reduce((sum, r) => {
       const match = r.message.match(/(\d+)\/(\d+)/)
-      return sum + (match ? parseInt(match[1]!, 10) : 0)
+      return sum + (match ? parseInt(match[1] ?? '', 10) : 0)
     }, 0)
 
     if (totalExported === 0) {

@@ -138,8 +138,8 @@ export default class ConstellationChart extends Command {
           contents.push(content)
         } catch {
           // Skip unreadable files
-        },
-      ),
+        }
+      }),
     )
 
     const result: ConstellationChartResult = buildConstellationChartResult(files, contents, {})

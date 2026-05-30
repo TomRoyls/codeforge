@@ -206,8 +206,8 @@ export function computeTodoStats(items: TodoItem[]): TodoStats {
   let newestItem: TodoItem | null = null
   for (const item of items) {
     if (item.age !== null) {
-      if (oldestItem === null || item.age > oldestItem.age) oldestItem = item
-      if (newestItem === null || item.age < newestItem.age) newestItem = item
+      if (oldestItem === null || item.age > (oldestItem.age ?? 0)) oldestItem = item
+      if (newestItem === null || item.age < (newestItem.age ?? Infinity)) newestItem = item
     }
   }
 

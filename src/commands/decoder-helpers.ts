@@ -74,7 +74,6 @@ export function computeGrade(score: number): string {
  */
 export function scoreNaming(content: string): number {
   let score = 80
-  const lines = content.split('\n')
 
   // Penalize single-letter variable names (except i, j, k in loops)
   const singleLetterVars = content.match(/\b(?:const|let|var)\s+([a-z])\b/g)
@@ -84,7 +83,7 @@ export function scoreNaming(content: string): number {
     if (loopBlocks) {
       for (const block of loopBlocks) {
         const m = block.match(/([ijk])/)
-        if (m) loopLetters.add(m[1]!)
+        if (m) loopLetters.add(m[1] ?? '')
       }
     }
     const badVars = singleLetterVars.filter((v) => {

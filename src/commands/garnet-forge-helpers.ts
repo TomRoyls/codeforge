@@ -654,7 +654,7 @@ export async function buildGarnetForgeResult(
 export function generateRecommendations(
   ingots: GarnetIngot[],
   crucibles: GarnetCrucible[],
-  furnace: GarnetForgeResult['furnace'],
+  _furnace: GarnetForgeResult['furnace'],
   stats: GarnetForgeResult['stats'],
 ): string[] {
   const recs: string[] = []

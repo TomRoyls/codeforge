@@ -263,7 +263,7 @@ export function extractImportPaths(content: string): string[] {
   const matches = content.match(/from\s+['"]([^'"]+)['"]/g) ?? []
   return matches.map(m => {
     const inner = m.match(/['"]([^'"]+)['"]/)
-    return inner ? inner[1] : ''
+    return inner?.[1] ?? ''
   }).filter(Boolean)
 }
 
@@ -643,7 +643,6 @@ export function analyzeFoundationStone(
 
   const loc = countLoc(content)
   const exports = countExports(content)
-  const imports = countImports(content)
 
   const qualityScore = Math.min(100, Math.max(0, Math.round(
     stoneQuality * 0.25 +
@@ -722,12 +721,15 @@ export function analyzeMasonrySection(stones: FoundationStone[], dirPath: string
   const avgLevelness = Math.round(stones.reduce((s, t) => s + t.levelness, 0) / n)
   const avgSquareness = Math.round(stones.reduce((s, t) => s + t.squareness, 0) / n)
 
-  const cornerstone = stones.reduce((best, s) =>
-    s.isCornerstone && (!best || s.qualityScore > best.qualityScore) ? s : best,
-    null as FoundationStone | null,
-  )?.file ?? stones.reduce((best, s) =>
-    s.qualityScore > best.qualityScore ? s : best, stones[0],
-  ).file
+  const firstStone = stones[0]
+  const cornerstone = firstStone
+    ? (stones.reduce((best, s) =>
+        s.isCornerstone && (!best || s.qualityScore > best.qualityScore) ? s : best,
+        null as FoundationStone | null,
+      )?.file ?? stones.reduce((best, s) =>
+        s.qualityScore > best.qualityScore ? s : best, firstStone,
+      ).file)
+    : 'none'
 
   const keystone = stones.reduce((best, s) =>
     s.isKeystone && (!best || s.load.supportedWeight > best.load.supportedWeight) ? s : best,
@@ -771,11 +773,12 @@ export function analyzeMasonrySection(stones: FoundationStone[], dirPath: string
  * generateRecommendations(stones, sections, building, stats) // string[]
  */
 export function generateRecommendations(
-  stones: FoundationStone[],
+  _stones: FoundationStone[],
   sections: MasonrySection[],
   _building: BuildingInfo,
   stats: QuarterstoneStats,
 ): string[] {
+  void _stones
   void _building
   const recs: string[] = []
 
@@ -835,14 +838,18 @@ export function buildQuarterstoneResult(
 
   const importMap = new Map<string, string[]>()
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
     const paths = extractImportPaths(content)
-    importMap.set(files[i], paths)
+    importMap.set(file, paths)
   }
 
   const dependentCounts = new Map<string, number>()
   for (let i = 0; i < files.length; i++) {
-    dependentCounts.set(files[i], 0)
+    const file = files[i]
+    if (!file) continue
+    dependentCounts.set(file, 0)
   }
   for (const [file, paths] of importMap) {
     void file
@@ -867,24 +874,33 @@ export function buildQuarterstoneResult(
   })
 
   for (let i = 0; i < stones.length; i++) {
-    const paths = importMap.get(files[i]) ?? []
-    stones[i].connections.restsUpon = paths
+    const file = files[i]
+    const stone = stones[i]
+    if (!file || !stone) continue
+    const paths = importMap.get(file) ?? []
+    stone.connections.restsUpon = paths
 
     const siblings: string[] = []
-    const dir = files[i].includes('/') ? files[i].slice(0, files[i].lastIndexOf('/')) : '.'
+    const dir = file.includes('/') ? file.slice(0, file.lastIndexOf('/')) : '.'
     for (const f of files) {
       const fDir = f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '.'
-      if (fDir === dir && f !== files[i]) siblings.push(f)
+      if (fDir === dir && f !== file) siblings.push(f)
     }
-    stones[i].connections.adjacentTo = siblings
+    stone.connections.adjacentTo = siblings
   }
 
   for (let i = 0; i < stones.length; i++) {
+    const stoneI = stones[i]
+    const fileI = files[i]
+    if (!stoneI || !fileI) continue
     for (let j = 0; j < stones.length; j++) {
       if (i === j) continue
-      if (stones[j].connections.restsUpon.some(p => files[i].endsWith(p.replace(/^\.\//, '')))) {
-        if (!stones[i].connections.supports.includes(files[j])) {
-          stones[i].connections.supports.push(files[j])
+      const stoneJ = stones[j]
+      const fileJ = files[j]
+      if (!stoneJ || !fileJ) continue
+      if (stoneJ.connections.restsUpon.some(p => fileI.endsWith(p.replace(/^\.\//, '')))) {
+        if (!stoneI.connections.supports.includes(fileJ)) {
+          stoneI.connections.supports.push(fileJ)
         }
       }
     }
@@ -916,12 +932,13 @@ export function buildQuarterstoneResult(
     avgPlumbAlignment * 0.2 + avgLevelness * 0.15 + avgSquareness * 0.2,
   )
 
+  const first = stones[0]
   const building: BuildingInfo = {
-    cornerstone: stones.length > 0
-      ? stones.reduce((best, s) => s.qualityScore > best.qualityScore ? s : best, stones[0]).file
+    cornerstone: first
+      ? stones.reduce((best, s) => s.qualityScore > best.qualityScore ? s : best, first).file
       : 'none',
-    keystone: stones.length > 0
-      ? stones.reduce((best, s) => s.load.supportedWeight > best.load.supportedWeight ? s : best, stones[0]).file
+    keystone: first
+      ? stones.reduce((best, s) => s.load.supportedWeight > best.load.supportedWeight ? s : best, first).file
       : 'none',
     avgStoneQuality,
     avgMortarStrength,
@@ -965,14 +982,14 @@ export function buildQuarterstoneResult(
     masterMasonGrade: classifyMasterMasonGrade(structuralHealth),
     cornerstoneFile: building.cornerstone,
     keystoneFile: building.keystone,
-    strongestStone: stones.length > 0
-      ? stones.reduce((s, t) => t.qualityScore > s.qualityScore ? t : s, stones[0]).file : 'none',
-    weakestStone: stones.length > 0
-      ? stones.reduce((s, t) => t.qualityScore < s.qualityScore ? t : s, stones[0]).file : 'none',
-    heaviestLoad: stones.length > 0
-      ? stones.reduce((s, t) => t.load.totalLoad > s.load.totalLoad ? t : s, stones[0]).file : 'none',
-    bestMasonry: stones.length > 0
-      ? stones.reduce((s, t) => t.masonry.mortarQuality > s.masonry.mortarQuality ? t : s, stones[0]).file : 'none',
+    strongestStone: first
+      ? stones.reduce((s, t) => t.qualityScore > s.qualityScore ? t : s, first).file : 'none',
+    weakestStone: first
+      ? stones.reduce((s, t) => t.qualityScore < s.qualityScore ? t : s, first).file : 'none',
+    heaviestLoad: first
+      ? stones.reduce((s, t) => t.load.totalLoad > s.load.totalLoad ? t : s, first).file : 'none',
+    bestMasonry: first
+      ? stones.reduce((s, t) => t.masonry.mortarQuality > s.masonry.mortarQuality ? t : s, first).file : 'none',
   }
 
   const recommendations = generateRecommendations(stones, sections, building, stats)

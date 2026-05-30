@@ -93,44 +93,56 @@ export function analyzeSections(content: string, _filePath: string): ScrollSecti
 
   const functionMatches = content.matchAll(/(?:\/\*\*[\s\S]*?\*\/\s*)?(export\s+)?(?:async\s+)?function\s+(\w+)/g) || []
   for (const m of functionMatches) {
+    const name = m[2]
+    if (!name) continue
     const offset = m.index ?? 0
     const preceding = content.slice(Math.max(0, offset - 500), offset + m[0].length)
-    sections.push(buildSection(m[2], 'function', m[1] !== undefined, preceding, content, lines))
+    sections.push(buildSection(name, 'function', m[1] !== undefined, preceding, content, lines))
   }
 
   const classMatches = content.matchAll(/(?:\/\*\*[\s\S]*?\*\/\s*)?(export\s+)?class\s+(\w+)/g) || []
   for (const m of classMatches) {
+    const name = m[2]
+    if (!name) continue
     const offset = m.index ?? 0
     const preceding = content.slice(Math.max(0, offset - 500), offset + m[0].length)
-    sections.push(buildSection(m[2], 'class', m[1] !== undefined, preceding, content, lines))
+    sections.push(buildSection(name, 'class', m[1] !== undefined, preceding, content, lines))
   }
 
   const ifaceMatches = content.matchAll(/(?:\/\*\*[\s\S]*?\*\/\s*)?(export\s+)?interface\s+(\w+)/g) || []
   for (const m of ifaceMatches) {
+    const name = m[2]
+    if (!name) continue
     const offset = m.index ?? 0
     const preceding = content.slice(Math.max(0, offset - 500), offset + m[0].length)
-    sections.push(buildSection(m[2], 'interface', m[1] !== undefined, preceding, content, lines))
+    sections.push(buildSection(name, 'interface', m[1] !== undefined, preceding, content, lines))
   }
 
   const typeMatches = content.matchAll(/(?:\/\*\*[\s\S]*?\*\/\s*)?(export\s+)?type\s+(\w+)/g) || []
   for (const m of typeMatches) {
+    const name = m[2]
+    if (!name) continue
     const offset = m.index ?? 0
     const preceding = content.slice(Math.max(0, offset - 500), offset + m[0].length)
-    sections.push(buildSection(m[2], 'type', m[1] !== undefined, preceding, content, lines))
+    sections.push(buildSection(name, 'type', m[1] !== undefined, preceding, content, lines))
   }
 
   const constMatches = content.matchAll(/(?:\/\*\*[\s\S]*?\*\/\s*)?(export\s+)?const\s+(\w+)/g) || []
   for (const m of constMatches) {
+    const name = m[2]
+    if (!name) continue
     const offset = m.index ?? 0
     const preceding = content.slice(Math.max(0, offset - 500), offset + m[0].length)
-    sections.push(buildSection(m[2], 'constant', m[1] !== undefined, preceding, content, lines))
+    sections.push(buildSection(name, 'constant', m[1] !== undefined, preceding, content, lines))
   }
 
   const enumMatches = content.matchAll(/(?:\/\*\*[\s\S]*?\*\/\s*)?(export\s+)?enum\s+(\w+)/g) || []
   for (const m of enumMatches) {
+    const name = m[2]
+    if (!name) continue
     const offset = m.index ?? 0
     const preceding = content.slice(Math.max(0, offset - 500), offset + m[0].length)
-    sections.push(buildSection(m[2], 'enum', m[1] !== undefined, preceding, content, lines))
+    sections.push(buildSection(name, 'enum', m[1] !== undefined, preceding, content, lines))
   }
 
   return sections
@@ -138,7 +150,7 @@ export function analyzeSections(content: string, _filePath: string): ScrollSecti
 
 function buildSection(name: string, type: SectionType, isExported: boolean, preceding: string, _content: string, _lines: string[]): ScrollSection {
   const hasJSDoc = /\/\*\*[\s\S]*?\*\//.test(preceding)
-  const jsDocText = hasJSDoc ? (preceding.match(/\/\*\*([\s\S]*?)\*\//) || ['', ''])[1] : ''
+  const jsDocText = hasJSDoc ? (preceding.match(/\/\*\*([\s\S]*?)\*\//) ?? ['', ''])[1] ?? '' : ''
 
   let jsDocQuality = 0
   if (hasJSDoc) {
@@ -179,10 +191,11 @@ export function analyzeMarginalia(content: string): MarginaliaItem[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const commentMatch = line.match(/\/\/\s*(.+)$/)
     if (!commentMatch) continue
 
-    const text = commentMatch[1].trim()
+    const text = commentMatch[1]?.trim() ?? ''
     const lineNum = i + 1
 
     if (/^TODO[\s:]/i.test(text)) {
@@ -275,7 +288,6 @@ export function evaluateScroll(content: string, filePath: string): Scroll {
   const inkQuality = evaluateInkQuality(content)
 
   const jsDocBlocks = (content.match(/\/\*\*[\s\S]*?\*\//g) || []).length
-  const codeLines = content.split('\n').filter(l => l.trim().length > 0).length
   const hasTypes = /:\s*(string|number|boolean|void|Promise|Record)/.test(content)
 
   let preservation = 30
@@ -466,11 +478,13 @@ export function buildParchmentResult(
   const scrolls: Scroll[] = []
 
   for (let i = 0; i < files.length; i++) {
-    scrolls.push(evaluateScroll(contents[i] || '', files[i]))
+    const file = files[i]
+    if (!file) continue
+    scrolls.push(evaluateScroll(contents[i] ?? '', file))
   }
 
   const allSections = scrolls.flatMap(s => s.sections)
-  const allMarginalia = scrolls.flatMap(s => analyzeMarginalia(contents[scrolls.indexOf(s)] || ''))
+  const allMarginalia = scrolls.flatMap((_s, idx) => analyzeMarginalia(contents[idx] ?? ''))
 
   const avg = (arr: number[]) => arr.length > 0
     ? Math.round(arr.reduce((s, v) => s + v, 0) / arr.length)

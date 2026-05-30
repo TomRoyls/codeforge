@@ -71,7 +71,10 @@ export function identifyDirections(files: string[], contents: string[]): Compass
     const exports: string[] = []
     const exportRe = /export\s+(?:default\s+)?(?:function|class|const|let|var|type|interface)\s+(\w+)/g
     let m: RegExpExecArray | null
-    while ((m = exportRe.exec(content)) !== null) exports.push(m[1])
+    while ((m = exportRe.exec(content)) !== null) {
+      const exportName = m[1]
+      if (exportName !== undefined) exports.push(exportName)
+    }
     exportMap.set(file, exports)
 
     if (SOUTH_PATTERNS.test(basename)) { buckets.south.push(file); continue }
@@ -173,8 +176,11 @@ export function findNavigationRoutes(
     for (const line of content.split('\n')) {
       const match = line.match(IMPORT_RE)
       if (match) {
-        const resolved = resolveSimpleImport(match[1], file, new Set(files))
-        if (resolved) imported.add(resolved)
+        const importPath = match[1]
+        if (importPath !== undefined) {
+          const resolved = resolveSimpleImport(importPath, file, new Set(files))
+          if (resolved) imported.add(resolved)
+        }
       }
     }
     fileImports.set(file, imported)
@@ -272,9 +278,12 @@ export function findCenter(files: string[], contents: string[]): string {
     for (const line of content.split('\n')) {
       const match = line.match(IMPORT_RE)
       if (match) {
-        const resolved = resolveSimpleImport(match[1], file, new Set(files))
-        if (resolved && importCounts.has(resolved)) {
-          importCounts.set(resolved, (importCounts.get(resolved) ?? 0) + 1)
+        const importPath = match[1]
+        if (importPath !== undefined) {
+          const resolved = resolveSimpleImport(importPath, file, new Set(files))
+          if (resolved && importCounts.has(resolved)) {
+            importCounts.set(resolved, (importCounts.get(resolved) ?? 0) + 1)
+          }
         }
       }
     }
@@ -312,6 +321,7 @@ export function generateOnboardingGuide(directions: CompassDirection[], _routes:
 
   for (let i = 0; i < order.length; i++) {
     const dir = order[i]
+    if (dir === undefined) continue
     const d = dirMap.get(dir)
     if (!d || d.fileCount === 0) continue
     const prefix = `[${i + 1}]`

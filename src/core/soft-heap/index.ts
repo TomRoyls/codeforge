@@ -39,23 +39,26 @@ export class SoftHeap<T = unknown> {
   peek(): T | undefined {
     if (this.header === null) return undefined
     const minNode = this.findMinNode()
-    if (minNode.items.length === 0) return undefined
-    return minNode.items[0]
+    const offset = minNode._itemOffset ?? 0
+    if (offset >= minNode.items.length) return undefined
+    return minNode.items[offset]
   }
 
   extractMin(): T | undefined {
     if (this.header === null) return undefined
     const { prev: minPrev, node: minNode } = this.findMinNodeWithPrev()
 
-    if (minNode.items.length === 0) {
+    const offset = minNode._itemOffset ?? 0
+    if (offset >= minNode.items.length) {
       this.removeNode(minPrev, minNode)
       return this.extractMin()
     }
 
-    const item = minNode.items.shift()!
+    const item = minNode.items[offset]!
+    minNode._itemOffset = offset + 1
     this._size--
 
-    if (minNode.items.length === 0) {
+    if (offset + 1 >= minNode.items.length) {
       this.removeNode(minPrev, minNode)
     }
     return item
@@ -202,7 +205,7 @@ export class SoftHeap<T = unknown> {
         const loser: SoftHeapNode<T> =
           this.cmp(current.ckey, next.ckey) <= 0 ? next : current
 
-        if (loser.items.length > 0 && winner.rank >= this._rankThreshold) {
+        if (loser.items.length - (loser._itemOffset ?? 0) > 0 && winner.rank >= this._rankThreshold) {
           this.corruptNode(loser, winner.ckey)
         }
 
@@ -262,7 +265,10 @@ export class SoftHeap<T = unknown> {
   private collectItems(root: SoftHeapNode<T> | null, result: T[]): void {
     let current = root
     while (current !== null) {
-      result.push(...current.items)
+      const offset = current._itemOffset ?? 0
+      for (let i = offset; i < current.items.length; i++) {
+        result.push(current.items[i]!)
+      }
       this.collectItems(current.child, result)
       current = current.next
     }
@@ -272,7 +278,7 @@ export class SoftHeap<T = unknown> {
     if (root === null) return null
     return {
       ckey: root.ckey,
-      items: [...root.items],
+      items: root.items.slice(root._itemOffset ?? 0),
       rank: root.rank,
       child: this.cloneTree(root.child),
       next: this.cloneTree(root.next),

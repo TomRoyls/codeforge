@@ -880,7 +880,7 @@ export async function buildAmberSummitResult(
 export function generateRecommendations(
   peaks: AmberPeak[],
   ridges: AmberRidge[],
-  mountain: AmberSummitResult['mountain'],
+  _mountain: AmberSummitResult['mountain'],
   stats: AmberSummitStats,
 ): string[] {
   const recs: string[] = []

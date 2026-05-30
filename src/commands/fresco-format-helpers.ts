@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { FrescoResult, FrescoLayer, FrescoFile, PaintingTechnique, FrescoStats, LayerIssue } from './fresco-helpers.js'
+import type { FrescoResult, FrescoLayer, FrescoFile, FrescoStats } from './fresco-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────────
 

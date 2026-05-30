@@ -100,7 +100,6 @@ export default class Annotate extends Command {
 
     const format = flags.format as 'json' | 'table'
     const { verbose } = flags
-    const sortBy = flags.sort as 'count' | 'file' | 'severity' | 'type'
 
     const spinner = ora('Discovering files...').start()
 

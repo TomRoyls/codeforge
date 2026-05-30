@@ -147,7 +147,7 @@ export function findLogicalOperators(content: string, filePath: string): Mutable
     if (line.trim().startsWith('//') || line.trim().startsWith('*')) continue
 
     const andMatches = line.matchAll(/&&/g)
-    for (const m of andMatches) {
+    for (const _ of andMatches) {
       mutations.push({
         file: filePath, line: i + 1, code: '&&',
         mutationType: 'logical-operator', mutatedCode: '||',
@@ -157,7 +157,7 @@ export function findLogicalOperators(content: string, filePath: string): Mutable
     }
 
     const orMatches = line.matchAll(/\|\|/g)
-    for (const m of orMatches) {
+    for (const _ of orMatches) {
       mutations.push({
         file: filePath, line: i + 1, code: '||',
         mutationType: 'logical-operator', mutatedCode: '&&',
@@ -187,7 +187,7 @@ export function findBooleanLiterals(content: string, filePath: string): MutableP
     if (/import\s/.test(line)) continue
 
     const trueMatches = line.matchAll(/\btrue\b/g)
-    for (const m of trueMatches) {
+    for (const _ of trueMatches) {
       mutations.push({
         file: filePath, line: i + 1, code: 'true',
         mutationType: 'boolean-literal', mutatedCode: 'false',
@@ -197,7 +197,7 @@ export function findBooleanLiterals(content: string, filePath: string): MutableP
     }
 
     const falseMatches = line.matchAll(/\bfalse\b/g)
-    for (const m of falseMatches) {
+    for (const _ of falseMatches) {
       mutations.push({
         file: filePath, line: i + 1, code: 'false',
         mutationType: 'boolean-literal', mutatedCode: 'true',
@@ -228,11 +228,11 @@ export function findNumberLiterals(content: string, filePath: string): MutablePo
 
     const numMatches = line.matchAll(/\b(\d+(?:\.\d+)?)\b/g)
     for (const m of numMatches) {
-      const num = parseFloat(m[1]!)
+      const num = parseFloat(m[1] ?? '')
       if (num === 0 || num === 1 || num === -1) continue
       const offset = num > 0 ? num + 1 : num - 1
       mutations.push({
-        file: filePath, line: i + 1, code: m[1]!,
+        file: filePath, line: i + 1, code: m[1] ?? '',
         mutationType: 'number-literal', mutatedCode: String(offset),
         detectionLikelihood: 'medium',
         reason: `Number ${num} could be changed to ${offset}`,
@@ -262,7 +262,7 @@ export function findStringLiterals(content: string, filePath: string): MutablePo
     const strMatches = line.matchAll(/['"]([a-zA-Z][a-zA-Z0-9_ ]{2,})['"]/g)
     for (const m of strMatches) {
       const original = m[0]!
-      const inner = m[1]!
+      const inner = m[1] ?? ''
       const mutated = original.replace(inner, inner + '_mutated')
       mutations.push({
         file: filePath, line: i + 1, code: original,
@@ -291,7 +291,7 @@ export function findReturnStatements(content: string, filePath: string): Mutable
     const line = lines[i]!
     const match = line.match(/\breturn\s+([^;{}\n]+)/)
     if (match) {
-      const value = match[1]!.trim()
+      const value = match[1] ?? ''.trim()
       if (value === 'null' || value === 'undefined' || value === 'void') continue
       mutations.push({
         file: filePath, line: i + 1, code: `return ${value}`,
@@ -320,7 +320,7 @@ export function findConditionals(content: string, filePath: string): MutablePoin
     const line = lines[i]!
     const ifMatch = line.match(/\bif\s*\(([^)]+)\)/)
     if (ifMatch) {
-      const condition = ifMatch[1]!.trim()
+      const condition = ifMatch[1] ?? ''.trim()
       if (condition.startsWith('!')) continue
       mutations.push({
         file: filePath, line: i + 1, code: condition,
@@ -352,7 +352,7 @@ export function findConditionals(content: string, filePath: string): MutablePoin
  * estimateDetectionLikelihood(mutation, srcContent, testContent) // 'high'
  */
 export function estimateDetectionLikelihood(
-  mutation: MutablePoint,
+  _mutation: MutablePoint,
   _sourceContent: string,
   testContent: string,
 ): DetectionLikelihood {

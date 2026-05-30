@@ -278,7 +278,6 @@ export function measureBody(content: string): BodyMeasure {
   const classes = countClasses(content)
   const interfaces = countInterfaces(content)
   const exports = countExports(content)
-  const imports = countImports(content)
   const jsdoc = countJSDoc(content)
   const types = countTypeAnnotations(content)
   const errors = countErrorHandling(content)
@@ -325,6 +324,7 @@ export function measureBody(content: string): BodyMeasure {
 
   const isStable = density >= 50 && countTodos(content) === 0
   const isCollapsing = countDeprecated(content) > 0 || countTodos(content) > 3
+  const imports = countImports(content)
 
   let type: BodyMeasure['type'] = 'asteroid'
   if (mass >= 60 && exports > 2 && isStable) type = 'star'
@@ -881,19 +881,19 @@ export function buildGravityWellResult(
   }
 
   const mostMassive = totalFiles > 0
-    ? bodies.reduce((best, b) => b.gravitationalMass > best.gravitationalMass ? b : best, bodies[0]).file
+    ? bodies.reduce((best, b) => b.gravitationalMass > best.gravitationalMass ? b : best, bodies[0] as typeof bodies[number]).file
     : ''
   const mostStable = totalFiles > 0
-    ? bodies.reduce((best, b) => b.orbitalStability > best.orbitalStability ? b : best, bodies[0]).file
+    ? bodies.reduce((best, b) => b.orbitalStability > best.orbitalStability ? b : best, bodies[0] as typeof bodies[number]).file
     : ''
   const hardestToEscape = totalFiles > 0
-    ? bodies.reduce((best, b) => b.escapeVelocity > best.escapeVelocity ? b : best, bodies[0]).file
+    ? bodies.reduce((best, b) => b.escapeVelocity > best.escapeVelocity ? b : best, bodies[0] as typeof bodies[number]).file
     : ''
   const strongestGravity = totalFiles > 0
-    ? bodies.reduce((best, b) => b.gravity.pull > best.gravity.pull ? b : best, bodies[0]).file
+    ? bodies.reduce((best, b) => b.gravity.pull > best.gravity.pull ? b : best, bodies[0] as typeof bodies[number]).file
     : ''
   const mostDistorting = totalFiles > 0
-    ? bodies.reduce((best, b) => b.gravitationalLensing > best.gravitationalLensing ? b : best, bodies[0]).file
+    ? bodies.reduce((best, b) => b.gravitationalLensing > best.gravitationalLensing ? b : best, bodies[0] as typeof bodies[number]).file
     : ''
 
   const stats: GravityWellStats = {

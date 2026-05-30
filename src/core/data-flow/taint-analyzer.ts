@@ -167,8 +167,9 @@ export class TaintAnalyzer {
     ]
     visited.add(source.id)
 
-    while (queue.length > 0) {
-      const current = queue.shift()
+    let _qi = 0
+    while (_qi < queue.length) {
+      const current = queue[_qi++]
       if (!current) continue
 
       const currentNode = graph.nodes.get(current.nodeId)

@@ -127,10 +127,11 @@ export class GraphAdjList<T> {
 
     const visited = new Set<T>();
     const queue: T[] = [start];
+    let _qi = 0;
     visited.add(start);
 
-    while (queue.length > 0) {
-      const vertex = queue.shift()!;
+    while (_qi < queue.length) {
+      const vertex = queue[_qi++]!;
       callback(vertex);
 
       for (const neighbor of this.getNeighbors(vertex)) {
@@ -174,10 +175,11 @@ export class GraphAdjList<T> {
 
     const visited = new Set<T>();
     const queue: T[] = [from];
+    let _qi = 0;
     visited.add(from);
 
-    while (queue.length > 0) {
-      const vertex = queue.shift()!;
+    while (_qi < queue.length) {
+      const vertex = queue[_qi++]!;
 
       for (const neighbor of this.getNeighbors(vertex)) {
         if (neighbor === to) {
@@ -228,10 +230,11 @@ export class GraphAdjList<T> {
   private bfsShortestPath(from: T, to: T): T[] | null {
     const visited = new Set<T>();
     const queue: Array<{ vertex: T; path: T[] }> = [{ vertex: from, path: [from] }];
+    let _qi = 0;
     visited.add(from);
 
-    while (queue.length > 0) {
-      const { vertex, path } = queue.shift()!;
+    while (_qi < queue.length) {
+      const { vertex, path } = queue[_qi++]!;
 
       for (const neighbor of this.getNeighbors(vertex)) {
         if (neighbor === to) {

@@ -110,7 +110,7 @@ const TYPE_RE = /(?:export\s+)?type\s+\w+/g
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
 const TODO_RE = /\/\/\s*(TODO|FIXME|HACK|XXX)/gi
 const ANY_RE = /:\s*any\b/g
-const CONSOLE_RE = /console\.\w+\(/g
+
 const TEST_RE = /(?:describe|it|test)\s*\(/g
 
 // ─── Species Classification ─────────────────────────────────────────────────
@@ -277,8 +277,7 @@ export function analyzeOrganism(content: string, filePath: string, imports: stri
   const lifespan = classifyLifespan(biomass, exports)
 
   const prey = imports
-  const predators = dependents
-  const symbionts = findSymbionts(imports, dependents)
+  const symbionts = findSymbionts(imports, dependents, exports)
   const parasites = findParasites(imports, dependents, exports)
 
   return {
@@ -374,7 +373,7 @@ function classifyLifespan(biomass: number, exports: number): Organism['lifespan'
   return 'fossil'
 }
 
-function identifyNiche(species: Organism['species'], exports: number, functions: number, classes: number, interfaces: number): string {
+function identifyNiche(species: Organism['species'], _exports: number, _functions: number, classes: number, interfaces: number): string {
   switch (species) {
     case 'producer': return interfaces > 0 ? 'type-provider' : 'utility-source'
     case 'primary-consumer': return 'middleware-processor'
@@ -397,7 +396,7 @@ function findSymbionts(imports: string[], dependents: string[], exports: number)
   return result
 }
 
-function findParasites(imports: string[], dependents: string[], exports: number): string[] {
+function findParasites(imports: string[], _dependents: string[], exports: number): string[] {
   if (exports > 0 || imports.length === 0) return []
   return imports.slice(0, 5)
 }
@@ -414,7 +413,7 @@ export function extractImportPaths(content: string): string[] {
   let match: RegExpExecArray | null
   const re = new RegExp(IMPORT_FROM_RE.source, 'g')
   while ((match = re.exec(content)) !== null) {
-    paths.push(match[1])
+    paths.push(match[1] ?? '')
   }
   return paths
 }
@@ -513,7 +512,7 @@ function computeTrophicEfficiency(organisms: Organism[]): number {
   const withPrey = organisms.filter(o => o.prey.length > 0)
   if (withPrey.length === 0) return 50
   const avgRatio = withPrey.reduce((s, o) => {
-    const usefulPrey = o.prey.filter(p => o.predators.length > 0 || o.exports > 0)
+    const usefulPrey = o.prey.filter(_p => o.predators.length > 0 || o.prey.length > 0)
     return s + (usefulPrey.length / (o.prey.length || 1))
   }, 0) / withPrey.length
   return Math.min(100, Math.round(avgRatio * 100))
@@ -548,7 +547,6 @@ export function buildFoodWeb(organisms: Organism[]): FoodWeb {
 }
 
 function detectCycles(organisms: Organism[]): number {
-  const fileSet = new Set(organisms.map(o => o.file))
   let cycles = 0
   for (const org of organisms) {
     for (const prey of org.prey) {
@@ -584,9 +582,9 @@ export function computeEcologicalHealth(biomes: Biome[], organisms: Organism[]):
  */
 export function identifyKeystoneFile(organisms: Organism[]): string {
   const keystones = organisms.filter(o => o.keystone)
-  if (keystones.length === 0) return organisms.length > 0 ? organisms[0].file : 'none'
+  if (keystones.length === 0) return organisms.length > 0 ? (organisms[0] ?? { file: 'none' }).file : 'none'
   keystones.sort((a, b) => (b.population * b.fitness) - (a.population * a.fitness))
-  return keystones[0].file
+  return keystones[0]?.file ?? 'none'
 }
 
 /**
@@ -598,7 +596,7 @@ export function identifyParasiteFile(organisms: Organism[]): string {
   const parasites = organisms.filter(o => o.species === 'parasite')
   if (parasites.length === 0) return 'none'
   parasites.sort((a, b) => b.invasivePotential - a.invasivePotential)
-  return parasites[0].file
+  return parasites[0]?.file ?? 'none'
 }
 
 // ─── Recommendations ─────────────────────────────────────────────────────────
@@ -609,7 +607,7 @@ export function identifyParasiteFile(organisms: Organism[]): string {
  * generateTerrariumRecommendations(organisms, biomes, foodWeb, stats) // string[]
  */
 export function generateTerrariumRecommendations(
-  organisms: Organism[],
+  _organisms: Organism[],
   biomes: Biome[],
   foodWeb: FoodWeb,
   stats: TerrariumStats,
@@ -648,9 +646,12 @@ export function buildTerrariumResult(
 ): TerrariumResult {
   const importMap = new Map<string, string[]>()
   for (let i = 0; i < files.length; i++) {
-    const rawImports = extractImportPaths(contents[i])
-    const resolvedImports = resolveImports(files[i], rawImports, files)
-    importMap.set(files[i], resolvedImports)
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const rawImports = extractImportPaths(content)
+    const resolvedImports = resolveImports(file, rawImports, files)
+    importMap.set(file, resolvedImports)
   }
 
   const dependentMap = new Map<string, string[]>()
@@ -666,9 +667,12 @@ export function buildTerrariumResult(
 
   const organisms: Organism[] = []
   for (let i = 0; i < files.length; i++) {
-    const imports = importMap.get(files[i]) ?? []
-    const dependents = dependentMap.get(files[i]) ?? []
-    organisms.push(analyzeOrganism(contents[i], files[i], imports, dependents))
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const imports = importMap.get(file) ?? []
+    const dependents = dependentMap.get(file) ?? []
+    organisms.push(analyzeOrganism(content, file, imports, dependents))
   }
 
   const dirMap = new Map<string, Organism[]>()
@@ -760,8 +764,8 @@ function computeTerrariumStats(organisms: Organism[], biomes: Biome[], foodWeb: 
   }
 
   const sortedByDiversity = [...biomes].sort((a, b) => b.biodiversity - a.biodiversity)
-  const mostDiverse = sortedByDiversity.length > 0 ? sortedByDiversity[0].directory : 'none'
-  const leastDiverse = sortedByDiversity.length > 0 ? sortedByDiversity[sortedByDiversity.length - 1].directory : 'none'
+  const mostDiverse = sortedByDiversity[0]?.directory ?? 'none'
+  const leastDiverse = sortedByDiversity[sortedByDiversity.length - 1]?.directory ?? 'none'
 
   const keystoneFile = identifyKeystoneFile(organisms)
   const parasiteFile = identifyParasiteFile(organisms)

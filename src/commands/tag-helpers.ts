@@ -111,7 +111,7 @@ export function extractTags(content: string, filePath: string): CodeTag[] {
 
     TAG_PATTERN.lastIndex = 0
     while ((match = TAG_PATTERN.exec(line)) !== null) {
-      const rawType = match[1]!.toUpperCase()
+      const rawType = match[1] ?? ''.toUpperCase()
       if (!KNOWN_TYPES.has(rawType)) continue
 
       const tagType = rawType
@@ -148,7 +148,7 @@ export function parseTagType(line: string): { type: string; message: string } | 
   const match = TAG_PATTERN.exec(line)
   if (!match) return null
 
-  const type = match[1]!.toUpperCase()
+  const type = match[1] ?? ''.toUpperCase()
   const startOfMsg = match.index + match[0]!.length
   const message = line.slice(startOfMsg).replace(/^[\s:;-]+/, '').trim() || '(no message)'
   return { type, message }

@@ -51,7 +51,7 @@ export function colorGrade(grade: string): string {
     'iron-temple': good, 'beautiful-garden': good, 'master-forge': good,
 
     'proper-balance': okay, 'proper-metal': okay, 'proper-detail': okay,
-    'proper-anchoring': okay, 'proper-lotus': okay, 'proper-lotus': okay,
+    'proper-anchoring': okay, 'proper-lotus': okay,
     'proper-garden': okay, 'decent-plot': okay, 'skilled-crafter': okay,
 
     'brute-force': poor, 'bending-copper': poor, 'rough-cut': poor,

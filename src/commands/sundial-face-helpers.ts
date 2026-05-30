@@ -769,7 +769,7 @@ export function classifyChronometerGrade(avgPrecision: number): SundialFaceStats
  * generateRecommendations(marks, gardens, observatory, stats) // ['Add type annotations...']
  */
 export function generateRecommendations(
-  marks: SundialMark[],
+  _marks: SundialMark[],
   _gardens: SundialGarden[],
   _observatory: ObservatoryMeasure,
   stats: SundialFaceStats,
@@ -851,19 +851,19 @@ export function buildSundialFaceResult(
   const overallPrecision = observatory.overallPrecision
 
   const mostAccurate = marks.length > 0
-    ? marks.reduce((best, m) => m.gnomonAccuracy > best.gnomonAccuracy ? m : best, marks[0]).file
+    ? marks.reduce((best, m) => m.gnomonAccuracy > best.gnomonAccuracy ? m : best, marks[0] as typeof marks[number]).file
     : ''
   const bestCalibrated = marks.length > 0
-    ? marks.reduce((best, m) => m.dialCalibration > best.dialCalibration ? m : best, marks[0]).file
+    ? marks.reduce((best, m) => m.dialCalibration > best.dialCalibration ? m : best, marks[0] as typeof marks[number]).file
     : ''
   const mostRobust = marks.length > 0
-    ? marks.reduce((best, m) => m.weatheringResistance > best.weatheringResistance ? m : best, marks[0]).file
+    ? marks.reduce((best, m) => m.weatheringResistance > best.weatheringResistance ? m : best, marks[0] as typeof marks[number]).file
     : ''
   const mostWeathered = marks.length > 0
-    ? marks.reduce((best, m) => m.weathering.erosionScore > best.weathering.erosionScore ? m : best, marks[0]).file
+    ? marks.reduce((best, m) => m.weathering.erosionScore > best.weathering.erosionScore ? m : best, marks[0] as typeof marks[number]).file
     : ''
   const mostPredictable = marks.length > 0
-    ? marks.reduce((best, m) => m.timeTellingAccuracy > best.timeTellingAccuracy ? m : best, marks[0]).file
+    ? marks.reduce((best, m) => m.timeTellingAccuracy > best.timeTellingAccuracy ? m : best, marks[0] as typeof marks[number]).file
     : ''
 
   const stats: SundialFaceStats = {

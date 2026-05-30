@@ -64,7 +64,6 @@ export function colorGrade(grade: string): string {
 
     'no-forge': worst, 'no-star': worst, 'no-constellation': worst,
     'opaque': worst, 'no-strength': worst, 'stardust': worst,
-    'no-forge': worst, 'void': worst, 'meteor-smasher': worst,
   }
   return (tierMap[g] ?? low)(grade)
 }

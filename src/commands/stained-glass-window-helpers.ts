@@ -825,7 +825,7 @@ export function classifyGlazierGrade(avgBrilliance: number): StainedGlassWindowS
  * generateRecommendations(panels, bays, cathedral, stats) // ['Add JSDoc...']
  */
 export function generateRecommendations(
-  panels: GlassPanel[],
+  _panels: GlassPanel[],
   _bays: WindowBay[],
   _cathedral: CathedralMeasure,
   stats: StainedGlassWindowStats,
@@ -910,19 +910,19 @@ export function buildStainedGlassWindowResult(
   const overallBrilliance = cathedral.overallBrilliance
 
   const mostBrilliant = panels.length > 0
-    ? panels.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best, panels[0]).file
+    ? panels.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best, panels[0] as typeof panels[number]).file
     : ''
   const mostColorful = panels.length > 0
-    ? panels.reduce((best, p) => p.colorRichness > best.colorRichness ? p : best, panels[0]).file
+    ? panels.reduce((best, p) => p.colorRichness > best.colorRichness ? p : best, panels[0] as typeof panels[number]).file
     : ''
   const cleanestLead = panels.length > 0
-    ? panels.reduce((best, p) => p.leadQuality > best.leadQuality ? p : best, panels[0]).file
+    ? panels.reduce((best, p) => p.leadQuality > best.leadQuality ? p : best, panels[0] as typeof panels[number]).file
     : ''
   const bestFramed = panels.length > 0
-    ? panels.reduce((best, p) => p.windowFraming > best.windowFraming ? p : best, panels[0]).file
+    ? panels.reduce((best, p) => p.windowFraming > best.windowFraming ? p : best, panels[0] as typeof panels[number]).file
     : ''
   const bestStory = panels.length > 0
-    ? panels.reduce((best, p) => p.story.narrativeScore > best.story.narrativeScore ? p : best, panels[0]).file
+    ? panels.reduce((best, p) => p.story.narrativeScore > best.story.narrativeScore ? p : best, panels[0] as typeof panels[number]).file
     : ''
 
   const stats: StainedGlassWindowStats = {

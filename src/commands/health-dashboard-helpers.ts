@@ -1,4 +1,3 @@
-import { extname } from 'node:path'
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -165,7 +164,7 @@ export function assessDependencyHealth(
  * console.log(dim.findings)
  */
 export function assessSecurityHealth(
-  files: string[],
+  _files: string[],
   contents: Record<string, string>,
 ): HealthDimension {
   const findings: string[] = []
@@ -343,7 +342,7 @@ export function assessDocumentationHealth(
  * console.log(dim.score)
  */
 export function assessPerformanceHealth(
-  files: string[],
+  _files: string[],
   contents: Record<string, string>,
 ): HealthDimension {
   const findings: string[] = []

@@ -726,7 +726,7 @@ export function analyzePhantomClearing(trees: PhantomTree[], dirPath: string): P
 export function generateRecommendations(
   trees: PhantomTree[],
   clearings: PhantomClearing[],
-  forest: PhantomGroveResult['forest'],
+  _forest: PhantomGroveResult['forest'],
   stats: PhantomGroveResult['stats'],
 ): string[] {
   const recs: string[] = []

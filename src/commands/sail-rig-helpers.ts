@@ -434,7 +434,6 @@ export function measureHull(content: string): SailPanel['hull'] {
   const loc = countLoc(content)
   const console = countConsole(content)
   const todos = countTodos(content)
-  const comments = countComments(content)
   const functions = countFunctions(content)
   const exports = countExports(content)
   const types = countTypeAnnotations(content)
@@ -464,6 +463,7 @@ export function measureHull(content: string): SailPanel['hull'] {
     (exports * 8) + (functions * 5) + (loc * 0.3),
   )))
 
+  const comments = countComments(content)
   const displacement = Math.min(100, Math.max(0, Math.round(
     loc * 0.5 + branches * 3 + comments * 0.5,
   )))
@@ -476,7 +476,7 @@ export function measureHull(content: string): SailPanel['hull'] {
  * @example
  * measureBallast('try {} catch(e) {}') // { weight, isBalanced, ... }
  */
-export function measureBallast(content: string): SailPanel['ballast'] {
+export function measureBallast(content: string): { weight: number; isBalanced: boolean; isTooHeavy: boolean; isTooLight: boolean; hasStability: boolean; keelType: KeelType; stabilityScore: number } {
   const errors = countErrorHandling(content)
   const types = countTypeAnnotations(content)
   const exports = countExports(content)
@@ -524,7 +524,6 @@ export function measureRigging(content: string): SailPanel['rigging'] {
   const exports = countExports(content)
   const types = countTypeAnnotations(content)
   const loc = countLoc(content)
-  const branches = countBranches(content)
 
   const lineCount = imports + exports
   const isTaut = lineCount > 0 && types > 0
@@ -794,15 +793,15 @@ export function buildSailRigResult(
     overallEfficiency,
     captainGrade: classifyCaptainGrade(overallEfficiency),
     bestRigged: panels.length > 0
-      ? panels.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, panels[0]).file : 'none',
+      ? panels.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, panels[0] as typeof panels[number]).file : 'none',
     fastest: panels.length > 0
-      ? panels.reduce((a, b) => b.hullSpeed > a.hullSpeed ? b : a, panels[0]).file : 'none',
+      ? panels.reduce((a, b) => b.hullSpeed > a.hullSpeed ? b : a, panels[0] as typeof panels[number]).file : 'none',
     mostStable: panels.length > 0
-      ? panels.reduce((a, b) => b.ballast > a.ballast ? b : a, panels[0]).file : 'none',
+      ? panels.reduce((a, b) => b.ballast > a.ballast ? b : a, panels[0] as typeof panels[number]).file : 'none',
     mostTangled: panels.length > 0
-      ? panels.reduce((a, b) => b.rigging.tangleCount > a.rigging.tangleCount ? b : a, panels[0]).file : 'none',
+      ? panels.reduce((a, b) => b.rigging.tangleCount > a.rigging.tangleCount ? b : a, panels[0] as typeof panels[number]).file : 'none',
     mostBarnacled: panels.length > 0
-      ? panels.reduce((a, b) => b.hull.barnacleCount > a.hull.barnacleCount ? b : a, panels[0]).file : 'none',
+      ? panels.reduce((a, b) => b.hull.barnacleCount > a.hull.barnacleCount ? b : a, panels[0] as typeof panels[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(panels, fleets, regatta, stats)

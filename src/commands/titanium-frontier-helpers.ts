@@ -884,7 +884,7 @@ export async function buildTitaniumFrontierResult(
 export function generateRecommendations(
   panels: TitaniumPanel[],
   modules: TitaniumModule[],
-  space: TitaniumFrontierResult['space'],
+  _space: TitaniumFrontierResult['space'],
   stats: TitaniumFrontierStats,
 ): string[] {
   const recs: string[] = []

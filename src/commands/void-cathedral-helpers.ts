@@ -282,10 +282,7 @@ const hasReadonly = (c: string) => has(/\breadonly\b/, c)
 const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
 const hasStrictEq = (c: string) => has(/===/, c)
 const hasClass = (c: string) => has(/\bclass\b/, c)
-const hasTryCatch = (c: string) => has(/\btry\s*\{/, c)
 const hasOptional = (c: string) => has(/\?\s*:/, c)
-const hasNullishCoalescing = (c: string) => has(/\?\?/, c)
-const hasDefaultParam = (c: string) => has(/=\s*[^>]/, c)
 
 // ─── Measure Functions ─────────────────────────────────────────────
 

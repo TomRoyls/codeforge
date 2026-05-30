@@ -7,7 +7,6 @@ const ARROW_REGEX = /(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/g
 const CLASS_REGEX = /\bclass\s+\w+/g
 const INTERFACE_REGEX = /\binterface\s+\w+/g
 const TYPE_REGEX = /\btype\s+\w+/g
-const ENUM_REGEX = /\benum\s+\w+/g
 const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
 const ASYNC_REGEX = /\basync\s+/g
 const TRY_CATCH_REGEX = /\btry\s*\{/g
@@ -15,11 +14,8 @@ const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
 const CONSOLE_REGEX = /\bconsole\.\w+/g
 const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
 const GENERICS_REGEX = /<[^>]+>/g
-const PRIVATE_REGEX = /private\s+/g
-const PROTECTED_REGEX = /protected\s+/g
 const ANY_REGEX = /\bany\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
-const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
 
 // ─── Helper Functions ────────────────────────────────────────────────────────
 
@@ -33,7 +29,6 @@ function countExportKeywords(content: string): number { return countMatches(cont
 function countClassKeywords(content: string): number { return countMatches(content, CLASS_REGEX) }
 function countInterfaceKeywords(content: string): number { return countMatches(content, INTERFACE_REGEX) }
 function countTypeKeywords(content: string): number { return countMatches(content, TYPE_REGEX) }
-function countEnumKeywords(content: string): number { return countMatches(content, ENUM_REGEX) }
 function countFunctionKeywords(content: string): number { return countMatches(content, FUNCTION_REGEX) }
 function countArrowFunctions(content: string): number { return countMatches(content, ARROW_REGEX) }
 function countJSDocBlocks(content: string): number { return countMatches(content, JSDOC_REGEX) }
@@ -42,15 +37,10 @@ function countTryCatch(content: string): number { return countMatches(content, T
 function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
 function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
 function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
-function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
-function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
 function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
 function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
-function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
 
 function genericsCount_safe(content: string): number { return countMatches(content, GENERICS_REGEX) }
-function reExportCount_safe(content: string): number { return countMatches(content, REEXPORT_REGEX) }
-function enumCount_safe(content: string): number { return countMatches(content, ENUM_REGEX) }
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 

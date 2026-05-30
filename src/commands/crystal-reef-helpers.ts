@@ -729,7 +729,7 @@ export function analyzeCrystalAtoll(corals: CoralCrystal[], dirPath: string): Cr
 export function generateRecommendations(
   corals: CoralCrystal[],
   atolls: CrystalAtoll[],
-  ocean: CrystalReefResult['ocean'],
+  _ocean: CrystalReefResult['ocean'],
   stats: CrystalReefResult['stats'],
 ): string[] {
   const recs: string[] = []

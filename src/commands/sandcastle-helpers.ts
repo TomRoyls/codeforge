@@ -257,7 +257,7 @@ export function measureSandQuality(content: string): number {
   const indentStyles = new Set<string>()
   for (const line of lines) {
     const match = line.match(/^(\s*)/)
-    if (match && match[1].length > 0) {
+    if (match && match[1] !== undefined && match[1].length > 0) {
       indentStyles.add(match[1][0] === '\t' ? 'tab' : 'space')
     }
   }
@@ -767,12 +767,13 @@ export function analyzeSandFortress(towers: SandTower[], dirPath: string): SandF
  * generateRecommendations(towers, fortresses, shoreline, stats) // string[]
  */
 export function generateRecommendations(
-  towers: SandTower[],
+  _towers: SandTower[],
   fortresses: SandFortress[],
   _shoreline: ShorelineInfo,
   stats: SandcastleStats,
 ): string[] {
   void _shoreline
+  void _towers
   const recs: string[] = []
 
   if (stats.totalVulnerabilities > 15) {
@@ -892,18 +893,36 @@ export function buildSandcastleResult(
     totalStrengths: towers.reduce((s, t) => s + t.strengths.length, 0),
     overallStructuralHealth,
     architectGrade: classifyArchitectGrade(overallStructuralHealth),
-    strongestTower: towers.length > 0
-      ? towers.reduce((s, t) => t.qualityScore > s.qualityScore ? t : s, towers[0]).file : 'none',
-    weakestTower: towers.length > 0
-      ? towers.reduce((w, t) => t.qualityScore < w.qualityScore ? t : w, towers[0]).file : 'none',
-    deepestFoundation: towers.length > 0
-      ? towers.reduce((d, t) => t.foundationDepth > d.foundationDepth ? t : d, towers[0]).file : 'none',
-    highestTower: towers.length > 0
-      ? towers.reduce((h, t) => t.towerHeight > h.towerHeight ? t : h, towers[0]).file : 'none',
-    mostDefensible: fortresses.length > 0
-      ? fortresses.reduce((m, f) => f.fortressHealth > m.fortressHealth ? f : m, fortresses[0]).directory : 'none',
-    leastDefensible: fortresses.length > 0
-      ? fortresses.reduce((l, f) => f.fortressHealth < l.fortressHealth ? f : l, fortresses[0]).directory : 'none',
+    strongestTower: (() => {
+      const first = towers[0]
+      if (first === undefined) return 'none'
+      return towers.reduce((s, t) => t.qualityScore > s.qualityScore ? t : s, first).file
+    })(),
+    weakestTower: (() => {
+      const first = towers[0]
+      if (first === undefined) return 'none'
+      return towers.reduce((w, t) => t.qualityScore < w.qualityScore ? t : w, first).file
+    })(),
+    deepestFoundation: (() => {
+      const first = towers[0]
+      if (first === undefined) return 'none'
+      return towers.reduce((d, t) => t.foundationDepth > d.foundationDepth ? t : d, first).file
+    })(),
+    highestTower: (() => {
+      const first = towers[0]
+      if (first === undefined) return 'none'
+      return towers.reduce((h, t) => t.towerHeight > h.towerHeight ? t : h, first).file
+    })(),
+    mostDefensible: (() => {
+      const first = fortresses[0]
+      if (first === undefined) return 'none'
+      return fortresses.reduce((m, f) => f.fortressHealth > m.fortressHealth ? f : m, first).directory
+    })(),
+    leastDefensible: (() => {
+      const first = fortresses[0]
+      if (first === undefined) return 'none'
+      return fortresses.reduce((l, f) => f.fortressHealth < l.fortressHealth ? f : l, first).directory
+    })(),
   }
 
   const recommendations = generateRecommendations(towers, fortresses, shoreline, stats)

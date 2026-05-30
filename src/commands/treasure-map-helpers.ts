@@ -842,15 +842,15 @@ export function buildTreasureMapResult(
     overallMapQuality,
     cartographerGrade: classifyCartographerGrade(overallMapQuality),
     mostValuable: spots.length > 0
-      ? spots.reduce((a, b) => b.treasureValue > a.treasureValue ? b : a, spots[0]).file : 'none',
+      ? spots.reduce((a, b) => b.treasureValue > a.treasureValue ? b : a, spots[0] as typeof spots[number]).file : 'none',
     mostHidden: spots.length > 0
-      ? spots.reduce((a, b) => b.burialDepth > a.burialDepth ? b : a, spots[0]).file : 'none',
+      ? spots.reduce((a, b) => b.burialDepth > a.burialDepth ? b : a, spots[0] as typeof spots[number]).file : 'none',
     mostDangerous: spots.length > 0
-      ? spots.reduce((a, b) => b.pirateDanger > a.pirateDanger ? b : a, spots[0]).file : 'none',
+      ? spots.reduce((a, b) => b.pirateDanger > a.pirateDanger ? b : a, spots[0] as typeof spots[number]).file : 'none',
     easiestToFind: spots.length > 0
-      ? spots.reduce((a, b) => b.mapLegibility > a.mapLegibility ? b : a, spots[0]).file : 'none',
+      ? spots.reduce((a, b) => b.mapLegibility > a.mapLegibility ? b : a, spots[0] as typeof spots[number]).file : 'none',
     bestPreserved: spots.length > 0
-      ? spots.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, spots[0]).file : 'none',
+      ? spots.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, spots[0] as typeof spots[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(spots, islands, archipelago, stats)

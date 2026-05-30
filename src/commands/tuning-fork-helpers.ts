@@ -501,7 +501,7 @@ export function computeFrequency(qualityScore: number): { frequency: number; not
   const semitones = Math.round(12 * Math.log2(Math.max(1, frequency) / 16.35))
   const noteIndex = ((semitones % 12) + 12) % 12
   const octave = Math.floor(semitones / 12) + 1
-  return { frequency, note: NOTES[noteIndex], octave: Math.max(0, octave) }
+  return { frequency, note: NOTES[noteIndex] ?? '', octave: Math.max(0, octave) }
 }
 
 // ─── Classification Functions ────────────────────────────────────────────────
@@ -797,7 +797,7 @@ export function analyzeResonanceChamber(results: TuningResult[], dirPath: string
  * generateRecommendations(results, chambers, concert, stats) // string[]
  */
 export function generateRecommendations(
-  results: TuningResult[],
+  _results: TuningResult[],
   chambers: ResonanceChamber[],
   concert: ConcertInfo,
   stats: TuningForkStats,
@@ -944,13 +944,13 @@ export function buildTuningForkResult(
     isOrchestral,
     maestroGrade: classifyMaestroGrade(overallResonance),
     bestTuned: results.length > 0
-      ? results.reduce((b, r) => r.tuningAccuracy > b.tuningAccuracy ? r : b, results[0]).file : 'none',
+      ? results.reduce((b, r) => r.tuningAccuracy > b.tuningAccuracy ? r : b, results[0] as typeof results[number]).file : 'none',
     worstTuned: results.length > 0
-      ? results.reduce((w, r) => r.tuningAccuracy < w.tuningAccuracy ? r : w, results[0]).file : 'none',
+      ? results.reduce((w, r) => r.tuningAccuracy < w.tuningAccuracy ? r : w, results[0] as typeof results[number]).file : 'none',
     mostResonant: results.length > 0
-      ? results.reduce((m, r) => r.resonanceQuality > m.resonanceQuality ? r : m, results[0]).file : 'none',
+      ? results.reduce((m, r) => r.resonanceQuality > m.resonanceQuality ? r : m, results[0] as typeof results[number]).file : 'none',
     mostDissonant: results.length > 0
-      ? results.reduce((d, r) => d.beats.beatFrequency > r.beats.beatFrequency ? d : r, results[0]).file : 'none',
+      ? results.reduce((d, r) => d.beats.beatFrequency > r.beats.beatFrequency ? d : r, results[0] as typeof results[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(results, chambers, concert, stats)

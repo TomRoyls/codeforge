@@ -5,24 +5,41 @@ export interface HistoryPoint {
 import { clampPercent } from '../../utils/math-helpers.js'
 
 export class ETACalculator {
-  private history: HistoryPoint[] = []
-  private maxSize: number
+  private buffer: HistoryPoint[]
+  private head: number = 0
+  private tail: number = 0
+  private count: number = 0
+  private readonly capacity: number
 
   constructor(historySize: number = 100) {
-    this.maxSize = historySize
+    this.capacity = historySize
+    this.buffer = new Array<HistoryPoint>(historySize)
   }
 
   record(timestamp: number, value: number): void {
-    this.history.push({ timestamp, value })
-    if (this.history.length > this.maxSize) {
-      this.history = this.history.slice(this.history.length - this.maxSize)
+    this.buffer[this.tail] = { timestamp, value }
+    this.tail = (this.tail + 1) % this.capacity
+    if (this.count === this.capacity) {
+      this.head = (this.head + 1) % this.capacity
+    } else {
+      this.count++
     }
   }
 
+  private getOldest(): HistoryPoint | undefined {
+    if (this.count === 0) return undefined
+    return this.buffer[this.head]
+  }
+
+  private getNewest(): HistoryPoint | undefined {
+    if (this.count === 0) return undefined
+    return this.buffer[(this.tail - 1 + this.capacity) % this.capacity]
+  }
+
   calculateRate(): number {
-    if (this.history.length < 2) return 0
-    const earliest = this.history[0]!
-    const latest = this.history[this.history.length - 1]!
+    if (this.count < 2) return 0
+    const earliest = this.getOldest()!
+    const latest = this.getNewest()!
     const valueDiff = latest.value - earliest.value
     const timeDiff = latest.timestamp - earliest.timestamp
     if (timeDiff === 0) return 0
@@ -44,10 +61,16 @@ export class ETACalculator {
   }
 
   getHistory(): HistoryPoint[] {
-    return [...this.history]
+    const result: HistoryPoint[] = []
+    for (let i = 0; i < this.count; i++) {
+      result.push(this.buffer[(this.head + i) % this.capacity]!)
+    }
+    return result
   }
 
   clear(): void {
-    this.history = []
+    this.head = 0
+    this.tail = 0
+    this.count = 0
   }
 }

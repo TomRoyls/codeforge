@@ -207,19 +207,19 @@ export function extractCommentText(content: string): string[] {
   const singleLineRegex = /\/\/\s*(.*)/g
   let match: RegExpExecArray | null
   while ((match = singleLineRegex.exec(content)) !== null) {
-    comments.push(match[1])
+if (match[1] !== undefined) comments.push(match[1])
   }
 
   // Multi-line comments
   const multiLineRegex = /\/\*\s*([\s\S]*?)\s*\*\//g
   while ((match = multiLineRegex.exec(content)) !== null) {
-    comments.push(match[1])
+if (match[1] !== undefined) comments.push(match[1])
   }
 
   // Hash comments (Python, Shell, Ruby)
   const hashRegex = /#\s*(.*)/g
   while ((match = hashRegex.exec(content)) !== null) {
-    comments.push(match[1])
+if (match[1] !== undefined) comments.push(match[1])
   }
 
   return comments
@@ -271,9 +271,6 @@ export function extractIdentifiers(content: string, filePath: string): { token: 
   // Match word-like tokens that could be identifiers
   const identifierRegex = /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g
   let match: RegExpExecArray | null
-
-  // Build a set of lines for context inference
-  const lines = content.split('\n')
 
   while ((match = identifierRegex.exec(content)) !== null) {
     const word = match[1]

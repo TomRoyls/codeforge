@@ -146,10 +146,10 @@ export function parseGitLogNumstat(
       const entry = result.get(currentEmail)
       if (entry) {
         if (added !== '-') {
-          entry.linesAdded += Number.parseInt(added, 10) || 0
+          entry.linesAdded += Number.parseInt(added ?? '', 10) || 0
         }
         if (deleted !== '-') {
-          entry.linesDeleted += Number.parseInt(deleted, 10) || 0
+          entry.linesDeleted += Number.parseInt(deleted ?? '', 10) || 0
         }
         entry.filesTouched++
       }

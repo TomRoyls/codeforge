@@ -54,7 +54,7 @@ export function colorGrade(grade: string): string {
     'proper-base': okay, 'proper-understanding': okay, 'proper-chapel': okay,
     'proper-void': okay, 'decent-void': okay, 'proper-mason': okay,
 
-    'cluttered-space': poor, 'mundane-building': poor, 'noisy-code': poor,
+    'mundane-building': poor, 'noisy-code': poor,
     'heavy-anchor': poor, 'foggy-thought': poor, 'stone-church': poor,
     'crowded-hall': poor, 'cluttered-space': poor, 'apprentice': poor,
 
@@ -64,7 +64,6 @@ export function colorGrade(grade: string): string {
 
     'no-void': worst, 'no-structure': worst, 'babble': worst,
     'no-foundation': worst, 'oblivion': worst, 'dust': worst,
-    'no-void': worst, 'void': worst, 'destroyer': worst,
   }
   return (tierMap[g] ?? low)(grade)
 }

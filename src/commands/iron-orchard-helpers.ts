@@ -895,7 +895,7 @@ export async function buildIronGardenResult(
 export function generateRecommendations(
   blooms: IronBloom[],
   beds: IronBed[],
-  landscape: IronGardenResult['landscape'],
+  _landscape: IronGardenResult['landscape'],
   stats: IronGardenStats,
 ): string[] {
   const recs: string[] = []

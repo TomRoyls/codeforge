@@ -187,14 +187,11 @@ const INTERFACE_RE = /\binterface\b/g
 const TYPE_RE = /\btype\s+\w+\s*=/g
 const EXPORT_RE = /\bexport\b/g
 const IMPORT_RE = /\bimport\b/g
-const RETURN_RE = /\breturn\b/g
 const CONST_RE = /\bconst\b/g
 const LET_RE = /\blet\b/g
 const VAR_RE = /\bvar\b/g
 const IF_RE = /\bif\s*\(/g
 const ELSE_RE = /\belse\b/g
-const FOR_RE = /\bfor\s*\(/g
-const WHILE_RE = /\bwhile\s*\(/g
 const SWITCH_RE = /\bswitch\s*\(/g
 const TRY_RE = /\btry\s*\{/g
 const CATCH_RE = /\bcatch\b/g
@@ -202,8 +199,6 @@ const FINALLY_RE = /\bfinally\b/g
 const THROW_RE = /\bthrow\b/g
 const ERROR_RE = /\bError\b/g
 const ASYNC_RE = /\basync\b/g
-const AWAIT_RE = /\bawait\b/g
-const PROMISE_RE = /\bPromise\b/g
 const ANY_RE = /:\s*any\b/g
 const CONSOLE_RE = /\bconsole\.\w+/g
 const DEBUGGER_RE = /\bdebugger\b/g
@@ -335,10 +330,7 @@ export function measureShaping(content: string): ShapingMeasure {
   const classes = (content.match(CLASS_RE) ?? []).length
   const ifs = (content.match(IF_RE) ?? []).length
   const elses = (content.match(ELSE_RE) ?? []).length
-  const fors = (content.match(FOR_RE) ?? []).length
-  const whiles = (content.match(WHILE_RE) ?? []).length
   const switches = (content.match(SWITCH_RE) ?? []).length
-  const consts = (content.match(CONST_RE) ?? []).length
   const anys = (content.match(ANY_RE) ?? []).length
   const console = (content.match(CONSOLE_RE) ?? []).length
   const debuggers = (content.match(DEBUGGER_RE) ?? []).length
@@ -685,8 +677,8 @@ export function analyzePotteryStudio(pieces: PotteryPiece[], dirPath: string): P
  * generateRecommendations(pieces, studios, kiln, stats) // string[]
  */
 export function generateRecommendations(
-  pieces: PotteryPiece[],
-  studios: PotteryStudio[],
+  _pieces: PotteryPiece[],
+  _studios: PotteryStudio[],
   kiln: PotteryWheelResult['kiln'],
   stats: PotteryWheelStats,
 ): string[] {
@@ -746,7 +738,7 @@ export function generateRecommendations(
 export function buildPotteryWheelResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): PotteryWheelResult {
   const pieces = files.map((file, i) => analyzePotteryPiece(contents[i] ?? '', file))
 

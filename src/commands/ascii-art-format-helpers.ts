@@ -18,7 +18,7 @@ export function colorize(lines: string[], color: string | null): string[] {
     return lines.map((l) => chalk.rgb(Number(r), Number(g), Number(b))(l))
   }
   return lines.map((l) => {
-    const fn = (chalk as Record<string, unknown>)[color]
+    const fn = (chalk as unknown as Record<string, unknown>)[color]
     return typeof fn === 'function' ? (fn as (t: string) => string)(l) : l
   })
 }

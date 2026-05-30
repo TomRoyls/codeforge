@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { TelescopeArrayResult, ArrayDish, ArrayConfiguration, BaselinePair } from './telescope-array-helpers.js'
+import type { TelescopeArrayResult, ArrayDish, ArrayConfiguration } from './telescope-array-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 
@@ -71,11 +71,6 @@ function formatDish(d: ArrayDish, verbose: boolean): string {
 
 // ─── Baseline Formatting ─────────────────────────────────────────────────────
 
-function formatBaseline(b: BaselinePair): string {
-  const typeIcon = b.interferenceType === 'constructive' ? chalk.green('+') :
-    b.interferenceType === 'destructive' ? chalk.red('-') : chalk.dim('~')
-  return `  ${typeIcon} ${b.dishA} <-> ${b.dishB} bl:${scoreColor(b.baselineLength)} corr:${scoreColor(b.correlationQuality)} phase:${scoreColor(b.phaseAlignment)}${b.isCoherent ? chalk.green(' COH') : chalk.red(' INC')}`
-}
 
 // ─── Configuration Formatting ────────────────────────────────────────────────
 

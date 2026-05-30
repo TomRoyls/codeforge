@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { ArchitectResult, Blueprint, FloorPlan, ArchitectStats, StructuralIssue } from './architect-helpers.js'
+import type { ArchitectResult, Blueprint, FloorPlan, ArchitectStats } from './architect-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────────
 
@@ -26,13 +26,6 @@ function structureColor(s: string): string {
   return chalk.dim(s)
 }
 
-function severityColor(s: string): string {
-  if (s === 'critical') return chalk.red(s)
-  if (s === 'structural') return chalk.rgb(255, 100, 0)(s)
-  if (s === 'major') return chalk.yellow(s)
-  if (s === 'minor') return chalk.cyan(s)
-  return chalk.dim(s)
-}
 
 function buildingCodeColor(c: string): string {
   if (c === 'passing') return chalk.green(c)

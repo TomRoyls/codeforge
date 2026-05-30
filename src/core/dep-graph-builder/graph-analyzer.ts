@@ -274,9 +274,10 @@ export class GraphAnalyzer {
     const visited = new Set<string>()
     const queue: string[][] = [[from]]
     visited.add(from)
+    let _qi = 0
 
-    while (queue.length > 0) {
-      const path = queue.shift()!
+    while (_qi < queue.length) {
+      const path = queue[_qi++]!
       const current = path[path.length - 1]!
 
       const neighbors = this.adjList.get(current)

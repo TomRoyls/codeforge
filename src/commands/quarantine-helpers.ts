@@ -254,7 +254,6 @@ export function detectKnownBugs(content: string, filePath: string): QuarantineIt
 
 // ─── detectFragile ────────────────────────────────────────────────────────────
 
-const FRAGILE_RE = /\/\/\s*fragile|try\s*\{[^}]*\}\s*catch\s*\(\w*\)\s*\{\s*\}/
 
 /**
  * Find fragile patterns in code.
@@ -550,9 +549,12 @@ function buildDependentCounts(files: string[], contents: string[]): Map<string, 
     for (const line of content.split('\n')) {
       const match = line.match(IMPORT_RE)
       if (match) {
-        const resolved = resolveSimpleImport(match[1], file, new Set(files))
-        if (resolved) {
-          counts.set(resolved, (counts.get(resolved) ?? 0) + 1)
+        const importPath = match[1]
+        if (importPath) {
+          const resolved = resolveSimpleImport(importPath, file, new Set(files))
+          if (resolved) {
+            counts.set(resolved, (counts.get(resolved) ?? 0) + 1)
+          }
         }
       }
     }

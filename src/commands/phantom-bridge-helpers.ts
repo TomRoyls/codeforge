@@ -584,7 +584,7 @@ export function measureEnduring(content: string): EnduringMeasure {
   else phantom = 'no-resilience'
 
   return {
-    resilience, phantom, hasHighResilience, hasTryCatch, hasErrorRecovery,
+    resilience, phantom, hasHighResilience, hasTryCatch: hasTryCatch(content), hasErrorRecovery,
     hasNoBareThrow, hasRetryLogic, hasNoSinglePointFail, hasCircuitBreaker,
     hasNoCascadeFail, hasGracefulShutdown, hasNoHardCrash, hasSelfHealing,
     bareThrowCount, singlePointFailCount,
@@ -813,7 +813,6 @@ export async function buildPhantomBridgeResult(
     ? Math.round(spans.reduce((s, p) => s + p.ghostHandling, 0) / spans.length) : 0
   const avgFogNavigation = spans.length > 0
     ? Math.round(spans.reduce((s, p) => s + p.fogNavigation, 0) / spans.length) : 0
-  const avgPhantomResilience = spans.length > 0
     ? Math.round(spans.reduce((s, p) => s + p.phantomResilience, 0) / spans.length) : 0
 
   const bestSpan = spans.length > 0

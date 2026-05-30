@@ -132,7 +132,7 @@ export function parseGitShortlog(output: string): { name: string; count: number 
     .map((line) => {
       const match = line.match(/^(\d+)\s+(.+)$/)
       if (!match) return null
-      return { name: match[2]!, count: parseInt(match[1]!, 10) }
+      return { name: match[2]!, count: parseInt(match[1] ?? '', 10) }
     })
     .filter((r): r is { name: string; count: number } => r !== null)
     .sort((a, b) => b.count - a.count)
@@ -163,7 +163,7 @@ export function parseGitLogForContributors(output: string): ParsedCommit[] {
       const parts = line.split('\t')
       if (parts.length >= 3) {
         const adds = parts[0] === '-' ? 0 : parseInt(parts[0]!, 10) || 0
-        const dels = parts[1] === '-' ? 0 : parseInt(parts[1]!, 10) || 0
+        const dels = parts[1] === '-' ? 0 : parseInt(parts[1] ?? '', 10) || 0
         const file = parts[2]!.trim()
         if (file) {
           current.files.push({ file, adds, dels })

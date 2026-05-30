@@ -651,7 +651,7 @@ export async function buildCopperMorningResult(
 export function generateRecommendations(
   rays: CopperRay[],
   foundries: CopperFoundry[],
-  dawn: CopperMorningResult['dawn'],
+  _dawn: CopperMorningResult['dawn'],
   stats: CopperMorningResult['stats'],
 ): string[] {
   const recs: string[] = []

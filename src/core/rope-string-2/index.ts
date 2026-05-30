@@ -42,7 +42,7 @@ class RopeString2 {
 
   charAt(index: number): string {
     if (!this.root || index < 0 || index >= this.root.length) {
-      throw new Error(`Index out of bounds: index=${index}, length=${this.root.length}`);
+      throw new Error(`Index out of bounds: index=${index}, length=${this.root!.length}`);
     }
 
     return this.charAtImpl(this.root, index);

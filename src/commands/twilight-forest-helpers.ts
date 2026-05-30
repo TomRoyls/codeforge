@@ -266,7 +266,6 @@ export function measureBioluminescent(content: string): BioluminescentMeasure {
   const hasNoBlindSpots = blindSpotCount === 0
   const hasRadiant = TRY_RE.test(content) && CATCH_RE.test(content)
   const hasNoCamouflage = !NESTED_TERNARY_RE.test(content)
-  const hasProperIllumination = (content.match(DOC_COMMENT_RE) || []).length > 0
 
   if (content.length > 0) score += 5
   if (hasSelfDocumenting) score += 12
@@ -313,7 +312,6 @@ export function measureEcotone(content: string): EcotoneMeasure {
   const hasNoRigidWalls = !NESTED_TERNARY_RE.test(content)
   const hasProperEncapsulation = CLASS_RE.test(content) && INTERFACE_RE.test(content) && TYPE_RE.test(content)
   const hasNoOverexposure = (content.match(CONSOLE_RE) || []).length === 0
-  const hasEcotoneDiversity = TRY_RE.test(content) && CATCH_RE.test(content)
 
   if (content.length > 0) score += 5
   if (hasProperBoundaries) score += 12
@@ -360,7 +358,6 @@ export function measureCanopy(content: string): CanopyMeasure {
   const hasNoChoking = gapCount === 0
   const hasDiverse = (content.match(DOC_COMMENT_RE) || []).length > 0
   const hasNoMonoculture = (content.match(GENERIC_RE) || []).length > 0 || (content.match(OPTIONAL_RE) || []).length > 0
-  const hasProperCanopy = CLASS_RE.test(content) && (FUNCTION_RE.test(content) || ARROW_RE.test(content))
 
   if (content.length > 0) score += 5
   if (hasProperLayering) score += 12
@@ -407,7 +404,6 @@ export function measureUnderstory(content: string): UnderstoryMeasure {
   const hasNoRot = !NESTED_TERNARY_RE.test(content)
   const hasVibrant = ASYNC_RE.test(content) && AWAIT_RE.test(content)
   const hasNoWaste = (content.match(CONSOLE_RE) || []).length === 0
-  const hasDeepRoots = TRY_RE.test(content) && CATCH_RE.test(content)
 
   if (content.length > 0) score += 5
   if (hasHiddenGems) score += 12
@@ -454,7 +450,6 @@ export function measureSerenity(content: string): SerenityMeasure {
   const hasBalanced = TRY_RE.test(content) && CATCH_RE.test(content)
   const hasNoOverwhelming = !NESTED_TERNARY_RE.test(content)
   const hasContemplative = (content.match(DOC_COMMENT_RE) || []).length > 0
-  const hasTranquil = (content.match(CONSOLE_RE) || []).length === 0
 
   if (content.length > 0) score += 5
   if (hasCalmFlow) score += 12

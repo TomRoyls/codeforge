@@ -656,7 +656,7 @@ export async function buildEmeraldAuroraResult(
 export function generateRecommendations(
   curtains: AuroraCurtain[],
   bands: AuroraBand[],
-  sky: EmeraldAuroraResult['sky'],
+  _sky: EmeraldAuroraResult['sky'],
   stats: EmeraldAuroraResult['stats'],
 ): string[] {
   const recs: string[] = []

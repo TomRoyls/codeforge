@@ -52,7 +52,6 @@ export function colorGrade(grade: string): string {
 
     'proper-forge': okay, 'proper-temper': okay, 'proper-craft': okay,
     'proper-cycle': okay, 'proper-aim': okay, 'proper-ingot': okay,
-    'proper-forge': okay, 'decent-forge': okay, 'skilled-forger': okay,
 
     'daylight-only': poor, 'rough-forged': poor, 'visible-only': poor,
     'half-moon': poor, 'lost-star': poor, 'rough-metal': poor,

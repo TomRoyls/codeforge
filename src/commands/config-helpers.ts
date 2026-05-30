@@ -233,7 +233,7 @@ export function getConfigValue(config: CodeForgeConfig, keyPath: string): { foun
     if (current === null || current === undefined || typeof current !== 'object') {
       return { found: false, value: undefined }
     }
-    const record = current as Record<string, unknown>
+    const record = current as unknown as Record<string, unknown>
     if (!(part in record)) {
       return { found: false, value: undefined }
     }
@@ -268,7 +268,7 @@ export function setConfigValue(config: CodeForgeConfig, keyPath: string, value: 
 
   // Validate: top-level key must exist in DEFAULT_CONFIG
   const topLevelKey = parts[0]
-  if (!(topLevelKey in DEFAULT_CONFIG)) {
+  if (!topLevelKey || !(topLevelKey in DEFAULT_CONFIG)) {
     return config
   }
 
@@ -283,14 +283,14 @@ export function setConfigValue(config: CodeForgeConfig, keyPath: string, value: 
   if (parts.length === 1) {
     // Top-level key
     const key = parts[0]!
-    const defaultValue = DEFAULT_CONFIG[key]
+    const defaultValue = (DEFAULT_CONFIG as unknown as Record<string, unknown>)[key]
     const parsedValue = parseValue(value, defaultValue)
-    ;(updated as Record<string, unknown>)[key] = parsedValue
+    ;(updated as unknown as Record<string, unknown>)[key] = parsedValue
   } else {
     // Nested key (e.g., aliases.test)
     const parentKey = parts[0]!
-    const childKey = parts[1]!
-    const parent = (updated as Record<string, unknown>)[parentKey]
+    const childKey = parts[1] ?? ''
+    const parent = (updated as unknown as Record<string, unknown>)[parentKey]
 
     if (typeof parent === 'object' && parent !== null) {
       ;(parent as Record<string, string>)[childKey] = value

@@ -338,7 +338,6 @@ export function measureAging(content: string): AgingMeasure {
     hasNoNovel: !hasEval,
     hasBattleTested: (hasExtends || hasImplements) && hasDoc,
     hasNoUnproven: !hasEval && !hasDebugger,
-    hasDeep: hasGenerics && (hasExtends || hasImplements),
     hasTimeless: hasDoc && hasInterface && (hasExtends || hasAbstract),
     adHocCount,
     experimentalCount,
@@ -737,7 +736,7 @@ export function analyzeBronzeForge(rays: BronzeRay[], dirPath: string): BronzeFo
 export function generateRecommendations(
   rays: BronzeRay[],
   forges: BronzeForge[],
-  age: BronzeHorizonResult['age'],
+  _age: BronzeHorizonResult['age'],
   stats: BronzeHorizonResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -2,11 +2,11 @@ import chalk from 'chalk'
 
 import type { DirectoryStructure, ProjectFile, ScaffoldResult, ScaffoldStats, StructureCheck } from './scaffold-helpers.js'
 
+import { padRight } from '../utils/format-utils.js'
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function padRight(str: string, len: number): string {
-  return str.length >= len ? str : str + ' '.repeat(len - str.length)
-}
+
 
 function statusIcon(status: string): string {
   if (status === 'pass') return chalk.green('✔')
@@ -69,7 +69,7 @@ export function formatDirectoryTree(structure: DirectoryStructure[]): string {
     const icon = dir.isConventional ? chalk.green('◆') : chalk.gray('◇')
     const purposeStr = dir.purpose !== 'unknown' ? chalk.gray(`(${dir.purpose})`) : ''
     const fileStr = chalk.gray(`${dir.files} files`)
-    lines.push(`  ${indent}${icon} ${chalk.bold(dir.path.split('/').pop()!)}/ ${purposeStr} ${fileStr}`)
+    lines.push(`  ${indent}${icon} ${chalk.bold(dir.path.split('/').at(-1) ?? '')}/ ${purposeStr} ${fileStr}`)
   }
 
   if (structure.length > 25) {

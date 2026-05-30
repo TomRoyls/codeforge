@@ -18,22 +18,7 @@ function conditionColor(c: string): string {
   return chalk.red(c)
 }
 
-function materialColor(m: string): string {
-  if (m === 'crystal') return chalk.cyan(m)
-  if (m === 'platinum') return chalk.rgb(229, 228, 226)(m)
-  if (m === 'steel') return chalk.blue(m)
-  if (m === 'iron') return chalk.dim(m)
-  if (m === 'bronze') return chalk.yellow(m)
-  return chalk.red(m)
-}
 
-function stageColor(s: string): string {
-  if (s === 'coagulation') return chalk.green(s)
-  if (s === 'distillation') return chalk.blue(s)
-  if (s === 'fermentation') return chalk.cyan(s)
-  if (s === 'conjunction') return chalk.yellow(s)
-  return chalk.dim(s)
-}
 
 function workshopTypeColor(w: string): string {
   if (w === 'grand-laboratory') return chalk.rgb(255, 215, 0)(w)

@@ -984,9 +984,8 @@ export function generateRecommendations(
 export function buildEcosystemPondResult(
   files: string[],
   contents: string[],
-  options?: { ignore?: string[]; ext?: string[] },
+  _options?: { ignore?: string[]; ext?: string[] },
 ): EcosystemPondResult {
-  const _opts = options ?? {}
 
   const organisms: PondOrganism[] = files.map((file, i) =>
     analyzePondOrganism(contents[i] ?? '', file),
@@ -1073,12 +1072,13 @@ export function buildEcosystemPondResult(
     overallHealth,
   }
 
-  const recWater = count > 0 ? organisms[0].water : measureWater('')
-  const recSpecies = count > 0 ? organisms[0].species : measureSpecies('')
-  const recChain = count > 0 ? organisms[0].chain : measureChain('')
-  const recOxygen = count > 0 ? organisms[0].oxygen : measureOxygen('')
-  const recNutrient = count > 0 ? organisms[0].nutrient : measureNutrient('')
-  const recBalance = count > 0 ? organisms[0].balance : measureBalance('')
+
+  const recWater = count > 0 ? (organisms[0]?.water ?? measureWater('')) : measureWater('')
+  const recSpecies = count > 0 ? (organisms[0]?.species ?? measureSpecies('')) : measureSpecies('')
+  const recChain = count > 0 ? (organisms[0]?.chain ?? measureChain('')) : measureChain('')
+  const recOxygen = count > 0 ? (organisms[0]?.oxygen ?? measureOxygen('')) : measureOxygen('')
+  const recNutrient = count > 0 ? (organisms[0]?.nutrient ?? measureNutrient('')) : measureNutrient('')
+  const recBalance = count > 0 ? (organisms[0]?.balance ?? measureBalance('')) : measureBalance('')
 
   const recommendations = generateRecommendations(recWater, recSpecies, recChain, recOxygen, recNutrient, recBalance)
 

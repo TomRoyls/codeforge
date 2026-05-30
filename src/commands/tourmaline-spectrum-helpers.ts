@@ -650,7 +650,7 @@ export async function buildTourmalineSpectrumResult(
 export function generateRecommendations(
   shards: TourmalineShard[],
   clusters: TourmalineCluster[],
-  rainbow: TourmalineSpectrumResult['rainbow'],
+  _rainbow: TourmalineSpectrumResult['rainbow'],
   stats: TourmalineSpectrumResult['stats'],
 ): string[] {
   const recs: string[] = []

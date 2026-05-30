@@ -770,22 +770,22 @@ export function buildMoonlitCobbleResult(
   }
 
   const bestStone = totalFiles > 0
-    ? stones.reduce((best, st) => (st.qualityScore > best.qualityScore ? st : best), stones[0]).file
+    ? stones.reduce((best, st) => (st.qualityScore > best.qualityScore ? st : best), stones[0] as typeof stones[number]).file
     : ''
   const smoothestPath = totalFiles > 0
-    ? stones.reduce((best, st) => (st.pathQuality > best.pathQuality ? st : best), stones[0]).file
+    ? stones.reduce((best, st) => (st.pathQuality > best.pathQuality ? st : best), stones[0] as typeof stones[number]).file
     : ''
   const clearestJourney = totalFiles > 0
-    ? stones.reduce((best, st) => (st.journeyClarity > best.journeyClarity ? st : best), stones[0]).file
+    ? stones.reduce((best, st) => (st.journeyClarity > best.journeyClarity ? st : best), stones[0] as typeof stones[number]).file
     : ''
   const bestCrafted = totalFiles > 0
-    ? stones.reduce((best, st) => (st.stoneworkCraft > best.stoneworkCraft ? st : best), stones[0]).file
+    ? stones.reduce((best, st) => (st.stoneworkCraft > best.stoneworkCraft ? st : best), stones[0] as typeof stones[number]).file
     : ''
   const bestDocumented = totalFiles > 0
-    ? stones.reduce((best, st) => (st.lanternMarkers > best.lanternMarkers ? st : best), stones[0]).file
+    ? stones.reduce((best, st) => (st.lanternMarkers > best.lanternMarkers ? st : best), stones[0] as typeof stones[number]).file
     : ''
   const safestPath = totalFiles > 0
-    ? stones.reduce((best, st) => (st.travelerSafety > best.travelerSafety ? st : best), stones[0]).file
+    ? stones.reduce((best, st) => (st.travelerSafety > best.travelerSafety ? st : best), stones[0] as typeof stones[number]).file
     : ''
 
   const stats: MoonlitCobbleStats = {

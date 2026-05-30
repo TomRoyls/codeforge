@@ -810,15 +810,15 @@ export function buildSignalFireResult(
     overallVisibility,
     signalmanGrade: classifySignalmanGrade(overallVisibility),
     brightestFlame: flames.length > 0
-      ? flames.reduce((a, b) => b.flameHeight > a.flameHeight ? b : a, flames[0]).file : 'none',
+      ? flames.reduce((a, b) => b.flameHeight > a.flameHeight ? b : a, flames[0] as typeof flames[number]).file : 'none',
     dimmestFlame: flames.length > 0
-      ? flames.reduce((a, b) => b.flameHeight < a.flameHeight ? b : a, flames[0]).file : 'none',
+      ? flames.reduce((a, b) => b.flameHeight < a.flameHeight ? b : a, flames[0] as typeof flames[number]).file : 'none',
     clearestSmoke: flames.length > 0
-      ? flames.reduce((a, b) => b.smokeClarity > a.smokeClarity ? b : a, flames[0]).file : 'none',
+      ? flames.reduce((a, b) => b.smokeClarity > a.smokeClarity ? b : a, flames[0] as typeof flames[number]).file : 'none',
     mostCompliant: flames.length > 0
-      ? flames.reduce((a, b) => b.protocolCompliance > a.protocolCompliance ? b : a, flames[0]).file : 'none',
+      ? flames.reduce((a, b) => b.protocolCompliance > a.protocolCompliance ? b : a, flames[0] as typeof flames[number]).file : 'none',
     mostDeceptive: flames.length > 0
-      ? flames.reduce((a, b) => b.smoke.falseSignalCount > a.smoke.falseSignalCount ? b : a, flames[0]).file : 'none',
+      ? flames.reduce((a, b) => b.smoke.falseSignalCount > a.smoke.falseSignalCount ? b : a, flames[0] as typeof flames[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(flames, towers, network, stats)

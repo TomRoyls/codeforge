@@ -168,9 +168,10 @@ export class EulerTourTree {
     const result: number[] = []
     const visited = new Set<number>()
     const queue: number[] = [start]
+    let _qi = 0
     visited.add(start)
-    while (queue.length > 0) {
-      const v = queue.shift()!
+    while (_qi < queue.length) {
+      const v = queue[_qi++]!
       result.push(v)
       for (const u of this.adjacency.get(v)!) {
         if (!visited.has(u)) {
@@ -274,9 +275,10 @@ export class EulerTourTree {
     const parentMap = new Map<number, number>()
     const visited = new Set<number>()
     const queue: number[] = [u]
+    let _qi = 0
     visited.add(u)
-    while (queue.length > 0) {
-      const current = queue.shift()!
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!
       if (current === v) break
       for (const neighbor of this.adjacency.get(current)!) {
         if (!visited.has(neighbor)) {
@@ -312,10 +314,11 @@ export class EulerTourTree {
     const depthMap = new Map<number, number>()
     const visited = new Set<number>()
     const queue: number[] = [root]
+    let _qi = 0
     visited.add(root)
     depthMap.set(root, 0)
-    while (queue.length > 0) {
-      const current = queue.shift()!
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!
       if (current === node) break
       for (const neighbor of this.adjacency.get(current)!) {
         if (!visited.has(neighbor)) {
@@ -337,11 +340,12 @@ export class EulerTourTree {
     const depthMap = new Map<number, number>()
     const visited = new Set<number>()
     const queue: number[] = [root]
+    let _qi = 0
     visited.add(root)
     depthMap.set(root, 0)
     parentMap.set(root, root)
-    while (queue.length > 0) {
-      const current = queue.shift()!
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!
       for (const neighbor of this.adjacency.get(current)!) {
         if (!visited.has(neighbor)) {
           visited.add(neighbor)

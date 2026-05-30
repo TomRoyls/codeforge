@@ -1,18 +1,10 @@
 import chalk from 'chalk'
 
-import type { TodoItem, TodoListResult, TodoPriority } from './todo-list-helpers.js'
+import type { TodoListResult, TodoPriority } from './todo-list-helpers.js'
+
+import { padRight, padLeft } from '../utils/format-utils.js'
 
 // ─── Helpers ────────────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /**
  * Color-code a priority label: high=red, medium=yellow, low=green.

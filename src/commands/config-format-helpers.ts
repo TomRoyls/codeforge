@@ -3,12 +3,9 @@ import chalk from 'chalk'
 import type { CodeForgeConfig, ConfigFile } from './config-helpers.js'
 import { DEFAULT_CONFIG } from './config-helpers.js'
 
-// ─── Table formatting ───────────────────────────────────
+import { padRight } from '../utils/format-utils.js'
 
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
+// ─── Table formatting ───────────────────────────────────
 
 /**
  * Format a ConfigFile as a colorized table.

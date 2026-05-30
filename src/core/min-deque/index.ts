@@ -9,6 +9,8 @@ export class MinDeque<T = unknown> {
   private elements: T[]
   private minDeque: MinMaxNode<T>[]
   private maxDeque: MinMaxNode<T>[]
+  private minDequeHead: number
+  private maxDequeHead: number
   private head: number
   private tail: number
   private _size: number
@@ -20,6 +22,8 @@ export class MinDeque<T = unknown> {
     this.elements = new Array<T>(this._capacity)
     this.minDeque = []
     this.maxDeque = []
+    this.minDequeHead = 0
+    this.maxDequeHead = 0
     this.head = 0
     this.tail = 0
     this._size = 0
@@ -49,7 +53,7 @@ export class MinDeque<T = unknown> {
     this._size++
 
     let insertedToMin = false
-    for (let i = this.minDeque.length - 1; i >= 0; i--) {
+    for (let i = this.minDeque.length - 1; i >= this.minDequeHead; i--) {
       if (this.compare(this.minDeque[i]!.value, value) > 0) {
         this.minDeque.splice(i, 1)
       } else if (this.compare(this.minDeque[i]!.value, value) === 0) {
@@ -65,7 +69,7 @@ export class MinDeque<T = unknown> {
     }
 
     let insertedToMax = false
-    for (let i = this.maxDeque.length - 1; i >= 0; i--) {
+    for (let i = this.maxDeque.length - 1; i >= this.maxDequeHead; i--) {
       if (this.compare(this.maxDeque[i]!.value, value) < 0) {
         this.maxDeque.splice(i, 1)
       } else if (this.compare(this.maxDeque[i]!.value, value) === 0) {
@@ -113,24 +117,24 @@ export class MinDeque<T = unknown> {
     this.elements[this.tail] = undefined as unknown as T
     this._size--
 
-    if (this.minDeque.length > 0 && this.minDeque[0]!.value === value) {
-      this.minDeque[0]!.count--
-      if (this.minDeque[0]!.count === 0) {
-        this.minDeque.shift()
+    if (this.minDeque.length > this.minDequeHead && this.minDeque[this.minDequeHead]!.value === value) {
+      this.minDeque[this.minDequeHead]!.count--
+      if (this.minDeque[this.minDequeHead]!.count === 0) {
+        this.minDequeHead++
       }
-    } else if (this.minDeque.length > 0 && this.minDeque[this.minDeque.length - 1]!.value === value) {
+    } else if (this.minDeque.length > this.minDequeHead && this.minDeque[this.minDeque.length - 1]!.value === value) {
       this.minDeque[this.minDeque.length - 1]!.count--
       if (this.minDeque[this.minDeque.length - 1]!.count === 0) {
         this.minDeque.pop()
       }
     }
 
-    if (this.maxDeque.length > 0 && this.maxDeque[0]!.value === value) {
-      this.maxDeque[0]!.count--
-      if (this.maxDeque[0]!.count === 0) {
-        this.maxDeque.shift()
+    if (this.maxDeque.length > this.maxDequeHead && this.maxDeque[this.maxDequeHead]!.value === value) {
+      this.maxDeque[this.maxDequeHead]!.count--
+      if (this.maxDeque[this.maxDequeHead]!.count === 0) {
+        this.maxDequeHead++
       }
-    } else if (this.maxDeque.length > 0 && this.maxDeque[this.maxDeque.length - 1]!.value === value) {
+    } else if (this.maxDeque.length > this.maxDequeHead && this.maxDeque[this.maxDeque.length - 1]!.value === value) {
       this.maxDeque[this.maxDeque.length - 1]!.count--
       if (this.maxDeque[this.maxDeque.length - 1]!.count === 0) {
         this.maxDeque.pop()
@@ -147,19 +151,19 @@ export class MinDeque<T = unknown> {
     this.head = (this.head + 1) % this._capacity
     this._size--
 
-    const minFront = this.minDeque[0]
+    const minFront = this.minDeque.length > this.minDequeHead ? this.minDeque[this.minDequeHead] : undefined
     if (minFront && minFront.value === value) {
       minFront.count--
       if (minFront.count === 0) {
-        this.minDeque.shift()
+        this.minDequeHead++
       }
     }
 
-    const maxFront = this.maxDeque[0]
+    const maxFront = this.maxDeque.length > this.maxDequeHead ? this.maxDeque[this.maxDequeHead] : undefined
     if (maxFront && maxFront.value === value) {
       maxFront.count--
       if (maxFront.count === 0) {
-        this.maxDeque.shift()
+        this.maxDequeHead++
       }
     }
 
@@ -167,13 +171,13 @@ export class MinDeque<T = unknown> {
   }
 
   min(): T | undefined {
-    if (this._size === 0) return undefined
-    return this.minDeque[0]!.value
+    if (this._size === 0 || this.minDeque.length === this.minDequeHead) return undefined
+    return this.minDeque[this.minDequeHead]!.value
   }
 
   max(): T | undefined {
-    if (this._size === 0) return undefined
-    return this.maxDeque[0]!.value
+    if (this._size === 0 || this.maxDeque.length === this.maxDequeHead) return undefined
+    return this.maxDeque[this.maxDequeHead]!.value
   }
 
   front(): T | undefined {
@@ -198,6 +202,8 @@ export class MinDeque<T = unknown> {
     this.elements = new Array<T>(this._capacity)
     this.minDeque = []
     this.maxDeque = []
+    this.minDequeHead = 0
+    this.maxDequeHead = 0
     this.head = 0
     this.tail = 0
     this._size = 0

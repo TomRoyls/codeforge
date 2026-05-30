@@ -211,22 +211,6 @@ function countLoops(content: string): number {
   return (content.match(/\b(for|while)\s*\(/g) || []).length
 }
 
-function countNesting(content: string): number {
-  let maxDepth = 0
-  let depth = 0
-  for (const line of content.split('\n')) {
-    const trimmed = line.trim()
-    if (trimmed.startsWith('}') || trimmed.endsWith('}')) {
-      depth = Math.max(0, depth - 1)
-    }
-    if (trimmed.includes('{')) {
-      depth++
-      maxDepth = Math.max(maxDepth, depth)
-    }
-  }
-  return maxDepth
-}
-
 function countTODO(content: string): number {
   return (content.match(/\bTODO\b/g) || []).length + (content.match(/\bFIXME\b/g) || []).length + (content.match(/\bHACK\b/g) || []).length
 }
@@ -747,7 +731,7 @@ export function analyzeCabinetDrawer(sheets: HerbariumSheet[], dirPath: string):
  * // recs.length > 0
  */
 export function generateRecommendations(
-  sheets: HerbariumSheet[],
+  _sheets: HerbariumSheet[],
   _drawers: CabinetDrawer[],
   museum: HerbariumMuseum,
   stats: HerbariumPressStats,
@@ -892,14 +876,15 @@ export function buildHerbariumPressResult(
 
 function findMax(sheets: HerbariumSheet[], getter: (sh: HerbariumSheet) => number): string {
   if (sheets.length === 0) return 'none'
-  let best = sheets[0]
-  let bestVal = getter(sheets[0])
+  let best = sheets[0] as HerbariumSheet
+  let bestVal = getter(best)
   for (let i = 1; i < sheets.length; i++) {
-    const val = getter(sheets[i])
+    const sheet = sheets[i] as HerbariumSheet
+    const val = getter(sheet)
     if (val > bestVal) {
-      best = sheets[i]
+      best = sheet
       bestVal = val
     }
   }
-  return best.file
+  return best?.file ?? ''
 }

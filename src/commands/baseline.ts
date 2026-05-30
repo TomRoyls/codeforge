@@ -5,7 +5,7 @@ import { resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { buildBaselineResult, type BaselineMetrics } from './baseline-helpers.js'
+import { buildBaselineResult } from './baseline-helpers.js'
 import { formatBaselineJson, formatBaselineMetrics } from './baseline-format-helpers.js'
 
 export default class Baseline extends Command {

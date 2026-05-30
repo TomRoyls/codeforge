@@ -666,7 +666,7 @@ export async function buildCosmicTreasuryResult(
 export function generateRecommendations(
   artifacts: CosmicArtifact[],
   chambers: CosmicChamber[],
-  universe: CosmicTreasuryResult['universe'],
+  _universe: CosmicTreasuryResult['universe'],
   stats: CosmicTreasuryResult['stats'],
 ): string[] {
   const recs: string[] = []

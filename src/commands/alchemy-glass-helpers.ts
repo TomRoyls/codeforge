@@ -782,22 +782,22 @@ export function buildAlchemyGlassResult(
   }
 
   const bestPhial = totalFiles > 0
-    ? phials.reduce((best, p) => (p.qualityScore > best.qualityScore ? p : best), phials[0]).file
+    ? phials.reduce((best, p) => (p.qualityScore > best.qualityScore ? p : best), phials[0] as typeof phials[number]).file
     : ''
   const purest = totalFiles > 0
-    ? phials.reduce((best, p) => (p.transmutationPurity > best.transmutationPurity ? p : best), phials[0]).file
+    ? phials.reduce((best, p) => (p.transmutationPurity > best.transmutationPurity ? p : best), phials[0] as typeof phials[number]).file
     : ''
   const bestContained = totalFiles > 0
-    ? phials.reduce((best, p) => (p.phialQuality > best.phialQuality ? p : best), phials[0]).file
+    ? phials.reduce((best, p) => (p.phialQuality > best.phialQuality ? p : best), phials[0] as typeof phials[number]).file
     : ''
   const mostEssential = totalFiles > 0
-    ? phials.reduce((best, p) => (p.essenceDistillation > best.essenceDistillation ? p : best), phials[0]).file
+    ? phials.reduce((best, p) => (p.essenceDistillation > best.essenceDistillation ? p : best), phials[0] as typeof phials[number]).file
     : ''
   const mostBalanced = totalFiles > 0
-    ? phials.reduce((best, p) => (p.elementalBalance > best.elementalBalance ? p : best), phials[0]).file
+    ? phials.reduce((best, p) => (p.elementalBalance > best.elementalBalance ? p : best), phials[0] as typeof phials[number]).file
     : ''
   const wisest = totalFiles > 0
-    ? phials.reduce((best, p) => (p.philosopherQuality > best.philosopherQuality ? p : best), phials[0]).file
+    ? phials.reduce((best, p) => (p.philosopherQuality > best.philosopherQuality ? p : best), phials[0] as typeof phials[number]).file
     : ''
 
   const stats: AlchemyGlassStats = {

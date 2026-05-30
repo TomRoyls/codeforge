@@ -96,7 +96,7 @@ export interface ScaffoldOptions {
  * detectProjectType(['package.json', 'tsconfig.json']) // 'node'
  */
 export function detectProjectType(filePaths: string[]): string {
-  const names = new Set(filePaths.map((p) => p.split('/').pop()!.toLowerCase()))
+  const names = new Set(filePaths.map((p) => p.split('/').at(-1) ?? ''.toLowerCase()))
   if (names.has('package.json')) return 'node'
   if (names.has('cargo.toml')) return 'rust'
   if (names.has('go.mod')) return 'go'
@@ -229,7 +229,7 @@ export function analyzeDirectoryStructure(filePaths: string[]): DirectoryStructu
   const structure: DirectoryStructure[] = []
   for (const [path, data] of dirMap) {
     const depth = path.split('/').length - 1
-    const dirName = path.split('/').pop()!
+    const dirName = path.split('/').at(-1) ?? ''
     structure.push({
       path,
       files: data.files,
@@ -489,7 +489,7 @@ export function generateRecommendations(checks: StructureCheck[], missing: Proje
 export function buildScaffoldResult(
   projectName: string,
   filePaths: string[],
-  options: ScaffoldOptions = {},
+  _options: ScaffoldOptions = {},
 ): ScaffoldResult {
   const projectType = detectProjectType(filePaths)
   const files = checkEssentialFiles(filePaths)

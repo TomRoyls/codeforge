@@ -229,7 +229,7 @@ function computeSkeletalHealth(file: string, content: string): number {
   return clamp(score)
 }
 
-function computeMuscularHealth(file: string, content: string): number {
+function computeMuscularHealth(_file: string, content: string): number {
   let score = 60
   const complexity = computeComplexity(content)
   if (complexity <= 5) score += 20
@@ -246,7 +246,7 @@ function computeMuscularHealth(file: string, content: string): number {
   return clamp(score)
 }
 
-function computeNervousHealth(file: string, content: string): number {
+function computeNervousHealth(_file: string, content: string): number {
   let score = 40
   const catches = countCatchBlocks(content)
   const tries = countTryBlocks(content)
@@ -288,7 +288,7 @@ function computeImmuneHealth(file: string, content: string): number {
   return clamp(score)
 }
 
-function computeIntegumentaryHealth(file: string, content: string): number {
+function computeIntegumentaryHealth(_file: string, content: string): number {
   let score = 30
   const lines = countLines(content)
   if (lines === 0) return 0
@@ -334,7 +334,8 @@ export function examineSkeletalSystem(files: string[], contents: string[]): Body
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
-    const content = contents[i] || ''
+    if (!file) continue
+    const content = contents[i] ?? ''
     if (file.includes('index.ts') || file.includes('core/') || file.includes('main.ts') || file.includes('app.ts')) {
       const health = computeOrganHealth(file, content, 'skeletal')
       const size = countLines(content)
@@ -384,7 +385,8 @@ export function examineMuscularSystem(files: string[], contents: string[]): Body
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
-    const content = contents[i] || ''
+    if (!file) continue
+    const content = contents[i] ?? ''
     if (file.includes('commands/') || file.includes('-helpers') || (content.includes('function ') && !file.includes('.test.'))) {
       const health = computeOrganHealth(file, content, 'muscular')
       const size = countLines(content)
@@ -434,7 +436,8 @@ export function examineNervousSystem(files: string[], contents: string[]): BodyS
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
-    const content = contents[i] || ''
+    if (!file) continue
+    const content = contents[i] ?? ''
     const hasErrorHandling = content.includes('try') || content.includes('catch') || content.includes('throw') || content.includes('Error') || content.includes('error')
     if (hasErrorHandling) {
       const health = computeOrganHealth(file, content, 'nervous')
@@ -485,7 +488,8 @@ export function examineCirculatorySystem(files: string[], contents: string[]): B
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
-    const content = contents[i] || ''
+    if (!file) continue
+    const content = contents[i] ?? ''
     const imports = extractImports(content).length
     const exports = countExports(content)
     if (imports > 0 || exports > 0) {
@@ -537,7 +541,8 @@ export function examineImmuneSystem(files: string[], contents: string[]): BodySy
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
-    const content = contents[i] || ''
+    if (!file) continue
+    const content = contents[i] ?? ''
     if (file.includes('.test.') || file.includes('.spec.') || file.includes('test/') || content.includes('interface ') || content.includes('export type ')) {
       const health = computeOrganHealth(file, content, 'immune')
       const size = countLines(content)
@@ -587,7 +592,8 @@ export function examineIntegumentarySystem(files: string[], contents: string[]):
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
-    const content = contents[i] || ''
+    if (!file) continue
+    const content = contents[i] ?? ''
     const health = computeOrganHealth(file, content, 'integumentary')
     const size = countLines(content)
     const issues = diagnoseOrganIssues(file, content, 'integumentary')
@@ -799,7 +805,7 @@ export function estimateLifeExpectancy(health: number, vitalSigns: VitalSigns): 
  * @example
  * generateAnatomyRecommendations(systems, vitalSigns, stats)
  */
-export function generateAnatomyRecommendations(systems: BodySystem[], vitalSigns: VitalSigns, stats: AnatomyStats): string[] {
+export function generateAnatomyRecommendations(systems: BodySystem[], vitalSigns: VitalSigns, _stats: AnatomyStats): string[] {
   const recs: string[] = []
 
   const critical = systems.filter((s) => s.status === 'critical-issues')
@@ -850,7 +856,7 @@ export function generateAnatomyRecommendations(systems: BodySystem[], vitalSigns
  * @example
  * buildAnatomyResult(['a.ts'], ['export const x = 1'], {})
  */
-export function buildAnatomyResult(files: string[], contents: string[], options: AnatomyOptions): AnatomyResult {
+export function buildAnatomyResult(files: string[], contents: string[], _options: AnatomyOptions): AnatomyResult {
   const systems: BodySystem[] = [
     examineSkeletalSystem(files, contents),
     examineMuscularSystem(files, contents),

@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { PuzzleBreakdown, PuzzleResult, PuzzleScore, PuzzleStats } from './puzzle-helpers.js'
+import type { PuzzleResult, PuzzleScore, PuzzleStats } from './puzzle-helpers.js'
 
 // ─── DIFFICULTY_META ──────────────────────────────────────────────────────────
 

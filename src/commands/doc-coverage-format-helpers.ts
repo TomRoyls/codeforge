@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { DocCoverageResult, ExportItem } from './doc-coverage-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Coverage bar ────────────────────────────────────────
 
 /**
@@ -34,16 +36,6 @@ export function getCoverageColor(percentage: number): (text: string) => string {
 }
 
 // ─── Table formatting ────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 function computeQualityScore(item: ExportItem): number {
   const checks = [

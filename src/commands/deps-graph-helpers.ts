@@ -57,7 +57,7 @@ export function extractImports(content: string, filePath: string): ImportInfo[] 
     const line = lines[i]
 
     // ─── import ... from '...' ────────────────────────────
-    const fromMatch = line.match(/import\s+(type\s+)?(?:[\w{},\s*]+\s+from\s+)?['"]([^'"]+)['"]/)
+    const fromMatch = line?.match(/import\s+(type\s+)?(?:[\w{},\s*]+\s+from\s+)?['"]([^'"]+)['"]/)
 
     if (fromMatch) {
       const isTypeOnly = fromMatch[1] !== undefined
@@ -76,23 +76,23 @@ export function extractImports(content: string, filePath: string): ImportInfo[] 
     }
 
     // ─── import '...' (side-effect) ──────────────────────
-    const sideEffectMatch = line.match(/^\s*import\s+['"]([^'"]+)['"]\s*;?\s*$/)
+    const sideEffectMatch = line?.match(/^\s*import\s+['"]([^'"]+)['"]\s*;?\s*$/)
     if (sideEffectMatch) {
       const source = sideEffectMatch[1]
       if (!seen.has(`${i}:${source}`)) {
         seen.add(`${i}:${source}`)
         imports.push({
-          isExternal: isExternalImport(source),
+          isExternal: isExternalImport(source ?? ''),
           isTypeOnly: false,
           line: i + 1,
-          source,
+          source: source ?? '',
         })
       }
       continue
     }
 
     // ─── require('...') ──────────────────────────────────
-    const requireMatches = line.matchAll(/require\s*\(\s*['"]([^'"]+)['"]\s*\)/g)
+    const requireMatches = line?.matchAll(/require\s*\(\s*['"]([^'"]+)['"]\s*\)/g) ?? []
     for (const match of requireMatches) {
       const source = match[1]
       if (source && !seen.has(`${i}:${source}`)) {

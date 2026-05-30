@@ -724,7 +724,7 @@ export function analyzeRubySunrise(rays: RubyRay[], dirPath: string): RubySunris
 export function generateRecommendations(
   rays: RubyRay[],
   sunrises: RubySunrise[],
-  horizon: RubyDawnResult['horizon'],
+  _horizon: RubyDawnResult['horizon'],
   stats: RubyDawnResult['stats'],
 ): string[] {
   const recs: string[] = []

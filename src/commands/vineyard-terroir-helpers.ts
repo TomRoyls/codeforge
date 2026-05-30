@@ -986,7 +986,7 @@ export function classifySommelierGrade(avgTerroir: number): VineyardTerroirStats
  * generateRecommendations(plots, regions, estate, stats) // ['Add interfaces...']
  */
 export function generateRecommendations(
-  plots: VineyardPlot[],
+  _plots: VineyardPlot[],
   _regions: WineRegion[],
   _estate: EstateMeasure,
   stats: VineyardTerroirStats,
@@ -1071,19 +1071,19 @@ export function buildVineyardTerroirResult(
   }
 
   const bestPlot = plots.length > 0
-    ? plots.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best, plots[0]).file
+    ? plots.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best, plots[0] as typeof plots[number]).file
     : ''
   const bestSoil = plots.length > 0
-    ? plots.reduce((best, p) => p.soilQuality > best.soilQuality ? p : best, plots[0]).file
+    ? plots.reduce((best, p) => p.soilQuality > best.soilQuality ? p : best, plots[0] as typeof plots[number]).file
     : ''
   const bestVintage = plots.length > 0
-    ? plots.reduce((best, p) => p.vintageCharacter > best.vintageCharacter ? p : best, plots[0]).file
+    ? plots.reduce((best, p) => p.vintageCharacter > best.vintageCharacter ? p : best, plots[0] as typeof plots[number]).file
     : ''
   const bestAging = plots.length > 0
-    ? plots.reduce((best, p) => p.agingPotential > best.agingPotential ? p : best, plots[0]).file
+    ? plots.reduce((best, p) => p.agingPotential > best.agingPotential ? p : best, plots[0] as typeof plots[number]).file
     : ''
   const bestBouquet = plots.length > 0
-    ? plots.reduce((best, p) => p.bouquet > best.bouquet ? p : best, plots[0]).file
+    ? plots.reduce((best, p) => p.bouquet > best.bouquet ? p : best, plots[0] as typeof plots[number]).file
     : ''
 
   const stats: VineyardTerroirStats = {

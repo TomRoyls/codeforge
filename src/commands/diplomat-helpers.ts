@@ -84,7 +84,7 @@ export function extractExportedNames(content: string): string[] {
   for (const pat of patterns) {
     let m: RegExpExecArray | null
     while ((m = pat.exec(content)) !== null) {
-      names.push(m[1]!)
+      names.push(m[1] ?? '')
     }
   }
   return [...new Set(names)]
@@ -103,11 +103,11 @@ export function extractImportPaths(content: string): string[] {
   let m: RegExpExecArray | null
   const pat = /import\s+.*?\s+from\s+['"]([^'"]+)['"]/g
   while ((m = pat.exec(content)) !== null) {
-    paths.push(m[1]!)
+    paths.push(m[1] ?? '')
   }
   const sideEffect = /import\s+['"]([^'"]+)['"]/g
   while ((m = sideEffect.exec(content)) !== null) {
-    paths.push(m[1]!)
+    paths.push(m[1] ?? '')
   }
   return paths
 }
@@ -125,7 +125,7 @@ export function extractImportNames(content: string): string[] {
   let m: RegExpExecArray | null
   const pat = /import\s+\{([^}]+)\}\s+from/g
   while ((m = pat.exec(content)) !== null) {
-    for (const item of m[1]!.split(',')) {
+    for (const item of m[1] ?? ''.split(',')) {
       const trimmed = item.trim().split(/\s+as\s+/)[0]!.trim()
       if (trimmed) names.push(trimmed)
     }
@@ -163,7 +163,7 @@ export function extractTypeDefinitions(content: string): { name: string; isPubli
   const ifacePat = /(?:export\s+)?interface\s+(\w+)\s*\{([^}]*)\}/g
   let m: RegExpExecArray | null
   while ((m = ifacePat.exec(content)) !== null) {
-    const name = m[1]!
+    const name = m[1] ?? ''
     const body = m[2]!
     const matchedText = content.substring(m.index, m.index + 30)
     const isPublic = matchedText.startsWith('export')
@@ -176,7 +176,7 @@ export function extractTypeDefinitions(content: string): { name: string; isPubli
 
   const typePat = /(?:export\s+)?type\s+(\w+)\s*=/g
   while ((m = typePat.exec(content)) !== null) {
-    const name = m[1]!
+    const name = m[1] ?? ''
     const matchedText = content.substring(m.index, m.index + 30)
     const isPublic = matchedText.startsWith('export')
     types.push({ name, isPublic, isStrict: true, articles: 0 })

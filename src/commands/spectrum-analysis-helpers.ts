@@ -318,7 +318,7 @@ export function buildSpectralLayers(decompositions: ConcernDecomposition[]): Spe
     const data = layerMap.get(name)!
     return {
       name,
-      color: CONCERN_COLORS[name],
+      color: CONCERN_COLORS[name] ?? '',
       intensity: decompositions.length > 0 ? Math.round(data.totalIntensity / decompositions.length) : 0,
       files: [...data.files],
     }
@@ -408,11 +408,11 @@ export function generateRecommendations(
 export function buildSpectrumResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): SpectrumResult {
   if (files.length === 0) {
     const emptyLayers = CONCERN_NAMES.map((name) => ({
-      name, color: CONCERN_COLORS[name], intensity: 0, files: [] as string[],
+      name, color: CONCERN_COLORS[name] ?? '', intensity: 0, files: [] as string[],
     }))
     const emptyStats: SpectrumStats = {
       totalFiles: 0, pureFiles: 0, blendFiles: 0, whiteFiles: 0, muddyFiles: 0,
@@ -429,7 +429,7 @@ export function buildSpectrumResult(
     const file = files[i]
     const content = contents[i] ?? ''
 
-    const profile = buildProfile(file, content)
+    const profile = buildProfile(file ?? '', content)
     profiles.push(profile)
 
     const layers = decomposeConcerns(profile)
@@ -438,7 +438,7 @@ export function buildSpectrumResult(
     const balance = computeBalance(profile)
     const type = classifyDecompositionType(purity)
 
-    decompositions.push({ file, layers, dominantConcern, purity, type, balance })
+    decompositions.push({ file: file ?? '', layers, dominantConcern, purity, type, balance })
   }
 
   const spectralLayers = buildSpectralLayers(decompositions)

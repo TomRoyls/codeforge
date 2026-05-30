@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { FragmentCondition, VeinCondition, OpalFragment, OpalHorizonResult, OpalVein } from './opal-skyline-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorVeinCondition(condition: VeinCondition | string): string {
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatFragmentTable(fragment) */
 export function formatFragmentTable(fragment: OpalFragment): string {

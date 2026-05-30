@@ -824,22 +824,22 @@ export function buildFrostFernResult(
   }
 
   const bestCrystal = totalFiles > 0
-    ? crystals.reduce((best, c) => (c.qualityScore > best.qualityScore ? c : best), crystals[0]).file
+    ? crystals.reduce((best, c) => (c.qualityScore > best.qualityScore ? c : best), crystals[0] as typeof crystals[number]).file
     : ''
   const mostStructured = totalFiles > 0
-    ? crystals.reduce((best, c) => (c.crystallinePattern > best.crystallinePattern ? c : best), crystals[0]).file
+    ? crystals.reduce((best, c) => (c.crystallinePattern > best.crystallinePattern ? c : best), crystals[0] as typeof crystals[number]).file
     : ''
   const mostElegant = totalFiles > 0
-    ? crystals.reduce((best, c) => (c.fractalElegance > best.fractalElegance ? c : best), crystals[0]).file
+    ? crystals.reduce((best, c) => (c.fractalElegance > best.fractalElegance ? c : best), crystals[0] as typeof crystals[number]).file
     : ''
   const mostDelicate = totalFiles > 0
-    ? crystals.reduce((best, c) => (c.delicateStructure > best.delicateStructure ? c : best), crystals[0]).file
+    ? crystals.reduce((best, c) => (c.delicateStructure > best.delicateStructure ? c : best), crystals[0] as typeof crystals[number]).file
     : ''
   const mostStable = totalFiles > 0
-    ? crystals.reduce((best, c) => (c.icePreservation > best.icePreservation ? c : best), crystals[0]).file
+    ? crystals.reduce((best, c) => (c.icePreservation > best.icePreservation ? c : best), crystals[0] as typeof crystals[number]).file
     : ''
   const mostOriginal = totalFiles > 0
-    ? crystals.reduce((best, c) => (c.snowflakeUniqueness > best.snowflakeUniqueness ? c : best), crystals[0]).file
+    ? crystals.reduce((best, c) => (c.snowflakeUniqueness > best.snowflakeUniqueness ? c : best), crystals[0] as typeof crystals[number]).file
     : ''
 
   const stats: FrostFernStats = {

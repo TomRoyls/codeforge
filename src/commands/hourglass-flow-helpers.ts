@@ -623,7 +623,7 @@ export function analyzeHourglassSet(grains: SandGrain[], dirPath: string): Hourg
  * generateRecommendations(grains, sets, clockshop, stats) // string[]
  */
 export function generateRecommendations(
-  grains: SandGrain[],
+  _grains: SandGrain[],
   sets: HourglassSet[],
   clockshop: Clockshop,
   stats: HourglassFlowStats,
@@ -671,7 +671,7 @@ export function generateRecommendations(
 export function buildHourglassFlowResult(files: string[], contents: string[], _options: Record<string, unknown>): HourglassFlowResult {
   const grains: SandGrain[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeSandGrain(content, file)
+    return analyzeSandGrain(content ?? '', file)
   })
 
   const dirMap = new Map<string, SandGrain[]>()

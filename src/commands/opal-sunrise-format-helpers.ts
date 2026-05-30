@@ -51,7 +51,7 @@ export function colorGrade(grade: string): string {
     'coober-pedy': good, 'beautiful-dawn': good, 'expert-cutter': good,
 
     'common-opal': okay, 'proper-color': okay, 'proper-daybreak': okay,
-    'proper-glow': okay, 'proper-variety': okay, 'proper-glow': okay,
+    'proper-glow': okay, 'proper-variety': okay,
     'proper-deposit': okay, 'decent-morning': okay, 'skilled-polisher': okay,
 
     'fire-opal': poor, 'faint-flash': poor, 'misty-dawn': poor,

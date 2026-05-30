@@ -236,8 +236,8 @@ export function isPotentiallyInfinite(content: string, pos: number): boolean {
 export function isGuardClause(lines: string[], lineIdx: number): boolean {
   if (lineIdx < 0 || lineIdx >= lines.length) return false
   const line = lines[lineIdx]
-  return /^\s*(if\s*\(.+\)\s*\{?\s*return|if\s*\(.+\)\s*return)/.test(line) ||
-    /^\s*return\s+/.test(line) && lineIdx < lines.length / 2
+  return /^\s*(if\s*\(.+\)\s*\{?\s*return|if\s*\(.+\)\s*return)/.test(line ?? '') ||
+    /^\s*return\s+/.test(line ?? '') && lineIdx < lines.length / 2
 }
 
 /**
@@ -261,7 +261,7 @@ export function findCorridors(lines: string[], filePath: string, lighting: numbe
   let start = -1
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     const isControlFlow = /^\s*(if|else|for|while|switch|try|catch|function|class|return|throw|break|continue)\b/.test(trimmed)
     const isBlank = trimmed.length === 0
 
@@ -364,8 +364,8 @@ export function findMinotaurPoints(content: string, filePath: string): MinotaurP
     const line = lines[i]
     const depth = computeNestingDepth(content, content.split('\n').slice(0, i).join('\n').length)
 
-    if (depth >= 4 && /\b(if|for|while|switch)\b/.test(line)) {
-      const forks = (line.match(/&&|\|\|/g) || []).length + 1
+    if (depth >= 4 && /\b(if|for|while|switch)\b/.test(line ?? '')) {
+      const forks = (line?.match(/&&|\|\|/g) || []).length + 1
       minotaurs.push({
         file: filePath,
         line: i + 1,
@@ -487,7 +487,7 @@ export function findDeadEnds(content: string, filePath: string): DeadEnd[] {
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length - 1; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (/^\s*(return|throw)\b/.test(trimmed) && !trimmed.includes('}')) {
       const nextTrimmed = lines[i + 1]?.trim() || ''
       if (nextTrimmed.length > 0 && !/^\s*[}\])]/.test(nextTrimmed) && !/^\s*(catch|finally|else)\b/.test(nextTrimmed)) {
@@ -760,10 +760,10 @@ export function buildLabyrinthResult(
     const filePath = files[i]
     const content = contents[i]
 
-    const paths = mapPaths(content, filePath)
-    const minotaurs = findMinotaurPoints(content, filePath)
-    const deadEnds = findDeadEnds(content, filePath)
-    const lighting = computeLighting(content)
+    const paths = mapPaths(content ?? '',filePath ?? '')
+    const minotaurs = findMinotaurPoints(content ?? '',filePath ?? '')
+    const deadEnds = findDeadEnds(content ?? '',filePath ?? '')
+    const lighting = computeLighting(content ?? '')
     const navigability = computeNavigability(paths, minotaurs, lighting)
     const threadScore = computeThreadScore(paths, minotaurs)
     const complexity = computeFileComplexity(paths, minotaurs)
@@ -771,7 +771,7 @@ export function buildLabyrinthResult(
     const classification = classifyLabyrinthFile(navigability, complexity, lighting)
 
     const lf: LabyrinthFile = {
-      file: filePath,
+      file: filePath ?? '',
       paths,
       minotaurs,
       deadEnds,

@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { GlacierResult, IceZone, GlacierFlow, MorainePile, GlacierStats } from './glacier-helpers.js'
+import type { GlacierResult, IceZone, GlacierStats } from './glacier-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────
 

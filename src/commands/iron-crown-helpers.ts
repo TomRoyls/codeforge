@@ -333,7 +333,6 @@ export function measureForging(content: string): ForgingMeasure {
   const hasReadonly = hasPattern(content, /\breadonly\b/)
   const hasClass = hasPattern(content, /\bclass\b/)
   const hasPrivate = hasPattern(content, /\bprivate\b/)
-  const hasConst = hasPattern(content, /\bconst\b/)
 
   const hasVar = countPattern(content, /\bvar\b/)
   const hasAny = hasPattern(content, /:\s*any\b/)
@@ -521,7 +520,6 @@ export function measureFlexing(content: string): FlexingMeasure {
   const hasReturnType = hasPattern(content, /\):\s*[A-Z]\w+/)
   const hasGenerics = hasPattern(content, /<\w+/)
   const hasTryCatch = hasPattern(content, /\btry\b/)
-  const hasConst = hasPattern(content, /\bconst\b/)
   const hasReadonly = hasPattern(content, /\breadonly\b/)
   const hasStrictChecks = hasPattern(content, /===|!==/)
 

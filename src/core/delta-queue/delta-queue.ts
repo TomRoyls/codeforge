@@ -1,5 +1,6 @@
 export class DeltaQueue {
   private _deltas: number[] = []
+  private _head = 0
   private _lastValue: number | undefined = undefined
   private _capacity: number | undefined
   private _cacheValid = false
@@ -8,6 +9,17 @@ export class DeltaQueue {
 
   constructor(capacity?: number) {
     this._capacity = capacity
+  }
+
+  private _size(): number {
+    return this._deltas.length - this._head
+  }
+
+  private _compact(): void {
+    if (this._head > 0) {
+      this._deltas = this._deltas.slice(this._head)
+      this._head = 0
+    }
   }
 
   private _invalidate(): void {
@@ -20,17 +32,17 @@ export class DeltaQueue {
     this._prefixSums = []
     let running = 0
     let prefix = 0
-    for (let i = 0; i < this._deltas.length; i++) {
+    for (let i = this._head; i < this._deltas.length; i++) {
       running += this._deltas[i]!
       prefix += running
-      this._runningSums[i] = running
-      this._prefixSums[i] = prefix
+      this._runningSums[i - this._head] = running
+      this._prefixSums[i - this._head] = prefix
     }
     this._cacheValid = true
   }
 
   push(value: number): void {
-    if (this._deltas.length === 0) {
+    if (this._size() === 0) {
       this._deltas.push(value)
       this._lastValue = value
     } else {
@@ -38,12 +50,13 @@ export class DeltaQueue {
       this._deltas.push(delta)
       this._lastValue = value
     }
-    if (this._capacity !== undefined && this._deltas.length > this._capacity) {
+    if (this._capacity !== undefined && this._size() > this._capacity) {
+      this._compact()
       if (this._deltas.length > 1) {
         this._deltas[0] = this._deltas[0]! + this._deltas[1]!
         this._deltas.splice(1, 1)
       } else {
-        this._deltas.shift()
+        this._head++
         this._lastValue = undefined
       }
     }
@@ -51,10 +64,10 @@ export class DeltaQueue {
   }
 
   pop(): number | undefined {
-    if (this._deltas.length === 0) return undefined
+    if (this._size() === 0) return undefined
     const value = this._lastValue!
     const poppedDelta = this._deltas.pop()!
-    if (this._deltas.length === 0) {
+    if (this._size() === 0) {
       this._lastValue = undefined
     } else {
       this._lastValue = value - poppedDelta
@@ -64,39 +77,39 @@ export class DeltaQueue {
   }
 
   peek(): number | undefined {
-    if (this._deltas.length === 0) return undefined
+    if (this._size() === 0) return undefined
     return this._lastValue
   }
 
   at(index: number): number {
-    if (index < 0 || index >= this._deltas.length) {
-      throw new RangeError(`Index ${index} out of bounds [0, ${this._deltas.length - 1}]`)
+    if (index < 0 || index >= this._size()) {
+      throw new RangeError(`Index ${index} out of bounds [0, ${this._size() - 1}]`)
     }
     this._ensureCache()
     return this._runningSums[index]!
   }
 
   deltaAt(index: number): number {
-    if (index < 0 || index >= this._deltas.length) {
-      throw new RangeError(`Index ${index} out of bounds [0, ${this._deltas.length - 1}]`)
+    if (index < 0 || index >= this._size()) {
+      throw new RangeError(`Index ${index} out of bounds [0, ${this._size() - 1}]`)
     }
-    return this._deltas[index]!
+    return this._deltas[this._head + index]!
   }
 
   prefixSum(index?: number): number {
-    if (this._deltas.length === 0) return 0
+    if (this._size() === 0) return 0
     this._ensureCache()
-    const i = index ?? this._deltas.length - 1
-    if (i < 0 || i >= this._deltas.length) {
-      throw new RangeError(`Index ${i} out of bounds [0, ${this._deltas.length - 1}]`)
+    const i = index ?? this._size() - 1
+    if (i < 0 || i >= this._size()) {
+      throw new RangeError(`Index ${i} out of bounds [0, ${this._size() - 1}]`)
     }
     return this._prefixSums[i]!
   }
 
   rangeSum(from: number, to: number): number {
-    if (this._deltas.length === 0 && from === 0 && to === -1) return 0
-    if (from < 0 || to >= this._deltas.length || from > to) {
-      throw new RangeError(`Invalid range [${from}, ${to}] for size ${this._deltas.length}`)
+    if (this._size() === 0 && from === 0 && to === -1) return 0
+    if (from < 0 || to >= this._size() || from > to) {
+      throw new RangeError(`Invalid range [${from}, ${to}] for size ${this._size()}`)
     }
     this._ensureCache()
     const upper = this._prefixSums[to]!
@@ -105,27 +118,28 @@ export class DeltaQueue {
   }
 
   reconstruct(): number[] {
-    if (this._deltas.length === 0) return []
+    if (this._size() === 0) return []
     this._ensureCache()
     return [...this._runningSums]
   }
 
   get size(): number {
-    return this._deltas.length
+    return this._size()
   }
 
   isEmpty(): boolean {
-    return this._deltas.length === 0
+    return this._size() === 0
   }
 
   clear(): void {
     this._deltas = []
+    this._head = 0
     this._lastValue = undefined
     this._invalidate()
   }
 
   min(): number | undefined {
-    if (this._deltas.length === 0) return undefined
+    if (this._size() === 0) return undefined
     this._ensureCache()
     let result = this._runningSums[0]!
     for (let i = 1; i < this._runningSums.length; i++) {
@@ -136,7 +150,7 @@ export class DeltaQueue {
   }
 
   max(): number | undefined {
-    if (this._deltas.length === 0) return undefined
+    if (this._size() === 0) return undefined
     this._ensureCache()
     let result = this._runningSums[0]!
     for (let i = 1; i < this._runningSums.length; i++) {
@@ -147,13 +161,13 @@ export class DeltaQueue {
   }
 
   mean(): number | undefined {
-    if (this._deltas.length === 0) return undefined
+    if (this._size() === 0) return undefined
     this._ensureCache()
-    return this._prefixSums[this._prefixSums.length - 1]! / this._deltas.length
+    return this._prefixSums[this._prefixSums.length - 1]! / this._size()
   }
 
   get deltas(): number[] {
-    return [...this._deltas]
+    return this._deltas.slice(this._head)
   }
 
   toArray(): number[] {
@@ -169,11 +183,11 @@ export class DeltaQueue {
   }
 
   compress(): DeltaQueue {
-    if (this._deltas.length === 0) return new DeltaQueue(this._capacity)
+    if (this._size() === 0) return new DeltaQueue(this._capacity)
     this._ensureCache()
     const compressed = new DeltaQueue(this._capacity)
     for (let i = 0; i < this._runningSums.length; i++) {
-      if (i === 0 || this._deltas[i]! !== 0) {
+      if (i === 0 || this._deltas[this._head + i]! !== 0) {
         compressed.push(this._runningSums[i]!)
       }
     }

@@ -235,10 +235,6 @@ function countCodeExamples(content: string): number {
   return (content.match(/@example\b/g) || []).length
 }
 
-function countReturnStatements(content: string): number {
-  return (content.match(/\breturn\b/g) || []).length
-}
-
 function countNesting(content: string): number {
   let maxDepth = 0
   let depth = 0
@@ -333,7 +329,7 @@ export function measureInk(content: string): InkMeasure {
   const isWaterproof = quality >= 60 && countErrorHandling(content) > 0
   const illustrationCount = examples
   const hasIllustrations = examples > 0
-  const hasColophon = (content.match(/^\/\//gm) || []).length > 0 && loc > 3 && content.split('\n')[0]?.startsWith('//')
+  const hasColophon = (content.match(/^\/\//gm) || []).length > 0 && loc > 3 && (content.split('\n')[0]?.startsWith('//') ?? false)
 
   return {
     hasColophon,
@@ -488,7 +484,6 @@ export function measureCirculation(content: string): CirculationMeasure {
   const types = countTypeAnnotations(content)
   const comments = countComments(content)
   const todo = countTODO(content)
-  const deprecated = countDeprecated(content)
 
   const reach = loc === 0 ? 100 : clamp(Math.round(
     (exports > 0 ? 30 : 0) +
@@ -740,7 +735,7 @@ export function analyzePrintShop(pages: PrintedPage[], dirPath: string): PrintSh
  * // recs.length > 0
  */
 export function generateRecommendations(
-  pages: PrintedPage[],
+  _pages: PrintedPage[],
   _shops: PrintShop[],
   library: PrintingLibrary,
   stats: PrintingPressStats,
@@ -895,14 +890,15 @@ export function buildPrintingPressResult(
 
 function findMax(pages: PrintedPage[], getter: (p: PrintedPage) => number): string {
   if (pages.length === 0) return 'none'
-  let best = pages[0]
-  let bestVal = getter(pages[0])
+  let best = pages[0] as PrintedPage
+  let bestVal = getter(best)
   for (let i = 1; i < pages.length; i++) {
-    const val = getter(pages[i])
+    const page = pages[i] as PrintedPage
+    const val = getter(page)
     if (val > bestVal) {
-      best = pages[i]
+      best = page
       bestVal = val
     }
   }
-  return best.file
+  return best?.file ?? ''
 }

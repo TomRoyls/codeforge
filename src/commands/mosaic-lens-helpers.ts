@@ -289,7 +289,7 @@ function applyReadabilityLens(content: string, filePath: string): LensView {
 
   const goodNames = lines.filter(l => {
     const match = l.match(/(?:const|let|function|class)\s+([a-zA-Z_]\w*)/)
-    if (match) return match[1].length >= 2 && /^[a-z]/.test(match[1])
+    if (match && match[1]) return match[1].length >= 2 && /^[a-z]/.test(match[1])
     return true
   })
   if (goodNames.length === lines.length) {
@@ -449,7 +449,7 @@ export function filterFile(filePath: string, views: LensView[]): FilteredFile {
  * @example
  * compareLenses(views, files) // LensComparison
  */
-export function compareLenses(views: LensView[], files: FilteredFile[]): LensComparison {
+export function compareLenses(_views: LensView[], files: FilteredFile[]): LensComparison {
   const avgScores: Record<string, number[]> = {}
   for (const f of files) {
     for (const [lens, score] of Object.entries(f.lensScores)) {
@@ -478,13 +478,14 @@ export function compareLenses(views: LensView[], files: FilteredFile[]): LensCom
     for (let j = i + 1; j < LENS_TYPES.length; j++) {
       const l1 = LENS_TYPES[i]
       const l2 = LENS_TYPES[j]
+      if (l1 === undefined || l2 === undefined) continue
       const s1 = avgScores[l1] || []
       const s2 = avgScores[l2] || []
 
       if (s1.length === 0 || s2.length === 0) continue
 
-      const mean1 = s1.reduce((a, b) => a + b, 0) / s1.length
-      const mean2 = s2.reduce((a, b) => a + b, 0) / s2.length
+      const mean1 = s1.reduce((a: number, b: number) => a + b, 0) / s1.length
+      const mean2 = s2.reduce((a: number, b: number) => a + b, 0) / s2.length
       let diff = Math.abs(mean1 - mean2)
 
       if (diff > maxDiv) { maxDiv = diff; mostDivergent = [l1, l2] }
@@ -510,7 +511,7 @@ export function compareLenses(views: LensView[], files: FilteredFile[]): LensCom
  * @example
  * computeMosaicClarity(views, files) // 75
  */
-export function computeMosaicClarity(views: LensView[], files: FilteredFile[]): number {
+export function computeMosaicClarity(_views: LensView[], files: FilteredFile[]): number {
   if (files.length === 0) return 100
 
   const avgDisp = files.reduce((s, f) => s + f.disparity, 0) / files.length
@@ -541,7 +542,7 @@ export function classifyOverallGrade(clarity: number, avgScore: number): MosaicL
  * generateRecommendations(views, files, comparison, stats) // string[]
  */
 export function generateRecommendations(
-  views: LensView[],
+  _views: LensView[],
   files: FilteredFile[],
   comparison: LensComparison,
   stats: MosaicLensStats,
@@ -554,7 +555,7 @@ export function generateRecommendations(
 
   const lopsided = files.filter(f => f.classification === 'lopsided')
   if (lopsided.length > 0) {
-    recs.push(`Improve ${lopsided[0].weakestLens} in ${lopsided.length} lopsided file(s) for more balanced scores`)
+    recs.push(`Improve ${lopsided[0]?.weakestLens ?? 'unknown'} in ${lopsided.length} lopsided file(s) for more balanced scores`)
   }
 
   if (comparison.surpriseFiles.length > 0) {
@@ -593,9 +594,12 @@ export function buildMosaicLensResult(
   const filteredFiles: FilteredFile[] = []
 
   for (let i = 0; i < files.length; i++) {
-    const views = applyAllLenses(contents[i], files[i])
+    const file = files[i]
+    const content = contents[i]
+    if (file === undefined || content === undefined) continue
+    const views = applyAllLenses(content, file)
     allViews.push(...views)
-    filteredFiles.push(filterFile(files[i], views))
+    filteredFiles.push(filterFile(file, views))
   }
 
   const comparison = compareLenses(allViews, filteredFiles)

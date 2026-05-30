@@ -41,9 +41,9 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'all-seeing': best, 'diamond-level': best, 'royal-blue': best,
-    'star-sapphire': best, 'ocean-depth': best, 'star-sapphire': best,
+    'star-sapphire': best, 'ocean-depth': best,
     'royal-treasury': best, 'crown-jewels': best, 'oracle': best,
 
     'eagle-eye': good, 'corundum-hard': good, 'cornflower-blue': good,

@@ -1,28 +1,10 @@
 import chalk from 'chalk'
 
+import { formatBytes, formatNumber, padRight, padLeft } from '../utils/format-utils.js'
+
 import type { MetricChange, Snapshot, SnapshotDiff, SnapshotListItem } from './snapshot-helpers.js'
 
 // ─── Helpers ────────────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
-
-function formatNumber(n: number): string {
-  return n.toLocaleString()
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
 
 // ─── formatSnapshotTable ────────────────────────────────
 

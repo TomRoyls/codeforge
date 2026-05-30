@@ -554,7 +554,6 @@ export function measurePerspectiveVariance(perspectives: Record<string, Perspect
  * analyzeKaleidoscopeShard('export function calc() { return 1 }', 'calc.ts') // KaleidoscopeShard
  */
 export function analyzeKaleidoscopeShard(content: string, filePath: string): KaleidoscopeShard {
-  const loc = countLoc(content)
 
   const perspectives = {
     structural: analyzePerspectiveView(content, 'structural'),
@@ -571,8 +570,9 @@ export function analyzeKaleidoscopeShard(content: string, filePath: string): Kal
   const minScore = Math.min(...scores)
 
   const perspectiveEntries = Object.entries(perspectives)
-  const dominantEntry = perspectiveEntries.reduce((a, b) => b[1].score > a[1].score ? b : a, perspectiveEntries[0])
-  const weakestEntry = perspectiveEntries.reduce((a, b) => b[1].score < a[1].score ? b : a, perspectiveEntries[0])
+  const firstEntry = perspectiveEntries[0] ?? ['structural', perspectives.structural]
+  const dominantEntry = perspectiveEntries.reduce((a, b) => b[1].score > a[1].score ? b : a, firstEntry)
+  const weakestEntry = perspectiveEntries.reduce((a, b) => b[1].score < a[1].score ? b : a, firstEntry)
 
   const symmetry = Math.min(100, Math.round(
     avgScore * 0.5 +
@@ -586,6 +586,7 @@ export function analyzeKaleidoscopeShard(content: string, filePath: string): Kal
     (perspectiveEntries.filter(([, p]) => p.isClear).length / 6) * 30,
   ))
 
+  const loc = countLoc(content)
   const beauty = Math.min(100, Math.round(
     avgScore * 0.35 +
     (perspectiveEntries.filter(([, p]) => p.isBeautiful).length / 6) * 30 +
@@ -649,8 +650,10 @@ export function analyzeKaleidoscopeChamber(shards: KaleidoscopeShard[], dirPath:
     perspCounts.set(sh.dominantPerspective, (perspCounts.get(sh.dominantPerspective) ?? 0) + 1)
     weakCounts.set(sh.weakestPerspective, (weakCounts.get(sh.weakestPerspective) ?? 0) + 1)
   }
-  const dominantPerspective = Array.from(perspCounts.entries()).sort((a, b) => b[1] - a[1])[0][0]
-  const weakPerspective = Array.from(weakCounts.entries()).sort((a, b) => b[1] - a[1])[0][0]
+  const sortedPersp = Array.from(perspCounts.entries()).sort((a, b) => b[1] - a[1])
+  const dominantPerspective = sortedPersp[0]?.[0] ?? 'structural'
+  const sortedWeak = Array.from(weakCounts.entries()).sort((a, b) => b[1] - a[1])
+  const weakPerspective = sortedWeak[0]?.[0] ?? 'structural'
 
   const harmoniousCount = shards.filter(s => !s.pattern.hasDistortion).length
   const clashingCount = shards.filter(s => s.color.isClashing).length
@@ -737,6 +740,8 @@ export function buildKaleidoscopeTurnResult(
   const n = shards.length || 1
   const overallSymmetry = Math.round(shards.reduce((s, sh) => s + sh.symmetry, 0) / n)
 
+  const firstShard = shards[0]
+
   const stats: KaleidoscopeTurnStats = {
     totalFiles: files.length,
     totalChambers: chambers.length,
@@ -762,14 +767,14 @@ export function buildKaleidoscopeTurnResult(
     brokenChambers: chambers.filter(c => c.condition === 'broken').length,
     overallSymmetry,
     opticianGrade: classifyOpticianGrade(overallSymmetry),
-    mostSymmetrical: shards.length > 0
-      ? shards.reduce((a, b) => b.symmetry > a.symmetry ? b : a, shards[0]).file : 'none',
-    leastSymmetrical: shards.length > 0
-      ? shards.reduce((a, b) => b.symmetry < a.symmetry ? b : a, shards[0]).file : 'none',
-    mostBeautiful: shards.length > 0
-      ? shards.reduce((a, b) => b.beauty > a.beauty ? b : a, shards[0]).file : 'none',
-    bestFromAllAngles: shards.length > 0
-      ? shards.reduce((a, b) => b.perspectiveVariance > a.perspectiveVariance ? b : a, shards[0]).file : 'none',
+    mostSymmetrical: firstShard
+      ? shards.reduce((a, b) => b.symmetry > a.symmetry ? b : a, firstShard).file : 'none',
+    leastSymmetrical: firstShard
+      ? shards.reduce((a, b) => b.symmetry < a.symmetry ? b : a, firstShard).file : 'none',
+    mostBeautiful: firstShard
+      ? shards.reduce((a, b) => b.beauty > a.beauty ? b : a, firstShard).file : 'none',
+    bestFromAllAngles: firstShard
+      ? shards.reduce((a, b) => b.perspectiveVariance > a.perspectiveVariance ? b : a, firstShard).file : 'none',
   }
 
   const recommendations = generateRecommendations(shards, chambers, overallSymmetry, stats)

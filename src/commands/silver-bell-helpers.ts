@@ -808,22 +808,22 @@ export function buildSilverBellResult(
   const crackedBellCount = tones.filter((t) => t.condition === 'cracked-bell').length
 
   const bestTone = totalFiles > 0
-    ? tones.reduce((best, t) => (t.qualityScore > best.qualityScore ? t : best), tones[0]).file
+    ? tones.reduce((best, t) => (t.qualityScore > best.qualityScore ? t : best), tones[0] as typeof tones[number]).file
     : ''
   const mostResonant = totalFiles > 0
-    ? tones.reduce((best, t) => (t.resonance > best.resonance ? t : best), tones[0]).file
+    ? tones.reduce((best, t) => (t.resonance > best.resonance ? t : best), tones[0] as typeof tones[number]).file
     : ''
   const clearest = totalFiles > 0
-    ? tones.reduce((best, t) => (t.clarity > best.clarity ? t : best), tones[0]).file
+    ? tones.reduce((best, t) => (t.clarity > best.clarity ? t : best), tones[0] as typeof tones[number]).file
     : ''
   const bestQuality = totalFiles > 0
-    ? tones.reduce((best, t) => (t.ringQuality > best.ringQuality ? t : best), tones[0]).file
+    ? tones.reduce((best, t) => (t.ringQuality > best.ringQuality ? t : best), tones[0] as typeof tones[number]).file
     : ''
   const purest = totalFiles > 0
-    ? tones.reduce((best, t) => (t.tonePurity > best.tonePurity ? t : best), tones[0]).file
+    ? tones.reduce((best, t) => (t.tonePurity > best.tonePurity ? t : best), tones[0] as typeof tones[number]).file
     : ''
   const mostLasting = totalFiles > 0
-    ? tones.reduce((best, t) => (t.sustain > best.sustain ? t : best), tones[0]).file
+    ? tones.reduce((best, t) => (t.sustain > best.sustain ? t : best), tones[0] as typeof tones[number]).file
     : ''
 
   const stats: SilverBellStats = {

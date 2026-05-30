@@ -196,7 +196,7 @@ export function findUsages(content: string, query: string, filePath: string): Lo
           if (!isDef) {
             results.push({
               name,
-              type: name[0] === name[0].toUpperCase() && name[0] !== name[0].toLowerCase() ? 'class-usage' : 'function-call',
+              type: name[0] === name[0]?.toUpperCase() && name[0] !== name[0]?.toLowerCase() ? 'class-usage' : 'function-call',
               location: {
                 file: filePath,
                 line: i + 1,
@@ -274,7 +274,7 @@ export function findUsages(content: string, query: string, filePath: string): Lo
       for (const m of paramMatch) {
         const nameMatch = m.match(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\b$/)
         if (nameMatch) {
-          const name = nameMatch[1]!
+          const name = nameMatch[1] ?? ''
           if (pattern.test(name) && !/^\s*(function|const|let|var|class|interface|type)\s/.test(line)) {
             const alreadyAdded = results.some(
               (r) => r.location.line === i + 1 && r.name === name,
@@ -324,7 +324,7 @@ export function findImports(content: string, query: string, filePath: string): L
 
     const namedMatch = line.match(/import\s+(?:type\s+)?\{([^}]+)\}/)
     if (namedMatch) {
-      const names = namedMatch[1]!.split(',').map((n) => n.trim().split(/\s+as\s+/).pop()!.trim())
+      const names = namedMatch[1] ?? ''.split(',').map((n) => n.trim().split(/\s+as\s+/).at(-1) ?? ''.trim())
       for (const name of names) {
         if (pattern.test(name)) {
           results.push({
@@ -431,7 +431,7 @@ export function findExports(content: string, query: string, filePath: string): L
     if (line.match(/^export\s+\{/)) {
       const namedExport = line.match(/\{([^}]+)\}/)
       if (namedExport) {
-        const names = namedExport[1]!.split(',').map((n) => n.trim().split(/\s+as\s+/)[0]!.trim())
+        const names = namedExport[1] ?? ''.split(',').map((n) => n.trim().split(/\s+as\s+/)[0]!.trim())
         for (const name of names) {
           if (pattern.test(name)) {
             results.push({

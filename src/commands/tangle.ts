@@ -83,10 +83,7 @@ export default class Tangle extends Command {
         ? flags.ext.split(',').map((e) => e.trim())
         : ['.ts', '.tsx', '.js', '.jsx', '.mjs']
 
-      const files = await discoverFiles(targetPath, {
-        extensions,
-        ignore: flags.ignore,
-      })
+      const files = await discoverFiles({ cwd: targetPath, patterns: extensions.map(e => `**/*${e}`), ignore: flags.ignore ?? [] })
 
       if (files.length === 0) {
         spinner.warn('No source files found.')

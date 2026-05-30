@@ -263,7 +263,6 @@ export function computeDisplacement(content: string): Displacement {
   const imports = countImports(content)
   const functions = countFunctions(content)
   const types = countTypeAnnotations(content)
-  const branches = countBranches(content)
   const nesting = maxNesting(content)
   const errorHandling = countErrorHandling(content)
   const comments = countComments(content)
@@ -301,6 +300,7 @@ export function computeDisplacement(content: string): Displacement {
     (comments === 0 && loc > 20 ? -30 : 0),
   )))
 
+  const branches = countBranches(content)
   const testing = Math.max(-100, Math.min(100, Math.round(
     (errorHandling > 3 ? 30 : errorHandling > 1 ? 15 : 0) +
     (/test|describe|expect|it\(/.test(content) ? 30 : 0) +
@@ -621,7 +621,7 @@ export function analyzePendulumClock(swings: PendulumSwing[], dirPath: string): 
  * generateRecommendations(swings, clocks, system, stats) // string[]
  */
 export function generateRecommendations(
-  swings: PendulumSwing[],
+  _swings: PendulumSwing[],
   _clocks: PendulumClock[],
   _system: SystemInfo,
   stats: PendulumStats,
@@ -750,13 +750,13 @@ export function buildPendulumResult(
     overallBalance,
     horologistGrade: classifyHorologistGrade(overallBalance),
     mostBalanced: swings.length > 0
-      ? swings.reduce((b, s) => s.deviation.fromIdeal < b.deviation.fromIdeal ? s : b, swings[0]).file : 'none',
+      ? swings.reduce((b, s) => s.deviation.fromIdeal < b.deviation.fromIdeal ? s : b, swings[0] as typeof swings[number]).file : 'none',
     leastBalanced: swings.length > 0
-      ? swings.reduce((b, s) => s.deviation.fromIdeal > b.deviation.fromIdeal ? s : b, swings[0]).file : 'none',
+      ? swings.reduce((b, s) => s.deviation.fromIdeal > b.deviation.fromIdeal ? s : b, swings[0] as typeof swings[number]).file : 'none',
     mostChaotic: swings.length > 0
-      ? swings.reduce((b, s) => s.amplitude > b.amplitude ? s : b, swings[0]).file : 'none',
+      ? swings.reduce((b, s) => s.amplitude > b.amplitude ? s : b, swings[0] as typeof swings[number]).file : 'none',
     bestRegulated: clocks.length > 0
-      ? clocks.reduce((b, c) => c.clockQuality > b.clockQuality ? c : b, clocks[0]).directory : 'none',
+      ? clocks.reduce((b, c) => c.clockQuality > b.clockQuality ? c : b, clocks[0] as typeof clocks[number]).directory : 'none',
   }
 
   const recommendations = generateRecommendations(swings, clocks, system, stats)

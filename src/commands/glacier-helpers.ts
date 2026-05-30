@@ -272,6 +272,7 @@ export function detectHiddenDangers(content: string, _filePath: string): HiddenD
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     if (/:\s*any\b/.test(line)) {
@@ -399,22 +400,29 @@ export function mapGlacierFlows(files: string[], contents: string[]): GlacierFlo
   const importMap = new Map<string, Set<string>>()
 
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    const content = contents[i]
+    if (!file || !content) continue
     const imports = new Set<string>()
-    const matches = contents[i].matchAll(/import\s+.*?from\s+['"]\.\/?([^'"]+)['"]/g) || []
+    const matches = content.matchAll(/import\s+.*?from\s+['"]\.\/?([^'"]+)['"]/g)
     for (const m of matches) {
-      const imported = m[1].replace(/\.(ts|js)$/, '')
+      const imported = (m[1] ?? '').replace(/\.(ts|js)$/, '')
       for (let j = 0; j < files.length; j++) {
-        const baseName = files[j].replace(/\.(ts|tsx|js|jsx)$/, '').split('/').pop() || ''
-        if (imported === baseName || files[j].includes(imported)) {
-          imports.add(files[j])
+        const fileJ = files[j]
+        if (!fileJ) continue
+        const baseName = fileJ.replace(/\.(ts|tsx|js|jsx)$/, '').split('/').pop() || ''
+        if (imported === baseName || fileJ.includes(imported)) {
+          imports.add(fileJ)
         }
       }
     }
-    importMap.set(files[i], imports)
+    importMap.set(file, imports)
   }
 
   for (let i = 0; i < files.length; i++) {
-    const deps = importMap.get(files[i])
+    const file = files[i]
+    if (!file) continue
+    const deps = importMap.get(file)
     if (!deps) continue
     for (const dep of deps) {
       const fromContent = contents[files.indexOf(dep)] || ''
@@ -430,10 +438,10 @@ export function mapGlacierFlows(files: string[], contents: string[]): GlacierFlo
 
       flows.push({
         from: dep,
-        to: files[i],
+        to: file,
         flowType,
         volume,
-        description: `${dep} flows into ${files[i]}`,
+        description: `${dep} flows into ${file}`,
       })
     }
   }
@@ -453,17 +461,20 @@ export function identifyMoraines(files: string[], contents: string[]): MorainePi
   const dirMap = new Map<string, { files: string[]; items: string[] }>()
 
   for (let i = 0; i < files.length; i++) {
-    const dir = files[i].split('/').slice(0, -1).join('/') || '.'
+    const file = files[i]
+    const content = contents[i]
+    if (!file || !content) continue
+    const dir = file.split('/').slice(0, -1).join('/') || '.'
 
-    const todos = Array.from(contents[i].matchAll(/\/\/\s*(TODO[\s:]*)[^\n]*/g) || []).map(m => m[0].trim())
-    const fixmes = Array.from(contents[i].matchAll(/\/\/\s*(FIXME[\s:]*)[^\n]*/g) || []).map(m => m[0].trim())
-    const hacks = Array.from(contents[i].matchAll(/\/\/\s*(HACK[\s:]*)[^\n]*/g) || []).map(m => m[0].trim())
+    const todos = Array.from(content.matchAll(/\/\/\s*(TODO[\s:]*)[^\n]*/g)).map(m => m[0].trim())
+    const fixmes = Array.from(content.matchAll(/\/\/\s*(FIXME[\s:]*)[^\n]*/g)).map(m => m[0].trim())
+    const hacks = Array.from(content.matchAll(/\/\/\s*(HACK[\s:]*)[^\n]*/g)).map(m => m[0].trim())
     const items = [...todos, ...fixmes, ...hacks]
 
     if (items.length === 0) continue
 
     const group = dirMap.get(dir) || { files: [], items: [] }
-    group.files.push(files[i])
+    group.files.push(file)
     group.items.push(...items)
     dirMap.set(dir, group)
   }
@@ -607,6 +618,7 @@ export function buildGlacierResult(
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] || ''
     const filePath = files[i]
+    if (!filePath) continue
 
     const stability = measureStability(content, filePath)
     const density = measureDensity(content)

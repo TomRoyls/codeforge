@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { BridgeCableResult, CableSegment, BridgeSpan } from './bridge-cable-helpers.js'
+import type { BridgeCableResult, CableSegment } from './bridge-cable-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

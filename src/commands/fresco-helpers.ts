@@ -460,10 +460,12 @@ export function detectTechniques(files: string[], contents: string[]): PaintingT
 
   for (let i = 0; i < files.length; i++) {
     const c = contents[i]
-    if (/interface\s+\w+/.test(c)) interfaceFiles.push(files[i])
-    if (/export\s+function/.test(c) && !/class\s/.test(c)) functionalFiles.push(files[i])
-    if (/class\s+\w+/.test(c)) classFiles.push(files[i])
-    if (/export\s+const\s+\w+\s*=/.test(c) && !/class|function/.test(c)) utilityFiles.push(files[i])
+    const f = files[i]
+    if (c === undefined || f === undefined) continue
+    if (/interface\s+\w+/.test(c)) interfaceFiles.push(f)
+    if (/export\s+function/.test(c) && !/class\s/.test(c)) functionalFiles.push(f)
+    if (/class\s+\w+/.test(c)) classFiles.push(f)
+    if (/export\s+const\s+\w+\s*=/.test(c) && !/class|function/.test(c)) utilityFiles.push(f)
   }
 
   if (interfaceFiles.length > 0) {
@@ -513,7 +515,7 @@ export function detectTechniques(files: string[], contents: string[]): PaintingT
  * generateRecommendations(layers, files, stats) // string[]
  */
 export function generateRecommendations(
-  layers: FrescoLayer[],
+  _layers: FrescoLayer[],
   files: FrescoFile[],
   stats: FrescoStats,
 ): string[] {
@@ -581,6 +583,7 @@ export function buildFrescoResult(
   for (let i = 0; i < files.length; i++) {
     const content = contents[i]
     const filePath = files[i]
+    if (content === undefined || filePath === undefined) continue
 
     const surfaceQ = analyzeSurface(content, filePath)
     const interfaceQ = analyzeInterface(content, filePath)

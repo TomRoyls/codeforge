@@ -660,7 +660,7 @@ export async function buildSapphireAbyssResult(
 export function generateRecommendations(
   dives: SapphireDive[],
   trenches: SapphireTrench[],
-  ocean: SapphireAbyssResult['ocean'],
+  _ocean: SapphireAbyssResult['ocean'],
   stats: SapphireAbyssResult['stats'],
 ): string[] {
   const recs: string[] = []

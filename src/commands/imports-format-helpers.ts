@@ -2,17 +2,9 @@ import chalk from 'chalk'
 
 import type { ImportsResult } from './imports-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /**
  * Format imports result as a colorized table for terminal output.

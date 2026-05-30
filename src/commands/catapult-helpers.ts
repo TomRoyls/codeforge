@@ -817,15 +817,15 @@ export function buildCatapultResult(
     overallReadiness,
     commanderGrade: classifyCommanderGrade(overallReadiness),
     bestProjectile: projectiles.length > 0
-      ? projectiles.reduce((b, p) => p.qualityScore > b.qualityScore ? p : b, projectiles[0]).file : 'none',
+      ? projectiles.reduce((b, p) => p.qualityScore > b.qualityScore ? p : b, projectiles[0] as typeof projectiles[number]).file : 'none',
     worstProjectile: projectiles.length > 0
-      ? projectiles.reduce((w, p) => p.qualityScore < w.qualityScore ? p : w, projectiles[0]).file : 'none',
+      ? projectiles.reduce((w, p) => p.qualityScore < w.qualityScore ? p : w, projectiles[0] as typeof projectiles[number]).file : 'none',
     heaviestPayload: projectiles.length > 0
-      ? projectiles.reduce((h, p) => p.payloadWeight > h.payloadWeight ? p : h, projectiles[0]).file : 'none',
+      ? projectiles.reduce((h, p) => p.payloadWeight > h.payloadWeight ? p : h, projectiles[0] as typeof projectiles[number]).file : 'none',
     mostReady: projectiles.length > 0
-      ? projectiles.reduce((m, p) => p.qualityScore > m.qualityScore ? p : m, projectiles[0]).file : 'none',
+      ? projectiles.reduce((m, p) => p.qualityScore > m.qualityScore ? p : m, projectiles[0] as typeof projectiles[number]).file : 'none',
     leastReady: projectiles.length > 0
-      ? projectiles.reduce((l, p) => p.qualityScore < l.qualityScore ? p : l, projectiles[0]).file : 'none',
+      ? projectiles.reduce((l, p) => p.qualityScore < l.qualityScore ? p : l, projectiles[0] as typeof projectiles[number]).file : 'none',
   }
 
   const recommendations = generateCatapultRecommendations(projectiles, engines, launchPad, stats)

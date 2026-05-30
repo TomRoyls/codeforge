@@ -690,7 +690,7 @@ export function buildSundialShadowResult(
 ): SundialShadowResult {
   const traces: ShadowTrace[] = []
   for (let i = 0; i < files.length; i++) {
-    traces.push(analyzeShadowTrace(contents[i], files[i]))
+    traces.push(analyzeShadowTrace(contents[i] ?? '',files[i] ?? ''))
   }
 
   const dirMap = new Map<string, ShadowTrace[]>()
@@ -782,16 +782,16 @@ function computeStats(traces: ShadowTrace[], clusters: ShadowCluster[]): Sundial
   const epochGrade = classifyEpochGrade(overallEvolutionaryHealth)
 
   const sortedByClarity = [...traces].sort((a, b) => b.shadowClarity - a.shadowClarity)
-  const bestPreserved = sortedByClarity.length > 0 ? sortedByClarity[0].file : 'none'
+  const bestPreserved = sortedByClarity.length > 0 ? sortedByClarity[0]?.file ?? 'none' : 'none'
 
   const sortedByDepth = [...traces].sort((a, b) => b.temporalDepth - a.temporalDepth)
-  const mostEvolved = sortedByDepth.length > 0 ? sortedByDepth[0].file : 'none'
+  const mostEvolved = sortedByDepth.length > 0 ? sortedByDepth[0]?.file ?? 'none' : 'none'
 
   const sortedByMaturity = [...traces].sort((a, b) => b.maturity - a.maturity)
-  const freshestCode = sortedByMaturity.length > 0 ? sortedByMaturity[0].file : 'none'
+  const freshestCode = sortedByMaturity.length > 0 ? sortedByMaturity[0]?.file ?? 'none' : 'none'
 
   const sortedByLegacy = [...traces].sort((a, b) => b.traces.legacyPatterns - a.traces.legacyPatterns)
-  const mostLegacy = sortedByLegacy.length > 0 ? sortedByLegacy[0].file : 'none'
+  const mostLegacy = sortedByLegacy.length > 0 ? sortedByLegacy[0]?.file ?? 'none' : 'none'
 
   return {
     totalFiles, totalClusters, avgShadowLength, avgShadowClarity,

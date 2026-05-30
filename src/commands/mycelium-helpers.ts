@@ -102,10 +102,12 @@ export function buildNodes(files: string[], contents: string[]): HyphaeNode[] {
   const connectionCounts = new Map<string, { incoming: number; outgoing: number; exports: string[]; imports: string[] }>()
 
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
     const exports = extractExports(content)
     const imports = extractImports(content, files)
-    connectionCounts.set(files[i], { incoming: 0, outgoing: imports.length, exports, imports })
+    connectionCounts.set(file, { incoming: 0, outgoing: imports.length, exports, imports })
   }
 
   for (let i = 0; i < files.length; i++) {
@@ -125,7 +127,9 @@ export function buildNodes(files: string[], contents: string[]): HyphaeNode[] {
   const nodes: HyphaeNode[] = []
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
-    const data = connectionCounts.get(file)!
+    if (!file) continue
+    const data = connectionCounts.get(file)
+    if (!data) continue
     const total = data.incoming + data.outgoing
     const nutrientLevel = Math.min(100, Math.round((data.exports.length / Math.max(1, maxConn)) * 100))
     const dependencyScore = Math.min(100, Math.round((data.incoming / Math.max(1, maxConn)) * 100))
@@ -161,10 +165,15 @@ export function buildNodes(files: string[], contents: string[]): HyphaeNode[] {
 function extractExports(content: string): string[] {
   const exports: string[] = []
   const namedExport = content.matchAll(/export\s+(?:const|let|var|function|class|type|interface|enum)\s+(\w+)/g)
-  for (const m of namedExport) exports.push(m[1])
+  for (const m of namedExport) {
+    const name = m[1]
+    if (name) exports.push(name)
+  }
   const reExports = content.matchAll(/export\s+\{([^}]+)\}/g)
   for (const m of reExports) {
-    const names = m[1].split(',').map(n => n.trim().split(/\s+as\s+/).pop()?.trim()).filter(Boolean) as string[]
+    const group = m[1]
+    if (!group) continue
+    const names = group.split(',').map(n => n.trim().split(/\s+as\s+/).pop()?.trim()).filter((n): n is string => Boolean(n))
     exports.push(...names)
   }
   return [...new Set(exports)]
@@ -175,7 +184,7 @@ function extractImports(content: string, allFiles: string[]): string[] {
   const importMatches = content.matchAll(/import\s+.*?from\s+['"]([^'"]+)['"]/g)
   for (const m of importMatches) {
     const source = m[1]
-    if (source.startsWith('.')) {
+    if (!source || !source.startsWith('.')) continue
       const cleanSource = source.replace(/^\.\//, '').replace(/\.\w+$/, '')
       for (const f of allFiles) {
         const cleanFile = f.replace(/\.\w+$/, '').replace(/^.*\//, '')
@@ -184,7 +193,6 @@ function extractImports(content: string, allFiles: string[]): string[] {
           break
         }
       }
-    }
   }
   return [...new Set(imports)]
 }
@@ -210,27 +218,29 @@ export function buildConnections(files: string[], contents: string[], _nodes: Hy
   const connections: HyphaeConnection[] = []
 
   for (let i = 0; i < files.length; i++) {
+    const fromFile = files[i]
+    if (!fromFile) continue
     const content = contents[i] ?? ''
     const importMatches = content.matchAll(/import\s+(?:\{([^}]+)\}|\*\s+as\s+(\w+)|(\w+))\s+from\s+['"]([^'"]+)['"]/g)
     for (const m of importMatches) {
       const named = m[1]
       const source = m[4]
-      if (!source.startsWith('.')) continue
+      if (!source || !source.startsWith('.')) continue
 
       const nutrients: string[] = []
       if (named) {
-        nutrients.push(...named.split(',').map(n => n.trim().split(/\s+as\s+/)[0].trim()).filter(Boolean))
+        nutrients.push(...named.split(',').map(n => n.trim().split(/\s+as\s+/)[0] ?? '').filter(Boolean))
       }
 
       const targetFile = findTargetFile(source, files)
       if (targetFile) {
-        const existing = connections.find(c => c.from === files[i] && c.to === targetFile)
+        const existing = connections.find(c => c.from === fromFile && c.to === targetFile)
         if (existing) {
           existing.nutrients.push(...nutrients)
           existing.strength = Math.min(100, existing.nutrients.length * 15)
         } else {
           connections.push({
-            from: files[i],
+            from: fromFile,
             to: targetFile,
             type: 'import',
             strength: Math.min(100, Math.max(10, nutrients.length * 15)),
@@ -298,7 +308,7 @@ export function identifyClusters(nodes: HyphaeNode[], connections: HyphaeConnect
     const component: string[] = []
     const queue = [node.file]
     while (queue.length > 0) {
-      const current = queue.pop()!
+      const current = queue.pop() ?? ''
       if (visited.has(current)) continue
       visited.add(current)
       component.push(current)
@@ -369,14 +379,16 @@ export function traceNutrientFlows(files: string[], contents: string[], connecti
   const exportMap = new Map<string, { symbol: string; type: FlowType }[]>()
 
   for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
     const exports: { symbol: string; type: FlowType }[] = []
-    for (const m of content.matchAll(/export\s+function\s+(\w+)/g)) exports.push({ symbol: m[1], type: 'function' })
-    for (const m of content.matchAll(/export\s+const\s+(\w+)/g)) exports.push({ symbol: m[1], type: 'constant' })
-    for (const m of content.matchAll(/export\s+class\s+(\w+)/g)) exports.push({ symbol: m[1], type: 'class' })
-    for (const m of content.matchAll(/export\s+interface\s+(\w+)/g)) exports.push({ symbol: m[1], type: 'interface' })
-    for (const m of content.matchAll(/export\s+type\s+(\w+)/g)) exports.push({ symbol: m[1], type: 'type' })
-    exportMap.set(files[i], exports)
+    for (const m of content.matchAll(/export\s+function\s+(\w+)/g)) { if (m[1]) exports.push({ symbol: m[1], type: 'function' }) }
+    for (const m of content.matchAll(/export\s+const\s+(\w+)/g)) { if (m[1]) exports.push({ symbol: m[1], type: 'constant' }) }
+    for (const m of content.matchAll(/export\s+class\s+(\w+)/g)) { if (m[1]) exports.push({ symbol: m[1], type: 'class' }) }
+    for (const m of content.matchAll(/export\s+interface\s+(\w+)/g)) { if (m[1]) exports.push({ symbol: m[1], type: 'interface' }) }
+    for (const m of content.matchAll(/export\s+type\s+(\w+)/g)) { if (m[1]) exports.push({ symbol: m[1], type: 'type' }) }
+    exportMap.set(file, exports)
   }
 
   const flowMap = new Map<string, NutrientFlow>()
@@ -515,7 +527,7 @@ function countComponents(files: string[], adjacency: Map<string, Set<string>>): 
     components++
     const queue = [file]
     while (queue.length > 0) {
-      const current = queue.pop()!
+      const current = queue.pop() ?? ''
       if (visited.has(current)) continue
       visited.add(current)
       const neighbors = adjacency.get(current) ?? new Set()

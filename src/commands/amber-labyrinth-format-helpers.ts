@@ -48,7 +48,7 @@ export function colorGrade(grade: string): string {
 
     'clear-path': good, 'golden-resin': good, 'proper-maze': good,
     'skilled-handler': good, 'clear-trace': good, 'amber-sanctuary': good,
-    'proper-maze': good, 'golden-labyrinth': good, 'master-architect': good,
+    'golden-labyrinth': good, 'master-architect': good,
 
     'proper-hallway': okay, 'proper-preservation': okay, 'decent-winding': okay,
     'proper-management': okay, 'proper-path': okay, 'proper-labyrinth': okay,

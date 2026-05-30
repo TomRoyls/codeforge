@@ -580,7 +580,7 @@ export function detectTodos(content: string, filePath: string): CodeSmell[] {
     const line = lines[i]!
     const match = line.match(todoRegex) ?? line.match(blockTodoRegex)
     if (match) {
-      const tag = match[1]!.toUpperCase()
+      const tag = match[1] ?? ''.toUpperCase()
       smells.push({
         type: 'todo-comment',
         name: 'TODO Comment',

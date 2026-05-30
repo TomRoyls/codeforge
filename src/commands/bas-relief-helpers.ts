@@ -473,7 +473,7 @@ export function analyzeReliefPanel(elements: ReliefElement[], dirPath: string): 
 
   const narrative = buildNarrative(elements, avgProjection, isCoherent)
   const sortedByProjection = [...elements].sort((a, b) => b.projection - a.projection)
-  const focalElement = sortedByProjection[0].file
+  const focalElement = sortedByProjection[0]?.file
 
   const depths = elements.map(e => e.depth)
   const depthRange: DepthRange = {
@@ -496,7 +496,7 @@ export function analyzeReliefPanel(elements: ReliefElement[], dirPath: string): 
     totalLayers,
     isCoherent,
     narrative,
-    focalElement,
+    focalElement: focalElement ?? '',
     condition,
     depthRange,
   }
@@ -597,7 +597,7 @@ export function buildBasReliefResult(
 ): BasReliefResult {
   const elements: ReliefElement[] = []
   for (let i = 0; i < files.length; i++) {
-    elements.push(analyzeReliefElement(contents[i], files[i]))
+    elements.push(analyzeReliefElement(contents[i] ?? '',files[i] ?? ''))
   }
 
   const dirMap = new Map<string, ReliefElement[]>()
@@ -652,12 +652,12 @@ function computeBasReliefStats(elements: ReliefElement[], panels: ReliefPanel[])
   const sculptorGrade = classifySculptorGrade(avgSculpturalQuality)
 
   const sortedPanels = [...panels].sort((a, b) => b.avgSculpturalQuality - a.avgSculpturalQuality)
-  const bestPanel = sortedPanels.length > 0 ? sortedPanels[0].directory : 'none'
-  const worstPanel = sortedPanels.length > 0 ? sortedPanels[sortedPanels.length - 1].directory : 'none'
+  const bestPanel = sortedPanels.length > 0 ? sortedPanels[0]?.directory : 'none'
+  const worstPanel = sortedPanels.length > 0 ? sortedPanels[sortedPanels.length - 1]?.directory : 'none'
 
   const sortedByDepth = [...elements].sort((a, b) => b.depth - a.depth)
-  const deepestElement = sortedByDepth.length > 0 ? sortedByDepth[0].file : 'none'
-  const shallowestElement = sortedByDepth.length > 0 ? sortedByDepth[sortedByDepth.length - 1].file : 'none'
+  const deepestElement = sortedByDepth.length > 0 ? sortedByDepth[0]?.file : 'none'
+  const shallowestElement = sortedByDepth.length > 0 ? sortedByDepth[sortedByDepth.length - 1]?.file : 'none'
 
   return {
     totalFiles,
@@ -683,9 +683,9 @@ function computeBasReliefStats(elements: ReliefElement[], panels: ReliefPanel[])
     depthScore,
     compositionScore,
     sculptorGrade,
-    bestPanel,
-    worstPanel,
-    deepestElement,
-    shallowestElement,
+    bestPanel: bestPanel ?? '',
+    worstPanel: worstPanel ?? '',
+    deepestElement: deepestElement ?? '',
+    shallowestElement: shallowestElement ?? '',
   }
 }

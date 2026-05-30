@@ -89,7 +89,7 @@ export function formatPathChain(chain: string[]): string {
   return chain
     .map((c) => {
       const parts = c.split(':')
-      const name = parts.pop()!
+      const name = parts.at(-1) ?? ''
       return chalk.rgb(200, 200, 255)(name)
     })
     .join(` ${chalk.rgb(100, 100, 100)('→')} `)

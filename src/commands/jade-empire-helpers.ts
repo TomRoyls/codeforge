@@ -651,7 +651,7 @@ export async function buildJadeEmpireResult(
 export function generateRecommendations(
   artifacts: JadeArtifact[],
   dynasties: JadeDynasty[],
-  empire: JadeEmpireResult['empire'],
+  _empire: JadeEmpireResult['empire'],
   stats: JadeEmpireResult['stats'],
 ): string[] {
   const recs: string[] = []

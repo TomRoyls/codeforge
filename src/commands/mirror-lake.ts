@@ -7,9 +7,6 @@ import ora from 'ora'
 import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildMirrorLakeResult,
-  type LakeReflection,
-  type LakeSystem,
-  type MirrorLakeResult,
 } from './mirror-lake-helpers.js'
 import { formatResultJson, formatResultTable } from './mirror-lake-format-helpers.js'
 
@@ -84,7 +81,6 @@ export default class MirrorLake extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
 
     const spinner = ora('Scanning mirror lake...').start()
 

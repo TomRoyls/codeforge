@@ -86,7 +86,7 @@ export function hashBlock(code: string): number {
 export function extractBlocks(
   content: string,
   windowSize: number,
-  file: string,
+  _file: string,
 ): Array<{ code: string; lineStart: number; lineEnd: number; context: string }> {
   const lines = content.split('\n')
   const blocks: Array<{ code: string; lineStart: number; lineEnd: number; context: string }> = []
@@ -113,12 +113,12 @@ function findContext(lines: string[], lineIndex: number): string {
   for (let i = lineIndex; i >= 0; i--) {
     const line = lines[i]!.trim()
     const funcMatch = line.match(/\bfunction\s+(\w+)/)
-    if (funcMatch) return funcMatch[1]!
+    if (funcMatch) return funcMatch[1] ?? ''
     const classMatch = line.match(/\bclass\s+(\w+)/)
-    if (classMatch) return classMatch[1]!
+    if (classMatch) return classMatch[1] ?? ''
     const methodMatch = line.match(/^\s*(?:async\s+)?(\w+)\s*\(/)
-    if (methodMatch && !['if', 'for', 'while', 'switch', 'catch'].includes(methodMatch[1]!)) {
-      return methodMatch[1]!
+    if (methodMatch && !['if', 'for', 'while', 'switch', 'catch'].includes(methodMatch[1] ?? '')) {
+      return methodMatch[1] ?? ''
     }
   }
   return '<module>'

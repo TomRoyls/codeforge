@@ -822,22 +822,22 @@ export function buildLanternGlowResult(
   const darknessCount = flames.filter((f) => f.condition === 'darkness').length
 
   const bestFlame = totalFiles > 0
-    ? flames.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), flames[0]).file
+    ? flames.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), flames[0] as typeof flames[number]).file
     : ''
   const brightest = totalFiles > 0
-    ? flames.reduce((best, f) => (f.illumination > best.illumination ? f : best), flames[0]).file
+    ? flames.reduce((best, f) => (f.illumination > best.illumination ? f : best), flames[0] as typeof flames[number]).file
     : ''
   const warmest = totalFiles > 0
-    ? flames.reduce((best, f) => (f.warmth > best.warmth ? f : best), flames[0]).file
+    ? flames.reduce((best, f) => (f.warmth > best.warmth ? f : best), flames[0] as typeof flames[number]).file
     : ''
   const bestGuided = totalFiles > 0
-    ? flames.reduce((best, f) => (f.guidance > best.guidance ? f : best), flames[0]).file
+    ? flames.reduce((best, f) => (f.guidance > best.guidance ? f : best), flames[0] as typeof flames[number]).file
     : ''
   const mostEfficient = totalFiles > 0
-    ? flames.reduce((best, f) => (f.fuelEfficiency > best.fuelEfficiency ? f : best), flames[0]).file
+    ? flames.reduce((best, f) => (f.fuelEfficiency > best.fuelEfficiency ? f : best), flames[0] as typeof flames[number]).file
     : ''
   const farthestReaching = totalFiles > 0
-    ? flames.reduce((best, f) => (f.glowReach > best.glowReach ? f : best), flames[0]).file
+    ? flames.reduce((best, f) => (f.glowReach > best.glowReach ? f : best), flames[0] as typeof flames[number]).file
     : ''
 
   const stats: LanternGlowStats = {

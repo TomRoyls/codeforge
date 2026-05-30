@@ -823,22 +823,22 @@ export function buildSandstormEyeResult(
   }
 
   const bestGrain = totalFiles > 0
-    ? grains.reduce((best, g) => (g.qualityScore > best.qualityScore ? g : best), grains[0]).file
+    ? grains.reduce((best, g) => (g.qualityScore > best.qualityScore ? g : best), grains[0] as typeof grains[number]).file
     : ''
   const mostResilient = totalFiles > 0
-    ? grains.reduce((best, g) => (g.chaosResilience > best.chaosResilience ? g : best), grains[0]).file
+    ? grains.reduce((best, g) => (g.chaosResilience > best.chaosResilience ? g : best), grains[0] as typeof grains[number]).file
     : ''
   const mostFocused = totalFiles > 0
-    ? grains.reduce((best, g) => (g.stillnessFocus > best.stillnessFocus ? g : best), grains[0]).file
+    ? grains.reduce((best, g) => (g.stillnessFocus > best.stillnessFocus ? g : best), grains[0] as typeof grains[number]).file
     : ''
   const bestFiltered = totalFiles > 0
-    ? grains.reduce((best, g) => (g.grainFiltration > best.grainFiltration ? g : best), grains[0]).file
+    ? grains.reduce((best, g) => (g.grainFiltration > best.grainFiltration ? g : best), grains[0] as typeof grains[number]).file
     : ''
   const mostEnduring = totalFiles > 0
-    ? grains.reduce((best, g) => (g.visibilityEndurance > best.visibilityEndurance ? g : best), grains[0]).file
+    ? grains.reduce((best, g) => (g.visibilityEndurance > best.visibilityEndurance ? g : best), grains[0] as typeof grains[number]).file
     : ''
   const bestNavigator = totalFiles > 0
-    ? grains.reduce((best, g) => (g.stormNavigation > best.stormNavigation ? g : best), grains[0]).file
+    ? grains.reduce((best, g) => (g.stormNavigation > best.stormNavigation ? g : best), grains[0] as typeof grains[number]).file
     : ''
 
   const stats: SandstormEyeStats = {

@@ -1,16 +1,9 @@
 // ─── Imports ───────────────────────────────────────────────────────
-import { Command, Flags } from '@oclif/core'
+import { Command, Flags, Args } from '@oclif/core'
 import fg from 'fast-glob'
 import ora from 'ora'
 import {
   buildGoldenCompassResult,
-  computeRevealing,
-  computeAligning,
-  computeGuiding,
-  computeVirtueing,
-  computeConvicting,
-  classifyNeedleCondition,
-  classifyScholarGrade,
 } from './golden-compass-helpers.js'
 import {
   formatResultTable,
@@ -29,7 +22,9 @@ export default class GoldenCompass extends Command {
     glob: Flags.string({ char: 'g', description: 'Glob pattern for files', default: '**/*.ts' }),
   }
 
-  static override args = [{ name: 'path', description: 'Directory to analyze', required: true }]
+  static override args = {
+    path: Args.string({ description: 'Directory to analyze', required: true }),
+  }
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(GoldenCompass)
@@ -49,7 +44,7 @@ export default class GoldenCompass extends Command {
       }
 
       spinner.text = 'Computing golden compass analysis...'
-      const result = buildGoldenCompassResult(
+      const result = await buildGoldenCompassResult(
         Array.from(files),
         contents,
         { glob: flags.glob },

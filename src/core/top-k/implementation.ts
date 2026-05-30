@@ -34,16 +34,7 @@ export class TopK<T> {
   }
 
   getTopK(): Array<[T, number]> {
-    const result: Array<[T, number]> = [];
-    const tempHeap = [...this.heap];
-
-    while (tempHeap.length > 0) {
-      const min = tempHeap.shift()!;
-      result.unshift(min);
-    }
-
-    result.sort((a, b) => b[1] - a[1]);
-    return result;
+    return [...this.heap].sort((a, b) => b[1] - a[1]);
   }
 
   contains(item: T): boolean {

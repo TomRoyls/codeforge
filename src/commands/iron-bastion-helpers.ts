@@ -656,7 +656,7 @@ export async function buildIronBastionResult(
 export function generateRecommendations(
   plates: IronPlate[],
   fortresses: IronFortress[],
-  foundry: IronBastionResult['foundry'],
+  _foundry: IronBastionResult['foundry'],
   stats: IronBastionResult['stats'],
 ): string[] {
   const recs: string[] = []

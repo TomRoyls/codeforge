@@ -8,7 +8,6 @@ import type { JadeWaterfallResult, JadeDrop, JadeBasin } from './jade-waterfall-
 const JADE = chalk.rgb(0, 168, 107)
 const WATER = chalk.rgb(100, 200, 255)
 const MIST = chalk.rgb(180, 230, 200)
-const DEEP = chalk.rgb(0, 100, 80)
 const DIM = chalk.rgb(130, 130, 170)
 const BULLET = '\u{1F4A7}'
 

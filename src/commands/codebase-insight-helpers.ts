@@ -234,8 +234,6 @@ export function detectSurprisingInsights(dimensions: Dimension[], correlations: 
   const complexDim = dimensions.find((d) => d.name === 'complexity')
   const sizeDim = dimensions.find((d) => d.name === 'size')
   const docDim = dimensions.find((d) => d.name === 'documentation')
-  const couplingDim = dimensions.find((d) => d.name === 'coupling')
-  const exportDim = dimensions.find((d) => d.name === 'exports')
 
   if (complexDim && sizeDim) {
     const highComplexFiles = [...complexDim.files.entries()].filter(([, v]) => v > 50).map(([f]) => f)
@@ -295,7 +293,7 @@ export function detectSurprisingInsights(dimensions: Dimension[], correlations: 
  * @example
  * detectHiddenPatterns(files, contents, dimensions)
  */
-export function detectHiddenPatterns(files: string[], contents: string[], dimensions: Dimension[]): Insight[] {
+export function detectHiddenPatterns(_files: string[], _contents: string[], dimensions: Dimension[]): Insight[] {
   const insights: Insight[] = []
   let id = 0
 
@@ -368,7 +366,7 @@ export function detectHiddenPatterns(files: string[], contents: string[], dimens
  * @example
  * detectParadoxes(dimensions, correlations)
  */
-export function detectParadoxes(dimensions: Dimension[], correlations: Correlation[]): Insight[] {
+export function detectParadoxes(dimensions: Dimension[], _correlations: Correlation[]): Insight[] {
   const insights: Insight[] = []
   let id = 0
 
@@ -634,7 +632,7 @@ export function generateRecommendations(
 export function buildInsightResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): CodebaseInsightResult {
   if (files.length === 0) {
     const emptyStats: InsightStats = {

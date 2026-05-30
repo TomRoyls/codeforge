@@ -10,8 +10,7 @@ import {
   filterByAuthor,
   filterByLineRange,
   type BlameResult,
-  sortBlameLines,
-} from './blame-helpers.js'
+  } from './blame-helpers.js'
 import { formatBlameCsv, formatBlameJson, formatBlameTable } from './blame-format-helpers.js'
 
 export default class Blame extends Command {

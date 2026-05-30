@@ -188,16 +188,13 @@ const GENERIC_RE = /<\w+>/
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
 const COMMENT_RE = /\/\/.*$/gm
 const TRY_CATCH_RE = /try\s*\{/g
-const IF_RE = /\bif\s*\(/g
 const PIPE_RE = /[.\s](map|filter|reduce|forEach|flatMap|find|some|every)\s*\(/g
-const RETURN_RE = /\breturn\b/g
 const CONST_RE = /\bconst\s+/g
 const LET_RE = /\blet\s+/g
 const MUTATION_RE = /\.\s*(push|pop|shift|unshift|splice|sort|reverse)\s*\(/g
 const SIDE_EFFECT_RE = /\b(console|process|fs|fetch|http|writeFile|readFile)\b/g
 const ANY_TYPE_RE = /:\s*any\b/
 const DEAD_CODE_RE = /\b(debugger|with)\s*[(;]/
-const ASYNC_RE = /\basync\s+/
 
 // ─── measureCatalog ─────────────────────────────────────────────────────────
 
@@ -220,7 +217,6 @@ export function measureCatalog(content: string): CatalogMeasure {
   const types = (content.match(TYPE_ANNOTATION_RE) ?? []).length
   const interfaces = (content.match(INTERFACE_RE) ?? []).length
   const jsdoc = (content.match(JSDOC_RE) ?? []).length
-  const classes = (content.match(CLASS_RE) ?? []).length
   const functions = (content.match(FUNCTION_RE) ?? []).length + (content.match(ARROW_RE) ?? []).length
   const defaults = (content.match(EXPORT_DEFAULT_RE) ?? []).length
 
@@ -713,7 +709,7 @@ export function generateRecommendations(
   }
 
   const worst = books.length > 0
-    ? books.reduce((w, b) => b.qualityScore < w.qualityScore ? b : w, books[0])
+    ? books.reduce((w, b) => b.qualityScore < w.qualityScore ? b : w, books[0] as typeof books[number])
     : null
   if (worst && worst.qualityScore < 25) {
     recs.push(`Weakest book "${worst.file}" needs cataloguing (score: ${worst.qualityScore})`)
@@ -772,19 +768,19 @@ export function buildLibraryStacksResult(
 
   const conditions = books.map((b) => b.condition)
   const bestBook = books.length > 0
-    ? books.reduce((b, x) => x.qualityScore > b.qualityScore ? x : b, books[0])
+    ? books.reduce((b, x) => x.qualityScore > b.qualityScore ? x : b, books[0] as typeof books[number])
     : null
   const bestOrganized = books.length > 0
-    ? books.reduce((b, x) => x.cataloguingQuality > b.cataloguingQuality ? x : b, books[0])
+    ? books.reduce((b, x) => x.cataloguingQuality > b.cataloguingQuality ? x : b, books[0] as typeof books[number])
     : null
   const bestReferenced = books.length > 0
-    ? books.reduce((b, x) => x.referenceSystem > b.referenceSystem ? x : b, books[0])
+    ? books.reduce((b, x) => x.referenceSystem > b.referenceSystem ? x : b, books[0] as typeof books[number])
     : null
   const mostPopular = books.length > 0
-    ? books.reduce((b, x) => x.circulation > b.circulation ? x : b, books[0])
+    ? books.reduce((b, x) => x.circulation > b.circulation ? x : b, books[0] as typeof books[number])
     : null
   const mostReadable = books.length > 0
-    ? books.reduce((b, x) => x.readingRoom > b.readingRoom ? x : b, books[0])
+    ? books.reduce((b, x) => x.readingRoom > b.readingRoom ? x : b, books[0] as typeof books[number])
     : null
 
   const stats: LibraryStacksStats = {

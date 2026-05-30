@@ -190,16 +190,12 @@ const ASYNC_RE = /\basync\b/
 const AWAIT_RE = /\bawait\b/
 const TRY_RE = /\btry\b/
 const CATCH_RE = /\bcatch\b/
-const GENERIC_RE = /<[A-Z]\w*[,>]/
-const OPTIONAL_RE = /\?\s*:/
 const NESTED_TERNARY_RE = /\?.*:.*\?.*:/
 const CONSOLE_RE = /\bconsole\.\w+/g
 const ANY_RE = /:\s*any\b/g
 const EVAL_RE = /\beval\s*\(/g
-const TODO_RE = /\bTODO\b/gi
 const HACK_RE = /\bHACK\b/gi
 const FIXME_RE = /\bFIXME\b/gi
-const DEPRECATED_RE = /@deprecated/g
 const DOC_COMMENT_RE = /\/\*\*[\s\S]*?\*\//g
 const EMPTY_CATCH_RE = /catch\s*\(\w*\)\s*\{\s*\}/g
 
@@ -360,7 +356,6 @@ export function measureFoundation(content: string): FoundationMeasure {
   const hasNoSettling = (content.match(EMPTY_CATCH_RE) || []).length === 0
   const hasWeathered = (content.match(DOC_COMMENT_RE) || []).length > 0
   const hasNoDegradation = !NESTED_TERNARY_RE.test(content)
-  const hasGenericSupport = (content.match(GENERIC_RE) || []).length > 0 || (content.match(OPTIONAL_RE) || []).length > 0
 
   if (content.length > 0) score += 5
   if (hasSolidBase) score += 12
@@ -407,7 +402,6 @@ export function measureCoverage(content: string): CoverageMeasure {
   const hasProperExtent = TRY_RE.test(content) && CATCH_RE.test(content)
   const hasComprehensive = (content.match(DOC_COMMENT_RE) || []).length > 0
   const hasNoMissingPaths = !NESTED_TERNARY_RE.test(content)
-  const hasNoConsole = (content.match(CONSOLE_RE) || []).length === 0
 
   if (content.length > 0) score += 5
   if (hasCompletePaths) score += 12

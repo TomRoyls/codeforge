@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { FoldCondition, CurtainCondition, VelvetFold, VelvetCurtain, VelvetDuskResult } from './velvet-dusk-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ──────────────────────────────────────
 
 /** @example colorScore(85) */
@@ -55,16 +57,6 @@ export function colorCurtainCondition(condition: CurtainCondition | string): str
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatFoldTable(fold) */
 export function formatFoldTable(fold: VelvetFold): string {

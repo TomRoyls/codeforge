@@ -699,8 +699,8 @@ export function analyzeBouquet(petals: Petal[], dirPath: string): Bouquet {
 
 /** @example generateRecommendations(petals, bouquets, garden, stats) returns string[] */
 export function generateRecommendations(
-  petals: Petal[],
-  bouquets: Bouquet[],
+  _petals: Petal[],
+  _bouquets: Bouquet[],
   garden: PetalBloomResult['garden'],
   stats: PetalBloomResult['stats'],
 ): string[] {

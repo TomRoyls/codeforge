@@ -11,16 +11,12 @@ const ENUM_REGEX = /\benum\s+\w+/g
 const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
 const ASYNC_REGEX = /\basync\s+/g
 const TRY_CATCH_REGEX = /\btry\s*\{/g
-const CATCH_REGEX = /\bcatch\b/g
 const FINALLY_REGEX = /\bfinally\b/g
 const THROW_REGEX = /\bthrow\b/g
-const IF_REGEX = /\bif\s*\(/g
-const FOR_REGEX = /\bfor\s*[\(;]/g
 const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
 const TERNARY_REGEX = /\?[^:]+:/g
 const CONSOLE_REGEX = /\bconsole\.\w+/g
 const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
-const ERROR_REGEX = /\bnew\s+Error\b/g
 const GENERICS_REGEX = /<[^>]+>/g
 const PRIVATE_REGEX = /private\s+/g
 const PROTECTED_REGEX = /protected\s+/g
@@ -30,8 +26,6 @@ const READONLY_REGEX = /\breadonly\b/g
 const ANY_REGEX = /\bany\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
 const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
-const COMMENT_REGEX = /\/\/.*$/gm
-const DEFAULT_EXPORT_REGEX = /\bexport\s+default\b/g
 
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
@@ -418,7 +412,6 @@ export function measureThunder(content: string): ThunderMeasure {
   const anyCount = countAny(content)
   const consoleCount = countConsole(content)
   const deepNested = countDeepNested(content)
-  const ternaries = countTernaries(content)
 
   const echoChamberCount = deepNested
   const deadZoneCount = anyCount
@@ -525,6 +518,7 @@ export function measureWind(content: string): WindMeasure {
     hasGustFront,
     hasHighVelocity,
     hasNoCrosswind,
+    hasNoWindShear: !hasDivergence || force < 40,
     hasNoTurbulence,
     hasProperDirection,
     hasUplift,
@@ -608,10 +602,8 @@ export function measurePressure(content: string): PressureMeasure {
   const consoleCount = countConsole(content)
   const deepNested = countDeepNested(content)
   const generics = countGenerics(content)
-  const accessMods = countAccessModifiers(content)
   const readonlyCount = countReadonly(content)
   const staticCount = countStatic(content)
-  const ternaries = countTernaries(content)
 
   const stagnationCount = consoleCount + anyCount
   const supercellCount = deepNested
@@ -667,7 +659,6 @@ export function measurePressure(content: string): PressureMeasure {
 /** @example measureStorm(content) returns StormMeasure */
 export function measureStorm(content: string): StormMeasure {
   const exportCount = countExports(content)
-  const importCount = countImportKeywords(content)
   const classCount = countClasses(content)
   const interfaceCount = countInterfaces(content)
   const typeCount = countTypeAliases(content)

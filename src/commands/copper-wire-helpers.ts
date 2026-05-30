@@ -822,22 +822,22 @@ export function buildCopperWireResult(
   }
 
   const bestSegment = totalFiles > 0
-    ? segments.reduce((best, s) => (s.qualityScore > best.qualityScore ? s : best), segments[0]).file
+    ? segments.reduce((best, s) => (s.qualityScore > best.qualityScore ? s : best), segments[0] as typeof segments[number]).file
     : ''
   const mostConductive = totalFiles > 0
-    ? segments.reduce((best, s) => (s.conductivity > best.conductivity ? s : best), segments[0]).file
+    ? segments.reduce((best, s) => (s.conductivity > best.conductivity ? s : best), segments[0] as typeof segments[number]).file
     : ''
   const bestSignal = totalFiles > 0
-    ? segments.reduce((best, s) => (s.signalIntegrity > best.signalIntegrity ? s : best), segments[0]).file
+    ? segments.reduce((best, s) => (s.signalIntegrity > best.signalIntegrity ? s : best), segments[0] as typeof segments[number]).file
     : ''
   const bestInsulated = totalFiles > 0
-    ? segments.reduce((best, s) => (s.insulationQuality > best.insulationQuality ? s : best), segments[0]).file
+    ? segments.reduce((best, s) => (s.insulationQuality > best.insulationQuality ? s : best), segments[0] as typeof segments[number]).file
     : ''
   const mostComplete = totalFiles > 0
-    ? segments.reduce((best, s) => (s.circuitCompleteness > best.circuitCompleteness ? s : best), segments[0]).file
+    ? segments.reduce((best, s) => (s.circuitCompleteness > best.circuitCompleteness ? s : best), segments[0] as typeof segments[number]).file
     : ''
   const mostFlexible = totalFiles > 0
-    ? segments.reduce((best, s) => (s.flexibility > best.flexibility ? s : best), segments[0]).file
+    ? segments.reduce((best, s) => (s.flexibility > best.flexibility ? s : best), segments[0] as typeof segments[number]).file
     : ''
 
   const stats: CopperWireStats = {

@@ -118,7 +118,7 @@ const CONCERN_RULES: ConcernRule[] = [
  * @example
  * inferConcerns('import fs from "fs"; fs.readFile()', 'a.ts') // [{ name: 'IO', ... }]
  */
-export function inferConcerns(content: string, filePath: string): Concern[] {
+export function inferConcerns(content: string, _filePath: string): Concern[] {
   const lines = content.split('\n')
   const concerns: Concern[] = []
 
@@ -126,7 +126,7 @@ export function inferConcerns(content: string, filePath: string): Concern[] {
   const allImports: string[] = []
   for (const impLine of importLines) {
     const match = impLine.match(/from\s+['"]([^'"]+)['"]/)
-    if (match) allImports.push(match[1]!)
+    if (match) allImports.push(match[1] ?? '')
   }
 
   for (const rule of CONCERN_RULES) {
@@ -190,9 +190,9 @@ export function computeImportDiversity(content: string): number {
   const lines = content.split('\n')
   for (const line of lines) {
     const match = line.match(/from\s+['"]([^'"]+)['"]/)
-    if (match) sources.add(match[1]!)
+    if (match) sources.add(match[1] ?? '')
     const requireMatch = line.match(/require\s*\(\s*['"]([^'"]+)['"]\s*\)/)
-    if (requireMatch) sources.add(requireMatch[1]!)
+    if (requireMatch) sources.add(requireMatch[1] ?? '')
   }
   return sources.size
 }
@@ -210,7 +210,7 @@ export function computeFunctionDiversity(content: string): number {
   const verbPattern = /\b(get|set|add|remove|create|delete|update|find|search|parse|format|validate|check|handle|process|transform|convert|render|display|send|receive|fetch|post|put|patch|load|save|read|write|open|close|start|stop|init|reset|clear|flush|commit|rollback|push|pop|shift|unshift|sort|filter|map|reduce|merge|split|join|build|compile|execute|run)\w*/gi
   let match: RegExpExecArray | null
   while ((match = verbPattern.exec(content)) !== null) {
-    verbs.add(match[1]!.toLowerCase())
+    verbs.add(match[1] ?? ''.toLowerCase())
   }
   return verbs.size
 }

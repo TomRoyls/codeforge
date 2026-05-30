@@ -789,15 +789,15 @@ export function buildBridgeCableResult(
     overallStructuralHealth,
     engineerGrade: classifyEngineerGrade(overallStructuralHealth),
     strongestSegment: segments.length > 0
-      ? segments.reduce((b, seg) => seg.strength > b.strength ? seg : b, segments[0]).file : 'none',
+      ? segments.reduce((b, seg) => seg.strength > b.strength ? seg : b, segments[0] as typeof segments[number]).file : 'none',
     weakestSegment: segments.length > 0
-      ? segments.reduce((b, seg) => seg.strength < b.strength ? seg : b, segments[0]).file : 'none',
+      ? segments.reduce((b, seg) => seg.strength < b.strength ? seg : b, segments[0] as typeof segments[number]).file : 'none',
     heaviestLoad: segments.length > 0
-      ? segments.reduce((b, seg) => seg.load.totalLoad > b.load.totalLoad ? seg : b, segments[0]).file : 'none',
+      ? segments.reduce((b, seg) => seg.load.totalLoad > b.load.totalLoad ? seg : b, segments[0] as typeof segments[number]).file : 'none',
     mostRedundant: segments.length > 0
-      ? segments.reduce((b, seg) => seg.connections.connectionCount > b.connections.connectionCount ? seg : b, segments[0]).file : 'none',
+      ? segments.reduce((b, seg) => seg.connections.connectionCount > b.connections.connectionCount ? seg : b, segments[0] as typeof segments[number]).file : 'none',
     biggestSpan: spans.length > 0
-      ? spans.reduce((b, sp) => sp.segments.length > b.segments.length ? sp : b, spans[0]).directory : 'none',
+      ? spans.reduce((b, sp) => sp.segments.length > b.segments.length ? sp : b, spans[0] as typeof spans[number]).directory : 'none',
   }
 
   const recommendations = generateRecommendations(segments, spans, network, stats)

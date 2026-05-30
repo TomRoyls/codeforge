@@ -196,8 +196,9 @@ export class DependencyGraphBuilder {
     const result: string[] = []
     const processed = new Set<string>()
 
-    while (queue.length > 0) {
-      const node = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const node = queue[_qi++]!
       if (processed.has(node)) continue
       processed.add(node)
       result.push(node)

@@ -650,7 +650,7 @@ export async function buildAzuriteObservatoryResult(
 export function generateRecommendations(
   readings: AzuriteReading[],
   domes: AzuriteDome[],
-  sky: AzuriteObservatoryResult['sky'],
+  _sky: AzuriteObservatoryResult['sky'],
   stats: AzuriteObservatoryResult['stats'],
 ): string[] {
   const recs: string[] = []

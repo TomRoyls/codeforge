@@ -262,8 +262,8 @@ export function extractImportPaths(content: string): string[] {
   if (!m) return []
   return m.map(s => {
     const inner = s.match(/['"]([^'"]+)['"]/)
-    return inner ? inner[1] : ''
-  }).filter(Boolean)
+    return inner?.[1] ?? ''
+  }).filter((s): s is string => s !== '')
 }
 
 // ─── Canopy Measurement ──────────────────────────────────
@@ -622,7 +622,7 @@ export function analyzeForestStand(crowns: TreeCrown[], dirPath: string): Forest
  * generateRecommendations(crowns, stands, ecosystem, stats) // string[]
  */
 export function generateRecommendations(
-  crowns: TreeCrown[],
+  _crowns: TreeCrown[],
   stands: ForestStand[],
   ecosystem: EcosystemMeasure,
   stats: ForestCanopyStats,
@@ -667,7 +667,7 @@ export function generateRecommendations(
 export function buildForestCanopyResult(files: string[], contents: string[], _options: Record<string, unknown>): ForestCanopyResult {
   const crowns: TreeCrown[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeTreeCrown(content, file)
+    return analyzeTreeCrown(content ?? '', file)
   })
 
   const dirMap = new Map<string, TreeCrown[]>()

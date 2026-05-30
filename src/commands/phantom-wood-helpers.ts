@@ -873,7 +873,7 @@ export async function buildPhantomWoodResult(
 export function generateRecommendations(
   trees: PhantomTree[],
   groves: PhantomGrove[],
-  woodland: PhantomWoodResult['woodland'],
+  _woodland: PhantomWoodResult['woodland'],
   stats: PhantomWoodResult['stats'],
 ): string[] {
   const recs: string[] = []

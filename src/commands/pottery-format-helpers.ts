@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { PotteryResult, CeramicPiece, PotteryWheel, KilnResult, PotteryStats } from './pottery-helpers.js'
+import type { PotteryResult, CeramicPiece, KilnResult, PotteryStats } from './pottery-helpers.js'
 
 // ─── Color Utilities ───────────────────────────────────────────────────────────
 
@@ -27,12 +27,6 @@ function shapeColor(s: string): string {
   return chalk.red(s)
 }
 
-function severityColor(s: string): string {
-  if (s === 'structural') return chalk.red(s)
-  if (s === 'major') return chalk.yellow(s)
-  if (s === 'minor') return chalk.cyan(s)
-  return chalk.dim(s)
-}
 
 function kilnColor(r: string): string {
   if (r === 'perfect') return chalk.green(r)

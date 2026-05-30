@@ -785,9 +785,8 @@ export function generateAuditRecommendations(summary: AuditSummary): string[] {
 export function buildAuditResult(
   files: string[],
   contents: string[],
-  options?: AuditOptions,
+  _options?: AuditOptions,
 ): AuditResult {
-  const _verbose = options?.verbose ?? false
 
   const dimensions: AuditDimension[] = [
     auditComplexity(files, contents),

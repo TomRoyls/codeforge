@@ -1,18 +1,10 @@
 import chalk from 'chalk'
 
-import type { CountResult, PerFileStats } from './count-helpers.js'
+import type { CountResult } from './count-helpers.js'
+
+import { padRight, padLeft } from '../utils/format-utils.js'
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 export function formatCountTable(result: CountResult, verbose: boolean): string {
   const { languages, totals, fileBreakdown } = result

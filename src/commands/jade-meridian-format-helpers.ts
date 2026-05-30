@@ -48,7 +48,7 @@ export function colorGrade(grade: string): string {
 
     'smooth-current': good, 'harmonious-yin-yang': good, 'strong-energy': good,
     'precise-touch': good, 'harmonic-system': good, 'healing-jade': good,
-    'proper-channel': good, 'balanced-energy': good, 'master-healer': good,
+    'proper-channel': good, 'balanced-energy': good,
 
     'proper-flow': okay, 'proper-balance': okay, 'proper-vitality': okay,
     'proper-targeting': okay, 'proper-resonance': okay, 'proper-meridian': okay,

@@ -96,6 +96,7 @@ export function detectProtections(content: string): Protection[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     if (/typeof\s+\w+\s*===?\s*['"]/.test(line)) {
@@ -162,6 +163,7 @@ export function detectThreats(content: string): Threat[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     if (/:\s*any\b/.test(line)) {
@@ -304,13 +306,15 @@ export function findEndangeredPatterns(zones: SafetyZone[], files: string[], con
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
+    const file = files[i]
+    if (!file) continue
     const zone = zones[i]
 
     const jsonParseUnprotected = Array.from(content.matchAll(/JSON\.parse\s*\(/g))
     if (jsonParseUnprotected.length > 0) {
       const hasTry = /try\s*\{/.test(content)
       const existing = patternMap.get('JSON.parse') ?? { files: [] as string[], hasProtection: false, protectionType: null as string | null }
-      existing.files.push(files[i])
+      existing.files.push(file)
       if (hasTry) { existing.hasProtection = true; existing.protectionType = 'try-catch' }
       patternMap.set('JSON.parse', existing)
     }
@@ -318,27 +322,27 @@ export function findEndangeredPatterns(zones: SafetyZone[], files: string[], con
     const evalUsage = Array.from(content.matchAll(/\beval\s*\(/g))
     if (evalUsage.length > 0) {
       const existing = patternMap.get('eval') ?? { files: [] as string[], hasProtection: false, protectionType: null as string | null }
-      existing.files.push(files[i])
+      existing.files.push(file)
       patternMap.set('eval', existing)
     }
 
     const globalMutation = Array.from(content.matchAll(/(?:globalThis|window|global)\.\w+\s*=/g))
     if (globalMutation.length > 0) {
       const existing = patternMap.get('global-mutation') ?? { files: [] as string[], hasProtection: false, protectionType: null as string | null }
-      existing.files.push(files[i])
+      existing.files.push(file)
       patternMap.set('global-mutation', existing)
     }
 
     const anyTypes = Array.from(content.matchAll(/:\s*any\b/g))
     if (anyTypes.length > 0) {
       const existing = patternMap.get('any-type') ?? { files: [] as string[], hasProtection: false, protectionType: null as string | null }
-      existing.files.push(files[i])
+      existing.files.push(file)
       patternMap.set('any-type', existing)
     }
 
     if (zone && zone.threats.filter(t => t.severity === 'critical').length > 0) {
       const existing = patternMap.get('critical-threats') ?? { files: [] as string[], hasProtection: false, protectionType: null as string | null }
-      existing.files.push(files[i])
+      existing.files.push(file)
       patternMap.set('critical-threats', existing)
     }
   }
@@ -494,7 +498,9 @@ export function buildSanctuaryResult(files: string[], contents: string[], _optio
   const zones: SafetyZone[] = []
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    const zone = analyzeSafetyZone(content, files[i])
+    const file = files[i]
+    if (!file) continue
+    const zone = analyzeSafetyZone(content, file)
     zones.push(zone)
   }
 

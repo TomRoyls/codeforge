@@ -650,16 +650,16 @@ export function buildChiselResult(
   const sculptorGrade = classifySculptorGrade(overallPrecision)
 
   const bestMark = marks.length > 0
-    ? marks.reduce((best, m) => m.precision > best.precision ? m : best, marks[0]).file
+    ? marks.reduce((best, m) => m.precision > best.precision ? m : best, marks[0] as typeof marks[number]).file
     : 'none'
   const worstMark = marks.length > 0
-    ? marks.reduce((worst, m) => m.precision < worst.precision ? m : worst, marks[0]).file
+    ? marks.reduce((worst, m) => m.precision < worst.precision ? m : worst, marks[0] as typeof marks[number]).file
     : 'none'
   const mostDetailed = marks.length > 0
-    ? marks.reduce((m, cur) => cur.dimensions.detail > m.dimensions.detail ? cur : m, marks[0]).file
+    ? marks.reduce((m, cur) => cur.dimensions.detail > m.dimensions.detail ? cur : m, marks[0] as typeof marks[number]).file
     : 'none'
   const cleanestWork = marks.length > 0
-    ? marks.reduce((m, cur) => cur.markQuality.cleanCuts > m.markQuality.cleanCuts ? cur : m, marks[0]).file
+    ? marks.reduce((m, cur) => cur.markQuality.cleanCuts > m.markQuality.cleanCuts ? cur : m, marks[0] as typeof marks[number]).file
     : 'none'
 
   const stats: ChiselStats = {

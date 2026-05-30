@@ -112,7 +112,7 @@ export function extractSources(content: string, filePath: string): ValueSource[]
     const requireMatch = line.match(/(?:const|let|var)\s+(\w+)\s*=\s*require\s*\(\s*['"]([^'"]+)['"]\s*\)/)
     if (requireMatch) {
       sources.push({
-        name: requireMatch[1]!, file: filePath, line: i + 1,
+        name: requireMatch[1] ?? '', file: filePath, line: i + 1,
         type: 'import', dataType: 'module', flowsTo: [],
       })
       continue
@@ -132,7 +132,7 @@ export function extractSources(content: string, filePath: string): ValueSource[]
 
     const paramMatch = line.match(/function\s+\w+\s*\(([^)]*)\)/)
     if (paramMatch) {
-      const params = paramMatch[1]!.split(',').map((p) => p.trim()).filter((p) => p && !p.startsWith('//'))
+      const params = paramMatch[1] ?? ''.split(',').map((p) => p.trim()).filter((p) => p && !p.startsWith('//'))
       for (const param of params) {
         const cleanName = param.split(':')[0]!.split('=')[0]!.trim().replace(/[{}[\]]/g, '')
         if (cleanName && /^[$a-zA-Z_]/.test(cleanName)) {
@@ -146,7 +146,7 @@ export function extractSources(content: string, filePath: string): ValueSource[]
 
     const arrowParamMatch = line.match(/(?:const|let)\s+\w+\s*=\s*(?:async\s*)?\(([^)]*)\)\s*=>/)
     if (arrowParamMatch) {
-      const params = arrowParamMatch[1]!.split(',').map((p) => p.trim()).filter((p) => p)
+      const params = arrowParamMatch[1] ?? ''.split(',').map((p) => p.trim()).filter((p) => p)
       for (const param of params) {
         const cleanName = param.split(':')[0]!.split('=')[0]!.trim().replace(/[{}[\]]/g, '')
         if (cleanName && /^[$a-zA-Z_]/.test(cleanName)) {
@@ -161,7 +161,7 @@ export function extractSources(content: string, filePath: string): ValueSource[]
     const configMatch = line.match(/(?:config|settings|options)\.(\w+)/g)
     if (configMatch) {
       for (const cm of configMatch) {
-        const propName = cm.split('.')[1]!
+        const propName = cm.split('.')[1] ?? ''
         sources.push({
           name: `config.${propName}`, file: filePath, line: i + 1,
           type: 'config', dataType: 'unknown', flowsTo: [],
@@ -192,13 +192,13 @@ export function extractTransforms(content: string, filePath: string): ValueTrans
 
     const assignMatch = line.match(/(?:const|let|var)\s+(\w+)\s*=\s*(.+)/)
     if (assignMatch) {
-      const output = assignMatch[1]!
+      const output = assignMatch[1] ?? ''
       const rhs = assignMatch[2]!.trim()
 
       const mapMatch = rhs.match(/(\w+)\.map\s*\(/)
       if (mapMatch) {
         transforms.push({
-          input: mapMatch[1]!, output, file: filePath, line: i + 1,
+          input: mapMatch[1] ?? '', output, file: filePath, line: i + 1,
           type: 'map', description: `${mapMatch[1]}.map() → ${output}`,
         })
         continue
@@ -207,7 +207,7 @@ export function extractTransforms(content: string, filePath: string): ValueTrans
       const filterMatch = rhs.match(/(\w+)\.filter\s*\(/)
       if (filterMatch) {
         transforms.push({
-          input: filterMatch[1]!, output, file: filePath, line: i + 1,
+          input: filterMatch[1] ?? '', output, file: filePath, line: i + 1,
           type: 'filter', description: `${filterMatch[1]}.filter() → ${output}`,
         })
         continue
@@ -216,7 +216,7 @@ export function extractTransforms(content: string, filePath: string): ValueTrans
       const reduceMatch = rhs.match(/(\w+)\.reduce\s*\(/)
       if (reduceMatch) {
         transforms.push({
-          input: reduceMatch[1]!, output, file: filePath, line: i + 1,
+          input: reduceMatch[1] ?? '', output, file: filePath, line: i + 1,
           type: 'reduce', description: `${reduceMatch[1]}.reduce() → ${output}`,
         })
         continue
@@ -226,7 +226,7 @@ export function extractTransforms(content: string, filePath: string): ValueTrans
       if (parseMatch) {
         const inputVar = rhs.match(/\((\w+)/)
         transforms.push({
-          input: inputVar ? inputVar[1]! : 'input', output, file: filePath, line: i + 1,
+          input: inputVar ? inputVar[1] ?? '' : 'input', output, file: filePath, line: i + 1,
           type: 'parse', description: `parse → ${output}`,
         })
         continue
@@ -235,7 +235,7 @@ export function extractTransforms(content: string, filePath: string): ValueTrans
       const fnCallMatch = rhs.match(/^(\w+)\s*\(/)
       if (fnCallMatch) {
         transforms.push({
-          input: fnCallMatch[1]!, output, file: filePath, line: i + 1,
+          input: fnCallMatch[1] ?? '', output, file: filePath, line: i + 1,
           type: 'function-call', description: `${fnCallMatch[1]}() → ${output}`,
         })
         continue
@@ -249,8 +249,8 @@ export function extractTransforms(content: string, filePath: string): ValueTrans
     }
 
     const methodCallMatch = line.match(/(\w+)\.(\w+)\s*\(/)
-    if (methodCallMatch && !['if', 'for', 'while', 'switch', 'catch', 'return'].includes(methodCallMatch[1]!)) {
-      const objName = methodCallMatch[1]!
+    if (methodCallMatch && !['if', 'for', 'while', 'switch', 'catch', 'return'].includes(methodCallMatch[1] ?? '')) {
+      const objName = methodCallMatch[1] ?? ''
       const methodName = methodCallMatch[2]!
       if (['map', 'filter', 'reduce', 'forEach', 'find', 'some', 'every', 'sort'].includes(methodName)) {
         transforms.push({
@@ -281,7 +281,7 @@ export function extractSinks(content: string, filePath: string): ValueSink[] {
 
     const returnMatch = line.match(/\breturn\s+(.+)/)
     if (returnMatch) {
-      const val = returnMatch[1]!.trim().replace(/[;}\s]+$/, '')
+      const val = returnMatch[1] ?? ''.trim().replace(/[;}\s]+$/, '')
       sinks.push({
         name: `return:${val}`, file: filePath, line: i + 1,
         type: 'return', sources: [val.split('.')[0]!.split('(')[0]!.trim()],
@@ -292,15 +292,15 @@ export function extractSinks(content: string, filePath: string): ValueSink[] {
     const exportMatch = line.match(/export\s+(?:default\s+)?(?:function|const|let|var|class)\s+(\w+)/)
     if (exportMatch) {
       sinks.push({
-        name: exportMatch[1]!, file: filePath, line: i + 1,
-        type: 'export', sources: [exportMatch[1]!],
+        name: exportMatch[1] ?? '', file: filePath, line: i + 1,
+        type: 'export', sources: [exportMatch[1] ?? ''],
       })
       continue
     }
 
     const consoleMatch = line.match(/console\.(log|warn|error|info|debug)\s*\((.+)/)
     if (consoleMatch) {
-      const method = consoleMatch[1]!
+      const method = consoleMatch[1] ?? ''
       const arg = consoleMatch[2]!.split(',')[0]!.trim().replace(/[)]$/, '')
       sinks.push({
         name: `console.${method}`, file: filePath, line: i + 1,

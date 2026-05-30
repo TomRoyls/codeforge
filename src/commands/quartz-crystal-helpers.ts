@@ -18,7 +18,6 @@ const CATCH_REGEX = /\bcatch\b/g
 const FINALLY_REGEX = /\bfinally\b/g
 const THROW_REGEX = /\bthrow\b/g
 const IF_REGEX = /\bif\s*\(/g
-const ELSE_REGEX = /\belse\b/g
 const SWITCH_REGEX = /\bswitch\s*\(/g
 const FOR_REGEX = /\bfor\s*[\(;]/g
 const WHILE_REGEX = /\bwhile\s*\(/g
@@ -41,9 +40,6 @@ const READONLY_REGEX = /\breadonly\b/g
 const PROMISE_REGEX = /\bPromise\b/g
 const ANY_REGEX = /\bany\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
-const BREAK_REGEX = /\bbreak\b/g
-const CONTINUE_REGEX = /\bcontinue\b/g
-const YIELD_REGEX = /\byield\b/g
 const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
 const DYNAMIC_IMPORT_REGEX = /\bimport\s*\(/g
 const CALLBACK_NESTING_REGEX = /\bfunction\s*\([^)]*\)\s*\{[^{}]*\bfunction\s*\([^)]*\)\s*\{/g
@@ -564,7 +560,6 @@ export function measureLattice(content: string): LatticeMeasure {
     dislocationCount,
     hasCleavagePlanes,
     hasCrystalAxes,
-    hasGrainBoundaries: !hasNoGrainBoundaries,
     hasMillerIndices,
     hasNoDislocations,
     hasNoGrainBoundaries,
@@ -586,9 +581,6 @@ export function measureResonance(content: string): ResonanceMeasure {
   const tryCatch = countTryCatch(content)
   const catches = countCatches(content)
   const finallys = countFinallys(content)
-  const throws = countThrows(content)
-  const errors = countErrors(content)
-  const ifs = countIfs(content)
   const ternaries = countTernaries(content)
   const switches = countSwitches(content)
   const defaults = (content.match(DEFAULT_PARAM_REGEX) ?? []).length
@@ -665,7 +657,6 @@ export function measureFacet(content: string): FacetMeasure {
   const generics = countGenerics(content)
   const accessMods = countAccessModifiers(content)
   const jsdoc = countJSDoc(content)
-  const readonly = countReadonly(content)
 
   const hasProperAngles = generics > 0 && (interfaces + types) > 0
   const hasProportions = (funcs + arrows) > 0 && (funcs + arrows) <= 15

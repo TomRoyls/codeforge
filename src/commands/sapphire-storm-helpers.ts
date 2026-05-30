@@ -708,7 +708,7 @@ export function analyzeSapphireCloud(bolts: SapphireBolt[], dirPath: string): Sa
 export function generateRecommendations(
   bolts: SapphireBolt[],
   clouds: SapphireCloud[],
-  atmosphere: SapphireStormResult['atmosphere'],
+  _atmosphere: SapphireStormResult['atmosphere'],
   stats: SapphireStormResult['stats'],
 ): string[] {
   const recs: string[] = []

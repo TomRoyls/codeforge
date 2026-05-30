@@ -507,7 +507,6 @@ export function detectDeadZones(content: string): number {
  * analyzeBeaconSignal('export function calc() { return 1 }', 'calc.ts') // BeaconSignal
  */
 export function analyzeBeaconSignal(content: string, filePath: string): BeaconSignal {
-  const loc = countLoc(content)
   const beamIntensity = measureBeamIntensity(content)
   const fogPenetration = measureFogPenetration(content)
   const visibility = measureVisibility(content)
@@ -544,6 +543,7 @@ export function analyzeBeaconSignal(content: string, filePath: string): BeaconSi
     (countBranches(content) <= 5 ? 15 : countBranches(content) <= 10 ? 8 : 0),
   ))
 
+  const loc = countLoc(content)
   const lensQuality = Math.min(100, Math.round(
     (comments > 0 ? 30 : 0) +
     (types > 0 ? 25 : 0) +
@@ -808,13 +808,13 @@ export function buildLighthouseBeamResult(
     overallVisibility,
     keeperGrade: classifyKeeperGrade(overallVisibility),
     brightestBeacon: beacons.length > 0
-      ? beacons.reduce((a, b) => b.beamIntensity > a.beamIntensity ? b : a, beacons[0]).file : 'none',
+      ? beacons.reduce((a, b) => b.beamIntensity > a.beamIntensity ? b : a, beacons[0] as typeof beacons[number]).file : 'none',
     darkestBeacon: beacons.length > 0
-      ? beacons.reduce((a, b) => b.beamIntensity < a.beamIntensity ? b : a, beacons[0]).file : 'none',
+      ? beacons.reduce((a, b) => b.beamIntensity < a.beamIntensity ? b : a, beacons[0] as typeof beacons[number]).file : 'none',
     bestPenetration: beacons.length > 0
-      ? beacons.reduce((a, b) => b.fogPenetration > a.fogPenetration ? b : a, beacons[0]).file : 'none',
+      ? beacons.reduce((a, b) => b.fogPenetration > a.fogPenetration ? b : a, beacons[0] as typeof beacons[number]).file : 'none',
     mostReliable: beacons.length > 0
-      ? beacons.reduce((a, b) => b.beaconReliability > a.beaconReliability ? b : a, beacons[0]).file : 'none',
+      ? beacons.reduce((a, b) => b.beaconReliability > a.beaconReliability ? b : a, beacons[0] as typeof beacons[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(beacons, coastlines, coastguard, stats)

@@ -67,7 +67,6 @@ const DEPRECATED_RE = /@deprecated\b/
 const CONSOLE_LOG_RE = /console\.log\s*\(/
 const VAR_RE = /\bvar\s+\w+/
 const REQUIRE_RE = /require\s*\(\s*['"]/
-const UNUSED_IMPORT_RE = /^import\s+(?:\{[^}]*\}|\w+)\s+from\s+['"][^'"]+['"]\s*;?\s*$/gm
 const LEGACY_API_RE = /\b(?:arguments\.callee|with\s*\(|eval\s*\(|new\s+Function\s*\(|document\.write\b)/g
 const ANY_TYPE_RE = /:\s*any\b/
 const EMPTY_CATCH_RE = /catch\s*\([^)]*\)\s*\{\s*\}/
@@ -75,7 +74,6 @@ const ZOMBIE_CODE_RE = /\/\/\s*(?:eslint-disable|ts-ignore|@ts-ignore|@ts-expect
 const MODERN_SYNTAX_RE = /(?:const\s|let\s|=>|\basync\b|\bawait\b|\bclass\b|`[^`]*\$\{|(?:\.\.\.)|\?\.\w|!\.)/g
 const EXPORT_RE = /export\s+(?:default\s+)?(?:function|const|class|interface|type|enum|async\s+function)\s+(\w+)/g
 const IMPORT_FROM_RE = /import\s+(?:\{[^}]*\}|\w+)\s+from\s+['"]([^'"]+)['"]/g
-const FUNCTION_DEPTH_RE = /(?:function\s*\w|=>\s*\{|\bif\s*\(|\bfor\s*\(|\bwhile\s*\(|\bswitch\s*\()/g
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
 const TYPE_ANNOTATION_RE = /:\s*(?:string|number|boolean|void|Promise|Record|Map|Set|Array|[A-Z]\w+)/
 const INTERFACE_RE = /(?:interface|type)\s+\w+\s*(?:<[^>]+>)?\s*\{/
@@ -88,7 +86,7 @@ const TEST_PROXY_RE = /(?:describe|it|test)\s*\(\s*['"]/
  * @example
  * evaluatePreservation('export function foo(): void {}', 'a.ts') // high score
  */
-export function evaluatePreservation(content: string, filePath: string): number {
+export function evaluatePreservation(content: string, _filePath: string): number {
   if (content.trim().length === 0) return 50
   let score = 60
 
@@ -149,7 +147,7 @@ export function evaluatePreservation(content: string, filePath: string): number 
  * @example
  * estimateAge('const x = () => {}', 'a.ts') // 'recent'
  */
-export function estimateAge(content: string, filePath: string): PreservedSpecimen['age'] {
+export function estimateAge(content: string, _filePath: string): PreservedSpecimen['age'] {
   let modernScore = 0
   let legacyScore = 0
 
@@ -183,15 +181,16 @@ export function estimateAge(content: string, filePath: string): PreservedSpecime
  */
 export function detectFossilization(
   content: string,
-  filePath: string,
-  allFiles: string[],
+  _filePath: string,
+  _allFiles: string[],
 ): boolean {
   // Count how many files might import this one
   const exports: string[] = []
   EXPORT_RE.lastIndex = 0
   let m: RegExpExecArray | null
   while ((m = EXPORT_RE.exec(content)) !== null) {
-    exports.push(m[1])
+    const capture = m[1]
+    if (capture) exports.push(capture)
   }
 
   // Many exports with many dependents = fossilized
@@ -217,7 +216,7 @@ export function detectFossilization(
  * @example
  * detectDegrading('// TODO fix\n// FIXME hack\n// XXX broken') // true
  */
-export function detectDegrading(content: string, filePath: string): boolean {
+export function detectDegrading(content: string, _filePath: string): boolean {
   const todoCount = (content.match(TODO_FIXME_RE) ?? []).length
   const lines = content.split('\n').length
   if (lines === 0) return false
@@ -233,7 +232,7 @@ export function detectDegrading(content: string, filePath: string): boolean {
  * @example
  * analyzeGeologicalLayers('function foo() { if (x) { while(y) {} } }', 'a.ts') // GeologicalLayer[]
  */
-export function analyzeGeologicalLayers(content: string, filePath: string): GeologicalLayer[] {
+export function analyzeGeologicalLayers(content: string, _filePath: string): GeologicalLayer[] {
   const lines = content.split('\n')
   const layers: GeologicalLayer[] = []
   let maxDepth = 0
@@ -254,7 +253,7 @@ export function analyzeGeologicalLayers(content: string, filePath: string): Geol
   )).sort((a, b) => a - b)
 
   for (let i = 0; i < depths.length; i++) {
-    const depth = depths[i]
+    const depth = depths[i] ?? 0
     const linesAtDepth = lines.filter((line) => {
       const leading = line.match(/^(\s*)/)?.[1] ?? ''
       return Math.floor(leading.length / 2) === depth
@@ -312,6 +311,7 @@ export function identifyFossilArtifacts(content: string, filePath: string): Foss
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     // Deprecated patterns
@@ -341,19 +341,22 @@ export function identifyFossilArtifacts(content: string, filePath: string): Foss
     // Unused imports (heuristic: import never referenced)
     const importMatch = line.match(/^import\s+\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]/)
     if (importMatch) {
-      const symbols = importMatch[1].split(',').map((s) => s.trim())
-      for (const sym of symbols) {
-        const usageRe = new RegExp(`\\b${sym}\\b`, 'g')
-        const usageCount = (content.match(usageRe) ?? []).length
-        if (usageCount <= 1) {
-          fossils.push({
-            description: `Unused import: ${sym}`,
-            difficulty: 'trivial',
-            file: filePath,
-            line: lineNum,
-            replacementSuggestion: `Remove unused import '${sym}'`,
-            type: 'unused-import',
-          })
+      const matchSymbols = importMatch[1]
+      if (matchSymbols) {
+        const symbols = matchSymbols.split(',').map((s) => s.trim())
+        for (const sym of symbols) {
+          const usageRe = new RegExp(`\\b${sym}\\b`, 'g')
+          const usageCount = (content.match(usageRe) ?? []).length
+          if (usageCount <= 1) {
+            fossils.push({
+              description: `Unused import: ${sym}`,
+              difficulty: 'trivial',
+              file: filePath,
+              line: lineNum,
+              replacementSuggestion: `Remove unused import '${sym}'`,
+              type: 'unused-import',
+            })
+          }
         }
       }
     }
@@ -362,7 +365,7 @@ export function identifyFossilArtifacts(content: string, filePath: string): Foss
     const legacyMatch = line.match(LEGACY_API_RE)
     if (legacyMatch) {
       fossils.push({
-        description: `Legacy API usage: ${legacyMatch[0]}`,
+        description: `Legacy API usage: ${legacyMatch[0] ?? 'unknown'}`,
         difficulty: 'difficult',
         file: filePath,
         line: lineNum,
@@ -476,7 +479,7 @@ export function classifyOverall(
  * @example
  * evaluateQuality('const x: number = 1') // high score
  */
-export function evaluateQuality(content: string, filePath: string): number {
+export function evaluateQuality(content: string, _filePath: string): number {
   if (content.trim().length === 0) return 50
   let quality = 50
 
@@ -527,7 +530,8 @@ export function detectInclusions(content: string): boolean {
   const importSources: string[] = []
   let m: RegExpExecArray | null
   while ((m = IMPORT_FROM_RE.exec(content)) !== null) {
-    importSources.push(m[1])
+    const source = m[1]
+    if (source) importSources.push(source)
   }
   // Heavily coupled = many distinct import sources
   const uniqueSources = Array.from(new Set(importSources))
@@ -581,7 +585,7 @@ export function computeGeologicalComplexity(specimens: PreservedSpecimen[]): num
  * generateRecommendations(specimens, fossils, stats) // ['Refactor fossilized code...']
  */
 export function generateRecommendations(
-  specimens: PreservedSpecimen[],
+  _specimens: PreservedSpecimen[],
   fossils: FossilArtifact[],
   stats: AmberStats,
 ): string[] {
@@ -627,14 +631,14 @@ export function generateRecommendations(
 export function buildAmberResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): AmberResult {
   const specimens: PreservedSpecimen[] = []
   const allFossils: FossilArtifact[] = []
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    const filePath = files[i]
+    const filePath = files[i] ?? ''
 
     const preservation = evaluatePreservation(content, filePath)
     const quality = evaluateQuality(content, filePath)
@@ -650,10 +654,7 @@ export function buildAmberResult(
     specimens.push({
       age,
       classification,
-      degrading: isDegrading,
       file: filePath,
-      fossilized: isFossilized,
-      inclusions: isInclusions,
       isDegrading,
       isFossilized,
       isInclusions,
@@ -662,7 +663,6 @@ export function buildAmberResult(
       preservation,
       quality,
       resinFreshness,
-      timeless: isTimeless,
     })
 
     const fossils = identifyFossilArtifacts(content, filePath)

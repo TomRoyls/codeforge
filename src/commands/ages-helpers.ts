@@ -157,7 +157,7 @@ export function parseGitLogNumstat(output: string): Map<string, NumstatEntry> {
     if (parts.length < 3) continue
 
     const addedStr = parts[0]!
-    const deletedStr = parts[1]!
+    const deletedStr = parts[1] ?? ''
     const filePath = parts.slice(2).join('\t')
 
     const added = addedStr === '-' ? 0 : parseInt(addedStr, 10)

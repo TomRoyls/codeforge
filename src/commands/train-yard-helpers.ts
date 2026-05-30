@@ -381,7 +381,6 @@ export function measureTrack(content: string): RailCar['track'] {
   const types = countTypeAnnotations(content)
   const exports = countExports(content)
   const imports = countImports(content)
-  const loc = countLoc(content)
   const comments = countComments(content)
   const jsdoc = countJSDoc(content)
   const descriptive = countDescriptiveNames(content)
@@ -425,9 +424,7 @@ export function measureTrack(content: string): RailCar['track'] {
 export function measureSwitching(content: string): RailCar['switching'] {
   const branches = countBranches(content)
   const nesting = maxNesting(content)
-  const loc = countLoc(content)
   const todos = countTodos(content)
-  const errors = countErrorHandling(content)
   const functions = countFunctions(content)
 
   const switchCount = branches
@@ -464,11 +461,8 @@ export function measureSwitching(content: string): RailCar['switching'] {
  */
 export function measureSignal(content: string): RailCar['signal'] {
   const errors = countErrorHandling(content)
-  const loc = countLoc(content)
   const branches = countBranches(content)
-  const functions = countFunctions(content)
   const console_ = countConsole(content)
-  const todos = countTodos(content)
 
   const signalCount = errors
   const hasSignals = errors > 0
@@ -503,7 +497,6 @@ export function measureSignal(content: string): RailCar['signal'] {
  */
 export function measureFreight(content: string): RailCar['freight'] {
   const exports = countExports(content)
-  const imports = countImports(content)
   const functions = countFunctions(content)
   const classes = countClasses(content)
   const types = countTypeAnnotations(content)
@@ -528,6 +521,7 @@ export function measureFreight(content: string): RailCar['freight'] {
   if ((content.match(/\bprivate\b|\bconfidential\b/gi) ?? []).length > 0) hazmatType.push('private-data')
   if ((content.match(/\bencrypt|\bdecrypt|\bhash/gi) ?? []).length > 0) hazmatType.push('crypto')
   const hasHazmat = hazmatType.length > 0
+  const imports = countImports(content)
 
   let cargo = 'none'
   if (classes > 0 && interfaces > 0) cargo = 'typed-objects'
@@ -609,7 +603,6 @@ export function measureSchedule(content: string): RailCar['schedule'] {
   const nesting = maxNesting(content)
   const todos = countTodos(content)
   const descriptive = countDescriptiveNames(content)
-  const returns = countReturns(content)
 
   const delayCount = todos + (nesting > 3 ? nesting - 3 : 0)
   const expressCount = Math.max(0, functions - (branches > functions * 2 ? branches - functions : 0))
@@ -876,15 +869,15 @@ export function buildTrainYardResult(
     overallEfficiency,
     stationMasterGrade: classifyStationMasterGrade(overallEfficiency),
     bestTrack: cars.length > 0
-      ? cars.reduce((a, b) => b.trackQuality > a.trackQuality ? b : a, cars[0]).file : 'none',
+      ? cars.reduce((a, b) => b.trackQuality > a.trackQuality ? b : a, cars[0] as typeof cars[number]).file : 'none',
     worstTrack: cars.length > 0
-      ? cars.reduce((a, b) => b.trackQuality < a.trackQuality ? b : a, cars[0]).file : 'none',
+      ? cars.reduce((a, b) => b.trackQuality < a.trackQuality ? b : a, cars[0] as typeof cars[number]).file : 'none',
     mostReliable: cars.length > 0
-      ? cars.reduce((a, b) => b.signalReliability > a.signalReliability ? b : a, cars[0]).file : 'none',
+      ? cars.reduce((a, b) => b.signalReliability > a.signalReliability ? b : a, cars[0] as typeof cars[number]).file : 'none',
     mostDerailments: cars.length > 0
-      ? cars.reduce((a, b) => b.switching.brokenCount > a.switching.brokenCount ? b : a, cars[0]).file : 'none',
+      ? cars.reduce((a, b) => b.switching.brokenCount > a.switching.brokenCount ? b : a, cars[0] as typeof cars[number]).file : 'none',
     busiest: cars.length > 0
-      ? cars.reduce((a, b) => b.freight.capacity > a.freight.capacity ? b : a, cars[0]).file : 'none',
+      ? cars.reduce((a, b) => b.freight.capacity > a.freight.capacity ? b : a, cars[0] as typeof cars[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(cars, lines, network, stats)

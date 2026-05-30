@@ -2,12 +2,9 @@ import chalk from 'chalk'
 
 import type { CompareResult, FileStats } from './compare-helpers.js'
 
-// ─── Shared helpers ──────────────────────────────────────
+import { padRight } from '../utils/format-utils.js'
 
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
+// ─── Shared helpers ──────────────────────────────────────
 
 function formatDiffValue(diff: number): string {
   if (diff > 0) return chalk.green(`+${diff}`)

@@ -16,7 +16,6 @@ const CONSOLE_REGEX = /\bconsole\.\w+/g
 const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
 const GENERICS_REGEX = /<[^>]+>/g
 const PRIVATE_REGEX = /private\s+/g
-const PROTECTED_REGEX = /protected\s+/g
 const ANY_REGEX = /\bany\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
 const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
@@ -42,12 +41,9 @@ function countTryCatch(content: string): number { return countMatches(content, T
 function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
 function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
 function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
-function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
 function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
-function countProtectedMembers(content: string): number { return countMatches(content, PROTECTED_REGEX) }
 function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
 function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
-function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
 
 function genericsCount_safe(content: string): number { return countMatches(content, GENERICS_REGEX) }
 function reExportCount_safe(content: string): number { return countMatches(content, REEXPORT_REGEX) }

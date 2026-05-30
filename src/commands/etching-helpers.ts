@@ -378,7 +378,7 @@ function computeGroove(imports: number, structural: number, constructs: number, 
   return { depth: Math.round(depth), width: Math.round(width), angle }
 }
 
-function countLineTypes(codeLines: string[], precision: number, avgLen: number): LineTypeCounts {
+function countLineTypes(codeLines: string[], precision: number, _avgLen: number): LineTypeCounts {
   let bold = 0
   let fine = 0
   let rough = 0
@@ -580,7 +580,9 @@ export function buildEtchingResult(
 ): EtchingResult {
   const engravings: EngravingLine[] = []
   for (let i = 0; i < files.length; i++) {
-    engravings.push(analyzeEngravingLine(contents[i], files[i]))
+    const file = files[i]
+    if (!file) continue
+    engravings.push(analyzeEngravingLine(contents[i] ?? '', file))
   }
 
   const dirMap = new Map<string, EngravingLine[]>()
@@ -634,8 +636,8 @@ function computeStats(engravings: EngravingLine[], plates: EtchingPlate[]): Etch
   const craftsmanshipGrade = classifyOverallGrade(avgLinePrecision)
 
   const sorted = [...engravings].sort((a, b) => b.linePrecision - a.linePrecision)
-  const bestEngraving = sorted.length > 0 ? sorted[0].file : 'none'
-  const worstEngraving = sorted.length > 0 ? sorted[sorted.length - 1].file : 'none'
+  const bestEngraving = sorted.length > 0 ? (sorted[0]?.file ?? 'none') : 'none'
+  const worstEngraving = sorted.length > 0 ? (sorted.at(-1)?.file ?? 'none') : 'none'
 
   const styleCounts = new Map<string, number>()
   for (const e of engravings) {

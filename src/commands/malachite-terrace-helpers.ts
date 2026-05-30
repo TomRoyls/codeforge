@@ -648,7 +648,7 @@ export async function buildMalachiteTerraceResult(
 export function generateRecommendations(
   bands: MalachiteBand[],
   pillars: MalachitePillar[],
-  gallery: MalachiteTerraceResult['gallery'],
+  _gallery: MalachiteTerraceResult['gallery'],
   stats: MalachiteTerraceResult['stats'],
 ): string[] {
   const recs: string[] = []

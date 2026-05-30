@@ -193,7 +193,7 @@ export function findDeadExports(content: string, allOtherContents: string[]): st
   if (!m) return []
   for (const exp of m) {
     const nameMatch = exp.match(/(\w+)$/)
-    if (nameMatch) exports.push(nameMatch[1]!)
+    if (nameMatch) exports.push(nameMatch[1] ?? '')
   }
 
   const dead: string[] = []

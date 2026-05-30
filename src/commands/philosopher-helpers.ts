@@ -108,14 +108,6 @@ function countExports(content: string): number {
   return (content.match(/export\s+/g) || []).length
 }
 
-/**
- * Count import declarations
- * @example
- * countImports("import { x } from 'y'; import z from 'w'") // 2
- */
-function countImports(content: string): number {
-  return (content.match(/import\s+/g) || []).length
-}
 
 /**
  * Get maximum nesting depth
@@ -258,12 +250,11 @@ function countBranches(content: string): number {
  * @example
  * evaluatePrinciple('const x = 1', 'a.ts', "Occam's Razor") // 85
  */
-export function evaluatePrinciple(content: string, filePath: string, principleName: string): number {
+export function evaluatePrinciple(content: string, _filePath: string, principleName: string): number {
   const lines = content.split('\n').length
   const funcs = countFunctions(content)
   const classes = countClasses(content)
   const exports = countExports(content)
-  const imports = countImports(content)
   const nesting = getMaxNesting(content)
   const chains = countChains(content)
   const dupes = countDuplicateLines(content)
@@ -388,7 +379,7 @@ export function findViolations(content: string, filePath: string, principleName:
     case "Occam's Razor": {
       let depth = 0
       for (let i = 0; i < lines.length; i++) {
-        for (const ch of lines[i]) {
+        for (const ch of (lines[i] ?? '')) {
           if (ch === '{') depth++
           else if (ch === '}') depth = Math.max(0, depth - 1)
         }
@@ -451,19 +442,19 @@ export function findViolations(content: string, filePath: string, principleName:
       const lineArr = lines.map(l => l.trim()).filter(l => l.length > 3 && !l.startsWith('//'))
       const seen = new Map<string, number>()
       for (let i = 0; i < lineArr.length; i++) {
-        const existing = seen.get(lineArr[i])
+        const existing = seen.get(lineArr[i] ?? '')
         if (existing !== undefined) {
           violations.push({
             file: filePath,
             line: i + 1,
             principle: principleName,
             severity: 'moderate',
-            description: `Duplicate of line ${existing + 1}: "${lineArr[i].slice(0, 40)}"`,
+            description: `Duplicate of line ${existing + 1}: "${(lineArr[i] ?? '').slice(0, 40)}"`,
             lesson: 'Every piece of knowledge should have a single representation',
             fix: 'Extract duplicated logic into a shared function',
           })
         } else {
-          seen.set(lineArr[i], i)
+          seen.set(lineArr[i] ?? '', i)
         }
       }
       break
@@ -500,7 +491,7 @@ export function findViolations(content: string, filePath: string, principleName:
       const magicLines: number[] = []
       if (magicMatch) {
         for (let i = 0; i < lines.length; i++) {
-          const lineMagic = lines[i].match(/(?<![.\w])\d+\.?\d*(?![.\w])/g)
+          const lineMagic = (lines[i] ?? '').match(/(?<![.\w])\d+\.?\d*(?![.\w])/g)
           if (lineMagic) {
             const nonTrivial = lineMagic.filter(m => m !== '0' && m !== '1')
             if (nonTrivial.length > 0) magicLines.push(i + 1)
@@ -510,7 +501,7 @@ export function findViolations(content: string, filePath: string, principleName:
       if (magicLines.length > 3) {
         violations.push({
           file: filePath,
-          line: magicLines[0],
+          line: magicLines[0] ?? 0,
           principle: principleName,
           severity: 'moderate',
           description: `${magicLines.length} lines with magic numbers`,
@@ -549,7 +540,7 @@ export function findViolations(content: string, filePath: string, principleName:
     }
     case 'Law of Demeter': {
       for (let i = 0; i < lines.length; i++) {
-        const chainMatch = lines[i].match(/\.(\w+)\.(\w+)\.(\w+)\.(\w+)/)
+        const chainMatch = (lines[i] ?? '').match(/\.(\w+)\.(\w+)\.(\w+)\.(\w+)/)
         if (chainMatch) {
           violations.push({
             file: filePath,
@@ -699,7 +690,7 @@ export function generateRecommendations(
 ): string[] {
   const recs: string[] = []
 
-  const worstPrinciple = principles.reduce((w, p) => p.adherence < w.adherence ? p : w, principles[0])
+  const worstPrinciple = principles.reduce((w, p) => p.adherence < w.adherence ? p : w, principles[0] as typeof principles[number])
   if (worstPrinciple && worstPrinciple.adherence < 70) {
     recs.push(`Focus on ${worstPrinciple.name} — your weakest principle at ${worstPrinciple.adherence}/100`)
   }
@@ -709,7 +700,7 @@ export function generateRecommendations(
     recs.push(`Philosophical education needed for ${hereticFiles.length} heretic file(s)`)
   }
 
-  const bestPrinciple = principles.reduce((b, p) => p.adherence > b.adherence ? p : b, principles[0])
+  const bestPrinciple = principles.reduce((b, p) => p.adherence > b.adherence ? p : b, principles[0] as typeof principles[number])
   if (bestPrinciple) {
     recs.push(`Maintain your strength in ${bestPrinciple.name} (${bestPrinciple.adherence}/100)`)
   }
@@ -756,15 +747,15 @@ export function buildPhilosopherResult(
     const filePath = files[i]
 
     for (const def of PRINCIPLE_DEFS) {
-      const score = evaluatePrinciple(content, filePath, def.name)
+      const score = evaluatePrinciple(content ?? '',filePath ?? '', def.name)
       principleScoreMap.get(def.name)!.push(score)
 
-      const violations = findViolations(content, filePath, def.name)
+      const violations = findViolations(content ?? '',filePath ?? '', def.name)
       principleViolationsMap.get(def.name)!.push(...violations)
       allViolations.push(...violations)
     }
 
-    profiles.push(buildProfile(content, filePath))
+    profiles.push(buildProfile(content ?? '',filePath ?? ''))
   }
 
   const principles: Principle[] = PRINCIPLE_DEFS.map(def => {

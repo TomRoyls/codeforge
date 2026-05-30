@@ -1,24 +1,9 @@
 import chalk from 'chalk'
 
 import type { ConfigFile, ConfigFilesResult } from './configfiles-helpers.js'
+import { formatBytesCompact as formatBytes } from '../utils/format-utils.js'
 
-// ─── Utility ────────────────────────────────────────────
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`
-}
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 // ─── Status formatting ──────────────────────────────────
 
@@ -87,8 +72,6 @@ export function formatConfigFilesTable(result: ConfigFilesResult, verbose: boole
     lines.push('')
     lines.push(chalk.bold('Categories:'))
 
-    const nameWidth = Math.max(20, ...result.files.map((f) => f.name.length))
-    const typeWidth = Math.max(10, ...result.categories.map((c) => c.label.length))
 
     for (const category of result.categories) {
       lines.push('')

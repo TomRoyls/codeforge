@@ -165,7 +165,7 @@ export function countTodoMarkers(content: string): { type: string; line: number 
     const line = lines[i]!
     const localPat = new RegExp(pat.source, 'gi')
     while ((m = localPat.exec(line)) !== null) {
-      markers.push({ type: m[1]!.toUpperCase(), line: i + 1 })
+      markers.push({ type: m[1] ?? ''.toUpperCase(), line: i + 1 })
     }
   }
   return markers
@@ -212,7 +212,7 @@ export function detectSyncPatterns(content: string): string[] {
   const pat = /\b(readFileSync|writeFileSync|existsSync|mkdirSync|readdirSync|statSync|copyFileSync|rmSync)\s*\(/g
   let m: RegExpExecArray | null
   while ((m = pat.exec(content)) !== null) {
-    syncPatterns.push(m[1]!)
+    syncPatterns.push(m[1] ?? '')
   }
   return syncPatterns
 }

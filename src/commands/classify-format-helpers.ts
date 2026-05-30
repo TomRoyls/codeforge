@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { ClassCategory, ClassificationResult, ClassificationStats, FileClassification } from './classify-helpers.js'
+import type { ClassCategory, ClassificationResult, ClassificationStats } from './classify-helpers.js'
 import { formatBytes } from './classify-helpers.js'
 
 // ─── categoryColor ──────────────────────────────────────
@@ -76,7 +76,7 @@ export function formatFileList(categories: ClassCategory[]): string {
   for (const cat of categories) {
     const color = categoryColor(cat.name)
     lines.push('')
-    lines.push(`  ${cat.icon} ${color.bold(cat.name)} (${cat.count} files)`)
+    lines.push(`  ${cat.icon} ${chalk.bold(color(cat.name))} (${cat.count} files)`)
     for (const f of cat.files.slice(0, 10)) {
       const essential = f.isEssential ? chalk.yellow(' *') : ''
       lines.push(`    ${chalk.gray(f.filePath)}  ${chalk.gray(formatBytes(f.size))}${essential}`)

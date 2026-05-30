@@ -14,6 +14,7 @@ export class PhantomReferenceQueue<T> {
   private queue: number[] = []
   private nextId = 1
   private _checkInterval: number
+  private _head = 0
   private stats: PhantomReferenceStatistics = {
     registered: 0,
     enqueued: 0,
@@ -61,10 +62,10 @@ export class PhantomReferenceQueue<T> {
   }
 
   poll(): PhantomRef<T> | null {
-    const id = this.queue.shift()
-    if (id === undefined) {
+    if (this._head >= this.queue.length) {
       return null
     }
+    const id = this.queue[this._head++]
     const ref = this.refs.get(id)
     if (ref === undefined) {
       return null
@@ -78,6 +79,7 @@ export class PhantomReferenceQueue<T> {
     ref.cleared = true
     ref.value = null
     this.refs.delete(id)
+    this._compact()
     return result
   }
 
@@ -100,7 +102,7 @@ export class PhantomReferenceQueue<T> {
 
   clearAll(): number {
     let count = 0
-    for (const ref of this.refs.values()) {
+    for (const ref of Array.from(this.refs.values())) {
       if (!ref.cleared) {
         ref.cleared = true
         ref.value = null
@@ -108,27 +110,34 @@ export class PhantomReferenceQueue<T> {
       }
     }
     this.queue.length = 0
+    this._head = 0
     this.stats.cleared += count
     return count
   }
 
+  private _compact(): void {
+    if (this._head > this.queue.length / 2) {
+      this.queue = this.queue.slice(this._head)
+      this._head = 0
+    }
+  }
+
   processQueue(): number {
     let processed = 0
-    while (this.queue.length > 0) {
-      const queuedId = this.queue[0]
-      if (queuedId === undefined) break
+    while (this.queue.length - this._head > 0) {
+      const queuedId = this.queue[this._head]
       const ref = this.refs.get(queuedId)
       if (ref === undefined) {
-        this.queue.shift()
+        this._head++
         continue
       }
       if (ref.cleared) {
-        this.queue.shift()
+        this._head++
         continue
       }
       ref.cleared = true
       ref.value = null
-      this.queue.shift()
+      this._head++
       this.stats.cleared++
       if (ref.onFinalize) {
         const phantomRef: PhantomRef<T> = {
@@ -141,12 +150,13 @@ export class PhantomReferenceQueue<T> {
       }
       processed++
     }
+    this._compact()
     return processed
   }
 
   get size(): number {
     let count = 0
-    for (const ref of this.refs.values()) {
+    for (const ref of Array.from(this.refs.values())) {
       if (!ref.cleared) {
         count++
       }
@@ -155,7 +165,7 @@ export class PhantomReferenceQueue<T> {
   }
 
   get queueSize(): number {
-    return this.queue.length
+    return this.queue.length - this._head
   }
 
   isEmpty(): boolean {
@@ -164,7 +174,7 @@ export class PhantomReferenceQueue<T> {
 
   getAll(): PhantomRef<T>[] {
     const result: PhantomRef<T>[] = []
-    for (const ref of this.refs.values()) {
+    for (const ref of Array.from(this.refs.values())) {
       if (!ref.cleared) {
         result.push({
           id: ref.id,

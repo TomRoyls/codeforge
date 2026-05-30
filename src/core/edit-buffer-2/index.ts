@@ -158,8 +158,9 @@ export class EditBuffer2 {
   }
 
   private trimStack(stack: UndoAction[]): void {
-    while (stack.length > this.maxHistory) {
-      stack.shift();
+    if (stack.length > this.maxHistory) {
+      const excess = stack.length - this.maxHistory
+      stack.splice(0, excess)
     }
   }
 }

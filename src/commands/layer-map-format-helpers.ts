@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { ArchLayer, LayerDependency, LayerMapResult, LayerViolation } from './layer-map-helpers.js'
 
+import { padRight } from '../utils/format-utils.js'
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function severityIcon(severity: 'warning' | 'critical'): string {
@@ -14,16 +16,6 @@ function violationTypeLabel(type: LayerViolation['type']): string {
     case 'skip-layer': return chalk.yellow('⤓ skip')
     case 'circular': return chalk.bgRed.white('↻ circular')
   }
-}
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
 }
 
 // ─── ASCII Layer Diagram ──────────────────────────────────────────────────────

@@ -1,6 +1,5 @@
 import { Command, Flags } from '@oclif/core'
 import * as fs from 'node:fs/promises'
-import { resolve } from 'node:path'
 import ora from 'ora'
 
 import { buildContributorResult, parseGitLogForContributors, type ContributorResult } from './contributor-helpers.js'

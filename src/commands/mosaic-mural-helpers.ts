@@ -467,7 +467,7 @@ export function computeHealthGrade(score: number): 'A' | 'B' | 'C' | 'D' | 'F' {
 export function generateRecommendations(
   composition: OverallComposition,
   sections: MuralSection[],
-  panels: MuralPanel[],
+  _panels: MuralPanel[],
 ): string[] {
   const recs: string[] = []
 
@@ -509,12 +509,14 @@ export function generateRecommendations(
 export function buildMosaicMuralResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): MuralMuralResult {
   // Build panels
   const panels: MuralPanel[] = []
   for (let i = 0; i < files.length; i++) {
-    panels.push(analyzePanel(contents[i] ?? '', files[i]))
+    const file = files[i]
+    if (!file) continue
+    panels.push(analyzePanel(contents[i] ?? '', file))
   }
 
   // Group panels by directory into sections
@@ -572,10 +574,12 @@ export function buildMosaicMuralResult(
   const healthGrade = computeHealthGrade(compositionScore)
 
   // Restoration priority: section with worst health
-  const worstSection = sections.reduce((worst, sec) => {
-    const healthRank: Record<string, number> = { pristine: 5, 'well-maintained': 4, weathering: 3, deteriorating: 2, crumbling: 1, ruins: 0 }
-    return (healthRank[sec.health] ?? 3) < (healthRank[worst.health] ?? 3) ? sec : worst
-  }, sections[0])
+  const worstSection = sections.length > 0 && sections[0]
+    ? sections.reduce((worst, sec) => {
+        const healthRank: Record<string, number> = { pristine: 5, 'well-maintained': 4, weathering: 3, deteriorating: 2, crumbling: 1, ruins: 0 }
+        return (healthRank[sec.health] ?? 3) < (healthRank[worst.health] ?? 3) ? sec : worst
+      }, sections[0])
+    : undefined
 
   const recommendations = generateRecommendations(composition, sections, panels)
 

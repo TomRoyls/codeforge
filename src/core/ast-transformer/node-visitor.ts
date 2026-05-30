@@ -15,9 +15,10 @@ export class NodeVisitor {
     const queue: Array<{ node: ASTNode; parent: ASTNode | undefined; depth: number }> = [
       { node: root, parent: undefined, depth: 0 },
     ]
+    let _qi = 0
 
-    while (queue.length > 0) {
-      const entry = queue.shift()
+    while (_qi < queue.length) {
+      const entry = queue[_qi++]
       if (entry === undefined) break
 
       const result = callback(entry.node, entry.parent, entry.depth)

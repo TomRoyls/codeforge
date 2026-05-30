@@ -724,7 +724,7 @@ export function analyzeNeonBed(blooms: NeonBloom[], dirPath: string): NeonBed {
 export function generateRecommendations(
   blooms: NeonBloom[],
   beds: NeonBed[],
-  landscape: NeonGardenResult['landscape'],
+  _landscape: NeonGardenResult['landscape'],
   stats: NeonGardenResult['stats'],
 ): string[] {
   const recs: string[] = []

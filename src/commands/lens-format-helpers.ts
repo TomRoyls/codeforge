@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { FocusResult, LensResult, LensStats, LensView } from './lens-helpers.js'
+import type { LensResult, LensStats, LensView } from './lens-helpers.js'
 
 // ─── Lens Selector ─────────────────────────────────────────────────────────────
 
@@ -106,13 +106,13 @@ export function formatDistributionChart(scores: number[]): string {
   const counts = [0, 0, 0, 0, 0]
   for (const s of scores) {
     const idx = Math.min(4, Math.floor(s / 20))
-    counts[idx]++
+    counts[idx] = (counts[idx] ?? 0) + 1
   }
 
   const maxCount = Math.max(...counts, 1)
   for (let i = 0; i < 5; i++) {
-    const label = buckets[i].padEnd(7)
-    const barLen = Math.round((counts[i] / maxCount) * 20)
+    const label = (buckets[i] ?? '').padEnd(7)
+    const barLen = Math.round(((counts[i] ?? 0) / maxCount) * 20)
     const bar = '█'.repeat(barLen)
     const count = String(counts[i]).padStart(3)
     lines.push(`  ${label} ${chalk.rgb(0, 188, 212)(bar)} ${count}`)

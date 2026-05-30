@@ -188,7 +188,7 @@ export function computeBugRisk(metrics: { complexity: number; linesOfCode: numbe
  * @example
  * computeRegionMetrics(['a.ts'], [content])
  */
-export function computeRegionMetrics(files: string[], contents: string[]): RegionMetrics {
+export function computeRegionMetrics(_files: string[], contents: string[]): RegionMetrics {
   let linesOfCode = 0
   let complexity = 0
   let functionCount = 0
@@ -410,7 +410,7 @@ export function buildStats(regions: Region[], views: CartogramView[], comparison
  * @example
  * generateCartogramRecommendations(regions, views, comparison, stats)
  */
-export function generateCartogramRecommendations(regions: Region[], views: CartogramView[], comparison: ComparisonView[], stats: CartogramStats): string[] {
+export function generateCartogramRecommendations(regions: Region[], views: CartogramView[], _comparison: ComparisonView[], stats: CartogramStats): string[] {
   const recs: string[] = []
 
   const extremeViews = views.filter((v) => v.distribution === 'extreme')

@@ -313,10 +313,10 @@ export function identifyTectonicPlates(files: string[], contents: string[]): Tec
   const dirMap = new Map<string, { files: string[]; contents: string[] }>()
 
   for (let i = 0; i < files.length; i++) {
-    const dir = getDirectory(files[i])
+    const dir = getDirectory(files[i] ?? '')
     const existing = dirMap.get(dir) ?? { files: [], contents: [] }
-    existing.files.push(files[i])
-    existing.contents.push(contents[i])
+    existing.files.push(files[i] ?? '')
+    existing.contents.push(contents[i] ?? '')
     dirMap.set(dir, existing)
   }
 
@@ -376,7 +376,7 @@ export function identifyTectonicPlates(files: string[], contents: string[]): Tec
  * @example
  * mapSeismicZones(events, faultLines, plates) // => [{ zone: 'src', ... }]
  */
-export function mapSeismicZones(events: SeismicEvent[], faultLines: FaultLine[], plates: TectonicPlate[]): SeismicZone[] {
+export function mapSeismicZones(events: SeismicEvent[], _faultLines: FaultLine[], plates: TectonicPlate[]): SeismicZone[] {
   const zoneMap = new Map<string, SeismicEvent[]>()
 
   for (const event of events) {
@@ -464,7 +464,7 @@ export function findDominant<T extends string>(values: T[]): T {
   for (const v of values) {
     counts.set(v, (counts.get(v) ?? 0) + 1)
   }
-  let dominant = values[0]
+  let dominant: T = values[0] ?? ('stable' as T)
   let maxCount = 0
   for (const [val, count] of counts) {
     if (count > maxCount) {
@@ -533,21 +533,21 @@ export function generateRecommendations(
  * buildSeismicResult(['app.ts'], ['const x = 1'], {})
  * // => { events: [...], faultLines: [...], plates: [...], ... }
  */
-export function buildSeismicResult(files: string[], contents: string[], options: SeismicOptions): SeismicResult {
+export function buildSeismicResult(files: string[], contents: string[], _options: SeismicOptions): SeismicResult {
   const maxDepth = files.length > 0 ? Math.max(...files.map(f => f.split('/').length - 1)) : 1
 
   // build events
   const events: SeismicEvent[] = files.map((file, idx) => {
     const content = contents[idx]
-    const magnitude = computeMagnitude(content)
+    const magnitude = computeMagnitude(content ?? '')
     const depth = computeDepth(file, maxDepth)
 
     // find affected files (files that import from this file)
     const base = file.replace(/\.\w+$/, '')
     const baseName = base.split('/').pop() ?? ''
-    const affectedFiles = files.filter((f, i) => {
+    const affectedFiles = files.filter((_f, i) => {
       if (i === idx) return false
-      return extractImportPaths(contents[i]).some(p => p.includes(baseName))
+      return extractImportPaths(contents[i] ?? '').some(p => p.includes(baseName))
     })
 
     // count files in same directory for frequency
@@ -607,9 +607,9 @@ export function buildSeismicResult(files: string[], contents: string[], options:
   const overallRisk = classifyOverallRisk(avgMagnitude, activeFaultLines + hyperactiveFaultLines, pressureIndex)
 
   const sortedZones = [...zones].sort((a, b) => b.magnitude - a.magnitude)
-  const mostActiveZone = sortedZones.length > 0 ? sortedZones[0].zone : ''
+  const mostActiveZone = sortedZones.length > 0 ? sortedZones[0]?.zone : ''
   const stableZones = [...zones].sort((a, b) => a.magnitude - b.magnitude)
-  const mostStableZone = stableZones.length > 0 ? stableZones[0].zone : ''
+  const mostStableZone = stableZones.length > 0 ? stableZones[0]?.zone : ''
 
   const stats: SeismicStats = {
     totalEvents: events.length,
@@ -626,8 +626,8 @@ export function buildSeismicResult(files: string[], contents: string[], options:
     avgPlateStability,
     highPressurePlates,
     overallRisk,
-    mostActiveZone,
-    mostStableZone,
+    mostActiveZone: mostActiveZone ?? '',
+    mostStableZone: mostStableZone ?? '',
     pressureIndex,
   }
 

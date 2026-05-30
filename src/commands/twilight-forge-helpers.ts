@@ -732,7 +732,7 @@ export function analyzeTwilightWorkshop(sparks: TwilightSpark[], dirPath: string
 export function generateRecommendations(
   sparks: TwilightSpark[],
   workshops: TwilightWorkshop[],
-  dusk: TwilightForgeResult['dusk'],
+  _dusk: TwilightForgeResult['dusk'],
   stats: TwilightForgeResult['stats'],
 ): string[] {
   const recs: string[] = []

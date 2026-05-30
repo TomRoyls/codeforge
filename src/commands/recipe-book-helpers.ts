@@ -132,22 +132,32 @@ export function extractIngredients(content: string): Ingredient[] {
 
     const importMatch = trimmed.match(/^import\s+.*?from\s+['"](.+?)['"]/);
     if (importMatch) {
-      addIngredient('import', importMatch[1], true)
+      const val = importMatch[1]
+      if (val) addIngredient('import', val, true)
     }
 
     if (/\bclass\s+(\w+)/.test(trimmed)) {
-      const cls = trimmed.match(/\bclass\s+(\w+)/)!
-      addIngredient('class', cls[1], true)
+      const cls = trimmed.match(/\bclass\s+(\w+)/)
+      if (cls) {
+        const val = cls[1]
+        if (val) addIngredient('class', val, true)
+      }
     }
 
     if (/\bfunction\s+(\w+)/.test(trimmed)) {
-      const fn = trimmed.match(/\bfunction\s+(\w+)/)!
-      addIngredient('function', fn[1], true)
+      const fn = trimmed.match(/\bfunction\s+(\w+)/)
+      if (fn) {
+        const val = fn[1]
+        if (val) addIngredient('function', val, true)
+      }
     }
 
     if (/\b(const|let|var)\s+(\w+)/.test(trimmed)) {
-      const v = trimmed.match(/\b(const|let|var)\s+(\w+)/)!
-      addIngredient('keyword', v[1], false)
+      const v = trimmed.match(/\b(const|let|var)\s+(\w+)/)
+      if (v) {
+        const val = v[1]
+        if (val) addIngredient('keyword', val, false)
+      }
     }
 
     if (/\bif\b/.test(trimmed)) addIngredient('control-flow', 'if', false)
@@ -184,7 +194,10 @@ export function extractIngredients(content: string): Ingredient[] {
 
     if (trimmed.startsWith('@')) {
       const decorator = trimmed.match(/^@(\w+)/)
-      if (decorator) addIngredient('decorator', decorator[1], false)
+      if (decorator) {
+        const val = decorator[1]
+        if (val) addIngredient('decorator', val, false)
+      }
     }
   }
 
@@ -201,7 +214,6 @@ export function extractIngredients(content: string): Ingredient[] {
  */
 export function detectRecipes(ingredients: Ingredient[], content: string, filePath: string): Recipe[] {
   const recipes: Recipe[] = []
-  const lines = content.split('\n')
   let recipeCounter = 0
 
   const makeId = () => `recipe-${++recipeCounter}`
@@ -342,6 +354,7 @@ export function findMatches(recipes: Recipe[], files: string[], contents: string
 
   for (let fi = 0; fi < files.length; fi++) {
     const file = files[fi]
+    if (!file) continue
     const content = contents[fi] ?? ''
     const lines = content.split('\n')
 
@@ -356,6 +369,7 @@ export function findMatches(recipes: Recipe[], files: string[], contents: string
 
       for (let li = 0; li < lines.length; li++) {
         const line = lines[li]
+        if (!line) continue
         if (recipe.category === 'testing' && (line.includes('test(') || line.includes('it(') || line.includes('describe('))) {
           bestStart = li + 1
           break
@@ -579,7 +593,7 @@ export function generateRecipeBookRecommendations(
   }
 
   if (stats.cookbookCompleteness < 50) {
-    recs.append ? recs.push('Improve cookbook completeness by documenting common patterns') : recs.push('Improve cookbook completeness by documenting common patterns')
+    recs.push('Improve cookbook completeness by documenting common patterns')
   }
 
   return recs
@@ -593,12 +607,13 @@ export function generateRecipeBookRecommendations(
  * @example
  * buildRecipeBookResult(['a.ts'], ['code'], {}) // => RecipeBookResult
  */
-export function buildRecipeBookResult(files: string[], contents: string[], options: RecipeBookOptions): RecipeBookResult {
+export function buildRecipeBookResult(files: string[], contents: string[], _options: RecipeBookOptions): RecipeBookResult {
   const allRecipes: Recipe[] = []
   const allMatches: RecipeMatch[] = []
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
+    if (!file) continue
     const content = contents[i] ?? ''
     const ingredients = extractIngredients(content)
     const fileRecipes = detectRecipes(ingredients, content, file)

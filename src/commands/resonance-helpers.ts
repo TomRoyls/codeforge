@@ -230,9 +230,9 @@ export function detectResonances(
     const f1 = frequencies.find(f => f.pattern === p1)
     const f2 = frequencies.find(f => f.pattern === p2)
     if (f1 && f2) {
-      const commonFiles = files.filter((file, idx) => {
+      const commonFiles = files.filter((_file, idx) => {
         const c = contents[idx]
-        return hasPattern(c, p1) && hasPattern(c, p2)
+        return hasPattern(c ?? '', p1) && hasPattern(c ?? '', p2)
       })
       if (commonFiles.length > 0) {
         const strength = Math.min(100, commonFiles.length * 25)
@@ -245,9 +245,9 @@ export function detectResonances(
     const f1 = frequencies.find(f => f.pattern === p1)
     const f2 = frequencies.find(f => f.pattern === p2)
     if (f1 && f2) {
-      const commonFiles = files.filter((file, idx) => {
+      const commonFiles = files.filter((_file, idx) => {
         const c = contents[idx]
-        return hasPattern(c, p1) && hasPattern(c, p2)
+        return hasPattern(c ?? '', p1) && hasPattern(c ?? '', p2)
       })
       if (commonFiles.length > 0) {
         const strength = Math.min(100, commonFiles.length * 30)
@@ -260,7 +260,7 @@ export function detectResonances(
     const f1 = frequencies.find(f => f.pattern === p1)
     const f2 = frequencies.find(f => f.pattern === p2)
     if (f1 && f2) {
-      const commonFiles = files.filter((_, idx) => hasPattern(contents[idx], p1) && hasPattern(contents[idx], p2))
+      const commonFiles = files.filter((_, idx) => hasPattern(contents[idx] ?? '', p1) && hasPattern(contents[idx] ?? '', p2))
       if (commonFiles.length > 0) {
         const strength = Math.min(100, commonFiles.length * 20)
         resonances.push({ patterns: [p1, p2], type: 'harmonic', strength, files: commonFiles, description: desc, impact: 'neutral' })
@@ -272,7 +272,7 @@ export function detectResonances(
     const f1 = frequencies.find(f => f.pattern === p1)
     const f2 = frequencies.find(f => f.pattern === p2)
     if (f1 && f2) {
-      const commonFiles = files.filter((_, idx) => hasPattern(contents[idx], p1) && hasPattern(contents[idx], p2))
+      const commonFiles = files.filter((_, idx) => hasPattern(contents[idx] ?? '', p1) && hasPattern(contents[idx] ?? '', p2))
       if (commonFiles.length > 0) {
         const strength = Math.min(100, commonFiles.length * 25)
         resonances.push({ patterns: [p1, p2], type: 'dissonant', strength, files: commonFiles, description: desc, impact: 'negative' })
@@ -298,11 +298,11 @@ function hasPattern(content: string, patternName: string): boolean {
  * @example
  * buildProfile('app.ts', content, freqs) // => { dominantFrequency: 'arrow-function', ... }
  */
-export function buildProfile(file: string, content: string, allFrequencies: Frequency[]): ResonanceProfile {
+export function buildProfile(file: string, content: string, _allFrequencies: Frequency[]): ResonanceProfile {
   const fileFreqs = extractFrequencies(content, file)
 
   const dominant = fileFreqs.length > 0
-    ? fileFreqs.reduce((best, f) => f.occurrences > best.occurrences ? f : best, fileFreqs[0])
+    ? fileFreqs.reduce((best, f) => f.occurrences > best.occurrences ? f : best, fileFreqs[0] as typeof fileFreqs[number])
     : null
 
   const resonanceScore = computeResonanceScore(fileFreqs, content)
@@ -456,20 +456,20 @@ export function generateResonanceRecommendations(
  * buildResonanceResult(files, contents, {})
  * // => { frequencies: [...], resonances: [...], profiles: [...], ... }
  */
-export function buildResonanceResult(files: string[], contents: string[], options: ResonanceOptions): ResonanceResult {
+export function buildResonanceResult(files: string[], contents: string[], _options: ResonanceOptions): ResonanceResult {
   // Aggregate frequencies across all files
   const freqMap = new Map<string, Frequency>()
 
   for (let i = 0; i < files.length; i++) {
-    const fileFreqs = extractFrequencies(contents[i], files[i])
+    const fileFreqs = extractFrequencies(contents[i] ?? '',files[i] ?? '')
     for (const f of fileFreqs) {
       const key = `${f.category}:${f.pattern}`
       const existing = freqMap.get(key)
       if (existing) {
         existing.occurrences += f.occurrences
-        if (!existing.files.includes(files[i])) existing.files.push(files[i])
+        if (!existing.files.includes(files[i] ?? '')) existing.files.push(files[i] ?? '')
       } else {
-        freqMap.set(key, { ...f, files: [files[i]] })
+        freqMap.set(key, { ...f, files: [files[i] ?? ''] })
       }
     }
   }
@@ -486,7 +486,7 @@ export function buildResonanceResult(files: string[], contents: string[], option
   const resonances = detectResonances(frequencies, files, contents)
 
   // Build profiles
-  const profiles = files.map((file, i) => buildProfile(file, contents[i], frequencies))
+  const profiles = files.map((file, i) => buildProfile(file, contents[i] ?? '', frequencies))
 
   // Stats
   const constructiveCount = resonances.filter(r => r.type === 'constructive').length
@@ -495,12 +495,12 @@ export function buildResonanceResult(files: string[], contents: string[], option
   const avgInterference = profiles.length > 0 ? Math.round(profiles.reduce((s, p) => s + p.interference, 0) / profiles.length) : 50
 
   const sortedByOcc = [...frequencies].sort((a, b) => b.occurrences - a.occurrences)
-  const dominantFreq = sortedByOcc.length > 0 ? sortedByOcc[0].pattern : 'none'
-  const rarestFreq = sortedByOcc.length > 0 ? sortedByOcc[sortedByOcc.length - 1].pattern : 'none'
+  const dominantFreq = sortedByOcc.length > 0 ? sortedByOcc[0]?.pattern : 'none'
+  const rarestFreq = sortedByOcc.length > 0 ? sortedByOcc[sortedByOcc.length - 1]?.pattern : 'none'
 
   const sortedByScore = [...profiles].sort((a, b) => b.resonanceScore - a.resonanceScore)
-  const mostHarmonious = sortedByScore.length > 0 ? sortedByScore[0].file : ''
-  const mostDissonant = sortedByScore.length > 0 ? sortedByScore[sortedByScore.length - 1].file : ''
+  const mostHarmonious = sortedByScore.length > 0 ? sortedByScore[0]?.file : ''
+  const mostDissonant = sortedByScore.length > 0 ? sortedByScore[sortedByScore.length - 1]?.file : ''
 
   const overallHarmony = computeOverallHarmony(profiles)
   const snr = computeSignalToNoise(constructiveCount, destructiveCount)
@@ -511,10 +511,10 @@ export function buildResonanceResult(files: string[], contents: string[], option
     destructiveResonances: destructiveCount,
     avgResonanceScore: avgResonance,
     avgInterference,
-    dominantFrequency: dominantFreq,
-    rarestFrequency: rarestFreq,
-    mostHarmoniousFile: mostHarmonious,
-    mostDissonantFile: mostDissonant,
+    dominantFrequency: dominantFreq ?? '',
+    rarestFrequency: rarestFreq ?? '',
+    mostHarmoniousFile: mostHarmonious ?? '',
+    mostDissonantFile: mostDissonant ?? '',
     overallHarmony,
     signalToNoiseRatio: snr,
   }

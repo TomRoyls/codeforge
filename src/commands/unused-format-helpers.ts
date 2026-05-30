@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { ExportType, UnusedResult } from './unused-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color mapping ──────────────────────────────────────
 
 const TYPE_COLORS: Record<ExportType, (text: string) => string> = {
@@ -19,16 +21,6 @@ function colorizeType(type: ExportType, text: string): string {
 }
 
 // ─── Table formatting ───────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 export function formatUnusedTable(result: UnusedResult): string {
   const { byType, totalExports, totalUnused, unused, unusedPercentage } = result

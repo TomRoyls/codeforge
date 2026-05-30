@@ -90,9 +90,9 @@ export class CrossFileAnalyzer {
 
     const visited = new Set<string>()
     const queue = [...entryPoints]
-
-    while (queue.length > 0) {
-      const current = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!
       if (visited.has(current)) continue
       visited.add(current)
 
@@ -425,9 +425,9 @@ export class CrossFileAnalyzer {
   private getTransitiveDependents(graph: ImportGraph, directDependents: string[]): string[] {
     const visited = new Set<string>(directDependents)
     const queue = [...directDependents]
-
-    while (queue.length > 0) {
-      const current = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!
       const module = graph.modules.get(current)
       if (module) {
         for (const dep of module.dependents) {

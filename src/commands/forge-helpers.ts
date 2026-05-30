@@ -126,12 +126,11 @@ export function inspectWelds(content: string, filePath: string): ForgeWeld[] {
   if (content.trim().length === 0) return []
 
   const welds: ForgeWeld[] = []
-  const lines = content.split('\n')
 
   const functionPattern = /(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)/g
   for (const match of content.matchAll(functionPattern)) {
-    const name = match[1]
-    const params = match[2].trim()
+    const name = match[1] ?? ''
+    const params = (match[2] ?? '').trim()
     const strength = computeFunctionWeldStrength(params, content, name)
     welds.push({
       location: `${filePath}::${name}`,
@@ -145,7 +144,7 @@ export function inspectWelds(content: string, filePath: string): ForgeWeld[] {
 
   const classPattern = /(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/g
   for (const match of content.matchAll(classPattern)) {
-    const name = match[1]
+    const name = match[1] ?? ''
     const strength = computeClassWeldStrength(name, content)
     welds.push({
       location: `${filePath}::${name}`,
@@ -226,10 +225,10 @@ function extractClassBody(name: string, content: string): string | null {
   let started = false
   let end = startIdx
   for (let i = startIdx; i < content.length; i++) {
-    if (content[i] === '{') {
+    if (content.charAt(i) === '{') {
       braceCount++
       started = true
-    } else if (content[i] === '}') {
+    } else if (content.charAt(i) === '}') {
       braceCount--
       if (started && braceCount === 0) {
         end = i
@@ -285,7 +284,7 @@ export function detectHammerMarks(content: string): HammerMark[] {
   const lines = content.split('\n')
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     const lineNum = i + 1
 
     if (/console\.(log|debug|info|warn|error)\s*\(/.test(line)) {
@@ -604,7 +603,7 @@ export function generateRecommendations(pieces: ForgedPiece[], stats: ForgeStats
 
   const brittlePieces = pieces.filter(p => p.heatTreatment.grade === 'brittle' || p.heatTreatment.grade === 'raw')
   if (brittlePieces.length > 0) {
-    recs.push(`Add error handling and edge case coverage to ${brittlePieces.length} file${brittlePieces.length > 1 ? 's' : ''} with ${brittlePieces[0].heatTreatment.grade} heat treatment`)
+    recs.push(`Add error handling and edge case coverage to ${brittlePieces.length} file${brittlePieces.length > 1 ? 's' : ''} with ${brittlePieces[0]?.heatTreatment.grade ?? 'raw'} heat treatment`)
   }
 
   const roughWelds = pieces.reduce((s, p) => s + p.welds.filter(w => w.quality === 'rough' || w.quality === 'broken').length, 0)
@@ -646,7 +645,7 @@ export function buildForgeResult(files: string[], contents: string[], _options: 
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    const file = files[i]
+    const file = files[i] ?? ''
 
     const temper = evaluateTemper(content)
     const welds = inspectWelds(content, file)

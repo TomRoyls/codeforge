@@ -282,7 +282,7 @@ export function analyzeFunctions(content: string, _filePath: string): FunctionPu
       ?? line.match(/(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(?:async\s*)?\(/)
 
     if (funcMatch && !inFunc) {
-      funcName = funcMatch[1]!
+      funcName = funcMatch[1] ?? ''
       funcStart = i
       inFunc = true
       braceDepth = 0

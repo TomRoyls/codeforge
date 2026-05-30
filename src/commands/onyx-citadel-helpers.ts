@@ -278,6 +278,7 @@ export function measureIlluminating(content: string): IlluminatingMeasure {
   const hasClear = /:\s*(string|number|boolean|void|unknown|never)\b/.test(content)
   const obfuscatedCount = (content.match(/\b(obfuscated|encoded|mangled|minified)\b/gi) ?? []).length
   const hasNoObfuscated = obfuscatedCount === 0
+  const hasNoMystery = true
   const hasTransparent = /\b(readonly|private|protected)\b/.test(content)
   const hasUnderstandable = /\/\*\*[\s\S]*?\*\//.test(content)
   const hasSelfDocumenting = /\b(import|export)\b/.test(content)
@@ -290,7 +291,7 @@ export function measureIlluminating(content: string): IlluminatingMeasure {
   const hasManifest = (content.match(/\b(var|eval)\b/g) ?? []).length === 0
 
   const positiveBooleans = [
-    hasReadable, hasNoCryptic, hasClear, hasNoObfuscated, hasTransparent,
+    hasReadable, hasNoCryptic, hasClear, hasNoObfuscated, hasNoMystery, hasTransparent,
     hasUnderstandable, hasSelfDocumenting, hasVisible, hasDirect, hasOpen,
     hasRevealed, hasExposed, hasUnhidden, hasManifest,
   ]
@@ -307,7 +308,7 @@ export function measureIlluminating(content: string): IlluminatingMeasure {
 
   return {
     clarity, vision, hasHighClarity,
-    hasReadable, hasNoCryptic, hasClear, hasNoObfuscated, hasTransparent,
+    hasReadable, hasNoCryptic, hasClear, hasNoObfuscated, hasNoMystery, hasTransparent,
     hasUnderstandable, hasSelfDocumenting, hasVisible, hasDirect, hasOpen,
     hasRevealed, hasExposed, hasUnhidden, hasManifest,
     crypticCount, obfuscatedCount,
@@ -655,7 +656,7 @@ export async function buildOnyxCitadelResult(
 export function generateRecommendations(
   blocks: OnyxBlock[],
   castles: OnyxCastle[],
-  keep: OnyxCitadelResult['keep'],
+  _keep: OnyxCitadelResult['keep'],
   stats: OnyxCitadelResult['stats'],
 ): string[] {
   const recs: string[] = []

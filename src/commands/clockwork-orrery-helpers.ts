@@ -192,8 +192,6 @@ const TRY_RE = /\btry\b/
 const CATCH_RE = /\bcatch\b/
 const RETURN_RE = /\breturn\b/
 const THROW_RE = /\bthrow\b/
-const GENERIC_RE = /<[A-Z]\w*[,>]/
-const OPTIONAL_RE = /\?\s*:/
 const NESTED_TERNARY_RE = /\?.*:.*\?.*:/
 const CONSOLE_RE = /\bconsole\.\w+/g
 const ANY_RE = /:\s*any\b/g
@@ -201,7 +199,6 @@ const EVAL_RE = /\beval\s*\(/g
 const TODO_RE = /\bTODO\b/gi
 const HACK_RE = /\bHACK\b/gi
 const FIXME_RE = /\bFIXME\b/gi
-const DEPRECATED_RE = /@deprecated/g
 const DOC_COMMENT_RE = /\/\*\*[\s\S]*?\*\//g
 const EMPTY_CATCH_RE = /catch\s*\(\w*\)\s*\{\s*\}/g
 

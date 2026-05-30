@@ -25,7 +25,7 @@ export class ChainedHash2<V> {
 
   put(key: string, value: V): void {
     const idx = this.hash(key)
-    let entry = this.buckets[idx]!
+    let entry: ChainedHashEntry<V> | null = this.buckets[idx]!
 
     while (entry !== null) {
       if (entry.key === key) {
@@ -42,7 +42,7 @@ export class ChainedHash2<V> {
 
   get(key: string): V | undefined {
     const idx = this.hash(key)
-    let entry = this.buckets[idx]!
+    let entry: ChainedHashEntry<V> | null = this.buckets[idx]!
 
     while (entry !== null) {
       if (entry.key === key) return entry.value
@@ -53,7 +53,7 @@ export class ChainedHash2<V> {
 
   remove(key: string): boolean {
     const idx = this.hash(key)
-    let entry = this.buckets[idx]!
+    let entry: ChainedHashEntry<V> | null = this.buckets[idx]!
     let prev: ChainedHashEntry<V> | null = null
 
     while (entry !== null) {

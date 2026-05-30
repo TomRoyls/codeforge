@@ -1000,9 +1000,8 @@ export function generateRecommendations(
 export function buildPipelineValveResult(
   files: string[],
   contents: string[],
-  options?: { ignore?: string[]; ext?: string[] },
+  _options?: { ignore?: string[]; ext?: string[] },
 ): PipelineValveResult {
-  const _opts = options ?? {}
 
   const segments: PipelineSegment[] = files.map((file, i) =>
     analyzePipelineSegment(contents[i] ?? '', file),
@@ -1066,6 +1065,12 @@ export function buildPipelineValveResult(
     hasStagnationCount: segments.filter((s) => s.flow.hasStagnation).length,
     hasNoLeaksCount: segments.filter((s) => s.leak.hasNoLeaks).length,
     hasInputValidationCount: segments.filter((s) => s.filtration.hasInputValidation).length,
+    highPressureSystemCount: segments.filter((s) => s.pressure.isRegulated && s.pressureRegulation > 70).length,
+    modernPipelineCount: segments.filter((s) => s.pipeIntegrity > 80).length,
+    standardPipingCount: segments.filter((s) => s.pipeIntegrity > 50 && s.pipeIntegrity <= 80).length,
+    agingInfrastructureCount: segments.filter((s) => s.pipeIntegrity <= 50).length,
+    leakyPipesCount: segments.filter((s) => !s.leak.hasNoLeaks).length,
+    burstMainCount: segments.filter((s) => s.pressure.hasBurst).length,
     overallFlow,
     engineerGrade,
     bestSegment: count > 0 ? segments.reduce((best, s) => (s.qualityScore > best.qualityScore ? s : best)).file : '',
@@ -1083,12 +1088,13 @@ export function buildPipelineValveResult(
     overallFlow,
   }
 
-  const recPipe = count > 0 ? segments[0].pipe : measurePipe('')
-  const recValve = count > 0 ? segments[0].valve : measureValve('')
-  const recPressure = count > 0 ? segments[0].pressure : measurePressure('')
-  const recFlow = count > 0 ? segments[0].flow : measureFlow('')
-  const recLeak = count > 0 ? segments[0].leak : measureLeak('')
-  const recFiltration = count > 0 ? segments[0].filtration : measureFiltration('')
+
+  const recPipe = count > 0 ? (segments[0]?.pipe ?? measurePipe('')) : measurePipe('')
+  const recValve = count > 0 ? (segments[0]?.valve ?? measureValve('')) : measureValve('')
+  const recPressure = count > 0 ? (segments[0]?.pressure ?? measurePressure('')) : measurePressure('')
+  const recFlow = count > 0 ? (segments[0]?.flow ?? measureFlow('')) : measureFlow('')
+  const recLeak = count > 0 ? (segments[0]?.leak ?? measureLeak('')) : measureLeak('')
+  const recFiltration = count > 0 ? (segments[0]?.filtration ?? measureFiltration('')) : measureFiltration('')
 
   const recommendations = generateRecommendations(recPipe, recValve, recPressure, recFlow, recLeak, recFiltration)
 

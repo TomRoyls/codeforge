@@ -234,10 +234,4 @@ export class RuleEvaluator {
     }
     return lo
   }
-
-  private getLineNumber(content: string, index: number | undefined): number {
-    if (index === undefined) return 1
-    const lineStarts = this.buildLineStarts(content)
-    return this.lineFromStarts(lineStarts, index)
-  }
 }

@@ -1,24 +1,9 @@
 import chalk from 'chalk'
 
-import type { BundleSizeResult, FileBundleInfo } from './bundlesize-helpers.js'
+import type { BundleSizeResult } from './bundlesize-helpers.js'
+import { formatBytesCompact as formatBytes, padRight, padLeft } from '../utils/format-utils.js'
 
 // ─── Helpers ────────────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`
-}
 
 /**
  * Color-size a byte value: green <5KB, yellow 5-20KB, red >20KB.

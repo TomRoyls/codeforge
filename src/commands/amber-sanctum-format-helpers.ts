@@ -29,15 +29,7 @@ export function colorCondition(condition: CollectionCondition | string): string 
 
 // ─── Table formatting ───────────────────────────────────
 
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
 
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /** @example formatSpecimenTable(specimen) */
 export function formatSpecimenTable(specimen: AmberSpecimen): string {

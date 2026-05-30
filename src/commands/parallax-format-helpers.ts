@@ -99,7 +99,7 @@ export function formatDepthLayerTable(layers: DepthLayer[]): string {
  */
 export function formatDepthHistogram(layers: DepthLayer[]): string {
   const counts: Record<string, number> = { shallow: 0, moderate: 0, deep: 0, abyssal: 0 }
-  for (const l of layers) counts[l.depthCategory]++
+  for (const l of layers) counts[l.depthCategory] = (counts[l.depthCategory] ?? 0) + 1
 
   const maxCount = Math.max(...Object.values(counts), 1)
   const barMax = 20
@@ -119,10 +119,10 @@ export function formatDepthHistogram(layers: DepthLayer[]): string {
 
   for (const cat of ['shallow', 'moderate', 'deep', 'abyssal'] as const) {
     const count = counts[cat]
-    const barLen = Math.round((count / maxCount) * barMax)
+    const barLen = Math.round(((count ?? 0) / maxCount) * barMax)
     const bar = '█'.repeat(barLen)
     const color = catColors[cat]
-    lines.push(`  ${cat.padEnd(10)} ${color(bar)} ${count}`)
+    lines.push(`  ${cat.padEnd(10)} ${(color ?? ((t: string) => t))(bar)} ${count ?? 0}`)
   }
 
   return lines.join('\n')

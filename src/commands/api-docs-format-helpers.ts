@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { ApiDocsResult, ApiModule, ApiFunction, ApiInterface as ApiIface, ApiClass, ApiConst, ApiType } from './api-docs-helpers.js'
+import type { ApiDocsResult } from './api-docs-helpers.js'
 
 // ─── Helpers ────────────────────────────────────────────
 

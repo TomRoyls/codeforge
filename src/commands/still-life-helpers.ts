@@ -359,7 +359,7 @@ export function analyzeArrangement(
   const overallComposure = Math.round(objects.reduce((s, o) => s + o.composure, 0) / objects.length)
 
   // Identify focal point: highest composure + weight
-  let focalPoint = objects[0].file
+  let focalPoint = objects[0]?.file
   let focalScore = 0
   for (const obj of objects) {
     const score = obj.composure + Math.min(20, obj.weight / 5)
@@ -396,7 +396,7 @@ export function analyzeArrangement(
     overallStillness,
     overallBalance,
     overallComposure,
-    focalPoint,
+    focalPoint: focalPoint ?? '',
     supportingFiles,
     backgroundFiles,
     isBalanced,
@@ -500,7 +500,7 @@ export function computeArrangementScore(arrangements: StillLifeArrangement[]): n
  * generateRecommendations(objects, arrangements, stats) // string[]
  */
 export function generateRecommendations(
-  objects: StillnessObject[],
+  _objects: StillnessObject[],
   arrangements: StillLifeArrangement[],
   stats: StillLifeStats,
 ): string[] {
@@ -538,7 +538,7 @@ export function buildStillLifeResult(
 ): StillLifeResult {
   const objects: StillnessObject[] = []
   for (let i = 0; i < files.length; i++) {
-    objects.push(analyzeStillnessObject(contents[i], files[i]))
+    objects.push(analyzeStillnessObject(contents[i] ?? '',files[i] ?? ''))
   }
 
   const dirMap = new Map<string, StillnessObject[]>()
@@ -612,8 +612,8 @@ function computeStats(objects: StillnessObject[], arrangements: StillLifeArrange
   const sortedByHealth = [...arrangements].sort((a, b) =>
     (b.overallStillness + b.overallBalance) - (a.overallStillness + a.overallBalance),
   )
-  const bestArrangement = sortedByHealth.length > 0 ? sortedByHealth[0].directory : 'none'
-  const worstArrangement = sortedByHealth.length > 0 ? sortedByHealth[sortedByHealth.length - 1].directory : 'none'
+  const bestArrangement = sortedByHealth.length > 0 ? sortedByHealth[0]?.directory : 'none'
+  const worstArrangement = sortedByHealth.length > 0 ? sortedByHealth[sortedByHealth.length - 1]?.directory : 'none'
 
   return {
     totalFiles,
@@ -637,7 +637,7 @@ function computeStats(objects: StillnessObject[], arrangements: StillLifeArrange
     arrangementScore,
     masterworkArrangements,
     chaoticArrangements,
-    bestArrangement,
-    worstArrangement,
+    bestArrangement: bestArrangement ?? '',
+    worstArrangement: worstArrangement ?? '',
   }
 }

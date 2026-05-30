@@ -250,7 +250,7 @@ function identifyPersonality(metrics: GrowthMetrics, contents: string[]): string
   return traits
 }
 
-function computeAreaScores(metrics: GrowthMetrics, contents: string[]): Record<string, number> {
+function computeAreaScores(metrics: GrowthMetrics, _contents: string[]): Record<string, number> {
   return {
     Documentation: metrics.avgDocumentation,
     Testing: Math.min(100, Math.round(metrics.testRatio * 200)),
@@ -533,7 +533,7 @@ export function generatePredictions(
  */
 export function generateRecommendations(
   state: CurrentState,
-  metrics: GrowthMetrics,
+  _metrics: GrowthMetrics,
   trends: TrendIndicator[],
   predictions: Prediction[],
 ): string[] {
@@ -554,7 +554,7 @@ export function generateRecommendations(
 
   const highConfidencePredictions = predictions.filter((p) => p.confidence > 65)
   if (highConfidencePredictions.length > 0) {
-    recs.push(`Prepare for: ${highConfidencePredictions[0].prediction}`)
+    recs.push(`Prepare for: ${    recs.push(`Prepare for: ${highConfidencePredictions[0]?.prediction}`)}`)
   }
 
   if (state.health < 50) {
@@ -598,7 +598,7 @@ export function buildTimeCapsuleResult(
       achievements: [], concerns: ['No files to analyze'],
     }
     const emptyStats: CapsuleStats = {
-      capsuleDate: new Date().toISOString().split('T')[0], codebaseAge: 0, commitCount: 0,
+      capsuleDate: new Date().toISOString().split('T')[0] ?? '', codebaseAge: 0, commitCount: 0,
       authorCount: 0, linesPerDay: 0, filesPerWeek: 0, healthTrend: 'unknown',
       maturityIndex: 0, consistencyIndex: 0, resilienceScore: 0,
     }
@@ -626,7 +626,7 @@ export function buildTimeCapsuleResult(
   const healthTrend = decliningCount > 2 ? 'declining' : decliningCount === 0 ? 'improving' : 'stable'
 
   const stats: CapsuleStats = {
-    capsuleDate: snapshot.timestamp.split('T')[0],
+    capsuleDate: snapshot.timestamp.split('T')[0] ?? '',
     codebaseAge: 0,
     commitCount: 0,
     authorCount: 0,

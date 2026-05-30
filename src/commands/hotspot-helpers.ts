@@ -145,12 +145,12 @@ export function computeFunctionComplexity(content: string): FunctionHotspot[] {
       if (currentFn) {
         results.push(buildFunctionHotspot(currentFn))
       }
-      currentFn = { name: funcMatch[1]!, lineStart: i + 1, complexity: 1, size: 1 }
+      currentFn = { name: funcMatch[1] ?? '', lineStart: i + 1, complexity: 1, size: 1 }
     } else if (isArrow && !funcMatch) {
       const arrowMatch = trimmed.match(/^(?:export\s+)?(?:const|let)\s+(\w+)\s*=/)
       if (arrowMatch) {
         if (currentFn) results.push(buildFunctionHotspot(currentFn))
-        currentFn = { name: arrowMatch[1]!, lineStart: i + 1, complexity: 1, size: 1 }
+        currentFn = { name: arrowMatch[1] ?? '', lineStart: i + 1, complexity: 1, size: 1 }
       }
     }
 

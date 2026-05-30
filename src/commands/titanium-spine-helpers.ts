@@ -822,22 +822,22 @@ export function buildTitaniumSpineResult(
   const collapsedCount = vertebrae.filter((v) => v.condition === 'collapsed').length
 
   const bestVertebra = totalFiles > 0
-    ? vertebrae.reduce((best, v) => (v.qualityScore > best.qualityScore ? v : best), vertebrae[0]).file
+    ? vertebrae.reduce((best, v) => (v.qualityScore > best.qualityScore ? v : best), vertebrae[0] as typeof vertebrae[number]).file
     : ''
   const strongest = totalFiles > 0
-    ? vertebrae.reduce((best, v) => (v.structuralIntegrity > best.structuralIntegrity ? v : best), vertebrae[0]).file
+    ? vertebrae.reduce((best, v) => (v.structuralIntegrity > best.structuralIntegrity ? v : best), vertebrae[0] as typeof vertebrae[number]).file
     : ''
   const mostEfficient = totalFiles > 0
-    ? vertebrae.reduce((best, v) => (v.strengthToWeight > best.strengthToWeight ? v : best), vertebrae[0]).file
+    ? vertebrae.reduce((best, v) => (v.strengthToWeight > best.strengthToWeight ? v : best), vertebrae[0] as typeof vertebrae[number]).file
     : ''
   const mostAdaptable = totalFiles > 0
-    ? vertebrae.reduce((best, v) => (v.flexuralStrength > best.flexuralStrength ? v : best), vertebrae[0]).file
+    ? vertebrae.reduce((best, v) => (v.flexuralStrength > best.flexuralStrength ? v : best), vertebrae[0] as typeof vertebrae[number]).file
     : ''
   const mostResilient = totalFiles > 0
-    ? vertebrae.reduce((best, v) => (v.corrosionResistance > best.corrosionResistance ? v : best), vertebrae[0]).file
+    ? vertebrae.reduce((best, v) => (v.corrosionResistance > best.corrosionResistance ? v : best), vertebrae[0] as typeof vertebrae[number]).file
     : ''
   const bestIntegrated = totalFiles > 0
-    ? vertebrae.reduce((best, v) => (v.biocompatibility > best.biocompatibility ? v : best), vertebrae[0]).file
+    ? vertebrae.reduce((best, v) => (v.biocompatibility > best.biocompatibility ? v : best), vertebrae[0] as typeof vertebrae[number]).file
     : ''
 
   const stats: TitaniumSpineStats = {

@@ -186,16 +186,10 @@ const EXPORT_RE = /\bexport\b/
 const IMPORT_RE = /\bimport\b/
 const FUNCTION_RE = /\bfunction\b/
 const ARROW_RE = /=>/
-const ASYNC_RE = /\basync\b/
-const AWAIT_RE = /\bawait\b/
 const TRY_RE = /\btry\b/
 const CATCH_RE = /\bcatch\b/
 const FINALLY_RE = /\bfinally\b/
 const IF_RE = /\bif\b/
-const ELSE_RE = /\belse\b/
-const SWITCH_RE = /\bswitch\b/
-const FOR_RE = /\bfor\b/
-const WHILE_RE = /\bwhile\b/
 const RETURN_RE = /\breturn\b/
 const THROW_RE = /\bthrow\b/
 const GENERIC_RE = /<[A-Z]\w*[,>]/
@@ -381,7 +375,6 @@ export function measureExit(content: string): ExitMeasure {
   const hasEscapePlan = TRY_RE.test(content) && CATCH_RE.test(content)
   const sealedCount = (content.match(EVAL_RE) || []).length
   const hasNoSealed = sealedCount === 0
-  const hasHighAvailability = hasProperExits && hasEscapePlan && hasNoTrappedExits
 
   if (content.length > 0) score += 5
   if (hasProperExits) score += 12
@@ -420,18 +413,18 @@ export function measureDepth(content: string): DepthMeasure {
 
   const lines = content.split('\n')
   const maxIndent = lines.reduce((max, line) => {
-    const spaces = line.match(/^(\s*)/)?.[1].length ?? 0
+    const spaces = line.match(/^(\s*)/)?.[1]?.length ?? 0
     return Math.max(max, spaces)
   }, 0)
   const hasModerateDepth = maxIndent <= 24
   const hasProperLayering = INTERFACE_RE.test(content) || CLASS_RE.test(content) || TYPE_RE.test(content)
-  const deeplyNestedCount = lines.filter((l) => (l.match(/^(\s*)/)?.[1].length ?? 0) > 20).length
+  const deeplyNestedCount = lines.filter((l) => (l.match(/^(\s*)/)?.[1]?.length ?? 0) > 20).length
   const hasNoExcessiveNesting = deeplyNestedCount === 0
   const hasManageable = maxIndent <= 16
-  const cliffCount = lines.filter((l) => (l.match(/^(\s*)/)?.[1].length ?? 0) > 24).length
+  const cliffCount = lines.filter((l) => (l.match(/^(\s*)/)?.[1]?.length ?? 0) > 24).length
   const hasNoCliff = cliffCount === 0
   const hasGradualDescent = maxIndent <= 12 || (INTERFACE_RE.test(content) && maxIndent <= 20)
-  const abyssCount = lines.filter((l) => (l.match(/^(\s*)/)?.[1].length ?? 0) > 32).length
+  const abyssCount = lines.filter((l) => (l.match(/^(\s*)/)?.[1]?.length ?? 0) > 32).length
   const hasNoAbyss = abyssCount === 0
   const hasProperVentilation = content.includes('\n\n') || content.length === 0
   const hasNoCollapse = deeplyNestedCount <= 5

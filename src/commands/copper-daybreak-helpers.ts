@@ -900,7 +900,7 @@ export async function buildCopperMorningResult(
 export function generateRecommendations(
   ingots: CopperIngot[],
   forges: CopperForge[],
-  metallurgy: CopperMorningResult['metallurgy'],
+  _metallurgy: CopperMorningResult['metallurgy'],
   stats: CopperMorningResult['stats'],
 ): string[] {
   const recs: string[] = []

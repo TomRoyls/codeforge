@@ -83,7 +83,7 @@ export function formatDustTable(items: DustItem[]): string {
 
   const rows = items.slice(0, 50).map((item) => {
     const icon = dustTypeBadge(item.type)
-    const sev = SEVERITY_COLORS[item.severity](item.severity.padEnd(7))
+    const sev = SEVERITY_COLORS[item.severity]?.(item.severity.padEnd(7))
     return `  ${icon} ${sev} ${chalk.dim(item.file + ':' + item.line)} ${item.description}`
   })
 
@@ -122,7 +122,7 @@ export function formatCategoryBreakdown(categories: DustCategory[]): string {
 
   const rows = categories.map((cat) => {
     const icon = dustTypeBadge(cat.type as DustType)
-    const sev = SEVERITY_COLORS[cat.severity](cat.severity)
+    const sev = SEVERITY_COLORS[cat.severity]?.(cat.severity)
     return `  ${icon} ${String(cat.count).padStart(3)} × ${cat.type.padEnd(20)} ${sev} — ${cat.description}`
   })
 

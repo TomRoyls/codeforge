@@ -111,19 +111,19 @@ export function parseScopeLayers(content: string): ScopeLayer[] {
 
   const lines = content.split('\n')
   let depth = 0
-  let currentType: ScopeLayerType = 'module'
   const scopeStack: { type: ScopeLayerType; depth: number }[] = [{ depth: 0, type: 'module' }]
 
   layers.push({ type: 'module', depth: 0, declarations: [], isClean: true, issues: [] })
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const trimmed = line.trim()
 
     const fnMatch = trimmed.match(/^(?:export\s+)?(?:async\s+)?function\s+(\w+)/)
     if (fnMatch) {
       depth++
-      currentType = 'function'
+
       scopeStack.push({ type: 'function', depth })
       layers.push({ type: 'function', depth, declarations: [], isClean: true, issues: [] })
       continue
@@ -132,7 +132,7 @@ export function parseScopeLayers(content: string): ScopeLayer[] {
     const arrowMatch = trimmed.match(/^(?:export\s+)?(?:const|let|var)\s+\w+\s*=\s*(?:async\s*)?\(/)
     if (arrowMatch) {
       depth++
-      currentType = 'function'
+
       scopeStack.push({ type: 'function', depth })
       layers.push({ type: 'function', depth, declarations: [], isClean: true, issues: [] })
     }
@@ -140,7 +140,6 @@ export function parseScopeLayers(content: string): ScopeLayer[] {
     const classMatch = trimmed.match(/^(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/)
     if (classMatch) {
       depth++
-      currentType = 'class'
       scopeStack.push({ type: 'class', depth })
       layers.push({ type: 'class', depth, declarations: [], isClean: true, issues: [] })
       continue
@@ -149,7 +148,6 @@ export function parseScopeLayers(content: string): ScopeLayer[] {
     const forMatch = trimmed.match(/^(?:for|while|do)\s*[\({]/)
     if (forMatch) {
       depth++
-      currentType = 'loop'
       scopeStack.push({ type: 'loop', depth })
       layers.push({ type: 'loop', depth, declarations: [], isClean: true, issues: [] })
     }
@@ -157,7 +155,6 @@ export function parseScopeLayers(content: string): ScopeLayer[] {
     const catchMatch = trimmed.match(/^catch\s*[\({]/)
     if (catchMatch) {
       depth++
-      currentType = 'catch'
       scopeStack.push({ type: 'catch', depth })
       layers.push({ type: 'catch', depth, declarations: [], isClean: true, issues: [] })
     }
@@ -169,7 +166,6 @@ export function parseScopeLayers(content: string): ScopeLayer[] {
     for (let b = 0; b < opensFromNonScope; b++) {
       if (b === 0 && !(fnMatch || classMatch || forMatch || catchMatch || arrowMatch)) {
         depth++
-        currentType = 'block'
         scopeStack.push({ type: 'block', depth })
         layers.push({ type: 'block', depth, declarations: [], isClean: true, issues: [] })
       }
@@ -203,39 +199,40 @@ export function extractDeclarations(content: string, _layers: ScopeLayer[]): Sco
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const trimmed = line.trim()
 
     const varMatch = trimmed.match(/^(?:export\s+)?var\s+(\w+)/)
     if (varMatch) {
-      const name = varMatch[1]
+      const name = varMatch[1] ?? ''
       declarations.push(makeDecl(name, 'var', content, i, nameCounts))
       continue
     }
 
     const letMatch = trimmed.match(/^(?:export\s+)?let\s+(\w+)/)
     if (letMatch) {
-      const name = letMatch[1]
+      const name = letMatch[1] ?? ''
       declarations.push(makeDecl(name, 'let', content, i, nameCounts))
       continue
     }
 
     const constMatch = trimmed.match(/^(?:export\s+)?const\s+(\w+)/)
     if (constMatch) {
-      const name = constMatch[1]
+      const name = constMatch[1] ?? ''
       declarations.push(makeDecl(name, 'const', content, i, nameCounts))
       continue
     }
 
     const fnMatch = trimmed.match(/^(?:export\s+)?(?:async\s+)?function\s+(\w+)/)
     if (fnMatch) {
-      const name = fnMatch[1]
+      const name = fnMatch[1] ?? ''
       declarations.push(makeDecl(name, 'function', content, i, nameCounts))
       continue
     }
 
     const classMatch = trimmed.match(/^(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/)
     if (classMatch) {
-      const name = classMatch[1]
+      const name = classMatch[1] ?? ''
       declarations.push(makeDecl(name, 'class', content, i, nameCounts))
       continue
     }
@@ -244,7 +241,7 @@ export function extractDeclarations(content: string, _layers: ScopeLayer[]): Sco
     if (importMatch) {
       const namedImports = trimmed.match(/\{([^}]*)\}/)
       if (namedImports) {
-        const names = namedImports[1].split(',').map(n => n.trim().split(/\s+as\s+/).pop()?.trim()).filter(Boolean)
+        const names = namedImports[1]?.split(',').map(n => n.trim().split(/\s+as\s+/).pop()?.trim()).filter(Boolean) ?? []
         const kind: DeclKind = trimmed.includes('import type') ? 'type' : 'import'
         for (const n of names) {
           if (n) declarations.push(makeDecl(n, kind, content, i, nameCounts))
@@ -252,11 +249,13 @@ export function extractDeclarations(content: string, _layers: ScopeLayer[]): Sco
       } else {
         const defaultImport = trimmed.match(/^import\s+(?:type\s+)?(\w+)/)
         if (defaultImport) {
-          declarations.push(makeDecl(defaultImport[1], 'import', content, i, nameCounts))
+          const name = defaultImport[1]
+          if (name) declarations.push(makeDecl(name, 'import', content, i, nameCounts))
         }
         const starImport = trimmed.match(/^import\s+\*\s+as\s+(\w+)/)
         if (starImport) {
-          declarations.push(makeDecl(starImport[1], 'import', content, i, nameCounts))
+          const name = starImport[1]
+          if (name) declarations.push(makeDecl(name, 'import', content, i, nameCounts))
         }
       }
       continue
@@ -264,13 +263,15 @@ export function extractDeclarations(content: string, _layers: ScopeLayer[]): Sco
 
     const typeMatch = trimmed.match(/^(?:export\s+)?type\s+(\w+)/)
     if (typeMatch) {
-      declarations.push(makeDecl(typeMatch[1], 'type', content, i, nameCounts))
+      const name = typeMatch[1]
+      if (name) declarations.push(makeDecl(name, 'type', content, i, nameCounts))
       continue
     }
 
     const enumMatch = trimmed.match(/^(?:export\s+)?enum\s+(\w+)/)
     if (enumMatch) {
-      declarations.push(makeDecl(enumMatch[1], 'enum', content, i, nameCounts))
+      const name = enumMatch[1]
+      if (name) declarations.push(makeDecl(name, 'enum', content, i, nameCounts))
       continue
     }
   }
@@ -314,8 +315,10 @@ function computeDeclDepth(content: string, lineIdx: number): number {
   let depth = 0
   const lines = content.split('\n')
   for (let i = 0; i <= Math.min(lineIdx, lines.length - 1); i++) {
-    depth += (lines[i].match(/{/g) ?? []).length
-    depth -= (lines[i].match(/}/g) ?? []).length
+    const l = lines[i]
+    if (!l) continue
+    depth += (l.match(/{/g) ?? []).length
+    depth -= (l.match(/}/g) ?? []).length
   }
   return Math.max(0, depth)
 }
@@ -394,10 +397,10 @@ export function detectScopeIssues(content: string, declarations: ScopeDeclaratio
   }
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = lines[i]?.trim() ?? ''
     const implicitMatch = trimmed.match(/^(\w+)\s*=[^=]/)
     if (implicitMatch && !trimmed.startsWith('var ') && !trimmed.startsWith('let ') && !trimmed.startsWith('const ') && !trimmed.startsWith('export ') && !trimmed.startsWith('import ') && !trimmed.startsWith('//') && !trimmed.startsWith('*') && !trimmed.startsWith('function') && !trimmed.startsWith('class') && !trimmed.startsWith('type') && !trimmed.startsWith('enum') && !trimmed.startsWith('return') && !trimmed.startsWith('if') && !trimmed.startsWith('for') && !trimmed.startsWith('while') && !trimmed.startsWith('switch') && !trimmed.startsWith('case') && !trimmed.startsWith('throw') && !trimmed.startsWith('try') && !trimmed.startsWith('catch') && !trimmed.startsWith('else')) {
-      const name = implicitMatch[1]
+      const name = implicitMatch[1] ?? ''
       const isKnownDecl = declarations.some(d => d.name === name)
       if (!isKnownDecl) {
         issues.push({
@@ -437,7 +440,9 @@ export function detectScopeIssues(content: string, declarations: ScopeDeclaratio
 function findDeclLine(content: string, name: string, kind: DeclKind): number {
   const lines = content.split('\n')
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const line = lines[i]
+    if (!line) continue
+    const trimmed = line.trim()
     switch (kind) {
       case 'var': if (trimmed.match(new RegExp(`^(?:export\\s+)?var\\s+${escapeRegex(name)}\\b`))) return i + 1; break
       case 'let': if (trimmed.match(new RegExp(`^(?:export\\s+)?let\\s+${escapeRegex(name)}\\b`))) return i + 1; break
@@ -460,8 +465,8 @@ function findDeclLine(content: string, name: string, kind: DeclKind): number {
  */
 export function classifyDeclarationVisibility(decl: Partial<ScopeDeclaration>): Visibility {
   if (decl.isExported) return 'public'
-  if (decl.kind === 'var' && decl.depth === 0) return 'global'
-  if (decl.depth === 0 && !decl.isExported) return 'internal'
+  if (decl.kind === 'var' && (decl.depth ?? 0) === 0) return 'global'
+  if ((decl.depth ?? 0) === 0 && !decl.isExported) return 'internal'
   if (decl.depth && decl.depth > 0) return 'private'
   return 'internal'
 }
@@ -574,7 +579,7 @@ export function computeKaleidoscopeSymmetry(files: ScopeFile[]): number {
     patternCounts.set(f.pattern, (patternCounts.get(f.pattern) ?? 0) + 1)
   }
 
-  const dominant = Math.max(...patternCounts.values())
+  const dominant = Math.max(...Array.from(patternCounts.values()))
   const ratio = dominant / files.length
 
   const hygieneVariance = computeVariance(files.map(f => f.scopeHygiene))
@@ -614,7 +619,7 @@ export function classifyScopeHealth(avgHygiene: number, issueCount: number): Sco
  * generateScopeRecommendations(files, patterns, issues, stats) // => ['Convert var...']
  */
 export function generateScopeRecommendations(
-  files: ScopeFile[],
+  _files: ScopeFile[],
   _patterns: ScopePattern[],
   issues: ScopeIssue[],
   stats: KaleidoscopeScopeStats,
@@ -681,7 +686,7 @@ export function buildKaleidoscopeScopeResult(files: string[], contents: string[]
     const avgDepth = depths.length > 0 ? depths.reduce((s, d) => s + d, 0) / depths.length : 0
 
     const scopeFile: ScopeFile = {
-      file: files[i],
+      file: files[i] ?? '',
       layers,
       declarations,
       issues,
@@ -708,7 +713,7 @@ export function buildKaleidoscopeScopeResult(files: string[], contents: string[]
   }
 
   const patterns: ScopePattern[] = []
-  for (const [name, data] of patternMap) {
+  for (const [name, data] of Array.from(patternMap)) {
     const avgScore = data.scores.length > 0 ? Math.round(data.scores.reduce((s, v) => s + v, 0) / data.scores.length) : 0
     patterns.push({
       name,
@@ -729,13 +734,13 @@ export function buildKaleidoscopeScopeResult(files: string[], contents: string[]
     ? Math.round(scopeFiles.reduce((s, f) => s + f.avgScopeDepth, 0) / scopeFiles.length * 10) / 10 : 0
 
   const dominantPattern = patterns.length > 0
-    ? patterns.sort((a, b) => b.files.length - a.files.length)[0].name : 'module-scoped'
+    ? (patterns.sort((a, b) => b.files.length - a.files.length)[0] ?? { name: 'module-scoped' }).name : 'module-scoped'
 
   const symmetry = computeKaleidoscopeSymmetry(scopeFiles)
   const health = classifyScopeHealth(avgHygiene, allIssues.length)
 
   if (options.verbose) {
-    // Verbose includes additional detail in layers
+    void null
   }
 
   const stats: KaleidoscopeScopeStats = {

@@ -378,7 +378,7 @@ export function detectAnomalies(spectrum: SpectralLine[], files: string[], conte
  * generateRecommendations(spectrum, anomalies, stats)
  */
 export function generateRecommendations(
-  spectrum: SpectralLine[],
+  _spectrum: SpectralLine[],
   anomalies: SpectralAnomaly[],
   stats: SpectrumStats,
 ): string[] {

@@ -108,11 +108,11 @@ export function classifyLine(line: string, _context: string[]): NoiseType | 'sig
     if (/^\s*\*\s*(@param|@returns?|@throws?|@example|@see|@deprecated)/.test(line)) return 'signal'
     const codeAfterComment = trimmed.replace(/^\/\/+\s*/, '').replace(/^\*\s*/, '')
     const nextLine = _context.length > 0 ? _context[0] : ''
-    const nextTrimmed = nextLine.trim()
-    if (nextTrimmed.length > 0 && codeAfterComment.length > 0) {
+    const nextTrimmed = nextLine?.trim()
+    if ((nextTrimmed?.length ?? 0) > 0 && codeAfterComment.length > 0) {
       const commentWords = codeAfterComment.toLowerCase().split(/\s+/).filter(w => w.length > 2)
-      const codeWords = nextTrimmed.toLowerCase().replace(/[{}()=;,.<>[\]]/g, ' ').split(/\s+/).filter(w => w.length > 2)
-      const overlap = commentWords.filter(w => codeWords.includes(w)).length
+      const codeWords = nextTrimmed?.toLowerCase().replace(/[{}()=;,.<>[\]]/g, ' ').split(/\s+/).filter(w => w.length > 2)
+      const overlap = commentWords.filter(w => codeWords?.includes(w)).length
       if (overlap >= 2 && commentWords.length <= 5) return 'restatement-comment'
     }
     return 'signal'
@@ -121,11 +121,11 @@ export function classifyLine(line: string, _context: string[]): NoiseType | 'sig
   if (trimmed.startsWith('//')) {
     const commentText = trimmed.replace(/^\/\/+\s*/, '')
     const nextLine = _context.length > 0 ? _context[0] : ''
-    const nextTrimmed = nextLine.trim()
-    if (nextTrimmed.length > 0 && commentText.length > 0) {
+    const nextTrimmed = nextLine?.trim()
+    if ((nextTrimmed?.length ?? 0) > 0 && commentText.length > 0) {
       const commentWords = commentText.toLowerCase().split(/\s+/).filter(w => w.length > 2)
-      const codeWords = nextTrimmed.toLowerCase().replace(/[{}()=;,.<>[\]]/g, ' ').split(/\s+/).filter(w => w.length > 2)
-      const overlap = commentWords.filter(w => codeWords.includes(w)).length
+      const codeWords = nextTrimmed?.toLowerCase().replace(/[{}()=;,.<>[\]]/g, ' ').split(/\s+/).filter(w => w.length > 2)
+      const overlap = commentWords.filter(w => codeWords?.includes(w)).length
       if (overlap >= 2 && commentWords.length <= 5) return 'restatement-comment'
     }
     return 'signal'
@@ -156,7 +156,7 @@ export function detectNoiseSources(content: string): NoiseSource[] {
 
   const debugLines: number[] = []
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (/^console\.\w+\(/.test(trimmed) || /^debugger;?\s*$/.test(trimmed) || /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/i.test(trimmed)) {
       debugLines.push(i + 1)
     }
@@ -175,7 +175,7 @@ export function detectNoiseSources(content: string): NoiseSource[] {
 
   const boilerplateLines: number[] = []
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (/^export\s+default\s+\{\s*\}\s*;?\s*$/.test(trimmed)) boilerplateLines.push(i + 1)
     if (/^Object\.defineProperty\(exports,\s*['__"]__esModule['__"]/.test(trimmed)) boilerplateLines.push(i + 1)
     if (/^(['"])use strict\1;?\s*$/.test(trimmed)) boilerplateLines.push(i + 1)
@@ -194,8 +194,8 @@ export function detectNoiseSources(content: string): NoiseSource[] {
 
   const redundantLines: number[] = []
   for (let i = 0; i < lines.length - 2; i++) {
-    const cur = lines[i].trim()
-    const next = lines[i + 1].trim()
+    const cur = (lines[i] ?? '').trim()
+    const next = (lines[i + 1] ?? '').trim()
     const nextNext = lines[i + 2]?.trim() ?? ''
     if (/^if\s*\(.+\)\s*\{?\s*$/.test(cur) && /^\s*return\s+true;?\s*$/.test(next) && /^\s*\}\s*else\s*\{\s*$/.test(nextNext)) {
       if (i + 3 < lines.length && /^\s*return\s+false;?\s*$/.test(lines[i + 3]?.trim() ?? '')) {
@@ -224,7 +224,7 @@ export function detectNoiseSources(content: string): NoiseSource[] {
 
   const verboseLines: number[] = []
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (/^(const|let|var)\s+\w+\s*=\s*function\s*\(/.test(trimmed)) verboseLines.push(i + 1)
     if (/^\w+\s*=\s*\w+\s*\?\s*true\s*:\s*false/.test(trimmed)) verboseLines.push(i + 1)
   }
@@ -242,17 +242,17 @@ export function detectNoiseSources(content: string): NoiseSource[] {
 
   const deadLines: number[] = []
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (/^return\s+/.test(trimmed) && i + 1 < lines.length) {
       let j = i + 1
-      while (j < lines.length && lines[j].trim().length === 0) j++
-      if (j < lines.length && /^\}/.test(lines[j].trim())) {
+      while (j < lines.length && (lines[j] ?? '').trim().length === 0) j++
+      if (j < lines.length && /^\}/.test((lines[j] ?? '').trim())) {
         continue
       }
-      if (j < lines.length && lines[j].trim().length > 0) {
+      if (j < lines.length && (lines[j] ?? '').trim().length > 0) {
         let afterReturn = false
         for (let k = i + 1; k < lines.length; k++) {
-          const t = lines[k].trim()
+          const t = (lines[k] ?? '').trim()
           if (t.length === 0) continue
           if (/^\}/.test(t)) break
           if (!afterReturn && !/^\}/.test(t)) {
@@ -475,10 +475,10 @@ export function analyzeFileSignal(content: string, filePath: string): SignalAnal
   let noiseLines = 0
 
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const trimmed = (lines[i] ?? '').trim()
     if (trimmed.length === 0) continue
 
-    const context = i + 1 < lines.length ? [lines[i + 1]] : []
+    const context = i + 1 < lines.length ? [(lines[i + 1] ?? '')] : []
     const classification = classifyLine(trimmed, context)
 
     if (classification === 'signal') {
@@ -573,10 +573,10 @@ export function buildSignalResult(files: string[], contents: string[], options: 
 
   for (let i = 0; i < files.length; i++) {
     const content = contents[i] ?? ''
-    const analysis = analyzeFileSignal(content, files[i])
+    const analysis = analyzeFileSignal(content, files[i] ?? '')
     const bands = analyzeSignalBands(content)
 
-    signalFiles.push({ file: files[i], analysis, bands })
+    signalFiles.push({ file: files[i] ?? '', analysis, bands })
   }
 
   const allNoiseSources = signalFiles.flatMap(f => f.analysis.noiseSources)

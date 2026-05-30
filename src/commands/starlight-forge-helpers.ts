@@ -729,7 +729,7 @@ export function analyzeStarlightNursery(ingots: StarlightIngot[], dirPath: strin
 export function generateRecommendations(
   ingots: StarlightIngot[],
   nurseries: StarlightNursery[],
-  cosmos: StarlightForgeResult['cosmos'],
+  _cosmos: StarlightForgeResult['cosmos'],
   stats: StarlightForgeResult['stats'],
 ): string[] {
   const recs: string[] = []

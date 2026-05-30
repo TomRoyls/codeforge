@@ -103,7 +103,7 @@ function extractFunctionPatterns(content: string): FractalPattern[] {
   const totalFns = fnSigs.length + arrowFns.length
 
   if (totalFns > 0) {
-    const typedFns = fnSigs.filter(m => m[2].includes(':')).length
+    const typedFns = fnSigs.filter(m => m[2]?.includes(':')).length
     const asyncFns = fnSigs.filter(m => m[0].includes('async')).length
     const exportedFns = fnSigs.filter(m => m[0].includes('export')).length
 
@@ -425,7 +425,7 @@ export function buildFractalLevels(files: string[], contents: string[]): Fractal
     avgComplexity: avgFnComplexity,
     patternCount: allFnPatterns.length,
     selfSimilarityScore: 0,
-    dominantPattern: allFnPatterns.length > 0 ? allFnPatterns[0].name : 'none',
+    dominantPattern: allFnPatterns[0]?.name ?? 'none',
   })
 
   levels.push({
@@ -434,7 +434,7 @@ export function buildFractalLevels(files: string[], contents: string[]): Fractal
     avgComplexity: totalClasses > 0 ? avgFnComplexity : 0,
     patternCount: allClassPatterns.length,
     selfSimilarityScore: 0,
-    dominantPattern: allClassPatterns.length > 0 ? allClassPatterns[0].name : 'none',
+    dominantPattern: allClassPatterns[0]?.name ?? 'none',
   })
 
   levels.push({
@@ -443,12 +443,14 @@ export function buildFractalLevels(files: string[], contents: string[]): Fractal
     avgComplexity: files.length > 0 ? Math.round(contents.reduce((s, c) => s + c.split('\n').length, 0) / files.length) : 0,
     patternCount: allFilePatterns.length,
     selfSimilarityScore: 0,
-    dominantPattern: allFilePatterns.length > 0 ? allFilePatterns[0].name : 'none',
+    dominantPattern: allFilePatterns[0]?.name ?? 'none',
   })
 
   for (let i = 0; i < levels.length; i++) {
+    const level = levels[i]
+    if (!level) continue
     const others = levels.filter((_, j) => j !== i)
-    levels[i].selfSimilarityScore = computeSelfSimilarityScore(levels[i], others)
+    level.selfSimilarityScore = computeSelfSimilarityScore(level, others)
   }
 
   return levels

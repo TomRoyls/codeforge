@@ -69,6 +69,7 @@ export function findMagicNumbers(content: string, filePath: string): MagicNumber
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (line === undefined) continue
     const trimmed = line.trim()
 
     if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) continue
@@ -77,7 +78,9 @@ export function findMagicNumbers(content: string, filePath: string): MagicNumber
 
     const numberMatches = stringStripped.matchAll(/\b(\d+(?:\.\d+)?)\b/g)
     for (const match of numberMatches) {
-      const num = parseFloat(match[1])
+      const matchGroup = match[1]
+      if (matchGroup === undefined) continue
+      const num = parseFloat(matchGroup)
       if (skippedNumbers.has(num)) continue
       if (num > Number.MAX_SAFE_INTEGER) continue
 
@@ -119,6 +122,7 @@ export function findHardcodedStrings(content: string, filePath: string): Hardcod
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (line === undefined) continue
     const trimmed = line.trim()
 
     if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) continue
@@ -128,6 +132,7 @@ export function findHardcodedStrings(content: string, filePath: string): Hardcod
 
     while ((match = stringRegex.exec(line)) !== null) {
       const value = match[1]
+      if (value === undefined) continue
 
       if (/^\.(\/|\.\.)/.test(value)) continue
       if (/^[A-Z@][\w/-]*$/.test(value)) continue
@@ -170,11 +175,15 @@ export function findExistingConstants(content: string, filePath: string): Existi
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (line === undefined) continue
 
     const match = line.match(/(?:export\s+)?const\s+([A-Z][A-Z0-9_]*)\s*(?::\s*\w+\s*)?=\s*(.+)/)
     if (match) {
       const name = match[1]
-      const valueStr = match[2].trim().replace(/;$/, '')
+      if (name === undefined) continue
+      const rawValue = match[2]
+      if (rawValue === undefined) continue
+      const valueStr = rawValue.trim().replace(/;$/, '')
       const type = detectConstantType(valueStr)
       const usageCount = countNameUsage(content, name)
 

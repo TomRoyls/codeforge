@@ -1,5 +1,3 @@
-import { extname } from 'node:path'
-
 // ─── Types ──────────────────────────────────────────────
 
 export type PackageJsonReader = (cwd: string) => Promise<Record<string, unknown> | null>
@@ -116,7 +114,7 @@ export async function extractCommands(
       const baseName = file
         .replace(/\\/g, '/')
         .split('/')
-        .pop()!
+        .at(-1) ?? ''
         .replace(/\.(ts|js)$/, '')
 
       const usage = `codeforge ${baseName} [path]`
@@ -124,9 +122,10 @@ export async function extractCommands(
       const flagMatches = content.matchAll(/static\s+override\s+flags\s*=\s*\{([\s\S]*?)\}/g)
       const flags: string[] = []
       for (const fm of flagMatches) {
-        const flagNames = fm[1].matchAll(/(\w+):\s*Flags\./g)
+      const flags: string[] = []
+      const flagNames = (fm[1] ?? '').matchAll(/(\w+):\s*Flags\./g)
         for (const fn of flagNames) {
-          flags.push(`--${fn[1]}`)
+          if (fn[1]) flags.push(`--${fn[1]}`)
         }
       }
 
@@ -284,9 +283,11 @@ export function generateUsageSection(commands: ReadmeCommand[]): string {
 
   if (commands.length > 0) {
     const first = commands[0]
-    lines.push('```bash')
-    lines.push(`$ ${first.usage}`)
-    lines.push('```', '')
+    if (first) {
+      lines.push('```bash')
+      lines.push(`$ ${first.usage}`)
+      lines.push('```', '')
+    }
   }
 
   return lines.join('\n')

@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import type { CartogramResult, CartogramStats, CartogramView, ComparisonView, Region, RegionMetric } from './cartogram-helpers.js'
+import type { CartogramResult, CartogramStats, CartogramView, ComparisonView, Region } from './cartogram-helpers.js'
 
 // ─── ASCII Cartogram ──────────────────────────────────────────────────────────
 

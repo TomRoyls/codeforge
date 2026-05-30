@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { DeadCodeItem, DeadCodeResult } from './deadcode-helpers.js'
 
+import { padRight, padLeft } from '../utils/format-utils.js'
+
 // ─── Color helpers ────────────────────────────────────────
 
 /**
@@ -42,16 +44,6 @@ export function getDeadCodeIcon(type: DeadCodeItem['type']): string {
 }
 
 // ─── Table formatting ─────────────────────────────────────
-
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
-
-function padLeft(str: string, len: number): string {
-  if (str.length >= len) return str
-  return ' '.repeat(len - str.length) + str
-}
 
 /**
  * Format dead code results as a colored table.

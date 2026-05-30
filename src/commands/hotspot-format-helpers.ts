@@ -2,6 +2,8 @@ import chalk from 'chalk'
 
 import type { HotspotEntry, HotspotResult } from './hotspot-helpers.js'
 
+import { padRight } from '../utils/format-utils.js'
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function riskBadge(level: string): string {
@@ -11,10 +13,6 @@ function riskBadge(level: string): string {
     case 'medium': return chalk.yellow(' MED ')
     default: return chalk.green(' LOW ')
   }
-}
-
-function padRight(str: string, len: number): string {
-  return str.length >= len ? str : str + ' '.repeat(len - str.length)
 }
 
 // ─── Hotspot Table ────────────────────────────────────────────────────────────

@@ -42,7 +42,7 @@ export function colorScore(score: number): string {
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
   const tierMap: Record<string, (s: string) => string> = {
-    'perfect-obsidian': best, 'impregnable-fortress': best, 'smooth-void': best,
+    'perfect-obsidian': best, 'smooth-void': best,
     'shadow-sentinel': best, 'elegant-arch': best, 'obsidian-masterpiece': best,
     'dark-fortress': best, 'impregnable-fortress': best, 'shadow-warden': best,
 

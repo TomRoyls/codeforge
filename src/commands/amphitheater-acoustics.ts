@@ -8,16 +8,6 @@ import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildAmphitheaterAcousticsResult,
   type AmphitheaterAcousticsResult,
-  type AcousticReading,
-  type AcousticVenue,
-  type AmphitheaterAcousticsStats,
-  type FestivalMeasure,
-  type VoiceMeasure,
-  type ResonanceMeasure,
-  type ReachMeasure,
-  type PresenceMeasure,
-  type EchoMeasure,
-  type ArchitectureMeasure,
 } from './amphitheater-acoustics-helpers.js'
 import { formatAmphitheaterAcousticsJson, formatAmphitheaterAcousticsTable } from './amphitheater-acoustics-format-helpers.js'
 

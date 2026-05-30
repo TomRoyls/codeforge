@@ -2,11 +2,9 @@ import chalk from 'chalk'
 
 import type { EntropyDistribution, EntropyResult, EntropyStats, FileEntropy } from './entropy-helpers.js'
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+import { padRight } from '../utils/format-utils.js'
 
-function padRight(str: string, len: number): string {
-  return str.length >= len ? str : str + ' '.repeat(len - str.length)
-}
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function classificationBadge(c: string): string {
   switch (c) {

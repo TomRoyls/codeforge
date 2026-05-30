@@ -50,7 +50,7 @@ export function colorGrade(grade: string): string {
     'clean-surface': good, 'proper-glow': good, 'akoya-perfect': good,
     'akoya-farm': good, 'quality-harvest': good, 'expert-diver': good,
 
-    'proper-glow': okay, 'decent-coating': okay, 'proper-shift': okay,
+    'decent-coating': okay, 'proper-shift': okay,
     'minor-blemish': okay, 'decent-warmth': okay, 'proper-pearl': okay,
     'freshwater-bed': okay, 'decent-yield': okay, 'skilled-fisher': okay,
 

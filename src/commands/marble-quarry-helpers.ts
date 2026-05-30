@@ -204,28 +204,20 @@ const TRY_REGEX = /\btry\s*{/g
 const CATCH_REGEX = /\bcatch\s*\(/g
 const FINALLY_REGEX = /\bfinally\s*{/g
 const IF_REGEX = /\bif\s*\(/g
-const ELSE_REGEX = /\belse\b/g
 const FOR_REGEX = /\bfor\s*\(/g
 const WHILE_REGEX = /\bwhile\s*\(/g
 const SWITCH_REGEX = /\bswitch\s*\(/g
 const RETURN_REGEX = /\breturn\b/g
 const THROW_REGEX = /\bthrow\b/g
-const NEW_REGEX = /\bnew\b/g
 const TYPE_ANNOTATION_REGEX = /:\s*(?:string|number|boolean|void|never|unknown|any|null|undefined|object)/g
 const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
 const LINE_COMMENT_REGEX = /\/\/.*$/gm
-const BLOCK_COMMENT_REGEX = /\/\*[\s\S]*?\*\//g
 
 // ─── Counting Helpers ──────────────────────────────────────────────────────
 
 function countMatches(content: string, regex: RegExp): number {
   const matches = content.match(regex)
   return matches ? matches.length : 0
-}
-
-function countLines(content: string): number {
-  if (content.length === 0) return 0
-  return content.split('\n').length
 }
 
 function countNonEmptyLines(content: string): number {
@@ -898,9 +890,8 @@ export function generateRecommendations(
 export function buildMarbleQuarryResult(
   files: string[],
   contents: string[],
-  options?: { ignore?: string[]; ext?: string[] },
+  _options?: { ignore?: string[]; ext?: string[] },
 ): MarbleQuarryResult {
-  const _opts = options ?? {}
 
   const blocks: QuarryBlock[] = files.map((file, i) =>
     analyzeQuarryBlock(contents[i] ?? '', file),

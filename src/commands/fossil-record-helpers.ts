@@ -86,7 +86,7 @@ export function parseGitLog(raw: string): FossilLayer[] {
     if (parts.length < 6) continue
 
     const hash = parts[0]!.trim()
-    const date = parts[1]!.trim()
+    const date = parts[1] ?? ''.trim()
     const message = parts[2]!.trim()
     const filesChanged = parseInt(parts[3]!.trim(), 10) || 0
     const insertions = parseInt(parts[4]!.trim(), 10) || 0

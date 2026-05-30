@@ -43,7 +43,7 @@ export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
   const tierMap: Record<string, (s: string) => string> = {
     'golden-sun': best, 'topaz-grade': best, 'flawless-crystal': best,
-    'imperial-topaz': best, 'double-refraction': best, 'imperial-topaz': best,
+    'imperial-topaz': best, 'double-refraction': best,
     'brazilian-mine': best, 'golden-vein': best, 'master-lapidary': best,
 
     'warm-amber': good, 'proper-hard': good, 'clear-topaz': good,

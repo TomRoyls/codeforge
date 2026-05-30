@@ -877,7 +877,7 @@ export async function buildSapphireWaveResult(
 export function generateRecommendations(
   waves: SapphireWave[],
   oceans: SapphireOcean[],
-  sea: SapphireWaveResult['sea'],
+  _sea: SapphireWaveResult['sea'],
   stats: SapphireWaveResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -303,7 +303,7 @@ export function computeLanguageStats(languages: LanguageInfo[]): LanguageStats {
   const totalLines = languages.reduce((s, l) => s + l.totalLines, 0)
   const totalCodeLines = languages.reduce((s, l) => s + l.codeLines, 0)
 
-  const primaryLanguage = languages.length > 0 ? languages[0].name : 'None'
+  const primaryLanguage = languages.length > 0 ? languages[0]?.name ?? 'None' : 'None'
   const significant = languages.filter((l) => l.percentage >= 1)
   const polyglot = significant.length > 3
 
@@ -366,7 +366,7 @@ export function suggestTooling(languages: LanguageInfo[]): ToolingSuggestion[] {
 export async function buildLanguagesResult(
   filePaths: string[],
   contentReader: ContentReader,
-  options: LanguagesOptions,
+  _options: LanguagesOptions,
 ): Promise<LanguagesResult> {
   const analyses: FileAnalysis[] = []
 

@@ -62,7 +62,7 @@ function extractImports(content: string): string[] {
   const imports: string[] = []
   for (const line of content.split('\n')) {
     const m = line.match(/import\s+(?:type\s+)?(?:\{[^}]+\}|\*\s+as\s+\w+|\w+)\s+from\s+['"]([^'"]+)['"]/)
-    if (m) imports.push(m[1])
+    if (m && m[1]) imports.push(m[1])
   }
   return imports
 }
@@ -182,7 +182,7 @@ export function analyzeThroughReliability(files: string[], contents: string[]): 
 
     const hasTry = (content.match(/\btry\s*\{/g) ?? []).length
     const hasCatch = (content.match(/\bcatch\b/g) ?? []).length
-    if (hasTry === 0 && lines.length > 20) {
+    if (hasTry === 0 && hasCatch === 0 && lines.length > 20) {
       score -= 5
       findings.push({ file, line: 1, severity: 'info', message: 'No error handling detected' })
     }

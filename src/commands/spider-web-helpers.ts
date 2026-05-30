@@ -404,7 +404,6 @@ export function measureConnections(content: string): ConnectionsMeasure {
   const uniquePaths = Array.from(new Set(importPaths))
   const hasRedundant = importPaths.length !== uniquePaths.length
 
-  const defaultExports = countDefaultExports(content)
   const hasCircular = false
   const hasDangling = inbound > outbound && inbound > 3
   const hasBroken = false
@@ -692,7 +691,7 @@ export function analyzeWebCluster(threads: SilkThread[], dirPath: string): WebCl
  * generateRecommendations(threads, clusters, colony, stats) // string[]
  */
 export function generateRecommendations(
-  threads: SilkThread[],
+  _threads: SilkThread[],
   clusters: WebCluster[],
   colony: Colony,
   stats: SpiderWebStats,
@@ -743,7 +742,7 @@ export function generateRecommendations(
 export function buildSpiderWebResult(files: string[], contents: string[], _options: Record<string, unknown>): SpiderWebResult {
   const threads: SilkThread[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeSilkThread(content, file)
+    return analyzeSilkThread(content ?? '', file)
   })
 
   const dirMap = new Map<string, SilkThread[]>()

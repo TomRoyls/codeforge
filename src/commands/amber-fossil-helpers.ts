@@ -705,8 +705,8 @@ export function analyzeAmberCollection(specimens: AmberSpecimen[], dirPath: stri
 
 /** @example generateRecommendations(specimens, collections, museum, stats) returns string[] */
 export function generateRecommendations(
-  specimens: AmberSpecimen[],
-  collections: AmberCollection[],
+  _specimens: AmberSpecimen[],
+  _collections: AmberCollection[],
   museum: AmberFossilResult['museum'],
   stats: AmberFossilResult['stats'],
 ): string[] {

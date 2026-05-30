@@ -821,22 +821,22 @@ export function buildStarlitGardenResult(
   const lightlessVoidCount = flowers.filter((f) => f.condition === 'lightless-void').length
 
   const bestFlower = totalFiles > 0
-    ? flowers.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), flowers[0]).file
+    ? flowers.reduce((best, f) => (f.qualityScore > best.qualityScore ? f : best), flowers[0] as typeof flowers[number]).file
     : ''
   const mostInspiring = totalFiles > 0
-    ? flowers.reduce((best, f) => (f.wonder > best.wonder ? f : best), flowers[0]).file
+    ? flowers.reduce((best, f) => (f.wonder > best.wonder ? f : best), flowers[0] as typeof flowers[number]).file
     : ''
   const bestOrganized = totalFiles > 0
-    ? flowers.reduce((best, f) => (f.constellationMapping > best.constellationMapping ? f : best), flowers[0]).file
+    ? flowers.reduce((best, f) => (f.constellationMapping > best.constellationMapping ? f : best), flowers[0] as typeof flowers[number]).file
     : ''
   const bestStructured = totalFiles > 0
-    ? flowers.reduce((best, f) => (f.celestialOrganization > best.celestialOrganization ? f : best), flowers[0]).file
+    ? flowers.reduce((best, f) => (f.celestialOrganization > best.celestialOrganization ? f : best), flowers[0] as typeof flowers[number]).file
     : ''
   const mostBeautiful = totalFiles > 0
-    ? flowers.reduce((best, f) => (f.nocturnalBeauty > best.nocturnalBeauty ? f : best), flowers[0]).file
+    ? flowers.reduce((best, f) => (f.nocturnalBeauty > best.nocturnalBeauty ? f : best), flowers[0] as typeof flowers[number]).file
     : ''
   const bestDocumented = totalFiles > 0
-    ? flowers.reduce((best, f) => (f.guidingLight > best.guidingLight ? f : best), flowers[0]).file
+    ? flowers.reduce((best, f) => (f.guidingLight > best.guidingLight ? f : best), flowers[0] as typeof flowers[number]).file
     : ''
 
   const stats: StarlitGardenStats = {

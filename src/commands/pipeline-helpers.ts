@@ -89,10 +89,11 @@ export function parseGitHubActions(content: string, filePath: string): PipelineJ
 
   const triggers: string[] = []
   const onMatch = content.match(/on:\s*\n((?:\s+-?\s*\w+.*\n)*)/)
-  if (onMatch) {
-    const pushMatch = onMatch[1].match(/\bpush\b/)
-    const prMatch = onMatch[1].match(/\bpull_request\b/)
-    const scheduleMatch = onMatch[1].match(/\bschedule\b/)
+  if (onMatch && onMatch[1]) {
+    const onBlock = onMatch[1]
+    const pushMatch = onBlock.match(/\bpush\b/)
+    const prMatch = onBlock.match(/\bpull_request\b/)
+    const scheduleMatch = onBlock.match(/\bschedule\b/)
     if (pushMatch) triggers.push('push')
     if (prMatch) triggers.push('pull_request')
     if (scheduleMatch) triggers.push('schedule')
@@ -100,7 +101,7 @@ export function parseGitHubActions(content: string, filePath: string): PipelineJ
   if (triggers.length === 0 && /on:\s*push/.test(content)) triggers.push('push')
   if (triggers.length === 0 && /on:\s*\[/.test(content)) {
     const bracketMatch = content.match(/on:\s*\[([^\]]+)\]/)
-    if (bracketMatch) {
+    if (bracketMatch && bracketMatch[1]) {
       const items = bracketMatch[1].split(',').map((s) => s.trim()).filter(Boolean)
       triggers.push(...items)
     }
@@ -109,14 +110,14 @@ export function parseGitHubActions(content: string, filePath: string): PipelineJ
   const branchMatches = content.matchAll(/branches:\s*\n((?:\s+-\s+.*\n)*)/g)
   const branches: string[] = []
   for (const bm of branchMatches) {
-    const items = bm[1].matchAll(/-\s+(.+)/g)
+    const items = bm[1] ? bm[1].matchAll(/-\s+(.+)/g) : []
     for (const item of items) {
-      branches.push(item[1].trim())
+      branches.push(item[1]?.trim() ?? '')
     }
   }
 
   const jobsSection = content.match(/jobs:\s*\n([\s\S]*)/)
-  if (!jobsSection) return jobs
+  if (!jobsSection || !jobsSection[1]) return jobs
 
   const jobBody = jobsSection[1]
   const jobNames = jobBody.matchAll(/^  (\w[\w-]*):\s*$/gm)
@@ -124,8 +125,10 @@ export function parseGitHubActions(content: string, filePath: string): PipelineJ
   let lineOffset = content.substring(0, content.indexOf('jobs:')).split('\n').length
 
   for (const jn of jobNames) {
-    const jobName = jn[1]
-    const jobStartIdx = jn.index!
+    const jobName = jn[1] ?? ''
+    if (!jobName) continue
+    const jobStartIdx = jn.index
+    if (jobStartIdx === undefined) continue
     const line = lineOffset + jobBody.substring(0, jobStartIdx).split('\n').length
 
     const afterName = jobBody.substring(jobStartIdx)
@@ -180,24 +183,28 @@ export function parseGitLabCI(content: string, filePath: string): PipelineJob[] 
   const branchMatches = content.matchAll(/only:\s*\n((?:\s+-\s+.*\n)*)/g)
   const branches: string[] = []
   for (const bm of branchMatches) {
-    const items = bm[1].matchAll(/-\s+(.+)/g)
+    const items = bm[1] ? bm[1].matchAll(/-\s+(.+)/g) : []
     for (const item of items) {
-      const val = item[1].trim()
+      const val = item[1]?.trim() ?? ''
+      if (!val) continue
       if (!val.startsWith('$') && !val.startsWith('/')) branches.push(val)
     }
   }
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const match = line.match(/^([a-zA-Z][\w-]*):\s*$/)
     if (!match) continue
     const name = match[1]
-    if (reserved.has(name)) continue
+    if (!name || reserved.has(name)) continue
 
     const chunkLines: string[] = []
     for (let j = i + 1; j < lines.length; j++) {
-      if (lines[j].match(/^[a-zA-Z][\w-]*:\s*$/) || lines[j].match(/^\S/)) break
-      chunkLines.push(lines[j])
+      const jline = lines[j]
+      if (!jline) break
+      if (jline.match(/^[a-zA-Z][\w-]*:\s*$/) || jline.match(/^\S/)) break
+      chunkLines.push(jline)
     }
     const chunk = chunkLines.join('\n')
 
@@ -235,18 +242,19 @@ export function parseGitLabCI(content: string, filePath: string): PipelineJob[] 
  */
 export function parseTravisCI(content: string, filePath: string): PipelineJob[] {
   const jobs: PipelineJob[] = []
-  const lines = content.split('\n')
 
   const triggers: string[] = []
   if (/branches:/.test(content)) triggers.push('push')
   if (/type:\s*pull_request/.test(content)) triggers.push('pull_request')
 
   const branches: string[] = []
-  const branchMatches = content.matchAll(/-\s+(.+)/g)
   const branchSection = content.match(/branches:\s*\n((?:\s+only:.*\n)?(?:\s+-\s+.*\n)*)/)
-  if (branchSection) {
+  if (branchSection && branchSection[1]) {
     const items = branchSection[1].matchAll(/-\s+(.+)/g)
-    for (const item of items) branches.push(item[1].trim())
+    for (const item of items) {
+      const val = item[1]?.trim()
+      if (val) branches.push(val)
+    }
   }
 
   const scriptCount = (content.match(/^\s*-\s+/gm) ?? []).length
@@ -333,26 +341,32 @@ export function detectPipelineIssues(jobs: PipelineJob[]): PipelineIssue[] {
     /security|snyk|sonar|owasp|trivy|safety|audit/i.test(j.name),
   )
   if (!hasSecurity && jobs.length > 0) {
-    issues.push({
-      file: jobs[0].file,
-      fix: 'Add a security scanning job (Snyk, Trivy, npm audit)',
-      line: null,
-      message: 'No security scanning job found',
-      severity: 'info',
-    })
+    const firstJob = jobs[0]
+    if (firstJob) {
+      issues.push({
+        file: firstJob.file,
+        fix: 'Add a security scanning job (Snyk, Trivy, npm audit)',
+        line: null,
+        message: 'No security scanning job found',
+        severity: 'info',
+      })
+    }
   }
 
   const hasCoverage = jobs.some((j) =>
     /coverage|codecov|coveralls/i.test(j.name),
   )
   if (!hasCoverage && jobs.length > 0) {
-    issues.push({
-      file: jobs[0].file,
-      fix: 'Add coverage reporting step',
-      line: null,
-      message: 'No coverage reporting found',
-      severity: 'info',
-    })
+    const firstJob = jobs[0]
+    if (firstJob) {
+      issues.push({
+        file: firstJob.file,
+        fix: 'Add coverage reporting step',
+        line: null,
+        message: 'No coverage reporting found',
+        severity: 'info',
+      })
+    }
   }
 
   return issues
@@ -433,7 +447,7 @@ export function computePipelineStats(jobs: PipelineJob[]): PipelineStats {
 export async function buildPipelineResult(
   files: string[],
   contentReader: ContentReader,
-  options?: PipelineOptions,
+  _options?: PipelineOptions,
 ): Promise<PipelineConfig> {
   const platform = detectCIPlatform(files)
   const allJobs: PipelineJob[] = []

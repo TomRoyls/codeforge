@@ -18,20 +18,15 @@ const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
 const GENERICS_REGEX = /<[^>]+>/g
 const PRIVATE_REGEX = /private\s+/g
 const PROTECTED_REGEX = /protected\s+/g
-const PUBLIC_REGEX = /public\s+/g
 const STATIC_REGEX = /\bstatic\s+/g
 const READONLY_REGEX = /\breadonly\b/g
 const ANY_REGEX = /\bany\b/g
 const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
-const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
 const RETURN_TYPE_REGEX = /\)\s*:\s*\w+/g
-const METHOD_REGEX = /\b\w+\s*\([^)]*\)\s*[:{]/g
 const CONDITIONAL_REGEX = /\bif\s*\(/g
 const LOOP_REGEX = /\b(for|while|do)\s*[\({]/g
-const SWITCH_REGEX = /\bswitch\s*\(/g
 const ERROR_THROW_REGEX = /\bthrow\s+/g
 const PROMISE_REGEX = /\bPromise\b/g
-const STRING_TEMPLATE_REGEX = /`[^`]*\$\{/g
 
 // ─── Helper Functions ───────────────────────────────────────────────────────
 
@@ -112,10 +107,6 @@ function countProtectedMembers(content: string): number {
   return countMatches(content, PROTECTED_REGEX)
 }
 
-function countPublicMembers(content: string): number {
-  return countMatches(content, PUBLIC_REGEX)
-}
-
 function countStaticMembers(content: string): number {
   return countMatches(content, STATIC_REGEX)
 }
@@ -132,10 +123,6 @@ function countCommentedCode(content: string): number {
   return countMatches(content, COMMENTED_CODE_REGEX)
 }
 
-function countReExports(content: string): number {
-  return countMatches(content, REEXPORT_REGEX)
-}
-
 function countConditionals(content: string): number {
   return countMatches(content, CONDITIONAL_REGEX)
 }
@@ -150,10 +137,6 @@ function countErrorThrows(content: string): number {
 
 function countPromiseUsage(content: string): number {
   return countMatches(content, PROMISE_REGEX)
-}
-
-function countTemplateLiterals(content: string): number {
-  return countMatches(content, STRING_TEMPLATE_REGEX)
 }
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────

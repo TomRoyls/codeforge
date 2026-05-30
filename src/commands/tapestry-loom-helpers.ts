@@ -185,7 +185,6 @@ export interface TapestryLoomResult {
 
 const IMPORT_REGEX = /import\s/g
 const EXPORT_REGEX = /export\s/g
-const FROM_REGEX = /from\s+['"]/g
 const REQUIRE_REGEX = /require\s*\(/g
 const CLASS_REGEX = /\bclass\s+\w+/g
 const INTERFACE_REGEX = /\binterface\s+\w+/g
@@ -199,7 +198,6 @@ const TRY_CATCH_REGEX = /\btry\s*\{/g
 const IF_REGEX = /\bif\s*\(/g
 const FOR_REGEX = /\bfor\s*\(/g
 const WHILE_REGEX = /\bwhile\s*\(/g
-const NEW_REGEX = /\bnew\s+\w+/g
 const EXTENDS_REGEX = /\bextends\s+/g
 const IMPLEMENTS_REGEX = /\bimplements\s+/g
 const CONSOLE_REGEX = /\bconsole\./g
@@ -221,7 +219,6 @@ const ABSTRACT_REGEX = /\babstract\s/g
 const EMIT_REGEX = /\.emit\s*\(/g
 const DEFAULT_EXPORT_REGEX = /export\s+default/g
 const RE_EXPORT_REGEX = /export\s+\*\s+from/g
-const DYNAMIC_IMPORT_REGEX = /import\s*\(/g
 
 // ─── Helper Counting Functions ─────────────────────────────────────────────
 
@@ -422,7 +419,6 @@ export function measurePattern(content: string): PatternMeasure {
   const generics = countMatches(content, GENERIC_REGEX)
   const statics = countMatches(content, STATIC_REGEX)
 
-  const hasCode = lines > 0
   const designSignals = classes + interfaces + types + extends_ + implements_ + abstracts
   const baseRichness = lines === 0 ? 5 : Math.min(30, designSignals * 5)
   const patternBonus = Math.min(25, (extends_ + implements_) * 8 + abstracts * 10)
@@ -496,7 +492,6 @@ export function measureColor(content: string): ColorMeasure {
   const generics = countMatches(content, GENERIC_REGEX)
   const smells = countSmells(content)
 
-  const hasCode = lines > 0
   const featureSignals = funcs + classes + interfaces + types + asyncs + errorHandling
   const basePalette = lines === 0 ? 5 : Math.min(30, featureSignals * 3)
   const varietyBonus = Math.min(20, (asyncs + errorHandling + emits) * 4)
@@ -619,7 +614,6 @@ export function measureArtistry(content: string): ArtistryMeasure {
   const classes = countClasses(content)
   const interfaces = countInterfaces(content)
   const types = countMatches(content, TYPE_REGEX)
-  const funcs = countFunctions(content)
   const asyncs = countMatches(content, ASYNC_REGEX)
   const errorHandling = countErrorHandling(content)
   const typeAnnotations = countTypeAnnotations(content)
@@ -869,9 +863,8 @@ export function generateRecommendations(
 export function buildTapestryLoomResult(
   files: string[],
   contents: string[],
-  options?: { ignore?: string[]; ext?: string[] },
+  _options?: { ignore?: string[]; ext?: string[] },
 ): TapestryLoomResult {
-  const _opts = options ?? {}
 
   const threads: TapestryThread[] = files.map((file, i) =>
     analyzeTapestryThread(contents[i] ?? '', file),

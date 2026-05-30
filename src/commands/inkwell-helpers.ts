@@ -77,13 +77,11 @@ export interface InkwellResult {
 
 const FUNCTION_RE = /(?:export\s+)?(?:async\s+)?function\s+\w+/g
 const ARROW_RE = /(?:const|let|var)\s+\w+\s*=\s*(?:async\s*)?\(/g
-const CLASS_RE = /(?:export\s+)?(?:abstract\s+)?class\s+\w+/g
 const INTERFACE_RE = /(?:export\s+)?interface\s+\w+/g
 const TYPE_RE = /(?:export\s+)?type\s+\w+/g
 const EXPORT_RE = /export\s+(?:default\s+)?(?:function|class|const|let|interface|type)/g
 const IMPORT_RE = /import\s+.*?from\s+['"][^'"]+['"]/g
 const COMMENT_RE = /\/\/.*$/gm
-const BLOCK_COMMENT_RE = /\/\*[\s\S]*?\*\//g
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
 const IDENTIFIER_RE = /\b[a-zA-Z_$][a-zA-Z0-9_$]*\b/g
 const OPERATOR_RE = /[+\-*/%=<>!&|^~?:]+/g
@@ -95,7 +93,6 @@ const DESTRUCTURE_RE = /(?:const|let|var)\s*\{[^}]+\}\s*=/g
 const GUARD_CLAUSE_RE = /if\s*\([^)]+\)\s*(?:return|throw|continue|break)/g
 const CONSOLE_RE = /console\.\w+\(/g
 const ANY_RE = /:\s*any\b/g
-const TODO_RE = /\/\/\s*(TODO|FIXME|HACK)/gi
 
 // ─── Flourish Detection ──────────────────────────────────────────────────────
 
@@ -171,7 +168,7 @@ export function identifyInkBlots(content: string): string[] {
   // Deep nesting
   let maxIndent = 0
   for (const line of content.split('\n')) {
-    const indent = line.match(/^(\s*)/)?.[1].length ?? 0
+    const indent = line.match(/^(\s*)/)?.[1]?.length ?? 0
     if (indent > maxIndent) maxIndent = indent
   }
   if (maxIndent > 24) blots.push('deep-nesting')
@@ -398,7 +395,6 @@ function computeFlow(content: string, totalLines: number): number {
   let score = 60
   const guardClauses = (content.match(GUARD_CLAUSE_RE) ?? []).length
   const earlyReturns = (content.match(/\breturn\b/g) ?? []).length
-  const asyncCount = (content.match(/async\s+/g) ?? []).length
   const tryCatch = (content.match(/try\s*\{/g) ?? []).length
   const optionalChain = (content.match(OPTIONAL_CHAIN_RE) ?? []).length
 
@@ -421,7 +417,6 @@ function computePenmanship(content: string, totalLines: number): number {
 
   let score = 60
   const constUsage = (content.match(/\bconst\s+/g) ?? []).length
-  const letUsage = (content.match(/\blet\s+/g) ?? []).length
   const varUsage = (content.match(/\bvar\s+/g) ?? []).length
   const destructuring = (content.match(DESTRUCTURE_RE) ?? []).length
   const templateLiterals = (content.match(/`[^`]*\$\{/g) ?? []).length
@@ -590,7 +585,7 @@ export function classifyPenmanshipGrade(avgQuality: number): 'A' | 'B' | 'C' | '
  * generateRecommendations(strokes, bottles, stats) // string[]
  */
 export function generateRecommendations(
-  strokes: InkStroke[],
+  _strokes: InkStroke[],
   _bottles: InkBottle[],
   stats: InkwellStats,
 ): string[] {
@@ -624,7 +619,7 @@ export function buildInkwellResult(
 ): InkwellResult {
   const strokes: InkStroke[] = []
   for (let i = 0; i < files.length; i++) {
-    strokes.push(analyzeStroke(contents[i], files[i]))
+    strokes.push(analyzeStroke(contents[i] ?? '',files[i] ?? ''))
   }
 
   const dirMap = new Map<string, InkStroke[]>()
@@ -696,8 +691,8 @@ function computeStats(strokes: InkStroke[], bottles: InkBottle[]): InkwellStats 
   const penmanshipGrade = classifyPenmanshipGrade(avgStrokeQuality)
 
   const sortedByReadability = [...strokes].sort((a, b) => b.readabilityScore - a.readabilityScore)
-  const bestWrittenFile = sortedByReadability.length > 0 ? sortedByReadability[0].file : 'none'
-  const worstWrittenFile = sortedByReadability.length > 0 ? sortedByReadability[sortedByReadability.length - 1].file : 'none'
+  const bestWrittenFile = sortedByReadability.length > 0 ? sortedByReadability[0]?.file : 'none'
+  const worstWrittenFile = sortedByReadability.length > 0 ? sortedByReadability[sortedByReadability.length - 1]?.file : 'none'
 
   return {
     totalFiles,
@@ -720,7 +715,7 @@ function computeStats(strokes: InkStroke[], bottles: InkBottle[]): InkwellStats 
     dominantInkColor,
     manuscriptCondition,
     penmanshipGrade,
-    bestWrittenFile,
-    worstWrittenFile,
+    bestWrittenFile: bestWrittenFile ?? '',
+    worstWrittenFile: worstWrittenFile ?? '',
   }
 }

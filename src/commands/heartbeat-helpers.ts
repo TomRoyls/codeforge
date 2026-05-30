@@ -95,7 +95,7 @@ function extractImports(content: string): string[] {
   const imports: string[] = []
   for (const line of content.split('\n')) {
     const m = line.match(/import\s+(?:type\s+)?(?:\{[^}]+\}|\*\s+as\s+\w+|\w+)\s+from\s+['"]([^'"]+)['"]/)
-    if (m) imports.push(m[1])
+    if (m) imports.push(m[1] ?? '')
   }
   return imports
 }
@@ -112,7 +112,7 @@ function countDebtItems(content: string): number {
  * @example
  * measurePulse(files, contents)
  */
-export function measurePulse(files: string[], contents: string[]): VitalSign {
+export function measurePulse(files: string[], _contents: string[]): VitalSign {
   const value = Math.min(Math.round(files.length * 1.5), 100)
   const status = classifyVital('pulse', value)
   return {
@@ -138,7 +138,7 @@ export function measurePulse(files: string[], contents: string[]): VitalSign {
  * @example
  * measureBloodPressure(files, contents)
  */
-export function measureBloodPressure(files: string[], contents: string[]): VitalSign {
+export function measureBloodPressure(_files: string[], contents: string[]): VitalSign {
   let maxNesting = 0
   let totalNesting = 0
   let fileCount = 0
@@ -182,7 +182,7 @@ export function measureBloodPressure(files: string[], contents: string[]): Vital
  * @example
  * measureTemperature(files, contents)
  */
-export function measureTemperature(files: string[], contents: string[]): VitalSign {
+export function measureTemperature(_files: string[], contents: string[]): VitalSign {
   let hotspots = 0
   for (const content of contents) {
     if (/\beval\s*\(/.test(content)) hotspots++
@@ -215,7 +215,7 @@ export function measureTemperature(files: string[], contents: string[]): VitalSi
  * @example
  * measureRespiration(files, contents)
  */
-export function measureRespiration(files: string[], contents: string[]): VitalSign {
+export function measureRespiration(files: string[], _contents: string[]): VitalSign {
   const testFiles = files.filter((f) => /\.(?:test|spec)\.(ts|tsx|js|jsx)$/.test(f))
   const srcFiles = files.filter((f) => !/\.(?:test|spec)\.(ts|tsx|js|jsx)$/.test(f) && /\.(ts|tsx|js|jsx)$/.test(f))
   const ratio = srcFiles.length > 0 ? Math.round((testFiles.length / srcFiles.length) * 100) : 0
@@ -244,7 +244,7 @@ export function measureRespiration(files: string[], contents: string[]): VitalSi
  * @example
  * measureCholesterol(files, contents)
  */
-export function measureCholesterol(files: string[], contents: string[]): VitalSign {
+export function measureCholesterol(_files: string[], contents: string[]): VitalSign {
   let debt = 0
   for (const content of contents) {
     debt += countDebtItems(content)
@@ -302,7 +302,7 @@ export function measureBMI(files: string[], contents: string[]): VitalSign {
  * @example
  * measureBloodSugar(files, contents)
  */
-export function measureBloodSugar(files: string[], contents: string[]): VitalSign {
+export function measureBloodSugar(_files: string[], contents: string[]): VitalSign {
   const externalImports = new Set<string>()
   for (const content of contents) {
     for (const imp of extractImports(content)) {
@@ -334,7 +334,7 @@ export function measureBloodSugar(files: string[], contents: string[]): VitalSig
  * @example
  * measureHeartRateVariability(files, contents)
  */
-export function measureHeartRateVariability(files: string[], contents: string[]): VitalSign {
+export function measureHeartRateVariability(_files: string[], contents: string[]): VitalSign {
   let camelCase = 0
   let snakeCase = 0
   let pascalCase = 0

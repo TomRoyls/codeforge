@@ -2,8 +2,6 @@ import chalk from 'chalk'
 import {
   type CompositeResult,
   type Prism,
-  type PrismFile,
-  type PrismFinding,
   type PrismResult,
   type PrismResultStats,
   type Severity,

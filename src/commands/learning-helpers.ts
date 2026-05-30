@@ -150,7 +150,7 @@ function findLayerImports(
 
   for (const f of files) {
     const content = contents.get(f) ?? ''
-    for (const [layerName, layerDef] of allLayers) {
+    for (const [layerName] of allLayers) {
       if (layerName === currentLayer) continue
       const pattern = LAYER_DEFINITIONS.find((l) => l.name === layerName)?.pattern
       if (pattern && pattern.test(content)) {
@@ -412,7 +412,7 @@ export function buildGlossary(contents: ContentMap): GlossaryEntry[] {
  * ```
  */
 export function buildLearningGuide(
-  cwd: string,
+  _cwd: string,
   filePaths: string[],
   contents: ContentMap,
   options: LearningOptions,
@@ -446,7 +446,7 @@ function buildOverview(files: string[], layers: Layer[], options: LearningOption
   return `This codebase has ${files.length} files across ${layers.length} layers. This guide is tailored for a ${roleLabel} developer.`
 }
 
-function buildArchitectureGuide(layers: Layer[], filePaths: string[], contents: ContentMap): ArchitectureGuide {
+function buildArchitectureGuide(layers: Layer[], _filePaths: string[], _contents: ContentMap): ArchitectureGuide {
   const dataFlow = layers.length > 0
     ? `Data flows from ${layers.map((l) => l.name).join(' → ')}`
     : 'Single-layer codebase'

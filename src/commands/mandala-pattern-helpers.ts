@@ -656,7 +656,7 @@ export function analyzeMandalaGarden(rings: MandalaRing[], dirPath: string): Man
  * generateRecommendations(rings, gardens, monastery, stats) // string[]
  */
 export function generateRecommendations(
-  rings: MandalaRing[],
+  _rings: MandalaRing[],
   gardens: MandalaGarden[],
   monastery: MonasteryMeasure,
   stats: MandalaPatternStats,
@@ -701,7 +701,7 @@ export function generateRecommendations(
 export function buildMandalaPatternResult(files: string[], contents: string[], _options: Record<string, unknown>): MandalaPatternResult {
   const rings: MandalaRing[] = files.map((file, i) => {
     const content = i < contents.length ? contents[i] : ''
-    return analyzeMandalaRing(content, file)
+    return analyzeMandalaRing(content ?? '', file)
   })
 
   const dirMap = new Map<string, MandalaRing[]>()

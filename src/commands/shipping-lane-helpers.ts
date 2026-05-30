@@ -188,7 +188,6 @@ export interface ShippingLaneResult {
 
 const IMPORT_RE = /import\s+(?:\{[^}]*\}|\w+)\s+from\s+['"]([^'"]+)['"]/g
 const EXPORT_RE = /export\s+(?:default\s+)?(?:function|const|class|interface|type|enum|async\s+function)\s+(\w+)/g
-const EXPORT_DEFAULT_RE = /export\s+default\s+/g
 const FUNCTION_RE = /\bfunction\s+(\w+)/g
 const ARROW_RE = /=>\s*[{(]/g
 const CLASS_RE = /\bclass\s+\w+/g
@@ -199,12 +198,10 @@ const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
 const COMMENT_RE = /\/\/.*$/gm
 const TRY_CATCH_RE = /try\s*\{/g
 const IF_RE = /\bif\s*\(/g
-const ELSE_RE = /\belse\s*[{(]/g
 const PIPE_RE = /[.\s](map|filter|reduce|forEach|flatMap|find|some|every)\s*\(/g
 const RETURN_RE = /\breturn\b/g
 const THROW_RE = /\bthrow\b/g
 const ASYNC_RE = /\basync\s+/
-const AWAIT_RE = /\bawait\b/g
 const CONST_RE = /\bconst\s+/g
 const LET_RE = /\blet\s+/g
 const MUTATION_RE = /\.\s*(push|pop|shift|unshift|splice|sort|reverse)\s*\(/g
@@ -288,7 +285,6 @@ export function measureTraffic(content: string): TrafficMeasure {
   const functions = (content.match(FUNCTION_RE) ?? []).length + (content.match(ARROW_RE) ?? []).length
   const exports = (content.match(EXPORT_RE) ?? []).length
   const classes = (content.match(CLASS_RE) ?? []).length
-  const ifs = (content.match(IF_RE) ?? []).length
   const deadCode = (content.match(DEAD_CODE_RE) ?? []).length
   const consts = (content.match(CONST_RE) ?? []).length
   const lets = (content.match(LET_RE) ?? []).length
@@ -348,7 +344,6 @@ export function measureCargo(content: string): CargoMeasure {
   const imports = (content.match(IMPORT_RE) ?? []).length
   const exports = (content.match(EXPORT_RE) ?? []).length
   const anyTypes = (content.match(ANY_TYPE_RE) ?? []).length
-  const mutations = (content.match(MUTATION_RE) ?? []).length
   const sideEffects = (content.match(SIDE_EFFECT_RE) ?? []).length
   const tryCatch = (content.match(TRY_CATCH_RE) ?? []).length
   const deadCode = (content.match(DEAD_CODE_RE) ?? []).length
@@ -485,7 +480,6 @@ export function measureNavigation(content: string): NavigationMeasure {
   const throws = (content.match(THROW_RE) ?? []).length
   const ifs = (content.match(IF_RE) ?? []).length
   const returns = (content.match(RETURN_RE) ?? []).length
-  const types = (content.match(TYPE_ANNOTATION_RE) ?? []).length
   const jsdoc = (content.match(JSDOC_RE) ?? []).length
   const comments = (content.match(COMMENT_RE) ?? []).length
   const anyTypes = (content.match(ANY_TYPE_RE) ?? []).length
@@ -557,12 +551,10 @@ export function measureFleet(content: string): FleetMeasure {
   const pipes = (content.match(PIPE_RE) ?? []).length
   const asyncs = (content.match(ASYNC_RE) ?? []).length
   const exports = (content.match(EXPORT_RE) ?? []).length
-  const interfaces = (content.match(INTERFACE_RE) ?? []).length
   const anyTypes = (content.match(ANY_TYPE_RE) ?? []).length
   const deadCode = (content.match(DEAD_CODE_RE) ?? []).length
   const comments = (content.match(COMMENT_RE) ?? []).length
   const mutations = (content.match(MUTATION_RE) ?? []).length
-  const sideEffects = (content.match(SIDE_EFFECT_RE) ?? []).length
 
   const isWellMaintained = consts > 0 && lets === 0 && deadCode === 0
   const hasScheduledMaintenance = comments > 0 || jsdoc > 0
@@ -766,8 +758,9 @@ export function generateRecommendations(
     recs.push('Poor fleet management — use const, add JSDoc, and eliminate dead code')
   }
 
-  const worst = vessels.length > 0
-    ? vessels.reduce((w, v) => v.qualityScore < w.qualityScore ? v : w, vessels[0])
+  const firstVessel = vessels[0]
+  const worst = vessels.length > 0 && firstVessel
+    ? vessels.reduce((w, v) => v.qualityScore < w.qualityScore ? v : w, firstVessel)
     : null
   if (worst && worst.qualityScore < 25) {
     recs.push(`Vessel "${worst.file}" is taking on water (score: ${worst.qualityScore}) — needs major refit`)
@@ -825,20 +818,21 @@ export function buildShippingLaneResult(
   }
 
   const conditions = vessels.map((v) => v.condition)
-  const bestVessel = vessels.length > 0
-    ? vessels.reduce((b, v) => v.qualityScore > b.qualityScore ? v : b, vessels[0])
+  const firstV = vessels[0]
+  const bestVessel = vessels.length > 0 && firstV
+    ? vessels.reduce((b, v) => v.qualityScore > b.qualityScore ? v : b, firstV)
     : null
-  const deepestChannel = vessels.length > 0
-    ? vessels.reduce((b, v) => v.channelDepth > b.channelDepth ? v : b, vessels[0])
+  const deepestChannel = vessels.length > 0 && firstV
+    ? vessels.reduce((b, v) => v.channelDepth > b.channelDepth ? v : b, firstV)
     : null
-  const bestCargo = vessels.length > 0
-    ? vessels.reduce((b, v) => v.cargoHandling > b.cargoHandling ? v : b, vessels[0])
+  const bestCargo = vessels.length > 0 && firstV
+    ? vessels.reduce((b, v) => v.cargoHandling > b.cargoHandling ? v : b, firstV)
     : null
-  const safestNavigation = vessels.length > 0
-    ? vessels.reduce((b, v) => v.navigationSafety > b.navigationSafety ? v : b, vessels[0])
+  const safestNavigation = vessels.length > 0 && firstV
+    ? vessels.reduce((b, v) => v.navigationSafety > b.navigationSafety ? v : b, firstV)
     : null
-  const bestFleet = vessels.length > 0
-    ? vessels.reduce((b, v) => v.fleetManagement > b.fleetManagement ? v : b, vessels[0])
+  const bestFleet = vessels.length > 0 && firstV
+    ? vessels.reduce((b, v) => v.fleetManagement > b.fleetManagement ? v : b, firstV)
     : null
 
   const stats: ShippingLaneStats = {

@@ -289,12 +289,7 @@ const hasEnum = (c: string) => has(/\benum\b/, c)
 const hasSwitch = (c: string) => has(/\bswitch\b/, c)
 const hasUnionType = (c: string) => has(/\|\s*['"]/, c)
 const hasConditional = (c: string) => has(/\bif\b/, c)
-const hasTernary = (c: string) => has(/\?[^?]*:/, c)
-const hasMapFunction = (c: string) => has(/\b(?:map|filter|reduce|forEach)\b/, c)
-const hasArrowFunction = (c: string) => has(/=>/, c)
 const hasThrow = (c: string) => has(/\bthrow\b/, c)
-const hasErrorKeyword = (c: string) => has(/\bError\b/, c)
-const hasConsole = (c: string) => has(/\bconsole\./, c)
 
 // ─── Measure Functions ─────────────────────────────────────────────
 

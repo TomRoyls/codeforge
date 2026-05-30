@@ -104,24 +104,34 @@ export class ASTSerializer {
   }
 
   countNodes(node: ASTNode): number {
-    let count = 1
-    for (const child of node.children ?? []) {
-      count += this.countNodes(child)
+    let count = 0
+    const stack: ASTNode[] = [node]
+    while (stack.length > 0) {
+      const current = stack.pop()!
+      count++
+      const children = current.children
+      if (children !== undefined) {
+        for (let i = children.length - 1; i >= 0; i--) {
+          stack.push(children[i]!)
+        }
+      }
     }
     return count
   }
 
   getDepth(node: ASTNode): number {
-    if (!node.children || node.children.length === 0) {
-      return 0
-    }
-    let maxChildDepth = 0
-    for (const child of node.children) {
-      const childDepth = this.getDepth(child)
-      if (childDepth > maxChildDepth) {
-        maxChildDepth = childDepth
+    let maxDepth = 0
+    const stack: Array<{ node: ASTNode; depth: number }> = [{ node, depth: 0 }]
+    while (stack.length > 0) {
+      const item = stack.pop()!
+      if (item.depth > maxDepth) maxDepth = item.depth
+      const children = item.node.children
+      if (children !== undefined && children.length > 0) {
+        for (let i = children.length - 1; i >= 0; i--) {
+          stack.push({ node: children[i]!, depth: item.depth + 1 })
+        }
       }
     }
-    return maxChildDepth + 1
+    return maxDepth
   }
 }

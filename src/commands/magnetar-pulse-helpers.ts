@@ -233,12 +233,6 @@ function countConsoleLog(content: string): number {
   return (content.match(/\bconsole\.\w+\s*\(/g) || []).length
 }
 
-function countSideEffects(content: string): number {
-  return (content.match(/\bfs\.\w+\s*\(/g) || []).length
-    + (content.match(/\bprocess\.\w+/g) || []).length
-    + (content.match(/\bfetch\s*\(/g) || []).length
-}
-
 function countReturnStatements(content: string): number {
   return (content.match(/\breturn\b/g) || []).length
 }
@@ -396,7 +390,7 @@ export function measureEmission(content: string): EmissionMeasure {
   const dominantEmission = emissionTypes.length > 0 ? emissionTypes[0] : 'none'
 
   return {
-    dominantEmission,
+    dominantEmission: dominantEmission ?? '',
     emissionTypes,
     hasGammaRay,
     hasInfraredEmission,
@@ -737,7 +731,7 @@ export function analyzePulsarCluster(nodes: PulsarNode[], dirPath: string): Puls
  * // recs.length > 0
  */
 export function generateRecommendations(
-  nodes: PulsarNode[],
+  _nodes: PulsarNode[],
   _clusters: PulsarCluster[],
   galaxy: MagnetarGalaxy,
   stats: MagnetarPulseStats,
@@ -889,28 +883,30 @@ export function buildMagnetarPulseResult(
 
 function findExtreme(nodes: PulsarNode[], getter: (n: PulsarNode) => number): string {
   if (nodes.length === 0) return 'none'
-  let best = nodes[0]
-  let bestVal = getter(nodes[0])
+  let best = nodes[0] as PulsarNode
+  let bestVal = getter(best)
   for (let i = 1; i < nodes.length; i++) {
-    const val = getter(nodes[i])
+    const node = nodes[i] as PulsarNode
+    const val = getter(node)
     if (val > bestVal) {
-      best = nodes[i]
+      best = node
       bestVal = val
     }
   }
-  return best.file
+  return best?.file ?? ''
 }
 
 function findMin(nodes: PulsarNode[], getter: (n: PulsarNode) => number): string {
   if (nodes.length === 0) return 'none'
-  let best = nodes[0]
-  let bestVal = getter(nodes[0])
+  let best = nodes[0] as PulsarNode
+  let bestVal = getter(best)
   for (let i = 1; i < nodes.length; i++) {
-    const val = getter(nodes[i])
+    const node = nodes[i] as PulsarNode
+    const val = getter(node)
     if (val < bestVal) {
-      best = nodes[i]
+      best = node
       bestVal = val
     }
   }
-  return best.file
+  return best?.file ?? ''
 }

@@ -74,19 +74,19 @@ export function extractImports(content: string): string[] {
   // ESM imports: import ... from './path' or import ... from '../path'
   const esmMatches = content.matchAll(/from\s+['"](\.[^'"]+)['"]/g)
   for (const match of esmMatches) {
-    imports.push(normalizeImportPath(match[1]!))
+    imports.push(normalizeImportPath(match[1] ?? ''))
   }
 
   // Re-exports: export ... from './path'
   const reExportMatches = content.matchAll(/export\s+(?:[\w{}*,\s]+)\s+from\s+['"](\.[^'"]+)['"]/g)
   for (const match of reExportMatches) {
-    imports.push(normalizeImportPath(match[1]!))
+    imports.push(normalizeImportPath(match[1] ?? ''))
   }
 
   // CommonJS: require('./path')
   const cjsMatches = content.matchAll(/require\s*\(\s*['"](\.[^'"]+)['"]\s*\)/g)
   for (const match of cjsMatches) {
-    imports.push(normalizeImportPath(match[1]!))
+    imports.push(normalizeImportPath(match[1] ?? ''))
   }
 
   return [...new Set(imports)]
@@ -257,8 +257,10 @@ export function computeDepths(
     }
   }
 
-  while (queue.length > 0) {
-    const { file, depth } = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const { file, depth } = queue[_qi]!
+    _qi++
     if (visited.has(file)) continue
     visited.add(file)
 
@@ -399,8 +401,10 @@ export function findShortestPath(
   const queue: Array<{ file: string; path: string[] }> = [{ file: from, path: [] }]
   visited.add(from)
 
-  while (queue.length > 0) {
-    const { file, path } = queue.shift()!
+  let _qi = 0
+  while (_qi < queue.length) {
+    const { file, path } = queue[_qi]!
+    _qi++
     const imports = adj.get(file) ?? []
 
     for (const imp of imports) {

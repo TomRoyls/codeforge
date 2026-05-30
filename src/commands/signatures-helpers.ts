@@ -80,8 +80,14 @@ export function parseParameter(paramText: string): ParamDetail {
   if (isDestructured) {
     const braceMatch = trimmed.match(/\{([^}]*)\}/)
     if (braceMatch) {
-      const keys = braceMatch[1].split(',').map((k) => k.trim().split(':')[0].split('=')[0].trim()).filter(Boolean)
-      destructuredKeys.push(...keys)
+      const inner = braceMatch[1]
+      if (inner) {
+        const keys = inner.split(',').map((k) => {
+          const part = k.trim().split(':')[0] ?? ''
+          return (part.split('=')[0] ?? '').trim()
+        }).filter(Boolean)
+        destructuredKeys.push(...keys)
+      }
     }
     const afterBrace = trimmed.replace(/\{[^}]*\}/, '').trim()
     const colonIdx = afterBrace.indexOf(':')
@@ -144,13 +150,14 @@ export function extractSignatures(content: string, filePath: string): SignatureI
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const lineNum = i + 1
 
     const exported = line.includes('export')
 
     const asyncFunc = line.match(/(?:export\s+)?(?:default\s+)?(?:async\s+)?function\s+(\w+)\s*<([^>]*)>\s*\(([^)]*)\)\s*(?::\s*([^{]+?))?\s*\{/)
     if (asyncFunc) {
-      const sig = buildSignature(asyncFunc[1], asyncFunc[3], asyncFunc[4] ?? '', line.trim(), filePath, lineNum, {
+      const sig = buildSignature(asyncFunc[1] ?? '', asyncFunc[3] ?? '', asyncFunc[4] ?? '', line.trim(), filePath, lineNum, {
         isAsync: line.includes('async'),
         isExported: exported,
         isGeneric: true,
@@ -162,7 +169,7 @@ export function extractSignatures(content: string, filePath: string): SignatureI
 
     const regularFunc = line.match(/(?:export\s+)?(?:default\s+)?(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+?))?\s*\{/)
     if (regularFunc) {
-      const sig = buildSignature(regularFunc[1], regularFunc[2], regularFunc[3] ?? '', line.trim(), filePath, lineNum, {
+      const sig = buildSignature(regularFunc[1] ?? '', regularFunc[2] ?? '', regularFunc[3] ?? '', line.trim(), filePath, lineNum, {
         isAsync: line.includes('async'),
         isExported: exported,
         isGeneric: false,
@@ -173,7 +180,7 @@ export function extractSignatures(content: string, filePath: string): SignatureI
 
     const arrowGeneric = line.match(/(?:export\s+)?(?:const|let|var)\s+(\w+)\s*(?::\s*([^=]+?))?\s*=\s*(?:async\s+)?\s*<([^>]*)>\s*\(([^)]*)\)\s*(?::\s*([^=]+?))?\s*=>/)
     if (arrowGeneric) {
-      const sig = buildSignature(arrowGeneric[1], arrowGeneric[4], arrowGeneric[5] ?? arrowGeneric[2] ?? '', line.trim(), filePath, lineNum, {
+      const sig = buildSignature(arrowGeneric[1] ?? '', arrowGeneric[4] ?? '', arrowGeneric[5] ?? arrowGeneric[2] ?? '', line.trim(), filePath, lineNum, {
         isAsync: line.includes('async'),
         isExported: exported,
         isGeneric: true,
@@ -185,7 +192,7 @@ export function extractSignatures(content: string, filePath: string): SignatureI
 
     const arrow = line.match(/(?:export\s+)?(?:const|let|var)\s+(\w+)\s*(?::\s*([^=]+?))?\s*=\s*(?:async\s+)?\(([^)]*)\)\s*(?::\s*([^=]+?))?\s*=>/)
     if (arrow) {
-      const sig = buildSignature(arrow[1], arrow[3], arrow[4] ?? arrow[2] ?? '', line.trim(), filePath, lineNum, {
+      const sig = buildSignature(arrow[1] ?? '', arrow[3] ?? '', arrow[4] ?? arrow[2] ?? '', line.trim(), filePath, lineNum, {
         isAsync: line.includes('async'),
         isExported: exported,
         isGeneric: false,
@@ -196,7 +203,7 @@ export function extractSignatures(content: string, filePath: string): SignatureI
 
     const methodMatch = line.match(/(?:(?:public|private|protected|static|readonly|abstract|override)\s+)*(?:async\s+)?(\w+)\s*<([^>]*)>\s*\(([^)]*)\)\s*(?::\s*([^{;]+?))?\s*[\{;]/)
     if (methodMatch && !line.includes('function') && !line.includes('=>') && !line.includes('class ')) {
-      const sig = buildSignature(methodMatch[1], methodMatch[3], methodMatch[4] ?? '', line.trim(), filePath, lineNum, {
+      const sig = buildSignature(methodMatch[1] ?? '', methodMatch[3] ?? '', methodMatch[4] ?? '', line.trim(), filePath, lineNum, {
         isAsync: line.includes('async'),
         isExported: false,
         isGeneric: true,
@@ -208,7 +215,7 @@ export function extractSignatures(content: string, filePath: string): SignatureI
 
     const method = line.match(/(?:(?:public|private|protected|static|readonly|abstract|override)\s+)*(?:async\s+)?(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{;]+?))?\s*[\{;]/)
     if (method && !line.includes('function') && !line.includes('=>') && !line.includes('class ') && !line.includes('interface ') && !line.includes('if (') && !line.includes('for (') && !line.includes('while (') && !line.includes('switch (') && !line.includes('catch (')) {
-      const sig = buildSignature(method[1], method[2], method[3] ?? '', line.trim(), filePath, lineNum, {
+      const sig = buildSignature(method[1] ?? '', method[2] ?? '', method[3] ?? '', line.trim(), filePath, lineNum, {
         isAsync: line.includes('async'),
         isExported: exported,
         isGeneric: false,
@@ -240,7 +247,7 @@ function buildSignature(
   const parameters = splitParams(paramsText).map(parseParameter)
   const returnType = returnTypeRaw.trim().replace(/\s+/g, ' ') || 'void'
   const genericParams = opts.genericParamsRaw
-    ? opts.genericParamsRaw.split(',').map((s: string) => s.trim().split(/\s+extends\s+/)[0].trim()).filter(Boolean)
+    ? opts.genericParamsRaw.split(',').map((s: string) => (s.trim().split(/\s+extends\s+/)[0] ?? '').trim()).filter(Boolean)
     : []
 
   const hasOptionalParams = parameters.some((p) => p.optional)

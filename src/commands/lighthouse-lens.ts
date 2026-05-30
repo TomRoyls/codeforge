@@ -8,16 +8,6 @@ import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildLighthouseLensResult,
   type LighthouseLensResult,
-  type LensReading,
-  type CoastalStation,
-  type LighthouseService,
-  type LighthouseLensStats,
-  type BeamMeasure,
-  type LensMeasure,
-  type FocalMeasure,
-  type RotationMeasure,
-  type VisibilityMeasure,
-  type WarningMeasure,
 } from './lighthouse-lens-helpers.js'
 import { formatLighthouseLensJson, formatLighthouseLensTable } from './lighthouse-lens-format-helpers.js'
 

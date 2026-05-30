@@ -416,8 +416,8 @@ export function compareSnapshots(from: Snapshot, to: Snapshot): SnapshotDiff {
   const changes: MetricChange[] = []
 
   for (const key of NUMERIC_METRIC_KEYS) {
-    const fromVal = from.metrics[key]
-    const toVal = to.metrics[key]
+    const fromVal = from.metrics[key] as number
+    const toVal = to.metrics[key] as number
     const diff = toVal - fromVal
     const percentageChange = fromVal !== 0 ? (diff / fromVal) * 100 : 0
     let direction: MetricChange['direction']

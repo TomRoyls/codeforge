@@ -716,7 +716,7 @@ export function analyzeJadeBasin(drops: JadeDrop[], dirPath: string): JadeBasin 
 export function generateRecommendations(
   drops: JadeDrop[],
   basins: JadeBasin[],
-  river: JadeWaterfallResult['river'],
+  _river: JadeWaterfallResult['river'],
   stats: JadeWaterfallResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -304,7 +304,7 @@ export function computeMigrationStats(patterns: MigrationProgress[]): MigrationS
 export async function buildMigrationResult(
   files: string[],
   contentReader: ContentReader,
-  options?: MigrationOptions,
+  options?: Omit<MigrationOptions, 'contentReader'>,
 ): Promise<MigrationResult> {
   const patterns = getMigrationPatterns()
   const allMatches: MigrationMatch[] = []

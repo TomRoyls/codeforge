@@ -2,12 +2,9 @@ import chalk from 'chalk'
 
 import type { CommandCategory, CommandEntry, InteractiveMenu, InteractiveResult } from './interactive-menu-helpers.js'
 
-// ─── Helpers ────────────────────────────────────────────
+import { padRight } from '../utils/format-utils.js'
 
-function padRight(str: string, len: number): string {
-  if (str.length >= len) return str
-  return str + ' '.repeat(len - str.length)
-}
+// ─── Helpers ────────────────────────────────────────────
 
 // ─── formatCategoryHeader ───────────────────────────────
 

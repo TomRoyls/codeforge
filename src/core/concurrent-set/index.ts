@@ -11,6 +11,7 @@ export class ConcurrentSet<T> {
   private pendingOps: PendingOp[] = []
   private operationQueue: PendingOp[] = []
   private queueProcessing = false
+  private _opHead = 0
 
   constructor(options?: ConcurrentSetOptions<T>, initialValues?: Iterable<T>) {
     this.hash = options?.hash ?? ((v: T) => String(v))
@@ -52,11 +53,19 @@ export class ConcurrentSet<T> {
 
   private drainQueue(): void {
     this.queueProcessing = true
-    while (this.operationQueue.length > 0) {
-      const op = this.operationQueue.shift()!
+    while (this.operationQueue.length - this._opHead > 0) {
+      const op = this.operationQueue[this._opHead++]!
       op()
     }
+    this._compactOps()
     this.queueProcessing = false
+  }
+
+  private _compactOps(): void {
+    if (this._opHead > this.operationQueue.length / 2) {
+      this.operationQueue = this.operationQueue.slice(this._opHead)
+      this._opHead = 0
+    }
   }
 
   private checkIsLocked(): boolean {

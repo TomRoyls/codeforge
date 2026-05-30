@@ -198,13 +198,11 @@ const hasConst = (c: string) => has(/\bconst\b/, c)
 const hasAsync = (c: string) => has(/\basync\b/, c)
 const hasNamedExport = (c: string) => has(/\bexport\s+(?:const|function|class|interface|type)\b/, c)
 const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
-const hasStrictEq = (c: string) => has(/===/, c)
 const hasTryCatch = (c: string) => has(/\btry\s*\{/, c)
 const hasThrow = (c: string) => has(/\bthrow\b/, c)
 const hasOptional = (c: string) => has(/\?\s*:/, c)
 const hasReadonly = (c: string) => has(/\breadonly\b/, c)
 const hasPrivate = (c: string) => has(/\bprivate\b/, c)
-const hasUnionType = (c: string) => has(/\|\s*['"]/, c)
 
 // ─── Grade Helpers ─────────────────────────────────────────────────
 

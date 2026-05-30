@@ -211,7 +211,6 @@ const TYPE_ANNOTATION_REGEX = /:\s*(?:string|number|boolean|void|never|unknown|a
 const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
 const LINE_COMMENT_REGEX = /\/\/.*$/gm
 const TEST_REGEX = /\b(?:describe|it|test|expect)\b/g
-const EMPTY_LINE_REGEX = /^\s*$/gm
 
 // ─── Counting Helpers ──────────────────────────────────────────────────────
 
@@ -369,7 +368,6 @@ export function measureFlow(content: string): FlowMeasure {
   const loops = countLoops(content)
   const returns = countMatches(content, RETURN_REGEX)
   const throws = countMatches(content, THROW_REGEX)
-  const errorHandling = countErrorHandling(content)
   const comments = countComments(content)
   const smells = countSmells(content)
   const todos = countTodos(content)
@@ -652,7 +650,6 @@ export function measureAblation(content: string): AblationMeasure {
   const todos = countTodos(content)
   const deprecated = countMatches(content, DEPRECATED_REGEX)
   const comments = countComments(content)
-  const funcs = countFunctions(content)
 
   // Zone: refactoring quality — clean, balanced imports/exports, error handling
   const baseZone = lines === 0 ? 10 : Math.min(40, lines + exports * 5)
@@ -900,9 +897,8 @@ export function generateRecommendations(
 export function buildGlacierFieldResult(
   files: string[],
   contents: string[],
-  options?: { ignore?: string[]; ext?: string[] },
+  _options?: { ignore?: string[]; ext?: string[] },
 ): GlacierFieldResult {
-  const _opts = options ?? {}
 
   const readings: GlacierReading[] = files.map((file, i) =>
     analyzeGlacierReading(contents[i] ?? '', file),

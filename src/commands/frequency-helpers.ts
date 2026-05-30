@@ -93,7 +93,7 @@ export function extractFunctionCalls(content: string, filePath: string): Element
     if (line.trim().startsWith('//') || line.trim().startsWith('*')) continue
     const matches = line.matchAll(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g)
     for (const match of matches) {
-      const name = match[1]!
+      const name = match[1] ?? ''
       if (JS_KEYWORDS.has(name)) continue
       if (['if', 'for', 'while', 'switch', 'catch', 'new'].includes(name)) continue
       const entry = map.get(name) ?? { count: 0, locs: [] }
@@ -130,7 +130,7 @@ export function extractMethodCalls(content: string, filePath: string): ElementFr
     if (line.trim().startsWith('//') || line.trim().startsWith('*')) continue
     const matches = line.matchAll(/\.([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g)
     for (const match of matches) {
-      const name = match[1]!
+      const name = match[1] ?? ''
       const entry = map.get(name) ?? { count: 0, locs: [] }
       entry.count++
       entry.locs.push({ file: filePath, line: i + 1, context: line.trim() })
@@ -164,7 +164,7 @@ export function extractImports(content: string, filePath: string): ElementFreque
     const line = lines[i]!
     const matches = line.matchAll(/from\s+['"]([^'"]+)['"]/g)
     for (const match of matches) {
-      const mod = match[1]!
+      const mod = match[1] ?? ''
       const entry = map.get(mod) ?? { count: 0, locs: [] }
       entry.count++
       entry.locs.push({ file: filePath, line: i + 1, context: line.trim() })
@@ -198,7 +198,7 @@ export function extractReturnTypes(content: string, filePath: string): ElementFr
     const line = lines[i]!
     const matches = line.matchAll(/\)\s*:\s*([A-Za-z][a-zA-Z0-9_$]*(?:<[^>]+>)?)/g)
     for (const match of matches) {
-      const typeName = match[1]!.split('<')[0]!
+      const typeName = match[1] ?? ''.split('<')[0]!
       const entry = map.get(typeName) ?? { count: 0, locs: [] }
       entry.count++
       entry.locs.push({ file: filePath, line: i + 1, context: line.trim() })
@@ -232,7 +232,7 @@ export function extractThrowTypes(content: string, filePath: string): ElementFre
     const line = lines[i]!
     const matches = line.matchAll(/throw\s+new\s+([A-Z][a-zA-Z0-9_$]*)\s*\(/g)
     for (const match of matches) {
-      const typeName = match[1]!
+      const typeName = match[1] ?? ''
       const entry = map.get(typeName) ?? { count: 0, locs: [] }
       entry.count++
       entry.locs.push({ file: filePath, line: i + 1, context: line.trim() })
@@ -304,7 +304,7 @@ export function extractKeywords(content: string, filePath: string): ElementFrequ
     if (line.trim().startsWith('//') || line.trim().startsWith('*')) continue
     const words = line.matchAll(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g)
     for (const match of words) {
-      const word = match[1]!
+      const word = match[1] ?? ''
       if (JS_KEYWORDS.has(word)) {
         const entry = map.get(word) ?? { count: 0, locs: [] }
         entry.count++

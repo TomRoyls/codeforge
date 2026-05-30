@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { Gear, Gearbox, GearTrainResult } from './gear-train-helpers.js'
+import type { Gear, GearTrainResult } from './gear-train-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

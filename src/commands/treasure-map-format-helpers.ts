@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { TreasureSpot, TreasureIsland, TreasureMapResult } from './treasure-map-helpers.js'
+import type { TreasureSpot, TreasureMapResult } from './treasure-map-helpers.js'
 
 // ─── Color Utilities ─────────────────────────────────────────────────────────
 

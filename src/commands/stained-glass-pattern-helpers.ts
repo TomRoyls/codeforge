@@ -760,7 +760,7 @@ export function classifyArtisanGrade(avgBrilliance: number): PatternStats['artis
  * generatePatternRecommendations(pieces, workshops, stats) // ['Add JSDoc...']
  */
 export function generatePatternRecommendations(
-  pieces: GlassPiece[],
+  _pieces: GlassPiece[],
   _workshops: Workshop[],
   stats: PatternStats,
 ): string[] {
@@ -836,16 +836,16 @@ export function buildStainedGlassPatternResult(
   const overallBrilliance = avg(p => p.qualityScore)
 
   const bestPiece = pieces.length > 0
-    ? pieces.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best, pieces[0]).file
+    ? pieces.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best, pieces[0] as typeof pieces[number]).file
     : ''
   const mostColorful = pieces.length > 0
-    ? pieces.reduce((best, p) => p.color.richness > best.color.richness ? p : best, pieces[0]).file
+    ? pieces.reduce((best, p) => p.color.richness > best.color.richness ? p : best, pieces[0] as typeof pieces[number]).file
     : ''
   const strongestLead = pieces.length > 0
-    ? pieces.reduce((best, p) => p.lead.strength > best.lead.strength ? p : best, pieces[0]).file
+    ? pieces.reduce((best, p) => p.lead.strength > best.lead.strength ? p : best, pieces[0] as typeof pieces[number]).file
     : ''
   const mostComplex = pieces.length > 0
-    ? pieces.reduce((best, p) => p.pattern.complexity > best.pattern.complexity ? p : best, pieces[0]).file
+    ? pieces.reduce((best, p) => p.pattern.complexity > best.pattern.complexity ? p : best, pieces[0] as typeof pieces[number]).file
     : ''
 
   const stats: PatternStats = {

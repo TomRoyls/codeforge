@@ -38,9 +38,10 @@ export class GraphBFS2 {
     const visited = new Set<number>();
     const queue: number[] = [startVertex];
     visited.add(startVertex);
+    let _qi = 0;
 
-    while (queue.length > 0) {
-      const current = queue.shift() as number;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
       callback(current);
 
       const neighbors = this.adjacencyList.get(current);
@@ -120,9 +121,10 @@ export class GraphBFS2 {
     const queue: number[] = [start];
     const visited = new Set<number>([start]);
     const parent: Map<number, number> = new Map();
+    let _qi = 0;
 
-    while (queue.length > 0) {
-      const current = queue.shift() as number;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
@@ -153,13 +155,14 @@ export class GraphBFS2 {
 
     const queue: number[] = [start];
     visited.add(start);
+    let _qi = 0;
 
-    while (queue.length > 0) {
-      const levelSize = queue.length;
+    while (_qi < queue.length) {
+      const levelSize = queue.length - _qi;
       const currentLevel: number[] = [];
 
       for (let i = 0; i < levelSize; i++) {
-        const current = queue.shift() as number;
+        const current = queue[_qi++]!;
         currentLevel.push(current);
 
         const neighbors = this.adjacencyList.get(current);
@@ -245,9 +248,10 @@ export class GraphBFS2 {
   private checkBipartiteBFS(startVertex: number, startColor: number, colors: Map<number, number>): boolean {
     const queue: number[] = [startVertex];
     colors.set(startVertex, startColor);
+    let _qi = 0;
 
-    while (queue.length > 0) {
-      const current = queue.shift() as number;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
       const currentColor = colors.get(current) ?? 0;
 
       const neighbors = this.adjacencyList.get(current);
@@ -270,9 +274,10 @@ export class GraphBFS2 {
     const queue: number[] = [start];
     visited.add(start);
     parentMap.set(start, -1);
+    let _qi = 0;
 
-    while (queue.length > 0) {
-      const current = queue.shift() as number;
+    while (_qi < queue.length) {
+      const current = queue[_qi++]!;
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {

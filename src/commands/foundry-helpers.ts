@@ -630,7 +630,7 @@ export function buildFoundryResult(
 ): FoundryResult {
   const pieces: CastPiece[] = []
   for (let i = 0; i < files.length; i++) {
-    pieces.push(analyzeCastPiece(contents[i], files[i]))
+    pieces.push(analyzeCastPiece(contents[i] ?? '',files[i] ?? ''))
   }
 
   const dirMap = new Map<string, CastPiece[]>()
@@ -690,12 +690,12 @@ function computeFoundryStats(pieces: CastPiece[], batches: FoundryBatch[]): Foun
   const foundryGrade = classifyFoundryGrade(overallQuality)
 
   const sortedByQuality = [...pieces].sort((a, b) => b.qualityScore - a.qualityScore)
-  const bestPiece = sortedByQuality.length > 0 ? sortedByQuality[0].file : 'none'
-  const worstPiece = sortedByQuality.length > 0 ? sortedByQuality[sortedByQuality.length - 1].file : 'none'
+  const bestPiece = sortedByQuality.length > 0 ? sortedByQuality[0]?.file : 'none'
+  const worstPiece = sortedByQuality.length > 0 ? sortedByQuality[sortedByQuality.length - 1]?.file : 'none'
 
   const sortedByWeight = [...pieces].sort((a, b) => b.weight - a.weight)
-  const heaviestPiece = sortedByWeight.length > 0 ? sortedByWeight[0].file : 'none'
-  const lightestPiece = sortedByWeight.length > 0 ? sortedByWeight[sortedByWeight.length - 1].file : 'none'
+  const heaviestPiece = sortedByWeight.length > 0 ? sortedByWeight[0]?.file : 'none'
+  const lightestPiece = sortedByWeight.length > 0 ? sortedByWeight[sortedByWeight.length - 1]?.file : 'none'
 
   return {
     totalFiles,
@@ -726,9 +726,9 @@ function computeFoundryStats(pieces: CastPiece[], batches: FoundryBatch[]): Foun
     avgToughness,
     overallQuality,
     foundryGrade,
-    bestPiece,
-    worstPiece,
-    heaviestPiece,
-    lightestPiece,
+    bestPiece: bestPiece ?? '',
+    worstPiece: worstPiece ?? '',
+    heaviestPiece: heaviestPiece ?? '',
+    lightestPiece: lightestPiece ?? '',
   }
 }

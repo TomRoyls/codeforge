@@ -201,8 +201,6 @@ const ELSE_RE = /\belse\s*[{(]/g
 const PIPE_RE = /[.\s](map|filter|reduce|forEach|flatMap|find|some|every)\s*\(/g
 const RETURN_RE = /\breturn\b/g
 const THROW_RE = /\bthrow\b/g
-const ASYNC_RE = /\basync\s+/
-const AWAIT_RE = /\bawait\b/g
 const CONST_RE = /\bconst\s+/g
 const LET_RE = /\blet\s+/g
 const MUTATION_RE = /\.\s*(push|pop|shift|unshift|splice|sort|reverse)\s*\(/g
@@ -210,7 +208,6 @@ const SIDE_EFFECT_RE = /\b(console|process|fs|fetch|http|writeFile|readFile)\b/g
 const ANY_TYPE_RE = /:\s*any\b/
 const DEAD_CODE_RE = /\b(debugger|with)\s*[(;]/
 const SEMICOLON_RE = /;\s*$/gm
-const INDENT_RE = /^\s{2,}\S/gm
 const BLANK_LINE_RE = /\n\s*\n/g
 const NESTED_BLOCK_RE = /\{[^{}]*\{[^{}]*\{/
 
@@ -240,7 +237,6 @@ export function measurePresence(content: string): PresenceMeasure {
   const classes = (content.match(CLASS_RE) ?? []).length
   const generics = (content.match(GENERIC_RE) ?? []).length
   const returns = (content.match(RETURN_RE) ?? []).length
-  const asyncs = (content.match(ASYNC_RE) ?? []).length
   const defaults = (content.match(EXPORT_DEFAULT_RE) ?? []).length
 
   const hasStrongEntrance = exports > 0 && types > 0
@@ -363,10 +359,8 @@ export function measureCostume(content: string): CostumeMeasure {
   }
 
   const semicolons = (content.match(SEMICOLON_RE) ?? []).length
-  const indented = (content.match(INDENT_RE) ?? []).length
   const blankLines = (content.match(BLANK_LINE_RE) ?? []).length
   const jsdoc = (content.match(JSDOC_RE) ?? []).length
-  const comments = (content.match(COMMENT_RE) ?? []).length
   const types = (content.match(TYPE_ANNOTATION_RE) ?? []).length
   const consts = (content.match(CONST_RE) ?? []).length
   const lets = (content.match(LET_RE) ?? []).length
@@ -433,8 +427,6 @@ export function measureSet(content: string): SetMeasure {
   const interfaces = (content.match(INTERFACE_RE) ?? []).length
   const functions = (content.match(FUNCTION_RE) ?? []).length + (content.match(ARROW_RE) ?? []).length
   const tryCatch = (content.match(TRY_CATCH_RE) ?? []).length
-  const ifs = (content.match(IF_RE) ?? []).length
-  const asyncs = (content.match(ASYNC_RE) ?? []).length
   const generics = (content.match(GENERIC_RE) ?? []).length
   const mutations = (content.match(MUTATION_RE) ?? []).length
   const sideEffects = (content.match(SIDE_EFFECT_RE) ?? []).length
@@ -562,9 +554,6 @@ export function measurePerformance(content: string): PerformanceMeasure {
   }
 
   const tryCatch = (content.match(TRY_CATCH_RE) ?? []).length
-  const throws = (content.match(THROW_RE) ?? []).length
-  const asyncs = (content.match(ASYNC_RE) ?? []).length
-  const awaits = (content.match(AWAIT_RE) ?? []).length
   const returns = (content.match(RETURN_RE) ?? []).length
   const types = (content.match(TYPE_ANNOTATION_RE) ?? []).length
   const pipes = (content.match(PIPE_RE) ?? []).length
@@ -573,7 +562,6 @@ export function measurePerformance(content: string): PerformanceMeasure {
   const sideEffects = (content.match(SIDE_EFFECT_RE) ?? []).length
   const deadCode = (content.match(DEAD_CODE_RE) ?? []).length
   const anyTypes = (content.match(ANY_TYPE_RE) ?? []).length
-  const mutations = (content.match(MUTATION_RE) ?? []).length
 
   const hasPerfectTiming = consts > 0 && lets === 0
   const hasEmotionalRange = pipes > 0 && functions_count(content) > 1
@@ -774,8 +762,8 @@ export function generateRecommendations(
     recs.push('Too many missed cues — add try-catch around side effects')
   }
 
-  const worst = performances.length > 0
-    ? performances.reduce((w, p) => p.qualityScore < w.qualityScore ? p : w, performances[0])
+  const worst = performances.length > 0 && performances[0]
+    ? performances.reduce((w, p) => p.qualityScore < w.qualityScore ? p : w, performances[0] as typeof performances[number])
     : null
   if (worst && worst.qualityScore < 25) {
     recs.push(`Worst performance "${worst.file}" needs a complete rewrite (score: ${worst.qualityScore})`)
@@ -833,20 +821,21 @@ export function buildTheaterStageResult(
   }
 
   const conditions = performances.map((p) => p.condition)
-  const bestPerformance = performances.length > 0
-    ? performances.reduce((b, p) => p.qualityScore > b.qualityScore ? p : b, performances[0])
+  const first = performances[0]
+  const bestPerformance = first
+    ? performances.reduce((b, p) => p.qualityScore > b.qualityScore ? p : b, first)
     : null
-  const bestScript = performances.length > 0
-    ? performances.reduce((b, p) => p.scriptQuality > b.scriptQuality ? p : b, performances[0])
+  const bestScript = first
+    ? performances.reduce((b, p) => p.scriptQuality > b.scriptQuality ? p : b, first)
     : null
-  const bestCostume = performances.length > 0
-    ? performances.reduce((b, p) => p.costumeDesign > b.costumeDesign ? p : b, performances[0])
+  const bestCostume = first
+    ? performances.reduce((b, p) => p.costumeDesign > b.costumeDesign ? p : b, first)
     : null
-  const bestSet = performances.length > 0
-    ? performances.reduce((b, p) => p.setDesign > b.setDesign ? p : b, performances[0])
+  const bestSet = first
+    ? performances.reduce((b, p) => p.setDesign > b.setDesign ? p : b, first)
     : null
-  const bestEngagement = performances.length > 0
-    ? performances.reduce((b, p) => p.audienceEngagement > b.audienceEngagement ? p : b, performances[0])
+  const bestEngagement = first
+    ? performances.reduce((b, p) => p.audienceEngagement > b.audienceEngagement ? p : b, first)
     : null
 
   const stats: TheaterStageStats = {

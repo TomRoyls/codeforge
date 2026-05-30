@@ -41,7 +41,7 @@ export function colorScore(score: number): string {
  */
 export function colorGrade(grade: string): string {
   const g = grade.toLowerCase()
-  const tierMap: Record<string, string> = {
+  const tierMap: Record<string, (text: string) => string> = {
     'temple-bell': best, 'pure-chime': best, 'crystal-chime': best,
     'beautiful-patina': best, 'instant-response': best, 'grand-cathedral-bell': best,
     'bell-tower': best, 'pealing-glory': best, 'master-bell-founder': best,

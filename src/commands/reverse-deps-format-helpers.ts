@@ -106,7 +106,7 @@ export function formatCriticalPaths(paths: string[][]): string {
   lines.push(chalk.gray('  ──────────────────────────────────────────────'))
 
   for (let i = 0; i < paths.length; i++) {
-    const chain = paths[i].map((p, idx) => {
+    const chain = (paths[i] ?? []).map((p: string, idx: number) => {
       if (idx === 0) return chalk.bold(p)
       return chalk.cyan(p)
     }).join(` ${chalk.gray('→')} `)

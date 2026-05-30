@@ -716,7 +716,7 @@ export function analyzeMoonlightBed(blooms: NightBloom[], dirPath: string): Moon
 export function generateRecommendations(
   blooms: NightBloom[],
   beds: MoonlightBed[],
-  estate: MidnightGardenResult['estate'],
+  _estate: MidnightGardenResult['estate'],
   stats: MidnightGardenResult['stats'],
 ): string[] {
   const recs: string[] = []

@@ -143,9 +143,12 @@ export function findShadowPaths(content: string, filePath: string): ShadowPath[]
   const callCounts = new Map<string, number[]>()
   const callRegex = /\b(\w+(?:\.\w+)*)\s*\(/g
   for (let i = 0; i < lines.length; i++) {
+    const currentLine = lines[i]
+    if (currentLine === undefined) continue
     let match: RegExpExecArray | null
     callRegex.lastIndex = 0
-    while ((match = callRegex.exec(lines[i])) !== null) {
+    while ((match = callRegex.exec(currentLine)) !== null) {
+      if (match[1] === undefined) continue
       const fn = match[1]
       if (/^(if|for|while|switch|return|const|let|var|function|class|new|typeof|instanceof)/.test(fn)) continue
       const lineNums = callCounts.get(fn) || []
@@ -156,9 +159,12 @@ export function findShadowPaths(content: string, filePath: string): ShadowPath[]
 
   const propRegex = /\b(\w+\.\w+)(?!\s*\()/g
   for (let i = 0; i < lines.length; i++) {
+    const currentLine = lines[i]
+    if (currentLine === undefined) continue
     let match: RegExpExecArray | null
     propRegex.lastIndex = 0
-    while ((match = propRegex.exec(lines[i])) !== null) {
+    while ((match = propRegex.exec(currentLine)) !== null) {
+      if (match[1] === undefined) continue
       const prop = match[1]
       if (/^(Math|console|JSON|Object|Array|String|Number|Promise|Date|Error|Map|Set|RegExp)/.test(prop)) continue
       const lineNums = callCounts.get(prop) || []
@@ -169,11 +175,13 @@ export function findShadowPaths(content: string, filePath: string): ShadowPath[]
 
   for (const [fn, lineNums] of callCounts) {
     if (lineNums.length >= 2) {
+      const secondLine = lineNums[1]
+      if (secondLine === undefined) continue
       const wasteLevel: ShadowPath['wasteLevel'] = lineNums.length >= 4 ? 'severe' : lineNums.length >= 3 ? 'major' : 'moderate'
       paths.push({
         type: 'repeated-lookup',
         file: filePath,
-        line: lineNums[1],
+        line: secondLine,
         description: `${fn} called ${lineNums.length} times — result could be cached`,
         wasteLevel,
         estimatedSavings: `${lineNums.length - 1} call(s)`,
@@ -184,8 +192,11 @@ export function findShadowPaths(content: string, filePath: string): ShadowPath[]
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (line === undefined) continue
     const trimmed = line.trim()
     const lineNum = i + 1
+    const nextLine = lines[i + 1]
+    const futureLine = lines[Math.min(i + 2, lines.length - 1)]
 
     if (/\.slice\(\)\s*\.sort\(|\.slice\(\)\.concat\(|Array\.from\(.*\)\.map\(/.test(trimmed)) {
       paths.push({
@@ -199,8 +210,8 @@ export function findShadowPaths(content: string, filePath: string): ShadowPath[]
       })
     }
 
-    if ((/\.forEach\(/.test(trimmed) && i + 1 < lines.length && /\.forEach\(/.test(lines[i + 1])) ||
-        (/\.map\(/.test(trimmed) && /\.filter\(/.test(lines[Math.min(i + 2, lines.length - 1)]))) {
+    if ((/\.forEach\(/.test(trimmed) && nextLine !== undefined && /\.forEach\(/.test(nextLine)) ||
+        (/\.map\(/.test(trimmed) && futureLine !== undefined && /\.filter\(/.test(futureLine))) {
       paths.push({
         type: 'double-iteration',
         file: filePath,
@@ -227,9 +238,10 @@ export function findShadowPaths(content: string, filePath: string): ShadowPath[]
       }
     }
 
+    const lhs = trimmed.split('=')[0]
     if (/^\s*(const|let)\s+\w+\s*=\s*.*[\+\-\*\/%]/.test(trimmed) &&
-        i + 1 < lines.length && !lines[i + 1].includes(trimmed.split('=')[0].trim().split(' ')[1] || '')) {
-      const varName = trimmed.split('=')[0].trim().split(' ')[1] || ''
+        lhs !== undefined && nextLine !== undefined && !nextLine.includes(lhs.trim().split(' ')[1] || '')) {
+      const varName = lhs.trim().split(' ')[1] || ''
       if (varName && !content.substring(content.indexOf(trimmed) + trimmed.length).includes(varName)) {
         paths.push({
           type: 'unused-result',
@@ -246,7 +258,9 @@ export function findShadowPaths(content: string, filePath: string): ShadowPath[]
 
   let loopDepth = 0
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim()
+    const loopLine = lines[i]
+    if (loopLine === undefined) continue
+    const trimmed = loopLine.trim()
     if (/^\s*(\/\/|\/\*|\*)/.test(trimmed)) continue
     const loopMatches = trimmed.match(/\bfor\s*\(|\bwhile\s*\(/g)
     if (loopMatches) {
@@ -553,10 +567,13 @@ export function buildSundialResult(
   const allShadowPaths: ShadowPath[] = []
 
   for (let i = 0; i < files.length; i++) {
-    const reading = takeReading(contents[i], files[i])
+    const content = contents[i]
+    const file = files[i]
+    if (content === undefined || file === undefined) continue
+    const reading = takeReading(content, file)
     readings.push(reading)
 
-    const shadows = findShadowPaths(contents[i], files[i])
+    const shadows = findShadowPaths(content, file)
     allShadowPaths.push(...shadows)
   }
 

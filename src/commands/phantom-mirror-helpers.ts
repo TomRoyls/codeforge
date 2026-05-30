@@ -699,8 +699,8 @@ export function analyzeMirrorGallery(reflections: PhantomReflection[], dirPath: 
 
 /** @example generateRecommendations(reflections, galleries, mansion, stats) returns string[] */
 export function generateRecommendations(
-  reflections: PhantomReflection[],
-  galleries: MirrorGallery[],
+  _reflections: PhantomReflection[],
+  _galleries: MirrorGallery[],
   mansion: PhantomMirrorResult['mansion'],
   stats: PhantomMirrorResult['stats'],
 ): string[] {

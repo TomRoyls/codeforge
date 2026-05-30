@@ -52,7 +52,7 @@ export function colorGrade(grade: string): string {
 
     'proper-throne': okay, 'proper-scholar': okay, 'proper-authority': okay,
     'proper-craft': okay, 'proper-stone': okay, 'proper-rule': okay,
-    'proper-courtyard': okay, 'stable-dynasty': okay, 'skilled-artisan': okay,
+    'proper-courtyard': okay, 'stable-dynasty': okay,
 
     'carved-stone': poor, 'learning-student': poor, 'weak-rule': poor,
     'rough-hewn': poor, 'cloudy-jade': poor, 'brief-era': poor,

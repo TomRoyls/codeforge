@@ -530,7 +530,6 @@ export function measureCoordination(content: string): ChessPiece['coordinationDe
   const imports = countImports(content)
   const functions = countFunctions(content)
   const comments = countComments(content)
-  const jsdoc = countJSDoc(content)
   const types = countTypeAnnotations(content)
 
   const protectedPieces = exports
@@ -837,15 +836,15 @@ export function buildChessBoardResult(
     overallPosition,
     playerGrade: classifyPlayerGrade(overallPosition),
     bestPosition: pieces.length > 0
-      ? pieces.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
     worstPosition: pieces.length > 0
-      ? pieces.reduce((a, b) => b.qualityScore < a.qualityScore ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.qualityScore < a.qualityScore ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
     mostPowerful: pieces.length > 0
-      ? pieces.reduce((a, b) => b.tacticalStrength > a.tacticalStrength ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.tacticalStrength > a.tacticalStrength ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
     mostStrategic: pieces.length > 0
-      ? pieces.reduce((a, b) => b.strategicDepth > a.strategicDepth ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.strategicDepth > a.strategicDepth ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
     mostCoordinated: pieces.length > 0
-      ? pieces.reduce((a, b) => b.coordination > a.coordination ? b : a, pieces[0]).file : 'none',
+      ? pieces.reduce((a, b) => b.coordination > a.coordination ? b : a, pieces[0] as typeof pieces[number]).file : 'none',
   }
 
   const recommendations = generateRecommendations(pieces, ranks, game, stats)

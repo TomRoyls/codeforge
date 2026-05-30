@@ -214,7 +214,7 @@ export function extractFunctions(content: string, filePath: string): FunctionInf
           endLine,
           filePath,
           linesOfCode,
-          name,
+          name: name ?? '',
           params: countParams(paramString),
           riskLevel: getRiskLevel(complexity),
           startLine,

@@ -52,7 +52,7 @@ export function colorGrade(grade: string): string {
 
     'proper-glow': okay, 'proper-hum': okay, 'proper-light': okay,
     'proper-intent': okay, 'proper-power': okay, 'proper-shrine': okay,
-    'proper-shrine': okay, 'decent-temple': okay, 'skilled-acolyte': okay,
+    'decent-temple': okay, 'skilled-acolyte': okay,
 
     'dim-bulb': poor, 'dull-buzz': poor, 'flickering': poor,
     'mumbled-words': poor, 'wasteful-bulb': poor, 'dim-sanctuary': poor,

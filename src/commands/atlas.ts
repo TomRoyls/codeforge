@@ -1,8 +1,8 @@
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { extname, resolve } from 'node:path'
 import ora from 'ora'
+import { resolve } from 'node:path'
 
 import { discoverFiles } from '../core/file-discovery.js'
 import { buildAtlasResult, type AtlasResult } from './atlas-helpers.js'

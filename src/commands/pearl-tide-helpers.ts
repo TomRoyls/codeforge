@@ -654,7 +654,7 @@ export async function buildPearlTideResult(
 export function generateRecommendations(
   lusters: PearlLuster[],
   beds: PearlBed[],
-  ocean: PearlTideResult['ocean'],
+  _ocean: PearlTideResult['ocean'],
   stats: PearlTideResult['stats'],
 ): string[] {
   const recs: string[] = []

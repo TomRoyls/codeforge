@@ -242,12 +242,14 @@ export function extractImports(content: string): string[] {
   const importRegex = /import\s+(?:type\s+)?(?:[\w{}*,\s]+?)\s*(?:from\s+)?['"]([^'"]+)['"]/g
   let match: RegExpExecArray | null
   while ((match = importRegex.exec(content)) !== null) {
-    imports.push(match[1])
+    const importPath = match[1]
+    if (importPath !== undefined) imports.push(importPath)
   }
   // Also match dynamic imports
   const dynamicRegex = /import\(\s*['"]([^'"]+)['"]\s*\)/g
   while ((match = dynamicRegex.exec(content)) !== null) {
-    imports.push(match[1])
+    const importPath = match[1]
+    if (importPath !== undefined) imports.push(importPath)
   }
   return [...new Set(imports)]
 }
@@ -272,22 +274,28 @@ export function extractExports(content: string): ExportExplanation[] {
       /^export\s+default\s+class\s+(\w+)/,
     )
     if (defaultClassMatch) {
-      exports.push({
-        name: defaultClassMatch[1],
-        purpose: `Default exported class`,
-        type: 'class',
-      })
+      const name = defaultClassMatch[1] ?? ''
+      if (name) {
+        exports.push({
+          name,
+          purpose: `Default exported class`,
+          type: 'class',
+        })
+      }
       continue
     }
 
     // export class X
     const classMatch = trimmed.match(/^export\s+(?:default\s+)?class\s+(\w+)/)
     if (classMatch) {
-      exports.push({
-        name: classMatch[1],
-        purpose: `Exported class`,
-        type: 'class',
-      })
+      const name = classMatch[1] ?? ''
+      if (name) {
+        exports.push({
+          name,
+          purpose: `Exported class`,
+          type: 'class',
+        })
+      }
       continue
     }
 
@@ -296,33 +304,42 @@ export function extractExports(content: string): ExportExplanation[] {
       /^export\s+(?:async\s+)?function\s+(\w+)/,
     )
     if (funcMatch) {
-      exports.push({
-        name: funcMatch[1],
-        purpose: `Exported function`,
-        type: 'function',
-      })
+      const name = funcMatch[1] ?? ''
+      if (name) {
+        exports.push({
+          name,
+          purpose: `Exported function`,
+          type: 'function',
+        })
+      }
       continue
     }
 
     // export interface X
     const ifaceMatch = trimmed.match(/^export\s+interface\s+(\w+)/)
     if (ifaceMatch) {
-      exports.push({
-        name: ifaceMatch[1],
-        purpose: `Exported interface`,
-        type: 'interface',
-      })
+      const name = ifaceMatch[1] ?? ''
+      if (name) {
+        exports.push({
+          name,
+          purpose: `Exported interface`,
+          type: 'interface',
+        })
+      }
       continue
     }
 
     // export type X
     const typeMatch = trimmed.match(/^export\s+type\s+(\w+)/)
     if (typeMatch) {
-      exports.push({
-        name: typeMatch[1],
-        purpose: `Exported type`,
-        type: 'type',
-      })
+      const name = typeMatch[1] ?? ''
+      if (name) {
+        exports.push({
+          name,
+          purpose: `Exported type`,
+          type: 'type',
+        })
+      }
       continue
     }
 
@@ -331,18 +348,22 @@ export function extractExports(content: string): ExportExplanation[] {
       /^export\s+(?:const|let|var)\s+(\w+)/,
     )
     if (constMatch) {
-      exports.push({
-        name: constMatch[1],
-        purpose: `Exported constant`,
-        type: 'constant',
-      })
+      const name = constMatch[1] ?? ''
+      if (name) {
+        exports.push({
+          name,
+          purpose: `Exported constant`,
+          type: 'constant',
+        })
+      }
       continue
     }
 
     // export { X, Y }
     const namedMatch = trimmed.match(/^export\s+\{([^}]+)\}/)
     if (namedMatch) {
-      const names = namedMatch[1].split(',').map((n) => n.trim().split(/\s+as\s+/).pop()?.trim() ?? n.trim())
+      const matchStr = namedMatch[1] ?? ''
+      const names = matchStr.split(',').map((n) => (n.trim().split(/\s+as\s+/).pop() ?? '').trim() || n.trim())
       for (const name of names) {
         if (name) {
           exports.push({
@@ -358,11 +379,14 @@ export function extractExports(content: string): ExportExplanation[] {
     // export default X
     const defaultMatch = trimmed.match(/^export\s+default\s+(\w+)/)
     if (defaultMatch) {
-      exports.push({
-        name: defaultMatch[1],
-        purpose: `Default export`,
-        type: 'unknown',
-      })
+      const name = defaultMatch[1] ?? ''
+      if (name) {
+        exports.push({
+          name,
+          purpose: `Default export`,
+          type: 'unknown',
+        })
+      }
       continue
     }
   }
@@ -385,7 +409,7 @@ export function extractSections(content: string): CodeSection[] {
   const sectionStack: { type: SectionType; name: string; startLine: number; braceCount: number }[] = []
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+    const line = lines[i] ?? ''
     const lineNum = i + 1
     const trimmed = line.trim()
 
@@ -423,13 +447,15 @@ export function extractSections(content: string): CodeSection[] {
         /^(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*[<(]/,
       )
       if (funcMatch) {
+        const funcName = funcMatch[1] ?? ''
+        if (!funcName) continue
         const opens = (trimmed.match(/\{/g) ?? []).length
         const closes = (trimmed.match(/\}/g) ?? []).length
         const braceCount = opens - closes
         if (braceCount > 0 || !trimmed.includes('{')) {
           sectionStack.push({
             type: 'function',
-            name: funcMatch[1],
+            name: funcName,
             startLine: lineNum,
             braceCount: braceCount > 0 ? braceCount : 0,
           })
@@ -442,12 +468,14 @@ export function extractSections(content: string): CodeSection[] {
         /^(?:export\s+)?(?:default\s+)?(?:abstract\s+)?class\s+(\w+)/,
       )
       if (classMatch) {
+        const className = classMatch[1] ?? ''
+        if (!className) continue
         const opens = (trimmed.match(/\{/g) ?? []).length
         const closes = (trimmed.match(/\}/g) ?? []).length
         const braceCount = opens - closes
         sectionStack.push({
           type: 'class',
-          name: classMatch[1],
+          name: className,
           startLine: lineNum,
           braceCount: braceCount > 0 ? braceCount : 0,
         })
@@ -460,8 +488,8 @@ export function extractSections(content: string): CodeSection[] {
       /^(?:export\s+)?interface\s+(\w+)\s*(?:\{|extends)/,
     )
     if (ifaceMatch) {
-      const name = ifaceMatch[1]
-      if (!sections.some((s) => s.name === name && s.type === 'interface')) {
+      const name = ifaceMatch[1] ?? ''
+      if (name && !sections.some((s) => s.name === name && s.type === 'interface')) {
         let endLine = lineNum
         let depth = (trimmed.match(/\{/g) ?? []).length - (trimmed.match(/\}/g) ?? []).length
         for (let k = i + 1; k < lines.length; k++) {
@@ -469,7 +497,6 @@ export function extractSections(content: string): CodeSection[] {
           endLine = k + 1
           if (depth <= 0) break
         }
-        const sectionContent = lines.slice(i, endLine).join('\n')
         sections.push({
           type: 'interface',
           name,
@@ -493,8 +520,8 @@ export function extractSections(content: string): CodeSection[] {
       /^(?:export\s+)?type\s+(\w+)\s*(?:<|=)/,
     )
     if (typeMatch) {
-      const name = typeMatch[1]
-      if (!sections.some((s) => s.name === name && s.type === 'type')) {
+      const name = typeMatch[1] ?? ''
+      if (name && !sections.some((s) => s.name === name && s.type === 'type')) {
         let endLine = lineNum
         if (!trimmed.endsWith(';') && trimmed.includes('{')) {
           let depth = (trimmed.match(/\{/g) ?? []).length - (trimmed.match(/\}/g) ?? []).length
@@ -527,8 +554,8 @@ export function extractSections(content: string): CodeSection[] {
       /^(?:export\s+)?(?:const|let|var)\s+(\w+)\s*[:=]/,
     )
     if (constMatch && sectionStack.length === 0) {
-      const name = constMatch[1]
-      if (!sections.some((s) => s.name === name && s.type === 'constant')) {
+      const name = constMatch[1] ?? ''
+      if (name && !sections.some((s) => s.name === name && s.type === 'constant')) {
         let endLine = lineNum
         if (trimmed.includes('{') || trimmed.includes('(')) {
           let depth = 0
@@ -623,7 +650,8 @@ export function extractSectionParams(
     // Find constructor
     const constructorMatch = decl.match(/constructor\s*\(([^)]*)\)/)
     if (constructorMatch) {
-      return parseParamList(constructorMatch[1])
+      const paramStr = constructorMatch[1] ?? ''
+      return parseParamList(paramStr)
     }
     return []
   }
@@ -633,7 +661,8 @@ export function extractSectionParams(
     new RegExp(`${escapeRegex(name)}\\s*(?:<[^>]*>)?\\s*\\(([^)]*)\\)`),
   )
   if (parenMatch) {
-    return parseParamList(parenMatch[1])
+    const paramStr = parenMatch[1] ?? ''
+    return parseParamList(paramStr)
   }
 
   return []
@@ -649,12 +678,16 @@ export function extractSectionParams(
 export function extractArrowParams(line: string): ParamExplanation[] {
   const arrowMatch = line.match(/=\s*\(([^)]*)\)/)
   if (arrowMatch) {
-    return parseParamList(arrowMatch[1])
+    const paramStr = arrowMatch[1] ?? ''
+    return parseParamList(paramStr)
   }
   // Single param without parens: const x = param => ...
   const singleMatch = line.match(/=\s*(\w+)\s*=>/)
   if (singleMatch) {
-    return [{ name: singleMatch[1], type: 'unknown', purpose: `Parameter ${singleMatch[1]}` }]
+    const paramName = singleMatch[1] ?? ''
+    if (paramName) {
+      return [{ name: paramName, type: 'unknown', purpose: `Parameter ${paramName}` }]
+    }
   }
   return []
 }
@@ -777,18 +810,20 @@ export function detectControlFlow(content: string): ControlFlowType {
   // Check for recursion: function calls its own name
   const funcNameMatch = content.match(/function\s+(\w+)/)
   if (funcNameMatch) {
-    const funcName = funcNameMatch[1]
-    const bodyMatch = content.slice(content.indexOf('{'))
-    if (bodyMatch && new RegExp(`\\b${escapeRegex(funcName)}\\s*\\(`).test(bodyMatch)) {
-      return 'recursive'
+    const funcName = funcNameMatch[1] ?? ''
+    if (funcName) {
+      const bodyMatch = content.slice(content.indexOf('{'))
+      if (bodyMatch && new RegExp(`\\b${escapeRegex(funcName)}\\s*\\(`).test(bodyMatch)) {
+        return 'recursive'
+      }
     }
   }
 
   // Check arrow constant recursion
   const arrowMatch = content.match(/(?:const|let)\s+(\w+)\s*=[^=]*=>/)
   if (arrowMatch) {
-    const varName = arrowMatch[1]
-    if (new RegExp(`\\b${escapeRegex(varName)}\\s*\\(`).test(content)) {
+    const varName = arrowMatch[1] ?? ''
+    if (varName && new RegExp(`\\b${escapeRegex(varName)}\\s*\\(`).test(content)) {
       return 'recursive'
     }
   }
@@ -1028,6 +1063,7 @@ export function extractCallsFromSection(content: string, selfName: string): stri
 
   while ((match = callRegex.exec(content)) !== null) {
     const name = match[1]
+    if (name === undefined) continue
     if (name === selfName) continue
     if (keywords.has(name)) continue
     if (!calls.includes(name)) calls.push(name)
@@ -1052,7 +1088,8 @@ export function inferReturnType(content: string, type: SectionType): string {
   // Check explicit return type
   const returnTypeMatch = content.match(/\)\s*:\s*([^{=]+?)(?:\s*[{=]|$)/m)
   if (returnTypeMatch) {
-    return returnTypeMatch[1].trim()
+    const retType = returnTypeMatch[1] ?? ''
+    if (retType) return retType.trim()
   }
 
   // Infer from content
@@ -1097,7 +1134,7 @@ export function computeMetrics(content: string, sections: CodeSection[]): FileMe
  * // 'TypeScript file with 3 functions and 2 imports...'
  */
 export function generateOverview(
-  filePath: string,
+  _filePath: string,
   language: string,
   sections: CodeSection[],
   dependencies: string[],
