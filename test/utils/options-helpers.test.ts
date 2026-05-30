@@ -41,4 +41,61 @@ describe('extractRuleOptions', () => {
     const result = extractRuleOptions([{ b: 2 }], defaults)
     expect(result).toEqual({ a: 1, b: 2 })
   })
+
+  it('handles null input', () => {
+    const defaults = { max: 10 }
+    expect(extractRuleOptions(null, defaults)).toEqual(defaults)
+  })
+
+  it('handles numeric input', () => {
+    const defaults = { max: 10 }
+    expect(extractRuleOptions(42, defaults)).toEqual(defaults)
+  })
+
+  it('handles boolean input', () => {
+    const defaults = { max: 10 }
+    expect(extractRuleOptions(true, defaults)).toEqual(defaults)
+  })
+
+  it('preserves undefined values from override', () => {
+    const defaults = { a: 1, b: 2 }
+    const result = extractRuleOptions([{ a: 1, b: undefined }], defaults)
+    expect(result).toEqual({ a: 1, b: undefined })
+  })
+
+  it('handles multiple objects in array (uses first)', () => {
+    const defaults = { a: 1 }
+    const result = extractRuleOptions([{ a: 2 }, { a: 3 }], defaults)
+    expect(result.a).toBe(2)
+  })
+
+  it('handles nested object in options', () => {
+    const defaults = { config: { x: 1 } }
+    const result = extractRuleOptions([{ config: { x: 5 } }], defaults)
+    expect(result.config).toEqual({ x: 5 })
+  })
+
+  it('handles empty object in array', () => {
+    const defaults = { a: 1 }
+    const result = extractRuleOptions([{}], defaults)
+    expect(result).toEqual({ a: 1 })
+  })
+
+  it('preserves all default properties', () => {
+    const defaults = { a: 1, b: 2, c: 3 }
+    const result = extractRuleOptions([{ a: 10 }], defaults)
+    expect(result.b).toBe(2)
+    expect(result.c).toBe(3)
+  })
+
+  it('overrides multiple properties', () => {
+    const defaults = { x: 0, y: 0, z: 0 }
+    const result = extractRuleOptions([{ x: 1, y: 2 }], defaults)
+    expect(result).toEqual({ x: 1, y: 2, z: 0 })
+  })
+
+  it('handles empty defaults', () => {
+    const result = extractRuleOptions([{ a: 1 }], {})
+    expect(result).toEqual({ a: 1 })
+  })
 })

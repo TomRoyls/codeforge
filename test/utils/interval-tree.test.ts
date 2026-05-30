@@ -134,3 +134,40 @@ describe('IntervalTree clear', () => {
     expect(tree.query(3)).toEqual([])
   })
 })
+
+describe('IntervalTree additional', () => {
+  it('handles point at exactly 0', () => {
+    const tree = new IntervalTree<string>()
+    tree.insert({ start: 0, end: 0 }, 'zero')
+    expect(tree.query(0).map((r) => r.value)).toEqual(['zero'])
+    expect(tree.query(1)).toEqual([])
+  })
+
+  it('handles overlapping intervals with same range', () => {
+    const tree = new IntervalTree<string>()
+    tree.insert({ start: 1, end: 5 }, 'a')
+    tree.insert({ start: 1, end: 5 }, 'b')
+    expect(tree.size).toBe(2)
+    expect(tree.query(3).map((r) => r.value).sort()).toEqual(['a', 'b'])
+  })
+
+  it('deletes correct interval from duplicates', () => {
+    const tree = new IntervalTree<string>()
+    tree.insert({ start: 1, end: 5 }, 'a')
+    tree.insert({ start: 1, end: 5 }, 'b')
+    expect(tree.delete({ start: 1, end: 5 })).toBe(true)
+    expect(tree.size).toBe(1)
+  })
+
+  it('queryRange returns empty for empty tree', () => {
+    const tree = new IntervalTree<string>()
+    expect(tree.queryRange(0, 100)).toEqual([])
+  })
+
+  it('handles negative intervals', () => {
+    const tree = new IntervalTree<string>()
+    tree.insert({ start: -10, end: -5 }, 'neg')
+    expect(tree.query(-7).map((r) => r.value)).toEqual(['neg'])
+    expect(tree.query(0)).toEqual([])
+  })
+})

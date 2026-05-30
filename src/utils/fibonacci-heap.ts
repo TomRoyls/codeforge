@@ -1,155 +1,101 @@
-export interface FibHeapNode<T> {
-  key: number
-  value: T
-  degree: number
-  marked: boolean
-}
-
-interface InternalNode<T> {
-  key: number
-  value: T
-  degree: number
-  marked: boolean
-  parent: InternalNode<T> | null
-  child: InternalNode<T> | null
-  left: InternalNode<T>
-  right: InternalNode<T>
-}
-
-function createNode<T>(key: number, value: T): InternalNode<T> {
-  const node: InternalNode<T> = {
-    key,
-    value,
-    degree: 0,
-    marked: false,
-    parent: null,
-    child: null,
-    left: null as unknown as InternalNode<T>,
-    right: null as unknown as InternalNode<T>,
-  }
-  node.left = node
-  node.right = node
-  return node
-}
-
-function linkIntoList<T>(node: InternalNode<T>, list: InternalNode<T>): void {
-  node.right = list.right
-  node.left = list
-  list.right.left = node
-  list.right = node
-}
-
-function unlinkFromList<T>(node: InternalNode<T>): void {
-  node.left.right = node.right
-  node.right.left = node.left
-  node.left = node
-  node.right = node
-}
-
 export class FibonacciHeap<T> {
-  private minNode: InternalNode<T> | null = null
-  private _size = 0
+  private min: FibNode<T> | null = null
+  private _size: number = 0
+  private nextHandle: number = 1
+  private nodeMap: Map<number, FibNode<T>> = new Map()
 
-  insert(key: number, value: T): FibHeapNode<T> {
-    const node = createNode(key, value)
-    if (this.minNode === null) {
-      this.minNode = node
+  constructor(private comparator: (a: T, b: T) => number = (a: T, b: T) => {
+    if (a < b) return -1
+    if (a > b) return 1
+    return 0
+  }) {}
+
+  insert(value: T): number {
+    const handle = this.nextHandle++
+    const node: FibNode<T> = {
+      value,
+      handle,
+      degree: 0,
+      mark: false,
+      parent: null,
+      child: null,
+      left: null as FibNode<T> | null,
+      right: null as FibNode<T> | null
+    }
+    node.left = node
+    node.right = node
+    this.nodeMap.set(handle, node)
+    if (!this.min) {
+      this.min = node
     } else {
-      linkIntoList(node, this.minNode)
-      if (node.key < this.minNode.key) {
-        this.minNode = node
+      this.addToRootList(node)
+      if (this.comparator(value, this.min.value) < 0) {
+        this.min = node
       }
     }
     this._size++
-    return node
+    return handle
   }
 
-  extractMin(): { key: number; value: T } | undefined {
-    if (this.minNode === null) return undefined
-
-    const z = this.minNode
-
-    if (z.child !== null) {
+  extractMin(): T | undefined {
+    const z = this.min
+    if (!z) return undefined
+    if (z.child) {
       let child = z.child
-      const children: InternalNode<T>[] = []
-      let start = child
       do {
-        children.push(child)
-        child = child.right
-      } while (child !== start)
-
-      for (const c of children) {
-        c.parent = null
-        linkIntoList(c, z)
-      }
+        const nextChild = child.right!
+        child.parent = null
+        this.addToRootList(child)
+        child = nextChild
+      } while (child !== z.child)
     }
-
-    const next = z.right
-    unlinkFromList(z)
-
-    if (z === next) {
-      this.minNode = null
+    this.removeFromRootList(z)
+    this.nodeMap.delete(z.handle)
+    if (z === z.right) {
+      this.min = null
     } else {
-      this.minNode = next
+      this.min = z.right!
       this.consolidate()
     }
-
     this._size--
-    return { key: z.key, value: z.value }
+    return z.value
   }
 
-  get min(): { key: number; value: T } | undefined {
-    if (this.minNode === null) return undefined
-    return { key: this.minNode.key, value: this.minNode.value }
+  peek(): T | undefined {
+    return this.min?.value
   }
 
-  decreaseKey(node: FibHeapNode<T>, newKey: number): void {
-    const internal = node as InternalNode<T>
-    if (newKey >= internal.key) {
-      throw new Error('New key is greater than current key')
+  decreaseKey(handle: number, newValue: T): void {
+    const node = this.nodeMap.get(handle)
+    if (!node) {
+      throw new Error(`Invalid handle: ${handle}`)
     }
-
-    internal.key = newKey
-    const parent = internal.parent
-
-    if (parent !== null && internal.key < parent.key) {
-      this.cut(internal, parent)
+    if (this.comparator(newValue, node.value) > 0) {
+      throw new Error('New value must be less than or equal to current value')
+    }
+    node.value = newValue
+    const parent = node.parent
+    if (parent && this.comparator(node.value, parent.value) < 0) {
+      this.cut(node, parent)
       this.cascadingCut(parent)
     }
-
-    if (this.minNode === null || internal.key < this.minNode.key) {
-      this.minNode = internal
+    if (this.min && this.comparator(node.value, this.min.value) < 0) {
+      this.min = node
     }
   }
 
-  delete(node: FibHeapNode<T>): void {
-    const internal = node as InternalNode<T>
-    this.decreaseKey(internal, -Infinity)
+  delete(handle: number): void {
+    const node = this.nodeMap.get(handle)
+    if (!node) {
+      throw new Error(`Invalid handle: ${handle}`)
+    }
+    const parent = node.parent
+    if (parent) {
+      this.cut(node, parent)
+      this.cascadingCut(parent)
+    }
+    this.min = node
     this.extractMin()
-  }
-
-  merge(other: FibonacciHeap<T>): void {
-    if (other.minNode === null) return
-
-    if (this.minNode === null) {
-      this.minNode = other.minNode
-    } else {
-      const aRight = this.minNode.right
-      const bRight = other.minNode.right
-
-      this.minNode.right = bRight
-      bRight.left = this.minNode
-      other.minNode.right = aRight
-      aRight.left = other.minNode
-
-      if (other.minNode.key < this.minNode.key) {
-        this.minNode = other.minNode
-      }
-    }
-
-    this._size += other._size
-    other.minNode = null
-    other._size = 0
   }
 
   get size(): number {
@@ -161,90 +107,169 @@ export class FibonacciHeap<T> {
   }
 
   clear(): void {
-    this.minNode = null
+    this.min = null
     this._size = 0
+    this.nextHandle = 1
+    this.nodeMap.clear()
+  }
+
+  merge(other: FibonacciHeap<T>): void {
+    if (!other.min) return
+    if (!this.min) {
+      this.min = other.min
+    } else {
+      this.mergeLists(this.min, other.min)
+      if (this.comparator(other.min.value, this.min.value) < 0) {
+        this.min = other.min
+      }
+    }
+    this._size += other._size
+    other.nodeMap.forEach((node, handle) => {
+      this.nodeMap.set(handle, node)
+    })
+    other.min = null
+    other._size = 0
+    other.nextHandle = 1
+    other.nodeMap.clear()
+  }
+
+  toArray(): T[] {
+    const result: T[] = []
+    const visited = new Set<FibNode<T>>()
+    if (this.min) {
+      let current = this.min
+      do {
+        if (!visited.has(current)) {
+          this.collectAllNodes(current, result, visited)
+        }
+        current = current.right!
+      } while (current !== this.min)
+    }
+    return result
+  }
+
+  private collectAllNodes(node: FibNode<T>, result: T[], visited: Set<FibNode<T>>): void {
+    if (visited.has(node)) return
+    visited.add(node)
+    result.push(node.value)
+    if (node.child) {
+      let child = node.child
+      do {
+        this.collectAllNodes(child, result, visited)
+        child = child.right!
+      } while (child !== node.child)
+    }
+  }
+
+  private addToRootList(node: FibNode<T>): void {
+    if (!this.min) {
+      this.min = node
+      node.left = node
+      node.right = node
+      return
+    }
+    node.left = this.min
+    const minRight = this.min.right!
+    node.right = minRight
+    minRight.left = node
+    this.min.right = node
+  }
+
+  private removeFromRootList(node: FibNode<T>): void {
+    const leftNode = node.left!
+    const rightNode = node.right!
+    leftNode.right = rightNode
+    rightNode.left = leftNode
+    if (node === this.min) {
+      this.min = node.right !== node ? node.right : null
+    }
+  }
+
+  private link(y: FibNode<T>, x: FibNode<T>): void {
+    this.removeFromRootList(y)
+    y.parent = x
+    if (!x.child) {
+      x.child = y
+      y.left = y
+      y.right = y
+    } else {
+      y.left = x.child
+      const xChildRight = x.child.right!
+      y.right = xChildRight
+      xChildRight.left = y
+      x.child.right = y
+    }
+    x.degree++
+    y.mark = false
   }
 
   private consolidate(): void {
     const maxDegree = Math.floor(Math.log2(this._size)) + 1
-    const A: (InternalNode<T> | null)[] = new Array(maxDegree + 2).fill(null)
-
-    const roots = this.getRootList()
+    const degreeArray: (FibNode<T> | null)[] = new Array(maxDegree + 1).fill(null)
+    let current = this.min
+    const roots: FibNode<T>[] = []
+    if (current) {
+      do {
+        roots.push(current)
+        current = current.right!
+      } while (current !== this.min)
+    }
     for (const w of roots) {
       let x = w
       let d = x.degree
-
-      while (d < A.length && A[d] !== null) {
-        let y = A[d]!
-        if (x.key > y.key) {
+      while (degreeArray[d]) {
+        let y = degreeArray[d]!
+        if (this.comparator(x.value, y.value) > 0) {
           const temp = x
           x = y
           y = temp
         }
-        this.heapLink(y, x)
-        A[d] = null
+        this.link(y, x)
+        degreeArray[d] = null
         d++
       }
-      if (d >= A.length) {
-        A.length = d + 1
-      }
-      A[d] = x
+      degreeArray[d] = x
     }
-
-    this.minNode = null
-    for (const node of A) {
-      if (node !== null) {
-        if (this.minNode === null) {
+    this.min = null
+    for (const node of degreeArray) {
+      if (node) {
+        if (!this.min) {
+          this.min = node
           node.left = node
           node.right = node
-          this.minNode = node
         } else {
-          linkIntoList(node, this.minNode)
-          if (node.key < this.minNode.key) {
-            this.minNode = node
+          this.addToRootList(node)
+          if (this.comparator(node.value, this.min.value) < 0) {
+            this.min = node
           }
         }
       }
     }
   }
 
-  private heapLink(y: InternalNode<T>, x: InternalNode<T>): void {
-    unlinkFromList(y)
-    y.parent = x
-
-    if (x.child === null) {
-      x.child = y
-      y.left = y
-      y.right = y
-    } else {
-      linkIntoList(y, x.child)
-    }
-
-    x.degree++
-    y.marked = false
-  }
-
-  private cut(x: InternalNode<T>, y: InternalNode<T>): void {
-    if (x.right === x) {
-      y.child = null
-    } else {
-      if (y.child === x) {
+  private cut(x: FibNode<T>, y: FibNode<T>): void {
+    if (y.child === x) {
+      if (x.right === x) {
+        y.child = null
+      } else {
         y.child = x.right
       }
-      unlinkFromList(x)
     }
-
+    const leftNode = x.left!
+    const rightNode = x.right!
+    leftNode.right = rightNode
+    rightNode.left = leftNode
     y.degree--
+    this.addToRootList(x)
     x.parent = null
-    x.marked = false
-    linkIntoList(x, this.minNode!)
+    x.mark = false
   }
 
-  private cascadingCut(y: InternalNode<T>): void {
+  private cascadingCut(y: FibNode<T>): void {
     const z = y.parent
-    if (z !== null) {
-      if (!y.marked) {
-        y.marked = true
+    if (z) {
+      if (!y.mark) {
+        y.mark = true
       } else {
         this.cut(y, z)
         this.cascadingCut(z)
@@ -252,15 +277,23 @@ export class FibonacciHeap<T> {
     }
   }
 
-  private getRootList(): InternalNode<T>[] {
-    if (this.minNode === null) return []
-    const result: InternalNode<T>[] = []
-    let current = this.minNode
-    const start = current
-    do {
-      result.push(current)
-      current = current.right
-    } while (current !== start)
-    return result
+  private mergeLists(a: FibNode<T>, b: FibNode<T>): void {
+    const aLeft = a.left!
+    const bLeft = b.left!
+    aLeft.right = b
+    b.left = aLeft
+    a.left = bLeft
+    bLeft.right = a
   }
+}
+
+interface FibNode<T> {
+  value: T
+  handle: number
+  degree: number
+  mark: boolean
+  parent: FibNode<T> | null
+  child: FibNode<T> | null
+  left: FibNode<T> | null
+  right: FibNode<T> | null
 }

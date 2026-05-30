@@ -2,28 +2,62 @@ const TOMBSTONE: unique symbol = Symbol('TOMBSTONE')
 
 type Slot<K, V> = { key: K; value: V } | typeof TOMBSTONE | null
 
+export interface HashMapOptions<K> {
+  initialCapacity?: number
+  loadFactor?: number
+  hashFn?: (key: K) => number
+  keyEqual?: (a: K, b: K) => boolean
+}
+
+function defaultHash<K>(key: K): number {
+  if (typeof key === 'number') return key >>> 0
+  if (typeof key === 'string') {
+    let h = 0
+    for (let i = 0; i < key.length; i++) {
+      h = ((h << 5) - h + key.charCodeAt(i)) | 0
+    }
+    return h >>> 0
+  }
+  const str = String(key)
+  let h = 0
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h + str.charCodeAt(i)) | 0
+  }
+  return h >>> 0
+}
+
+function sameValueZero(a: unknown, b: unknown): boolean {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return a === b || (a !== a && b !== b)
+  }
+  return a === b
+}
+
 export class HashMap<K, V> {
   private table: Slot<K, V>[]
   private _size: number = 0
   private tombstoneCount: number = 0
   private readonly _loadFactor: number
+  private readonly _hash: (key: K) => number
+  private readonly _keyEqual: (a: K, b: K) => boolean
 
-  constructor(initialCapacity: number = 16, loadFactor: number = 0.75) {
-    this.table = new Array<Slot<K, V>>(initialCapacity).fill(null)
-    this._loadFactor = loadFactor
-  }
-
-  private hash(key: K): number {
-    const str = String(key)
-    let h = 0
-    for (let i = 0; i < str.length; i++) {
-      h = ((h << 5) - h + str.charCodeAt(i)) | 0
+  constructor(initialCapacityOrOpts?: number | HashMapOptions<K>, loadFactor?: number) {
+    if (typeof initialCapacityOrOpts === 'object' && initialCapacityOrOpts !== null) {
+      const opts = initialCapacityOrOpts
+      this.table = new Array<Slot<K, V>>(opts.initialCapacity ?? 16).fill(null)
+      this._loadFactor = opts.loadFactor ?? 0.75
+      this._hash = opts.hashFn ?? defaultHash
+      this._keyEqual = opts.keyEqual ?? sameValueZero
+    } else {
+      this.table = new Array<Slot<K, V>>(initialCapacityOrOpts ?? 16).fill(null)
+      this._loadFactor = loadFactor ?? 0.75
+      this._hash = defaultHash
+      this._keyEqual = sameValueZero
     }
-    return h >>> 0
   }
 
   private probeIndex(key: K): number {
-    return this.hash(key) % this.table.length
+    return this._hash(key) % this.table.length
   }
 
   private findSlot(key: K): { index: number; found: boolean } {
@@ -33,13 +67,13 @@ export class HashMap<K, V> {
 
     for (let i = 0; i < len; i++) {
       const j = (idx + i) % len
-      const slot = this.table[j]
+      const slot = this.table[j]!
 
       if (slot === TOMBSTONE) {
         if (firstTombstone === -1) firstTombstone = j
       } else if (slot === null) {
         return { index: firstTombstone !== -1 ? firstTombstone : j, found: false }
-      } else if (String(slot.key) === String(key)) {
+      } else if (this._keyEqual(slot.key, key)) {
         return { index: j, found: true }
       }
     }
@@ -79,7 +113,7 @@ export class HashMap<K, V> {
 
     for (let i = 0; i < len; i++) {
       const j = (idx + i) % len
-      const slot = this.table[j]
+      const slot = this.table[j]!
 
       if (slot === TOMBSTONE) {
         if (firstTombstone === -1) firstTombstone = j
@@ -88,7 +122,7 @@ export class HashMap<K, V> {
         this.table[target] = { key, value }
         this._size++
         return
-      } else if (String(slot.key) === String(key)) {
+      } else if (this._keyEqual(slot.key, key)) {
         slot.value = value
         return
       }
@@ -98,7 +132,7 @@ export class HashMap<K, V> {
   get(key: K): V | undefined {
     const { index, found } = this.findSlot(key)
     if (!found || index === -1) return undefined
-    const slot = this.table[index]
+    const slot = this.table[index]!
     return slot !== null && slot !== TOMBSTONE ? slot.value : undefined
   }
 

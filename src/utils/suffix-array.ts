@@ -1,146 +1,204 @@
 export class SuffixArray {
-  private _text: string
-  private _indices: number[]
-  private _lcpArray: number[]
+  private readonly text: string;
+  private readonly sa: number[];
+  private readonly lcp: number[];
 
   constructor(text: string) {
-    this._text = text
-    this._indices = []
-    this._lcpArray = []
-    this.buildSuffixArray()
-    this.buildLCPArray()
-  }
-
-  get text(): string {
-    return this._text
+    this.text = text;
+    this.sa = this.buildSuffixArray();
+    this.lcp = this.buildLCP();
   }
 
   get length(): number {
-    return this._text.length
+    return this.text.length;
   }
 
-  index(i: number): number {
-    if (i < 0 || i >= this._indices.length) {
-      throw new RangeError(`Index ${i} out of bounds [0, ${this._indices.length})`)
-    }
-    return this._indices[i]!
-  }
-
-  lcp(i: number): number {
-    if (i < 0 || i >= this._lcpArray.length) {
-      throw new RangeError(`Index ${i} out of bounds [0, ${this._lcpArray.length})`)
-    }
-    return this._lcpArray[i]!
+  get indices(): ReadonlyArray<number> {
+    return this.sa;
   }
 
   search(pattern: string): number[] {
-    if (pattern.length === 0) return []
-    if (this._text.length === 0) return []
-
-    const results: number[] = []
-    let lo = 0
-    let hi = this._indices.length - 1
-
-    while (lo <= hi) {
-      const mid = (lo + hi) >>> 1
-      const suffixStart = this._indices[mid]!
-      const cmp = this.compareAt(suffixStart, pattern)
-      if (cmp < 0) {
-        lo = mid + 1
-      } else if (cmp > 0) {
-        hi = mid - 1
-      } else {
-        results.push(suffixStart)
-        let left = mid - 1
-        while (left >= 0 && this.startsWith(this._indices[left]!, pattern)) {
-          results.push(this._indices[left]!)
-          left--
-        }
-        let right = mid + 1
-        while (right < this._indices.length && this.startsWith(this._indices[right]!, pattern)) {
-          results.push(this._indices[right]!)
-          right++
-        }
-        return results.sort((a, b) => a - b)
-      }
+    if (pattern.length === 0 || this.text.length === 0) {
+      return [];
     }
 
-    return results
+    const lower = this.lowerBound(pattern);
+    const upper = this.upperBound(pattern);
+
+    if (lower >= upper) {
+      return [];
+    }
+
+    const result: number[] = [];
+    for (let i = lower; i < upper; i++) {
+      result.push(this.sa[i]!);
+    }
+
+    return result.sort((a, b) => a - b);
   }
 
   contains(pattern: string): boolean {
-    return this.search(pattern).length > 0
+    return this.search(pattern).length > 0;
   }
 
-  longestRepeatedSubstring(): string {
-    if (this._lcpArray.length === 0) return ''
-
-    let maxLcp = 0
-    let maxIndex = 0
-    for (let i = 0; i < this._lcpArray.length; i++) {
-      if (this._lcpArray[i]! > maxLcp) {
-        maxLcp = this._lcpArray[i]!
-        maxIndex = i
-      }
+  count(pattern: string): number {
+    if (pattern.length === 0 || this.text.length === 0) {
+      return 0;
     }
 
-    if (maxLcp === 0) return ''
-    return this._text.substring(this._indices[maxIndex]!, this._indices[maxIndex]! + maxLcp)
+    const lower = this.lowerBound(pattern);
+    const upper = this.upperBound(pattern);
+
+    return upper - lower;
   }
 
-  toArray(): number[] {
-    return [...this._indices]
+  longestCommonPrefix(k: number): number {
+    if (k <= 0 || k >= this.sa.length) {
+      return 0;
+    }
+
+    return this.lcp[k]!;
   }
 
-  private buildSuffixArray(): void {
-    const n = this._text.length
-    this._indices = []
+  allLCP(): number[] {
+    return [...this.lcp];
+  }
+
+  private buildSuffixArray(): number[] {
+    const n = this.text.length;
+    if (n === 0) {
+      return [];
+    }
+
+    const sa: number[] = [];
     for (let i = 0; i < n; i++) {
-      this._indices.push(i)
+      sa.push(i);
     }
-    this._indices.sort((a, b) => {
-      const sa = this._text.substring(a)
-      const sb = this._text.substring(b)
-      return sa < sb ? -1 : sa > sb ? 1 : 0
-    })
-  }
 
-  private buildLCPArray(): void {
-    const n = this._indices.length
-    this._lcpArray = new Array(n).fill(0) as number[]
+    const rank: number[] = new Array(n);
+    for (let i = 0; i < n; i++) {
+      rank[i] = this.text.charCodeAt(i);
+    }
 
-    for (let i = 1; i < n; i++) {
-      const prev = this._indices[i - 1]!
-      const curr = this._indices[i]!
-      let len = 0
-      while (
-        prev + len < this._text.length &&
-        curr + len < this._text.length &&
-        this._text[prev + len] === this._text[curr + len]
-      ) {
-        len++
+    let k = 1;
+    while (k < n) {
+      sa.sort((a, b) => {
+        if (rank[a]! !== rank[b]!) {
+          return rank[a]! - rank[b]!;
+        }
+        const ra = a + k < n ? rank[a + k]! : -1;
+        const rb = b + k < n ? rank[b + k]! : -1;
+        return ra - rb;
+      });
+
+      const temp: number[] = new Array(n);
+      temp[sa[0]!] = 0;
+      for (let i = 1; i < n; i++) {
+        const prev = sa[i - 1]!;
+        const curr = sa[i]!;
+
+        if (rank[prev]! !== rank[curr]!) {
+          temp[curr] = temp[prev]! + 1;
+        } else {
+          const prevRank = prev + k < n ? rank[prev + k]! : -1;
+          const currRank = curr + k < n ? rank[curr + k]! : -1;
+          temp[curr] = prevRank === currRank ? temp[prev]! : temp[prev]! + 1;
+        }
       }
-      this._lcpArray[i] = len
+
+      for (let i = 0; i < n; i++) {
+        rank[i] = temp[i]!;
+      }
+
+      k *= 2;
     }
+
+    return sa;
   }
 
-  private compareAt(suffixStart: number, pattern: string): number {
-    for (let i = 0; i < pattern.length; i++) {
-      const textIdx = suffixStart + i
-      if (textIdx >= this._text.length) return -1
-      const tc = this._text[textIdx]!
-      const pc = pattern[i]!
-      if (tc < pc) return -1
-      if (tc > pc) return 1
+  private buildLCP(): number[] {
+    const n = this.sa.length;
+    if (n === 0) {
+      return [];
     }
-    return 0
+
+    const lcp: number[] = new Array(n);
+    const rank: number[] = new Array(n);
+
+    for (let i = 0; i < n; i++) {
+      rank[this.sa[i]!] = i;
+    }
+
+    let h = 0;
+    for (let i = 0; i < n; i++) {
+      const r = rank[i]!;
+      if (r > 0) {
+        const j = this.sa[r - 1]!;
+        while (i + h < n && j + h < n && this.text[i + h]! === this.text[j + h]!) {
+          h++;
+        }
+        lcp[r] = h;
+        if (h > 0) {
+          h--;
+        }
+      } else {
+        lcp[r] = 0;
+      }
+    }
+
+    return lcp;
   }
 
-  private startsWith(suffixStart: number, pattern: string): boolean {
-    if (suffixStart + pattern.length > this._text.length) return false
-    for (let i = 0; i < pattern.length; i++) {
-      if (this._text[suffixStart + i] !== pattern[i]) return false
+  private lowerBound(pattern: string): number {
+    let left = 0;
+    let right = this.sa.length;
+
+    while (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      const suffixStart = this.sa[mid]!;
+      const cmp = this.compareSuffix(suffixStart, pattern);
+
+      if (cmp < 0) {
+        left = mid + 1;
+      } else {
+        right = mid;
+      }
     }
-    return true
+
+    return left;
+  }
+
+  private upperBound(pattern: string): number {
+    let left = 0;
+    let right = this.sa.length;
+
+    while (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      const suffixStart = this.sa[mid]!;
+      const cmp = this.compareSuffix(suffixStart, pattern);
+
+      if (cmp <= 0) {
+        left = mid + 1;
+      } else {
+        right = mid;
+      }
+    }
+
+    return left;
+  }
+
+  private compareSuffix(suffixStart: number, pattern: string): number {
+    for (let i = 0; i < pattern.length; i++) {
+      const textIdx = suffixStart + i;
+      if (textIdx >= this.text.length) {
+        return -1;
+      }
+      const tc = this.text.charCodeAt(textIdx);
+      const pc = pattern.charCodeAt(i);
+      if (tc !== pc) {
+        return tc - pc;
+      }
+    }
+    return 0;
   }
 }

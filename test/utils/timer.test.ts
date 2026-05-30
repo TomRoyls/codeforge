@@ -64,4 +64,82 @@ describe('Timer - utility', () => {
     timer.reset()
     expect(timer.isRunning()).toBe(true)
   })
+
+  it('elapsed works while running (not stopped)', () => {
+    const timer = new Timer()
+    const ms = timer.elapsed()
+    expect(ms).toBeGreaterThanOrEqual(0)
+    expect(timer.isRunning()).toBe(true)
+  })
+
+  it('elapsed after stop equals stop value', () => {
+    const timer = new Timer()
+    const stopped = timer.stop()
+    expect(timer.elapsed()).toBe(stopped)
+  })
+
+  it('elapsedSeconds returns fraction of a second', () => {
+    const timer = new Timer()
+    timer.stop()
+    const secs = timer.elapsedSeconds()
+    expect(secs).toBeGreaterThanOrEqual(0)
+    expect(typeof secs).toBe('number')
+  })
+
+  it('elapsedNanoseconds is 1e6 times elapsed ms', () => {
+    const timer = new Timer()
+    timer.stop()
+    const ms = timer.elapsed()
+    const ns = timer.elapsedNanoseconds()
+    expect(ns).toBeCloseTo(ms * 1_000_000, -3)
+  })
+
+  it('measureAsync works with rejected promise', async () => {
+    await expect(
+      Timer.measureAsync(async () => {
+        throw new Error('boom')
+      }),
+    ).rejects.toThrow('boom')
+  })
+
+  it('multiple resets work correctly', () => {
+    const timer = new Timer()
+    timer.stop()
+    timer.reset()
+    timer.stop()
+    timer.reset()
+    expect(timer.isRunning()).toBe(true)
+    const ms = timer.stop()
+    expect(ms).toBeGreaterThanOrEqual(0)
+  })
+
+  it('measure captures synchronous work', () => {
+    const { result, elapsed } = Timer.measure(() => {
+      let sum = 0
+      for (let i = 0; i < 10000; i++) sum += i
+      return sum
+    })
+    expect(result).toBe(49995000)
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('isRunning starts as true', () => {
+    const timer = new Timer()
+    expect(timer.isRunning()).toBe(true)
+  })
+
+  it('stop returns number', () => {
+    const timer = new Timer()
+    const ms = timer.stop()
+    expect(typeof ms).toBe('number')
+    expect(ms).toBeGreaterThanOrEqual(0)
+  })
+
+  it('reset allows re-measuring', () => {
+    const timer = new Timer()
+    timer.stop()
+    timer.reset()
+    const ms = timer.stop()
+    expect(ms).toBeGreaterThanOrEqual(0)
+  })
 })

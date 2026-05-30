@@ -110,4 +110,81 @@ describe('retryAsync - edge cases', () => {
     const result = await retryAsync(() => Promise.reject(new Error('once')), { maxAttempts: 1, maxDelayMs: 1 })
     expect(result.isErr()).toBe(true)
   })
+
+  it('onRetry receives the error', async () => {
+    const errors: string[] = []
+    let attempt = 0
+    await retryAsync(async () => {
+      attempt++
+      if (attempt < 2) throw new Error(`err-${attempt}`)
+    }, {
+      maxAttempts: 3,
+      maxDelayMs: 1,
+      onRetry: (err) => errors.push((err as Error).message),
+    })
+    expect(errors).toEqual(['err-1'])
+  })
+
+  it('shouldRetry can allow selective retries', async () => {
+    let attempts = 0
+    const result = await retryAsync(async () => {
+      attempts++
+      if (attempts === 1) throw new Error('retryable')
+      if (attempts === 2) throw new Error('fatal')
+    }, {
+      maxAttempts: 10,
+      maxDelayMs: 1,
+      shouldRetry: (err) => (err as Error).message === 'retryable',
+    })
+    expect(result.isErr()).toBe(true)
+    result.match(
+      () => {},
+      (err) => expect((err as Error).message).toBe('fatal'),
+    )
+    expect(attempts).toBe(2)
+  })
+
+  it('respects backoffFactor', async () => {
+    const start = Date.now()
+    let attempt = 0
+    await retryAsync(async () => {
+      attempt++
+      if (attempt < 3) throw new Error('fail')
+    }, { maxAttempts: 5, maxDelayMs: 50, backoffFactor: 1 })
+    const elapsed = Date.now() - start
+    expect(elapsed).toBeLessThan(500)
+  })
+
+  it('handles fn returning undefined', async () => {
+    const result = await retryAsync(async () => undefined, { maxAttempts: 1 })
+    expect(result.isOk()).toBe(true)
+    expect(result.unwrap()).toBeUndefined()
+  })
+
+  it('handles fn returning null', async () => {
+    const result = await retryAsync(async () => null, { maxAttempts: 1 })
+    expect(result.isOk()).toBe(true)
+    expect(result.unwrap()).toBeNull()
+  })
+
+  it('handles zero maxDelayMs', async () => {
+    let attempt = 0
+    const result = await retryAsync(async () => {
+      attempt++
+      if (attempt < 3) throw new Error('fail')
+      return 'done'
+    }, { maxAttempts: 5, maxDelayMs: 0 })
+    expect(result.isOk()).toBe(true)
+    expect(result.unwrap()).toBe('done')
+  })
+
+  it('tracks attempt count via onRetry', async () => {
+    let retryCount = 0
+    let attempt = 0
+    await retryAsync(async () => {
+      attempt++
+      if (attempt < 3) throw new Error('fail')
+    }, { maxAttempts: 5, maxDelayMs: 1, onRetry: () => { retryCount++ } })
+    expect(retryCount).toBe(2)
+  })
 })

@@ -89,3 +89,45 @@ describe('matchAnyGlob', () => {
     expect(matchAnyGlob('test.ts', [])).toBe(false)
   })
 })
+
+describe('globToRegex edge cases', () => {
+  it('matches empty string pattern', () => {
+    const re = globToRegex('')
+    expect(re.test('')).toBe(true)
+    expect(re.test('a')).toBe(false)
+  })
+
+  it('handles special regex characters in pattern', () => {
+    const re = globToRegex('file.(test).ts')
+    expect(re.test('file.(test).ts')).toBe(true)
+  })
+
+  it('matches multiple * wildcards', () => {
+    const re = globToRegex('*/*.ts')
+    expect(re.test('src/foo.ts')).toBe(true)
+    expect(re.test('src/bar/foo.ts')).toBe(false)
+  })
+
+  it('handles ? at start', () => {
+    const re = globToRegex('?ello')
+    expect(re.test('hello')).toBe(true)
+    expect(re.test('ello')).toBe(false)
+  })
+
+  it('character class with range', () => {
+    const re = globToRegex('file[0-9].ts')
+    expect(re.test('file3.ts')).toBe(true)
+    expect(re.test('fileA.ts')).toBe(false)
+  })
+})
+
+describe('matchGlob edge cases', () => {
+  it('exact string match', () => {
+    expect(matchGlob('exact', 'exact')).toBe(true)
+    expect(matchGlob('exact', 'other')).toBe(false)
+  })
+
+  it('wildcard matches empty segment', () => {
+    expect(matchGlob('file.ts', 'file*.ts')).toBe(true)
+  })
+})

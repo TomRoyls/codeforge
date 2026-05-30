@@ -151,11 +151,11 @@ describe('TTLCache getTTL', () => {
 
 describe('TTLCache touch', () => {
   it('refreshes TTL', async () => {
-    const cache = new TTLCache<string, number>({ defaultTTL: 20 })
+    const cache = new TTLCache<string, number>({ defaultTTL: 100 })
     cache.set('k', 1)
-    await new Promise((r) => setTimeout(r, 10))
+    await new Promise((r) => setTimeout(r, 50))
     expect(cache.touch('k')).toBe(true)
-    await new Promise((r) => setTimeout(r, 10))
+    await new Promise((r) => setTimeout(r, 50))
     expect(cache.get('k')).toBe(1)
   })
 

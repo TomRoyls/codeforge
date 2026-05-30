@@ -57,3 +57,31 @@ describe('getGrade', () => {
     expect(getGrade(0)).toBe('(F)')
   })
 })
+
+describe('formatSize edge cases', () => {
+  it('formats large GB', () => {
+    expect(formatSize(5 * 1024 * 1024 * 1024)).toBe('5.0 GB')
+  })
+
+  it('formats fractional MB', () => {
+    expect(formatSize(1.5 * 1024 * 1024)).toBe('1.5 MB')
+  })
+
+  it('formats very large sizes in GB', () => {
+    expect(formatSize(1024 * 1024 * 1024 * 1024)).toBe('1024.0 GB')
+  })
+})
+
+describe('getGrade edge cases', () => {
+  it('returns A for 95', () => {
+    expect(getGrade(95)).toBe('(A)')
+  })
+
+  it('handles negative scores', () => {
+    expect(getGrade(-10)).toBe('(F)')
+  })
+
+  it('handles score over 100', () => {
+    expect(getGrade(110)).toBe('(A)')
+  })
+})

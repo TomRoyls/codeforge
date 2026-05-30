@@ -142,7 +142,7 @@ export class PairingHeap<T> {
     let current: InternalNode<T> | null = first
 
     while (current !== null && current.sibling !== null) {
-      const nextPair = current.sibling.sibling
+      const nextPair: InternalNode<T> | null = current.sibling.sibling
       const a = current
       const b = current.sibling
       a.sibling = null
@@ -161,7 +161,7 @@ export class PairingHeap<T> {
 
     let result: InternalNode<T> | null = null
     for (let i = pairs.length - 1; i >= 0; i--) {
-      result = this.mergeNodes(result, pairs[i])
+      result = this.mergeNodes(result, pairs[i]!)
     }
 
     return result

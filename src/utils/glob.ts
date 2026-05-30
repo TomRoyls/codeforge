@@ -53,7 +53,12 @@ export function globToRegex(pattern: string, options: Partial<GlobToRegexOptions
       result += '[' + bracketContent + ']'
       i = j + 1
     } else if (ch === '\\' && i + 1 < len) {
-      result += escapeRegexChar(pattern[i + 1]!)
+      const nextChar = pattern[i + 1]!
+      if (nextChar === '*' || nextChar === '?') {
+        result += '\\' + nextChar
+      } else {
+        result += escapeRegexChar(nextChar)
+      }
       i += 2
     } else {
       result += escapeRegexChar(ch!)

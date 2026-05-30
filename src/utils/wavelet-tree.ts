@@ -1,150 +1,236 @@
-interface WTNode {
-  bitmap: number[]
-  prefixSum: number[]
-  left: WTNode | null
-  right: WTNode | null
-  lo: number
-  hi: number
-}
-
 export class WaveletTree {
-  private _text: string
-  private _alphabet: string[]
-  private _charToIdx: Map<string, number>
-  private _root: WTNode | null
+  private readonly nodes: WaveletNode | null
+  private readonly _length: number
+  private readonly _alphabet: number[]
 
-  constructor(text: string) {
-    this._text = text
-    const charSet = new Set<string>()
-    for (const c of text) {
-      charSet.add(c)
-    }
-    this._alphabet = [...charSet].sort()
-    this._charToIdx = new Map<string, number>()
-    for (let i = 0; i < this._alphabet.length; i++) {
-      this._charToIdx.set(this._alphabet[i], i)
-    }
-    this._root =
-      this._alphabet.length > 0
-        ? this._buildNode(text, 0, this._alphabet.length)
-        : null
+  constructor(data: number[], alphabet?: number[]) {
+    this._alphabet = alphabet
+      ? [...alphabet].sort((a, b) => a - b)
+      : [...new Set(data)].sort((a, b) => a - b)
+    this._length = data.length
+    this.nodes = this._alphabet.length > 0 ? this.build(data, this._alphabet) : null
   }
 
-  private _buildNode(text: string, lo: number, hi: number): WTNode {
-    if (lo + 1 >= hi) {
-      return { bitmap: [], prefixSum: [0], left: null, right: null, lo, hi }
-    }
-    const mid = (lo + hi) >> 1
-    const bitmap: number[] = []
-    const prefixSum: number[] = [0]
-    const leftChars: string[] = []
-    const rightChars: string[] = []
-    for (let i = 0; i < text.length; i++) {
-      const idx = this._charToIdx.get(text[i])!
-      const bit = idx < mid ? 0 : 1
-      bitmap.push(bit)
-      prefixSum.push(prefixSum[i] + bit)
-      if (bit === 0) {
-        leftChars.push(text[i])
+  private build(data: number[], alphabet: number[]): WaveletNode | null {
+    if (data.length === 0) return null
+    if (alphabet.length === 1) return { symbol: alphabet[0]!, isLeaf: true, size: data.length }
+
+    const mid = Math.floor(alphabet.length / 2)
+    const leftAlphabet = alphabet.slice(0, mid)
+    const rightAlphabet = alphabet.slice(mid)
+    const rightSet = new Set(rightAlphabet)
+
+    const bitvector = new Uint8Array(Math.ceil(data.length / 8))
+    const leftData: number[] = []
+    const rightData: number[] = []
+
+    for (let i = 0; i < data.length; i++) {
+      const value = data[i]!
+      const isRight = rightSet.has(value)
+      if (isRight) {
+        setBit(bitvector, i)
+        rightData.push(value)
       } else {
-        rightChars.push(text[i])
+        leftData.push(value)
       }
     }
+
     return {
-      bitmap,
-      prefixSum,
-      left: this._buildNode(leftChars.join(""), lo, mid),
-      right: this._buildNode(rightChars.join(""), mid, hi),
-      lo,
-      hi,
+      isLeaf: false,
+      bitvector,
+      left: this.build(leftData, leftAlphabet),
+      right: this.build(rightData, rightAlphabet),
+      alphabet,
+      size: data.length,
     }
   }
 
-  access(index: number): string {
-    if (index < 0 || index >= this._text.length) {
-      throw new RangeError(
-        `Index ${index} out of range [0, ${this._text.length})`,
-      )
-    }
-    let node = this._root!
-    let pos = index
-    while (node.left !== null) {
-      const bit = node.bitmap[pos]
-      if (bit === 0) {
-        pos = pos + 1 - node.prefixSum[pos + 1] - 1
-        node = node.left
-      } else {
-        pos = node.prefixSum[pos + 1] - 1
-        node = node.right
-      }
-    }
-    return this._alphabet[node.lo]
+  access(index: number): number {
+    if (this.nodes === null) throw new RangeError('Index out of bounds')
+    if (index < 0 || index >= this._length) throw new RangeError('Index out of bounds')
+    return this.accessNode(this.nodes, index)
   }
 
-  rank(char: string, position: number): number {
-    if (position < 0 || this._root === null) return 0
-    const charIdx = this._charToIdx.get(char)
-    if (charIdx === undefined) return 0
-    let pos = Math.min(position, this._text.length - 1)
-    let node = this._root
-    while (node.left !== null) {
-      const mid = (node.lo + node.hi) >> 1
-      if (charIdx < mid) {
-        pos = pos + 1 - node.prefixSum[pos + 1] - 1
-        node = node.left
-      } else {
-        pos = node.prefixSum[pos + 1] - 1
-        node = node.right
-      }
+  private accessNode(node: WaveletNode, index: number): number {
+    if (node.isLeaf) return node.symbol
+    const bit = getBit(node.bitvector, index)
+    if (bit === 0) {
+      const zerosBefore = countZeros(node.bitvector, index)
+      if (node.left === null) throw new RangeError('Invalid tree state')
+      return this.accessNode(node.left, zerosBefore)
+    } else {
+      const onesBefore = countOnes(node.bitvector, index)
+      if (node.right === null) throw new RangeError('Invalid tree state')
+      return this.accessNode(node.right, onesBefore)
     }
-    return pos + 1
   }
 
-  select(char: string, occurrence: number): number {
-    if (occurrence < 0 || this._root === null) return -1
-    const charIdx = this._charToIdx.get(char)
-    if (charIdx === undefined) return -1
-    const result = this._selectRec(this._root, charIdx, occurrence)
-    if (result < 0 || result >= this._text.length) return -1
+  rank(symbol: number, endIndex: number): number {
+    if (this.nodes === null) return 0
+    if (endIndex <= 0 || endIndex > this._length) return 0
+    return this.rankNode(this.nodes, symbol, endIndex)
+  }
+
+  private rankNode(node: WaveletNode, symbol: number, endIndex: number): number {
+    if (node.isLeaf) return (node.symbol === symbol ? endIndex : 0)
+    if (!node.alphabet.includes(symbol)) return 0
+
+    const mid = Math.floor(node.alphabet.length / 2)
+    const inRight = symbol >= node.alphabet[mid]!
+
+    if (inRight) {
+      if (node.right === null) return 0
+      const onesBefore = countOnes(node.bitvector, endIndex)
+      return this.rankNode(node.right, symbol, onesBefore)
+    } else {
+      if (node.left === null) return 0
+      const zerosBefore = countZeros(node.bitvector, endIndex)
+      return this.rankNode(node.left, symbol, zerosBefore)
+    }
+  }
+
+  select(symbol: number, occurrence: number): number {
+    if (occurrence < 1) return -1
+    const total = this.rank(symbol, this._length)
+    if (occurrence > total) return -1
+    if (this.nodes === null) return -1
+    return this.selectNode(this.nodes, symbol, occurrence)
+  }
+
+  private selectNode(node: WaveletNode, symbol: number, occurrence: number): number {
+    if (node.isLeaf) {
+      if (node.symbol !== symbol) return -1
+      if (occurrence > node.size) return -1
+      return occurrence - 1
+    }
+
+    if (!node.alphabet.includes(symbol)) return -1
+
+    const mid = Math.floor(node.alphabet.length / 2)
+    const inRight = symbol >= node.alphabet[mid]!
+
+    if (inRight) {
+      if (node.right === null) return -1
+      const rightPos = this.selectNode(node.right, symbol, occurrence)
+      if (rightPos === -1) return -1
+      return findNthOne(node.bitvector, rightPos + 1)
+    } else {
+      if (node.left === null) return -1
+      const leftPos = this.selectNode(node.left, symbol, occurrence)
+      if (leftPos === -1) return -1
+      return findNthZero(node.bitvector, leftPos + 1)
+    }
+  }
+
+  rangeCount(start: number, end: number, symbol: number): number {
+    if (this.nodes === null) return 0
+    if (start < 0 || end > this._length || start >= end) return 0
+    return this.rankNode(this.nodes, symbol, end) - this.rankNode(this.nodes, symbol, start)
+  }
+
+  rangeCountAll(start: number, end: number): Map<number, number> {
+    if (this.nodes === null) return new Map()
+    if (start < 0 || end > this._length || start >= end) return new Map()
+    const result = new Map<number, number>()
+    this.rangeCountAllNode(this.nodes, start, end, result)
     return result
   }
 
-  private _selectRec(
-    node: WTNode,
-    charIdx: number,
-    occurrence: number,
-  ): number {
-    if (node.left === null) {
-      return occurrence
+  private rangeCountAllNode(
+    node: WaveletNode,
+    start: number,
+    end: number,
+    result: Map<number, number>,
+  ): void {
+    if (node.isLeaf) {
+      const count = end - start
+      const current = result.get(node.symbol) ?? 0
+      result.set(node.symbol, current + count)
+      return
     }
-    const mid = (node.lo + node.hi) >> 1
-    if (charIdx < mid) {
-      const childResult = this._selectRec(node.left, charIdx, occurrence)
-      if (childResult === -1) return -1
-      return this._findNthBit(node, 0, childResult + 1)
-    } else {
-      const childResult = this._selectRec(node.right, charIdx, occurrence)
-      if (childResult === -1) return -1
-      return this._findNthBit(node, 1, childResult + 1)
-    }
-  }
 
-  private _findNthBit(node: WTNode, bit: number, n: number): number {
-    let count = 0
-    for (let i = 0; i < node.bitmap.length; i++) {
-      if (node.bitmap[i] === bit) {
-        count++
-        if (count === n) return i
-      }
-    }
-    return -1
-  }
+    const startZeros = countZeros(node.bitvector, start)
+    const endZeros = countZeros(node.bitvector, end)
+    const startOnes = countOnes(node.bitvector, start)
+    const endOnes = countOnes(node.bitvector, end)
 
-  get text(): string {
-    return this._text
+    if (node.left !== null && startZeros !== endZeros) {
+      this.rangeCountAllNode(node.left, startZeros, endZeros, result)
+    }
+
+    if (node.right !== null && startOnes !== endOnes) {
+      this.rangeCountAllNode(node.right, startOnes, endOnes, result)
+    }
   }
 
   get length(): number {
-    return this._text.length
+    return this._length
   }
+
+  get alphabet(): number[] {
+    return this._alphabet
+  }
+}
+
+interface WaveletLeafNode {
+  isLeaf: true
+  symbol: number
+  size: number
+}
+
+interface WaveletInternalNode {
+  isLeaf: false
+  bitvector: Uint8Array
+  left: WaveletNode | null
+  right: WaveletNode | null
+  alphabet: number[]
+  size: number
+}
+
+type WaveletNode = WaveletLeafNode | WaveletInternalNode
+
+function setBit(bitvector: Uint8Array, index: number): void {
+  const byteIndex = Math.floor(index / 8)
+  const bitIndex = index % 8
+  bitvector[byteIndex]! |= 1 << bitIndex
+}
+
+function getBit(bitvector: Uint8Array, index: number): number {
+  const byteIndex = Math.floor(index / 8)
+  const bitIndex = index % 8
+  return (bitvector[byteIndex]! >> bitIndex) & 1
+}
+
+function countOnes(bitvector: Uint8Array, endIndex: number): number {
+  let count = 0
+  for (let i = 0; i < endIndex; i++) {
+    count += getBit(bitvector, i)
+  }
+  return count
+}
+
+function countZeros(bitvector: Uint8Array, endIndex: number): number {
+  return endIndex - countOnes(bitvector, endIndex)
+}
+
+function findNthOne(bitvector: Uint8Array, n: number): number {
+  let count = 0
+  for (let i = 0; i < bitvector.length * 8; i++) {
+    if (getBit(bitvector, i) === 1) {
+      count++
+      if (count === n) return i
+    }
+  }
+  return -1
+}
+
+function findNthZero(bitvector: Uint8Array, n: number): number {
+  let count = 0
+  for (let i = 0; i < bitvector.length * 8; i++) {
+    if (getBit(bitvector, i) === 0) {
+      count++
+      if (count === n) return i
+    }
+  }
+  return -1
 }

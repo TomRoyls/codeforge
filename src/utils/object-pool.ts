@@ -1,58 +1,78 @@
-export interface ObjectPoolOptions<T> {
-  factory: () => T
-  reset: (obj: T) => void
-  maxSize: number
-}
-
 export class ObjectPool<T> {
-  private readonly pool: T[] = []
+  private pool: T[] = []
   private readonly factory: () => T
-  private readonly resetFn: (obj: T) => void
-  private readonly maxSize: number
-  private created: number = 0
-  private reused: number = 0
-  private returned: number = 0
+  private readonly reset: (item: T) => void
+  private readonly _maxSize: number
+  private createdCount: number = 0
+  private reusedCount: number = 0
+  private returnedCount: number = 0
 
-  constructor(options: ObjectPoolOptions<T>) {
-    if (options.maxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${options.maxSize}`)
+  constructor(options: {
+    factory: () => T
+    reset: (item: T) => void
+    maxSize?: number
+  }) {
     this.factory = options.factory
-    this.resetFn = options.reset
-    this.maxSize = options.maxSize
+    this.reset = options.reset
+    const maxSize = options.maxSize ?? 1000
+    if (maxSize < 1) {
+      throw new RangeError(`maxSize must be >= 1, got ${maxSize}`)
+    }
+    this._maxSize = maxSize
   }
 
-  public acquire(): T {
+  acquire(): T {
     if (this.pool.length > 0) {
-      this.reused++
+      this.reusedCount++
       return this.pool.pop()!
     }
-    this.created++
+    this.createdCount++
     return this.factory()
   }
 
-  public release(obj: T): void {
-    this.returned++
-    if (this.pool.length < this.maxSize) {
-      this.resetFn(obj)
-      this.pool.push(obj)
+  release(item: T): void {
+    if (this.pool.length < this._maxSize) {
+      this.reset(item)
+      this.pool.push(item)
+      this.returnedCount++
     }
   }
 
-  public get size(): number {
+  prefill(count: number): void {
+    for (let i = 0; i < count; i++) {
+      this.pool.push(this.factory())
+      this.createdCount++
+    }
+  }
+
+  get size(): number {
     return this.pool.length
   }
 
-  public getStats(): { available: number; created: number; reused: number; returned: number } {
+  get available(): number {
+    return this.pool.length
+  }
+
+  get totalCreated(): number {
+    return this.createdCount
+  }
+
+  get capacity(): number {
+    return this._maxSize
+  }
+
+  getStats(): { available: number; created: number; reused: number; returned: number } {
     return {
       available: this.pool.length,
-      created: this.created,
-      reused: this.reused,
-      returned: this.returned,
+      created: this.createdCount,
+      reused: this.reusedCount,
+      returned: this.returnedCount,
     }
   }
 
-  public drain(): T[] {
-    const items = [...this.pool]
-    this.pool.length = 0
+  drain(): T[] {
+    const items = this.pool
+    this.pool = []
     return items
   }
 }

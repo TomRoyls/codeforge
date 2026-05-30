@@ -125,12 +125,14 @@ export class AhoCorasick {
 
     this.root.children.forEach((child) => {
       child.fail = this.root
-      queue.push(child)
-    })
+    queue.push(child)
+  })
 
-    while (queue.length > 0) {
-      const current = queue.shift()!
-      current.children.forEach((child, ch) => {
+  let _qi = 0
+  while (_qi < queue.length) {
+    const current = queue[_qi]!
+    _qi++
+    current.children.forEach((child, ch) => {
         let fail = current.fail
         while (fail !== this.root && !fail.children.has(ch)) {
           fail = fail.fail

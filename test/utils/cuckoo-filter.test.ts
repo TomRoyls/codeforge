@@ -93,3 +93,77 @@ describe('CuckooFilter capacity', () => {
     expect(cf.capacity).toBeGreaterThanOrEqual(50)
   })
 })
+
+describe('CuckooFilter edge cases', () => {
+  it('handles empty string', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('')
+    expect(cf.contains('')).toBe(true)
+    expect(cf.remove('')).toBe(true)
+    expect(cf.contains('')).toBe(false)
+  })
+
+  it('handles unicode strings', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('日本語テスト')
+    expect(cf.contains('日本語テスト')).toBe(true)
+    expect(cf.contains('日本語')).toBe(false)
+  })
+
+  it('handles numbers as strings', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('42')
+    expect(cf.contains('42')).toBe(true)
+    expect(cf.contains(42 as unknown as string)).toBe(false)
+  })
+
+  it('re-insert after remove works', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('x')
+    cf.remove('x')
+    expect(cf.contains('x')).toBe(false)
+    cf.insert('x')
+    expect(cf.contains('x')).toBe(true)
+    expect(cf.size).toBe(1)
+  })
+
+  it('loadFactor approaches 1 as filter fills', () => {
+    const cf = new CuckooFilter({ capacity: 50 })
+    for (let i = 0; i < 40; i++) {
+      cf.insert(`item-${i}`)
+    }
+    expect(cf.loadFactor).toBeGreaterThan(0.5)
+  })
+
+  it('clear allows reinsertion', () => {
+    const cf = new CuckooFilter({ capacity: 50 })
+    for (let i = 0; i < 10; i++) {
+      cf.insert(`item-${i}`)
+    }
+    cf.clear()
+    for (let i = 0; i < 10; i++) {
+      expect(cf.insert(`item-${i}`)).toBe(true)
+    }
+    for (let i = 0; i < 10; i++) {
+      expect(cf.contains(`item-${i}`)).toBe(true)
+    }
+  })
+
+  it('size tracks insertions', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    expect(cf.size).toBe(0)
+    cf.insert('a')
+    expect(cf.size).toBe(1)
+    cf.insert('b')
+    expect(cf.size).toBe(2)
+  })
+
+  it('remove decreases size', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('a')
+    cf.insert('b')
+    expect(cf.size).toBe(2)
+    cf.remove('a')
+    expect(cf.size).toBe(1)
+  })
+})

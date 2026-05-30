@@ -19,6 +19,18 @@ describe('escapeXml', () => {
   it('leaves normal text unchanged', () => {
     expect(escapeXml('hello world')).toBe('hello world')
   })
+
+  it('handles empty string', () => {
+    expect(escapeXml('')).toBe('')
+  })
+
+  it('escapes multiple ampersands', () => {
+    expect(escapeXml('a&b&c')).toBe('a&amp;b&amp;c')
+  })
+
+  it('escapes all special chars together', () => {
+    expect(escapeXml('<a href="x&y">\'z\'</a>')).toBe('&lt;a href=&quot;x&amp;y&quot;&gt;&apos;z&apos;&lt;/a&gt;')
+  })
 })
 
 // ─── escapeHtml ───────────────────────────────────────────
@@ -31,6 +43,18 @@ describe('escapeHtml', () => {
 
   it('escapes single quotes', () => {
     expect(escapeHtml("it's")).toBe('it&#039;s')
+  })
+
+  it('handles empty string', () => {
+    expect(escapeHtml('')).toBe('')
+  })
+
+  it('escapes ampersand before other chars', () => {
+    expect(escapeHtml('a&b<c')).toBe('a&amp;b&lt;c')
+  })
+
+  it('leaves normal text unchanged', () => {
+    expect(escapeHtml('hello world')).toBe('hello world')
   })
 })
 
@@ -45,5 +69,17 @@ describe('escapeMarkdown', () => {
 
   it('leaves normal text unchanged', () => {
     expect(escapeMarkdown('hello world')).toBe('hello world')
+  })
+
+  it('escapes pipe characters', () => {
+    expect(escapeMarkdown('a|b')).toBe('a\\|b')
+  })
+
+  it('escapes square brackets', () => {
+    expect(escapeMarkdown('[link]')).toBe('\\[link\\]')
+  })
+
+  it('handles empty string', () => {
+    expect(escapeMarkdown('')).toBe('')
   })
 })

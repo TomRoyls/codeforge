@@ -1,98 +1,87 @@
 export class HyperLogLog {
   private registers: Uint8Array
-  private readonly _precision: number
-  private readonly _m: number
-  private readonly _alpha: number
+  private readonly precision: number
+  private readonly m: number
+  private readonly alpha: number
 
   constructor(precision: number = 14) {
-    if (precision < 4 || precision > 16) {
-      throw new RangeError(`Precision must be between 4 and 16, got ${precision}`)
-    }
-    this._precision = precision
-    this._m = 1 << precision
-    this.registers = new Uint8Array(this._m)
-    this._alpha = this.computeAlpha(this._m)
-  }
-
-  private computeAlpha(m: number): number {
-    switch (m) {
-      case 16: return 0.673
-      case 32: return 0.697
-      case 64: return 0.709
-      default: return 0.7213 / (1 + 1.079 / m)
-    }
-  }
-
-  private hash(str: string): number {
-    let h1 = 0xdeadbeef
-    let h2 = 0x41c6ce57
-    for (let i = 0; i < str.length; i++) {
-      const ch = str.charCodeAt(i)
-      h1 = Math.imul(h1 ^ ch, 2654435761)
-      h2 = Math.imul(h2 ^ ch, 1597334677)
-    }
-    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507)
-    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507)
-    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
-    return (4294967296 * (2097151 & h2) + (h1 >>> 0)) >>> 0
+    if (precision < 4 || precision > 16) throw new RangeError('precision must be between 4 and 16')
+    this.precision = precision
+    this.m = 1 << precision
+    this.registers = new Uint8Array(this.m)
+    this.alpha = this.m === 16 ? 0.673
+      : this.m === 32 ? 0.697
+      : this.m === 64 ? 0.709
+      : 0.7213 / (1 + 1.079 / this.m)
   }
 
   add(value: string): void {
-    const hash = this.hash(value)
-    const index = hash >>> (32 - this._precision)
-    const w = ((hash << this._precision) >>> this._precision) >>> 0
-    const rho = this.rho(w)
+    const hash = this.hashString(value)
+    const index = hash >>> (32 - this.precision)
+    const remaining = (hash << this.precision) | (hash >>> (32 - this.precision))
+    const rho = this.rho(remaining >>> (this.precision > 0 ? 0 : 0))
     if (rho > this.registers[index]!) {
       this.registers[index] = rho
     }
   }
 
-  private rho(value: number): number {
-    if (value === 0) return 32 - this._precision + 1
-    let count = 0
-    while ((value & 1) === 0) {
-      count++
-      value >>>= 1
-    }
-    return count + 1
-  }
-
   count(): number {
     let sum = 0
     let zeros = 0
-    for (let i = 0; i < this._m; i++) {
+    for (let i = 0; i < this.m; i++) {
       const val = this.registers[i]!
       sum += 1 / (1 << val)
       if (val === 0) zeros++
     }
-    const estimate = this._alpha * this._m * this._m / sum
-    if (estimate <= 2.5 * this._m && zeros > 0) {
-      return Math.round(this._m * Math.log(this._m / zeros))
+    const estimate = this.alpha * this.m * this.m / sum
+    if (estimate <= 2.5 * this.m && zeros > 0) {
+      return this.m * Math.log(this.m / zeros)
     }
-    return Math.round(estimate)
+    if (estimate <= (1 / 30) * (1 << 32)) {
+      return estimate
+    }
+    return -(1 << 32) * Math.log(1 - estimate / (1 << 32))
   }
 
   merge(other: HyperLogLog): HyperLogLog {
-    if (this._precision !== other._precision) {
-      throw new Error('Cannot merge HyperLogLog with different precision')
+    if (this.precision !== other.precision) {
+      throw new Error('Cannot merge HyperLogLogs with different precision')
     }
-    const result = new HyperLogLog(this._precision)
-    for (let i = 0; i < this._m; i++) {
+    const result = new HyperLogLog(this.precision)
+    for (let i = 0; i < this.m; i++) {
       result.registers[i] = Math.max(this.registers[i]!, other.registers[i]!)
     }
     return result
   }
 
-  get precision(): number {
-    return this._precision
-  }
-
   get registerCount(): number {
-    return this._m
+    return this.m
   }
 
   reset(): void {
     this.registers.fill(0)
+  }
+
+  private rho(value: number): number {
+    if (value === 0) return 32 - this.precision + 1
+    let count = 1
+    while ((value & 1) === 0) {
+      count++
+      value >>>= 1
+    }
+    return count
+  }
+
+  private hashString(s: string): number {
+    let h1 = 0x314159265
+    let h2 = 0x271828183
+    for (let i = 0; i < s.length; i++) {
+      const ch = s.charCodeAt(i)
+      h1 = Math.imul(h1 ^ ch, 0x85ebca6b)
+      h2 = Math.imul(h2 ^ ch, 0x165667b1)
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 0x45d9f3b)
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 0x45d9f3b)
+    return (h1 ^ h2) >>> 0
   }
 }

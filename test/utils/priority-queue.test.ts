@@ -152,3 +152,43 @@ describe('PriorityQueue - custom comparator', () => {
     expect(pq.dequeue()!.name).toBe('low')
   })
 })
+
+describe('PriorityQueue - edge cases', () => {
+  it('clear then reuse', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(1)
+    pq.clear()
+    pq.enqueue(5)
+    expect(pq.dequeue()).toBe(5)
+    expect(pq.isEmpty()).toBe(true)
+  })
+
+  it('toArray after partial dequeue', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    pq.dequeue()
+    expect(pq.toArray()).toHaveLength(2)
+  })
+
+  it('peek returns minimum without removing', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(5)
+    pq.enqueue(3)
+    pq.enqueue(7)
+    expect(pq.peek()).toBe(3)
+    expect(pq.size).toBe(3)
+  })
+
+  it('enqueue many then dequeue sorted', () => {
+    const pq = new PriorityQueue<number>()
+    for (let i = 100; i >= 0; i--) pq.enqueue(i)
+    let prev = -1
+    while (!pq.isEmpty()) {
+      const val = pq.dequeue()!
+      expect(val).toBeGreaterThanOrEqual(prev)
+      prev = val
+    }
+  })
+})

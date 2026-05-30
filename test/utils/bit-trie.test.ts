@@ -1,0 +1,273 @@
+import { describe, it, expect } from 'vitest'
+import { BitTrie } from '../../src/utils/bit-trie.js'
+
+describe('BitTrie', () => {
+  it('creates empty trie', () => {
+    const trie = new BitTrie<number>()
+    expect(trie.isEmpty).toBe(true)
+    expect(trie.size).toBe(0)
+  })
+
+  it('inserts single key-value pair', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    expect(trie.isEmpty).toBe(false)
+    expect(trie.size).toBe(1)
+  })
+
+  it('inserts and looks up single value', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    const result = trie.lookup(0b101, 3)
+    expect(result).toBe(42)
+  })
+
+  it('looks up non-existent key', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    const result = trie.lookup(0b111, 3)
+    expect(result).toBeUndefined()
+  })
+
+  it('handles multiple insertions with different keys', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+    trie.insert(0b110, 3, 30)
+    trie.insert(0b111, 3, 40)
+
+    expect(trie.size).toBe(4)
+    expect(trie.lookup(0b100, 3)).toBe(10)
+    expect(trie.lookup(0b101, 3)).toBe(20)
+    expect(trie.lookup(0b110, 3)).toBe(30)
+    expect(trie.lookup(0b111, 3)).toBe(40)
+  })
+
+  it('removes existing key', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    const removed = trie.remove(0b101, 3)
+    expect(removed).toBe(true)
+    expect(trie.size).toBe(0)
+    expect(trie.lookup(0b101, 3)).toBeUndefined()
+  })
+
+  it('removes non-existent key', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    const removed = trie.remove(0b111, 3)
+    expect(removed).toBe(false)
+    expect(trie.size).toBe(1)
+  })
+
+  it('has returns true for existing key', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    expect(trie.has(0b101, 3)).toBe(true)
+  })
+
+  it('has returns false for non-existent key', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    expect(trie.has(0b111, 3)).toBe(false)
+  })
+
+  it('clears trie', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    trie.insert(0b110, 3, 43)
+    trie.clear()
+    expect(trie.isEmpty).toBe(true)
+    expect(trie.size).toBe(0)
+    expect(trie.lookup(0b101, 3)).toBeUndefined()
+  })
+
+  it('generates entries', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+    trie.insert(0b110, 3, 30)
+
+    const entries = Array.from(trie.entries())
+    expect(entries.length).toBe(3)
+    expect(entries).toContainEqual({ key: 0b100, bits: 3, value: 10 })
+    expect(entries).toContainEqual({ key: 0b101, bits: 3, value: 20 })
+    expect(entries).toContainEqual({ key: 0b110, bits: 3, value: 30 })
+  })
+
+  it('generates values', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+    trie.insert(0b110, 3, 30)
+
+    const values = Array.from(trie.values())
+    expect(values.length).toBe(3)
+    expect(values).toContain(10)
+    expect(values).toContain(20)
+    expect(values).toContain(30)
+  })
+
+  it('generates keys', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+    trie.insert(0b110, 3, 30)
+
+    const keys = Array.from(trie.keys())
+    expect(keys.length).toBe(3)
+    expect(keys).toContainEqual({ key: 0b100, bits: 3 })
+    expect(keys).toContainEqual({ key: 0b101, bits: 3 })
+    expect(keys).toContainEqual({ key: 0b110, bits: 3 })
+  })
+
+  it('forEach iterates over all entries', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+    trie.insert(0b110, 3, 30)
+
+    const results: Array<{ value: number; key: number; bits: number }> = []
+    trie.forEach((value, key, bits) => {
+      results.push({ value, key, bits })
+    })
+
+    expect(results.length).toBe(3)
+    expect(results).toContainEqual({ value: 10, key: 0b100, bits: 3 })
+    expect(results).toContainEqual({ value: 20, key: 0b101, bits: 3 })
+    expect(results).toContainEqual({ value: 30, key: 0b110, bits: 3 })
+  })
+
+  it('toArray returns all entries', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+    trie.insert(0b110, 3, 30)
+
+    const arr = trie.toArray()
+    expect(arr.length).toBe(3)
+    expect(arr).toContainEqual({ key: 0b100, bits: 3, value: 10 })
+    expect(arr).toContainEqual({ key: 0b101, bits: 3, value: 20 })
+    expect(arr).toContainEqual({ key: 0b110, bits: 3, value: 30 })
+  })
+
+  it('toMap converts entries to map', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+    trie.insert(0b110, 3, 30)
+
+    const map = trie.toMap()
+    expect(map.size).toBe(3)
+    expect(map.get('4/3')).toBe(10)
+    expect(map.get('5/3')).toBe(20)
+    expect(map.get('6/3')).toBe(30)
+  })
+
+  it('handles prefix matches with common prefix', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+
+    const result = trie.longestPrefix(0b101, 3)
+    expect(result).toBeDefined()
+    expect(result!.value).toBe(20)
+    expect(result!.prefixBits).toBe(3)
+  })
+
+  it('returns undefined when no prefix match', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+
+    const result = trie.longestPrefix(0b001, 3)
+    expect(result).toBeUndefined()
+  })
+
+  it('handles varying bit lengths', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b1, 1, 1)
+    trie.insert(0b10, 2, 2)
+    trie.insert(0b100, 3, 4)
+    trie.insert(0b1000, 4, 8)
+
+    expect(trie.lookup(0b1, 1)).toBe(1)
+    expect(trie.lookup(0b10, 2)).toBe(2)
+    expect(trie.lookup(0b100, 3)).toBe(4)
+    expect(trie.lookup(0b1000, 4)).toBe(8)
+  })
+
+  it('overwrites existing key value', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b101, 3, 42)
+    expect(trie.size).toBe(1)
+    trie.insert(0b101, 3, 99)
+    expect(trie.size).toBe(1)
+    expect(trie.lookup(0b101, 3)).toBe(99)
+  })
+
+  it('handles string values', () => {
+    const trie = new BitTrie<string>()
+    trie.insert(0b101, 3, 'hello')
+    trie.insert(0b110, 3, 'world')
+
+    expect(trie.lookup(0b101, 3)).toBe('hello')
+    expect(trie.lookup(0b110, 3)).toBe('world')
+  })
+
+  it('handles object values', () => {
+    const trie = new BitTrie<{ id: number; name: string }>()
+    trie.insert(0b101, 3, { id: 1, name: 'first' })
+    trie.insert(0b110, 3, { id: 2, name: 'second' })
+
+    const result = trie.lookup(0b101, 3)
+    expect(result).toBeDefined()
+    expect(result!.id).toBe(1)
+    expect(result!.name).toBe('first')
+  })
+
+  it('removes key without affecting other keys', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0b100, 3, 10)
+    trie.insert(0b101, 3, 20)
+    trie.insert(0b110, 3, 30)
+
+    trie.remove(0b101, 3)
+    expect(trie.size).toBe(2)
+    expect(trie.lookup(0b100, 3)).toBe(10)
+    expect(trie.lookup(0b101, 3)).toBeUndefined()
+    expect(trie.lookup(0b110, 3)).toBe(30)
+  })
+
+  it('handles zero bits', () => {
+    const trie = new BitTrie<number>()
+    trie.insert(0, 0, 42)
+    expect(trie.lookup(0, 0)).toBe(42)
+  })
+
+  it('tracks size correctly through operations', () => {
+    const trie = new BitTrie<number>()
+    expect(trie.size).toBe(0)
+
+    trie.insert(0b101, 3, 42)
+    expect(trie.size).toBe(1)
+
+    trie.insert(0b110, 3, 43)
+    expect(trie.size).toBe(2)
+
+    trie.remove(0b101, 3)
+    expect(trie.size).toBe(1)
+
+    trie.insert(0b111, 3, 44)
+    expect(trie.size).toBe(2)
+
+    trie.clear()
+    expect(trie.size).toBe(0)
+  })
+
+  it('handles negative numbers', () => {
+    const trie = new BitTrie<number>()
+    const negOne = -1 >>> 0
+    trie.insert(negOne, 32, -1)
+    expect(trie.lookup(negOne, 32)).toBe(-1)
+  })
+})

@@ -74,3 +74,66 @@ describe('SimpleBloomFilter - falsePositiveRate', () => {
     expect(fpr).toBeGreaterThan(0)
   })
 })
+
+describe('SimpleBloomFilter - edge cases', () => {
+  it('handles empty string', () => {
+    const bf = new SimpleBloomFilter(100)
+    bf.add('')
+    expect(bf.has('')).toBe(true)
+  })
+
+  it('handles unicode strings', () => {
+    const bf = new SimpleBloomFilter(100)
+    bf.add('日本語')
+    expect(bf.has('日本語')).toBe(true)
+    expect(bf.has('english')).toBe(false)
+  })
+
+  it('handles duplicate adds', () => {
+    const bf = new SimpleBloomFilter(100)
+    bf.add('test')
+    bf.add('test')
+    bf.add('test')
+    expect(bf.size).toBe(3)
+    expect(bf.has('test')).toBe(true)
+  })
+
+  it('clear allows re-adding items', () => {
+    const bf = new SimpleBloomFilter(100)
+    bf.add('a')
+    bf.add('b')
+    bf.clear()
+    bf.add('c')
+    expect(bf.has('c')).toBe(true)
+    expect(bf.size).toBe(1)
+  })
+
+  it('has low false positive rate for small fill', () => {
+    const bf = new SimpleBloomFilter(1000, 0.001)
+    for (let i = 0; i < 100; i++) bf.add(`item-${i}`)
+    let falsePositives = 0
+    for (let i = 100; i < 200; i++) {
+      if (bf.has(`item-${i}`)) falsePositives++
+    }
+    expect(falsePositives).toBeLessThan(10)
+  })
+
+  it('stats includes all fields', () => {
+    const bf = new SimpleBloomFilter(50, 0.01)
+    bf.add('x')
+    const s = bf.stats()
+    expect(s).toHaveProperty('capacity')
+    expect(s).toHaveProperty('size')
+    expect(s).toHaveProperty('bitCount')
+    expect(s).toHaveProperty('hashCount')
+    expect(s).toHaveProperty('falsePositiveRate')
+    expect(s.hashCount).toBeGreaterThanOrEqual(1)
+  })
+
+  it('works with single-item capacity', () => {
+    const bf = new SimpleBloomFilter(1)
+    bf.add('only')
+    expect(bf.has('only')).toBe(true)
+    expect(bf.size).toBe(1)
+  })
+})

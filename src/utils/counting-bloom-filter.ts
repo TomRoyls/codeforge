@@ -28,8 +28,8 @@ export class CountingBloomFilter {
   add(value: string): void {
     const positions = this.getPositions(value)
     for (const pos of positions) {
-      if (this.counters[pos] < 65535) {
-        this.counters[pos]++
+      if (this.counters[pos]! < 65535) {
+        this.counters[pos]!++
       }
     }
     this._size++
@@ -38,10 +38,10 @@ export class CountingBloomFilter {
   remove(value: string): boolean {
     const positions = this.getPositions(value)
     for (const pos of positions) {
-      if (this.counters[pos] === 0) return false
+      if (this.counters[pos]! === 0) return false
     }
     for (const pos of positions) {
-      this.counters[pos]--
+      this.counters[pos]!--
     }
     this._size--
     return true
@@ -50,7 +50,7 @@ export class CountingBloomFilter {
   has(value: string): boolean {
     const positions = this.getPositions(value)
     for (const pos of positions) {
-      if (this.counters[pos] === 0) return false
+      if (this.counters[pos]! === 0) return false
     }
     return true
   }

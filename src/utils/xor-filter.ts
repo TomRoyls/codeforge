@@ -73,12 +73,12 @@ export class XorFilter {
       const b2: Set<number>[] = Array.from({ length: blockLen }, () => new Set());
 
       for (let i = 0; i < n; i++) {
-        b0[slots[i].h0].add(i);
-        b1[slots[i].h1].add(i);
-        b2[slots[i].h2].add(i);
+        b0[slots[i]!.h0]!.add(i);
+        b1[slots[i]!.h1]!.add(i);
+        b2[slots[i]!.h2]!.add(i);
       }
 
-      const buckets = [b0, b1, b2];
+      const buckets: [Set<number>[], Set<number>[], Set<number>[]] = [b0, b1, b2];
       const stack: { itemIdx: number; whichBucket: number }[] = [];
       const removed = new Uint8Array(n);
 
@@ -86,16 +86,18 @@ export class XorFilter {
       while (changed) {
         changed = false;
         for (let b = 0; b < 3; b++) {
+          const bucket = buckets[b]!;
           for (let j = 0; j < blockLen; j++) {
-            const alive = new Set(Array.from(buckets[b][j]).filter((i) => !removed[i]));
-            buckets[b][j] = alive;
+            const alive = new Set(Array.from(bucket[j]!).filter((i) => !removed[i]));
+            bucket[j] = alive;
             if (alive.size === 1) {
               const itemIdx = alive.values().next().value as number;
+              const sl = slots[itemIdx]!;
               stack.push({ itemIdx, whichBucket: b });
               removed[itemIdx] = 1;
-              buckets[0][slots[itemIdx].h0].delete(itemIdx);
-              buckets[1][slots[itemIdx].h1].delete(itemIdx);
-              buckets[2][slots[itemIdx].h2].delete(itemIdx);
+              buckets[0][sl.h0]!.delete(itemIdx);
+              buckets[1][sl.h1]!.delete(itemIdx);
+              buckets[2][sl.h2]!.delete(itemIdx);
               changed = true;
             }
           }
@@ -108,19 +110,22 @@ export class XorFilter {
       const table1 = new Uint8Array(blockLen);
       const table2 = new Uint8Array(blockLen);
       const tables = [table0, table1, table2];
-      const slotKeys: (keyof typeof slots[0])[] = ['h0', 'h1', 'h2'];
 
       while (stack.length > 0) {
         const { itemIdx, whichBucket } = stack.pop()!;
-        const sl = slots[itemIdx];
+        const sl = slots[itemIdx]!;
         const indices = [sl.h0, sl.h1, sl.h2];
         let val = sl.fp;
         for (let b = 0; b < 3; b++) {
           if (b !== whichBucket) {
-            val ^= tables[b][indices[b]];
+            const tb = tables[b];
+            const ix = indices[b];
+            if (tb && ix !== undefined) val ^= tb[ix]!;
           }
         }
-        tables[whichBucket][indices[whichBucket]] = val;
+        const table = tables[whichBucket];
+        const idx = indices[whichBucket];
+        if (table && idx !== undefined) table[idx] = val;
       }
 
       return new XorFilter(table0, table1, table2, s, n, blockLen);
@@ -134,7 +139,7 @@ export class XorFilter {
     if (this._size === 0) return false;
     const [i0, i1, i2] = this.getSlots(item, this._seed);
     const f = this.getFp(item);
-    return (this.t0[i0] ^ this.t1[i1] ^ this.t2[i2]) === f;
+    return ((this.t0[i0] ?? 0) ^ (this.t1[i1] ?? 0) ^ (this.t2[i2] ?? 0)) === f;
   }
 
   get size(): number {

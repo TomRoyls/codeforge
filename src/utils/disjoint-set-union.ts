@@ -23,9 +23,9 @@ export class DisjointSetUnion {
 
   find(x: number): number {
     this.validateIndex(x)
-    while (this.parent[x] !== x) {
-      this.parent[x] = this.parent[this.parent[x]]
-      x = this.parent[x]
+    while (this.parent[x]! !== x) {
+      this.parent[x] = this.parent[this.parent[x]!]!
+      x = this.parent[x]!
     }
     return x
   }
@@ -36,15 +36,15 @@ export class DisjointSetUnion {
     let rootX = this.find(x)
     let rootY = this.find(y)
     if (rootX === rootY) return false
-    if (this.rnk[rootX] < this.rnk[rootY]) {
+    if (this.rnk[rootX]! < this.rnk[rootY]!) {
       const tmp = rootX
       rootX = rootY
       rootY = tmp
     }
     this.parent[rootY] = rootX
-    this.sz[rootX] += this.sz[rootY]
-    if (this.rnk[rootX] === this.rnk[rootY]) {
-      this.rnk[rootX]++
+    this.sz[rootX]! += this.sz[rootY]!
+    if (this.rnk[rootX]! === this.rnk[rootY]!) {
+      this.rnk[rootX]!++
     }
     this._componentCount--
     return true
@@ -59,13 +59,13 @@ export class DisjointSetUnion {
   setSize(x: number): number {
     this.validateIndex(x)
     const root = this.find(x)
-    return this.sz[root]
+    return this.sz[root]!
   }
 
   rank(x: number): number {
     this.validateIndex(x)
     const root = this.find(x)
-    return this.rnk[root]
+    return this.rnk[root]!
   }
 
   get componentCount(): number {

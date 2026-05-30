@@ -37,7 +37,7 @@ export class TernarySearchTree {
     word: string,
     index: number,
   ): [TSTNode, boolean] {
-    const char = word[index]
+    const char = word[index]!
     if (node === null) {
       node = createNode(char)
     }
@@ -76,7 +76,7 @@ export class TernarySearchTree {
     index: number,
   ): TSTNode | null {
     if (node === null || index >= word.length) return null
-    const char = word[index]
+    const char = word[index]!
     if (char < node.char) return this._find(node.left, word, index)
     if (char > node.char) return this._find(node.right, word, index)
     if (index === word.length - 1) return node

@@ -90,3 +90,65 @@ describe('TopK - merge and forEach', () => {
     expect(entries).toEqual(['b', 'a'])
   })
 })
+
+describe('TopK - edge cases', () => {
+  it('top returns entries sorted by count descending', () => {
+    const tk = new TopK<number>(3)
+    tk.add(1, 100)
+    tk.add(2, 50)
+    tk.add(3, 75)
+    const top = tk.top
+    expect(top[0]!.count).toBe(100)
+    expect(top[1]!.count).toBe(75)
+    expect(top[2]!.count).toBe(50)
+  })
+
+  it('adds default count of 1', () => {
+    const tk = new TopK<string>(3)
+    tk.add('x')
+    expect(tk.getCount('x')).toBe(1)
+  })
+
+  it('accumulates counts for same value', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 3)
+    tk.add('a', 2)
+    expect(tk.getCount('a')).toBe(5)
+  })
+
+  it('merge uses larger k', () => {
+    const tk1 = new TopK<string>(2)
+    tk1.add('a', 1)
+    const tk2 = new TopK<string>(5)
+    tk2.add('b', 1)
+    const merged = tk1.merge(tk2)
+    expect(merged.k).toBe(5)
+  })
+
+  it('works with k=1', () => {
+    const tk = new TopK<string>(1)
+    tk.add('a', 5)
+    tk.add('b', 10)
+    tk.add('c', 3)
+    expect(tk.topValues).toEqual(['b'])
+  })
+
+  it('handles large stream of values', () => {
+    const tk = new TopK<number>(5)
+    for (let i = 0; i < 1000; i++) {
+      tk.add(i % 10)
+    }
+    expect(tk.topValues).toHaveLength(5)
+    expect(tk.totalCount).toBe(1000)
+  })
+
+  it('clear allows re-adding', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 10)
+    tk.clear()
+    tk.add('b', 5)
+    expect(tk.getCount('a')).toBe(0)
+    expect(tk.getCount('b')).toBe(5)
+    expect(tk.topValues).toEqual(['b'])
+  })
+})

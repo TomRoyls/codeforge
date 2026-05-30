@@ -153,4 +153,12 @@ describe('CircuitBreaker - canAttempt', () => {
     const cb = new CircuitBreaker(defaultOptions)
     expect(cb.canAttempt()).toBe(true)
   })
+
+  it('returns false in open state', async () => {
+    const cb = new CircuitBreaker(defaultOptions)
+    for (let i = 0; i < 3; i++) {
+      await expect(cb.execute(() => Promise.reject(new Error('fail')))).rejects.toThrow('fail')
+    }
+    expect(cb.canAttempt()).toBe(false)
+  })
 })

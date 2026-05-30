@@ -87,3 +87,45 @@ describe('deepClone - maxDepth', () => {
     expect((clone.a as Record<string, unknown>).b).toBe(obj.a.b)
   })
 })
+
+describe('deepClone - edge cases', () => {
+  it('clones empty objects', () => {
+    const clone = deepClone({})
+    expect(clone).toEqual({})
+  })
+
+  it('clones empty arrays', () => {
+    const clone = deepClone([])
+    expect(clone).toEqual([])
+  })
+
+  it('clones nested arrays', () => {
+    const arr = [[1, 2], [3, 4]]
+    const clone = deepClone(arr)
+    expect(clone).toEqual(arr)
+    expect(clone[0]).not.toBe(arr[0])
+  })
+
+  it('handles mixed object with all types', () => {
+    const obj = {
+      num: 42,
+      str: 'hello',
+      bool: true,
+      nil: null,
+      arr: [1, 2],
+      nested: { x: 1 },
+    }
+    const clone = deepClone(obj)
+    expect(clone).toEqual(obj)
+    expect(clone).not.toBe(obj)
+    expect(clone.arr).not.toBe(obj.arr)
+    expect(clone.nested).not.toBe(obj.nested)
+  })
+
+  it('clones sparse arrays', () => {
+    const arr: (number | undefined)[] = [1, , , 4]
+    const clone = deepClone(arr)
+    expect(clone[0]).toBe(1)
+    expect(clone[3]).toBe(4)
+  })
+})

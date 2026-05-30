@@ -1,111 +1,84 @@
-class SkipNode<K, V> {
-  key: K | undefined
-  value: V | undefined
-  next: (SkipNode<K, V> | null)[]
+const DEFAULT_MAX_LEVEL = 32
+const P = 0.5
 
-  constructor(key: K | undefined, value: V | undefined, height: number) {
+class SkipNode<K, V> {
+  key: K
+  value: V
+  forward: Array<SkipNode<K, V> | null>
+
+  constructor(key: K, value: V, level: number) {
     this.key = key
     this.value = value
-    this.next = new Array<SkipNode<K, V> | null>(height).fill(null)
+    this.forward = new Array(level).fill(null)
   }
 }
 
-export class SkipList<K, V> {
-  private maxHeight: number
-  private compare: (a: K, b: K) => number
-  private head: SkipNode<K, V>
-  private _size: number = 0
-  private _height: number = 1
+export interface SkipListOptions<K> {
+  comparator?: (a: K, b: K) => number
+  maxHeight?: number
+}
 
-  constructor(options?: { maxHeight?: number; comparator?: (a: K, b: K) => number }) {
-    this.maxHeight = options?.maxHeight ?? 32
-    this.compare = options?.comparator ?? ((a: K, b: K) => (a as number) - (b as number))
-    this.head = new SkipNode<K, V>(undefined, undefined, this.maxHeight)
+export class SkipList<K, V> {
+  private head: SkipNode<K, V>
+  private _size = 0
+  private _level = 1
+  private _maxLevel: number
+  private compare: (a: K, b: K) => number
+
+  constructor(options?: SkipListOptions<K>) {
+    this.compare = options?.comparator ?? ((a: K, b: K) => (a < b ? -1 : a > b ? 1 : 0))
+    this._maxLevel = options?.maxHeight ?? DEFAULT_MAX_LEVEL
+    this.head = new SkipNode<K, V>(null as K, null as V, this._maxLevel)
   }
 
   private randomLevel(): number {
     let level = 1
-    while (level < this.maxHeight && Math.random() < 0.5) {
+    while (Math.random() < P && level < this._maxLevel) {
       level++
     }
     return level
   }
 
   insert(key: K, value: V): void {
-    const update: (SkipNode<K, V> | null)[] = new Array(this.maxHeight).fill(null)
-    let current: SkipNode<K, V> | null = this.head
-
-    for (let i = this._height - 1; i >= 0; i--) {
-      while (current!.next[i] && this.compare(current!.next[i]!.key!, key) < 0) {
-        current = current!.next[i]
+    const update: Array<SkipNode<K, V> | null> = new Array(this._maxLevel).fill(null)
+    let current = this.head
+    for (let i = this._level - 1; i >= 0; i--) {
+      while (current.forward[i] && this.compare(current.forward[i]!.key, key) < 0) {
+        current = current.forward[i]!
       }
       update[i] = current
     }
-
-    const existing = current!.next[0]
-    if (existing && this.compare(existing.key!, key) === 0) {
-      existing.value = value
+    current = current.forward[0]!
+    if (current && this.compare(current.key, key) === 0) {
+      current.value = value
       return
     }
-
     const newLevel = this.randomLevel()
-    if (newLevel > this._height) {
-      for (let i = this._height; i < newLevel; i++) {
+    if (newLevel > this._level) {
+      for (let i = this._level; i < newLevel; i++) {
         update[i] = this.head
       }
-      this._height = newLevel
+      this._level = newLevel
     }
-
-    const newNode = new SkipNode<K, V>(key, value, newLevel)
+    const newNode = new SkipNode(key, value, newLevel)
     for (let i = 0; i < newLevel; i++) {
-      newNode.next[i] = update[i]!.next[i]
-      update[i]!.next[i] = newNode
+      const up = update[i]!
+      newNode.forward[i] = up.forward[i]!
+      up.forward[i] = newNode
     }
-
     this._size++
   }
 
-  delete(key: K): boolean {
-    const update: (SkipNode<K, V> | null)[] = new Array(this.maxHeight).fill(null)
-    let current: SkipNode<K, V> | null = this.head
-
-    for (let i = this._height - 1; i >= 0; i--) {
-      while (current!.next[i] && this.compare(current!.next[i]!.key!, key) < 0) {
-        current = current!.next[i]
-      }
-      update[i] = current
-    }
-
-    const target = current!.next[0]
-    if (!target || this.compare(target.key!, key) !== 0) {
-      return false
-    }
-
-    for (let i = 0; i < this._height; i++) {
-      if (update[i]!.next[i] !== target) break
-      update[i]!.next[i] = target.next[i]
-    }
-
-    while (this._height > 1 && this.head.next[this._height - 1] === null) {
-      this._height--
-    }
-
-    this._size--
-    return true
-  }
-
   find(key: K): V | undefined {
-    let current: SkipNode<K, V> | null = this.head
-
-    for (let i = this._height - 1; i >= 0; i--) {
-      while (current!.next[i] && this.compare(current!.next[i]!.key!, key) < 0) {
-        current = current!.next[i]
+    let current = this.head
+    for (let i = this._level - 1; i >= 0; i--) {
+      while (current.forward[i] && this.compare(current.forward[i]!.key, key) < 0) {
+        current = current.forward[i]!
       }
     }
-
-    const found = current!.next[0]
-    if (found && this.compare(found.key!, key) === 0) {
-      return found.value
+    current = current.forward[0]!
+    if (current && this.compare(current.key, key) === 0) {
+      return current.value
     }
     return undefined
   }
@@ -114,58 +87,133 @@ export class SkipList<K, V> {
     return this.find(key) !== undefined
   }
 
-  get min(): K | undefined {
-    return this.head.next[0]?.key
-  }
-
-  get max(): K | undefined {
-    let current: SkipNode<K, V> | null = this.head
-    for (let i = this._height - 1; i >= 0; i--) {
-      while (current!.next[i]) {
-        current = current!.next[i]!
+  delete(key: K): boolean {
+    const update: Array<SkipNode<K, V> | null> = new Array(this._maxLevel).fill(null)
+    let current = this.head
+    for (let i = this._level - 1; i >= 0; i--) {
+      while (current.forward[i] && this.compare(current.forward[i]!.key, key) < 0) {
+        current = current.forward[i]!
       }
+      update[i] = current
     }
-    return current === this.head ? undefined : current!.key
+    current = current.forward[0]!
+    if (!current || this.compare(current.key, key) !== 0) {
+      return false
+    }
+    for (let i = 0; i < this._level; i++) {
+      const up = update[i]!
+      if (up.forward[i] !== current) break
+      up.forward[i] = current.forward[i]!
+    }
+    while (this._level > 1 && this.head.forward[this._level - 1] === null) {
+      this._level--
+    }
+    this._size--
+    return true
   }
 
   get size(): number {
     return this._size
   }
 
-  get height(): number {
-    return this._height
+  get isEmpty(): boolean {
+    return this._size === 0
   }
 
-  forEach(callback: (key: K, value: V) => void): void {
-    let current: SkipNode<K, V> | null = this.head.next[0]
-    while (current) {
-      callback(current.key!, current.value!)
-      current = current.next[0]
+  get min(): K | undefined {
+    const first = this.head.forward[0]
+    return first ? first.key : undefined
+  }
+
+  get max(): K | undefined {
+    let current = this.head
+    for (let i = this._level - 1; i >= 0; i--) {
+      while (current.forward[i]) {
+        current = current.forward[i]!
+      }
     }
+    return current === this.head ? undefined : current.key
+  }
+
+  get height(): number {
+    return this._level
   }
 
   clear(): void {
-    this.head = new SkipNode<K, V>(undefined, undefined, this.maxHeight)
+    this.head = new SkipNode<K, V>(null as K, null as V, this._maxLevel)
+    this._level = 1
     this._size = 0
-    this._height = 1
   }
 
-  range(minKey: K, maxKey: K): Array<{ key: K; value: V }> {
+  range(min: K, max: K): Array<{ key: K; value: V }> {
     const result: Array<{ key: K; value: V }> = []
-    let current: SkipNode<K, V> | null = this.head
-
-    for (let i = this._height - 1; i >= 0; i--) {
-      while (current!.next[i] && this.compare(current!.next[i]!.key!, minKey) < 0) {
-        current = current!.next[i]
+    let current = this.head
+    for (let i = this._level - 1; i >= 0; i--) {
+      while (current.forward[i] && this.compare(current.forward[i]!.key, min) < 0) {
+        current = current.forward[i]!
       }
     }
-
-    current = current!.next[0]
-    while (current && this.compare(current.key!, maxKey) <= 0) {
-      result.push({ key: current.key!, value: current.value! })
-      current = current.next[0]
+    current = current.forward[0]!
+    while (current && this.compare(current.key, max) <= 0) {
+      result.push({ key: current.key, value: current.value })
+      current = current.forward[0]!
     }
-
     return result
+  }
+
+  forEach(callback: (key: K, value: V) => void): void {
+    let current = this.head.forward[0]
+    while (current) {
+      callback(current.key, current.value)
+      current = current.forward[0]
+    }
+  }
+
+  keys(): K[] {
+    const result: K[] = []
+    let current = this.head.forward[0]
+    while (current) {
+      result.push(current.key)
+      current = current.forward[0]
+    }
+    return result
+  }
+
+  values(): V[] {
+    const result: V[] = []
+    let current = this.head.forward[0]
+    while (current) {
+      result.push(current.value)
+      current = current.forward[0]
+    }
+    return result
+  }
+
+  entries(): Array<{ key: K; value: V }> {
+    const result: Array<{ key: K; value: V }> = []
+    let current = this.head.forward[0]
+    while (current) {
+      result.push({ key: current.key, value: current.value })
+      current = current.forward[0]
+    }
+    return result
+  }
+
+  toArray(): Array<{ key: K; value: V }> {
+    return this.entries()
+  }
+
+  [Symbol.iterator](): Iterator<{ key: K; value: V }> {
+    let current = this.head.forward[0]
+    return {
+      next: () => {
+        if (current) {
+          const entry = { key: current.key, value: current.value }
+          current = current.forward[0]
+          return { value: entry, done: false }
+        }
+        return { value: undefined, done: true } as IteratorResult<{ key: K; value: V }>
+      },
+    }
   }
 }

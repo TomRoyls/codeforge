@@ -82,4 +82,32 @@ describe('Logger methods', () => {
     const log = new Logger({ level: LogLevel.SILENT })
     expect(() => log.error('should be suppressed')).not.toThrow()
   })
+
+  it('debug at INFO level is suppressed', () => {
+    const log = new Logger({ level: LogLevel.INFO })
+    expect(() => log.debug('suppressed')).not.toThrow()
+    expect(log.getLevel()).toBe(LogLevel.INFO)
+  })
+
+  it('handles all options combined', () => {
+    const log = new Logger({ level: LogLevel.DEBUG, colorize: false, prefix: 'test', timestamp: true })
+    expect(() => log.info('combined')).not.toThrow()
+  })
+
+  it('warn at WARN level outputs', () => {
+    const log = new Logger({ level: LogLevel.WARN, colorize: false })
+    expect(() => log.warn('warning')).not.toThrow()
+  })
+
+  it('setLevel changes level', () => {
+    const log = new Logger({ level: LogLevel.ERROR, colorize: false })
+    expect(log.getLevel()).toBe(LogLevel.ERROR)
+    log.setLevel(LogLevel.DEBUG)
+    expect(log.getLevel()).toBe(LogLevel.DEBUG)
+  })
+
+  it('error always outputs', () => {
+    const log = new Logger({ level: LogLevel.ERROR, colorize: false })
+    expect(() => log.error('error msg')).not.toThrow()
+  })
 })

@@ -111,4 +111,59 @@ describe('throttle', () => {
     vi.advanceTimersByTime(200)
     expect(fn).toHaveBeenCalledTimes(1)
   })
+
+  it('throttle passes arguments', () => {
+    const fn = vi.fn()
+    const throttled = throttle(fn, 100)
+    throttled('arg1', 'arg2')
+    expect(fn).toHaveBeenCalledWith('arg1', 'arg2')
+  })
+
+  it('throttle trailing call uses latest args', () => {
+    const fn = vi.fn()
+    const throttled = throttle(fn, 100)
+    throttled('first')
+    throttled('second')
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledTimes(2)
+    expect(fn).toHaveBeenLastCalledWith('second')
+  })
+
+  it('debounce works with multiple arguments', () => {
+    const fn = vi.fn()
+    const debounced = debounce(fn, 100)
+    debounced('a', 'b', 'c')
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledWith('a', 'b', 'c')
+  })
+
+  it('debounce can be called again after flush', () => {
+    const fn = vi.fn()
+    const debounced = debounce(fn, 100)
+    debounced('first')
+    debounced.flush()
+    debounced('second')
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledTimes(2)
+    expect(fn).toHaveBeenCalledWith('second')
+  })
+
+  it('throttle handles rapid calls correctly', () => {
+    const fn = vi.fn()
+    const throttled = throttle(fn, 50)
+    throttled()
+    throttled()
+    throttled()
+    vi.advanceTimersByTime(50)
+    expect(fn).toHaveBeenCalledTimes(2)
+  })
+
+  it('debounce cancel prevents execution', () => {
+    const fn = vi.fn()
+    const debounced = debounce(fn, 100)
+    debounced('test')
+    debounced.cancel()
+    vi.advanceTimersByTime(200)
+    expect(fn).not.toHaveBeenCalled()
+  })
 })

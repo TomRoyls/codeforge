@@ -68,13 +68,13 @@ export class ScapegoatTree<K, V> {
     this._maxSize++
 
     for (let i = path.length - 1; i >= 0; i--) {
-      path[i].size++
+      path[i]!.size++
     }
 
     const scapegoatIdx = this.findScapegoat(path)
     if (scapegoatIdx !== -1) {
-      const scapegoat = path[scapegoatIdx]
-      const parent = scapegoatIdx > 0 ? path[scapegoatIdx - 1] : null
+      const scapegoat = path[scapegoatIdx]!
+      const parent = scapegoatIdx > 0 ? path[scapegoatIdx - 1]! : null
       const rebuilt = this.rebuild(scapegoat)
 
       if (parent === null) {
@@ -211,7 +211,7 @@ export class ScapegoatTree<K, V> {
 
   private findScapegoat(path: Array<ScapegoatNode<K, V>>): number {
     for (let i = path.length - 1; i >= 0; i--) {
-      if (!this.isAlphaWeightBalanced(path[i])) {
+      if (!this.isAlphaWeightBalanced(path[i]!)) {
         return i
       }
     }
@@ -249,7 +249,7 @@ export class ScapegoatTree<K, V> {
   ): ScapegoatNode<K, V> | null {
     if (start > end) return null
     const mid = (start + end) >>> 1
-    const node = nodes[mid]
+    const node = nodes[mid]!
     node.left = this.buildBalanced(nodes, start, mid - 1)
     node.right = this.buildBalanced(nodes, mid + 1, end)
     node.size = 1 + this.nodeSize(node.left) + this.nodeSize(node.right)

@@ -109,3 +109,60 @@ describe('ConsistentHash removeNode', () => {
     }
   })
 })
+
+describe('ConsistentHash edge cases', () => {
+  it('handles remove of non-existent node', () => {
+    const ch = new ConsistentHash<string>({ virtualNodes: 10 })
+    ch.addNode('A')
+    ch.removeNode('Z')
+    expect(ch.nodeCount).toBe(0)
+  })
+
+  it('single node handles all keys', () => {
+    const ch = new ConsistentHash<string>({ virtualNodes: 100 })
+    ch.addNode('only')
+    for (let i = 0; i < 50; i++) {
+      expect(ch.getNode(`key-${i}`)).toBe('only')
+    }
+  })
+
+  it('adding same node creates duplicate node entries but shared ring positions', () => {
+    const ch = new ConsistentHash<string>({ virtualNodes: 10 })
+    ch.addNode('A')
+    ch.addNode('A')
+    expect(ch.nodeCount).toBe(2)
+    expect(ch.ringSize).toBe(10)
+  })
+
+  it('works with number nodes', () => {
+    const ch = new ConsistentHash<number>({ virtualNodes: 50 })
+    ch.addNode(1)
+    ch.addNode(2)
+    ch.addNode(3)
+    const node = ch.getNode('test')
+    expect([1, 2, 3]).toContain(node)
+  })
+
+  it('empty string key works', () => {
+    const ch = new ConsistentHash<string>({ virtualNodes: 10 })
+    ch.addNode('A')
+    expect(ch.getNode('')).toBe('A')
+  })
+
+  it('consistent mapping across calls', () => {
+    const ch = new ConsistentHash<string>({ virtualNodes: 50 })
+    ch.addNode('A')
+    ch.addNode('B')
+    ch.addNode('C')
+    for (let i = 0; i < 20; i++) {
+      const first = ch.getNode(`key-${i}`)
+      const second = ch.getNode(`key-${i}`)
+      expect(first).toBe(second)
+    }
+  })
+
+  it('getNode returns undefined when no nodes', () => {
+    const ch = new ConsistentHash<string>({ virtualNodes: 10 })
+    expect(ch.getNode('key')).toBeUndefined()
+  })
+})

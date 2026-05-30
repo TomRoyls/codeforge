@@ -13,20 +13,20 @@ export class Matrix {
   }
 
   static from2DArray(data: number[][]): Matrix {
-    if (data.length === 0 || data[0].length === 0) {
+    if (data.length === 0 || data[0]!.length === 0) {
       throw new RangeError('Cannot create matrix from empty array')
     }
     const rows = data.length
-    const cols = data[0].length
+    const cols = data[0]!.length
     for (let i = 1; i < rows; i++) {
-      if (data[i].length !== cols) {
+      if (data[i]!.length !== cols) {
         throw new RangeError('All rows must have the same length')
       }
     }
     const m = new Matrix(rows, cols)
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
-        m.data[i * cols + j] = data[i][j]
+        m.data[i * cols + j] = data[i]![j]!
       }
     }
     return m
@@ -58,7 +58,7 @@ export class Matrix {
 
   get(row: number, col: number): number {
     this.checkBounds(row, col)
-    return this.data[row * this._cols + col]
+    return this.data[row * this._cols + col]!
   }
 
   set(row: number, col: number, value: number): void {
@@ -70,7 +70,7 @@ export class Matrix {
     this.checkDimensions(other)
     const result = new Matrix(this._rows, this._cols)
     for (let i = 0; i < this.data.length; i++) {
-      result.data[i] = this.data[i] + other.data[i]
+      result.data[i] = this.data[i]! + other.data[i]!
     }
     return result
   }
@@ -79,7 +79,7 @@ export class Matrix {
     this.checkDimensions(other)
     const result = new Matrix(this._rows, this._cols)
     for (let i = 0; i < this.data.length; i++) {
-      result.data[i] = this.data[i] - other.data[i]
+      result.data[i] = this.data[i]! - other.data[i]!
     }
     return result
   }
@@ -95,7 +95,7 @@ export class Matrix {
       for (let j = 0; j < other._cols; j++) {
         let sum = 0
         for (let k = 0; k < this._cols; k++) {
-          sum += this.data[i * this._cols + k] * other.data[k * other._cols + j]
+          sum += this.data[i * this._cols + k]! * other.data[k * other._cols + j]!
         }
         result.data[i * other._cols + j] = sum
       }
@@ -106,7 +106,7 @@ export class Matrix {
   scale(scalar: number): Matrix {
     const result = new Matrix(this._rows, this._cols)
     for (let i = 0; i < this.data.length; i++) {
-      result.data[i] = this.data[i] * scalar
+      result.data[i] = this.data[i]! * scalar
     }
     return result
   }
@@ -115,7 +115,7 @@ export class Matrix {
     const result = new Matrix(this._cols, this._rows)
     for (let i = 0; i < this._rows; i++) {
       for (let j = 0; j < this._cols; j++) {
-        result.data[j * this._rows + i] = this.data[i * this._cols + j]
+        result.data[j * this._rows + i] = this.data[i * this._cols + j]!
       }
     }
     return result
@@ -126,9 +126,9 @@ export class Matrix {
       throw new RangeError('Determinant is only defined for square matrices')
     }
     const n = this._rows
-    if (n === 1) return this.data[0]
+    if (n === 1) return this.data[0]!
     if (n === 2) {
-      return this.data[0] * this.data[3] - this.data[1] * this.data[2]
+      return this.data[0]! * this.data[3]! - this.data[1]! * this.data[2]!
     }
     if (n <= 4) return this.cofactorDet()
     return this.luDet()
@@ -140,7 +140,7 @@ export class Matrix {
     }
     let sum = 0
     for (let i = 0; i < this._rows; i++) {
-      sum += this.data[i * this._cols + i]
+      sum += this.data[i * this._cols + i]!
     }
     return sum
   }
@@ -162,7 +162,7 @@ export class Matrix {
     for (let i = 0; i < this._rows; i++) {
       const row: number[] = []
       for (let j = 0; j < this._cols; j++) {
-        row.push(this.data[i * this._cols + j])
+        row.push(this.data[i * this._cols + j]!)
       }
       result.push(row)
     }
@@ -179,7 +179,7 @@ export class Matrix {
     const result = new Matrix(this._rows, this._cols)
     for (let i = 0; i < this._rows; i++) {
       for (let j = 0; j < this._cols; j++) {
-        result.data[i * this._cols + j] = fn(this.data[i * this._cols + j], i, j)
+        result.data[i * this._cols + j] = fn(this.data[i * this._cols + j]!, i, j)
       }
     }
     return result
@@ -203,14 +203,14 @@ export class Matrix {
 
   private cofactorDet(): number {
     const n = this._rows
-    if (n === 1) return this.data[0]
+    if (n === 1) return this.data[0]!
     if (n === 2) {
-      return this.data[0] * this.data[3] - this.data[1] * this.data[2]
+      return this.data[0]! * this.data[3]! - this.data[1]! * this.data[2]!
     }
     let det = 0
     for (let j = 0; j < n; j++) {
       const minor = this.minor(0, j)
-      det += (j % 2 === 0 ? 1 : -1) * this.data[j] * minor.cofactorDet()
+      det += (j % 2 === 0 ? 1 : -1) * this.data[j]! * minor.cofactorDet()
     }
     return det
   }
@@ -222,7 +222,7 @@ export class Matrix {
       if (i === skipRow) continue
       for (let j = 0; j < this._cols; j++) {
         if (j === skipCol) continue
-        m.data[idx++] = this.data[i * this._cols + j]
+        m.data[idx++] = this.data[i * this._cols + j]!
       }
     }
     return m
@@ -235,10 +235,10 @@ export class Matrix {
     let swaps = 0
 
     for (let k = 0; k < n; k++) {
-      let maxVal = Math.abs(lu[k * n + k])
+      let maxVal = Math.abs(lu[k * n + k]!)
       let maxRow = k
       for (let i = k + 1; i < n; i++) {
-        const val = Math.abs(lu[i * n + k])
+        const val = Math.abs(lu[i * n + k]!)
         if (val > maxVal) {
           maxVal = val
           maxRow = i
@@ -248,23 +248,23 @@ export class Matrix {
 
       if (maxRow !== k) {
         for (let j = 0; j < n; j++) {
-          const tmp = lu[k * n + j]
-          lu[k * n + j] = lu[maxRow * n + j]
+          const tmp = lu[k * n + j]!
+          lu[k * n + j] = lu[maxRow * n + j]!
           lu[maxRow * n + j] = tmp
         }
         swaps++
       }
 
       for (let i = k + 1; i < n; i++) {
-        lu[i * n + k] /= lu[k * n + k]
+        lu[i * n + k] = lu[i * n + k]! / lu[k * n + k]!
         for (let j = k + 1; j < n; j++) {
-          lu[i * n + j] -= lu[i * n + k] * lu[k * n + j]
+          lu[i * n + j] = lu[i * n + j]! - lu[i * n + k]! * lu[k * n + j]!
         }
       }
     }
 
     for (let i = 0; i < n; i++) {
-      det *= lu[i * n + i]
+      det *= lu[i * n + i]!
     }
 
     return swaps % 2 === 0 ? det : -det

@@ -1,0 +1,264 @@
+import { describe, expect, it } from 'vitest'
+import { TreapImplicit } from '../../src/utils/treap-implicit.js'
+
+describe('TreapImplicit basics', () => {
+  it('push elements and verify size', () => {
+    const treap = new TreapImplicit<number>()
+    expect(treap.size).toBe(0)
+    treap.push(1)
+    expect(treap.size).toBe(1)
+    treap.push(2)
+    treap.push(3)
+    expect(treap.size).toBe(3)
+  })
+
+  it('insert at beginning', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(2)
+    treap.push(3)
+    treap.insert(0, 1)
+    expect(treap.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('insert at middle', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(3)
+    treap.insert(1, 2)
+    expect(treap.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('insert at end', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.insert(2, 3)
+    expect(treap.toArray()).toEqual([1, 2, 3])
+  })
+})
+
+describe('TreapImplicit get', () => {
+  it('get at various indices', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(10)
+    treap.push(20)
+    treap.push(30)
+    treap.push(40)
+    expect(treap.get(0)).toBe(10)
+    expect(treap.get(1)).toBe(20)
+    expect(treap.get(2)).toBe(30)
+    expect(treap.get(3)).toBe(40)
+    expect(treap.get(4)).toBeUndefined()
+    expect(treap.get(-1)).toBeUndefined()
+  })
+})
+
+describe('TreapImplicit set', () => {
+  it('set and update values', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.set(1, 20)
+    expect(treap.get(1)).toBe(20)
+    expect(treap.toArray()).toEqual([1, 20, 3])
+  })
+
+  it('set out of bounds does nothing', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.set(5, 99)
+    expect(treap.toArray()).toEqual([1, 2])
+  })
+})
+
+describe('TreapImplicit delete', () => {
+  it('delete from various positions', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    expect(treap.delete(0)).toBe(1)
+    expect(treap.toArray()).toEqual([2, 3])
+    expect(treap.delete(1)).toBe(3)
+    expect(treap.toArray()).toEqual([2])
+  })
+
+  it('delete returns undefined for invalid index', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    expect(treap.delete(5)).toBeUndefined()
+    expect(treap.delete(-1)).toBeUndefined()
+  })
+})
+
+describe('TreapImplicit toArray', () => {
+  it('toArray matches insertion order', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.push(4)
+    expect(treap.toArray()).toEqual([1, 2, 3, 4])
+  })
+
+  it('toArray on empty treap', () => {
+    const treap = new TreapImplicit<number>()
+    expect(treap.toArray()).toEqual([])
+  })
+})
+
+describe('TreapImplicit reverse', () => {
+  it('reverse subarray', () => {
+    const treap = new TreapImplicit<number>()
+    for (let i = 0; i < 10; i++) {
+      treap.push(i)
+    }
+    treap.reverse(2, 7)
+    expect(treap.toArray()).toEqual([0, 1, 6, 5, 4, 3, 2, 7, 8, 9])
+  })
+
+  it('reverse single element', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.reverse(1, 2)
+    expect(treap.toArray()).toEqual([1, 2, 3])
+  })
+})
+
+describe('TreapImplicit splitAt', () => {
+  it('split at various positions', () => {
+    const treap = new TreapImplicit<number>()
+    for (let i = 0; i < 10; i++) {
+      treap.push(i)
+    }
+    const [left, right] = treap.splitAt(5)
+    expect(left.toArray()).toEqual([0, 1, 2, 3, 4])
+    expect(right.toArray()).toEqual([5, 6, 7, 8, 9])
+    expect(treap.size).toBe(0)
+  })
+
+  it('split at beginning', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    const [left, right] = treap.splitAt(0)
+    expect(left.toArray()).toEqual([])
+    expect(right.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('split at end', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    const [left, right] = treap.splitAt(3)
+    expect(left.toArray()).toEqual([1, 2, 3])
+    expect(right.toArray()).toEqual([])
+  })
+})
+
+describe('TreapImplicit empty treap operations', () => {
+  it('get on empty treap', () => {
+    const treap = new TreapImplicit<number>()
+    expect(treap.get(0)).toBeUndefined()
+  })
+
+  it('set on empty treap', () => {
+    const treap = new TreapImplicit<number>()
+    treap.set(0, 1)
+    expect(treap.toArray()).toEqual([])
+  })
+
+  it('delete on empty treap', () => {
+    const treap = new TreapImplicit<number>()
+    expect(treap.delete(0)).toBeUndefined()
+  })
+
+  it('reverse on empty treap', () => {
+    const treap = new TreapImplicit<number>()
+    treap.reverse(0, 0)
+    expect(treap.toArray()).toEqual([])
+  })
+
+  it('toArray on empty treap', () => {
+    const treap = new TreapImplicit<number>()
+    expect(treap.toArray()).toEqual([])
+  })
+})
+
+describe('TreapImplicit large sequence operations', () => {
+  it('handles 1000+ elements', () => {
+    const treap = new TreapImplicit<number>()
+    for (let i = 0; i < 1000; i++) {
+      treap.push(i)
+    }
+    expect(treap.size).toBe(1000)
+    expect(treap.get(500)).toBe(500)
+    const arr = treap.toArray()
+    expect(arr.length).toBe(1000)
+    expect(arr[0]).toBe(0)
+    expect(arr[999]).toBe(999)
+  })
+})
+
+describe('TreapImplicit delete all elements one by one', () => {
+  it('deletes all elements correctly', () => {
+    const treap = new TreapImplicit<number>()
+    for (let i = 0; i < 10; i++) {
+      treap.push(i)
+    }
+    for (let i = 0; i < 10; i++) {
+      treap.delete(0)
+    }
+    expect(treap.size).toBe(0)
+    expect(treap.toArray()).toEqual([])
+  })
+})
+
+describe('TreapImplicit reverse full array', () => {
+  it('reverses entire array', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.push(4)
+    treap.push(5)
+    treap.reverse(0, 5)
+    expect(treap.toArray()).toEqual([5, 4, 3, 2, 1])
+  })
+})
+
+describe('TreapImplicit string values', () => {
+  it('works with string values', () => {
+    const treap = new TreapImplicit<string>()
+    treap.push('a')
+    treap.push('b')
+    treap.push('c')
+    expect(treap.get(1)).toBe('b')
+    treap.set(1, 'x')
+    expect(treap.toArray()).toEqual(['a', 'x', 'c'])
+    expect(treap.delete(0)).toBe('a')
+    expect(treap.toArray()).toEqual(['x', 'c'])
+  })
+})
+
+describe('TreapImplicit insert out of bounds', () => {
+  it('does not insert at negative index', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.insert(-1, 99)
+    expect(treap.toArray()).toEqual([1])
+  })
+
+  it('does not insert beyond size', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.insert(5, 99)
+    expect(treap.toArray()).toEqual([1])
+  })
+})

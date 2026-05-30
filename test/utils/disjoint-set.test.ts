@@ -118,4 +118,37 @@ describe('DisjointSet - stats and clear', () => {
     expect(ds.setCount).toBe(0)
     expect(ds.isEmpty).toBe(true)
   })
+
+  it('clear allows re-adding elements', () => {
+    const ds = new DisjointSet<number>()
+    ds.add(1)
+    ds.clear()
+    ds.add(1)
+    expect(ds.elementCount).toBe(1)
+    expect(ds.find(1)).toBe(1)
+  })
+
+  it('handles string elements', () => {
+    const ds = new DisjointSet<string>()
+    ds.add('foo')
+    ds.add('bar')
+    ds.union('foo', 'bar')
+    expect(ds.connected('foo', 'bar')).toBe(true)
+    expect(ds.setCount).toBe(1)
+  })
+
+  it('handles many elements', () => {
+    const ds = new DisjointSet<number>()
+    for (let i = 0; i < 100; i++) ds.add(i)
+    for (let i = 0; i < 99; i++) ds.union(i, i + 1)
+    expect(ds.setCount).toBe(1)
+    expect(ds.connected(0, 99)).toBe(true)
+  })
+
+  it('union returns false for already connected', () => {
+    const ds = new DisjointSet<number>()
+    ds.add(1); ds.add(2)
+    ds.union(1, 2)
+    expect(ds.union(1, 2)).toBe(false)
+  })
 })

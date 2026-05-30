@@ -11,7 +11,7 @@ const DEFAULT_FINGERPRINT_SIZE = 1
 
 const FNV_OFFSET = 2166136261
 const FNV_PRIME = 16777619
-const FNV_MASK32 = 0xffffffff
+// FNV_MASK32 = 0xffffffff (used implicitly via >>> 0)
 
 export class CuckooFilter {
   private buckets: Uint8Array[]
@@ -51,8 +51,8 @@ export class CuckooFilter {
       const offset = slot * this._fingerprintBytes
 
       for (let b = 0; b < this._fingerprintBytes; b++) {
-        evicted[b] = this.buckets[idx][offset + b]
-        this.buckets[idx][offset + b] = fp[b]
+        evicted[b] = this.buckets[idx]![offset + b]!
+        this.buckets[idx]![offset + b] = fp[b]!
       }
 
       idx = this.altIndex(idx, evicted) % this._numBuckets
@@ -98,7 +98,7 @@ export class CuckooFilter {
 
   clear(): void {
     for (let i = 0; i < this._numBuckets; i++) {
-      this.buckets[i].fill(0)
+      this.buckets[i]!.fill(0)
     }
     this._size = 0
   }
@@ -122,12 +122,12 @@ export class CuckooFilter {
   }
 
   private tryInsert(bucketIdx: number, fp: Uint8Array): boolean {
-    const bucket = this.buckets[bucketIdx % this._numBuckets]
+    const bucket = this.buckets[bucketIdx % this._numBuckets]!
     for (let s = 0; s < this._bucketSize; s++) {
       const offset = s * this._fingerprintBytes
       if (this.isSlotEmpty(bucket, offset)) {
         for (let b = 0; b < this._fingerprintBytes; b++) {
-          bucket[offset + b] = fp[b]
+          bucket[offset + b] = fp[b]!
         }
         this._size++
         return true
@@ -137,7 +137,7 @@ export class CuckooFilter {
   }
 
   private hasFingerprint(bucketIdx: number, fp: Uint8Array): boolean {
-    const bucket = this.buckets[bucketIdx % this._numBuckets]
+    const bucket = this.buckets[bucketIdx % this._numBuckets]!
     for (let s = 0; s < this._bucketSize; s++) {
       const offset = s * this._fingerprintBytes
       if (this.matchesSlot(bucket, offset, fp)) return true
@@ -146,7 +146,7 @@ export class CuckooFilter {
   }
 
   private removeFingerprint(bucketIdx: number, fp: Uint8Array): boolean {
-    const bucket = this.buckets[bucketIdx % this._numBuckets]
+    const bucket = this.buckets[bucketIdx % this._numBuckets]!
     for (let s = 0; s < this._bucketSize; s++) {
       const offset = s * this._fingerprintBytes
       if (this.matchesSlot(bucket, offset, fp)) {
@@ -186,7 +186,7 @@ export class CuckooFilter {
   private fnv1aBytes(data: Uint8Array): number {
     let h = FNV_OFFSET >>> 0
     for (let i = 0; i < data.length; i++) {
-      h ^= data[i]
+      h ^= data[i]!
       h = Math.imul(h, FNV_PRIME) >>> 0
     }
     return h >>> 0

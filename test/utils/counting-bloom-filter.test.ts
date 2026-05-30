@@ -108,4 +108,46 @@ describe('CountingBloomFilter clear', () => {
     expect(bf.size).toBe(0)
     expect(bf.isEmpty).toBe(true)
   })
+
+  it('handles many add-remove cycles', () => {
+    const bf = new CountingBloomFilter(100)
+    for (let i = 0; i < 20; i++) {
+      bf.add(`item-${i}`)
+    }
+    for (let i = 0; i < 20; i++) {
+      bf.remove(`item-${i}`)
+    }
+    expect(bf.size).toBe(0)
+  })
+
+  it('handles unicode keys', () => {
+    const bf = new CountingBloomFilter(50)
+    bf.add('日本語')
+    bf.add('🎉')
+    expect(bf.has('日本語')).toBe(true)
+    expect(bf.has('🎉')).toBe(true)
+  })
+
+  it('isEmpty after removing all', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('x')
+    bf.add('y')
+    bf.remove('x')
+    bf.remove('y')
+    expect(bf.isEmpty).toBe(true)
+  })
+
+  it('adding same item multiple times increases count', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('a')
+    bf.add('a')
+    bf.add('a')
+    expect(bf.has('a')).toBe(true)
+    bf.remove('a')
+    expect(bf.has('a')).toBe(true)
+    bf.remove('a')
+    expect(bf.has('a')).toBe(true)
+    bf.remove('a')
+    expect(bf.isEmpty).toBe(true)
+  })
 })

@@ -91,3 +91,64 @@ describe('VersionVector - toArray', () => {
     expect(arr).toContainEqual(['a', 1])
   })
 })
+
+describe('VersionVector - edge cases', () => {
+  it('merge with empty vector is no-op', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv1.merge(vv2)
+    expect(vv1.get('a')).toBe(2)
+    expect(vv1.get('b')).toBe(0)
+  })
+
+  it('merge does not lower versions', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    vv1.increment()
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    vv2.increment()
+    vv1.merge(vv2)
+    expect(vv1.get('a')).toBe(3)
+  })
+
+  it('multiple nodes tracked correctly', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv2.increment()
+    const vv3 = new VersionVector({ nodeId: 'c' })
+    vv3.increment()
+    vv3.increment()
+    vv3.increment()
+    vv1.merge(vv2)
+    vv1.merge(vv3)
+    expect(vv1.get('a')).toBe(1)
+    expect(vv1.get('b')).toBe(2)
+    expect(vv1.get('c')).toBe(3)
+  })
+
+  it('compare is reflexive (equal)', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    expect(vv1.compare(vv1)).toBe('equal')
+  })
+
+  it('compare before/after is antisymmetric', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    vv2.increment()
+    expect(vv1.compare(vv2)).toBe('before')
+    expect(vv2.compare(vv1)).toBe('after')
+  })
+
+  it('size reflects number of tracked nodes', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    expect(vv.size).toBe(0)
+    vv.increment()
+    expect(vv.size).toBe(1)
+  })
+})

@@ -3,6 +3,7 @@ export interface GraphOptions {
 }
 
 import { increment } from './map-helpers.js'
+import { PriorityQueue } from './priority-queue.js'
 
 interface EdgeEntry {
   to: string
@@ -177,8 +178,10 @@ export class Graph<V = undefined> {
     const queue: string[] = [start]
     visited.add(start)
 
-    while (queue.length > 0) {
-      const vertex = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const vertex = queue[_qi]!
+      _qi++
       result.push(vertex)
 
       const edges = this.adjacency.get(vertex) ?? []
@@ -231,26 +234,25 @@ export class Graph<V = undefined> {
     Array.from(this.adjacency.keys()).forEach((v) => dist.set(v, Infinity))
     dist.set(from, 0)
 
-    while (true) {
-      let u: string | undefined
-      let minDist = Infinity
-      for (const [v, d] of dist) {
-        if (!visited.has(v) && d < minDist) {
-          minDist = d
-          u = v
-        }
-      }
+    const pq = new PriorityQueue<{ id: string; d: number }>({
+      comparator: (a, b) => a.d - b.d,
+    })
+    pq.enqueue({ id: from, d: 0 })
 
-      if (u === undefined || u === to) break
+    while (!pq.isEmpty()) {
+      const { id: u, d: uDist } = pq.dequeue()!
+      if (visited.has(u)) continue
       visited.add(u)
+      if (u === to) break
 
       const edges = this.adjacency.get(u) ?? []
       for (const edge of edges) {
         if (visited.has(edge.to)) continue
-        const alt = dist.get(u)! + edge.weight
+        const alt = uDist + edge.weight
         if (alt < dist.get(edge.to)!) {
           dist.set(edge.to, alt)
           prev.set(edge.to, u)
+          pq.enqueue({ id: edge.to, d: alt })
         }
       }
     }
@@ -320,8 +322,10 @@ export class Graph<V = undefined> {
     }
 
     const result: string[] = []
-    while (queue.length > 0) {
-      const vertex = queue.shift()!
+    let _qi = 0
+    while (_qi < queue.length) {
+      const vertex = queue[_qi]!
+      _qi++
       result.push(vertex)
 
       const edges = this.adjacency.get(vertex) ?? []

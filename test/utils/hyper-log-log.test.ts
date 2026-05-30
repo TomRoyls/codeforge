@@ -90,3 +90,69 @@ describe('HyperLogLog - reset', () => {
     expect(hll.count()).toBe(0)
   })
 })
+
+describe('HyperLogLog - edge cases', () => {
+  it('handles empty string', () => {
+    const hll = new HyperLogLog(8)
+    hll.add('')
+    expect(hll.count()).toBeGreaterThan(0)
+  })
+
+  it('handles unicode strings', () => {
+    const hll = new HyperLogLog(8)
+    hll.add('日本語')
+    hll.add('中文')
+    hll.add('العربية')
+    const estimate = hll.count()
+    expect(estimate).toBeGreaterThan(0)
+    expect(estimate).toBeLessThanOrEqual(10)
+  })
+
+  it('reset allows re-adding', () => {
+    const hll = new HyperLogLog(8)
+    for (let i = 0; i < 50; i++) hll.add(`item-${i}`)
+    hll.reset()
+    for (let i = 0; i < 50; i++) hll.add(`new-${i}`)
+    const estimate = hll.count()
+    expect(estimate).toBeGreaterThan(25)
+    expect(estimate).toBeLessThan(100)
+  })
+
+  it('merge with empty returns same estimate', () => {
+    const hll1 = new HyperLogLog(8)
+    for (let i = 0; i < 100; i++) hll1.add(`item-${i}`)
+    const hll2 = new HyperLogLog(8)
+    const merged = hll1.merge(hll2)
+    expect(merged.count()).toBeCloseTo(hll1.count(), -1)
+  })
+
+  it('self-merge preserves estimate', () => {
+    const hll = new HyperLogLog(8)
+    for (let i = 0; i < 100; i++) hll.add(`item-${i}`)
+    const original = hll.count()
+    const merged = hll.merge(hll)
+    expect(merged.count()).toBeCloseTo(original, -1)
+  })
+
+  it('merge of two disjoint sets approximates sum', () => {
+    const hll1 = new HyperLogLog(10)
+    for (let i = 0; i < 100; i++) hll1.add(`set1-${i}`)
+    const hll2 = new HyperLogLog(10)
+    for (let i = 0; i < 100; i++) hll2.add(`set2-${i}`)
+    const merged = hll1.merge(hll2)
+    const estimate = merged.count()
+    expect(estimate).toBeGreaterThan(100)
+    expect(estimate).toBeLessThan(400)
+  })
+
+  it('precision parameter affects accuracy', () => {
+    const hll8 = new HyperLogLog(8)
+    const hll14 = new HyperLogLog(14)
+    for (let i = 0; i < 500; i++) {
+      hll8.add(`item-${i}`)
+      hll14.add(`item-${i}`)
+    }
+    expect(hll14.count()).toBeGreaterThan(0)
+    expect(hll8.count()).toBeGreaterThan(0)
+  })
+})

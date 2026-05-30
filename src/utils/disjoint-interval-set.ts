@@ -53,29 +53,66 @@ export class DisjointIntervalSet {
   }
 
   contains(point: number): boolean {
-    for (const iv of this.intervals) {
-      if (point >= iv.start && point <= iv.end) return true
+    let lo = 0
+    let hi = this.intervals.length - 1
+    while (lo <= hi) {
+      const mid = (lo + hi) >>> 1
+      const iv = this.intervals[mid]!
+      if (point < iv.start) {
+        hi = mid - 1
+      } else if (point > iv.end) {
+        lo = mid + 1
+      } else {
+        return true
+      }
     }
     return false
   }
 
   containsInterval(start: number, end: number): boolean {
-    for (const iv of this.intervals) {
+    let lo = 0
+    let hi = this.intervals.length - 1
+    while (lo <= hi) {
+      const mid = (lo + hi) >>> 1
+      const iv = this.intervals[mid]!
       if (iv.start <= start && iv.end >= end) return true
+      if (end < iv.start) {
+        hi = mid - 1
+      } else {
+        lo = mid + 1
+      }
     }
     return false
   }
 
   overlaps(start: number, end: number): boolean {
-    for (const iv of this.intervals) {
+    let lo = 0
+    let hi = this.intervals.length - 1
+    while (lo <= hi) {
+      const mid = (lo + hi) >>> 1
+      const iv = this.intervals[mid]!
       if (iv.start <= end && iv.end >= start) return true
+      if (end < iv.start) {
+        hi = mid - 1
+      } else {
+        lo = mid + 1
+      }
     }
     return false
   }
 
   findContaining(point: number): Interval | undefined {
-    for (const iv of this.intervals) {
+    let lo = 0
+    let hi = this.intervals.length - 1
+    while (lo <= hi) {
+      const mid = (lo + hi) >>> 1
+      const iv = this.intervals[mid]!
       if (point >= iv.start && point <= iv.end) return iv
+      if (point < iv.start) {
+        hi = mid - 1
+      } else {
+        lo = mid + 1
+      }
     }
     return undefined
   }

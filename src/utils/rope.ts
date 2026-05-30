@@ -91,10 +91,10 @@ function rebuildFromLeaves(leaves: RopeNode[]): RopeNode | undefined {
   const merged: RopeNode[] = []
   let i = 0
   while (i + 1 < leaves.length) {
-    merged.push(makeInternal(leaves[i], leaves[i + 1]))
+    merged.push(makeInternal(leaves[i]!, leaves[i + 1]!))
     i += 2
   }
-  if (i < leaves.length) merged.push(leaves[i])
+  if (i < leaves.length) merged.push(leaves[i]!)
   return rebuildFromLeaves(merged)
 }
 
@@ -107,17 +107,10 @@ export class Rope {
     }
   }
 
-  private constructorDirect(root: RopeNode | undefined) {
-    this.root = root
-  }
-
   private static fromRoot(root: RopeNode | undefined): Rope {
-    return new Rope(undefined)["_setRoot"](root)
-  }
-
-  private _setRoot(root: RopeNode | undefined): this {
-    ;(this as { root: RopeNode | undefined }).root = root
-    return this
+    const r = new Rope(undefined)
+    r.root = root
+    return r
   }
 
   index(i: number): string {
@@ -130,7 +123,7 @@ export class Rope {
   private _index(node: RopeNode | undefined, i: number): string {
     if (!node) throw new RangeError(`Index out of bounds`)
     if (node.text !== undefined) {
-      return node.text[i]
+      return node.text[i]!
     }
     const leftLen = node.left ? subtreeLength(node.left) : 0
     if (i < leftLen) {

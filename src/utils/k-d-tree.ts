@@ -63,7 +63,7 @@ export class KDTree {
       best = node
       bestDist = dist
     })
-    return best === null ? null : best.point
+    return (best as KDNode | null)?.point ?? null
   }
 
   kNearestNeighbors(target: Point, k: number): Point[] {

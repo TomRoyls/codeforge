@@ -1,117 +1,149 @@
-import { describe, expect, it } from 'vitest'
-import { WaveletTree } from '../../src/utils/wavelet-tree.js'
+import { describe, it, expect } from 'vitest';
+import { WaveletTree } from '../../src/utils/wavelet-tree.js';
 
-// ─── Construction ───
+describe('WaveletTree', () => {
+  it('handles empty data', () => {
+    const wt = new WaveletTree([]);
+    expect(wt.length).toBe(0);
+    expect(wt.alphabet).toEqual([]);
+    expect(wt.rank(1, 0)).toBe(0);
+    expect(wt.rangeCountAll(0, 0)).toEqual(new Map());
+  });
 
-describe('WaveletTree construction', () => {
-  it('builds from string', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.length).toBe(6)
-    expect(wt.text).toBe('banana')
-  })
+  it('handles single element', () => {
+    const wt = new WaveletTree([5]);
+    expect(wt.length).toBe(1);
+    expect(wt.alphabet).toEqual([5]);
+    expect(wt.access(0)).toBe(5);
+    expect(wt.rank(5, 1)).toBe(1);
+    expect(wt.select(5, 1)).toBe(0);
+  });
 
-  it('handles empty string', () => {
-    const wt = new WaveletTree('')
-    expect(wt.length).toBe(0)
-  })
-
-  it('handles single character', () => {
-    const wt = new WaveletTree('a')
-    expect(wt.length).toBe(1)
-    expect(wt.access(0)).toBe('a')
-  })
-
-  it('handles repeated character', () => {
-    const wt = new WaveletTree('aaa')
-    expect(wt.access(0)).toBe('a')
-    expect(wt.access(1)).toBe('a')
-    expect(wt.access(2)).toBe('a')
-  })
-})
-
-// ─── Access ───
-
-describe('WaveletTree access', () => {
-  it('returns correct characters', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.access(0)).toBe('b')
-    expect(wt.access(1)).toBe('a')
-    expect(wt.access(2)).toBe('n')
-    expect(wt.access(3)).toBe('a')
-    expect(wt.access(4)).toBe('n')
-    expect(wt.access(5)).toBe('a')
-  })
-
-  it('throws on out of bounds', () => {
-    const wt = new WaveletTree('abc')
-    expect(() => wt.access(-1)).toThrow(RangeError)
-    expect(() => wt.access(3)).toThrow(RangeError)
-  })
-
-  it('handles string with all unique chars', () => {
-    const wt = new WaveletTree('abcdef')
-    for (let i = 0; i < 6; i++) {
-      expect(wt.access(i)).toBe('abcdef'[i])
+  it('accesses all elements correctly', () => {
+    const data = [3, 1, 4, 1, 5, 9, 2, 6];
+    const wt = new WaveletTree(data);
+    for (let i = 0; i < data.length; i++) {
+      expect(wt.access(i)).toBe(data[i]!);
     }
-  })
-})
+  });
 
-// ─── Rank ───
+  it('computes rank queries', () => {
+    const wt = new WaveletTree([1, 2, 1, 3, 1, 2, 1]);
+    expect(wt.rank(1, 7)).toBe(4);
+    expect(wt.rank(2, 7)).toBe(2);
+    expect(wt.rank(3, 7)).toBe(1);
+    expect(wt.rank(1, 3)).toBe(2);
+    expect(wt.rank(2, 5)).toBe(1);
+    expect(wt.rank(4, 7)).toBe(0);
+  });
 
-describe('WaveletTree rank', () => {
-  it('counts occurrences up to position', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.rank('a', 0)).toBe(0)
-    expect(wt.rank('a', 1)).toBe(1)
-    expect(wt.rank('a', 3)).toBe(2)
-    expect(wt.rank('a', 5)).toBe(3)
-  })
+  it('computes select queries', () => {
+    const wt = new WaveletTree([1, 2, 1, 3, 1, 2, 1]);
+    expect(wt.select(1, 1)).toBe(0);
+    expect(wt.select(1, 2)).toBe(2);
+    expect(wt.select(1, 3)).toBe(4);
+    expect(wt.select(1, 4)).toBe(6);
+    expect(wt.select(2, 1)).toBe(1);
+    expect(wt.select(2, 2)).toBe(5);
+    expect(wt.select(3, 1)).toBe(3);
+  });
 
-  it('returns 0 for non-existent character', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.rank('z', 5)).toBe(0)
-  })
+  it('computes range count', () => {
+    const wt = new WaveletTree([1, 2, 1, 3, 1, 2, 1]);
+    expect(wt.rangeCount(0, 7, 1)).toBe(4);
+    expect(wt.rangeCount(2, 5, 1)).toBe(2);
+    expect(wt.rangeCount(1, 4, 2)).toBe(1);
+    expect(wt.rangeCount(3, 6, 3)).toBe(1);
+    expect(wt.rangeCount(0, 3, 3)).toBe(0);
+  });
 
-  it('returns 0 for negative position', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.rank('a', -1)).toBe(0)
-  })
+  it('computes range count all', () => {
+    const wt = new WaveletTree([1, 2, 1, 3, 1, 2, 1]);
+    const result = wt.rangeCountAll(1, 5);
+    expect(result.get(1)).toBe(2);
+    expect(result.get(2)).toBe(1);
+    expect(result.get(3)).toBe(1);
+  });
 
-  it('counts character correctly', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.rank('b', 5)).toBe(1)
-    expect(wt.rank('n', 5)).toBe(2)
-  })
-})
+  it('reports length and alphabet', () => {
+    const data = [5, 3, 5, 2, 3, 1];
+    const wt = new WaveletTree(data);
+    expect(wt.length).toBe(6);
+    expect(wt.alphabet).toEqual([1, 2, 3, 5]);
+  });
 
-// ─── Select ───
+  it('handles multiple symbols', () => {
+    const data = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+    const wt = new WaveletTree(data);
+    for (let i = 0; i < data.length; i++) {
+      expect(wt.access(i)).toBe(data[i]!);
+    }
+    for (const sym of data) {
+      expect(wt.rank(sym, data.length)).toBe(1);
+      expect(wt.select(sym, 1)).toBe(data.indexOf(sym));
+    }
+  });
 
-describe('WaveletTree select', () => {
-  it('finds position of nth occurrence', () => {
-    const wt = new WaveletTree('banana')
-    const pos = wt.select('a', 0)
-    expect(pos).toBeGreaterThanOrEqual(0)
-    expect(wt.access(pos)).toBe('a')
-  })
+  it('handles large data', () => {
+    const data: number[] = [];
+    for (let i = 0; i < 150; i++) {
+      data.push(i % 7);
+    }
+    const wt = new WaveletTree(data);
+    expect(wt.length).toBe(150);
+    expect(wt.alphabet).toEqual([0, 1, 2, 3, 4, 5, 6]);
+    expect(wt.rank(0, 150)).toBe(22);
+    expect(wt.rank(6, 150)).toBe(21);
+    expect(wt.access(74)).toBe(4);
+    expect(wt.access(149)).toBe(2);
+  });
 
-  it('returns -1 for non-existent character', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.select('z', 0)).toBe(-1)
-  })
+  it('select returns -1 for non-existent occurrence', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.select(1, 5)).toBe(-1);
+    expect(wt.select(2, 3)).toBe(-1);
+    expect(wt.select(4, 1)).toBe(-1);
+    expect(wt.select(3, 2)).toBe(-1);
+  });
 
-  it('returns -1 for out of range occurrence', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.select('a', 100)).toBe(-1)
-  })
+  it('handles binary alphabet', () => {
+    const wt = new WaveletTree([0, 1, 0, 1, 0, 1, 1, 0, 0, 1]);
+    expect(wt.alphabet).toEqual([0, 1]);
+    expect(wt.length).toBe(10);
+    expect(wt.rank(0, 10)).toBe(5);
+    expect(wt.rank(1, 10)).toBe(5);
+    expect(wt.select(0, 1)).toBe(0);
+    expect(wt.select(0, 3)).toBe(4);
+    expect(wt.select(1, 2)).toBe(3);
+    expect(wt.rangeCount(0, 5, 0)).toBe(3);
+    expect(wt.rangeCount(0, 5, 1)).toBe(2);
+  });
 
-  it('returns -1 for negative occurrence', () => {
-    const wt = new WaveletTree('banana')
-    expect(wt.select('a', -1)).toBe(-1)
-  })
+  it('works with provided alphabet', () => {
+    const wt = new WaveletTree([5, 3, 1, 5, 3], [1, 3, 5, 7]);
+    expect(wt.alphabet).toEqual([1, 3, 5, 7]);
+    expect(wt.access(0)).toBe(5);
+    expect(wt.rank(5, 5)).toBe(2);
+  });
 
-  it('finds first occurrence of each character', () => {
-    const wt = new WaveletTree('banana')
-    const bPos = wt.select('b', 0)
-    expect(bPos).toBe(0)
-  })
-})
+  it('select returns -1 for empty tree', () => {
+    const wt = new WaveletTree([]);
+    expect(wt.select(1, 1)).toBe(-1);
+  });
+
+  it('rank returns 0 for empty tree', () => {
+    const wt = new WaveletTree([]);
+    expect(wt.rank(1, 0)).toBe(0);
+  });
+
+  it('rangeCount for single element', () => {
+    const wt = new WaveletTree([5]);
+    expect(wt.rangeCount(0, 1, 5)).toBe(1);
+    expect(wt.rangeCount(0, 1, 3)).toBe(0);
+  });
+
+  it('access on single element', () => {
+    const wt = new WaveletTree([42]);
+    expect(wt.access(0)).toBe(42);
+  });
+});

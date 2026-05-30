@@ -111,4 +111,28 @@ describe('XorFilter', () => {
       expect(f2.has(item)).toBe(true);
     }
   });
+
+  it('handles numeric string items', () => {
+    const items = ['1', '2', '3', '100', '999'];
+    const f = XorFilter.create(items);
+    for (const item of items) {
+      expect(f.has(item)).toBe(true);
+    }
+  });
+
+  it('handles single item', () => {
+    const f = XorFilter.create(['only']);
+    expect(f.has('only')).toBe(true);
+    expect(f.size).toBe(1);
+  });
+
+  it('has low false positive rate', () => {
+    const items = Array.from({ length: 100 }, (_, i) => `item-${i}`);
+    const f = XorFilter.create(items);
+    let falsePositives = 0;
+    for (let i = 0; i < 100; i++) {
+      if (f.has(`missing-${i}`)) falsePositives++;
+    }
+    expect(falsePositives).toBeLessThan(10);
+  });
 });

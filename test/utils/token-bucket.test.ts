@@ -68,4 +68,40 @@ describe('TokenBucket - wait', () => {
     tb.consume(5)
     expect(tb.wait(5)).toBeGreaterThan(0)
   })
+
+  it('consume 1 token by default', () => {
+    const tb = new TokenBucket({ capacity: 10, fillRate: 1 })
+    expect(tb.consume()).toBe(true)
+    expect(tb.available).toBe(9)
+  })
+
+  it('repeated rejections do not affect stats', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
+    tb.consume(3)
+    const result = tb.consume(3)
+    expect(result).toBe(false)
+    expect(tb.available).toBe(2)
+  })
+
+  it('consume all tokens leaves zero available', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
+    expect(tb.consume(5)).toBe(true)
+    expect(tb.available).toBe(0)
+    expect(tb.consume(1)).toBe(false)
+  })
+
+  it('wait returns correct value for partially filled', () => {
+    const tb = new TokenBucket({ capacity: 10, fillRate: 1 })
+    tb.consume(8)
+    const waitTime = tb.wait(5)
+    expect(waitTime).toBeGreaterThan(0)
+  })
+
+  it('getStats tracks capacity and fillRate', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 2 })
+    const stats = tb.getStats()
+    expect(stats.capacity).toBe(5)
+    expect(stats.fillRate).toBe(2)
+    expect(stats.totalGranted).toBe(0)
+  })
 })

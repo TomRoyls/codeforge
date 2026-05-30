@@ -102,4 +102,27 @@ describe('append', () => {
     expect(arr).toEqual([1, 2])
     expect(map.get('a')).toBe(arr)
   })
+
+  it('append to empty map creates single-element arrays', () => {
+    const map = new Map<string, number>()
+    append(map, 'x', 42)
+    append(map, 'y', 99)
+    expect(map.get('x')).toEqual([42])
+    expect(map.get('y')).toEqual([99])
+    expect(map.size).toBe(2)
+  })
+
+  it('append multiple values to same key', () => {
+    const map = new Map<string, number>()
+    append(map, 'a', 1)
+    append(map, 'a', 2)
+    append(map, 'a', 3)
+    expect(map.get('a')).toEqual([1, 2, 3])
+  })
+
+  it('append to empty map creates new arrays', () => {
+    const map = new Map<string, string>()
+    append(map, 'key', 'val')
+    expect(map.get('key')).toEqual(['val'])
+  })
 })

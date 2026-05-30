@@ -27,9 +27,18 @@ export class RangeMap<V> {
   }
 
   get(point: number): V | undefined {
-    for (const entry of this.entries) {
+    let lo = 0
+    let hi = this.entries.length - 1
+    while (lo <= hi) {
+      const mid = (lo + hi) >>> 1
+      const entry = this.entries[mid]!
       if (point >= entry.start && point <= entry.end) {
         return entry.value
+      }
+      if (point < entry.start) {
+        hi = mid - 1
+      } else {
+        lo = mid + 1
       }
     }
     return undefined
@@ -70,7 +79,8 @@ export class RangeMap<V> {
   findOverlapping(start: number, end: number): RangeMapEntry<V>[] {
     const result: RangeMapEntry<V>[] = []
     for (const entry of this.entries) {
-      if (entry.start <= end && entry.end >= start) {
+      if (entry.start > end) break
+      if (entry.end >= start) {
         result.push(entry)
       }
     }

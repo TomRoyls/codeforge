@@ -4,6 +4,7 @@ export class AsyncQueue<T> {
   private _closed = false
   private _enqueued: number = 0
   private _dequeued: number = 0
+  private _qi: number = 0
 
   public enqueue(item: T): void {
     if (this._closed) throw new Error('AsyncQueue is closed')
@@ -17,9 +18,13 @@ export class AsyncQueue<T> {
   }
 
   public dequeue(): Promise<T> {
-    if (this.queue.length > 0) {
+    if (this._qi < this.queue.length) {
       this._dequeued++
-      return Promise.resolve(this.queue.shift()!)
+      const item = this.queue[this._qi]!
+      this.queue[this._qi] = undefined as unknown as T
+      this._qi++
+      this.compactIfNeeded()
+      return Promise.resolve(item)
     }
     if (this._closed) {
       return Promise.reject(new Error('AsyncQueue is closed and empty'))
@@ -30,11 +35,11 @@ export class AsyncQueue<T> {
   }
 
   public peek(): T | undefined {
-    return this.queue[0]
+    return this._qi < this.queue.length ? this.queue[this._qi] : undefined
   }
 
   public get size(): number {
-    return this.queue.length
+    return this.queue.length - this._qi
   }
 
   public get pending(): number {
@@ -55,7 +60,7 @@ export class AsyncQueue<T> {
 
   public getStats(): { size: number; pending: number; enqueued: number; dequeued: number; closed: boolean } {
     return {
-      size: this.queue.length,
+      size: this.queue.length - this._qi,
       pending: this.waiting.length,
       enqueued: this._enqueued,
       dequeued: this._dequeued,
@@ -64,7 +69,7 @@ export class AsyncQueue<T> {
   }
 
   public [Symbol.iterator](): Iterator<T> {
-    let i = 0
+    let i = this._qi
     return {
       next: () => {
         if (i < this.queue.length) {
@@ -72,6 +77,13 @@ export class AsyncQueue<T> {
         }
         return { value: undefined as unknown as T, done: true }
       },
+    }
+  }
+
+  private compactIfNeeded(): void {
+    if (this._qi >= 64 && this._qi > this.queue.length >> 1) {
+      this.queue.splice(0, this._qi)
+      this._qi = 0
     }
   }
 }

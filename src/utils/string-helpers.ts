@@ -29,20 +29,40 @@ export function truncate(str: string, maxLength: number, suffix = '...'): string
 }
 
 export function trimLines(str: string): string {
-  return str
-    .split('\n')
-    .map((line) => line.trim())
-    .join('\n')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
+  const lines = str.split('\n')
+  const result: string[] = []
+  let prevWasBlank = false
+  let startTrimmed = false
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (trimmed.length === 0) {
+      if (prevWasBlank) continue
+      prevWasBlank = true
+    } else {
+      prevWasBlank = false
+      startTrimmed = true
+    }
+    if (startTrimmed) result.push(trimmed)
+  }
+  while (result.length > 0 && result[result.length - 1]!.length === 0) {
+    result.pop()
+  }
+  return result.join('\n')
 }
 
 export function indent(str: string, spaces: number): string {
   const prefix = ' '.repeat(spaces)
-  return str
-    .split('\n')
-    .map((line) => (line.length > 0 ? prefix + line : line))
-    .join('\n')
+  let result = ''
+  let lineStart = 0
+  for (let i = 0; i <= str.length; i++) {
+    if (i === str.length || str[i] === '\n') {
+      const line = str.slice(lineStart, i)
+      if (result.length > 0) result += '\n'
+      result += line.length > 0 ? prefix + line : line
+      lineStart = i + 1
+    }
+  }
+  return result
 }
 
 export function isBlank(str: string): boolean {

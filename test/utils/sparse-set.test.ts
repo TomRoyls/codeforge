@@ -471,6 +471,44 @@ describe('SparseSet - difference', () => {
     expect(a.difference(b).has(1)).toBe(true)
     expect(b.difference(a).has(3)).toBe(true)
   })
+
+  it('symmetricDifference returns items in either set but not both', () => {
+    const a = new SparseSet(10)
+    a.add(1)
+    a.add(2)
+    a.add(3)
+    const b = new SparseSet(10)
+    b.add(2)
+    b.add(3)
+    b.add(4)
+    const result = a.symmetricDifference(b)
+    expect(result.has(1)).toBe(true)
+    expect(result.has(4)).toBe(true)
+    expect(result.has(2)).toBe(false)
+    expect(result.has(3)).toBe(false)
+    expect(result.size).toBe(2)
+  })
+
+  it('symmetricDifference of identical sets is empty', () => {
+    const a = new SparseSet(10)
+    a.add(1)
+    a.add(2)
+    const b = new SparseSet(10)
+    b.add(1)
+    b.add(2)
+    expect(a.symmetricDifference(b).size).toBe(0)
+  })
+
+  it('symmetricDifference with empty set returns original', () => {
+    const a = new SparseSet(10)
+    a.add(1)
+    a.add(2)
+    const b = new SparseSet(10)
+    const result = a.symmetricDifference(b)
+    expect(result.size).toBe(2)
+    expect(result.has(1)).toBe(true)
+    expect(result.has(2)).toBe(true)
+  })
 })
 
 // ─── Subset and superset ─────────────────────────────────

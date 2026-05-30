@@ -235,19 +235,19 @@ function murmurHash3(key: string, seed: number): number {
 
   let k1 = 0
   const tailStart = nblocks * 4
-  switch (len & 3) {
-    case 3:
-      k1 ^= (key.charCodeAt(tailStart + 2) & 0xff) << 16
-      // fallthrough
-    case 2:
-      k1 ^= (key.charCodeAt(tailStart + 1) & 0xff) << 8
-      // fallthrough
-    case 1:
-      k1 ^= key.charCodeAt(tailStart) & 0xff
-      k1 = Math.imul(k1, C1)
-      k1 = ((k1 << 15) | (k1 >>> 17))
-      k1 = Math.imul(k1, C2)
-      h1 ^= k1
+  const remaining = len & 3
+  if (remaining >= 3) {
+    k1 ^= (key.charCodeAt(tailStart + 2) & 0xff) << 16
+  }
+  if (remaining >= 2) {
+    k1 ^= (key.charCodeAt(tailStart + 1) & 0xff) << 8
+  }
+  if (remaining >= 1) {
+    k1 ^= key.charCodeAt(tailStart) & 0xff
+    k1 = Math.imul(k1, C1)
+    k1 = ((k1 << 15) | (k1 >>> 17))
+    k1 = Math.imul(k1, C2)
+    h1 ^= k1
   }
 
   h1 ^= len

@@ -125,6 +125,18 @@ export class SparseSet {
     return result
   }
 
+  symmetricDifference(other: SparseSet): SparseSet {
+    const maxSize = Math.max(this.sparse.length, other.sparse.length)
+    const result = new SparseSet(maxSize)
+    this.forEach((v) => {
+      if (!other.has(v)) result.add(v)
+    })
+    other.forEach((v) => {
+      if (!this.has(v)) result.add(v)
+    })
+    return result
+  }
+
   isSubsetOf(other: SparseSet): boolean {
     if (this._size > other._size) return false
     let allFound = true

@@ -99,4 +99,41 @@ describe('calculateBackoff - edge cases', () => {
       expect(result).toBeLessThanOrEqual(30000)
     }
   })
+
+  it('calculateUniformBackoff handles large base delay', () => {
+    expect(calculateUniformBackoff(0, 10000)).toBe(10000)
+    expect(calculateUniformBackoff(1, 10000)).toBe(20000)
+  })
+
+  it('calculateUniformBackoff caps correctly', () => {
+    expect(calculateUniformBackoff(100, 1, 1000)).toBe(1000)
+  })
+
+  it('full jitter with base delay 1', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(5, 1, 30000, 'full')
+      expect(result).toBeGreaterThanOrEqual(0)
+      expect(result).toBeLessThanOrEqual(64)
+    }
+  })
+
+  it('equal jitter with attempt 0', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(0, 100, 30000, 'equal')
+      expect(result).toBeGreaterThanOrEqual(50)
+      expect(result).toBeLessThanOrEqual(100)
+    }
+  })
+
+  it('decorrelating jitter with large attempt', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(50, 100, 5000, 'decorrelating')
+      expect(result).toBeLessThanOrEqual(5000)
+    }
+  })
+
+  it('calculateUniformBackoff with maxDelayMs equal to baseDelayMs', () => {
+    expect(calculateUniformBackoff(0, 100, 100)).toBe(100)
+    expect(calculateUniformBackoff(1, 100, 100)).toBe(100)
+  })
 })

@@ -97,4 +97,33 @@ describe('DeferredBarrier', () => {
     await new Promise((r) => setTimeout(r, 0))
     expect(barrier.size).toBe(0)
   })
+
+  it('resolves with complex object', async () => {
+    const d = createDeferred<{ a: number; b: string }>()
+    d.resolve({ a: 42, b: 'hello' })
+    const result = await d.promise
+    expect(result).toEqual({ a: 42, b: 'hello' })
+  })
+
+  it('barrier handles multiple concurrent deferreds', async () => {
+    const barrier = new DeferredBarrier()
+    const d1 = barrier.create<number>('a')
+    const d2 = barrier.create<number>('b')
+    barrier.resolve('a', 1)
+    barrier.resolve('b', 2)
+    expect(await d1.promise).toBe(1)
+    expect(await d2.promise).toBe(2)
+  })
+
+  it('createDeferred reject propagates error', async () => {
+    const d = createDeferred<number>()
+    d.reject(new Error('test error'))
+    await expect(d.promise).rejects.toThrow('test error')
+  })
+
+  it('createDeferred resolves undefined', async () => {
+    const d = createDeferred<void>()
+    d.resolve()
+    await expect(d.promise).resolves.toBeUndefined()
+  })
 })

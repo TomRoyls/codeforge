@@ -49,4 +49,48 @@ describe('RULE_SUGGESTIONS known rules', () => {
     expect(RULE_SUGGESTIONS.noDuplicateCode).toBeDefined()
     expect(RULE_SUGGESTIONS.noDuplicateCode).toContain('duplicated')
   })
+
+  it('has noVar suggestion', () => {
+    expect(RULE_SUGGESTIONS.noVar).toBeDefined()
+    expect(RULE_SUGGESTIONS.noVar).toContain('let')
+  })
+
+  it('has noFallthrough suggestion', () => {
+    expect(RULE_SUGGESTIONS.noFallthrough).toBeDefined()
+    expect(RULE_SUGGESTIONS.noFallthrough).toContain('break')
+  })
+
+  it('has preferTemplate suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferTemplate).toBeDefined()
+    expect(RULE_SUGGESTIONS.preferTemplate).toContain('template')
+  })
+
+  it('has noUnsafeRegex suggestion', () => {
+    expect(RULE_SUGGESTIONS.noUnsafeRegex).toBeDefined()
+    expect(RULE_SUGGESTIONS.noUnsafeRegex).toContain('backtracking')
+  })
+
+  it('has consistent return type for all entries', () => {
+    for (const [rule, suggestion] of Object.entries(RULE_SUGGESTIONS)) {
+      expect(typeof rule).toBe('string')
+      expect(typeof suggestion).toBe('string')
+      expect(suggestion.length).toBeGreaterThan(10)
+    }
+  })
+
+  it('has maxFileSize suggestion', () => {
+    expect(RULE_SUGGESTIONS.maxFileSize).toBeDefined()
+    expect(RULE_SUGGESTIONS.maxFileSize).toContain('Split')
+  })
+
+  it('has noExplicitAny suggestion', () => {
+    expect(RULE_SUGGESTIONS.noExplicitAny).toBeDefined()
+    expect(typeof RULE_SUGGESTIONS.noExplicitAny).toBe('string')
+  })
+
+  it('suggestions do not contain empty strings', () => {
+    for (const [key, val] of Object.entries(RULE_SUGGESTIONS)) {
+      expect(val.trim().length).toBeGreaterThan(0)
+    }
+  })
 })

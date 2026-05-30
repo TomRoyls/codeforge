@@ -56,4 +56,80 @@ describe('CountMinSketch - reset', () => {
     cms.reset()
     expect(cms.estimate('a')).toBe(0)
   })
+
+  it('allows updates after reset', () => {
+    const cms = new CountMinSketch({ width: 100, depth: 5 })
+    cms.update('a', 100)
+    cms.reset()
+    cms.update('a', 5)
+    expect(cms.estimate('a')).toBe(5)
+  })
+})
+
+// ─── Edge cases ───────────────────────────────────────────
+describe('CountMinSketch - edge cases', () => {
+  it('handles negative counts', () => {
+    const cms = new CountMinSketch({ width: 100, depth: 5 })
+    cms.update('a', 10)
+    cms.update('a', -3)
+    expect(cms.estimate('a')).toBe(7)
+  })
+
+  it('handles empty string key', () => {
+    const cms = new CountMinSketch({ width: 100, depth: 5 })
+    cms.update('', 5)
+    expect(cms.estimate('')).toBe(5)
+  })
+
+  it('handles very large counts', () => {
+    const cms = new CountMinSketch({ width: 100, depth: 5 })
+    cms.update('big', 1_000_000)
+    expect(cms.estimate('big')).toBe(1_000_000)
+  })
+
+  it('provides consistent estimates for same item', () => {
+    const cms = new CountMinSketch({ width: 100, depth: 5 })
+    cms.update('x', 42)
+    expect(cms.estimate('x')).toBe(cms.estimate('x'))
+  })
+
+  it('minimum width and depth work', () => {
+    const cms = new CountMinSketch({ width: 1, depth: 1 })
+    cms.update('a', 5)
+    expect(cms.estimate('a')).toBe(5)
+  })
+
+  it('default count parameter is 1', () => {
+    const cms = new CountMinSketch({ width: 100, depth: 5 })
+    cms.update('default')
+    expect(cms.estimate('default')).toBe(1)
+  })
+
+  it('handles unicode keys', () => {
+    const cms = new CountMinSketch({ width: 100, depth: 5 })
+    cms.update('日本語', 3)
+    expect(cms.estimate('日本語')).toBe(3)
+  })
+
+  it('getStats returns valid data', () => {
+    const cms = new CountMinSketch({ width: 50, depth: 3 })
+    const stats = cms.getStats()
+    expect(stats.totalCells).toBe(150)
+    expect(stats.width).toBe(50)
+    expect(stats.depth).toBe(3)
+  })
+
+  it('multiple updates accumulate correctly', () => {
+    const cms = new CountMinSketch({ width: 100, depth: 5 })
+    cms.update('key', 3)
+    cms.update('key', 7)
+    expect(cms.estimate('key')).toBe(10)
+  })
+
+  it('estimate for unseen key is small', () => {
+    const cms = new CountMinSketch({ width: 1000, depth: 5 })
+    for (let i = 0; i < 100; i++) cms.update(`item-${i}`)
+    const est = cms.estimate('never-seen')
+    expect(est).toBeLessThan(100)
+  })
 })

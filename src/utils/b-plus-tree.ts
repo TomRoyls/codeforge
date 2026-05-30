@@ -67,7 +67,7 @@ export class BPlusTree<K, V> {
   }
 
   private splitChild(parent: BPlusInternalNode<K, V>, idx: number): void {
-    const child = parent.children[idx]
+    const child = parent.children[idx]!
     if (child.leaf) {
       this.splitLeafChild(parent, idx, child as BPlusLeafNode<K, V>)
     } else {
@@ -88,7 +88,7 @@ export class BPlusTree<K, V> {
       leaf: true,
     }
     leaf.next = newLeaf
-    parent.keys.splice(idx, 0, newLeaf.keys[0])
+    parent.keys.splice(idx, 0, newLeaf.keys[0]!)
     parent.children.splice(idx + 1, 0, newLeaf)
   }
 
@@ -105,7 +105,7 @@ export class BPlusTree<K, V> {
       leaf: false,
     }
     node.keys.splice(mid)
-    parent.keys.splice(idx, 0, promotedKey)
+    parent.keys.splice(idx, 0, promotedKey!)
     parent.children.splice(idx + 1, 0, sibling)
   }
 
@@ -116,19 +116,19 @@ export class BPlusTree<K, V> {
     }
     const internal = node as BPlusInternalNode<K, V>
     let i = 0
-    while (i < internal.keys.length && this.compare(key, internal.keys[i]) >= 0) i++
-    const child = internal.children[i]
+    while (i < internal.keys.length && this.compare(key, internal.keys[i]!) >= 0) i++
+    const child = internal.children[i]!
     if (child.keys.length >= this.maxKeys) {
       this.splitChild(internal, i)
-      if (this.compare(key, internal.keys[i]) >= 0) i++
+      if (this.compare(key, internal.keys[i]!) >= 0) i++
     }
-    this.insertNonFull(internal.children[i], key, value)
+    this.insertNonFull(internal.children[i]!, key, value)
   }
 
   private insertIntoLeaf(leaf: BPlusLeafNode<K, V>, key: K, value: V): void {
     let i = 0
-    while (i < leaf.keys.length && this.compare(key, leaf.keys[i]) > 0) i++
-    if (i < leaf.keys.length && this.compare(key, leaf.keys[i]) === 0) {
+    while (i < leaf.keys.length && this.compare(key, leaf.keys[i]!) > 0) i++
+    if (i < leaf.keys.length && this.compare(key, leaf.keys[i]!) === 0) {
       leaf.values[i] = value
       return
     }
@@ -141,7 +141,7 @@ export class BPlusTree<K, V> {
     const leaf = this.findLeaf(key)
     if (!leaf) return undefined
     for (let i = 0; i < leaf.keys.length; i++) {
-      if (this.compare(key, leaf.keys[i]) === 0) return leaf.values[i]
+      if (this.compare(key, leaf.keys[i]!) === 0) return leaf.values[i]!
     }
     return undefined
   }
@@ -154,8 +154,8 @@ export class BPlusTree<K, V> {
     let node = this.root
     while (this.isInternal(node)) {
       let i = 0
-      while (i < node.keys.length && this.compare(key, node.keys[i]) >= 0) i++
-      node = node.children[i]
+      while (i < node.keys.length && this.compare(key, node.keys[i]!) >= 0) i++
+      node = node.children[i]!
     }
     return this.asLeaf(node)
   }
@@ -166,7 +166,7 @@ export class BPlusTree<K, V> {
     this.deleteFromNode(this.root, key)
     this._size--
     if (this.isInternal(this.root) && this.root.keys.length === 0) {
-      this.root = this.root.children[0]
+      this.root = this.root.children[0]!
       this._height--
     }
     return true
@@ -179,8 +179,8 @@ export class BPlusTree<K, V> {
     }
     const internal = this.asInternal(node)
     let i = 0
-    while (i < internal.keys.length && this.compare(key, internal.keys[i]) >= 0) i++
-    const child = internal.children[i]
+    while (i < internal.keys.length && this.compare(key, internal.keys[i]!) >= 0) i++
+    const child = internal.children[i]!
     if (child.leaf) {
       this.deleteFromLeaf(this.asLeaf(child), key)
       this.fixAfterLeafDelete(internal, i)
@@ -193,14 +193,14 @@ export class BPlusTree<K, V> {
       this.root.keys.length === 0 &&
       this.root.children.length === 1
     ) {
-      this.root = this.root.children[0]
+      this.root = this.root.children[0]!
       this._height--
     }
   }
 
   private deleteFromLeaf(leaf: BPlusLeafNode<K, V>, key: K): void {
     for (let i = 0; i < leaf.keys.length; i++) {
-      if (this.compare(key, leaf.keys[i]) === 0) {
+      if (this.compare(key, leaf.keys[i]!) === 0) {
         leaf.keys.splice(i, 1)
         leaf.values.splice(i, 1)
         return
@@ -212,17 +212,17 @@ export class BPlusTree<K, V> {
     parent: BPlusInternalNode<K, V>,
     childIdx: number,
   ): void {
-    const child = this.asLeaf(parent.children[childIdx])
+    const child = this.asLeaf(parent.children[childIdx]!)
     if (child.keys.length >= this.minKeys || parent.children.length <= 1) return
     if (childIdx > 0) {
-      const left = this.asLeaf(parent.children[childIdx - 1])
+      const left = this.asLeaf(parent.children[childIdx - 1]!)
       if (left.keys.length > this.minKeys) {
         this.borrowFromLeftLeaf(parent, childIdx)
         return
       }
     }
     if (childIdx < parent.children.length - 1) {
-      const right = this.asLeaf(parent.children[childIdx + 1])
+      const right = this.asLeaf(parent.children[childIdx + 1]!)
       if (right.keys.length > this.minKeys) {
         this.borrowFromRightLeaf(parent, childIdx)
         return
@@ -239,34 +239,34 @@ export class BPlusTree<K, V> {
     parent: BPlusInternalNode<K, V>,
     childIdx: number,
   ): void {
-    const child = this.asLeaf(parent.children[childIdx])
-    const left = this.asLeaf(parent.children[childIdx - 1])
+    const child = this.asLeaf(parent.children[childIdx]!)
+    const left = this.asLeaf(parent.children[childIdx - 1]!)
     const k = left.keys.pop()!
     const v = left.values.pop()!
     child.keys.unshift(k)
     child.values.unshift(v)
-    parent.keys[childIdx - 1] = child.keys[0]
+    parent.keys[childIdx - 1] = child.keys[0]!
   }
 
   private borrowFromRightLeaf(
     parent: BPlusInternalNode<K, V>,
     childIdx: number,
   ): void {
-    const child = this.asLeaf(parent.children[childIdx])
-    const right = this.asLeaf(parent.children[childIdx + 1])
+    const child = this.asLeaf(parent.children[childIdx]!)
+    const right = this.asLeaf(parent.children[childIdx + 1]!)
     const k = right.keys.shift()!
     const v = right.values.shift()!
     child.keys.push(k)
     child.values.push(v)
-    parent.keys[childIdx] = right.keys[0]
+    parent.keys[childIdx] = right.keys[0]!
   }
 
   private mergeLeaves(
     parent: BPlusInternalNode<K, V>,
     leftIdx: number,
   ): void {
-    const left = this.asLeaf(parent.children[leftIdx])
-    const right = this.asLeaf(parent.children[leftIdx + 1])
+    const left = this.asLeaf(parent.children[leftIdx]!)
+    const right = this.asLeaf(parent.children[leftIdx + 1]!)
     left.keys.push(...right.keys)
     left.values.push(...right.values)
     left.next = right.next
@@ -278,17 +278,17 @@ export class BPlusTree<K, V> {
     parent: BPlusInternalNode<K, V>,
     childIdx: number,
   ): void {
-    const child = this.asInternal(parent.children[childIdx])
+    const child = this.asInternal(parent.children[childIdx]!)
     if (child.keys.length >= this.minKeys || parent.children.length <= 1) return
     if (childIdx > 0) {
-      const left = this.asInternal(parent.children[childIdx - 1])
+      const left = this.asInternal(parent.children[childIdx - 1]!)
       if (left.keys.length > this.minKeys) {
         this.borrowFromLeftInternal(parent, childIdx)
         return
       }
     }
     if (childIdx < parent.children.length - 1) {
-      const right = this.asInternal(parent.children[childIdx + 1])
+      const right = this.asInternal(parent.children[childIdx + 1]!)
       if (right.keys.length > this.minKeys) {
         this.borrowFromRightInternal(parent, childIdx)
         return
@@ -305,11 +305,11 @@ export class BPlusTree<K, V> {
     parent: BPlusInternalNode<K, V>,
     childIdx: number,
   ): void {
-    const child = this.asInternal(parent.children[childIdx])
-    const left = this.asInternal(parent.children[childIdx - 1])
+    const child = this.asInternal(parent.children[childIdx]!)
+    const left = this.asInternal(parent.children[childIdx - 1]!)
     const sep = parent.keys[childIdx - 1]
     parent.keys[childIdx - 1] = left.keys.pop()!
-    child.keys.unshift(sep)
+    child.keys.unshift(sep!)
     child.children.unshift(left.children.pop()!)
   }
 
@@ -317,11 +317,11 @@ export class BPlusTree<K, V> {
     parent: BPlusInternalNode<K, V>,
     childIdx: number,
   ): void {
-    const child = this.asInternal(parent.children[childIdx])
-    const right = this.asInternal(parent.children[childIdx + 1])
+    const child = this.asInternal(parent.children[childIdx]!)
+    const right = this.asInternal(parent.children[childIdx + 1]!)
     const sep = parent.keys[childIdx]
     parent.keys[childIdx] = right.keys.shift()!
-    child.keys.push(sep)
+    child.keys.push(sep!)
     child.children.push(right.children.shift()!)
   }
 
@@ -329,9 +329,9 @@ export class BPlusTree<K, V> {
     parent: BPlusInternalNode<K, V>,
     leftIdx: number,
   ): void {
-    const left = this.asInternal(parent.children[leftIdx])
-    const right = this.asInternal(parent.children[leftIdx + 1])
-    left.keys.push(parent.keys[leftIdx])
+    const left = this.asInternal(parent.children[leftIdx]!)
+    const right = this.asInternal(parent.children[leftIdx + 1]!)
+    left.keys.push(parent.keys[leftIdx]!)
     left.keys.push(...right.keys)
     left.children.push(...right.children)
     parent.keys.splice(leftIdx, 1)
@@ -345,10 +345,10 @@ export class BPlusTree<K, V> {
     let leaf = this.findLeaf(min)
     while (leaf !== null) {
       for (let i = 0; i < leaf.keys.length; i++) {
-        const cmpLo = this.compare(leaf.keys[i], min)
-        const cmpHi = this.compare(leaf.keys[i], max)
+        const cmpLo = this.compare(leaf.keys[i]!, min)
+        const cmpHi = this.compare(leaf.keys[i]!, max)
         if (cmpLo >= 0 && cmpHi <= 0) {
-          result.push({ key: leaf.keys[i], value: leaf.values[i] })
+          result.push({ key: leaf.keys[i]!, value: leaf.values[i]! })
         }
         if (cmpHi > 0) return result
       }
@@ -360,16 +360,16 @@ export class BPlusTree<K, V> {
   min(): K | undefined {
     if (this._size === 0) return undefined
     let node = this.root
-    while (this.isInternal(node)) node = node.children[0]
-    return this.asLeaf(node).keys[0]
+    while (this.isInternal(node)) node = node.children[0]!
+    return this.asLeaf(node).keys[0]!
   }
 
   max(): K | undefined {
     if (this._size === 0) return undefined
     let node = this.root
-    while (this.isInternal(node)) node = node.children[node.children.length - 1]
+    while (this.isInternal(node)) node = node.children[node.children.length - 1]!
     const leaf = this.asLeaf(node)
-    return leaf.keys[leaf.keys.length - 1]
+    return leaf.keys[leaf.keys.length - 1]!
   }
 
   get size(): number {
@@ -394,7 +394,7 @@ export class BPlusTree<K, V> {
     const result: K[] = []
     let leaf = this.getLeftmostLeaf()
     while (leaf !== null) {
-      for (let i = 0; i < leaf.keys.length; i++) result.push(leaf.keys[i])
+      for (let i = 0; i < leaf.keys.length; i++) result.push(leaf.keys[i]!)
       leaf = leaf.next
     }
     return result
@@ -404,7 +404,7 @@ export class BPlusTree<K, V> {
     const result: V[] = []
     let leaf = this.getLeftmostLeaf()
     while (leaf !== null) {
-      for (let i = 0; i < leaf.values.length; i++) result.push(leaf.values[i])
+      for (let i = 0; i < leaf.values.length; i++) result.push(leaf.values[i]!)
       leaf = leaf.next
     }
     return result
@@ -415,7 +415,7 @@ export class BPlusTree<K, V> {
     let leaf = this.getLeftmostLeaf()
     while (leaf !== null) {
       for (let i = 0; i < leaf.keys.length; i++) {
-        result.push({ key: leaf.keys[i], value: leaf.values[i] })
+        result.push({ key: leaf.keys[i]!, value: leaf.values[i]! })
       }
       leaf = leaf.next
     }
@@ -424,7 +424,7 @@ export class BPlusTree<K, V> {
 
   private getLeftmostLeaf(): BPlusLeafNode<K, V> | null {
     let node = this.root
-    while (this.isInternal(node)) node = node.children[0]
+    while (this.isInternal(node)) node = node.children[0]!
     return this.asLeaf(node)
   }
 }

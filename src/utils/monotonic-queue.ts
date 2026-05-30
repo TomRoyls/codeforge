@@ -7,7 +7,11 @@ export interface MonotonicQueueOptions {
 
 export class MonotonicQueue<T> {
   private readonly data: T[] = []
+  private dataHead = 0
+  private dataTail = 0
   private readonly deque: T[] = []
+  private dequeHead = 0
+  private dequeTail = 0
   private readonly mode: MonotonicMode
   private readonly windowSize: number | undefined
   private readonly compare: (a: T, b: T) => number
@@ -19,49 +23,69 @@ export class MonotonicQueue<T> {
   }
 
   push(value: T): void {
-    this.data.push(value)
+    this.data[this.dataTail] = value
+    this.dataTail++
 
-    while (this.deque.length > 0) {
-      const back = this.deque[this.deque.length - 1]!
+    const dequeLen = this.dequeTail - this.dequeHead
+    if (dequeLen > 0) {
+      const back = this.deque[this.dequeTail - 1]!
       const shouldEvict =
         this.mode === 'min'
           ? this.compare(back, value) >= 0
           : this.compare(back, value) <= 0
-      if (!shouldEvict) break
-      this.deque.pop()
+      if (shouldEvict) {
+        this.dequeTail--
+        while (this.dequeTail > this.dequeHead) {
+          const back2 = this.deque[this.dequeTail - 1]!
+          const shouldEvict2 =
+            this.mode === 'min'
+              ? this.compare(back2, value) >= 0
+              : this.compare(back2, value) <= 0
+          if (!shouldEvict2) break
+          this.dequeTail--
+        }
+      }
     }
-    this.deque.push(value)
+    this.deque[this.dequeTail] = value
+    this.dequeTail++
 
-    if (this.windowSize !== undefined && this.data.length > this.windowSize) {
-      const evicted = this.data.shift()!
-      if (this.deque.length > 0 && this.deque[0] === evicted) {
-        this.deque.shift()
+    if (this.windowSize !== undefined && (this.dataTail - this.dataHead) > this.windowSize) {
+      const evicted = this.data[this.dataHead]!
+      this.dataHead++
+      if (this.dequeTail > this.dequeHead && this.deque[this.dequeHead] === evicted) {
+        this.dequeHead++
       }
     }
   }
 
   current(): T {
-    if (this.deque.length === 0) {
+    if (this.dequeTail === this.dequeHead) {
       throw new RangeError('Cannot get current from empty MonotonicQueue')
     }
-    return this.deque[0]!
+    return this.deque[this.dequeHead]!
   }
 
   get size(): number {
-    return this.data.length
+    return this.dataTail - this.dataHead
   }
 
   isEmpty(): boolean {
-    return this.data.length === 0
+    return this.dataTail === this.dataHead
   }
 
   clear(): void {
-    this.data.length = 0
-    this.deque.length = 0
+    this.dataHead = 0
+    this.dataTail = 0
+    this.dequeHead = 0
+    this.dequeTail = 0
   }
 
   toArray(): T[] {
-    return [...this.data]
+    const result: T[] = []
+    for (let i = this.dataHead; i < this.dataTail; i++) {
+      result.push(this.data[i]!)
+    }
+    return result
   }
 
   getMode(): MonotonicMode {
