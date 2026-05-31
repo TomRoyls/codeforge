@@ -77,4 +77,19 @@ describe('RadixHeap', () => {
     h.push(0)
     expect(h.pop()).toBe(0)
   })
+
+  it('handles sequential pushes', () => {
+    const h = new RadixHeap()
+    for (let i = 0; i < 50; i++) h.push(i)
+    for (let i = 0; i < 50; i++) {
+      expect(h.pop()).toBe(i)
+    }
+  })
+
+  it('isEmpty after draining', () => {
+    const h = new RadixHeap()
+    h.push(1)
+    h.pop()
+    expect(h.isEmpty).toBe(true)
+  })
 })
