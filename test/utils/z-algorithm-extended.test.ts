@@ -45,4 +45,8 @@ describe('ZAlgorithmExtended', () => {
   it('handles pattern at end', () => {
     expect(ZAlgorithmExtended.search('abcdef', 'def')).toEqual([3])
   })
+
+  it('handles repeated pattern', () => {
+    expect(ZAlgorithmExtended.search('abababab', 'abab')).toEqual([0, 2, 4])
+  })
 })

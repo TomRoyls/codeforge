@@ -44,4 +44,10 @@ describe('PolynomialRollingHash', () => {
     const s = 'a'.repeat(10000)
     expect(PolynomialRollingHash.hash(s) > 0n).toBe(true)
   })
+
+  it('hashes single character', () => {
+    const h = PolynomialRollingHash.hash('a')
+    expect(h > 0n).toBe(true)
+    expect(typeof h).toBe('bigint')
+  })
 })

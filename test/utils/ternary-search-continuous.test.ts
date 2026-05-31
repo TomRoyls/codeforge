@@ -51,4 +51,9 @@ describe('TernarySearchContinuous', () => {
     const x = TernarySearchContinuous.maximize(Math.cos, -Math.PI, Math.PI)
     expect(Math.abs(x)).toBeLessThan(0.01)
   })
+
+  it('minimizes quartic', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.pow(x - 2, 4), 0, 10)
+    expect(x).toBeCloseTo(2, 2)
+  })
 })

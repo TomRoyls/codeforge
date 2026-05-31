@@ -43,4 +43,9 @@ describe('BoyerMooreExtended', () => {
   it('handles repeated pattern', () => {
     expect(BoyerMooreExtended.search('abababab', 'abab')).toEqual([0, 2, 4])
   })
+
+  it('handles single char text', () => {
+    expect(BoyerMooreExtended.search('a', 'a')).toEqual([0])
+    expect(BoyerMooreExtended.search('a', 'b')).toEqual([])
+  })
 })
