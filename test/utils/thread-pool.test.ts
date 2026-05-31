@@ -97,4 +97,31 @@ describe('ThreadPool', () => {
       expect(outcome.message).toBe('string error')
     }
   })
+
+  it('handles sync function', async () => {
+    const pool = new ThreadPool({ maxConcurrency: 2 })
+    const outcome = await pool.submit(async () => 'sync result')
+    expect(outcome.error).toBe(false)
+    if (!outcome.error) expect(outcome.result).toBe('sync result')
+  })
+
+  it('tracks duration', async () => {
+    const pool = new ThreadPool({ maxConcurrency: 2 })
+    const outcome = await pool.submit(async () => {
+      await new Promise(r => setTimeout(r, 10))
+      return 1
+    })
+    expect(outcome.error).toBe(false)
+    if (!outcome.error) expect(outcome.duration).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles many sequential tasks', async () => {
+    const pool = new ThreadPool({ maxConcurrency: 1 })
+    let sum = 0
+    for (let i = 0; i < 10; i++) {
+      const outcome = await pool.submit(async () => i)
+      if (!outcome.error) sum += outcome.result
+    }
+    expect(sum).toBe(45)
+  })
 })

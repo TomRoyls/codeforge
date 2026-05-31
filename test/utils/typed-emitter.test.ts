@@ -109,4 +109,27 @@ describe('TypedEventEmitter - max listeners', () => {
     emitter.on('message', () => {})
     expect(() => emitter.on('message', () => {})).toThrow('Max listeners')
   })
+
+  it('emits with correct argument types', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let receivedNum = 0
+    emitter.on('count', (n) => { receivedNum = n })
+    emitter.emit('count', 42)
+    expect(receivedNum).toBe(42)
+  })
+
+  it('once returns unsubscribe function', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count = 0
+    const unsub = emitter.once('count', () => { count++ })
+    unsub()
+    emitter.emit('count', 1)
+    expect(count).toBe(0)
+  })
+
+  it('off does nothing for unknown handler', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.off('message', () => {})
+    expect(emitter.listenerCount('message')).toBe(0)
+  })
 })
