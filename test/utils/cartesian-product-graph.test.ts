@@ -89,4 +89,11 @@ describe('CartesianProductGraph', () => {
     cg.addEdgeG2(0, 1)
     expect(cg.productEdgeCount()).toBe(4)
   })
+
+  it('non-adjacent nodes in product', () => {
+    const cg = new CartesianProductGraph(3, 3)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.areAdjacent([0, 0], [2, 2])).toBe(false)
+  })
 })

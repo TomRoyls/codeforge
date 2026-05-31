@@ -52,4 +52,8 @@ describe('BoyerMooreExtended', () => {
   it('handles unicode pattern', () => {
     expect(BoyerMooreExtended.search('café café', 'café')).toEqual([0, 5])
   })
+
+  it('handles empty text', () => {
+    expect(BoyerMooreExtended.search('', 'a')).toEqual([])
+  })
 })

@@ -74,4 +74,10 @@ describe('DeltaEncoding', () => {
     expect(encoded.deltas.length).toBe(0)
     expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(arr)
   })
+
+  it('roundtrip empty array', () => {
+    const arr: number[] = []
+    const encoded = DeltaEncoding.encode(arr)
+    expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(arr)
+  })
 })

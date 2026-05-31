@@ -108,4 +108,16 @@ describe('Deque', () => {
     expect(dq.toArray()).toEqual([1, 2, 3, 4])
     expect(dq.size).toBe(4)
   })
+
+  it('handles pop all then refill', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.popFront()
+    dq.popFront()
+    expect(dq.isEmpty).toBe(true)
+    dq.pushBack(3)
+    expect(dq.front()).toBe(3)
+    expect(dq.back()).toBe(3)
+  })
 })

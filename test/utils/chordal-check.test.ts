@@ -95,4 +95,14 @@ describe('ChordalCheck', () => {
     cc.addEdge(0, 2)
     expect(cc.isChordal()).toBe(true)
   })
+
+  it('C5 cycle is not chordal', () => {
+    const cc = new ChordalCheck(5)
+    cc.addEdge(0, 1)
+    cc.addEdge(1, 2)
+    cc.addEdge(2, 3)
+    cc.addEdge(3, 4)
+    cc.addEdge(4, 0)
+    expect(cc.isChordal()).toBe(false)
+  })
 })
