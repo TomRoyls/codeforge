@@ -75,4 +75,9 @@ describe('Eertree', () => {
     const tree = Eertree.build('x')
     expect(tree.getPalindromes().length).toBeGreaterThanOrEqual(1)
   })
+
+  it('handles empty string', () => {
+    const tree = Eertree.build('')
+    expect(tree.getPalindromes().length).toBe(0)
+  })
 })

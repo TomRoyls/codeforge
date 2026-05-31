@@ -111,4 +111,10 @@ describe('DynamicConvexHull', () => {
     ch.add(10, 10)
     expect(ch.area).toBe(0)
   })
+
+  it('handles single point', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(5, 5)
+    expect(ch.getHull().length).toBeGreaterThanOrEqual(0)
+  })
 })

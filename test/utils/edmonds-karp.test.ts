@@ -97,4 +97,8 @@ describe('EdmondsKarp', () => {
   it('handles disconnected source-sink', () => {
     expect(EdmondsKarp.maxFlow([{ from: 1, to: 2, capacity: 5 }], 0, 3, 4)).toBe(0)
   })
+
+  it('handles single node', () => {
+    expect(EdmondsKarp.maxFlow([], 0, 0, 1)).toBe(0)
+  })
 })
