@@ -114,4 +114,14 @@ describe('DijkstraFibonacci', () => {
     expect(dist[1]).toBe(7)
     expect(dist[3]).toBe(9)
   })
+
+  it('handles disconnected', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 5 },
+      { from: 2, to: 3, weight: 3 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[1]).toBe(5)
+    expect(dist[2]).toBe(Infinity)
+  })
 })

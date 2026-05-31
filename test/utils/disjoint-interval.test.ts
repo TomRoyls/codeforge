@@ -86,4 +86,13 @@ describe('DisjointInterval', () => {
     expect(di.contains(3)).toBe(false)
     expect(di.contains(14)).toBe(true)
   })
+
+  it('covers range after split', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(4, 6)
+    expect(di.covers(0, 3)).toBe(true)
+    expect(di.covers(4, 6)).toBe(false)
+    expect(di.covers(7, 10)).toBe(true)
+  })
 })

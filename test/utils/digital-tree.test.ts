@@ -94,4 +94,11 @@ describe('DigitalTree', () => {
     expect(dt.search('naïve')).toBe(true)
     expect(dt.startsWith('caf')).toBe(true)
   })
+
+  it('handles empty string', () => {
+    const dt = new DigitalTree()
+    dt.insert('')
+    expect(dt.search('')).toBe(true)
+    expect(dt.search('a')).toBe(false)
+  })
 })

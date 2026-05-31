@@ -129,4 +129,14 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(3)).toBe(2)
   })
+
+  it('handles unreachable node', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 2 }]],
+      [1, []],
+      [2, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(2)).toBe(Infinity)
+  })
 })

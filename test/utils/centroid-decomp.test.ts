@@ -113,4 +113,13 @@ describe('CentroidDecomposition', () => {
     for (const p of tree) if (p === -1) roots++
     expect(roots).toBe(1)
   })
+
+  it('handles depth of centroid tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, [5]], [5, [6]], [6, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(7)
+  })
 })
