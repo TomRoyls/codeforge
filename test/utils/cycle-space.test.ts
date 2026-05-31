@@ -88,4 +88,13 @@ describe('CycleSpace', () => {
     const cs = new CycleSpace(3)
     expect(cs.isTree()).toBe(true)
   })
+
+  it('single cycle dimension', () => {
+    const cs = new CycleSpace(3)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    cs.addEdge(2, 0)
+    expect(cs.cycleSpaceDimension()).toBe(1)
+    expect(cs.isTree()).toBe(false)
+  })
 })

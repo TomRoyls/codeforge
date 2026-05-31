@@ -84,4 +84,11 @@ describe('IntervalGraph', () => {
     ig.addInterval(5, 8)
     expect(ig.totalOverlap()).toBe(5)
   })
+
+  it('single interval', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 10)
+    expect(ig.isIntervalGraph()).toBe(true)
+    expect(ig.maxOverlap()).toBe(1)
+  })
 })

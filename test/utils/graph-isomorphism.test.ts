@@ -87,12 +87,22 @@ describe('GraphIsomorphism', () => {
     expect(gi.isomorphic()).toBe(true)
   })
 
-  it('detects non-isomorphic by edges', () => {
+  it('detects non-isomorphic by different edge count', () => {
     const gi = new GraphIsomorphism(3)
     gi.addEdgeG1(0, 1)
     gi.addEdgeG1(1, 2)
     gi.addEdgeG2(0, 1)
-    gi.addEdgeG2(0, 2)
     expect(gi.isomorphic()).toBe(false)
+  })
+
+  it('handles K3 vs K3', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(1, 2)
+    gi.addEdgeG1(0, 2)
+    gi.addEdgeG2(0, 1)
+    gi.addEdgeG2(1, 2)
+    gi.addEdgeG2(0, 2)
+    expect(gi.isomorphic()).toBe(true)
   })
 })

@@ -95,4 +95,12 @@ describe('ConvexHull3D', () => {
     ch.addPoint(3, 4, 5)
     expect(ch.centroid()).toEqual([3, 4, 5])
   })
+
+  it('three collinear points no volume', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(1, 1, 1)
+    ch.addPoint(2, 2, 2)
+    expect(ch.convexHullVolume()).toBe(0)
+  })
 })

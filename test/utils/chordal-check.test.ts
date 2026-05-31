@@ -87,4 +87,12 @@ describe('ChordalCheck', () => {
     cc.addEdge(2, 3)
     expect(cc.isChordal()).toBe(true)
   })
+
+  it('K3 is chordal', () => {
+    const cc = new ChordalCheck(3)
+    cc.addEdge(0, 1)
+    cc.addEdge(1, 2)
+    cc.addEdge(0, 2)
+    expect(cc.isChordal()).toBe(true)
+  })
 })
