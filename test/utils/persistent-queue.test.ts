@@ -70,4 +70,25 @@ describe('PersistentQueue', () => {
     const q = PersistentQueue.create<string>().enqueue('x').enqueue('y')
     expect(q.toArray()).toEqual(['x', 'y'])
   })
+
+  it('interleaved enqueue dequeue preserves order', () => {
+    const q0 = PersistentQueue.create<number>()
+    const q1 = q0.enqueue(1)
+    const r1 = q1.dequeue()!
+    expect(r1.value).toBe(1)
+    const q2 = r1.queue.enqueue(2)
+    expect(q2.toArray()).toEqual([2])
+  })
+
+  it('dequeue all returns elements in FIFO order', () => {
+    let q = PersistentQueue.create<number>()
+    for (let i = 0; i < 5; i++) q = q.enqueue(i * 10)
+    const result: number[] = []
+    while (!q.isEmpty) {
+      const r = q.dequeue()!
+      result.push(r.value)
+      q = r.queue
+    }
+    expect(result).toEqual([0, 10, 20, 30, 40])
+  })
 })
