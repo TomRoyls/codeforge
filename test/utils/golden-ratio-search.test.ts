@@ -52,4 +52,14 @@ describe('GoldenRatioSearch', () => {
     expect(x).toBeGreaterThanOrEqual(0)
     expect(x).toBeLessThanOrEqual(10)
   })
+
+  it('minimizes exponential-like function', () => {
+    const x = GoldenRatioSearch.minimize((x) => Math.abs(x - 2) + 1, 0, 5)
+    expect(x).toBeCloseTo(2, 2)
+  })
+
+  it('maximizes quadratic peak', () => {
+    const x = GoldenRatioSearch.maximize((x) => -Math.pow(x - 4, 2) + 10, 0, 8)
+    expect(x).toBeCloseTo(4, 3)
+  })
 })

@@ -78,4 +78,25 @@ describe('Manacher2D', () => {
     const result = Manacher2D.longestPalindromicSubgrid(grid)
     expect(result.len).toBeGreaterThanOrEqual(1)
   })
+
+  it('finds 5x5 palindrome', () => {
+    const grid = [
+      ['x', 'x', 'x', 'x', 'x'],
+      ['x', 'a', 'b', 'a', 'x'],
+      ['x', 'b', 'c', 'b', 'x'],
+      ['x', 'a', 'b', 'a', 'x'],
+      ['x', 'x', 'x', 'x', 'x'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(5)
+  })
+
+  it('handles 2x2 non-palindrome', () => {
+    const grid = [
+      ['a', 'b'],
+      ['c', 'd'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(1)
+  })
 })
