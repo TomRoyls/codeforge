@@ -91,4 +91,22 @@ describe('MinCostFlow', () => {
     expect(maxFlow).toBe(5)
     expect(minCost).toBe(3 * 1 + 2 * 5)
   })
+
+  it('handles back edge saturation', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 2, cost: 1 },
+      { from: 0, to: 2, capacity: 2, cost: 100 },
+      { from: 1, to: 3, capacity: 1, cost: 1 },
+      { from: 1, to: 2, capacity: 1, cost: 1 },
+      { from: 2, to: 3, capacity: 3, cost: 1 },
+    ]
+    const { maxFlow } = MinCostFlow.minCostMaxFlow(edges, 0, 3, 4)
+    expect(maxFlow).toBe(4)
+  })
+
+  it('handles single node graph', () => {
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow([], 0, 0, 0)
+    expect(maxFlow).toBe(0)
+    expect(minCost).toBe(0)
+  })
 })

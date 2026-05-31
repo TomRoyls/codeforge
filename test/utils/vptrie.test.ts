@@ -1,0 +1,85 @@
+import { describe, expect, it } from 'vitest'
+import { VPTrie } from '../../src/utils/vptrie.js'
+
+describe('VPTrie', () => {
+  it('finds nearest point', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([10, 10])
+    expect(vp.nearest([1, 1])).toEqual([0, 0])
+  })
+
+  it('returns null for empty trie', () => {
+    const vp = new VPTrie(2)
+    expect(vp.nearest([0, 0])).toBeNull()
+  })
+
+  it('finds k nearest', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([1, 1])
+    vp.addPoint([10, 10])
+    const result = vp.kNearest([0, 0], 2)
+    expect(result.length).toBe(2)
+    expect(result[0]).toEqual([0, 0])
+    expect(result[1]).toEqual([1, 1])
+  })
+
+  it('finds all within radius', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([1, 0])
+    vp.addPoint([10, 10])
+    expect(vp.findAllWithin([0, 0], 2).length).toBe(2)
+  })
+
+  it('tracks size', () => {
+    const vp = new VPTrie(2)
+    expect(vp.size).toBe(0)
+    vp.addPoint([0, 0])
+    expect(vp.size).toBe(1)
+  })
+
+  it('handles 1D points', () => {
+    const vp = new VPTrie(1)
+    vp.addPoint([0])
+    vp.addPoint([5])
+    vp.addPoint([10])
+    expect(vp.nearest([4])).toEqual([5])
+  })
+
+  it('handles 3D points', () => {
+    const vp = new VPTrie(3)
+    vp.addPoint([0, 0, 0])
+    vp.addPoint([5, 5, 5])
+    expect(vp.nearest([1, 1, 1])).toEqual([0, 0, 0])
+  })
+
+  it('handles duplicate points', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([0, 0])
+    expect(vp.nearest([0, 0])).toEqual([0, 0])
+    expect(vp.size).toBe(2)
+  })
+
+  it('kNearest with k > size', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    const result = vp.kNearest([0, 0], 5)
+    expect(result.length).toBe(1)
+  })
+
+  it('findAllWithin empty result', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([10, 10])
+    expect(vp.findAllWithin([0, 0], 1)).toEqual([])
+  })
+
+  it('handles many points', () => {
+    const vp = new VPTrie(2)
+    for (let i = 0; i < 100; i++) vp.addPoint([i, i])
+    expect(vp.nearest([50.1, 50.1])).toEqual([50, 50])
+    expect(vp.kNearest([50, 50], 3).length).toBe(3)
+  })
+})
