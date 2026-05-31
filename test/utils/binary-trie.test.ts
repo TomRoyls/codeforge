@@ -98,4 +98,12 @@ describe('BinaryTrie', () => {
     expect(bt.find(15)).toBe(true)
     expect(bt.maxXor(0)).toBe(15)
   })
+
+  it('handles remove to empty', () => {
+    const bt = new BinaryTrie(4)
+    bt.insert(5)
+    bt.remove(5)
+    expect(bt.size).toBe(0)
+    expect(bt.find(5)).toBe(false)
+  })
 })

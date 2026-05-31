@@ -93,4 +93,15 @@ describe('BlockList', () => {
     expect(bl.get(1)).toBe(99)
     expect(bl.toArray()).toEqual([10, 99, 30])
   })
+
+  it('handles pushFront all then popBack all', () => {
+    const bl = new BlockList<number>(2)
+    bl.pushFront(3)
+    bl.pushFront(2)
+    bl.pushFront(1)
+    expect(bl.popBack()).toBe(3)
+    expect(bl.popBack()).toBe(2)
+    expect(bl.popBack()).toBe(1)
+    expect(bl.isEmpty).toBe(true)
+  })
 })

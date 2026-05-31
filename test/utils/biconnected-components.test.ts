@@ -119,4 +119,10 @@ describe('BiconnectedComponents', () => {
         bc.addEdge(i, j)
     expect(bc.findArticulationPoints()).toEqual([])
   })
+
+  it('handles isolated nodes', () => {
+    const bc = new BiconnectedComponents(3)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toEqual([])
+  })
 })

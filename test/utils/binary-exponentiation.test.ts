@@ -63,4 +63,8 @@ describe('BinaryExponentiation', () => {
   it('handles negative base', () => {
     expect(BinaryExponentiation.power(-2n, 3n, 7n)).toBe(6n)
   })
+
+  it('power of zero is one', () => {
+    expect(BinaryExponentiation.power(5n, 0n, 100n)).toBe(1n)
+  })
 })
