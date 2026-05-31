@@ -89,4 +89,9 @@ describe('FastFourierTransform', () => {
     const result = FastFourierTransform.multiplyPolynomials([0, 0], [1, 2, 3])
     expect(result.every(v => v === 0)).toBe(true)
   })
+
+  it('multiplyPolynomials by one', () => {
+    const result = FastFourierTransform.multiplyPolynomials([1], [1, 2, 3])
+    expect(result).toEqual([1, 2, 3])
+  })
 })

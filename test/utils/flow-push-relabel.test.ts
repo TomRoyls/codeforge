@@ -99,4 +99,12 @@ describe('FlowPushRelabel', () => {
   it('handles source equals sink', () => {
     expect(FlowPushRelabel.maxFlow([], 0, 0, 1)).toBe(0)
   })
+
+  it('handles disconnected source and sink', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(0)
+  })
 })

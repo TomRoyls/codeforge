@@ -75,4 +75,9 @@ describe('ExtendedEuclidean', () => {
     const result = ExtendedEuclidean.solve(-6n, 4n)
     expect(Math.abs(Number(result.gcd))).toBe(2)
   })
+
+  it('gcd of identical numbers', () => {
+    const result = ExtendedEuclidean.solve(42n, 42n)
+    expect(result.gcd).toBe(42n)
+  })
 })

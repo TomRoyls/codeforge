@@ -78,4 +78,10 @@ describe('EliasCoding', () => {
       expect(EliasCoding.gammaDecode(EliasCoding.gammaEncode(n)).value).toBe(n)
     }
   })
+
+  it('delta encode 1 is single bit', () => {
+    const encoded = EliasCoding.deltaEncode(1)
+    expect(encoded.length).toBeGreaterThanOrEqual(1)
+    expect(EliasCoding.deltaDecode(encoded).value).toBe(1)
+  })
 })

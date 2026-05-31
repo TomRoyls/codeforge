@@ -128,4 +128,9 @@ describe('FloydWarshall', () => {
     expect(dist[0]![0]).toBe(0)
     expect(dist[0]![1]).toBe(5)
   })
+
+  it('handles single node', () => {
+    const dist = FloydWarshall.allPairsShortestPath([], 1)
+    expect(dist[0]![0]).toBe(0)
+  })
 })
