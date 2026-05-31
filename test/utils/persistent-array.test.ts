@@ -1,0 +1,56 @@
+import { describe, expect, it } from 'vitest'
+import { PersistentArray } from '../../src/utils/persistent-array.js'
+
+describe('PersistentArray', () => {
+  it('creates from array', () => {
+    const arr = PersistentArray.from([1, 2, 3])
+    expect(arr.get(0)).toBe(1)
+    expect(arr.get(2)).toBe(3)
+  })
+
+  it('creates with default value', () => {
+    const arr = PersistentArray.create(3, 0)
+    expect(arr.length).toBe(3)
+    expect(arr.get(0)).toBe(0)
+  })
+
+  it('set returns new version', () => {
+    const v0 = PersistentArray.from([1, 2, 3])
+    const v1 = v0.set(1, 99)
+    expect(v0.get(1)).toBe(2)
+    expect(v1.get(1)).toBe(99)
+  })
+
+  it('toArray returns current state', () => {
+    const arr = PersistentArray.from([1, 2, 3]).set(0, 10)
+    expect(arr.toArray()).toEqual([10, 2, 3])
+  })
+
+  it('map transforms values', () => {
+    const arr = PersistentArray.from([1, 2, 3])
+    const doubled = arr.map(x => x * 2)
+    expect(doubled.toArray()).toEqual([2, 4, 6])
+  })
+
+  it('filter returns matching elements', () => {
+    const arr = PersistentArray.from([1, 2, 3, 4])
+    const evens = arr.filter(x => x % 2 === 0)
+    expect(evens.toArray()).toEqual([2, 4])
+  })
+
+  it('reduce computes aggregate', () => {
+    const arr = PersistentArray.from([1, 2, 3])
+    expect(arr.reduce((s, v) => s + v, 0)).toBe(6)
+  })
+
+  it('push adds element', () => {
+    const arr = PersistentArray.from([1, 2]).push(3)
+    expect(arr.length).toBe(3)
+    expect(arr.get(2)).toBe(3)
+  })
+
+  it('get out of bounds returns undefined', () => {
+    const arr = PersistentArray.from([1])
+    expect(arr.get(5)).toBeUndefined()
+  })
+})

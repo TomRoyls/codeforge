@@ -60,4 +60,35 @@ describe('MinCostFlow', () => {
     expect(maxFlow).toBe(4)
     expect(minCost).toBe(2 * 1 + 2 * 1 + 2 * 5 + 2 * 1)
   })
+
+  it('handles linear chain with costs', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5, cost: 2 },
+      { from: 1, to: 2, capacity: 3, cost: 3 },
+      { from: 2, to: 3, capacity: 4, cost: 1 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 3, 4)
+    expect(maxFlow).toBe(3)
+    expect(minCost).toBe(3 * (2 + 3 + 1))
+  })
+
+  it('handles uniform cost', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5, cost: 1 },
+      { from: 1, to: 2, capacity: 5, cost: 1 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 2, 3)
+    expect(maxFlow).toBe(5)
+    expect(minCost).toBe(10)
+  })
+
+  it('handles parallel edges with different costs', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3, cost: 1 },
+      { from: 0, to: 1, capacity: 2, cost: 5 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 1, 2)
+    expect(maxFlow).toBe(5)
+    expect(minCost).toBe(3 * 1 + 2 * 5)
+  })
 })

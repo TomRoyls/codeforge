@@ -60,4 +60,27 @@ describe('NetworkFlow', () => {
     ]
     expect(NetworkFlow.maxFlow(edges, 0, 1, 2)).toBe(5)
   })
+
+  it('handles multi-level graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 5 },
+      { from: 1, to: 4, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+      { from: 2, to: 4, capacity: 5 },
+      { from: 3, to: 5, capacity: 10 },
+      { from: 4, to: 5, capacity: 10 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 5, 6)).toBe(20)
+  })
+
+  it('handles linear chain', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 2, capacity: 3 },
+      { from: 2, to: 3, capacity: 7 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 3, 4)).toBe(3)
+  })
 })

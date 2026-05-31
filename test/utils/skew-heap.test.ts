@@ -1,0 +1,85 @@
+import { describe, expect, it } from 'vitest'
+import { SkewHeap } from '../../src/utils/skew-heap.js'
+
+describe('SkewHeap', () => {
+  it('pushes and pops in order', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    heap.push(2)
+    expect(heap.pop()).toBe(1)
+    expect(heap.pop()).toBe(2)
+    expect(heap.pop()).toBe(3)
+  })
+
+  it('handles empty pop', () => {
+    expect(new SkewHeap<number>().pop()).toBeUndefined()
+  })
+
+  it('peek returns minimum', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(5)
+    heap.push(2)
+    expect(heap.peek()).toBe(2)
+  })
+
+  it('size and isEmpty', () => {
+    const heap = new SkewHeap<number>()
+    expect(heap.isEmpty).toBe(true)
+    heap.push(1)
+    expect(heap.size).toBe(1)
+    expect(heap.isEmpty).toBe(false)
+  })
+
+  it('merge two heaps', () => {
+    const h1 = new SkewHeap<number>()
+    h1.push(1)
+    h1.push(3)
+    const h2 = new SkewHeap<number>()
+    h2.push(2)
+    h2.push(4)
+    const merged = h1.merge(h2)
+    expect(merged.size).toBe(4)
+    expect(merged.pop()).toBe(1)
+    expect(merged.pop()).toBe(2)
+  })
+
+  it('toArray returns sorted', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    heap.push(2)
+    expect(heap.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('handles max heap via comparator', () => {
+    const heap = new SkewHeap<number>((a, b) => b - a)
+    heap.push(1)
+    heap.push(3)
+    heap.push(2)
+    expect(heap.pop()).toBe(3)
+    expect(heap.pop()).toBe(2)
+  })
+
+  it('handles single element', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(42)
+    expect(heap.pop()).toBe(42)
+    expect(heap.isEmpty).toBe(true)
+  })
+
+  it('handles many elements', () => {
+    const heap = new SkewHeap<number>()
+    for (let i = 100; i >= 0; i--) heap.push(i)
+    for (let i = 0; i <= 100; i++) expect(heap.pop()).toBe(i)
+  })
+
+  it('merge preserves originals', () => {
+    const h1 = new SkewHeap<number>()
+    h1.push(1)
+    const h2 = new SkewHeap<number>()
+    h2.push(2)
+    h1.merge(h2)
+    expect(h1.size).toBe(1)
+  })
+})
