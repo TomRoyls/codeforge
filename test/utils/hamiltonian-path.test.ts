@@ -71,4 +71,22 @@ describe('HamiltonianPath', () => {
     const hp = new HamiltonianPath(2)
     expect(hp.existsCycle()).toBe(false)
   })
+
+  it('handles K5 cycle', () => {
+    const hp = new HamiltonianPath(5)
+    for (let i = 0; i < 5; i++)
+      for (let j = i + 1; j < 5; j++)
+        hp.addEdge(i, j)
+    expect(hp.existsCycle()).toBe(true)
+    expect(hp.existsPath()).toBe(true)
+  })
+
+  it('handles path graph no cycle', () => {
+    const hp = new HamiltonianPath(4)
+    hp.addEdge(0, 1)
+    hp.addEdge(1, 2)
+    hp.addEdge(2, 3)
+    expect(hp.existsCycle()).toBe(false)
+    expect(hp.existsPath()).toBe(true)
+  })
 })
