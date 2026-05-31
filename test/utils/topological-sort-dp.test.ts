@@ -86,4 +86,14 @@ describe('TopologicalSortDP', () => {
     expect(ts.longestPath()).toBe(2)
     expect(ts.countPaths()).toBe(5)
   })
+
+  it('handles linear chain', () => {
+    const ts = new TopologicalSortDP(5)
+    ts.addEdge(0, 1)
+    ts.addEdge(1, 2)
+    ts.addEdge(2, 3)
+    ts.addEdge(3, 4)
+    expect(ts.longestPath()).toBe(4)
+    expect(ts.countPaths()).toBe(5)
+  })
 })

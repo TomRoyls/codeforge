@@ -82,4 +82,12 @@ describe('VPTrie', () => {
     expect(vp.nearest([50.1, 50.1])).toEqual([50, 50])
     expect(vp.kNearest([50, 50], 3).length).toBe(3)
   })
+
+  it('findAllWithin returns correct range', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([1, 0])
+    vp.addPoint([5, 5])
+    expect(vp.findAllWithin([0, 0], 1.5).length).toBe(2)
+  })
 })

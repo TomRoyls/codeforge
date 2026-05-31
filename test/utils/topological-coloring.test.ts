@@ -88,4 +88,13 @@ describe('TopologicalColoring', () => {
     tc.addEdge(4, 1)
     expect(tc.chromaticNumber()).toBeLessThanOrEqual(4)
   })
+
+  it('handles bipartite', () => {
+    const tc = new TopologicalColoring(4)
+    tc.addEdge(0, 2)
+    tc.addEdge(0, 3)
+    tc.addEdge(1, 2)
+    tc.addEdge(1, 3)
+    expect(tc.chromaticNumber()).toBe(2)
+  })
 })

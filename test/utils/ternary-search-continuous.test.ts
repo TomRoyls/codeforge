@@ -56,4 +56,9 @@ describe('TernarySearchContinuous', () => {
     const x = TernarySearchContinuous.minimize((x) => Math.pow(x - 2, 4), 0, 10)
     expect(x).toBeCloseTo(2, 2)
   })
+
+  it('minimizes negative exponential', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.exp(x), -5, 5)
+    expect(x).toBeCloseTo(-5, 1)
+  })
 })

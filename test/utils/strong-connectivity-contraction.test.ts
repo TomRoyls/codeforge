@@ -91,4 +91,16 @@ describe('StrongConnectivityContraction', () => {
     const totalEdges = dag.reduce((sum, arr) => sum + arr.length, 0)
     expect(totalEdges).toBe(4)
   })
+
+  it('handles two SCCs with edge between', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 0)
+    scc.addEdge(2, 3)
+    scc.addEdge(3, 2)
+    scc.addEdge(0, 2)
+    const { componentCount, dag } = scc.contract()
+    expect(componentCount).toBe(2)
+    expect(dag[0]!.length + dag[1]!.length).toBeGreaterThanOrEqual(1)
+  })
 })
