@@ -79,4 +79,10 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('abc')
     expect(result.size).toBe(0)
   })
+
+  it('handles empty patterns array', () => {
+    const ac = new AhoCorasickMulti([])
+    const result = ac.search('abc')
+    expect(result.size).toBe(0)
+  })
 })

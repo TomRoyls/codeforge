@@ -100,4 +100,11 @@ describe('TwoSAT', () => {
     ts.addClause(1, true, 1, true)
     expect(ts.solve()).toBeNull()
   })
+
+  it('handles trivial single variable', () => {
+    const ts = new TwoSAT(1)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    expect(result!.length).toBe(1)
+  })
 })

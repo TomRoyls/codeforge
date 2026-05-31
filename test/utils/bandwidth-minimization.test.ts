@@ -96,4 +96,12 @@ describe('BandwidthMinimization', () => {
     bm.addEdge(3, 4)
     expect(bm.bandwidth()).toBe(1)
   })
+
+  it('handles K3', () => {
+    const bm = new BandwidthMinimization(3)
+    bm.addEdge(0, 1)
+    bm.addEdge(1, 2)
+    bm.addEdge(0, 2)
+    expect(bm.bandwidth()).toBe(2)
+  })
 })

@@ -91,4 +91,11 @@ describe('BinaryTrie', () => {
     expect(bt.find(0)).toBe(true)
     expect(bt.size).toBe(1)
   })
+
+  it('handles all ones', () => {
+    const bt = new BinaryTrie(4)
+    bt.insert(15)
+    expect(bt.find(15)).toBe(true)
+    expect(bt.maxXor(0)).toBe(15)
+  })
 })
