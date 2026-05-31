@@ -124,4 +124,12 @@ describe('HungarianAssignment', () => {
     expect(assignment[0]).toBe(0)
     expect(assignment[1]).toBe(1)
   })
+
+  it('1x1 assignment', () => {
+    const ha = new HungarianAssignment(1, 1)
+    ha.setCost(0, 0, 42)
+    const { totalCost, assignment } = ha.solve()
+    expect(totalCost).toBe(42)
+    expect(assignment[0]).toBe(0)
+  })
 })

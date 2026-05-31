@@ -89,4 +89,10 @@ describe('HamiltonianPath', () => {
     expect(hp.existsCycle()).toBe(false)
     expect(hp.existsPath()).toBe(true)
   })
+
+  it('handles single node', () => {
+    const hp = new HamiltonianPath(1)
+    expect(hp.existsPath()).toBe(true)
+    expect(hp.existsCycle()).toBe(false)
+  })
 })

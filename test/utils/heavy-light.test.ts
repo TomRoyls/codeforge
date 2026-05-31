@@ -108,4 +108,11 @@ describe('HeavyLightDecomposition', () => {
     expect(hld.lca(0, 5)).toBe(0)
     expect(hld.distance(0, 5)).toBe(5)
   })
+
+  it('single node tree', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(0, 0)).toBe(0)
+    expect(hld.distance(0, 0)).toBe(0)
+  })
 })

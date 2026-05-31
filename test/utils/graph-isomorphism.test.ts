@@ -105,4 +105,12 @@ describe('GraphIsomorphism', () => {
     gi.addEdgeG2(0, 2)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('non-isomorphic different node count', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG2(0, 1)
+    gi.addEdgeG2(1, 2)
+    expect(gi.isomorphic()).toBe(false)
+  })
 })
