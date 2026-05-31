@@ -99,4 +99,10 @@ describe('Manacher2D', () => {
     const result = Manacher2D.longestPalindromicSubgrid(grid)
     expect(result.len).toBe(1)
   })
+
+  it('handles 1x1 grid', () => {
+    const grid = [['z']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(1)
+  })
 })

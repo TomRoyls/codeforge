@@ -93,4 +93,10 @@ describe('MaxBipartiteMatching', () => {
     expect(pairs).toContainEqual([0, 0])
     expect(pairs).toContainEqual([1, 1])
   })
+
+  it('handles single edge', () => {
+    const m = new MaxBipartiteMatching(1, 1)
+    m.addEdge(0, 0)
+    expect(m.getMatchingSize()).toBe(1)
+  })
 })

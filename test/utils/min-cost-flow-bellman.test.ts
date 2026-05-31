@@ -109,4 +109,12 @@ describe('MinCostFlow', () => {
     expect(maxFlow).toBe(0)
     expect(minCost).toBe(0)
   })
+
+  it('handles disconnected source-sink', () => {
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow([
+      { from: 1, to: 2, capacity: 5, cost: 1 },
+    ], 0, 3, 4)
+    expect(maxFlow).toBe(0)
+    expect(minCost).toBe(0)
+  })
 })

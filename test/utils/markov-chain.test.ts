@@ -94,4 +94,10 @@ describe('MarkovChain', () => {
     expect(mc.getTransitionProbability('a', 'b')).toBeCloseTo(1, 6)
     expect(mc.getTransitionProbability('b', 'c')).toBeCloseTo(0.5, 6)
   })
+
+  it('unknown state probability is 0', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    expect(mc.getTransitionProbability('z', 'a')).toBe(0)
+  })
 })
