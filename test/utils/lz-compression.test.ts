@@ -59,4 +59,25 @@ describe('LZCompression', () => {
     const tokens = LZCompression.compress(data)
     expect(LZCompression.decompress(tokens)).toBe(data)
   })
+
+  it('handles single repeated character long', () => {
+    const data = 'a'.repeat(100)
+    const tokens = LZCompression.compress(data)
+    expect(LZCompression.decompress(tokens)).toBe(data)
+  })
+
+  it('handles alternating pattern', () => {
+    const data = 'abababababab'
+    const tokens = LZCompression.compress(data)
+    expect(LZCompression.decompress(tokens)).toBe(data)
+  })
+
+  it('compressionRatio is positive for non-empty', () => {
+    const ratio = LZCompression.compressRatio('abcabc')
+    expect(ratio).toBeGreaterThan(0)
+  })
+
+  it('compressionRatio is 1 for empty', () => {
+    expect(LZCompression.compressRatio('')).toBe(1)
+  })
 })
