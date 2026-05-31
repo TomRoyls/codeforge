@@ -82,4 +82,21 @@ describe('SkewHeap', () => {
     h1.merge(h2)
     expect(h1.size).toBe(1)
   })
+
+  it('handles duplicate values', () => {
+    const h = new SkewHeap<number>()
+    h.push(5)
+    h.push(5)
+    h.push(5)
+    expect(h.pop()).toBe(5)
+    expect(h.size).toBe(2)
+  })
+
+  it('toArray returns sorted order', () => {
+    const h = new SkewHeap<number>()
+    h.push(3)
+    h.push(1)
+    h.push(2)
+    expect(h.toArray().sort()).toEqual([1, 2, 3])
+  })
 })

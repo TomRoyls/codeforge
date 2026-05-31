@@ -62,4 +62,14 @@ describe('EliasCoding', () => {
     const deltaLen = EliasCoding.deltaEncode(100).length
     expect(deltaLen).toBeLessThanOrEqual(gammaLen)
   })
+
+  it('gamma encode 1 is single 1', () => {
+    expect(EliasCoding.gammaEncode(1)).toBe('1')
+  })
+
+  it('delta decode handles partial strings', () => {
+    const encoded = EliasCoding.deltaEncode(5)
+    const decoded = EliasCoding.deltaDecode(encoded)
+    expect(decoded.value).toBe(5)
+  })
 })
