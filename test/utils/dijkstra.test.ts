@@ -1,0 +1,84 @@
+import { describe, expect, it } from 'vitest'
+import { Dijkstra } from '../../src/utils/dijkstra.js'
+
+describe('Dijkstra', () => {
+  it('finds shortest distances from source', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 4 }, { to: 2, weight: 1 }]],
+      [1, [{ to: 3, weight: 1 }]],
+      [2, [{ to: 1, weight: 2 }, { to: 3, weight: 5 }]],
+      [3, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+    expect(distances.get(1)).toBe(3)
+    expect(distances.get(2)).toBe(1)
+    expect(distances.get(3)).toBe(4)
+  })
+
+  it('reconstructs shortest path', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 1 }, { to: 2, weight: 4 }]],
+      [1, [{ to: 2, weight: 2 }]],
+      [2, []],
+    ])
+    const { parents } = Dijkstra.shortestPath(adj, 0)
+    const path = Dijkstra.reconstructPath(parents, 0, 2)
+    expect(path).toEqual([0, 1, 2])
+  })
+
+  it('handles single node', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+  })
+
+  it('handles disconnected graph', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, []], [1, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+    expect(distances.get(1)).toBe(Infinity)
+  })
+
+  it('reconstructPath returns null for unreachable', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, []], [1, []],
+    ])
+    const { parents } = Dijkstra.shortestPath(adj, 0)
+    expect(Dijkstra.reconstructPath(parents, 0, 1)).toBeNull()
+  })
+
+  it('stops early when end is reached', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 1 }]],
+      [1, [{ to: 2, weight: 1 }]],
+      [2, [{ to: 3, weight: 1 }]],
+      [3, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0, 2)
+    expect(distances.get(2)).toBe(2)
+  })
+
+  it('handles graph with equal weight edges', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 1 }, { to: 2, weight: 1 }]],
+      [1, [{ to: 3, weight: 1 }]],
+      [2, [{ to: 3, weight: 1 }]],
+      [3, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(3)).toBe(2)
+  })
+
+  it('reconstructPath returns single node for same start/end', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, []],
+    ])
+    const { parents } = Dijkstra.shortestPath(adj, 0)
+    expect(Dijkstra.reconstructPath(parents, 0, 0)).toEqual([0])
+  })
+})
