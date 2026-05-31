@@ -77,4 +77,14 @@ describe('BandwidthMinimization', () => {
     const optimized = bm.bandwidth()
     expect(optimized).toBeLessThanOrEqual(natural)
   })
+
+  it('handles large star', () => {
+    const bm = new BandwidthMinimization(6)
+    bm.addEdge(0, 1)
+    bm.addEdge(0, 2)
+    bm.addEdge(0, 3)
+    bm.addEdge(0, 4)
+    bm.addEdge(0, 5)
+    expect(bm.bandwidth()).toBeLessThanOrEqual(5)
+  })
 })

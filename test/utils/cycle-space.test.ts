@@ -83,4 +83,9 @@ describe('CycleSpace', () => {
         cs.addEdge(i, j)
     expect(cs.cycleSpaceDimension()).toBe(3)
   })
+
+  it('isTree for empty', () => {
+    const cs = new CycleSpace(3)
+    expect(cs.isTree()).toBe(true)
+  })
 })

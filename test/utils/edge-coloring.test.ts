@@ -84,4 +84,16 @@ describe('EdgeColoring', () => {
     for (let i = 0; i < 5; i++) ec.addEdge(i, (i + 1) % 5)
     expect(ec.chromaticIndex()).toBe(3)
   })
+
+  it('handles bipartite K2,3', () => {
+    const ec = new EdgeColoring(5)
+    ec.addEdge(0, 2)
+    ec.addEdge(0, 3)
+    ec.addEdge(0, 4)
+    ec.addEdge(1, 2)
+    ec.addEdge(1, 3)
+    ec.addEdge(1, 4)
+    expect(ec.chromaticIndex()).toBeGreaterThanOrEqual(3)
+    expect(ec.maxDegree()).toBe(3)
+  })
 })

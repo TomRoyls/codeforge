@@ -79,4 +79,14 @@ describe('DominatorTree', () => {
     expect(dom[0]).toBe(0)
     expect(dom[1]).toBe(-1)
   })
+
+  it('linear chain', () => {
+    const dt = new DominatorTree(5)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    dt.addEdge(2, 3)
+    dt.addEdge(3, 4)
+    const dom = dt.build(0)
+    expect(dom).toEqual([0, 0, 1, 2, 3])
+  })
 })
