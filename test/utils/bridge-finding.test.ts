@@ -104,4 +104,13 @@ describe('BridgeFinding', () => {
     bf.addEdge(5, 3)
     expect(bf.findBridges().length).toBe(1)
   })
+
+  it('handles star graph all bridges', () => {
+    const bf = new BridgeFinding(5)
+    bf.addEdge(0, 1)
+    bf.addEdge(0, 2)
+    bf.addEdge(0, 3)
+    bf.addEdge(0, 4)
+    expect(bf.findBridges().length).toBe(4)
+  })
 })

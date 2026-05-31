@@ -111,4 +111,12 @@ describe('BiconnectedComponents', () => {
     const ap = bc.findArticulationPoints()
     expect(ap).toEqual([0])
   })
+
+  it('handles K4 no articulation points', () => {
+    const bc = new BiconnectedComponents(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        bc.addEdge(i, j)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
 })

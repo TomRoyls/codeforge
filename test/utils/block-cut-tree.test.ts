@@ -119,4 +119,11 @@ describe('BlockCutTree', () => {
     expect(isArticulation[1]).toBe(true)
     expect(isArticulation[3]).toBe(true)
   })
+
+  it('handles single edge', () => {
+    const bct = new BlockCutTree(2)
+    bct.addEdge(0, 1)
+    const { isArticulation } = bct.build()
+    expect(isArticulation.every(v => !v)).toBe(true)
+  })
 })

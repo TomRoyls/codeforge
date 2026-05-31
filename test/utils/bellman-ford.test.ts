@@ -124,4 +124,14 @@ describe('BellmanFord', () => {
     const { hasNegativeCycle } = BellmanFord.shortestPath(edges, 2, 0)
     expect(hasNegativeCycle).toBe(true)
   })
+
+  it('handles disconnected graph', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 5 },
+      { from: 2, to: 3, weight: 3 },
+    ]
+    const { distances } = BellmanFord.shortestPath(edges, 4, 0)
+    expect(distances.get(1)).toBe(5)
+    expect(distances.get(2)).toBe(Infinity)
+  })
 })

@@ -74,4 +74,10 @@ describe('Centroid2D', () => {
     expect(weighted.x).toBeCloseTo(simple.x)
     expect(weighted.y).toBeCloseTo(simple.y)
   })
+
+  it('single point centroid', () => {
+    const c = Centroid2D.compute([{ x: 5, y: 10 }])
+    expect(c.x).toBe(5)
+    expect(c.y).toBe(10)
+  })
 })
