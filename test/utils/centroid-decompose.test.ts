@@ -98,4 +98,24 @@ describe('CentroidDecomposition', () => {
     expect(parent.length).toBe(10)
     expect(depth.length).toBe(10)
   })
+
+  it('centroid has minimum max depth', () => {
+    const cd = new CentroidDecomposition(7)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(4, 5)
+    cd.addEdge(5, 6)
+    const { depth } = cd.decompose()
+    const maxD = Math.max(...depth)
+    expect(maxD).toBeLessThan(7)
+  })
+
+  it('handles binary tree decomposition', () => {
+    const cd = new CentroidDecomposition(15)
+    for (let i = 1; i < 15; i++) cd.addEdge(Math.floor((i - 1) / 2), i)
+    const { parent } = cd.decompose()
+    expect(parent.length).toBe(15)
+  })
 })
