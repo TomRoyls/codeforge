@@ -72,4 +72,14 @@ describe('CartesianProductGraph', () => {
     const cg = new CartesianProductGraph(2, 2)
     expect(cg.areAdjacent([0, 0], [0, 0])).toBe(false)
   })
+
+  it('P2 x P2 adjacency', () => {
+    const cg = new CartesianProductGraph(2, 2)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productNodeCount()).toBe(4)
+    expect(cg.areAdjacent([0, 0], [1, 0])).toBe(true)
+    expect(cg.areAdjacent([0, 0], [0, 1])).toBe(true)
+    expect(cg.areAdjacent([0, 0], [1, 1])).toBe(false)
+  })
 })

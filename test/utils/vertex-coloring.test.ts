@@ -68,4 +68,13 @@ describe('VertexColoring', () => {
     vc.addEdge(0, 2)
     expect(vc.maxDegree()).toBe(2)
   })
+
+  it('handles bipartite', () => {
+    const vc = new VertexColoring(4)
+    vc.addEdge(0, 2)
+    vc.addEdge(0, 3)
+    vc.addEdge(1, 2)
+    vc.addEdge(1, 3)
+    expect(vc.chromaticNumber()).toBe(2)
+  })
 })
