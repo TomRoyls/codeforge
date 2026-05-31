@@ -95,4 +95,20 @@ describe('VirtualTree', () => {
     const { lca } = vt.build([0, 2])
     expect(lca(0, 2)).toBe(0)
   })
+
+  it('handles single node virtual tree', () => {
+    const vt = new VirtualTree(1)
+    const { lca } = vt.build([0])
+    expect(lca(0, 0)).toBe(0)
+  })
+
+  it('handles chain virtual tree', () => {
+    const vt = new VirtualTree(5)
+    vt.addEdge(0, 1)
+    vt.addEdge(1, 2)
+    vt.addEdge(2, 3)
+    vt.addEdge(3, 4)
+    const { vtree, lca } = vt.build([0, 2, 4])
+    expect(lca(0, 4)).toBe(0)
+  })
 })
