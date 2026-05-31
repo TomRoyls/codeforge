@@ -60,4 +60,15 @@ describe('RectArea', () => {
   it('handles negative coordinates', () => {
     expect(RectArea.area({ x1: -3, y1: -2, x2: 1, y2: 3 })).toBe(20)
   })
+
+  it('intersection of touching rects returns null', () => {
+    const r1 = { x1: 0, y1: 0, x2: 2, y2: 2 }
+    const r2 = { x1: 2, y1: 0, x2: 4, y2: 2 }
+    expect(RectArea.intersection(r1, r2)).toBeNull()
+  })
+
+  it('union of single rect equals its area', () => {
+    const r = { x1: 1, y1: 1, x2: 4, y2: 5 }
+    expect(RectArea.unionArea([r])).toBe(12)
+  })
 })

@@ -69,4 +69,19 @@ describe('SegmentTree2D', () => {
     const st = new SegmentTree2D(3, 3)
     expect(st.query(0, 0, 2, 2)).toBe(0)
   })
+
+  it('handles 4x4 grid', () => {
+    const st = new SegmentTree2D(4, 4)
+    st.update(1, 1, 5)
+    st.update(2, 2, 10)
+    expect(st.query(0, 0, 3, 3)).toBe(15)
+    expect(st.query(1, 1, 2, 2)).toBe(15)
+  })
+
+  it('handles non-square grid', () => {
+    const st = new SegmentTree2D(2, 4)
+    st.update(0, 0, 3)
+    st.update(1, 3, 7)
+    expect(st.query(0, 0, 1, 3)).toBe(10)
+  })
 })
