@@ -77,4 +77,19 @@ describe('ChinesePostman', () => {
     cp.addEdge(0, 2, 5)
     expect(cp.solve()).toBe(35)
   })
+
+  it('handles single edge correctly', () => {
+    const cp = new ChinesePostman(2)
+    cp.addEdge(0, 1, 3)
+    expect(cp.solve()).toBe(6)
+  })
+
+  it('handles larger eulerian graph', () => {
+    const cp = new ChinesePostman(4)
+    cp.addEdge(0, 1, 1)
+    cp.addEdge(1, 2, 1)
+    cp.addEdge(2, 3, 1)
+    cp.addEdge(3, 0, 1)
+    expect(cp.solve()).toBe(4)
+  })
 })
