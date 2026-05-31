@@ -115,4 +115,19 @@ describe('HeavyLightDecomposition', () => {
     expect(hld.lca(0, 0)).toBe(0)
     expect(hld.distance(0, 0)).toBe(0)
   })
+
+  it('handles binary tree LCA', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]],
+      [1, [3, 4]],
+      [2, [5, 6]],
+      [3, []],
+      [4, []],
+      [5, []],
+      [6, []],
+    ])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(4, 5)).toBe(0)
+    expect(hld.lca(3, 4)).toBe(1)
+  })
 })

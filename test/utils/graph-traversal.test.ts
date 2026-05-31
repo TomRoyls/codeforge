@@ -100,4 +100,9 @@ describe('GraphTraversal', () => {
     const adj = new Map<number, number[]>([[0, []]])
     expect(GraphTraversal.shortestPathBFS(adj, 0, 0)).toEqual([0])
   })
+
+  it('hasCycle on empty graph', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, []]])
+    expect(GraphTraversal.hasCycle(adj)).toBe(false)
+  })
 })
