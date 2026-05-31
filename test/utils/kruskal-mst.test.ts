@@ -97,4 +97,18 @@ describe('KruskalMST', () => {
       expect(found).toBe(true)
     }
   })
+
+  it('handles K4', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 0, to: 2, weight: 2 },
+      { from: 0, to: 3, weight: 3 },
+      { from: 1, to: 2, weight: 4 },
+      { from: 1, to: 3, weight: 5 },
+      { from: 2, to: 3, weight: 6 },
+    ]
+    const { edges: mstEdges, totalWeight } = KruskalMST.findMST(edges, 4)
+    expect(mstEdges.length).toBe(3)
+    expect(totalWeight).toBe(6)
+  })
 })

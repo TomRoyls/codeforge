@@ -99,4 +99,13 @@ describe('HeavyLightDecomposition', () => {
     expect(hld.distance(1, 2)).toBe(2)
     expect(hld.distance(0, 3)).toBe(1)
   })
+
+  it('handles deep chain', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, [5]], [5, []],
+    ])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(0, 5)).toBe(0)
+    expect(hld.distance(0, 5)).toBe(5)
+  })
 })

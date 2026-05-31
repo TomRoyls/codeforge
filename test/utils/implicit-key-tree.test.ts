@@ -87,4 +87,12 @@ describe('ImplicitKeyTree', () => {
     t.insert(1, 2)
     expect(t.toArray()).toEqual([1, 2, 3])
   })
+
+  it('handles many insertions', () => {
+    const t = new ImplicitKeyTree()
+    for (let i = 0; i < 50; i++) t.insert(i, i)
+    expect(t.size).toBe(50)
+    expect(t.get(0)).toBe(0)
+    expect(t.get(49)).toBe(49)
+  })
 })
