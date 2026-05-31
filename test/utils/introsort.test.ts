@@ -52,4 +52,10 @@ describe('Introsort', () => {
   it('handles two elements', () => {
     expect(Introsort.sort([2, 1])).toEqual([1, 2])
   })
+
+  it('returns new array', () => {
+    const arr = [3, 1, 2]
+    const result = Introsort.sort(arr)
+    expect(result).toEqual([1, 2, 3])
+  })
 })

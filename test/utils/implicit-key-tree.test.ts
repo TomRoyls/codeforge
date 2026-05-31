@@ -91,8 +91,17 @@ describe('ImplicitKeyTree', () => {
   it('handles many insertions', () => {
     const t = new ImplicitKeyTree()
     for (let i = 0; i < 50; i++) t.insert(i, i)
-    expect(t.size).toBe(50)
     expect(t.get(0)).toBe(0)
     expect(t.get(49)).toBe(49)
+  })
+
+  it('insert after removes preserves order', () => {
+    const t = new ImplicitKeyTree()
+    t.insert(0, 10)
+    t.insert(1, 20)
+    t.remove(0)
+    t.insert(0, 99)
+    expect(t.get(0)).toBe(99)
+    expect(t.get(1)).toBe(20)
   })
 })

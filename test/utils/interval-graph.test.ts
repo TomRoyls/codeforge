@@ -91,4 +91,10 @@ describe('IntervalGraph', () => {
     expect(ig.isIntervalGraph()).toBe(true)
     expect(ig.maxOverlap()).toBe(1)
   })
+
+  it('empty graph is interval graph', () => {
+    const ig = new IntervalGraph()
+    expect(ig.isIntervalGraph()).toBe(true)
+    expect(ig.maxOverlap()).toBe(0)
+  })
 })

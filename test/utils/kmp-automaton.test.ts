@@ -64,4 +64,9 @@ describe('KMPAutomaton', () => {
     const text = 'xyzabcxyzabcxyz'
     expect(kmp.search(text)).toEqual([3, 9])
   })
+
+  it('no match returns empty', () => {
+    const kmp = new KMPAutomaton('xyz')
+    expect(kmp.search('abcdef')).toEqual([])
+  })
 })
