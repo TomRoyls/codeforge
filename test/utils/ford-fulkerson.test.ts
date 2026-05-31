@@ -99,4 +99,8 @@ describe('FordFulkerson', () => {
   it('handles disconnected source-sink', () => {
     expect(FordFulkerson.maxFlow([{ from: 1, to: 2, capacity: 5 }], 0, 3, 4)).toBe(0)
   })
+
+  it('handles source equals sink', () => {
+    expect(FordFulkerson.maxFlow([], 0, 0, 1)).toBe(0)
+  })
 })

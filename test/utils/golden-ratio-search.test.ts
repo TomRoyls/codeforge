@@ -68,4 +68,9 @@ describe('GoldenRatioSearch', () => {
     expect(x).toBeGreaterThanOrEqual(0)
     expect(x).toBeLessThanOrEqual(10)
   })
+
+  it('minimizes parabola near zero', () => {
+    const x = GoldenRatioSearch.minimize((x) => Math.pow(x, 2), -5, 5)
+    expect(x).toBeCloseTo(0, 2)
+  })
 })

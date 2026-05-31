@@ -111,4 +111,9 @@ describe('GomoryHu', () => {
     gh.addEdge(1, 2, 3)
     expect(gh.minCut(0, 0)).toBe(0)
   })
+
+  it('handles single node', () => {
+    const gh = new GomoryHu(1)
+    expect(gh.minCut(0, 0)).toBe(0)
+  })
 })
