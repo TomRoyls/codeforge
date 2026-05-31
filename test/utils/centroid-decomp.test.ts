@@ -71,4 +71,34 @@ describe('CentroidDecomposition', () => {
     const cd = new CentroidDecomposition(adj)
     expect(cd.getParent(0)).toBe(-1)
   })
+
+  it('all nodes have valid parent or -1', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3]], [1, [4]], [2, []], [3, []], [4, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    for (let i = 0; i < tree.length; i++) {
+      expect(tree[i]).toBeGreaterThanOrEqual(-1)
+      expect(tree[i]).toBeLessThan(tree.length)
+    }
+  })
+
+  it('handles two-node tree', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []]])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(2)
+    let roots = 0
+    for (const p of tree) if (p === -1) roots++
+    expect(roots).toBe(1)
+  })
+
+  it('handles linear chain of 5', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getCentroidTree().length).toBe(5)
+  })
 })

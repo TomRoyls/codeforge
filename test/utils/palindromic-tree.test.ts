@@ -39,4 +39,19 @@ describe('PalindromicTree', () => {
     const pt = new PalindromicTree()
     expect(typeof pt.add('a')).toBe('number')
   })
+
+  it('handles no palindromes in distinct chars', () => {
+    const pt = PalindromicTree.from('abcd')
+    expect(pt.distinctPalindromes).toBe(4)
+  })
+
+  it('handles repeated palindrome centers', () => {
+    const pt = PalindromicTree.from('abacaba')
+    expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(4)
+  })
+
+  it('handles two chars same', () => {
+    const pt = PalindromicTree.from('aa')
+    expect(pt.distinctPalindromes).toBe(2)
+  })
 })

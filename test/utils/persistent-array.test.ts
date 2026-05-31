@@ -53,4 +53,26 @@ describe('PersistentArray', () => {
     const arr = PersistentArray.from([1])
     expect(arr.get(5)).toBeUndefined()
   })
+
+  it('multiple sets preserve history', () => {
+    const v0 = PersistentArray.from([1, 2, 3])
+    const v1 = v0.set(0, 10)
+    const v2 = v1.set(1, 20)
+    expect(v0.get(0)).toBe(1)
+    expect(v1.get(0)).toBe(10)
+    expect(v2.get(0)).toBe(10)
+    expect(v2.get(1)).toBe(20)
+  })
+
+  it('reduce with index checks all values', () => {
+    const arr = PersistentArray.from([10, 20, 30])
+    const indices: number[] = []
+    arr.reduce<number[]>((acc, v, i) => { indices.push(i); acc.push(v); return acc }, [])
+    expect(indices).toEqual([0, 1, 2])
+  })
+
+  it('empty array has length 0', () => {
+    const arr = PersistentArray.from([])
+    expect(arr.length).toBe(0)
+  })
 })

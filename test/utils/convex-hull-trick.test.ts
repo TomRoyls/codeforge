@@ -66,4 +66,16 @@ describe('ConvexHullTrick', () => {
     expect(cht.query(0)).toBe(0)
     expect(cht.query(5)).toBe(0)
   })
+
+  it('handles many lines in order', () => {
+    const cht = new ConvexHullTrick()
+    for (let i = 0; i < 20; i++) cht.addLine(i, 0)
+    expect(cht.query(0)).toBe(0)
+  })
+
+  it('single line at negative x', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(1, -5)
+    expect(cht.query(-10)).toBe(-15)
+  })
 })
