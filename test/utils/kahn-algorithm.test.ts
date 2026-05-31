@@ -84,4 +84,25 @@ describe('KahnAlgorithm', () => {
     expect(result!.indexOf(2)).toBeLessThan(result!.indexOf(3))
     expect(result!.indexOf(3)).toBeLessThan(result!.indexOf(1))
   })
+
+  it('handles multi-source DAG', () => {
+    const kahn = new KahnAlgorithm(5)
+    kahn.addEdge(0, 2)
+    kahn.addEdge(1, 2)
+    kahn.addEdge(2, 3)
+    kahn.addEdge(2, 4)
+    const result = kahn.sort()
+    expect(result).not.toBeNull()
+    expect(result!.indexOf(2)).toBeGreaterThan(result!.indexOf(0))
+    expect(result!.indexOf(2)).toBeGreaterThan(result!.indexOf(1))
+    expect(result!.indexOf(3)).toBeGreaterThan(result!.indexOf(2))
+  })
+
+  it('handles partial cycle', () => {
+    const kahn = new KahnAlgorithm(4)
+    kahn.addEdge(0, 1)
+    kahn.addEdge(1, 2)
+    kahn.addEdge(2, 1)
+    expect(kahn.sort()).toBeNull()
+  })
 })

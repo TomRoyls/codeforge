@@ -1,0 +1,48 @@
+import { describe, expect, it } from 'vitest'
+import { ZAlgorithmExtended } from '../../src/utils/z-algorithm-extended.js'
+
+describe('ZAlgorithmExtended', () => {
+  it('finds all occurrences', () => {
+    expect(ZAlgorithmExtended.search('abcabcabc', 'abc')).toEqual([0, 3, 6])
+  })
+
+  it('finds single occurrence', () => {
+    expect(ZAlgorithmExtended.search('abcdef', 'cde')).toEqual([2])
+  })
+
+  it('handles no match', () => {
+    expect(ZAlgorithmExtended.search('abcdef', 'xyz')).toEqual([])
+  })
+
+  it('handles empty pattern', () => {
+    expect(ZAlgorithmExtended.search('abc', '')).toEqual([])
+  })
+
+  it('handles overlapping matches', () => {
+    expect(ZAlgorithmExtended.search('aaaa', 'aa')).toEqual([0, 1, 2])
+  })
+
+  it('computes z array', () => {
+    const z = ZAlgorithmExtended.zArray('aabcaab')
+    expect(z[0]).toBe(7)
+    expect(z[1]).toBe(1)
+    expect(z[4]).toBe(3)
+  })
+
+  it('computes longest prefix suffix', () => {
+    expect(ZAlgorithmExtended.longestPrefixSuffix('abcabc')).toBe(3)
+    expect(ZAlgorithmExtended.longestPrefixSuffix('aaaa')).toBe(3)
+  })
+
+  it('longest prefix suffix no overlap', () => {
+    expect(ZAlgorithmExtended.longestPrefixSuffix('abc')).toBe(0)
+  })
+
+  it('handles single char pattern', () => {
+    expect(ZAlgorithmExtended.search('aaa', 'a')).toEqual([0, 1, 2])
+  })
+
+  it('handles pattern at end', () => {
+    expect(ZAlgorithmExtended.search('abcdef', 'def')).toEqual([3])
+  })
+})
