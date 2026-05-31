@@ -107,4 +107,10 @@ describe('LineGraph', () => {
     expect(adj.length).toBe(1)
     expect(adj[0]).toEqual([])
   })
+
+  it('empty graph has no edges', () => {
+    const lg = new LineGraph(3)
+    expect(lg.edgeCount()).toBe(0)
+    expect(lg.build().length).toBe(0)
+  })
 })

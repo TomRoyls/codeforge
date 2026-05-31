@@ -119,4 +119,11 @@ describe('KruskalMST', () => {
     ]
     expect(KruskalMST.isConnected(edges, 4)).toBe(false)
   })
+
+  it('handles single edge MST', () => {
+    const edges = [{ from: 0, to: 1, weight: 7 }]
+    const { edges: mstEdges, totalWeight } = KruskalMST.findMST(edges, 2)
+    expect(mstEdges.length).toBe(1)
+    expect(totalWeight).toBe(7)
+  })
 })

@@ -77,4 +77,11 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'a')
     expect(lcp.length).toBe(0)
   })
+
+  it('handles two character string', () => {
+    const sa = [1, 0]
+    const lcp = LCPArray.build(sa, 'ab')
+    expect(lcp.length).toBe(1)
+    expect(lcp[0]).toBe(0)
+  })
 })

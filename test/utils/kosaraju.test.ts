@@ -90,4 +90,12 @@ describe('KosarajuSCC', () => {
     expect(sccs.length).toBe(1)
     expect(sccs[0]).toEqual([0])
   })
+
+  it('two separate SCCs with 2 nodes each', () => {
+    const adj = new Map<number, number[]>(([
+      [0, [1]], [1, [0]], [2, [3]], [3, [2]],
+    ] as [number, number[]][]))
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(2)
+  })
 })
