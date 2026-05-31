@@ -78,4 +78,23 @@ describe('SparseSet', () => {
     ss.add(20)
     expect(ss.size).toBe(2)
   })
+
+  it('handles large universe', () => {
+    const ss = new SparseSet(10000)
+    ss.add(0)
+    ss.add(9999)
+    expect(ss.has(0)).toBe(true)
+    expect(ss.has(9999)).toBe(true)
+  })
+
+  it('multiple add-remove cycles', () => {
+    const ss = new SparseSet(10)
+    ss.add(5)
+    ss.remove(5)
+    ss.add(5)
+    ss.remove(5)
+    ss.add(5)
+    expect(ss.has(5)).toBe(true)
+    expect(ss.size).toBe(1)
+  })
 })

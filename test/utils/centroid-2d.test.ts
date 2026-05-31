@@ -61,4 +61,17 @@ describe('Centroid2D', () => {
     const c = Centroid2D.compute([{ x: 0, y: 0 }, { x: 10, y: 10 }])
     expect(c).toEqual({ x: 5, y: 5 })
   })
+
+  it('polygon centroid of triangle matches average for equilateral', () => {
+    const c = Centroid2D.polygonCentroid([{ x: 0, y: 0 }, { x: 2, y: 0 }, { x: 1, y: Math.sqrt(3) }])
+    expect(c.x).toBeCloseTo(1)
+  })
+
+  it('weighted centroid with equal weights equals simple', () => {
+    const pts = [{ x: 1, y: 2 }, { x: 3, y: 4 }, { x: 5, y: 6 }]
+    const simple = Centroid2D.compute(pts)
+    const weighted = Centroid2D.weightedCentroid(pts.map(p => ({ ...p, weight: 1 })))
+    expect(weighted.x).toBeCloseTo(simple.x)
+    expect(weighted.y).toBeCloseTo(simple.y)
+  })
 })
