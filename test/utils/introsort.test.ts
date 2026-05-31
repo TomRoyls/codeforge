@@ -58,4 +58,10 @@ describe('Introsort', () => {
     const result = Introsort.sort(arr)
     expect(result).toEqual([1, 2, 3])
   })
+
+  it('handles already sorted array', () => {
+    const arr = [1, 2, 3, 4, 5]
+    const result = Introsort.sort(arr)
+    expect(result).toEqual([1, 2, 3, 4, 5])
+  })
 })

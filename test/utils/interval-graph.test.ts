@@ -97,4 +97,13 @@ describe('IntervalGraph', () => {
     expect(ig.isIntervalGraph()).toBe(true)
     expect(ig.maxOverlap()).toBe(0)
   })
+
+  it('three non-overlapping intervals', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 2)
+    ig.addInterval(3, 5)
+    ig.addInterval(6, 8)
+    expect(ig.isIntervalGraph()).toBe(true)
+    expect(ig.maxOverlap()).toBe(1)
+  })
 })

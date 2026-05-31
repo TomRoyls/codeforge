@@ -110,4 +110,10 @@ describe('KahnAlgorithm', () => {
     const kahn = new KahnAlgorithm(1)
     expect(kahn.sort()).toEqual([0])
   })
+
+  it('handles two node chain', () => {
+    const kahn = new KahnAlgorithm(2)
+    kahn.addEdge(0, 1)
+    expect(kahn.sort()).toEqual([0, 1])
+  })
 })

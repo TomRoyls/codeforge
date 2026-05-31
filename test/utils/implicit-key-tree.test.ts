@@ -104,4 +104,10 @@ describe('ImplicitKeyTree', () => {
     expect(t.get(0)).toBe(99)
     expect(t.get(1)).toBe(20)
   })
+
+  it('get negative index returns undefined', () => {
+    const t = new ImplicitKeyTree()
+    t.insert(0, 1)
+    expect(t.get(-1)).toBeUndefined()
+  })
 })

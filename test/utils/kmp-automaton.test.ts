@@ -69,4 +69,9 @@ describe('KMPAutomaton', () => {
     const kmp = new KMPAutomaton('xyz')
     expect(kmp.search('abcdef')).toEqual([])
   })
+
+  it('pattern at start of text', () => {
+    const kmp = new KMPAutomaton('abc')
+    expect(kmp.search('abcdef')).toEqual([0])
+  })
 })
