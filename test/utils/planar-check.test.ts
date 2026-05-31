@@ -75,4 +75,13 @@ describe('PlanarCheck', () => {
     pc.addEdge(1, 4)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('K3,3 with extra edge still not planar', () => {
+    const pc = new PlanarCheck(6)
+    for (let i = 0; i < 3; i++)
+      for (let j = 3; j < 6; j++)
+        pc.addEdge(i, j)
+    pc.addEdge(0, 1)
+    expect(pc.isPlanar()).toBe(false)
+  })
 })

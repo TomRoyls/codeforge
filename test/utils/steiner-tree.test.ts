@@ -92,4 +92,13 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([0, 3, 5])
     expect(result.totalWeight).toBeLessThanOrEqual(5)
   })
+
+  it('handles two adjacent terminals', () => {
+    const st = new SteinerTree(3)
+    st.addEdge(0, 1, 5)
+    st.addEdge(1, 2, 3)
+    const result = st.approximateSteiner([0, 1])
+    expect(result.totalWeight).toBe(5)
+    expect(result.edges.length).toBe(1)
+  })
 })

@@ -74,4 +74,12 @@ describe('StoerWagner', () => {
     sw.addEdge(0, 1, 4)
     expect(sw.minCut()).toBe(7)
   })
+
+  it('handles K3 min cut', () => {
+    const sw = new StoerWagner(3)
+    sw.addEdge(0, 1, 1)
+    sw.addEdge(1, 2, 1)
+    sw.addEdge(0, 2, 1)
+    expect(sw.minCut()).toBe(2)
+  })
 })

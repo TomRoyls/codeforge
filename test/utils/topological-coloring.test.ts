@@ -75,4 +75,17 @@ describe('TopologicalColoring', () => {
     for (let i = 0; i < 4; i++) tc.addEdge(i, (i + 1) % 4)
     expect(tc.chromaticNumber()).toBe(2)
   })
+
+  it('handles wheel graph', () => {
+    const tc = new TopologicalColoring(5)
+    tc.addEdge(0, 1)
+    tc.addEdge(0, 2)
+    tc.addEdge(0, 3)
+    tc.addEdge(0, 4)
+    tc.addEdge(1, 2)
+    tc.addEdge(2, 3)
+    tc.addEdge(3, 4)
+    tc.addEdge(4, 1)
+    expect(tc.chromaticNumber()).toBeLessThanOrEqual(4)
+  })
 })

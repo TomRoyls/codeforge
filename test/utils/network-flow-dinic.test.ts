@@ -78,4 +78,12 @@ describe('NetworkFlowDinic', () => {
     const nf = new NetworkFlowDinic(1)
     expect(nf.maxFlow(0, 0)).toBe(0)
   })
+
+  it('handles cycle', () => {
+    const nf = new NetworkFlowDinic(3)
+    nf.addEdge(0, 1, 5)
+    nf.addEdge(1, 2, 3)
+    nf.addEdge(2, 0, 2)
+    expect(nf.maxFlow(0, 2)).toBe(3)
+  })
 })
