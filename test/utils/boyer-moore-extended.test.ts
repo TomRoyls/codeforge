@@ -56,4 +56,8 @@ describe('BoyerMooreExtended', () => {
   it('handles empty text', () => {
     expect(BoyerMooreExtended.search('', 'a')).toEqual([])
   })
+
+  it('handles text shorter than pattern', () => {
+    expect(BoyerMooreExtended.search('ab', 'abcdef')).toEqual([])
+  })
 })

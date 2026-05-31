@@ -80,4 +80,10 @@ describe('Centroid2D', () => {
     expect(c.x).toBe(5)
     expect(c.y).toBe(10)
   })
+
+  it('weighted centroid with zero total weight returns zero', () => {
+    const c = Centroid2D.weightedCentroid([{ x: 5, y: 5, weight: 0 }])
+    expect(c.x).toBe(0)
+    expect(c.y).toBe(0)
+  })
 })

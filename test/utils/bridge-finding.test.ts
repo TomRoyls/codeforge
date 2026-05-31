@@ -113,4 +113,9 @@ describe('BridgeFinding', () => {
     bf.addEdge(0, 4)
     expect(bf.findBridges().length).toBe(4)
   })
+
+  it('handles single node', () => {
+    const bf = new BridgeFinding(1)
+    expect(bf.findBridges()).toEqual([])
+  })
 })

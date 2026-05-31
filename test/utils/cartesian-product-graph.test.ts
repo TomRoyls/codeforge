@@ -96,4 +96,10 @@ describe('CartesianProductGraph', () => {
     cg.addEdgeG2(0, 1)
     expect(cg.areAdjacent([0, 0], [2, 2])).toBe(false)
   })
+
+  it('single node graphs product', () => {
+    const cg = new CartesianProductGraph(1, 1)
+    expect(cg.productNodeCount()).toBe(1)
+    expect(cg.productEdgeCount()).toBe(0)
+  })
 })
