@@ -53,4 +53,22 @@ describe('CentroidDecomposition', () => {
     const cd = new CentroidDecomposition(adj)
     expect(cd.getCentroidTree().length).toBe(7)
   })
+
+  it('handles binary tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3, 4]], [2, [5, 6]], [3, []], [4, []], [5, []], [6, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(7)
+    let roots = 0
+    for (const p of tree) if (p === -1) roots++
+    expect(roots).toBe(1)
+  })
+
+  it('getParent returns -1 for root', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getParent(0)).toBe(-1)
+  })
 })

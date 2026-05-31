@@ -62,4 +62,23 @@ describe('HeavyLightDecomposition', () => {
     expect(hld.lca(3, 5)).toBe(0)
     expect(hld.distance(3, 6)).toBe(4)
   })
+
+  it('handles wide tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3, 4, 5]], [1, []], [2, []], [3, []], [4, []], [5, []],
+    ])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(1, 5)).toBe(0)
+    expect(hld.distance(1, 5)).toBe(2)
+    expect(hld.distance(3, 3)).toBe(0)
+  })
+
+  it('handles two-node tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, []],
+    ])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(0, 1)).toBe(0)
+    expect(hld.distance(0, 1)).toBe(1)
+  })
 })
