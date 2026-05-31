@@ -107,4 +107,26 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(4)).toBe(17)
   })
+
+  it('handles bidirectional edges', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 3 }]],
+      [1, [{ to: 0, weight: 7 }, { to: 2, weight: 2 }]],
+      [2, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(1)).toBe(3)
+    expect(distances.get(2)).toBe(5)
+  })
+
+  it('handles multiple paths to same node', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 1 }, { to: 2, weight: 5 }]],
+      [1, [{ to: 3, weight: 1 }]],
+      [2, [{ to: 3, weight: 1 }]],
+      [3, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(3)).toBe(2)
+  })
 })

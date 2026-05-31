@@ -82,4 +82,26 @@ describe('TarjanSCC', () => {
     const dag = TarjanSCC.condensation(adj)
     expect(dag.size).toBe(4)
   })
+
+  it('handles chain with back edge', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [0]], [2, [3]], [3, []],
+    ])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('handles figure-8 graph', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [0]], [2, [0]],
+    ])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+    expect(sccs[0]!.sort()).toEqual([0, 1, 2])
+  })
+
+  it('empty graph returns empty', () => {
+    const adj = new Map<number, number[]>()
+    expect(TarjanSCC.findSCCs(adj)).toEqual([])
+  })
 })

@@ -86,4 +86,30 @@ describe('TopologicalSort', () => {
     const results = TopologicalSort.allTopologicalSorts(adj)
     expect(results.length).toBe(6)
   })
+
+  it('sorts diamond graph', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3]], [2, [3]], [3, []],
+    ])
+    const result = TopologicalSort.sort(adj)
+    expect(result).not.toBeNull()
+    expect(result!.indexOf(0)).toBeLessThan(result!.indexOf(1))
+    expect(result!.indexOf(0)).toBeLessThan(result!.indexOf(2))
+    expect(result!.indexOf(1)).toBeLessThan(result!.indexOf(3))
+  })
+
+  it('handles two-node cycle', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]],
+    ])
+    expect(TopologicalSort.sort(adj)).toBeNull()
+  })
+
+  it('handles large linear chain', () => {
+    const adj = new Map<number, number[]>()
+    for (let i = 0; i < 10; i++) adj.set(i, i < 9 ? [i + 1] : [])
+    const result = TopologicalSort.sort(adj)
+    expect(result).not.toBeNull()
+    expect(result).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  })
 })
