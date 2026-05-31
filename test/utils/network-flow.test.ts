@@ -83,4 +83,16 @@ describe('NetworkFlow', () => {
     ]
     expect(NetworkFlow.maxFlow(edges, 0, 3, 4)).toBe(3)
   })
+
+  it('handles single node', () => {
+    expect(NetworkFlow.maxFlow([], 0, 0, 1)).toBe(0)
+  })
+
+  it('handles zero capacity edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 0 },
+      { from: 1, to: 2, capacity: 5 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 2, 3)).toBe(0)
+  })
 })

@@ -61,4 +61,10 @@ describe('DeltaEncoding', () => {
     const encoded = DeltaEncoding.encodeZigzag(arr)
     expect(DeltaEncoding.decodeZigzag(encoded.first, encoded.deltas)).toEqual(arr)
   })
+
+  it('roundtrip alternating positive negative', () => {
+    const arr = [0, 5, -3, 8, -1]
+    const encoded = DeltaEncoding.encodeZigzag(arr)
+    expect(DeltaEncoding.decodeZigzag(encoded.first, encoded.deltas)).toEqual(arr)
+  })
 })
