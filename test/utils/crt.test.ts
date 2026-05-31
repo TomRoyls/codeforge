@@ -67,4 +67,10 @@ describe('ChineseRemainderTheorem', () => {
     expect(result!.remainder % 97).toBe(1)
     expect(result!.remainder % 89).toBe(2)
   })
+
+  it('handles two same moduli', () => {
+    const result = ChineseRemainderTheorem.solve([1, 1], [3, 3])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 3).toBe(1)
+  })
 })

@@ -103,4 +103,15 @@ describe('ConvexHull3D', () => {
     ch.addPoint(2, 2, 2)
     expect(ch.convexHullVolume()).toBe(0)
   })
+
+  it('bounding box of cube', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(1, 0, 0)
+    ch.addPoint(0, 1, 0)
+    ch.addPoint(0, 0, 1)
+    const bb = ch.boundingBox()
+    expect(bb.min).toEqual([0, 0, 0])
+    expect(bb.max).toEqual([1, 1, 1])
+  })
 })

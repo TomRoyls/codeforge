@@ -92,4 +92,11 @@ describe('ChinesePostman', () => {
     cp.addEdge(3, 0, 1)
     expect(cp.solve()).toBe(4)
   })
+
+  it('handles path of 3', () => {
+    const cp = new ChinesePostman(3)
+    cp.addEdge(0, 1, 1)
+    cp.addEdge(1, 2, 1)
+    expect(cp.solve()).toBe(4)
+  })
 })

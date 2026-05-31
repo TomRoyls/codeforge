@@ -97,4 +97,14 @@ describe('CycleSpace', () => {
     expect(cs.cycleSpaceDimension()).toBe(1)
     expect(cs.isTree()).toBe(false)
   })
+
+  it('multiple cycles dimension', () => {
+    const cs = new CycleSpace(4)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    cs.addEdge(2, 0)
+    cs.addEdge(0, 3)
+    cs.addEdge(3, 1)
+    expect(cs.cycleSpaceDimension()).toBe(2)
+  })
 })

@@ -87,4 +87,12 @@ describe('ConvexHullTrick', () => {
     expect(cht.query(1)).toBe(1)
     expect(cht.query(5)).toBe(5)
   })
+
+  it('handles intersecting lines', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(0, 10)
+    cht.addLine(1, 0)
+    expect(cht.query(0)).toBe(0)
+    expect(cht.query(20)).toBe(10)
+  })
 })
