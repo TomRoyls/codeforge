@@ -93,4 +93,12 @@ describe('NetworkFlowDinic', () => {
     nf.addEdge(2, 3, 5)
     expect(nf.maxFlow(0, 3)).toBe(0)
   })
+
+  it('handles self-loop', () => {
+    const nf = new NetworkFlowDinic(3)
+    nf.addEdge(0, 0, 5)
+    nf.addEdge(0, 1, 3)
+    nf.addEdge(1, 2, 3)
+    expect(nf.maxFlow(0, 2)).toBe(3)
+  })
 })
