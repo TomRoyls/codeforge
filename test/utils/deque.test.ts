@@ -98,4 +98,14 @@ describe('Deque', () => {
     dq.pushBack('b')
     expect(dq.toArray()).toEqual(['a', 'b'])
   })
+
+  it('handles alternating push front/back', () => {
+    const dq = new Deque<number>()
+    dq.pushFront(2)
+    dq.pushFront(1)
+    dq.pushBack(3)
+    dq.pushBack(4)
+    expect(dq.toArray()).toEqual([1, 2, 3, 4])
+    expect(dq.size).toBe(4)
+  })
 })

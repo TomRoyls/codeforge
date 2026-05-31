@@ -109,4 +109,14 @@ describe('FloydWarshall', () => {
     expect(dist[1]![0]).toBe(Infinity)
     expect(dist[1]![1]).toBe(0)
   })
+
+  it('handles disconnected graph', () => {
+    const dist = FloydWarshall.allPairsShortestPath([
+      { from: 0, to: 1, weight: 1 },
+      { from: 2, to: 3, weight: 1 },
+    ], 4)
+    expect(dist[0]![1]).toBe(1)
+    expect(dist[0]![2]).toBe(Infinity)
+    expect(dist[2]![3]).toBe(1)
+  })
 })

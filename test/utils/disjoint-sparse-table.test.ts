@@ -74,4 +74,12 @@ describe('DisjointSparseTable', () => {
     expect(dst.query(0, 3)).toBe(8)
     expect(dst.query(0, 1)).toBe(12)
   })
+
+  it('handles single element gcd', () => {
+    const dst = new DisjointSparseTable([12], (a, b) => {
+      while (b !== 0) { const t = b; b = a % b; a = t }
+      return a
+    })
+    expect(dst.query(0, 0)).toBe(12)
+  })
 })

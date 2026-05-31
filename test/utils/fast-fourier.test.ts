@@ -75,4 +75,13 @@ describe('FastFourierTransform', () => {
     const result = FastFourierTransform.multiplyPolynomials([1, 0, 1], [-1, 0, 1])
     expect(result).toEqual([-1, 0, 0, 0, 1])
   })
+
+  it('inverse transform recovers original', () => {
+    const input = [{ re: 1, im: 0 }, { re: 2, im: 0 }, { re: 3, im: 0 }, { re: 4, im: 0 }]
+    const transformed = FastFourierTransform.transform(input)
+    const recovered = FastFourierTransform.transform(transformed, true)
+    for (let i = 0; i < input.length; i++) {
+      expect(recovered[i]!.re).toBeCloseTo(input[i]!.re, 6)
+    }
+  })
 })

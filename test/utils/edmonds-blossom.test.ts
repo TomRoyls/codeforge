@@ -83,4 +83,12 @@ describe('EdmondsBlossom', () => {
     eb.addEdge(2, 3)
     expect(eb.maxMatchingSize()).toBe(2)
   })
+
+  it('handles K4 matching', () => {
+    const eb = new EdmondsBlossom(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        eb.addEdge(i, j)
+    expect(eb.maxMatchingSize()).toBe(2)
+  })
 })
