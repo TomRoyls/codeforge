@@ -76,4 +76,13 @@ describe('FordFulkerson', () => {
     ]
     expect(FordFulkerson.maxFlow(edges, 0, 3, 4)).toBe(3)
   })
+
+  it('handles bidirectional edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 0, capacity: 3 },
+      { from: 1, to: 2, capacity: 4 },
+    ]
+    expect(FordFulkerson.maxFlow(edges, 0, 2, 3)).toBe(4)
+  })
 })
