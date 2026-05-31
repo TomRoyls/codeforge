@@ -59,4 +59,9 @@ describe('PalindromicTree', () => {
     const pt = new PalindromicTree('abacaba')
     expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(0)
   })
+
+  it('single char string', () => {
+    const pt = new PalindromicTree('x')
+    expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(0)
+  })
 })

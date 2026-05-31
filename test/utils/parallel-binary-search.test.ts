@@ -100,4 +100,12 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search(queries)
     expect(results[0]).toBe(100)
   })
+
+  it('handles single element range', () => {
+    const queries = [
+      { lo: 5, hi: 5, check: (mid: number) => mid >= 5 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(5)
+  })
 })

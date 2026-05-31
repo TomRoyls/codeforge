@@ -100,4 +100,9 @@ describe('PersistentQueue', () => {
     expect(q1.toArray()).toEqual([1])
     expect(q2.toArray()).toEqual([1, 2])
   })
+
+  it('dequeue empty returns null', () => {
+    const q = PersistentQueue.create<number>()
+    expect(q.dequeue()).toBeNull()
+  })
 })

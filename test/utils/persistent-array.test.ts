@@ -75,4 +75,12 @@ describe('PersistentArray', () => {
     const arr = PersistentArray.from([])
     expect(arr.length).toBe(0)
   })
+
+  it('set beyond length returns new version', () => {
+    const v0 = PersistentArray.from([1, 2])
+    const v1 = v0.set(0, 99)
+    expect(v0.get(0)).toBe(1)
+    expect(v1.get(0)).toBe(99)
+    expect(v1.get(1)).toBe(2)
+  })
 })

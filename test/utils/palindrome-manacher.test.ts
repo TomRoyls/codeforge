@@ -64,4 +64,10 @@ describe('PalindromeManacher', () => {
     const m = new PalindromeManacher('abba')
     expect(m.countAllPalindromes()).toBe(6)
   })
+
+  it('handles single character', () => {
+    const m = new PalindromeManacher('a')
+    expect(m.isPalindrome(0, 0)).toBe(true)
+    expect(m.countAllPalindromes()).toBe(1)
+  })
 })
