@@ -76,4 +76,12 @@ describe('SuffixAutomatonLight', () => {
     expect(sa.contains('a')).toBe(true)
     expect(sa.contains('b')).toBe(false)
   })
+
+  it('handles all same characters', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('aaaa')
+    expect(sa.contains('a')).toBe(true)
+    expect(sa.contains('aa')).toBe(true)
+    expect(sa.contains('aaaa')).toBe(true)
+  })
 })

@@ -61,4 +61,10 @@ describe('SqrtDecompRange', () => {
     const sd = new SqrtDecompRange([-1, 2, -3, 4])
     expect(sd.rangeSum(0, 3)).toBe(2)
   })
+
+  it('handles single element update', () => {
+    const sd = new SqrtDecompRange([1, 2, 3, 4, 5])
+    sd.update(2, 10)
+    expect(sd.rangeSum(2, 2)).toBe(10)
+  })
 })

@@ -101,4 +101,14 @@ describe('SteinerTree', () => {
     expect(result.totalWeight).toBe(5)
     expect(result.edges.length).toBe(1)
   })
+
+  it('handles three terminals in line', () => {
+    const st = new SteinerTree(5)
+    st.addEdge(0, 1, 1)
+    st.addEdge(1, 2, 1)
+    st.addEdge(2, 3, 1)
+    st.addEdge(3, 4, 1)
+    const result = st.approximateSteiner([0, 2, 4])
+    expect(result.totalWeight).toBeLessThanOrEqual(4)
+  })
 })
