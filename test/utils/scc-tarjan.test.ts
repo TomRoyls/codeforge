@@ -109,4 +109,10 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(10)
   })
+
+  it('handles single node', () => {
+    const scc = new SCCTarjan(1)
+    const comps = scc.solve()
+    expect(comps.length).toBe(1)
+  })
 })

@@ -71,4 +71,9 @@ describe('RectArea', () => {
     const r = { x1: 1, y1: 1, x2: 4, y2: 5 }
     expect(RectArea.unionArea([r])).toBe(12)
   })
+
+  it('handles zero area rect', () => {
+    const r = { x1: 1, y1: 1, x2: 1, y2: 1 }
+    expect(RectArea.area(r)).toBe(0)
+  })
 })

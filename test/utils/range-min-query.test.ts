@@ -73,4 +73,9 @@ describe('RangeMinQuery', () => {
     expect(rmq.query(0, 1)).toBe(3)
     expect(rmq.query(0, 0)).toBe(7)
   })
+
+  it('handles single element', () => {
+    const rmq = new RangeMinQuery([42])
+    expect(rmq.query(0, 0)).toBe(42)
+  })
 })
