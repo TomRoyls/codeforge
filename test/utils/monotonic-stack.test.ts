@@ -70,4 +70,13 @@ describe('MonotonicStack', () => {
     arr.push(99)
     expect(ms.size).toBe(1)
   })
+
+  it('handles decreasing sequence', () => {
+    const ms = new MonotonicStack<number>()
+    ms.push(3)
+    ms.push(2)
+    ms.push(1)
+    expect(ms.size).toBe(3)
+    expect(ms.peek()).toBe(1)
+  })
 })

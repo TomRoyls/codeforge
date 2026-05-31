@@ -98,4 +98,10 @@ describe('GomoryHu', () => {
     gh.addEdge(3, 4, 3)
     expect(gh.minCut(0, 4)).toBe(3)
   })
+
+  it('handles single edge', () => {
+    const gh = new GomoryHu(2)
+    gh.addEdge(0, 1, 7)
+    expect(gh.minCut(0, 1)).toBe(7)
+  })
 })

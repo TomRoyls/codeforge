@@ -84,4 +84,9 @@ describe('GraphEntropy', () => {
     expect(ent).toBeGreaterThan(0)
     expect(ent).toBeLessThan(Math.log2(4))
   })
+
+  it('empty graph zero entropy', () => {
+    const ge = new GraphEntropy(3)
+    expect(ge.degreeEntropy()).toBe(0)
+  })
 })

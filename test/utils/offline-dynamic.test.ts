@@ -87,4 +87,11 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(0, 2, 5)
     expect(odc.solve()).toEqual([true, false])
   })
+
+  it('handles edge appearing after query', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 5, 10)
+    odc.addQuery(0, 1, 3)
+    expect(odc.solve()).toEqual([false])
+  })
 })
