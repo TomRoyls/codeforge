@@ -1,0 +1,79 @@
+import { describe, expect, it } from 'vitest'
+import { DigitalTree } from '../../src/utils/digital-tree.js'
+
+describe('DigitalTree', () => {
+  it('insert and search', () => {
+    const dt = new DigitalTree()
+    dt.insert('hello')
+    expect(dt.search('hello')).toBe(true)
+    expect(dt.search('hell')).toBe(false)
+  })
+
+  it('startsWith checks prefix', () => {
+    const dt = new DigitalTree()
+    dt.insert('hello')
+    expect(dt.startsWith('hel')).toBe(true)
+    expect(dt.startsWith('xyz')).toBe(false)
+  })
+
+  it('handles empty string', () => {
+    const dt = new DigitalTree()
+    dt.insert('')
+    expect(dt.search('')).toBe(true)
+  })
+
+  it('handles multiple inserts', () => {
+    const dt = new DigitalTree()
+    dt.insert('abc')
+    dt.insert('abd')
+    dt.insert('ab')
+    expect(dt.search('abc')).toBe(true)
+    expect(dt.search('abd')).toBe(true)
+    expect(dt.search('ab')).toBe(true)
+    expect(dt.count).toBe(3)
+  })
+
+  it('duplicate insert does not increase count', () => {
+    const dt = new DigitalTree()
+    dt.insert('abc')
+    dt.insert('abc')
+    expect(dt.count).toBe(1)
+  })
+
+  it('remove existing word', () => {
+    const dt = new DigitalTree()
+    dt.insert('abc')
+    expect(dt.remove('abc')).toBe(true)
+    expect(dt.search('abc')).toBe(false)
+    expect(dt.count).toBe(0)
+  })
+
+  it('remove non-existent word', () => {
+    const dt = new DigitalTree()
+    expect(dt.remove('abc')).toBe(false)
+  })
+
+  it('removes shared prefix correctly', () => {
+    const dt = new DigitalTree()
+    dt.insert('abc')
+    dt.insert('abcd')
+    dt.remove('abcd')
+    expect(dt.search('abc')).toBe(true)
+    expect(dt.search('abcd')).toBe(false)
+  })
+
+  it('handles single char', () => {
+    const dt = new DigitalTree()
+    dt.insert('a')
+    expect(dt.search('a')).toBe(true)
+    expect(dt.search('b')).toBe(false)
+  })
+
+  it('count tracks correctly', () => {
+    const dt = new DigitalTree()
+    expect(dt.count).toBe(0)
+    dt.insert('a')
+    dt.insert('b')
+    expect(dt.count).toBe(2)
+  })
+})

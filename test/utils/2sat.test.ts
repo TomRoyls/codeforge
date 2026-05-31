@@ -81,4 +81,23 @@ describe('TwoSAT', () => {
       expect(result![1]).toBe(true)
     }
   })
+
+  it('handles chain of implications', () => {
+    const ts = new TwoSAT(3)
+    ts.addClause(0, true, 1, false)
+    ts.addClause(1, true, 2, false)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    if (result![0] === false && result![1] === false) {
+      expect(result![2]).toBe(true)
+    }
+  })
+
+  it('contradictory implications', () => {
+    const ts = new TwoSAT(2)
+    ts.addClause(0, true, 1, false)
+    ts.addClause(0, false, 0, false)
+    ts.addClause(1, true, 1, true)
+    expect(ts.solve()).toBeNull()
+  })
 })

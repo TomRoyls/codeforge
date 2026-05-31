@@ -54,4 +54,15 @@ describe('StringHash', () => {
     const sh = new StringHash('test')
     expect(sh.hash(0, 3)).toBe(sh.hash(0, 3))
   })
+
+  it('handles overlapping equal substrings', () => {
+    const sh = new StringHash('ababab')
+    expect(sh.equals(0, 1, 2, 3)).toBe(true)
+    expect(sh.equals(0, 1, 4, 5)).toBe(true)
+  })
+
+  it('handles palindrome', () => {
+    const sh = new StringHash('racecar')
+    expect(sh.equals(0, 6, 0, 6)).toBe(true)
+  })
 })
