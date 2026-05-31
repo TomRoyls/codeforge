@@ -97,4 +97,13 @@ describe('LowestCommonAncestor', () => {
     const lca = new LowestCommonAncestor(adj, 0)
     expect(lca.getDepth(0)).toBe(0)
   })
+
+  it('handles grandchild LCA', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2, 3]], [2, []], [3, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(2, 3)).toBe(1)
+    expect(lca.distance(2, 3)).toBe(2)
+  })
 })

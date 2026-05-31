@@ -89,4 +89,18 @@ describe('DominatorTree', () => {
     const dom = dt.build(0)
     expect(dom).toEqual([0, 0, 1, 2, 3])
   })
+
+  it('handles branching graph', () => {
+    const dt = new DominatorTree(5)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(2, 4)
+    const dom = dt.build(0)
+    expect(dom[0]).toBe(0)
+    expect(dom[1]).toBe(0)
+    expect(dom[2]).toBe(0)
+    expect(dom[3]).toBe(1)
+    expect(dom[4]).toBe(2)
+  })
 })

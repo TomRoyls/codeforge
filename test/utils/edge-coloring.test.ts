@@ -96,4 +96,13 @@ describe('EdgeColoring', () => {
     expect(ec.chromaticIndex()).toBeGreaterThanOrEqual(3)
     expect(ec.maxDegree()).toBe(3)
   })
+
+  it('handles star graph', () => {
+    const ec = new EdgeColoring(5)
+    ec.addEdge(0, 1)
+    ec.addEdge(0, 2)
+    ec.addEdge(0, 3)
+    ec.addEdge(0, 4)
+    expect(ec.chromaticIndex()).toBe(4)
+  })
 })

@@ -87,4 +87,11 @@ describe('MarkovChain', () => {
     const mc = new MarkovChain<string>()
     expect(mc.getTransitionsFrom('x').size).toBe(0)
   })
+
+  it('handles longer training sequence', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'b', 'c', 'a', 'b', 'd'])
+    expect(mc.getTransitionProbability('a', 'b')).toBeCloseTo(1, 6)
+    expect(mc.getTransitionProbability('b', 'c')).toBeCloseTo(0.5, 6)
+  })
 })
