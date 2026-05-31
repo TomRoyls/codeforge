@@ -91,4 +91,24 @@ describe('BiconnectedComponents', () => {
     const ap = bc.findArticulationPoints()
     expect(ap).toEqual([2])
   })
+
+  it('handles K3 plus pendant', () => {
+    const bc = new BiconnectedComponents(4)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 0)
+    bc.addEdge(2, 3)
+    const ap = bc.findArticulationPoints()
+    const comps = bc.findComponents()
+    expect(ap).toContain(2)
+    expect(comps.length).toBe(2)
+  })
+
+  it('handles two edges sharing node', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(0, 2)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toEqual([0])
+  })
 })
