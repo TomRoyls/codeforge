@@ -74,4 +74,14 @@ describe('GraphEntropy', () => {
         ge.addEdge(i, j)
     expect(ge.clusteringCoefficient()).toBe(1)
   })
+
+  it('path graph has entropy', () => {
+    const ge = new GraphEntropy(4)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    ge.addEdge(2, 3)
+    const ent = ge.degreeEntropy()
+    expect(ent).toBeGreaterThan(0)
+    expect(ent).toBeLessThan(Math.log2(4))
+  })
 })

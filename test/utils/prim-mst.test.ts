@@ -86,4 +86,12 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.totalWeight).toBe(16)
   })
+
+  it('handles disconnected gracefully', () => {
+    const mst = new PrimMST(4)
+    mst.addEdge(0, 1, 2)
+    mst.addEdge(2, 3, 3)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBeLessThanOrEqual(5)
+  })
 })

@@ -77,4 +77,14 @@ describe('ChordalCheck', () => {
     cc.addEdge(1, 4)
     expect(cc.isChordal()).toBe(false)
   })
+
+  it('diamond is chordal', () => {
+    const cc = new ChordalCheck(4)
+    cc.addEdge(0, 1)
+    cc.addEdge(0, 2)
+    cc.addEdge(0, 3)
+    cc.addEdge(1, 2)
+    cc.addEdge(2, 3)
+    expect(cc.isChordal()).toBe(true)
+  })
 })
