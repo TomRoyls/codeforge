@@ -107,4 +107,10 @@ describe('CycleSpace', () => {
     cs.addEdge(3, 1)
     expect(cs.cycleSpaceDimension()).toBe(2)
   })
+
+  it('single node has dimension zero', () => {
+    const cs = new CycleSpace(1)
+    expect(cs.cycleSpaceDimension()).toBe(0)
+    expect(cs.isTree()).toBe(true)
+  })
 })

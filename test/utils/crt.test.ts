@@ -73,4 +73,10 @@ describe('ChineseRemainderTheorem', () => {
     expect(result).not.toBeNull()
     expect(result!.remainder % 3).toBe(1)
   })
+
+  it('handles single congruence', () => {
+    const result = ChineseRemainderTheorem.solve([7], [11])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 11).toBe(7)
+  })
 })

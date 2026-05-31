@@ -114,4 +114,12 @@ describe('ConvexHull3D', () => {
     expect(bb.min).toEqual([0, 0, 0])
     expect(bb.max).toEqual([1, 1, 1])
   })
+
+  it('single point bounding box', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(5, 5, 5)
+    const bb = ch.boundingBox()
+    expect(bb.min).toEqual([5, 5, 5])
+    expect(bb.max).toEqual([5, 5, 5])
+  })
 })

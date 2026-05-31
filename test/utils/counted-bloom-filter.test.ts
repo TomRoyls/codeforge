@@ -97,4 +97,9 @@ describe('CountedBloomFilter', () => {
     expect(bf.contains('1')).toBe(true)
     expect(bf.contains('4')).toBe(false)
   })
+
+  it('count returns zero for absent item', () => {
+    const bf = new CountedBloomFilter()
+    expect(bf.count('absent')).toBe(0)
+  })
 })

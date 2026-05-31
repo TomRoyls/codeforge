@@ -95,4 +95,11 @@ describe('ConvexHullTrick', () => {
     expect(cht.query(0)).toBe(0)
     expect(cht.query(20)).toBe(10)
   })
+
+  it('handles zero slope', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(0, 5)
+    expect(cht.query(0)).toBe(5)
+    expect(cht.query(100)).toBe(5)
+  })
 })
