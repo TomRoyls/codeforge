@@ -64,4 +64,23 @@ describe('LazySegmentTree', () => {
     for (let i = 0; i < 100; i++) st.updateRange(i, i, 1)
     expect(st.queryRange(0, 99)).toBe(100)
   })
+
+  it('handles range update then point queries', () => {
+    const st = new LazySegmentTree(5)
+    st.updateRange(1, 3, 5)
+    expect(st.getPoint(0)).toBe(0)
+    expect(st.getPoint(1)).toBe(5)
+    expect(st.getPoint(2)).toBe(5)
+    expect(st.getPoint(3)).toBe(5)
+    expect(st.getPoint(4)).toBe(0)
+  })
+
+  it('handles many overlapping updates', () => {
+    const st = new LazySegmentTree(10)
+    st.updateRange(0, 9, 1)
+    st.updateRange(3, 7, 2)
+    st.updateRange(5, 5, 3)
+    expect(st.getPoint(5)).toBe(6)
+    expect(st.queryRange(0, 9)).toBe(23)
+  })
 })

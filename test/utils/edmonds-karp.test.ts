@@ -75,4 +75,12 @@ describe('EdmondsKarp', () => {
     ]
     expect(EdmondsKarp.maxFlow(edges, 0, 5, 6)).toBe(20)
   })
+
+  it('handles reverse edge capacity', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 0, capacity: 3 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(5)
+  })
 })

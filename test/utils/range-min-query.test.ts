@@ -49,4 +49,16 @@ describe('RangeMinQuery', () => {
     const rmq = new RangeMinQuery([3, 3, 3, 3])
     expect(rmq.query(0, 3)).toBe(3)
   })
+
+  it('handles all same except one', () => {
+    const rmq = new RangeMinQuery([5, 5, 1, 5, 5])
+    expect(rmq.query(0, 4)).toBe(1)
+    expect(rmq.query(0, 1)).toBe(5)
+  })
+
+  it('handles power of two length', () => {
+    const rmq = new RangeMinQuery([8, 6, 4, 2])
+    expect(rmq.query(0, 3)).toBe(2)
+    expect(rmq.query(1, 2)).toBe(4)
+  })
 })
