@@ -106,4 +106,13 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [0, 2])
     expect(path.length).toBeGreaterThanOrEqual(3)
   })
+
+  it('handles T-shaped maze', () => {
+    const maze = new TremauxMaze(3, 2)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([1, 0], [1, 1])
+    const path = maze.solve([0, 0], [1, 1])
+    expect(path.length).toBeGreaterThanOrEqual(2)
+  })
 })

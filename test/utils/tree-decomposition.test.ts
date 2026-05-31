@@ -87,4 +87,12 @@ describe('TreeDecomposition', () => {
     td.addEdge(3, 4)
     expect(td.treewidth()).toBeLessThanOrEqual(2)
   })
+
+  it('K4 has higher treewidth', () => {
+    const td = new TreeDecomposition(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        td.addEdge(i, j)
+    expect(td.treewidth()).toBe(3)
+  })
 })

@@ -107,4 +107,16 @@ describe('TreeHash', () => {
     th.addEdge(2, 6)
     expect(th.rootedHash(1)).toBe(th.rootedHash(2))
   })
+
+  it('different trees different hash', () => {
+    const th1 = new TreeHash(4)
+    th1.addEdge(0, 1)
+    th1.addEdge(0, 2)
+    th1.addEdge(0, 3)
+    const th2 = new TreeHash(4)
+    th2.addEdge(0, 1)
+    th2.addEdge(1, 2)
+    th2.addEdge(2, 3)
+    expect(th1.rootedHash(0)).not.toBe(th2.rootedHash(0))
+  })
 })

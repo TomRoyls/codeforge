@@ -50,4 +50,10 @@ describe('PolynomialRollingHash', () => {
     expect(h > 0n).toBe(true)
     expect(typeof h).toBe('bigint')
   })
+
+  it('hash consistency across calls', () => {
+    const h1 = PolynomialRollingHash.hash('test')
+    const h2 = PolynomialRollingHash.hash('test')
+    expect(h1).toBe(h2)
+  })
 })

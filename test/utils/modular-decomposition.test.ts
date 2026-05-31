@@ -82,4 +82,12 @@ describe('ModularDecomposition', () => {
     md.addEdge(2, 3)
     expect(md.moduleCount()).toBeGreaterThanOrEqual(2)
   })
+
+  it('handles K4 all modules', () => {
+    const md = new ModularDecomposition(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        md.addEdge(i, j)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
 })

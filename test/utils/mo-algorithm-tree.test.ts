@@ -148,4 +148,19 @@ describe('MoAlgorithmTree', () => {
     )
     expect(maxActive.value).toBeGreaterThanOrEqual(0)
   })
+
+  it('handles star tree', () => {
+    const mo = new MoAlgorithmTree(5)
+    mo.addEdge(0, 1)
+    mo.addEdge(0, 2)
+    mo.addEdge(0, 3)
+    mo.addEdge(0, 4)
+    const nodes = new Set<number>()
+    mo.processQueries(
+      [[1, 4]],
+      (n) => { nodes.add(n) },
+      () => {}
+    )
+    expect(nodes.size).toBeGreaterThan(0)
+  })
 })

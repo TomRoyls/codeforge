@@ -77,4 +77,12 @@ describe('VertexColoring', () => {
     vc.addEdge(1, 3)
     expect(vc.chromaticNumber()).toBe(2)
   })
+
+  it('handles K4', () => {
+    const vc = new VertexColoring(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        vc.addEdge(i, j)
+    expect(vc.chromaticNumber()).toBe(4)
+  })
 })

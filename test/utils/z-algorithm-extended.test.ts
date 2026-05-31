@@ -49,4 +49,8 @@ describe('ZAlgorithmExtended', () => {
   it('handles repeated pattern', () => {
     expect(ZAlgorithmExtended.search('abababab', 'abab')).toEqual([0, 2, 4])
   })
+
+  it('handles DNA pattern', () => {
+    expect(ZAlgorithmExtended.search('ATCGATCGATCG', 'ATCG')).toEqual([0, 4, 8])
+  })
 })

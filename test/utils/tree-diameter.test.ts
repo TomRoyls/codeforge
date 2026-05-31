@@ -91,4 +91,13 @@ describe('TreeDiameter', () => {
     for (let i = 0; i < 9; i++) td.addEdge(i, i + 1)
     expect(td.findDiameter()).toBe(9)
   })
+
+  it('handles star graph diameter', () => {
+    const td = new TreeDiameter(5)
+    td.addEdge(0, 1)
+    td.addEdge(0, 2)
+    td.addEdge(0, 3)
+    td.addEdge(0, 4)
+    expect(td.findDiameter()).toBe(2)
+  })
 })

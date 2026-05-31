@@ -90,4 +90,13 @@ describe('LineGraph', () => {
     expect(adj[0]!.length).toBe(1)
     expect(adj[1]!.length).toBe(1)
   })
+
+  it('star line graph is complete', () => {
+    const lg = new LineGraph(4)
+    lg.addEdge(0, 1)
+    lg.addEdge(0, 2)
+    lg.addEdge(0, 3)
+    const adj = lg.build()
+    expect(adj.length).toBe(3)
+  })
 })
