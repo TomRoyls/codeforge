@@ -135,4 +135,17 @@ describe('MoAlgorithmTree', () => {
     )
     expect(calls).toBeGreaterThanOrEqual(0)
   })
+
+  it('toggles nodes correctly', () => {
+    const mo = new MoAlgorithmTree(3)
+    mo.addEdge(0, 1)
+    mo.addEdge(1, 2)
+    const maxActive = { value: 0 }
+    mo.processQueries(
+      [[0, 2]],
+      () => { maxActive.value++ },
+      () => { maxActive.value-- }
+    )
+    expect(maxActive.value).toBeGreaterThanOrEqual(0)
+  })
 })
