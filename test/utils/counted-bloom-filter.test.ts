@@ -72,4 +72,29 @@ describe('CountedBloomFilter', () => {
     const bf = new CountedBloomFilter()
     expect(bf.contains('anything')).toBe(false)
   })
+
+  it('handles repeated remove gracefully', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('test')
+    expect(bf.remove('test')).toBe(true)
+    expect(bf.remove('test')).toBe(false)
+  })
+
+  it('handles add remove add cycle', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('x')
+    bf.remove('x')
+    bf.add('x')
+    bf.add('x')
+    expect(bf.count('x')).toBeGreaterThanOrEqual(2)
+  })
+
+  it('works with numeric strings', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('1')
+    bf.add('2')
+    bf.add('3')
+    expect(bf.contains('1')).toBe(true)
+    expect(bf.contains('4')).toBe(false)
+  })
 })

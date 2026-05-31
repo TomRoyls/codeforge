@@ -92,4 +92,36 @@ describe('BellmanFord', () => {
     const { distances } = BellmanFord.shortestPath(edges, 4, 0)
     expect(distances.get(3)).toBe(Infinity)
   })
+
+  it('handles graph with multiple paths', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 0, to: 2, weight: 5 },
+      { from: 1, to: 2, weight: 2 },
+      { from: 1, to: 3, weight: 6 },
+      { from: 2, to: 3, weight: 1 },
+    ]
+    const { distances } = BellmanFord.shortestPath(edges, 4, 0)
+    expect(distances.get(2)).toBe(3)
+    expect(distances.get(3)).toBe(4)
+  })
+
+  it('handles bidirectional edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 3 },
+      { from: 1, to: 0, weight: 7 },
+    ]
+    const { distances } = BellmanFord.shortestPath(edges, 2, 0)
+    expect(distances.get(0)).toBe(0)
+    expect(distances.get(1)).toBe(3)
+  })
+
+  it('handles self-loop with negative weight (cycle)', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 5 },
+      { from: 1, to: 1, weight: -1 },
+    ]
+    const { hasNegativeCycle } = BellmanFord.shortestPath(edges, 2, 0)
+    expect(hasNegativeCycle).toBe(true)
+  })
 })
