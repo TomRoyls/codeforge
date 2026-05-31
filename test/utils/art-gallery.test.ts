@@ -88,4 +88,22 @@ describe('ArtGallery', () => {
     ag.addPoint(1, 1)
     expect(ag.polygonArea()).toBe(0)
   })
+
+  it('handles square', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.polygonArea()).toBeCloseTo(16, 5)
+  })
+
+  it('point inside convex polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.pointInPolygon(2, 2)).toBe(true)
+  })
 })
