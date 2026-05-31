@@ -50,4 +50,23 @@ describe('SegmentTree2D', () => {
     st.update(1, 1, 5)
     expect(st.query(5, 5, 10, 10)).toBe(0)
   })
+
+  it('handles 1x1 grid', () => {
+    const st = new SegmentTree2D(1, 1)
+    st.update(0, 0, 42)
+    expect(st.query(0, 0, 0, 0)).toBe(42)
+  })
+
+  it('multiple updates accumulate', () => {
+    const st = new SegmentTree2D(2, 2)
+    st.update(0, 0, 1)
+    st.update(0, 0, 2)
+    st.update(0, 0, 3)
+    expect(st.query(0, 0, 0, 0)).toBe(3)
+  })
+
+  it('query empty grid returns 0', () => {
+    const st = new SegmentTree2D(3, 3)
+    expect(st.query(0, 0, 2, 2)).toBe(0)
+  })
 })

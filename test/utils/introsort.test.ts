@@ -44,4 +44,12 @@ describe('Introsort', () => {
   it('handles all same elements', () => {
     expect(Introsort.sort([5, 5, 5, 5])).toEqual([5, 5, 5, 5])
   })
+
+  it('sorts negative numbers', () => {
+    expect(Introsort.sort([-3, -1, -2, 0], (a, b) => a - b)).toEqual([-3, -2, -1, 0])
+  })
+
+  it('handles two elements', () => {
+    expect(Introsort.sort([2, 1])).toEqual([1, 2])
+  })
 })
