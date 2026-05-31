@@ -102,4 +102,26 @@ describe('HungarianAssignment', () => {
     const { totalCost } = ha.solveGreedy()
     expect(totalCost).toBeLessThanOrEqual(5)
   })
+
+  it('handles all equal costs', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 5)
+    ha.setCost(0, 1, 5)
+    ha.setCost(1, 0, 5)
+    ha.setCost(1, 1, 5)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBe(10)
+  })
+
+  it('handles large cost difference', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 1000)
+    ha.setCost(1, 0, 1000)
+    ha.setCost(1, 1, 1)
+    const { totalCost, assignment } = ha.solve()
+    expect(totalCost).toBe(2)
+    expect(assignment[0]).toBe(0)
+    expect(assignment[1]).toBe(1)
+  })
 })
