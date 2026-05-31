@@ -60,4 +60,11 @@ describe('ChineseRemainderTheorem', () => {
     expect(result!.remainder % 11).toBe(3)
     expect(result!.remainder % 13).toBe(4)
   })
+
+  it('handles moderate numbers', () => {
+    const result = ChineseRemainderTheorem.solve([1, 2], [97, 89])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 97).toBe(1)
+    expect(result!.remainder % 89).toBe(2)
+  })
 })

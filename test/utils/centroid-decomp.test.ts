@@ -101,4 +101,16 @@ describe('CentroidDecomposition', () => {
     const cd = new CentroidDecomposition(adj)
     expect(cd.getCentroidTree().length).toBe(5)
   })
+
+  it('handles star-like tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3, 4]], [1, []], [2, []], [3, []], [4, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(5)
+    let roots = 0
+    for (const p of tree) if (p === -1) roots++
+    expect(roots).toBe(1)
+  })
 })

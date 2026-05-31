@@ -84,4 +84,11 @@ describe('BinaryTrie', () => {
     expect(bt.find(1000)).toBe(true)
     expect(bt.maxXor(0)).toBe(2000)
   })
+
+  it('handles zero insertion', () => {
+    const bt = new BinaryTrie(4)
+    bt.insert(0)
+    expect(bt.find(0)).toBe(true)
+    expect(bt.size).toBe(1)
+  })
 })

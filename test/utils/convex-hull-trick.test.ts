@@ -78,4 +78,13 @@ describe('ConvexHullTrick', () => {
     cht.addLine(1, -5)
     expect(cht.query(-10)).toBe(-15)
   })
+
+  it('handles increasing slopes', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(1, 0)
+    cht.addLine(3, 0)
+    cht.addLine(5, 0)
+    expect(cht.query(1)).toBe(1)
+    expect(cht.query(5)).toBe(5)
+  })
 })
