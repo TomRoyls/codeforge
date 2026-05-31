@@ -75,4 +75,12 @@ describe('EdmondsBlossom', () => {
     eb.addEdge(1, 3)
     expect(eb.maxMatchingSize()).toBe(2)
   })
+
+  it('handles path of 4', () => {
+    const eb = new EdmondsBlossom(4)
+    eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
+    eb.addEdge(2, 3)
+    expect(eb.maxMatchingSize()).toBe(2)
+  })
 })
