@@ -62,4 +62,34 @@ describe('BellmanFord', () => {
     const { distances } = BellmanFord.shortestPath(edges, 3, 0)
     expect(distances.get(2)).toBe(1)
   })
+
+  it('handles linear chain', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 2 },
+      { from: 2, to: 3, weight: 3 },
+    ]
+    const { distances } = BellmanFord.shortestPath(edges, 4, 0)
+    expect(distances.get(1)).toBe(1)
+    expect(distances.get(2)).toBe(3)
+    expect(distances.get(3)).toBe(6)
+  })
+
+  it('handles zero-weight edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 0 },
+      { from: 1, to: 2, weight: 5 },
+    ]
+    const { distances } = BellmanFord.shortestPath(edges, 3, 0)
+    expect(distances.get(1)).toBe(0)
+    expect(distances.get(2)).toBe(5)
+  })
+
+  it('does not relax through Infinity', () => {
+    const edges = [
+      { from: 2, to: 3, weight: -10 },
+    ]
+    const { distances } = BellmanFord.shortestPath(edges, 4, 0)
+    expect(distances.get(3)).toBe(Infinity)
+  })
 })

@@ -75,4 +75,38 @@ describe('FloydWarshall', () => {
       }
     }
   })
+
+  it('handles bidirectional edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 3 },
+      { from: 1, to: 0, weight: 5 },
+    ]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 2)
+    expect(dist[0]![1]).toBe(3)
+    expect(dist[1]![0]).toBe(5)
+  })
+
+  it('transitiveClosure for cycle', () => {
+    const edges = [
+      { from: 0, to: 1 },
+      { from: 1, to: 2 },
+      { from: 2, to: 0 },
+    ]
+    const reach = FloydWarshall.transitiveClosure(edges, 3)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        expect(reach[i]![j]).toBe(true)
+      }
+    }
+  })
+
+  it('handles two-node graph', () => {
+    const dist = FloydWarshall.allPairsShortestPath([
+      { from: 0, to: 1, weight: 7 },
+    ], 2)
+    expect(dist[0]![0]).toBe(0)
+    expect(dist[0]![1]).toBe(7)
+    expect(dist[1]![0]).toBe(Infinity)
+    expect(dist[1]![1]).toBe(0)
+  })
 })

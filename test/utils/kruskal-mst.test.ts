@@ -74,4 +74,27 @@ describe('KruskalMST', () => {
     expect(mstEdges.length).toBe(2)
     expect(totalWeight).toBe(3)
   })
+
+  it('handles large graph', () => {
+    const edges: { from: number; to: number; weight: number }[] = []
+    for (let i = 0; i < 10; i++) {
+      edges.push({ from: i, to: i + 1, weight: 1 })
+    }
+    const { edges: mstEdges, totalWeight } = KruskalMST.findMST(edges, 11)
+    expect(mstEdges.length).toBe(10)
+    expect(totalWeight).toBe(10)
+  })
+
+  it('MST edges are subset of input edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 4 },
+      { from: 0, to: 2, weight: 3 },
+      { from: 1, to: 2, weight: 1 },
+    ]
+    const { edges: mstEdges } = KruskalMST.findMST(edges, 3)
+    for (const mstEdge of mstEdges) {
+      const found = edges.some(e => e.from === mstEdge.from && e.to === mstEdge.to && e.weight === mstEdge.weight)
+      expect(found).toBe(true)
+    }
+  })
 })
