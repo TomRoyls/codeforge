@@ -67,4 +67,16 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('theend')
     expect(result.get(0)).toEqual([5])
   })
+
+  it('handles multiple same-pattern matches', () => {
+    const ac = new AhoCorasickMulti(['a'])
+    const result = ac.search('aaa')
+    expect(result.get(0)).toEqual([0, 1, 2])
+  })
+
+  it('handles longer pattern than text', () => {
+    const ac = new AhoCorasickMulti(['abcdef'])
+    const result = ac.search('abc')
+    expect(result.size).toBe(0)
+  })
 })
