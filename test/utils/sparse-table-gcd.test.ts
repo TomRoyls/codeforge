@@ -53,4 +53,15 @@ describe('SparseTableGCD', () => {
     const st = new SparseTableGCD([8, 4, 12, 16])
     expect(st.query(0, 3)).toBe(4)
   })
+
+  it('handles large array', () => {
+    const arr = Array.from({ length: 100 }, (_, i) => (i + 1) * 6)
+    const st = new SparseTableGCD(arr)
+    expect(st.query(0, 99)).toBe(6)
+  })
+
+  it('handles single query element', () => {
+    const st = new SparseTableGCD([15, 25, 35])
+    expect(st.query(1, 1)).toBe(25)
+  })
 })

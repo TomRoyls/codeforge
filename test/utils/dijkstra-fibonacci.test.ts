@@ -95,4 +95,23 @@ describe('DijkstraFibonacci', () => {
     expect(dist[0]).toBe(0)
     expect(dist[4]).toBe(Infinity)
   })
+
+  it('handles negative source dist', () => {
+    const dist = DijkstraFibonacci.shortestPath([], 3, 5)
+    expect(dist[3]).toBe(0)
+    expect(dist[0]).toBe(Infinity)
+  })
+
+  it('handles multiple paths to same node', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 10 },
+      { from: 0, to: 2, weight: 3 },
+      { from: 2, to: 1, weight: 4 },
+      { from: 2, to: 3, weight: 8 },
+      { from: 1, to: 3, weight: 2 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[1]).toBe(7)
+    expect(dist[3]).toBe(9)
+  })
 })
