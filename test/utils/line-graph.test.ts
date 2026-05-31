@@ -81,4 +81,13 @@ describe('LineGraph', () => {
     expect(adj[0]!.length).toBe(1)
     expect(adj[1]!.length).toBe(2)
   })
+
+  it('parallel edges create complete line', () => {
+    const lg = new LineGraph(2)
+    lg.addEdge(0, 1)
+    lg.addEdge(0, 1)
+    const adj = lg.build()
+    expect(adj[0]!.length).toBe(1)
+    expect(adj[1]!.length).toBe(1)
+  })
 })

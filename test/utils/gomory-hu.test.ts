@@ -89,4 +89,13 @@ describe('GomoryHu', () => {
     const cuts = gh.allPairsMinCut()
     expect(cuts[0]![1]).toBe(7)
   })
+
+  it('handles larger graph', () => {
+    const gh = new GomoryHu(5)
+    gh.addEdge(0, 1, 10)
+    gh.addEdge(1, 2, 5)
+    gh.addEdge(2, 3, 8)
+    gh.addEdge(3, 4, 3)
+    expect(gh.minCut(0, 4)).toBe(3)
+  })
 })

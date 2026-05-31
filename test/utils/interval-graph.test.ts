@@ -77,4 +77,11 @@ describe('IntervalGraph', () => {
     expect(ig.isIntervalGraph()).toBe(true)
     expect(ig.maxOverlap()).toBe(2)
   })
+
+  it('total overlap with no overlap', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 2)
+    ig.addInterval(5, 8)
+    expect(ig.totalOverlap()).toBe(5)
+  })
 })

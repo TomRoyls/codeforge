@@ -86,4 +86,13 @@ describe('GraphIsomorphism', () => {
     gi.addEdgeG2(0, 1)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('detects non-isomorphic by edges', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(1, 2)
+    gi.addEdgeG2(0, 1)
+    gi.addEdgeG2(0, 2)
+    expect(gi.isomorphic()).toBe(false)
+  })
 })

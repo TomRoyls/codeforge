@@ -89,4 +89,10 @@ describe('ConvexHull3D', () => {
     ch.addPoint(1, 1, 1)
     expect(ch.convexHullVolume()).toBe(0)
   })
+
+  it('centroid of single point', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(3, 4, 5)
+    expect(ch.centroid()).toEqual([3, 4, 5])
+  })
 })
