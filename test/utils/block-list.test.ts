@@ -69,4 +69,21 @@ describe('BlockList', () => {
     const bl = BlockList.from([1, 2, 3])
     expect(bl.toArray()).toEqual([1, 2, 3])
   })
+
+  it('large pushBack with small block size', () => {
+    const bl = new BlockList<number>(2)
+    for (let i = 0; i < 8; i++) bl.pushBack(i)
+    expect(bl.size).toBe(8)
+    expect(bl.get(0)).toBe(0)
+    expect(bl.get(7)).toBe(7)
+  })
+
+  it('pushFront and popBack mix', () => {
+    const bl = new BlockList<number>(3)
+    bl.pushFront(3)
+    bl.pushFront(2)
+    bl.pushFront(1)
+    expect(bl.popBack()).toBe(3)
+    expect(bl.toArray()).toEqual([1, 2])
+  })
 })

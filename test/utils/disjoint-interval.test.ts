@@ -1,0 +1,72 @@
+import { describe, expect, it } from 'vitest'
+import { DisjointInterval } from '../../src/utils/disjoint-interval.js'
+
+describe('DisjointInterval', () => {
+  it('adds single interval', () => {
+    const di = new DisjointInterval()
+    di.add(1, 5)
+    expect(di.getIntervals()).toEqual([[1, 5]])
+  })
+
+  it('merges overlapping intervals', () => {
+    const di = new DisjointInterval()
+    di.add(1, 3)
+    di.add(2, 5)
+    expect(di.getIntervals()).toEqual([[1, 5]])
+  })
+
+  it('merges adjacent intervals', () => {
+    const di = new DisjointInterval()
+    di.add(1, 3)
+    di.add(4, 6)
+    expect(di.getIntervals()).toEqual([[1, 6]])
+  })
+
+  it('keeps disjoint intervals separate', () => {
+    const di = new DisjointInterval()
+    di.add(1, 3)
+    di.add(7, 9)
+    expect(di.count).toBe(2)
+  })
+
+  it('contains checks membership', () => {
+    const di = new DisjointInterval()
+    di.add(1, 5)
+    expect(di.contains(3)).toBe(true)
+    expect(di.contains(6)).toBe(false)
+  })
+
+  it('removes interval', () => {
+    const di = new DisjointInterval()
+    di.add(1, 10)
+    di.remove(4, 6)
+    expect(di.getIntervals()).toEqual([[1, 3], [7, 10]])
+  })
+
+  it('totalCovered computes sum', () => {
+    const di = new DisjointInterval()
+    di.add(1, 3)
+    di.add(7, 9)
+    expect(di.totalCovered()).toBe(6)
+  })
+
+  it('covers checks full range', () => {
+    const di = new DisjointInterval()
+    di.add(1, 10)
+    expect(di.covers(2, 8)).toBe(true)
+    expect(di.covers(2, 12)).toBe(false)
+  })
+
+  it('handles add then remove all', () => {
+    const di = new DisjointInterval()
+    di.add(1, 5)
+    di.remove(1, 5)
+    expect(di.count).toBe(0)
+  })
+
+  it('handles invalid range', () => {
+    const di = new DisjointInterval()
+    di.add(5, 3)
+    expect(di.count).toBe(0)
+  })
+})
