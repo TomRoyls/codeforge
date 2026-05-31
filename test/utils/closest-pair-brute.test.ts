@@ -76,4 +76,25 @@ describe('ClosestPairBrute', () => {
     expect(result).not.toBeNull()
     expect(result!.distance).toBeCloseTo(Math.SQRT2, 5)
   })
+
+  it('findKNearest returns available pairs', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 0)
+    const pairs = cp.findKNearest(3)
+    expect(pairs.length).toBe(1)
+    expect(pairs[0]!.distance).toBe(1)
+  })
+
+  it('findKNearest returns closest pairs', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 0)
+    cp.addPoint(5, 0)
+    cp.addPoint(10, 0)
+    const pairs = cp.findKNearest(2)
+    expect(pairs.length).toBe(2)
+    expect(pairs[0]!.distance).toBe(1)
+    expect(pairs[1]!.distance).toBeCloseTo(4)
+  })
 })
