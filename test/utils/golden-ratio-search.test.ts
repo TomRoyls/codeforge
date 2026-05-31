@@ -62,4 +62,10 @@ describe('GoldenRatioSearch', () => {
     const x = GoldenRatioSearch.maximize((x) => -Math.pow(x - 4, 2) + 10, 0, 8)
     expect(x).toBeCloseTo(4, 3)
   })
+
+  it('minimizes constant function', () => {
+    const x = GoldenRatioSearch.minimize(() => 5, 0, 10)
+    expect(x).toBeGreaterThanOrEqual(0)
+    expect(x).toBeLessThanOrEqual(10)
+  })
 })

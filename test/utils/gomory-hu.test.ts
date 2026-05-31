@@ -104,4 +104,11 @@ describe('GomoryHu', () => {
     gh.addEdge(0, 1, 7)
     expect(gh.minCut(0, 1)).toBe(7)
   })
+
+  it('same node cut is zero', () => {
+    const gh = new GomoryHu(3)
+    gh.addEdge(0, 1, 5)
+    gh.addEdge(1, 2, 3)
+    expect(gh.minCut(0, 0)).toBe(0)
+  })
 })

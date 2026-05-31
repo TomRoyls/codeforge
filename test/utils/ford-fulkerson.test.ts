@@ -95,4 +95,8 @@ describe('FordFulkerson', () => {
     ]
     expect(FordFulkerson.maxFlow(edges, 0, 3, 4)).toBe(20)
   })
+
+  it('handles disconnected source-sink', () => {
+    expect(FordFulkerson.maxFlow([{ from: 1, to: 2, capacity: 5 }], 0, 3, 4)).toBe(0)
+  })
 })

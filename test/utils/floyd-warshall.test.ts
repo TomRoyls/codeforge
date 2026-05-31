@@ -119,4 +119,13 @@ describe('FloydWarshall', () => {
     expect(dist[0]![2]).toBe(Infinity)
     expect(dist[2]![3]).toBe(1)
   })
+
+  it('handles self-loop', () => {
+    const dist = FloydWarshall.allPairsShortestPath([
+      { from: 0, to: 0, weight: 3 },
+      { from: 0, to: 1, weight: 5 },
+    ], 2)
+    expect(dist[0]![0]).toBe(0)
+    expect(dist[0]![1]).toBe(5)
+  })
 })

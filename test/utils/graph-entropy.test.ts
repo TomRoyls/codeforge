@@ -89,4 +89,11 @@ describe('GraphEntropy', () => {
     const ge = new GraphEntropy(3)
     expect(ge.degreeEntropy()).toBe(0)
   })
+
+  it('single edge graph clustering', () => {
+    const ge = new GraphEntropy(2)
+    ge.addEdge(0, 1)
+    expect(ge.clusteringCoefficient()).toBeGreaterThanOrEqual(0)
+    expect(ge.edgeEntropy()).toBeGreaterThan(0)
+  })
 })
