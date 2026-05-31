@@ -103,4 +103,10 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.totalWeight).toBe(3)
   })
+
+  it('handles single node', () => {
+    const mst = new PrimMST(1)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(0)
+  })
 })

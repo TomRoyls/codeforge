@@ -98,4 +98,11 @@ describe('PersistentSegmentTree', () => {
     expect(pst.query(v3, 0, 2)).toBe(40)
     expect(pst.getPoint(v1, 0)).toBe(10)
   })
+
+  it('single element tree', () => {
+    const pst = new PersistentSegmentTree(1)
+    const v1 = pst.update(0, 0, 42)
+    expect(pst.getPoint(v1, 0)).toBe(42)
+    expect(pst.query(v1, 0, 0)).toBe(42)
+  })
 })

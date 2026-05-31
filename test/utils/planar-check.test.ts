@@ -93,4 +93,9 @@ describe('PlanarCheck', () => {
     pc.addEdge(0, 4)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('empty graph is planar', () => {
+    const pc = new PlanarCheck(3)
+    expect(pc.isPlanar()).toBe(true)
+  })
 })

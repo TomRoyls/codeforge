@@ -92,4 +92,12 @@ describe('RadixHeap', () => {
     h.pop()
     expect(h.isEmpty).toBe(true)
   })
+
+  it('handles large values', () => {
+    const h = new RadixHeap()
+    h.push(1000000)
+    h.push(1000001)
+    expect(h.pop()).toBe(1000000)
+    expect(h.pop()).toBe(1000001)
+  })
 })
