@@ -78,4 +78,13 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(0, 2, 5)
     expect(odc.solve()).toEqual([true])
   })
+
+  it('handles disconnected components', () => {
+    const odc = new OfflineDynamicConnectivity(4)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(2, 3, 0, 10)
+    odc.addQuery(0, 1, 5)
+    odc.addQuery(0, 2, 5)
+    expect(odc.solve()).toEqual([true, false])
+  })
 })
