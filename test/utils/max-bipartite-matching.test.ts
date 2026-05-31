@@ -69,4 +69,28 @@ describe('MaxBipartiteMatching', () => {
     const m = new MaxBipartiteMatching(3, 3)
     expect(m.getMatchingSize()).toBe(0)
   })
+
+  it('handles complete bipartite', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(0, 2)
+    m.addEdge(1, 0)
+    m.addEdge(1, 1)
+    m.addEdge(1, 2)
+    m.addEdge(2, 0)
+    m.addEdge(2, 1)
+    m.addEdge(2, 2)
+    expect(m.getMatchingSize()).toBe(3)
+  })
+
+  it('returns matching pairs', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    const pairs = m.maxMatching()
+    expect(pairs.length).toBe(2)
+    expect(pairs).toContainEqual([0, 0])
+    expect(pairs).toContainEqual([1, 1])
+  })
 })
