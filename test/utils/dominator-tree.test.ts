@@ -103,4 +103,14 @@ describe('DominatorTree', () => {
     expect(dom[3]).toBe(1)
     expect(dom[4]).toBe(2)
   })
+
+  it('diamond merge point', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(2, 3)
+    const dom = dt.build(0)
+    expect(dom[3]).toBe(0)
+  })
 })

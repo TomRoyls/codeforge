@@ -103,4 +103,12 @@ describe('DynamicConvexHull', () => {
     ch.add(5, 5)
     expect(ch.getHull().length).toBe(hullBefore)
   })
+
+  it('collinear points hull', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(5, 5)
+    ch.add(10, 10)
+    expect(ch.area).toBe(0)
+  })
 })

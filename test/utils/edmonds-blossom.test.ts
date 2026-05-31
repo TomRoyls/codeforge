@@ -91,4 +91,12 @@ describe('EdmondsBlossom', () => {
         eb.addEdge(i, j)
     expect(eb.maxMatchingSize()).toBe(2)
   })
+
+  it('handles triangle', () => {
+    const eb = new EdmondsBlossom(3)
+    eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
+    eb.addEdge(0, 2)
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(1)
+  })
 })
