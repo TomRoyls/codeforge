@@ -80,4 +80,21 @@ describe('XorLinkedList', () => {
     expect(list.get(19)).toBe(19)
     expect(list.get(10)).toBe(10)
   })
+
+  it('handles negative index as undefined', () => {
+    const list = new XorLinkedList<number>()
+    list.pushBack(1)
+    expect(list.get(-1)).toBeUndefined()
+  })
+
+  it('preserves order after many operations', () => {
+    const list = new XorLinkedList<number>()
+    list.pushFront(3)
+    list.pushFront(1)
+    list.pushBack(5)
+    list.pushFront(0)
+    list.pushBack(7)
+    expect(list.toArray()).toEqual([0, 1, 3, 5, 7])
+    expect(list.size).toBe(5)
+  })
 })

@@ -76,4 +76,22 @@ describe('DigitalTree', () => {
     dt.insert('b')
     expect(dt.count).toBe(2)
   })
+
+  it('startsWith after removal', () => {
+    const dt = new DigitalTree()
+    dt.insert('hello')
+    dt.insert('help')
+    dt.remove('help')
+    expect(dt.startsWith('hel')).toBe(true)
+    expect(dt.search('help')).toBe(false)
+  })
+
+  it('handles unicode characters', () => {
+    const dt = new DigitalTree()
+    dt.insert('café')
+    dt.insert('naïve')
+    expect(dt.search('café')).toBe(true)
+    expect(dt.search('naïve')).toBe(true)
+    expect(dt.startsWith('caf')).toBe(true)
+  })
 })
