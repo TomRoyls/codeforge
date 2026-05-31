@@ -113,4 +113,10 @@ describe('DominatorTree', () => {
     const dom = dt.build(0)
     expect(dom[3]).toBe(0)
   })
+
+  it('handles single node', () => {
+    const dt = new DominatorTree(1)
+    const dom = dt.build(0)
+    expect(dom[0]).toBe(0)
+  })
 })

@@ -88,4 +88,11 @@ describe('DisjointSparseTable', () => {
     expect(dst.query(0, 4)).toBe(1 ^ 2 ^ 3 ^ 4 ^ 5)
     expect(dst.query(1, 3)).toBe(2 ^ 3 ^ 4)
   })
+
+  it('handles two element max', () => {
+    const dst = new DisjointSparseTable([3, 7], (a, b) => Math.max(a, b))
+    expect(dst.query(0, 0)).toBe(3)
+    expect(dst.query(1, 1)).toBe(7)
+    expect(dst.query(0, 1)).toBe(7)
+  })
 })

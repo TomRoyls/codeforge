@@ -139,4 +139,12 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(2)).toBe(Infinity)
   })
+
+  it('handles single node graph', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })

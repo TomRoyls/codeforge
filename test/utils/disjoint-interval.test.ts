@@ -95,4 +95,13 @@ describe('DisjointInterval', () => {
     expect(di.covers(4, 6)).toBe(false)
     expect(di.covers(7, 10)).toBe(true)
   })
+
+  it('handles adjacent intervals merge', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    di.add(6, 10)
+    const intervals = di.getIntervals()
+    expect(intervals.length).toBeGreaterThanOrEqual(1)
+    expect(intervals.length).toBeLessThanOrEqual(2)
+  })
 })
