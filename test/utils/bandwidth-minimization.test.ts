@@ -87,4 +87,13 @@ describe('BandwidthMinimization', () => {
     bm.addEdge(0, 5)
     expect(bm.bandwidth()).toBeLessThanOrEqual(5)
   })
+
+  it('path graph bandwidth', () => {
+    const bm = new BandwidthMinimization(5)
+    bm.addEdge(0, 1)
+    bm.addEdge(1, 2)
+    bm.addEdge(2, 3)
+    bm.addEdge(3, 4)
+    expect(bm.bandwidth()).toBe(1)
+  })
 })

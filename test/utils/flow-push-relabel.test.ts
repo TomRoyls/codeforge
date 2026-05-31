@@ -85,4 +85,14 @@ describe('FlowPushRelabel', () => {
     ]
     expect(FlowPushRelabel.maxFlow(edges, 0, 5, 6)).toBe(20)
   })
+
+  it('handles diamond graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 10 },
+      { from: 2, to: 3, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(20)
+  })
 })

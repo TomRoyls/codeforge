@@ -83,4 +83,14 @@ describe('EdmondsKarp', () => {
     ]
     expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(5)
   })
+
+  it('handles diamond graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 10 },
+      { from: 2, to: 3, capacity: 10 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(20)
+  })
 })

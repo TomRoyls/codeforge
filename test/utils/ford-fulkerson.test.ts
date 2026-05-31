@@ -85,4 +85,14 @@ describe('FordFulkerson', () => {
     ]
     expect(FordFulkerson.maxFlow(edges, 0, 2, 3)).toBe(4)
   })
+
+  it('handles diamond graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 10 },
+      { from: 2, to: 3, capacity: 10 },
+    ]
+    expect(FordFulkerson.maxFlow(edges, 0, 3, 4)).toBe(20)
+  })
 })

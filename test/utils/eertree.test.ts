@@ -64,4 +64,10 @@ describe('Eertree', () => {
     const pals = tree.getPalindromes()
     expect(pals.length).toBeGreaterThan(0)
   })
+
+  it('handles long palindrome', () => {
+    const tree = Eertree.build('abacaba')
+    const pals = tree.getPalindromes()
+    expect(pals.length).toBeGreaterThanOrEqual(4)
+  })
 })
