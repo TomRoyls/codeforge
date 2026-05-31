@@ -105,4 +105,9 @@ describe('ChordalCheck', () => {
     cc.addEdge(4, 0)
     expect(cc.isChordal()).toBe(false)
   })
+
+  it('single node is chordal', () => {
+    const cc = new ChordalCheck(1)
+    expect(cc.isChordal()).toBe(true)
+  })
 })

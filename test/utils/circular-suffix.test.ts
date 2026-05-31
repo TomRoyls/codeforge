@@ -73,4 +73,9 @@ describe('CircularSuffix', () => {
     const sa = cs.suffixArray()
     expect(sa.length).toBe(4)
   })
+
+  it('single character', () => {
+    const cs = CircularSuffix.build('a')
+    expect(cs.suffixArray()).toEqual([0])
+  })
 })

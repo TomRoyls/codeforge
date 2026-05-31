@@ -104,4 +104,10 @@ describe('ClosestPairBrute', () => {
     cp.addPoint(3, 4)
     expect(cp.findClosest()!.distance).toBe(5)
   })
+
+  it('findClosest returns null for single point', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    expect(cp.findClosest()).toBeNull()
+  })
 })

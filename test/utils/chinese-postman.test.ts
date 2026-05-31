@@ -99,4 +99,9 @@ describe('ChinesePostman', () => {
     cp.addEdge(1, 2, 1)
     expect(cp.solve()).toBe(4)
   })
+
+  it('handles single node', () => {
+    const cp = new ChinesePostman(1)
+    expect(cp.solve()).toBe(0)
+  })
 })
