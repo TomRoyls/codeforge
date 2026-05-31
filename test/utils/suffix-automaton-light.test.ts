@@ -84,4 +84,10 @@ describe('SuffixAutomatonLight', () => {
     expect(sa.contains('aa')).toBe(true)
     expect(sa.contains('aaaa')).toBe(true)
   })
+
+  it('handles empty string', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('')
+    expect(sa.contains('a')).toBe(false)
+  })
 })

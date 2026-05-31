@@ -119,4 +119,9 @@ describe('TreeHash', () => {
     th2.addEdge(2, 3)
     expect(th1.rootedHash(0)).not.toBe(th2.rootedHash(0))
   })
+
+  it('handles single node', () => {
+    const th = new TreeHash(1)
+    expect(th.rootedHash(0)).toBeGreaterThanOrEqual(0)
+  })
 })

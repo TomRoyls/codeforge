@@ -85,4 +85,9 @@ describe('VertexColoring', () => {
         vc.addEdge(i, j)
     expect(vc.chromaticNumber()).toBe(4)
   })
+
+  it('handles single node', () => {
+    const vc = new VertexColoring(1)
+    expect(vc.maxDegree()).toBe(0)
+  })
 })

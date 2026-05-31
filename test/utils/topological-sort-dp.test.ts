@@ -96,4 +96,10 @@ describe('TopologicalSortDP', () => {
     expect(ts.longestPath()).toBe(4)
     expect(ts.countPaths()).toBe(5)
   })
+
+  it('handles single node', () => {
+    const ts = new TopologicalSortDP(1)
+    expect(ts.longestPath()).toBe(0)
+    expect(ts.countPaths()).toBe(1)
+  })
 })

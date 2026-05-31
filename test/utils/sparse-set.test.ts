@@ -97,4 +97,14 @@ describe('SparseSet', () => {
     expect(ss.has(5)).toBe(true)
     expect(ss.size).toBe(1)
   })
+
+  it('clear removes all', () => {
+    const ss = new SparseSet(10)
+    ss.add(1)
+    ss.add(2)
+    ss.add(3)
+    ss.clear()
+    expect(ss.size).toBe(0)
+    expect(ss.has(1)).toBe(false)
+  })
 })

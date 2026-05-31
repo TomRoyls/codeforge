@@ -87,4 +87,10 @@ describe('StoerWagner', () => {
     const sw = new StoerWagner(1)
     expect(sw.minCut()).toBe(0)
   })
+
+  it('handles two nodes', () => {
+    const sw = new StoerWagner(2)
+    sw.addEdge(0, 1, 5)
+    expect(sw.minCut()).toBe(5)
+  })
 })

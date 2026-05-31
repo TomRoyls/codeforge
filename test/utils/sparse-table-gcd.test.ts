@@ -64,4 +64,9 @@ describe('SparseTableGCD', () => {
     const st = new SparseTableGCD([15, 25, 35])
     expect(st.query(1, 1)).toBe(25)
   })
+
+  it('handles coprime pair', () => {
+    const st = new SparseTableGCD([7, 13])
+    expect(st.query(0, 1)).toBe(1)
+  })
 })

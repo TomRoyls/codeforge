@@ -111,4 +111,12 @@ describe('VirtualTree', () => {
     const { vtree, lca } = vt.build([0, 2, 4])
     expect(lca(0, 4)).toBe(0)
   })
+
+  it('handles all same node', () => {
+    const vt = new VirtualTree(3)
+    vt.addEdge(0, 1)
+    vt.addEdge(1, 2)
+    const { lca } = vt.build([1, 1])
+    expect(lca(1, 1)).toBe(1)
+  })
 })

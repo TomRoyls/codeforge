@@ -115,4 +115,10 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [1, 1])
     expect(path.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('handles 1x1 maze', () => {
+    const maze = new TremauxMaze(1, 1)
+    const path = maze.solve([0, 0], [0, 0])
+    expect(path.length).toBeGreaterThanOrEqual(1)
+  })
 })

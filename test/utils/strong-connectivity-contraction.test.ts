@@ -103,4 +103,10 @@ describe('StrongConnectivityContraction', () => {
     expect(componentCount).toBe(2)
     expect(dag[0]!.length + dag[1]!.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('handles single node', () => {
+    const scc = new StrongConnectivityContraction(1)
+    const { componentCount } = scc.contract()
+    expect(componentCount).toBe(1)
+  })
 })

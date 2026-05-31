@@ -67,4 +67,9 @@ describe('SqrtDecompRange', () => {
     sd.update(2, 10)
     expect(sd.rangeSum(2, 2)).toBe(10)
   })
+
+  it('handles empty array', () => {
+    const sd = new SqrtDecompRange([])
+    expect(sd.length).toBe(0)
+  })
 })

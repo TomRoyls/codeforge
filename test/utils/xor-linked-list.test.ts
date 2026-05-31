@@ -97,4 +97,10 @@ describe('XorLinkedList', () => {
     expect(list.toArray()).toEqual([0, 1, 3, 5, 7])
     expect(list.size).toBe(5)
   })
+
+  it('handles empty list get', () => {
+    const list = new XorLinkedList<number>()
+    expect(list.get(0)).toBeUndefined()
+    expect(list.size).toBe(0)
+  })
 })

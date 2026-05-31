@@ -82,4 +82,11 @@ describe('SweepLine', () => {
       { x1: 1, y1: 1, x2: 2, y2: 0 },
     )).toBe(true)
   })
+
+  it('handles parallel non-intersecting', () => {
+    expect(SweepLine.segmentsIntersect(
+      { x1: 0, y1: 0, x2: 2, y2: 0 },
+      { x1: 0, y1: 1, x2: 2, y2: 1 },
+    )).toBe(false)
+  })
 })

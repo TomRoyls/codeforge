@@ -65,4 +65,9 @@ describe('StringHash', () => {
     const sh = new StringHash('racecar')
     expect(sh.equals(0, 6, 0, 6)).toBe(true)
   })
+
+  it('handles single character', () => {
+    const sh = new StringHash('a')
+    expect(sh.hash(0, 0)).toBeGreaterThanOrEqual(0)
+  })
 })

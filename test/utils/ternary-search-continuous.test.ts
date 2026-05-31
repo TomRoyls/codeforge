@@ -61,4 +61,9 @@ describe('TernarySearchContinuous', () => {
     const x = TernarySearchContinuous.minimize((x) => Math.exp(x), -5, 5)
     expect(x).toBeCloseTo(-5, 1)
   })
+
+  it('maximizes concave function', () => {
+    const x = TernarySearchContinuous.maximize((x) => -(x - 3) * (x - 3) + 10, 0, 10)
+    expect(x).toBeCloseTo(3, 2)
+  })
 })

@@ -53,4 +53,8 @@ describe('ZAlgorithmExtended', () => {
   it('handles DNA pattern', () => {
     expect(ZAlgorithmExtended.search('ATCGATCGATCG', 'ATCG')).toEqual([0, 4, 8])
   })
+
+  it('handles empty text', () => {
+    expect(ZAlgorithmExtended.search('', 'abc')).toEqual([])
+  })
 })

@@ -90,4 +90,10 @@ describe('VPTrie', () => {
     vp.addPoint([5, 5])
     expect(vp.findAllWithin([0, 0], 1.5).length).toBe(2)
   })
+
+  it('handles single point nearest', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([5, 5])
+    expect(vp.nearest([0, 0])).toEqual([5, 5])
+  })
 })
