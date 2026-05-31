@@ -76,4 +76,14 @@ describe('TopologicalSortDP', () => {
     ts.addEdge(3, 5)
     expect(ts.longestPath()).toBe(3)
   })
+
+  it('diamond DAG path count', () => {
+    const ts = new TopologicalSortDP(4)
+    ts.addEdge(0, 1)
+    ts.addEdge(0, 2)
+    ts.addEdge(1, 3)
+    ts.addEdge(2, 3)
+    expect(ts.longestPath()).toBe(2)
+    expect(ts.countPaths()).toBe(5)
+  })
 })

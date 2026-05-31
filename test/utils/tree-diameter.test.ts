@@ -31,6 +31,15 @@ describe('TreeDiameter', () => {
     expect(td.findDiameter()).toBe(2)
   })
 
+  it('handles path of 5', () => {
+    const td = new TreeDiameter(5)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 4)
+    expect(td.findDiameter()).toBe(4)
+  })
+
   it('handles balanced binary tree', () => {
     const td = new TreeDiameter(7)
     td.addEdge(0, 1)

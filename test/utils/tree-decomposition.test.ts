@@ -78,4 +78,13 @@ describe('TreeDecomposition', () => {
     td.addEdge(2, 3)
     expect(td.treewidth()).toBe(2)
   })
+
+  it('path graph low treewidth', () => {
+    const td = new TreeDecomposition(5)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 4)
+    expect(td.treewidth()).toBeLessThanOrEqual(2)
+  })
 })

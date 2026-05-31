@@ -96,4 +96,15 @@ describe('TreeHash', () => {
     const center = th.findCenter()
     expect(center.length).toBe(2)
   })
+
+  it('same subtrees have same hash', () => {
+    const th = new TreeHash(7)
+    th.addEdge(0, 1)
+    th.addEdge(0, 2)
+    th.addEdge(1, 3)
+    th.addEdge(1, 4)
+    th.addEdge(2, 5)
+    th.addEdge(2, 6)
+    expect(th.rootedHash(1)).toBe(th.rootedHash(2))
+  })
 })
