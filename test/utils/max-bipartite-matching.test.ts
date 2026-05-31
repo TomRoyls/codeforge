@@ -99,4 +99,11 @@ describe('MaxBipartiteMatching', () => {
     m.addEdge(0, 0)
     expect(m.getMatchingSize()).toBe(1)
   })
+
+  it('handles 2x2 partial edges', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    expect(m.getMatchingSize()).toBe(1)
+  })
 })

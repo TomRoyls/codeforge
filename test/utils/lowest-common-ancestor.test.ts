@@ -115,4 +115,13 @@ describe('LowestCommonAncestor', () => {
     expect(lca.getDepth(1)).toBe(1)
     expect(lca.getDepth(2)).toBe(1)
   })
+
+  it('LCA in chain of 4', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(1, 3)).toBe(1)
+    expect(lca.distance(1, 3)).toBe(2)
+  })
 })

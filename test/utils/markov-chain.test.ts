@@ -100,4 +100,13 @@ describe('MarkovChain', () => {
     mc.addTransition('a', 'b')
     expect(mc.getTransitionProbability('z', 'a')).toBe(0)
   })
+
+  it('generate with start state in chain', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    mc.addTransition('b', 'c')
+    const result = mc.generate('a', 3)
+    expect(result[0]).toBe('a')
+    expect(result.length).toBeGreaterThanOrEqual(2)
+  })
 })
