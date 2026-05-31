@@ -80,4 +80,28 @@ describe('BridgeFinding', () => {
     bf.addEdge(3, 4)
     expect(bf.findBridges().length).toBe(4)
   })
+
+  it('handles multi-edge with bridge', () => {
+    const bf = new BridgeFinding(5)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 2)
+    const bridges = bf.findBridges()
+    expect(bridges.length).toBe(0)
+  })
+
+  it('handles figure eight', () => {
+    const bf = new BridgeFinding(6)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 5)
+    bf.addEdge(5, 3)
+    expect(bf.findBridges().length).toBe(1)
+  })
 })
