@@ -71,4 +71,42 @@ describe('DinicMaxFlow', () => {
     ]
     expect(DinicMaxFlow.maxFlow(edges, 0, 1, 2)).toBe(7)
   })
+
+  it('handles multi-path flow', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 5 },
+      { from: 1, to: 4, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+      { from: 2, to: 4, capacity: 5 },
+      { from: 3, to: 5, capacity: 10 },
+      { from: 4, to: 5, capacity: 10 },
+    ]
+    expect(DinicMaxFlow.maxFlow(edges, 0, 5, 6)).toBe(20)
+  })
+
+  it('handles cycle in graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 2, capacity: 3 },
+      { from: 2, to: 0, capacity: 1 },
+      { from: 1, to: 3, capacity: 4 },
+      { from: 2, to: 3, capacity: 2 },
+    ]
+    const flow = DinicMaxFlow.maxFlow(edges, 0, 3, 4)
+    expect(flow).toBeGreaterThan(0)
+    expect(flow).toBeLessThanOrEqual(5)
+  })
+
+  it('handles single node', () => {
+    expect(DinicMaxFlow.maxFlow([], 0, 0, 1)).toBe(0)
+  })
+
+  it('handles large capacity', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 1000000 },
+    ]
+    expect(DinicMaxFlow.maxFlow(edges, 0, 1, 2)).toBe(1000000)
+  })
 })

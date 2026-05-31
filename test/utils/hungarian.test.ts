@@ -68,4 +68,37 @@ describe('Hungarian', () => {
     const { totalCost } = Hungarian.solve([[3, 1, 2]])
     expect(totalCost).toBe(1)
   })
+
+  it('handles 4x4 matrix', () => {
+    const { totalCost } = Hungarian.solve([
+      [10, 5, 13, 15],
+      [3, 9, 18, 3],
+      [12, 6, 2, 7],
+      [8, 7, 9, 10],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(5 + 3 + 2 + 10)
+  })
+
+  it('handles large costs', () => {
+    const { totalCost } = Hungarian.solve([
+      [1000000, 1], [1, 1000000],
+    ])
+    expect(totalCost).toBe(2)
+  })
+
+  it('handles zero costs', () => {
+    const { totalCost } = Hungarian.solve([
+      [0, 0], [0, 0],
+    ])
+    expect(totalCost).toBe(0)
+  })
+
+  it('prefers diagonal when optimal', () => {
+    const { assignment } = Hungarian.solve([
+      [1, 100, 100], [100, 1, 100], [100, 100, 1],
+    ])
+    expect(assignment[0]).toBe(0)
+    expect(assignment[1]).toBe(1)
+    expect(assignment[2]).toBe(2)
+  })
 })
