@@ -163,4 +163,16 @@ describe('MoAlgorithmTree', () => {
     )
     expect(nodes.size).toBeGreaterThan(0)
   })
+
+  it('handles two nodes', () => {
+    const mo = new MoAlgorithmTree(2)
+    mo.addEdge(0, 1)
+    let calls = 0
+    mo.processQueries(
+      [[0, 1]],
+      () => { calls++ },
+      () => {}
+    )
+    expect(calls).toBeGreaterThan(0)
+  })
 })

@@ -67,4 +67,9 @@ describe('ModuloCombinatorics', () => {
     const mc = new ModuloCombinatorics(5)
     expect(mc.nPr(0, 0)).toBe(1)
   })
+
+  it('nCr k>n returns 0', () => {
+    const mc = new ModuloCombinatorics(5)
+    expect(mc.nCr(2, 5)).toBe(0)
+  })
 })

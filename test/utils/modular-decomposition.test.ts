@@ -90,4 +90,9 @@ describe('ModularDecomposition', () => {
         md.addEdge(i, j)
     expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
   })
+
+  it('empty graph has modules', () => {
+    const md = new ModularDecomposition(3)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(0)
+  })
 })

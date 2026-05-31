@@ -79,4 +79,10 @@ describe('MonotonicStack', () => {
     expect(ms.size).toBe(3)
     expect(ms.peek()).toBe(1)
   })
+
+  it('handles empty stack', () => {
+    const ms = new MonotonicStack<number>()
+    expect(ms.size).toBe(0)
+    expect(ms.isEmpty).toBe(true)
+  })
 })

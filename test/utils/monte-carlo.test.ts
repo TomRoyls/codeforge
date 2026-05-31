@@ -79,4 +79,9 @@ describe('MonteCarlo', () => {
     const pi = MonteCarlo.pi(50000)
     expect(Math.abs(pi - Math.PI)).toBeLessThan(0.2)
   })
+
+  it('integrates constant function', () => {
+    const result = MonteCarlo.integrate(() => 5, 0, 2, 10000)
+    expect(result).toBeCloseTo(10, 1)
+  })
 })
