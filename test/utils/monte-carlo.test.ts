@@ -74,4 +74,9 @@ describe('MonteCarlo', () => {
     const result = MonteCarlo.integrate2D(() => 5, 0, 0, 0, 1, 1000)
     expect(result).toBeCloseTo(0, 8)
   })
+
+  it('pi with many samples converges', () => {
+    const pi = MonteCarlo.pi(50000)
+    expect(Math.abs(pi - Math.PI)).toBeLessThan(0.2)
+  })
 })

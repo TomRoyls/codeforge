@@ -86,4 +86,11 @@ describe('NetworkFlowDinic', () => {
     nf.addEdge(2, 0, 2)
     expect(nf.maxFlow(0, 2)).toBe(3)
   })
+
+  it('handles disconnected', () => {
+    const nf = new NetworkFlowDinic(4)
+    nf.addEdge(0, 1, 5)
+    nf.addEdge(2, 3, 5)
+    expect(nf.maxFlow(0, 3)).toBe(0)
+  })
 })

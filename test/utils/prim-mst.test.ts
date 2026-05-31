@@ -94,4 +94,13 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.totalWeight).toBeLessThanOrEqual(5)
   })
+
+  it('handles K3', () => {
+    const mst = new PrimMST(3)
+    mst.addEdge(0, 1, 1)
+    mst.addEdge(1, 2, 2)
+    mst.addEdge(0, 2, 3)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(3)
+  })
 })

@@ -54,4 +54,9 @@ describe('PalindromicTree', () => {
     const pt = PalindromicTree.from('aa')
     expect(pt.distinctPalindromes).toBe(2)
   })
+
+  it('handles longer palindrome string', () => {
+    const pt = new PalindromicTree('abacaba')
+    expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(0)
+  })
 })

@@ -91,4 +91,13 @@ describe('PersistentQueue', () => {
     }
     expect(result).toEqual([0, 10, 20, 30, 40])
   })
+
+  it('persists old version after enqueue', () => {
+    const q0 = PersistentQueue.create<number>()
+    const q1 = q0.enqueue(1)
+    const q2 = q1.enqueue(2)
+    expect(q0.isEmpty).toBe(true)
+    expect(q1.toArray()).toEqual([1])
+    expect(q2.toArray()).toEqual([1, 2])
+  })
 })
