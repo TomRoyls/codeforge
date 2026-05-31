@@ -52,4 +52,16 @@ describe('KMPAutomaton', () => {
     const kmp = new KMPAutomaton('ab')
     expect(kmp.search('ababab')).toEqual([0, 2, 4])
   })
+
+  it('failure function for repeated prefix', () => {
+    const kmp = new KMPAutomaton('aabaa')
+    const fail = kmp.getFailure()
+    expect(fail[0]).toBe(-1)
+  })
+
+  it('finds pattern in long text', () => {
+    const kmp = new KMPAutomaton('abc')
+    const text = 'xyzabcxyzabcxyz'
+    expect(kmp.search(text)).toEqual([3, 9])
+  })
 })

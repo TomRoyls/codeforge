@@ -82,4 +82,25 @@ describe('DynamicConvexHull', () => {
     ch.add(3, 4)
     expect(ch.area).toBe(12)
   })
+
+  it('handles many random points on circle', () => {
+    const ch = new DynamicConvexHull()
+    for (let i = 0; i < 20; i++) {
+      const angle = (2 * Math.PI * i) / 20
+      ch.add(10 * Math.cos(angle), 10 * Math.sin(angle))
+    }
+    expect(ch.getHull().length).toBe(20)
+    expect(ch.area).toBeGreaterThan(280)
+    expect(ch.area).toBeLessThan(315)
+  })
+
+  it('add interior point does not change hull', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(10, 0)
+    ch.add(5, 10)
+    const hullBefore = ch.getHull().length
+    ch.add(5, 5)
+    expect(ch.getHull().length).toBe(hullBefore)
+  })
 })
