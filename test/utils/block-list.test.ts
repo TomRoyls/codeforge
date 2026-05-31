@@ -86,4 +86,11 @@ describe('BlockList', () => {
     expect(bl.popBack()).toBe(3)
     expect(bl.toArray()).toEqual([1, 2])
   })
+
+  it('handles set operation', () => {
+    const bl = BlockList.from([10, 20, 30], 2)
+    bl.set(1, 99)
+    expect(bl.get(1)).toBe(99)
+    expect(bl.toArray()).toEqual([10, 99, 30])
+  })
 })

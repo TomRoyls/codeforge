@@ -104,4 +104,12 @@ describe('DequeMin', () => {
     expect(dq.popFront()).toBe(42)
     expect(dq.min).toBeUndefined()
   })
+
+  it('handles negative values', () => {
+    const dq = new DequeMin()
+    dq.pushBack(-5)
+    dq.pushBack(-3)
+    dq.pushBack(-10)
+    expect(dq.min).toBe(-10)
+  })
 })

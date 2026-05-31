@@ -118,4 +118,12 @@ describe('CentroidDecomposition', () => {
     const { parent } = cd.decompose()
     expect(parent.length).toBe(15)
   })
+
+  it('handles star tree', () => {
+    const cd = new CentroidDecomposition(6)
+    for (let i = 1; i < 6; i++) cd.addEdge(0, i)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(6)
+    expect(depth.length).toBe(6)
+  })
 })

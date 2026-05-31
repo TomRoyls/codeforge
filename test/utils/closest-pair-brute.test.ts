@@ -97,4 +97,11 @@ describe('ClosestPairBrute', () => {
     expect(pairs[0]!.distance).toBe(1)
     expect(pairs[1]!.distance).toBeCloseTo(4)
   })
+
+  it('handles 3D projection on XY plane', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(3, 4)
+    expect(cp.findClosest()!.distance).toBe(5)
+  })
 })
