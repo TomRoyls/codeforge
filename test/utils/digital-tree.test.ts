@@ -101,4 +101,11 @@ describe('DigitalTree', () => {
     expect(dt.search('')).toBe(true)
     expect(dt.search('a')).toBe(false)
   })
+
+  it('handles remove non-existent', () => {
+    const dt = new DigitalTree()
+    dt.insert('abc')
+    expect(dt.remove('xyz')).toBe(false)
+    expect(dt.search('abc')).toBe(true)
+  })
 })

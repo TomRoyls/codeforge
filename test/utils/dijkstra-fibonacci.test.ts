@@ -124,4 +124,9 @@ describe('DijkstraFibonacci', () => {
     expect(dist[1]).toBe(5)
     expect(dist[2]).toBe(Infinity)
   })
+
+  it('handles single node', () => {
+    const dist = DijkstraFibonacci.shortestPath([], 0, 1)
+    expect(dist[0]).toBe(0)
+  })
 })

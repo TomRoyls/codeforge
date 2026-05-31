@@ -120,4 +120,14 @@ describe('Deque', () => {
     expect(dq.front()).toBe(3)
     expect(dq.back()).toBe(3)
   })
+
+  it('handles pushFront only', () => {
+    const dq = new Deque<number>()
+    dq.pushFront(3)
+    dq.pushFront(2)
+    dq.pushFront(1)
+    expect(dq.toArray()).toEqual([1, 2, 3])
+    expect(dq.front()).toBe(1)
+    expect(dq.back()).toBe(3)
+  })
 })

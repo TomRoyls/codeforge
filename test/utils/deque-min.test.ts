@@ -112,4 +112,13 @@ describe('DequeMin', () => {
     dq.pushBack(-10)
     expect(dq.min).toBe(-10)
   })
+
+  it('handles pop all elements', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.popFront()
+    dq.popFront()
+    expect(dq.size).toBe(0)
+  })
 })

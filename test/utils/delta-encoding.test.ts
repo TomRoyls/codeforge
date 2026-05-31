@@ -80,4 +80,11 @@ describe('DeltaEncoding', () => {
     const encoded = DeltaEncoding.encode(arr)
     expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(arr)
   })
+
+  it('handles all same values', () => {
+    const arr = [5, 5, 5, 5]
+    const encoded = DeltaEncoding.encode(arr)
+    expect(encoded.deltas).toEqual([0, 0, 0])
+    expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(arr)
+  })
 })
