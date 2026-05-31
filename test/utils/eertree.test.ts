@@ -70,4 +70,9 @@ describe('Eertree', () => {
     const pals = tree.getPalindromes()
     expect(pals.length).toBeGreaterThanOrEqual(4)
   })
+
+  it('single char has palindrome', () => {
+    const tree = Eertree.build('x')
+    expect(tree.getPalindromes().length).toBeGreaterThanOrEqual(1)
+  })
 })

@@ -84,4 +84,9 @@ describe('FastFourierTransform', () => {
       expect(recovered[i]!.re).toBeCloseTo(input[i]!.re, 6)
     }
   })
+
+  it('multiplyPolynomials by zero', () => {
+    const result = FastFourierTransform.multiplyPolynomials([0, 0], [1, 2, 3])
+    expect(result.every(v => v === 0)).toBe(true)
+  })
 })

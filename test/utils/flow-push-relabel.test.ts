@@ -95,4 +95,8 @@ describe('FlowPushRelabel', () => {
     ]
     expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(20)
   })
+
+  it('handles source equals sink', () => {
+    expect(FlowPushRelabel.maxFlow([], 0, 0, 1)).toBe(0)
+  })
 })

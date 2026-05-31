@@ -72,4 +72,10 @@ describe('EliasCoding', () => {
     const decoded = EliasCoding.deltaDecode(encoded)
     expect(decoded.value).toBe(5)
   })
+
+  it('gamma roundtrip large values', () => {
+    for (const n of [1, 10, 50, 100, 255]) {
+      expect(EliasCoding.gammaDecode(EliasCoding.gammaEncode(n)).value).toBe(n)
+    }
+  })
 })
