@@ -56,4 +56,16 @@ describe('SquareDecomposition', () => {
     sd.update(4, 10)
     expect(sd.query(0, 4)).toBe(29)
   })
+
+  it('query single element', () => {
+    const sd = new SquareDecomposition([10, 20, 30])
+    expect(sd.query(1, 1)).toBe(20)
+  })
+
+  it('handles custom block size', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5, 6], 2)
+    expect(sd.query(0, 5)).toBe(21)
+    sd.update(2, 10)
+    expect(sd.get(2)).toBe(10)
+  })
 })

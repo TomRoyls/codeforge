@@ -84,4 +84,20 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search(queries)
     expect(results[0]).toBe(0)
   })
+
+  it('finds exact threshold in large range', () => {
+    const queries = [
+      { lo: 0, hi: 10000, check: (mid: number) => mid >= 7777 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(7777)
+  })
+
+  it('handles boundary hi value', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= 100 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(100)
+  })
 })

@@ -59,4 +59,16 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'banana')
     for (const v of lcp) expect(v).toBeGreaterThanOrEqual(0)
   })
+
+  it('handles two identical strings', () => {
+    const sa = [2, 0, 3, 1]
+    const lcp = LCPArray.build(sa, 'abab')
+    expect(Math.max(...lcp)).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles single character repeated', () => {
+    const sa = [3, 2, 1, 0]
+    const lcp = LCPArray.build(sa, 'aaaa')
+    expect(lcp.reduce((a, b) => a + b, 0)).toBeGreaterThan(0)
+  })
 })
