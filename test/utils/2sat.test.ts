@@ -107,4 +107,11 @@ describe('TwoSAT', () => {
     expect(result).not.toBeNull()
     expect(result!.length).toBe(1)
   })
+
+  it('handles no clauses', () => {
+    const ts = new TwoSAT(3)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    expect(result!.length).toBe(3)
+  })
 })

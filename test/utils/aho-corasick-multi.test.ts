@@ -85,4 +85,10 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('abc')
     expect(result.size).toBe(0)
   })
+
+  it('handles single char pattern in empty text', () => {
+    const ac = new AhoCorasickMulti(['a'])
+    const result = ac.search('')
+    expect(result.size).toBe(0)
+  })
 })

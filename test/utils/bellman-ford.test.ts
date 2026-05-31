@@ -134,4 +134,9 @@ describe('BellmanFord', () => {
     expect(distances.get(1)).toBe(5)
     expect(distances.get(2)).toBe(Infinity)
   })
+
+  it('handles empty graph', () => {
+    const { distances } = BellmanFord.shortestPath([], 1, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })

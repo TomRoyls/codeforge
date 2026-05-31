@@ -115,4 +115,12 @@ describe('ArtGallery', () => {
     ag.addPoint(0, 4)
     expect(ag.pointInPolygon(10, 10)).toBe(false)
   })
+
+  it('handles triangle area', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(0, 4)
+    expect(ag.polygonArea()).toBeCloseTo(8, 5)
+  })
 })
