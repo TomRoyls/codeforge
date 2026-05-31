@@ -71,4 +71,10 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'aaaa')
     expect(lcp.reduce((a, b) => a + b, 0)).toBeGreaterThan(0)
   })
+
+  it('handles single character string', () => {
+    const sa = [0]
+    const lcp = LCPArray.build(sa, 'a')
+    expect(lcp.length).toBe(0)
+  })
 })

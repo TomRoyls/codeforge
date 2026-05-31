@@ -99,4 +99,12 @@ describe('LineGraph', () => {
     const adj = lg.build()
     expect(adj.length).toBe(3)
   })
+
+  it('single edge line graph', () => {
+    const lg = new LineGraph(2)
+    lg.addEdge(0, 1)
+    const adj = lg.build()
+    expect(adj.length).toBe(1)
+    expect(adj[0]).toEqual([])
+  })
 })

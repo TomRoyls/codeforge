@@ -83,4 +83,11 @@ describe('LazySegmentTree', () => {
     expect(st.getPoint(5)).toBe(6)
     expect(st.queryRange(0, 9)).toBe(23)
   })
+
+  it('handles single element tree', () => {
+    const st = new LazySegmentTree(1)
+    st.updateRange(0, 0, 7)
+    expect(st.getPoint(0)).toBe(7)
+    expect(st.queryRange(0, 0)).toBe(7)
+  })
 })

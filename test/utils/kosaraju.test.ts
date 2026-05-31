@@ -83,4 +83,11 @@ describe('KosarajuSCC', () => {
     ])
     expect(KosarajuSCC.findSCCs(adj).length).toBe(2)
   })
+
+  it('single node is own SCC', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+    expect(sccs[0]).toEqual([0])
+  })
 })

@@ -111,4 +111,12 @@ describe('KruskalMST', () => {
     expect(mstEdges.length).toBe(3)
     expect(totalWeight).toBe(6)
   })
+
+  it('handles disconnected graph', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 2, to: 3, weight: 2 },
+    ]
+    expect(KruskalMST.isConnected(edges, 4)).toBe(false)
+  })
 })
