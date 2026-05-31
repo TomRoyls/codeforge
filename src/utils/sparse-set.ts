@@ -1,171 +1,58 @@
-/**
- * SparseSet - O(1) add/remove/contains/iterate for non-negative integers.
- *
- * Uses a pair of arrays (sparse/dense) to achieve constant-time operations
- * while maintaining dense iteration order. Memory usage is O(universe_size)
- * for the sparse array and O(n) for the dense array.
- *
- * Ideal when the integer universe is bounded and iteration order doesn't matter.
- */
 export class SparseSet {
-  private readonly sparse: Int32Array
-  private readonly dense: Int32Array
-  private _size: number = 0
+  private dense: number[]
+  private sparse: number[]
+  private n: number
 
-  constructor(universeSize: number) {
-    if (!Number.isInteger(universeSize) || universeSize < 0) {
-      throw new RangeError(`Universe size must be a non-negative integer, got ${universeSize}`)
-    }
-    this.sparse = new Int32Array(universeSize).fill(-1)
-    this.dense = new Int32Array(universeSize)
+  constructor(universe: number) {
+    this.dense = []
+    this.sparse = new Array(universe).fill(-1)
+    this.n = 0
   }
 
-  add(value: number): boolean {
-    if (!Number.isInteger(value) || value < 0 || value >= this.sparse.length) {
-      return false
-    }
-    if (this.has(value)) {
-      return false
-    }
-    this.dense[this._size] = value
-    this.sparse[value] = this._size
-    this._size++
+  has(x: number): boolean {
+    if (x < 0 || x >= this.sparse.length) return false
+    const idx = this.sparse[x]!
+    return idx >= 0 && idx < this.n && this.dense[idx] === x
+  }
+
+  add(x: number): boolean {
+    if (this.has(x)) return false
+    this.sparse[x] = this.n
+    this.dense[this.n] = x
+    this.n++
     return true
   }
 
-  has(value: number): boolean {
-    if (!Number.isInteger(value) || value < 0 || value >= this.sparse.length) {
-      return false
-    }
-    const idx = this.sparse[value]!
-    return idx >= 0 && idx < this._size && this.dense[idx]! === value
-  }
-
-  remove(value: number): boolean {
-    if (!this.has(value)) {
-      return false
-    }
-    const idx = this.sparse[value]!
-    const lastDense = this.dense[this._size - 1]!
-    if (idx !== this._size - 1) {
-      this.dense[idx]! = lastDense
-      this.sparse[lastDense]! = idx
-    }
-    this.sparse[value] = -1
-    this._size--
+  remove(x: number): boolean {
+    if (!this.has(x)) return false
+    const idx = this.sparse[x]!
+    const last = this.dense[this.n - 1]!
+    this.dense[idx] = last
+    this.sparse[last] = idx
+    this.n--
     return true
   }
 
   clear(): void {
-    this._size = 0
-    this.sparse.fill(-1)
+    this.n = 0
   }
 
   get size(): number {
-    return this._size
-  }
-
-  get isEmpty(): boolean {
-    return this._size === 0
-  }
-
-  get universeSize(): number {
-    return this.sparse.length
+    return this.n
   }
 
   values(): number[] {
-    return Array.from(this.dense.subarray(0, this._size))
-  }
-
-  forEach(callback: (value: number, index: number) => void): void {
-    for (let i = 0; i < this._size; i++) {
-      callback(this.dense[i]!, i)
-    }
+    return this.dense.slice(0, this.n)
   }
 
   [Symbol.iterator](): Iterator<number> {
     let i = 0
+    const self = this
     return {
-      next: () => {
-        if (i < this._size) {
-          return { value: this.dense[i++]!, done: false }
-        }
-        return { value: undefined as unknown as number, done: true }
+      next(): IteratorResult<number> {
+        if (i < self.n) return { value: self.dense[i++]!, done: false }
+        return { value: undefined, done: true } as IteratorResult<number>
       },
     }
-  }
-
-  union(other: SparseSet): SparseSet {
-    const maxSize = Math.max(this.sparse.length, other.sparse.length)
-    const result = new SparseSet(maxSize)
-    this.forEach((v) => result.add(v))
-    other.forEach((v) => result.add(v))
-    return result
-  }
-
-  intersection(other: SparseSet): SparseSet {
-    const [smaller, larger] = this._size <= other._size ? [this, other] : [other, this]
-    const maxSize = Math.max(this.sparse.length, other.sparse.length)
-    const result = new SparseSet(maxSize)
-    smaller.forEach((v) => {
-      if (larger.has(v)) {
-        result.add(v)
-      }
-    })
-    return result
-  }
-
-  difference(other: SparseSet): SparseSet {
-    const result = new SparseSet(this.sparse.length)
-    this.forEach((v) => {
-      if (!other.has(v)) {
-        result.add(v)
-      }
-    })
-    return result
-  }
-
-  symmetricDifference(other: SparseSet): SparseSet {
-    const maxSize = Math.max(this.sparse.length, other.sparse.length)
-    const result = new SparseSet(maxSize)
-    this.forEach((v) => {
-      if (!other.has(v)) result.add(v)
-    })
-    other.forEach((v) => {
-      if (!this.has(v)) result.add(v)
-    })
-    return result
-  }
-
-  isSubsetOf(other: SparseSet): boolean {
-    if (this._size > other._size) return false
-    let allFound = true
-    this.forEach((v) => {
-      if (!other.has(v)) allFound = false
-    })
-    return allFound
-  }
-
-  isSupersetOf(other: SparseSet): boolean {
-    return other.isSubsetOf(this)
-  }
-
-  equals(other: SparseSet): boolean {
-    if (this._size !== other._size) return false
-    let allFound = true
-    this.forEach((v) => {
-      if (!other.has(v)) allFound = false
-    })
-    return allFound
-  }
-
-  clone(): SparseSet {
-    const result = new SparseSet(this.sparse.length)
-    this.forEach((v) => result.add(v))
-    return result
-  }
-
-  toArray(): number[] {
-    return this.values()
   }
 }

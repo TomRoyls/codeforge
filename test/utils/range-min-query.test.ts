@@ -61,4 +61,16 @@ describe('RangeMinQuery', () => {
     expect(rmq.query(0, 3)).toBe(2)
     expect(rmq.query(1, 2)).toBe(4)
   })
+
+  it('handles duplicate minimums', () => {
+    const rmq = new RangeMinQuery([3, 1, 4, 1, 5])
+    expect(rmq.query(0, 4)).toBe(1)
+    expect(rmq.query(2, 4)).toBe(1)
+  })
+
+  it('handles two elements', () => {
+    const rmq = new RangeMinQuery([7, 3])
+    expect(rmq.query(0, 1)).toBe(3)
+    expect(rmq.query(0, 0)).toBe(7)
+  })
 })

@@ -69,4 +69,21 @@ describe('DisjointInterval', () => {
     di.add(5, 3)
     expect(di.count).toBe(0)
   })
+
+  it('remove from middle of interval', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(5, 5)
+    expect(di.getIntervals()).toEqual([[0, 4], [6, 10]])
+  })
+
+  it('contains after multiple operations', () => {
+    const di = new DisjointInterval()
+    di.add(1, 5)
+    di.add(10, 15)
+    di.remove(3, 12)
+    expect(di.contains(2)).toBe(true)
+    expect(di.contains(3)).toBe(false)
+    expect(di.contains(14)).toBe(true)
+  })
 })

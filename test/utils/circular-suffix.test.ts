@@ -57,4 +57,14 @@ describe('CircularSuffix', () => {
     expect(cs.length).toBe(0)
     expect(cs.suffixArray()).toEqual([])
   })
+
+  it('abc circular order', () => {
+    const cs = CircularSuffix.build('abc')
+    expect(cs.suffixArray()).toEqual([0, 1, 2])
+  })
+
+  it('cab circular order', () => {
+    const cs = CircularSuffix.build('cab')
+    expect(cs.suffixArray()).toEqual([1, 2, 0])
+  })
 })
