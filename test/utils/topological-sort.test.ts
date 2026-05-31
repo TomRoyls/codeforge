@@ -71,4 +71,19 @@ describe('TopologicalSort', () => {
     expect(result!.indexOf(5)).toBeLessThan(result!.indexOf(0))
     expect(result!.indexOf(4)).toBeLessThan(result!.indexOf(1))
   })
+
+  it('handles self-loop as cycle', () => {
+    const adj = new Map<number, number[]>([
+      [0, [0]],
+    ])
+    expect(TopologicalSort.sort(adj)).toBeNull()
+  })
+
+  it('allTopologicalSorts for independent nodes', () => {
+    const adj = new Map<number, number[]>([
+      [0, []], [1, []], [2, []],
+    ])
+    const results = TopologicalSort.allTopologicalSorts(adj)
+    expect(results.length).toBe(6)
+  })
 })

@@ -81,4 +81,30 @@ describe('Dijkstra', () => {
     const { parents } = Dijkstra.shortestPath(adj, 0)
     expect(Dijkstra.reconstructPath(parents, 0, 0)).toEqual([0])
   })
+
+  it('finds path in diamond graph', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 1 }, { to: 2, weight: 5 }]],
+      [1, [{ to: 3, weight: 1 }]],
+      [2, [{ to: 3, weight: 1 }]],
+      [3, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(3)).toBe(2)
+    const { parents } = Dijkstra.shortestPath(adj, 0)
+    const path = Dijkstra.reconstructPath(parents, 0, 3)
+    expect(path).toEqual([0, 1, 3])
+  })
+
+  it('handles larger graph', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 2 }, { to: 2, weight: 6 }]],
+      [1, [{ to: 3, weight: 5 }]],
+      [2, [{ to: 3, weight: 8 }]],
+      [3, [{ to: 4, weight: 10 }]],
+      [4, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(4)).toBe(17)
+  })
 })
