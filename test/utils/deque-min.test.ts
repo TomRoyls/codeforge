@@ -86,4 +86,22 @@ describe('DequeMin', () => {
     dq.pushBack(3)
     expect(dq.min).toBe(3)
   })
+
+  it('handles increasing sequence', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.pushBack(3)
+    expect(dq.min).toBe(1)
+    dq.popFront()
+    expect(dq.min).toBe(2)
+  })
+
+  it('handles single element lifecycle', () => {
+    const dq = new DequeMin()
+    dq.pushBack(42)
+    expect(dq.min).toBe(42)
+    expect(dq.popFront()).toBe(42)
+    expect(dq.min).toBeUndefined()
+  })
 })
