@@ -133,4 +133,9 @@ describe('SuffixArray', () => {
     expect(sa.length).toBe(3)
     expect(sa.search('a').length).toBe(3)
   })
+
+  it('empty string has zero length', () => {
+    const sa = new SuffixArray('')
+    expect(sa.length).toBe(0)
+  })
 })

@@ -99,4 +99,8 @@ describe('RULE_SUGGESTIONS known rules', () => {
       expect(key.length).toBeGreaterThan(0)
     }
   })
+
+  it('RULE_SUGGESTIONS has at least 1 entry', () => {
+    expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(0)
+  })
 })

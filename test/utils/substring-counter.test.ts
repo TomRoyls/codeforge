@@ -98,4 +98,9 @@ describe('SubstringCounter', () => {
     const sc = new SubstringCounter('abcabc')
     expect(sc.countNaive('a')).toBe(2)
   })
+
+  it('count non-existent substring', () => {
+    const sc = new SubstringCounter('hello')
+    expect(sc.countNaive('xyz')).toBe(0)
+  })
 })

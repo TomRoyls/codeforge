@@ -119,4 +119,10 @@ describe('SweepLine', () => {
     expect(result).not.toBeNull()
     expect(result!.dist).toBeCloseTo(Math.sqrt(20000), 5)
   })
+
+  it('two identical points have zero distance', () => {
+    const result = SweepLine.closestPair([{ x: 1, y: 1 }, { x: 1, y: 1 }])
+    expect(result).not.toBeNull()
+    expect(result!.dist).toBe(0)
+  })
 })

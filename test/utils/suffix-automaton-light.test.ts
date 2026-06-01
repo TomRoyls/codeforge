@@ -121,4 +121,11 @@ describe('SuffixAutomatonLight', () => {
     sa.build('')
     expect(sa.contains('')).toBe(true)
   })
+
+  it('contains single char after build', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('a')
+    expect(sa.contains('a')).toBe(true)
+    expect(sa.contains('b')).toBe(false)
+  })
 })
