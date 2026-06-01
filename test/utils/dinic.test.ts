@@ -129,4 +129,9 @@ describe('DinicMaxFlow', () => {
   it('handles source equals sink', () => {
     expect(DinicMaxFlow.maxFlow([], 0, 0, 1)).toBe(0)
   })
+
+  it('handles single edge', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    expect(DinicMaxFlow.maxFlow(edges, 0, 1, 2)).toBe(5)
+  })
 })

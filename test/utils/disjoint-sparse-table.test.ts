@@ -106,4 +106,10 @@ describe('DisjointSparseTable', () => {
     const dst = new DisjointSparseTable([42], (a, b) => a + b)
     expect(dst.query(0, 0)).toBe(42)
   })
+
+  it('handles four element min', () => {
+    const dst = new DisjointSparseTable([5, 3, 7, 1], (a, b) => Math.min(a, b))
+    expect(dst.query(0, 3)).toBe(1)
+    expect(dst.query(1, 2)).toBe(3)
+  })
 })

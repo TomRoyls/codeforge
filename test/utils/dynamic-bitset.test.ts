@@ -116,4 +116,12 @@ describe('DynamicBitset', () => {
     bs.flip(0)
     expect(bs.get(0)).toBe(true)
   })
+
+  it('count tracks correctly after flip', () => {
+    const bs = new DynamicBitset(4)
+    bs.set(0)
+    bs.set(1)
+    bs.flip(0)
+    expect(bs.count()).toBe(1)
+  })
 })

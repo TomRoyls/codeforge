@@ -117,4 +117,10 @@ describe('DisjointInterval', () => {
     expect(di.getIntervals()).toEqual([])
     expect(di.totalCovered()).toBe(0)
   })
+
+  it('covers full range after single add', () => {
+    const di = new DisjointInterval()
+    di.add(0, 100)
+    expect(di.covers(0, 100)).toBe(true)
+  })
 })
