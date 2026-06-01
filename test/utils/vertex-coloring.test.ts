@@ -112,4 +112,9 @@ describe('VertexColoring', () => {
     vc.addEdge(0, 1)
     expect(vc.chromaticNumber()).toBe(2)
   })
+
+  it('single node needs 1 color', () => {
+    const vc = new VertexColoring(1)
+    expect(vc.chromaticNumber()).toBe(1)
+  })
 })

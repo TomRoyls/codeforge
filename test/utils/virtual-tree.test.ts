@@ -146,4 +146,10 @@ describe('VirtualTree', () => {
     const { lca } = vt.build([1, 2])
     expect(lca(1, 2)).toBe(1)
   })
+
+  it('single node tree', () => {
+    const vt = new VirtualTree(1)
+    const { lca } = vt.build([0])
+    expect(lca(0, 0)).toBe(0)
+  })
 })

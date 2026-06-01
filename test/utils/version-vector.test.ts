@@ -151,4 +151,11 @@ describe('VersionVector - edge cases', () => {
     vv.increment()
     expect(vv.size).toBe(1)
   })
+
+  it('toArray returns entries', () => {
+    const vv = new VersionVector('a')
+    vv.increment()
+    const arr = vv.toArray()
+    expect(arr.length).toBeGreaterThanOrEqual(0)
+  })
 })

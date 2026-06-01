@@ -155,4 +155,10 @@ describe('UndoDisjointSet', () => {
     expect(dsu.connected(1, 3)).toBe(true)
     expect(dsu.components).toBe(2)
   })
+
+  it('single element is its own set', () => {
+    const dsu = new UndoDisjointSet(1)
+    expect(dsu.find(0)).toBe(0)
+    expect(dsu.components).toBe(1)
+  })
 })
