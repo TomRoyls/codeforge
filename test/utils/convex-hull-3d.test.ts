@@ -141,4 +141,9 @@ describe('ConvexHull3D', () => {
     ch.addPoint(0, 1, 0)
     expect(ch.convexHullVolume()).toBe(0)
   })
+
+  it('empty hull returns zero volume', () => {
+    const ch = new ConvexHull3D()
+    expect(ch.convexHullVolume()).toBe(0)
+  })
 })

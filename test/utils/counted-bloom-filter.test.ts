@@ -116,4 +116,12 @@ describe('CountedBloomFilter', () => {
     bf.remove('x')
     expect(bf.contains('x')).toBe(false)
   })
+
+  it('add same item multiple times increases count', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('z')
+    bf.add('z')
+    bf.add('z')
+    expect(bf.count('z')).toBeGreaterThanOrEqual(3)
+  })
 })

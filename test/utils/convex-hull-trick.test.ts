@@ -118,4 +118,11 @@ describe('ConvexHullTrick', () => {
     expect(cht.query(0)).toBe(3)
     expect(cht.query(5)).toBe(13)
   })
+
+  it('handles two parallel lines different intercepts', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(1, 5)
+    cht.addLine(1, 10)
+    expect(cht.query(0)).toBe(5)
+  })
 })

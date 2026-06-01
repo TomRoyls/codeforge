@@ -83,4 +83,8 @@ describe('ContinuedFraction', () => {
     const cf = ContinuedFraction.fromRatio(22, 7)
     expect(ContinuedFraction.toNumber(cf)).toBeCloseTo(22 / 7)
   })
+
+  it('fromNumber 1 returns [1]', () => {
+    expect(ContinuedFraction.fromNumber(1)).toEqual([1])
+  })
 })
