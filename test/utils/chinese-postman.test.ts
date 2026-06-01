@@ -104,4 +104,9 @@ describe('ChinesePostman', () => {
     const cp = new ChinesePostman(1)
     expect(cp.solve()).toBe(0)
   })
+
+  it('handles two nodes no edge', () => {
+    const cp = new ChinesePostman(2)
+    expect(cp.solve()).toBe(0)
+  })
 })

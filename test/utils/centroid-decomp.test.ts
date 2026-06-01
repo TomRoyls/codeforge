@@ -130,4 +130,13 @@ describe('CentroidDecomposition', () => {
     expect(tree.length).toBe(1)
     expect(cd.getParent(0)).toBe(-1)
   })
+
+  it('handles three-node path', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(3)
+  })
 })
