@@ -85,4 +85,10 @@ describe('ExtendedEuclidean', () => {
     const inv = ExtendedEuclidean.modularInverseNumber(1, 7)
     expect(inv).toBe(1)
   })
+
+  it('solves diophantine equation', () => {
+    const { x, y, gcd } = ExtendedEuclidean.solve(12n, 8n)
+    expect(12n * x + 8n * y).toBe(gcd)
+    expect(gcd).toBe(4n)
+  })
 })

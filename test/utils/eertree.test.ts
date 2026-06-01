@@ -88,4 +88,9 @@ describe('Eertree', () => {
     expect(tree.hasPalindrome('a')).toBe(true)
     expect(tree.hasPalindrome('aa')).toBe(true)
   })
+
+  it('handles empty string', () => {
+    const tree = Eertree.build('')
+    expect(tree.getPalindromes().length).toBe(0)
+  })
 })
