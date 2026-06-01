@@ -109,4 +109,12 @@ describe('ChinesePostman', () => {
     const cp = new ChinesePostman(2)
     expect(cp.solve()).toBe(0)
   })
+
+  it('handles triangle graph', () => {
+    const cp = new ChinesePostman(3)
+    cp.addEdge(0, 1, 2)
+    cp.addEdge(1, 2, 3)
+    cp.addEdge(2, 0, 1)
+    expect(cp.solve()).toBe(6)
+  })
 })
