@@ -124,4 +124,9 @@ describe('CountedBloomFilter', () => {
     bf.add('z')
     expect(bf.count('z')).toBeGreaterThanOrEqual(3)
   })
+
+  it('empty filter has zero count', () => {
+    const bf = new CountedBloomFilter(100)
+    expect(bf.count('missing')).toBe(0)
+  })
 })

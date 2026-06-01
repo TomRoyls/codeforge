@@ -81,4 +81,8 @@ describe('CountingInversions', () => {
   it('handles single element', () => {
     expect(CountingInversions.count([42])).toBe(0)
   })
+
+  it('sorted array has zero inversions', () => {
+    expect(CountingInversions.count([1, 2, 3, 4, 5])).toBe(0)
+  })
 })

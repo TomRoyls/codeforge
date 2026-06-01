@@ -83,4 +83,8 @@ describe('CountingSort', () => {
   it('handles reverse sorted input', () => {
     expect(CountingSort.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles single element', () => {
+    expect(CountingSort.sort([42])).toEqual([42])
+  })
 })

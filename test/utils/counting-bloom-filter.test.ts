@@ -150,4 +150,11 @@ describe('CountingBloomFilter clear', () => {
     bf.remove('a')
     expect(bf.isEmpty).toBe(true)
   })
+
+  it('size tracks additions', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('a')
+    bf.add('b')
+    expect(bf.size).toBe(2)
+  })
 })
