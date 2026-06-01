@@ -108,4 +108,10 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(Math.exp(-1), 3)
   })
+
+  it('constant derivative produces linear growth', () => {
+    const result = RungeKutta.solve(() => 1, 0, 0, 5, 0.5)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(5, 3)
+  })
 })

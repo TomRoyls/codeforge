@@ -128,4 +128,11 @@ describe('RobinHopMap', () => {
     map.set('a', 1)
     expect(map.maxPSL()).toBeGreaterThanOrEqual(0)
   })
+
+  it('delete returns true for existing key', () => {
+    const map = new RobinHopMap<string, number>()
+    map.set('x', 10)
+    expect(map.delete('x')).toBe(true)
+    expect(map.has('x')).toBe(false)
+  })
 })

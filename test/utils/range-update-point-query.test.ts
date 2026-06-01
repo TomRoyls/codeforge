@@ -121,4 +121,13 @@ describe('RangeUpdatePointQuery', () => {
     rq.addRange(0, 2, 0)
     expect(rq.build()).toEqual([0, 0, 0])
   })
+
+  it('overlapping range updates accumulate', () => {
+    const rq = new RangeUpdatePointQuery(5)
+    rq.addRange(0, 4, 1)
+    rq.addRange(2, 4, 3)
+    const result = rq.build()
+    expect(result[0]).toBe(1)
+    expect(result[2]).toBe(4)
+  })
 })
