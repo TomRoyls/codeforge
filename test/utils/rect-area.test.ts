@@ -76,4 +76,12 @@ describe('RectArea', () => {
     const r = { x1: 1, y1: 1, x2: 1, y2: 1 }
     expect(RectArea.area(r)).toBe(0)
   })
+
+  it('intersection of overlapping rects', () => {
+    const r1 = { x1: 0, y1: 0, x2: 4, y2: 4 }
+    const r2 = { x1: 2, y1: 2, x2: 6, y2: 6 }
+    const inter = RectArea.intersection(r1, r2)
+    expect(inter).not.toBeNull()
+    expect(RectArea.area(inter!)).toBe(4)
+  })
 })

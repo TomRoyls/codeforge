@@ -104,4 +104,13 @@ describe('SkewHeap', () => {
     const h = new SkewHeap<number>()
     expect(h.pop()).toBeUndefined()
   })
+
+  it('push after pop preserves order', () => {
+    const h = new SkewHeap<number>()
+    h.push(3)
+    h.push(1)
+    h.pop()
+    h.push(2)
+    expect(h.pop()).toBe(2)
+  })
 })

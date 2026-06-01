@@ -107,4 +107,11 @@ describe('SparseSet', () => {
     expect(ss.size).toBe(0)
     expect(ss.has(1)).toBe(false)
   })
+
+  it('empty set iterates nothing', () => {
+    const ss = new SparseSet(10)
+    const result: number[] = []
+    for (const v of ss) result.push(v)
+    expect(result).toEqual([])
+  })
 })

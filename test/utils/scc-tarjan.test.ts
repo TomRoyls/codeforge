@@ -115,4 +115,14 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(1)
   })
+
+  it('handles two separate cycles', () => {
+    const scc = new SCCTarjan(4)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 0)
+    scc.addEdge(2, 3)
+    scc.addEdge(3, 2)
+    const comps = scc.solve()
+    expect(comps.length).toBe(2)
+  })
 })

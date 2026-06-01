@@ -91,4 +91,11 @@ describe('SegmentTree2D', () => {
     st.update(1, 2, 3)
     expect(st.query(1, 0, 1, 2)).toBe(8)
   })
+
+  it('handles 2x1 grid', () => {
+    const st = new SegmentTree2D(2, 1)
+    st.update(0, 0, 3)
+    st.update(1, 0, 7)
+    expect(st.query(0, 0, 1, 0)).toBe(10)
+  })
 })
