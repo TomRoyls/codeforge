@@ -99,4 +99,8 @@ describe('FibonacciIterator', () => {
     const result = iter.next()
     expect(result.done).toBe(true)
   })
+
+  it('nth handles 0', () => {
+    expect(FibonacciIterator.nth(0)).toBe(0n)
+  })
 })

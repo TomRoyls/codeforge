@@ -86,4 +86,10 @@ describe('FingerTree', () => {
     for (let i = 0; i < 10; i++) ft = ft.pushBack(i)
     expect(ft.toArray()).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
   })
+
+  it('handles pushFront many times', () => {
+    let ft = FingerTree.empty<number>()
+    for (let i = 0; i < 5; i++) ft = ft.pushFront(i)
+    expect(ft.toArray()).toEqual([4, 3, 2, 1, 0])
+  })
 })

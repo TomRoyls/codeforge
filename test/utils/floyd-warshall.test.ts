@@ -153,4 +153,14 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath(edges, 3)
     expect(dist[0]![2]).toBe(3)
   })
+
+  it('handles linear chain', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 2 },
+      { from: 2, to: 3, weight: 3 },
+    ]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 4)
+    expect(dist[0]![3]).toBe(6)
+  })
 })
