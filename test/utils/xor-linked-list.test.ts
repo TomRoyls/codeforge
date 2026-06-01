@@ -111,4 +111,12 @@ describe('XorLinkedList', () => {
     list.pushBack(3)
     expect(list.toArrayReverse()).toEqual([3, 2, 1])
   })
+
+  it('handles out of bounds get', () => {
+    const list = new XorLinkedList<number>()
+    list.pushBack(1)
+    list.pushBack(2)
+    expect(list.get(5)).toBeUndefined()
+    expect(list.get(2)).toBeUndefined()
+  })
 })

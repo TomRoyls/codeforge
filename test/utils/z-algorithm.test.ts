@@ -64,4 +64,8 @@ describe('ZAlgorithm', () => {
   it('search for pattern in itself', () => {
     expect(ZAlgorithm.search('abc', 'abc')).toEqual([0])
   })
+
+  it('handles overlapping pattern matches', () => {
+    expect(ZAlgorithm.search('aaa', 'aa')).toEqual([0, 1])
+  })
 })

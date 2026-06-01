@@ -92,4 +92,12 @@ describe('WindowTinyLFU', () => {
     for (let i = 0; i < 50; i++) w.recordAccess('hot')
     expect(w.estimate('hot')).toBeGreaterThanOrEqual(10)
   })
+
+  it('totalAccessesCount tracks accesses', () => {
+    const w = new WindowTinyLFU(100)
+    w.recordAccess('a')
+    w.recordAccess('b')
+    w.recordAccess('c')
+    expect(w.totalAccessesCount).toBe(3)
+  })
 })

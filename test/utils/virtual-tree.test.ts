@@ -128,4 +128,14 @@ describe('VirtualTree', () => {
     const { lca } = vt.build([1, 3])
     expect(lca(1, 3)).toBe(1)
   })
+
+  it('handles three siblings and parent', () => {
+    const vt = new VirtualTree(4)
+    vt.addEdge(0, 1)
+    vt.addEdge(0, 2)
+    vt.addEdge(0, 3)
+    const { vtree, lca } = vt.build([1, 2, 3])
+    expect(lca(1, 2)).toBe(0)
+    expect(vtree.has(0)).toBe(true)
+  })
 })

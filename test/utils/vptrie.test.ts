@@ -101,4 +101,12 @@ describe('VPTrie', () => {
     const vp = new VPTrie(2)
     expect(vp.nearest([0, 0])).toBeNull()
   })
+
+  it('handles kNearest on single point', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([3, 4])
+    const result = vp.kNearest([0, 0], 1)
+    expect(result.length).toBe(1)
+    expect(result[0]).toEqual([3, 4])
+  })
 })
