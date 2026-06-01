@@ -139,4 +139,13 @@ describe('HeavyLightDecomposition', () => {
     expect(hld.distance(0, 3)).toBe(3)
     expect(hld.distance(1, 3)).toBe(2)
   })
+
+  it('handles two node tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, []],
+    ])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(0, 1)).toBe(0)
+    expect(hld.distance(0, 1)).toBe(1)
+  })
 })

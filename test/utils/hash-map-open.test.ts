@@ -115,4 +115,11 @@ describe('HashMapOpen', () => {
     expect(map.values()).toEqual([])
     expect(map.entries()).toEqual([])
   })
+
+  it('handles has after delete', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.delete('a')
+    expect(map.has('a')).toBe(false)
+  })
 })

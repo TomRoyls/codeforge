@@ -116,4 +116,11 @@ describe('HeavyHitters', () => {
     hh.add('a')
     expect(hh.getCount('a')).toBe(1)
   })
+
+  it('handles single item', () => {
+    const hh = new HeavyHitters<string>(1)
+    hh.add('a', 10)
+    expect(hh.getCount('a')).toBe(10)
+    expect(hh.size).toBe(1)
+  })
 })

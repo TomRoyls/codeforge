@@ -157,4 +157,16 @@ describe('HungarianAssignment', () => {
     const { totalCost } = ha.solve()
     expect(totalCost).toBe(2)
   })
+
+  it('handles 2x3 rectangular', () => {
+    const ha = new HungarianAssignment(2, 3)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 2)
+    ha.setCost(0, 2, 3)
+    ha.setCost(1, 0, 3)
+    ha.setCost(1, 1, 2)
+    ha.setCost(1, 2, 1)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBeLessThanOrEqual(4)
+  })
 })
