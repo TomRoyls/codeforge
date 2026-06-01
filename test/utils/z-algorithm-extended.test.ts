@@ -57,4 +57,8 @@ describe('ZAlgorithmExtended', () => {
   it('handles empty text', () => {
     expect(ZAlgorithmExtended.search('', 'abc')).toEqual([])
   })
+
+  it('handles pattern longer than text', () => {
+    expect(ZAlgorithmExtended.search('ab', 'abcdef')).toEqual([])
+  })
 })

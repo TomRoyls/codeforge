@@ -101,4 +101,10 @@ describe('Hungarian', () => {
     expect(assignment[1]).toBe(1)
     expect(assignment[2]).toBe(2)
   })
+
+  it('handles 1x1 matrix', () => {
+    const { totalCost, assignment } = Hungarian.solve([[42]])
+    expect(totalCost).toBe(42)
+    expect(assignment[0]).toBe(0)
+  })
 })

@@ -84,4 +84,9 @@ describe('MonteCarlo', () => {
     const result = MonteCarlo.integrate(() => 5, 0, 2, 10000)
     expect(result).toBeCloseTo(10, 1)
   })
+
+  it('integrates linear function', () => {
+    const result = MonteCarlo.integrate((x) => 2 * x, 0, 1, 10000)
+    expect(result).toBeCloseTo(1, 1)
+  })
 })

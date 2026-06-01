@@ -60,4 +60,8 @@ describe('ZAlgorithm', () => {
     const count = ZAlgorithm.distinctSubstringCount('aab')
     expect(count).toBeGreaterThan(0)
   })
+
+  it('search for pattern in itself', () => {
+    expect(ZAlgorithm.search('abc', 'abc')).toEqual([0])
+  })
 })
