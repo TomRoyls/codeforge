@@ -76,4 +76,9 @@ describe('SubsetSum', () => {
   it('countSubsets counts all ways', () => {
     expect(SubsetSum.countSubsets([1, 1, 1], 2)).toBe(3)
   })
+
+  it('empty set sums to 0', () => {
+    expect(SubsetSum.hasSubset([], 0)).toBe(true)
+    expect(SubsetSum.hasSubset([], 1)).toBe(false)
+  })
 })

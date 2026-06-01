@@ -134,4 +134,10 @@ describe('StrongConnectivityContraction', () => {
     const { componentCount } = scc.contract()
     expect(componentCount).toBe(2)
   })
+
+  it('disconnected nodes form separate components', () => {
+    const scc = new StrongConnectivityContraction(3)
+    const { componentCount } = scc.contract()
+    expect(componentCount).toBe(3)
+  })
 })

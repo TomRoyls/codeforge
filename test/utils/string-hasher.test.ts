@@ -84,4 +84,11 @@ describe('StringHasher', () => {
     const sh = new StringHasher('abcdef')
     expect(sh.equals(0, 2, 3, 5)).toBe(false)
   })
+
+  it('single char hash is consistent', () => {
+    const sh = new StringHasher('abc')
+    const h1 = sh.hash(0, 1)
+    expect(typeof h1).toBe('number')
+    expect(h1).toBe(sh.hash(0, 1))
+  })
 })

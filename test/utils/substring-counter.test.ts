@@ -93,4 +93,9 @@ describe('SubstringCounter', () => {
     const sc = new SubstringCounter('aaa')
     expect(sc.countNaive('aa')).toBe(2)
   })
+
+  it('count single char', () => {
+    const sc = new SubstringCounter('abcabc')
+    expect(sc.countNaive('a')).toBe(2)
+  })
 })
