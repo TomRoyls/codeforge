@@ -93,4 +93,10 @@ describe('RandomWalk', () => {
     expect(walk.length).toBe(11)
     expect(walk[0]).toBe(0)
   })
+
+  it('walk2D returns correct length', () => {
+    const walk = RandomWalk.walk2D(5)
+    expect(walk.length).toBe(6)
+    expect(walk[0]).toEqual({ x: 0, y: 0 })
+  })
 })

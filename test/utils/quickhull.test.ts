@@ -86,4 +86,10 @@ describe('Quickhull', () => {
     const hull = Quickhull.convexHull(points)
     expect(hull.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('hull of triangle', () => {
+    const points = [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 2, y: 3 }]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(3)
+  })
 })

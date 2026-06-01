@@ -90,4 +90,8 @@ describe('RectArea', () => {
     const r2 = { x1: 5, y1: 5, x2: 7, y2: 7 }
     expect(RectArea.unionArea([r1, r2])).toBe(8)
   })
+
+  it('area of unit rect is 1', () => {
+    expect(RectArea.area({ x1: 0, y1: 0, x2: 1, y2: 1 })).toBe(1)
+  })
 })

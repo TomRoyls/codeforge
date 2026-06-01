@@ -117,4 +117,14 @@ describe('RadixHeap', () => {
     expect(h.pop()).toBe(3)
     expect(h.pop()).toBe(5)
   })
+
+  it('handles duplicate values', () => {
+    const h = new RadixHeap()
+    h.push(3)
+    h.push(3)
+    h.push(1)
+    expect(h.pop()).toBe(1)
+    expect(h.pop()).toBe(3)
+    expect(h.pop()).toBe(3)
+  })
 })

@@ -90,4 +90,10 @@ describe('RangeMinQuery', () => {
     expect(rmq.query(0, 4)).toBe(1)
     expect(rmq.query(0, 2)).toBe(3)
   })
+
+  it('handles all equal elements', () => {
+    const rmq = new RangeMinQuery([7, 7, 7, 7])
+    expect(rmq.query(0, 3)).toBe(7)
+    expect(rmq.query(1, 2)).toBe(7)
+  })
 })
