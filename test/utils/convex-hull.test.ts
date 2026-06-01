@@ -121,4 +121,9 @@ describe('pointInConvexPolygon', () => {
     const tri = [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 2, y: 4 }]
     expect(pointInConvexPolygon({ x: 0, y: 5 }, tri)).toBe(false)
   })
+
+  it('detects point inside triangle', () => {
+    const tri = [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 2, y: 4 }]
+    expect(pointInConvexPolygon({ x: 2, y: 1 }, tri)).toBe(true)
+  })
 })

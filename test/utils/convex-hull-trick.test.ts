@@ -125,4 +125,11 @@ describe('ConvexHullTrick', () => {
     cht.addLine(1, 10)
     expect(cht.query(0)).toBe(5)
   })
+
+  it('shallower line wins at large x for min query', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(1, 0)
+    cht.addLine(2, 0)
+    expect(cht.query(10)).toBe(10)
+  })
 })

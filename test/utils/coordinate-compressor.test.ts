@@ -115,4 +115,10 @@ describe('CoordinateCompressor', () => {
       expect(cc.decompress(cc.compress(v))).toBe(v)
     }
   })
+
+  it('compress returns 0-based indices', () => {
+    const cc = new CoordinateCompressor([10, 30, 20])
+    expect(cc.compress(10)).toBe(0)
+    expect(cc.compress(30)).toBeGreaterThanOrEqual(0)
+  })
 })
