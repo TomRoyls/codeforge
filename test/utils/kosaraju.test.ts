@@ -98,4 +98,11 @@ describe('KosarajuSCC', () => {
     const sccs = KosarajuSCC.findSCCs(adj)
     expect(sccs.length).toBe(2)
   })
+
+  it('handles chain DAG each node own SCC', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, []],
+    ])
+    expect(KosarajuSCC.findSCCs(adj).length).toBe(3)
+  })
 })

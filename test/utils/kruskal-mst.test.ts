@@ -126,4 +126,14 @@ describe('KruskalMST', () => {
     expect(mstEdges.length).toBe(1)
     expect(totalWeight).toBe(7)
   })
+
+  it('handles star graph MST', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 0, to: 2, weight: 2 },
+      { from: 0, to: 3, weight: 3 },
+    ]
+    const { totalWeight } = KruskalMST.findMST(edges, 4)
+    expect(totalWeight).toBe(6)
+  })
 })

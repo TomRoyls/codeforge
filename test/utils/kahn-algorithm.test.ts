@@ -116,4 +116,11 @@ describe('KahnAlgorithm', () => {
     kahn.addEdge(0, 1)
     expect(kahn.sort()).toEqual([0, 1])
   })
+
+  it('handles three independent nodes', () => {
+    const kahn = new KahnAlgorithm(3)
+    const result = kahn.sort()
+    expect(result).not.toBeNull()
+    expect(result!.length).toBe(3)
+  })
 })
