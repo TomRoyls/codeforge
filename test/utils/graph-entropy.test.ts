@@ -126,4 +126,9 @@ describe('GraphEntropy', () => {
     ge.addEdge(1, 2)
     expect(ge.clusteringCoefficient()).toBeGreaterThanOrEqual(0)
   })
+
+  it('degree entropy for isolated nodes is zero', () => {
+    const ge = new GraphEntropy(3)
+    expect(ge.degreeEntropy()).toBe(0)
+  })
 })

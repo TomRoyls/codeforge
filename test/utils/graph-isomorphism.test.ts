@@ -143,4 +143,11 @@ describe('GraphIsomorphism', () => {
     gi.addEdgeG2(3, 0)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('self loops detected', () => {
+    const gi = new GraphIsomorphism(3, 3)
+    gi.addEdgeG1(0, 0)
+    gi.addEdgeG2(0, 1)
+    expect(gi.isomorphic()).toBe(false)
+  })
 })
