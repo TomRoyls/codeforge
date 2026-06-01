@@ -64,4 +64,8 @@ describe('PartialSort', () => {
   it('partitionPoint with empty array', () => {
     expect(PartialSort.partitionPoint([], () => true)).toBe(0)
   })
+
+  it('partitionPoint finds first false', () => {
+    expect(PartialSort.partitionPoint([1, 2, 3, 4, 5], (x) => x < 3)).toBe(2)
+  })
 })

@@ -82,4 +82,11 @@ describe('PalindromeManacher', () => {
     expect(m.longestPalindrome().length).toBe(3)
     expect(m.countAllPalindromes()).toBe(6)
   })
+
+  it('handles abcba', () => {
+    const m = new PalindromeManacher('abcba')
+    expect(m.longestPalindrome().length).toBe(5)
+    expect(m.isPalindrome(0, 4)).toBe(true)
+    expect(m.isPalindrome(1, 3)).toBe(true)
+  })
 })

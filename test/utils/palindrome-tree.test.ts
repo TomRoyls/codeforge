@@ -91,4 +91,9 @@ describe('PalindromeTree', () => {
       expect(lengths[i]!).toBeGreaterThanOrEqual(lengths[i - 1]!)
     }
   })
+
+  it('handles empty string', () => {
+    const pt = new PalindromeTree('')
+    expect(pt.getPalindromeLengths().length).toBe(0)
+  })
 })
