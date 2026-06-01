@@ -90,4 +90,12 @@ describe('PersistentArray', () => {
     expect(v0.get(0)).toBe(0)
     expect(v1.get(0)).toBe(99)
   })
+
+  it('map transforms all values', () => {
+    const v0 = PersistentArray.from([1, 2, 3])
+    const v1 = v0.map((x) => x * 2)
+    expect(v1.get(0)).toBe(2)
+    expect(v1.get(1)).toBe(4)
+    expect(v1.get(2)).toBe(6)
+  })
 })

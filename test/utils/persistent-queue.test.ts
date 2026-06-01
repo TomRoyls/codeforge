@@ -111,4 +111,12 @@ describe('PersistentQueue', () => {
     const r = q.dequeue()!
     expect(r.queue.size).toBe(1)
   })
+
+  it('toArray preserves FIFO order after many ops', () => {
+    let q = PersistentQueue.create<number>()
+    for (let i = 0; i < 5; i++) q = q.enqueue(i)
+    expect(q.toArray()).toEqual([0, 1, 2, 3, 4])
+    const r = q.dequeue()!
+    expect(r.queue.toArray()).toEqual([1, 2, 3, 4])
+  })
 })

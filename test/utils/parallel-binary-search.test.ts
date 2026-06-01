@@ -116,4 +116,13 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search(queries)
     expect(results[0]).toBe(75)
   })
+
+  it('handles two queries with same threshold', () => {
+    const queries = [
+      { lo: 0, hi: 50, check: (mid: number) => mid >= 25 },
+      { lo: 0, hi: 50, check: (mid: number) => mid >= 25 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results).toEqual([25, 25])
+  })
 })

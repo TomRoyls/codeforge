@@ -69,4 +69,9 @@ describe('PalindromicTree', () => {
     const pt = new PalindromicTree('')
     expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(0)
   })
+
+  it('handles two chars different', () => {
+    const pt = PalindromicTree.from('ab')
+    expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(2)
+  })
 })
