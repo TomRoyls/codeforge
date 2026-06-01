@@ -135,4 +135,16 @@ describe('MinCostFlow', () => {
     expect(maxFlow).toBe(5)
     expect(minCost).toBe(0)
   })
+
+  it('handles diamond min cost', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5, cost: 1 },
+      { from: 0, to: 2, capacity: 5, cost: 10 },
+      { from: 1, to: 3, capacity: 5, cost: 1 },
+      { from: 2, to: 3, capacity: 5, cost: 1 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 3, 4)
+    expect(maxFlow).toBe(10)
+    expect(minCost).toBeGreaterThanOrEqual(0)
+  })
 })

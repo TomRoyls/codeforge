@@ -111,4 +111,13 @@ describe('MaxBipartiteMatching', () => {
     const m = new MaxBipartiteMatching(2, 2)
     expect(m.getMatchingSize()).toBe(0)
   })
+
+  it('handles K2,2 complete', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 0)
+    m.addEdge(1, 1)
+    expect(m.getMatchingSize()).toBe(2)
+  })
 })

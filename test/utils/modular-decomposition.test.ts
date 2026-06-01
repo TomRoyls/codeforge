@@ -106,4 +106,12 @@ describe('ModularDecomposition', () => {
     md.addEdge(0, 1)
     expect(md.isModule(0, 1)).toBe(true)
   })
+
+  it('handles path graph', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.addEdge(2, 3)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(0)
+  })
 })

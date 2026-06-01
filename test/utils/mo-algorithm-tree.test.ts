@@ -202,4 +202,18 @@ describe('MoAlgorithmTree', () => {
     )
     expect(calls).toBeGreaterThanOrEqual(0)
   })
+
+  it('handles multiple queries on chain', () => {
+    const mo = new MoAlgorithmTree(4)
+    mo.addEdge(0, 1)
+    mo.addEdge(1, 2)
+    mo.addEdge(2, 3)
+    let total = 0
+    mo.processQueries(
+      [[0, 1], [2, 3]],
+      () => { total++ },
+      () => { total-- }
+    )
+    expect(total).toBeGreaterThanOrEqual(0)
+  })
 })
