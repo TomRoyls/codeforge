@@ -124,4 +124,10 @@ describe('TarjanSCC', () => {
     expect(sccs.length).toBe(1)
     expect(sccs[0]).toEqual([0])
   })
+
+  it('two disconnected nodes form two SCCs', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, []]])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBe(2)
+  })
 })

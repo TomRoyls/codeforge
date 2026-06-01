@@ -154,4 +154,10 @@ describe('runWithConcurrency', () => {
     await runWithConcurrency([1], async () => { called = true }, 1)
     expect(called).toBe(true)
   })
+
+  it('processes empty array', async () => {
+    const results: number[] = []
+    await runWithConcurrency([], async (x) => { results.push(x) }, 2)
+    expect(results).toEqual([])
+  })
 })

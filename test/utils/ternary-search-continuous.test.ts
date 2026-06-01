@@ -82,4 +82,9 @@ describe('TernarySearchContinuous', () => {
     const x = TernarySearchContinuous.maximize((x) => x, -5, 5)
     expect(x).toBeCloseTo(5, 1)
   })
+
+  it('minimizes quadratic at vertex', () => {
+    const x = TernarySearchContinuous.minimize((t) => (t - 3) * (t - 3), 0, 10)
+    expect(x).toBeCloseTo(3, 1)
+  })
 })
