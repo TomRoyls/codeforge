@@ -90,4 +90,9 @@ describe('SpiralMatrix', () => {
     const m = SpiralMatrix.generate(1)
     expect(m).toEqual([[1]])
   })
+
+  it('2x2 matrix fills clockwise', () => {
+    const m = SpiralMatrix.generate(2)
+    expect(m).toEqual([[1, 2], [4, 3]])
+  })
 })

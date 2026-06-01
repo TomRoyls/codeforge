@@ -137,4 +137,11 @@ describe('SparseSet', () => {
     expect(ss.has(5)).toBe(true)
     expect(ss.has(3)).toBe(false)
   })
+
+  it('remove clears membership', () => {
+    const ss = new SparseSet(10)
+    ss.add(5)
+    ss.remove(5)
+    expect(ss.has(5)).toBe(false)
+  })
 })

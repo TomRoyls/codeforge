@@ -94,4 +94,9 @@ describe('SqrtDecompRange', () => {
     sd.update(2, 10)
     expect(sd.rangeSum(0, 4)).toBe(22)
   })
+
+  it('rangeMin finds minimum', () => {
+    const sd = new SqrtDecompRange([10, 20, 5, 30])
+    expect(sd.rangeMin(0, 3)).toBe(5)
+  })
 })

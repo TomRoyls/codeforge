@@ -161,4 +161,11 @@ describe('SplayTree custom comparator', () => {
     expect(tree.min).toBe('apple')
     expect(tree.max).toBe('cherry')
   })
+
+  it('size tracks insertions', () => {
+    const tree = new SplayTree<string, number>()
+    tree.insert('a', 1)
+    tree.insert('b', 2)
+    expect(tree.size).toBe(2)
+  })
 })
