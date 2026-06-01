@@ -149,5 +149,10 @@ describe('TernarySearchTree clear', () => {
      tst.insert('cat')
      expect(tst.contains('cat')).toBe(true)
      expect(tst.contains('dog')).toBe(false)
-   })
+  })
+
+  it('empty tree contains nothing', () => {
+    const tst = new TernarySearchTree<number>()
+    expect(tst.contains('anything')).toBe(false)
+  })
 })

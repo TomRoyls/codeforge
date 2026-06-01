@@ -135,4 +135,11 @@ describe('TimerWheel', () => {
     const result = tw.advance()
     expect(result).toEqual([])
   })
+
+  it('advance returns scheduled payload at correct tick', () => {
+    const tw = new TimerWheel<string>(8)
+    tw.schedule(0, 'hello')
+    const result = tw.advance()
+    expect(result).toContain('hello')
+  })
 })

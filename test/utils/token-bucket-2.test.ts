@@ -120,4 +120,10 @@ describe('TokenBucket2', () => {
     const bucket = new TokenBucket2(100, 10)
     expect(bucket.capacity).toBe(100)
   })
+
+  it('tryConsume returns true when enough tokens', () => {
+    const bucket = new TokenBucket2(10, 0)
+    expect(bucket.tryConsume(3)).toBe(true)
+    expect(bucket.tryConsume(8)).toBe(false)
+  })
 })
