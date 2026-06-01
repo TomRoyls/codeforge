@@ -93,4 +93,10 @@ describe('PowerSet', () => {
     const bySize = PowerSet.bySize([])
     expect(bySize.get(0)).toEqual([[]])
   })
+
+  it('bySize returns correct sizes for 3 elements', () => {
+    const bySize = PowerSet.bySize(['x', 'y', 'z'])
+    expect(bySize.get(1)!.length).toBe(3)
+    expect(bySize.get(2)!.length).toBe(3)
+  })
 })

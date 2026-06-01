@@ -125,4 +125,12 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.totalWeight).toBe(5)
   })
+
+  it('handles three node line', () => {
+    const mst = new PrimMST(3)
+    mst.addEdge(0, 1, 1)
+    mst.addEdge(1, 2, 1)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(2)
+  })
 })

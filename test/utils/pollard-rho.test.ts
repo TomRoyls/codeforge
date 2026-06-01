@@ -72,4 +72,8 @@ describe('PollardRho', () => {
   it('factorizes 4', () => {
     expect(PollardRho.factorize(4)).toEqual([2n, 2n])
   })
+
+  it('factorizes 1 returns empty', () => {
+    expect(PollardRho.factorize(1)).toEqual([])
+  })
 })

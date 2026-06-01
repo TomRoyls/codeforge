@@ -72,4 +72,10 @@ describe('PolynomialRollingHash', () => {
     const h = PolynomialRollingHash.hash('a')
     expect(h > 0n).toBe(true)
   })
+
+  it('hash is deterministic across calls', () => {
+    const h1 = PolynomialRollingHash.hash('hello')
+    const h2 = PolynomialRollingHash.hash('hello')
+    expect(h1).toBe(h2)
+  })
 })
