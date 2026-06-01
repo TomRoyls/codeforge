@@ -137,4 +137,11 @@ describe('SkipListMap', () => {
     sl.set(1, 'b')
     expect(sl.get(1)).toBe('b')
   })
+
+  it('delete removes key', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'a')
+    sl.delete(1)
+    expect(sl.get(1)).toBeUndefined()
+  })
 })

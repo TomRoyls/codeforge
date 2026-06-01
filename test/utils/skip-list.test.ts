@@ -174,4 +174,9 @@ describe('SkipList stress', () => {
       expect(sl.find(i)).toBe(i)
     }
   })
+
+  it('find returns undefined for missing', () => {
+    const sl = new SkipList<number>()
+    expect(sl.find(999)).toBeUndefined()
+  })
 })

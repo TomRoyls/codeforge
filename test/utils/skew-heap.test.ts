@@ -141,4 +141,9 @@ describe('SkewHeap', () => {
     expect(h.pop()).toBe(3)
     expect(h.pop()).toBe(5)
   })
+
+  it('handles empty heap pop', () => {
+    const h = new SkewHeap<number>()
+    expect(h.pop()).toBeUndefined()
+  })
 })

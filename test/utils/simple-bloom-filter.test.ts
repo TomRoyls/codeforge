@@ -141,4 +141,14 @@ describe('SimpleBloomFilter - edge cases', () => {
     const bf = new SimpleBloomFilter(100)
     expect(bf.has('absent')).toBe(false)
   })
+
+  it('add and has for multiple items', () => {
+    const bf = new SimpleBloomFilter(100)
+    bf.add('a')
+    bf.add('b')
+    bf.add('c')
+    expect(bf.has('a')).toBe(true)
+    expect(bf.has('b')).toBe(true)
+    expect(bf.has('c')).toBe(true)
+  })
 })
