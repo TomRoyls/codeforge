@@ -77,4 +77,9 @@ describe('Bisect', () => {
   it('bisectRight for empty array', () => {
     expect(Bisect.bisectRight([], 5)).toBe(0)
   })
+
+  it('bisectLeft finds first of duplicates', () => {
+    expect(Bisect.bisectLeft([1, 2, 2, 2, 3], 2)).toBe(1)
+    expect(Bisect.bisectRight([1, 2, 2, 2, 3], 2)).toBe(4)
+  })
 })

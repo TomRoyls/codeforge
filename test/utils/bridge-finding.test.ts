@@ -124,4 +124,11 @@ describe('BridgeFinding', () => {
     bf.addEdge(0, 1)
     expect(bf.findBridges()).toEqual([[0, 1]])
   })
+
+  it('handles disconnected graph', () => {
+    const bf = new BridgeFinding(4)
+    bf.addEdge(0, 1)
+    bf.addEdge(2, 3)
+    expect(bf.findBridges().length).toBe(2)
+  })
 })

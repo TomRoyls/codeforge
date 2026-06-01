@@ -109,4 +109,12 @@ describe('BlockList', () => {
     const bl = new BlockList<number>(4)
     expect(bl.get(0)).toBeUndefined()
   })
+
+  it('handles large pushBack sequence', () => {
+    const bl = new BlockList<number>(4)
+    for (let i = 0; i < 20; i++) bl.pushBack(i)
+    expect(bl.size).toBe(20)
+    expect(bl.get(0)).toBe(0)
+    expect(bl.get(19)).toBe(19)
+  })
 })
