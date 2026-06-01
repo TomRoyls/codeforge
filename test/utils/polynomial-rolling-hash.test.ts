@@ -84,4 +84,10 @@ describe('PolynomialRollingHash', () => {
     const h2 = PolynomialRollingHash.hash('world')
     expect(h1).not.toBe(h2)
   })
+
+  it('same string gives same hash', () => {
+    const h1 = PolynomialRollingHash.hash('test')
+    const h2 = PolynomialRollingHash.hash('test')
+    expect(h1).toBe(h2)
+  })
 })

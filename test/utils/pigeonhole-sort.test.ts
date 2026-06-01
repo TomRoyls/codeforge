@@ -78,4 +78,8 @@ describe('PigeonholeSort', () => {
   it('handles all same elements', () => {
     expect(PigeonholeSort.sort([5, 5, 5])).toEqual([5, 5, 5])
   })
+
+  it('handles empty array', () => {
+    expect(PigeonholeSort.sort([])).toEqual([])
+  })
 })

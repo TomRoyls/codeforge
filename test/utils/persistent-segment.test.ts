@@ -135,4 +135,12 @@ describe('PersistentSegmentTree', () => {
     pst.update(0, 0, 5)
     expect(pst.query(1, 0, 0)).toBe(5)
   })
+
+  it('versions are independent', () => {
+    const pst = new PersistentSegmentTree(1)
+    const v0 = pst.update(0, 0, 2)
+    const v1 = pst.update(v0, 0, 3)
+    expect(pst.query(v0, 0, 0)).toBe(2)
+    expect(pst.query(v1, 0, 0)).toBe(3)
+  })
 })

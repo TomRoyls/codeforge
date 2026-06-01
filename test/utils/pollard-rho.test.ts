@@ -82,4 +82,9 @@ describe('PollardRho', () => {
     const sorted = factors.map(Number).sort()
     expect(sorted).toEqual([2, 2, 3])
   })
+
+  it('factorize prime returns itself', () => {
+    const factors = PollardRho.factorize(7n)
+    expect(factors).toEqual([7n])
+  })
 })
