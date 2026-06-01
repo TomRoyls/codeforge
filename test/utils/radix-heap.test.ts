@@ -135,4 +135,14 @@ describe('RadixHeap', () => {
     expect(h.pop()).toBe(5)
     expect(h.isEmpty).toBe(true)
   })
+
+  it('handles decreasing push order', () => {
+    const h = new RadixHeap()
+    h.push(10)
+    h.push(5)
+    h.push(1)
+    expect(h.pop()).toBe(1)
+    expect(h.pop()).toBe(5)
+    expect(h.pop()).toBe(10)
+  })
 })

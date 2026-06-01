@@ -81,4 +81,8 @@ describe('QuickSelect', () => {
   it('select handles single element', () => {
     expect(QuickSelect.select([42], 0)).toBe(42)
   })
+
+  it('select finds median', () => {
+    expect(QuickSelect.select([3, 1, 4, 1, 5], 2)).toBe(3)
+  })
 })

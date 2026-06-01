@@ -112,4 +112,11 @@ describe('RadixSort', () => {
     expect(result).toBe(arr)
     expect(arr).toEqual([5])
   })
+
+  it('sortInPlace handles empty array', () => {
+    const arr: number[] = []
+    const result = RadixSort.sortInPlace(arr)
+    expect(result).toBe(arr)
+    expect(arr).toEqual([])
+  })
 })

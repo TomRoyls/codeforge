@@ -86,4 +86,8 @@ describe('RabinKarp', () => {
   it('empty text returns empty', () => {
     expect(new RabinKarp().search('', 'abc')).toEqual([])
   })
+
+  it('finds single match at start', () => {
+    expect(new RabinKarp().search('abcdef', 'abc')).toEqual([0])
+  })
 })
