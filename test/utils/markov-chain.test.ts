@@ -109,4 +109,10 @@ describe('MarkovChain', () => {
     expect(result[0]).toBe('a')
     expect(result.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('train with single transition', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'b'])
+    expect(mc.getTransitionProbability('a', 'b')).toBeCloseTo(1, 6)
+  })
 })

@@ -71,4 +71,9 @@ describe('MatrixChainMultiply', () => {
     const result = MatrixChainMultiply.minCost([30, 35, 15, 5, 10, 20])
     expect(result.cost).toBe(11875)
   })
+
+  it('minCost for 3 matrices', () => {
+    const result = MatrixChainMultiply.minCost([10, 30, 5, 60])
+    expect(result.cost).toBe(4500)
+  })
 })

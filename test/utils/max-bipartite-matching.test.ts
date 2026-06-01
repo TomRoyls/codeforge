@@ -106,4 +106,9 @@ describe('MaxBipartiteMatching', () => {
     m.addEdge(0, 1)
     expect(m.getMatchingSize()).toBe(1)
   })
+
+  it('handles no edges', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    expect(m.getMatchingSize()).toBe(0)
+  })
 })

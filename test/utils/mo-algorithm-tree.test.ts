@@ -188,4 +188,18 @@ describe('MoAlgorithmTree', () => {
     )
     expect(calls).toBeGreaterThanOrEqual(0)
   })
+
+  it('handles path of 4 nodes', () => {
+    const mo = new MoAlgorithmTree(4)
+    mo.addEdge(0, 1)
+    mo.addEdge(1, 2)
+    mo.addEdge(2, 3)
+    let calls = 0
+    mo.processQueries(
+      [[0, 3]],
+      () => { calls++ },
+      () => { calls-- }
+    )
+    expect(calls).toBeGreaterThanOrEqual(0)
+  })
 })
