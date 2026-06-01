@@ -138,4 +138,13 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [2, 2])
     expect(path.length).toBe(5)
   })
+
+  it('handles straight corridor', () => {
+    const maze = new TremauxMaze(4, 1)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([2, 0], [3, 0])
+    const path = maze.solve([0, 0], [3, 0])
+    expect(path.length).toBe(4)
+  })
 })

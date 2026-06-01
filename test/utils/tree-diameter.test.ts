@@ -118,4 +118,12 @@ describe('TreeDiameter', () => {
     td.addEdge(1, 2)
     expect(td.findDiameter()).toBe(2)
   })
+
+  it('handles four node star', () => {
+    const td = new TreeDiameter(4)
+    td.addEdge(0, 1)
+    td.addEdge(0, 2)
+    td.addEdge(0, 3)
+    expect(td.findDiameter()).toBe(2)
+  })
 })

@@ -116,4 +116,10 @@ describe('TreeDecomposition', () => {
     td.addEdge(0, 3)
     expect(td.treewidth()).toBe(1)
   })
+
+  it('handles two nodes', () => {
+    const td = new TreeDecomposition(2)
+    td.addEdge(0, 1)
+    expect(td.treewidth()).toBe(1)
+  })
 })

@@ -122,4 +122,9 @@ describe('TopologicalSort', () => {
     const adj = new Map<number, number[]>([[0, []]])
     expect(TopologicalSort.sort(adj)).toEqual([0])
   })
+
+  it('handles two nodes no cycle', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []]])
+    expect(TopologicalSort.sort(adj)).toEqual([0, 1])
+  })
 })

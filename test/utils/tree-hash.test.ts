@@ -136,4 +136,11 @@ describe('TreeHash', () => {
     expect(th.rootedHash(0)).toBeGreaterThanOrEqual(0)
     expect(th.rootedHash(1)).toBeGreaterThanOrEqual(0)
   })
+
+  it('three node star has same subtrees', () => {
+    const th = new TreeHash(3)
+    th.addEdge(0, 1)
+    th.addEdge(0, 2)
+    expect(th.rootedHash(1)).toBe(th.rootedHash(2))
+  })
 })
