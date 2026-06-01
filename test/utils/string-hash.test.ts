@@ -91,4 +91,9 @@ describe('StringHash', () => {
     const sh2 = new StringHash('xyz')
     expect(sh1.hash(0, 2)).not.toBe(sh2.hash(0, 2))
   })
+
+  it('same substring gives same hash', () => {
+    const sh = new StringHash('abcabc')
+    expect(sh.hash(0, 2)).toBe(sh.hash(3, 5))
+  })
 })

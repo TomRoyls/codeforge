@@ -81,4 +81,9 @@ describe('SubsetSum', () => {
     expect(SubsetSum.hasSubset([], 0)).toBe(true)
     expect(SubsetSum.hasSubset([], 1)).toBe(false)
   })
+
+  it('single element matches target', () => {
+    expect(SubsetSum.hasSubset([5], 5)).toBe(true)
+    expect(SubsetSum.hasSubset([5], 3)).toBe(false)
+  })
 })

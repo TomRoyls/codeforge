@@ -159,4 +159,10 @@ describe('SCCGraph', () => {
     g.addEdge(2, 3)
     expect(g.nodeCount).toBe(4)
   })
+
+  it('single edge creates two nodes', () => {
+    const g = new SCCGraph()
+    g.addEdge(0, 1)
+    expect(g.nodeCount).toBe(2)
+  })
 })

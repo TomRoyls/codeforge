@@ -91,4 +91,11 @@ describe('StringHasher', () => {
     expect(typeof h1).toBe('number')
     expect(h1).toBe(sh.hash(0, 1))
   })
+
+  it('hash is deterministic', () => {
+    const sh = new StringHasher('hello')
+    const h1 = sh.hash(0, 4)
+    const h2 = sh.hash(0, 4)
+    expect(h1).toBe(h2)
+  })
 })
