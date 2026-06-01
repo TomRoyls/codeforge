@@ -89,4 +89,9 @@ describe('KMPAutomaton', () => {
     const kmp = new KMPAutomaton('xyz')
     expect(kmp.search('abcabc')).toEqual([])
   })
+
+  it('finds single occurrence', () => {
+    const kmp = new KMPAutomaton('abc')
+    expect(kmp.search('xyzabcdef')).toEqual([3])
+  })
 })

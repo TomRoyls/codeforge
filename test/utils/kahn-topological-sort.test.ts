@@ -125,4 +125,8 @@ describe('KahnTopologicalSort', () => {
     const weights = [1, 2, 3, 4]
     expect(KahnTopologicalSort.longestPath(adj, weights)).toBe(10)
   })
+
+  it('isDAG for empty graph', () => {
+    expect(KahnTopologicalSort.isDAG([[]])).toBe(true)
+  })
 })

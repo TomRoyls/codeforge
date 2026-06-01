@@ -133,4 +133,11 @@ describe('KahnAlgorithm', () => {
     const kahn = new KahnAlgorithm(1)
     expect(kahn.sort()).toEqual([0])
   })
+
+  it('detects cycle in two-node loop', () => {
+    const kahn = new KahnAlgorithm(2)
+    kahn.addEdge(0, 1)
+    kahn.addEdge(1, 0)
+    expect(kahn.sort()).toBeNull()
+  })
 })

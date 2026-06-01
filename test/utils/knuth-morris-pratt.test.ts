@@ -69,4 +69,8 @@ describe('KnuthMorrisPratt', () => {
   it('search returns all matches', () => {
     expect(KnuthMorrisPratt.search('abababab', 'ab')).toEqual([0, 2, 4, 6])
   })
+
+  it('handles pattern longer than text', () => {
+    expect(KnuthMorrisPratt.search('ab', 'abcd')).toEqual([])
+  })
 })
