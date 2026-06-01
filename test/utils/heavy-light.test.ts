@@ -148,4 +148,12 @@ describe('HeavyLightDecomposition', () => {
     expect(hld.lca(0, 1)).toBe(0)
     expect(hld.distance(0, 1)).toBe(1)
   })
+
+  it('handles path query on root', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [0]], [2, [0]],
+    ])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(1, 2)).toBe(0)
+  })
 })

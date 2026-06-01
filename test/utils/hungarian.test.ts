@@ -121,4 +121,9 @@ describe('Hungarian', () => {
     ])
     expect(totalCost).toBeLessThanOrEqual(3)
   })
+
+  it('handles 1x1 matrix', () => {
+    const { totalCost } = Hungarian.solve([[7]])
+    expect(totalCost).toBe(7)
+  })
 })

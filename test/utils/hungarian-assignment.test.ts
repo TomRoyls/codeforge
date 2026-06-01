@@ -169,4 +169,11 @@ describe('HungarianAssignment', () => {
     const { totalCost } = ha.solve()
     expect(totalCost).toBeLessThanOrEqual(4)
   })
+
+  it('handles 1x1 matrix', () => {
+    const ha = new HungarianAssignment(1)
+    ha.setCost(0, 0, 7)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBeGreaterThanOrEqual(0)
+  })
 })
