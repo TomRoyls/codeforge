@@ -103,5 +103,11 @@ describe('TarjanSCC', () => {
       expect(new Set(componentId).size).toBe(1)
       expect(dag[0]).toHaveLength(0)
     })
+
+    it('two disconnected components', () => {
+      const adj = [[1], [0], [3], [2]]
+      const { componentId } = TarjanSCC.condensation(adj)
+      expect(new Set(componentId).size).toBe(2)
+    })
   })
 })

@@ -110,4 +110,13 @@ describe('SweepLine', () => {
     expect(result).not.toBeNull()
     expect(result!.dist).toBe(1)
   })
+
+  it('no intersection when far apart', () => {
+    const result = SweepLine.closestPair([
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+    ])
+    expect(result).not.toBeNull()
+    expect(result!.dist).toBeCloseTo(Math.sqrt(20000), 5)
+  })
 })

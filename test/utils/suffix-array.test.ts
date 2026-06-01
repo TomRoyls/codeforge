@@ -127,4 +127,10 @@ describe('SuffixArray', () => {
     expect(sa.length).toBe(1)
     expect(sa.search('a')).toEqual([0])
   })
-});
+
+  it('handles repeated characters', () => {
+    const sa = new SuffixArray('aaa')
+    expect(sa.length).toBe(3)
+    expect(sa.search('a').length).toBe(3)
+  })
+})

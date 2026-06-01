@@ -93,4 +93,10 @@ describe('RULE_SUGGESTIONS known rules', () => {
       expect(val.trim().length).toBeGreaterThan(0)
     }
   })
+
+  it('all rule IDs are non-empty strings', () => {
+    for (const key of Object.keys(RULE_SUGGESTIONS)) {
+      expect(key.length).toBeGreaterThan(0)
+    }
+  })
 })
