@@ -82,4 +82,9 @@ describe('Combination', () => {
   it('choose 0 returns empty combination', () => {
     expect(Combination.generate([1, 2, 3], 0)).toEqual([[]])
   })
+
+  it('choose 1 returns singletons', () => {
+    const result = Combination.generate([1, 2], 1)
+    expect(result).toEqual([[1], [2]])
+  })
 })

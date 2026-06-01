@@ -84,4 +84,8 @@ describe('Collatz', () => {
     const result = Collatz.longestSequence(20)
     expect(result.steps).toBeGreaterThanOrEqual(19)
   })
+
+  it('sequence for 1 is just [1]', () => {
+    expect(Collatz.sequence(1)).toEqual([1])
+  })
 })

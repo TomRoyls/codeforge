@@ -110,4 +110,10 @@ describe('Comparators', () => {
     const comp = Comparators.natural<number>()
     expect(comp(5, 5)).toBe(0)
   })
+
+  it('reverse inverts comparison', () => {
+    const comp = Comparators.natural<number>()
+    const rev = Comparators.reverse(comp)
+    expect(rev(1, 2)).toBeGreaterThan(0)
+  })
 })
