@@ -78,4 +78,8 @@ describe('LevenshteinDistance', () => {
     const ops = LevenshteinDistance.editOperations('ab', 'ab')
     expect(ops.every(o => o.type === 'match')).toBe(true)
   })
+
+  it('distance for empty strings is 0', () => {
+    expect(LevenshteinDistance.distance('', '')).toBe(0)
+  })
 })

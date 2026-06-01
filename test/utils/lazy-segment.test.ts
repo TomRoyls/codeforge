@@ -120,4 +120,10 @@ describe('LazySegmentTree', () => {
     st.updateRange(0, 4, 3)
     expect(st.queryRange(0, 4)).toBe(15)
   })
+
+  it('single element update and query', () => {
+    const st = new LazySegmentTree(3)
+    st.updateRange(1, 1, 7)
+    expect(st.queryRange(1, 1)).toBe(7)
+  })
 })

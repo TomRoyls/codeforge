@@ -150,4 +150,8 @@ describe('KruskalMST', () => {
     expect(mstEdges.length).toBe(1)
     expect(totalWeight).toBe(5)
   })
+
+  it('isConnected for single node', () => {
+    expect(KruskalMST.isConnected([], 1)).toBe(true)
+  })
 })

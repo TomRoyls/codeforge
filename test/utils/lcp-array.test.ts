@@ -102,4 +102,10 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'a')
     expect(lcp.length).toBe(0)
   })
+
+  it('two identical chars have lcp of 1', () => {
+    const sa = [1, 0]
+    const lcp = LCPArray.build(sa, 'aa')
+    expect(lcp).toEqual([1])
+  })
 })

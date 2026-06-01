@@ -138,4 +138,9 @@ describe('LeakyBucket', () => {
     bucket.pour(10)
     expect(bucket.isFull).toBe(true)
   })
+
+  it('pour over capacity returns false', () => {
+    const bucket = new LeakyBucket(5, 1)
+    expect(bucket.pour(100)).toBe(false)
+  })
 })
