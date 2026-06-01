@@ -136,4 +136,11 @@ describe('CycleSpace', () => {
     cs.addEdge(0, 2)
     expect(cs.cycleSpaceDimension()).toBe(1)
   })
+
+  it('tree has zero cycle space', () => {
+    const cs = new CycleSpace(3)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    expect(cs.cycleSpaceDimension()).toBe(0)
+  })
 })

@@ -100,4 +100,9 @@ describe('ChineseRemainderTheorem', () => {
     expect(result).not.toBeNull()
     expect(result!.remainder % 7).toBe(4)
   })
+
+  it('solves trivial single modulus 1', () => {
+    const result = ChineseRemainderTheorem.solve([0], [1])
+    expect(result).not.toBeNull()
+  })
 })

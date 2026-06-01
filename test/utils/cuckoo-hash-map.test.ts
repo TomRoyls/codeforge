@@ -159,4 +159,11 @@ describe('CuckooHashMap', () => {
     expect(map.get('key3')).toBe(300)
     expect(map.get('key4')).toBe(400)
   })
+
+  it('has returns true for existing key', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('x', 10)
+    expect(map.has('x')).toBe(true)
+    expect(map.has('y')).toBe(false)
+  })
 })

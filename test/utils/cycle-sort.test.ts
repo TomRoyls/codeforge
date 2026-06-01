@@ -100,4 +100,10 @@ describe('CycleSort', () => {
     expect(CycleSort.sortInPlace(arr)).toBe(0)
     expect(arr).toEqual([42])
   })
+
+  it('handles already sorted', () => {
+    const arr = [1, 2, 3, 4, 5]
+    expect(CycleSort.sortInPlace(arr)).toBe(0)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
 })

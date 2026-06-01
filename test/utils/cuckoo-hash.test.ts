@@ -131,4 +131,11 @@ describe('CuckooHashTable', () => {
     expect(ht.delete('a')).toBe(true)
     expect(ht.has('a')).toBe(false)
   })
+
+  it('size tracks elements', () => {
+    const ht = new CuckooHashTable<string, number>()
+    ht.set('a', 1)
+    ht.set('b', 2)
+    expect(ht.size).toBe(2)
+  })
 })
