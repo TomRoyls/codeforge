@@ -131,4 +131,11 @@ describe('DigitalTree', () => {
     dt.remove('abcd')
     expect(dt.startsWith('abc')).toBe(false)
   })
+
+  it('search after removal returns false', () => {
+    const dt = new DigitalTree()
+    dt.insert('hello')
+    dt.remove('hello')
+    expect(dt.search('hello')).toBe(false)
+  })
 })

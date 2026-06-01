@@ -183,4 +183,12 @@ describe('DequeAggregation', () => {
     const deque = new DequeAggregation<number>((a, b) => a + b)
     expect(deque.aggregate()).toBeUndefined()
   })
+
+  it('aggregate sums correctly', () => {
+    const deque = new DequeAggregation<number>((a, b) => a + b)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    expect(deque.aggregate()).toBe(6)
+  })
 })

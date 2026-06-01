@@ -153,4 +153,12 @@ describe('Deque', () => {
     const dq = new Deque<number>()
     expect(dq.isEmpty).toBe(true)
   })
+
+  it('pushBack and popBack work', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.popBack()).toBe(2)
+    expect(dq.popBack()).toBe(1)
+  })
 })

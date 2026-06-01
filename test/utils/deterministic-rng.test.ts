@@ -130,4 +130,12 @@ describe('DeterministicRng', () => {
     for (let i = 0; i < 1000; i++) sum += rng.nextGaussian()
     expect(Math.abs(sum / 1000)).toBeLessThan(0.2)
   })
+
+  it('nextInt returns integer', () => {
+    const rng = new DeterministicRng(42)
+    const val = rng.nextInt(1, 10)
+    expect(Number.isInteger(val)).toBe(true)
+    expect(val).toBeGreaterThanOrEqual(1)
+    expect(val).toBeLessThanOrEqual(10)
+  })
 })

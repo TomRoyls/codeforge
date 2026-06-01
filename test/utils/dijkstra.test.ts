@@ -176,4 +176,10 @@ describe('Dijkstra', () => {
     const { parents } = Dijkstra.shortestPath(adj, 0)
     expect(Dijkstra.reconstructPath(parents, 0, 1)).toEqual([0, 1])
   })
+
+  it('unreachable returns null', () => {
+    const adj = new Map<number, [number, number][]>([[0, []], [1, []]])
+    const { parents } = Dijkstra.shortestPath(adj, 0)
+    expect(Dijkstra.reconstructPath(parents, 0, 1)).toBeNull()
+  })
 })

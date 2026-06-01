@@ -144,4 +144,12 @@ describe('DequeMin', () => {
     const dq = new DequeMin()
     expect(dq.min).toBeUndefined()
   })
+
+  it('min tracks pushed values', () => {
+    const dq = new DequeMin()
+    dq.pushBack(5)
+    dq.pushBack(3)
+    dq.pushBack(7)
+    expect(dq.min).toBe(3)
+  })
 })
