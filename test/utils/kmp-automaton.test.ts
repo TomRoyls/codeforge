@@ -84,4 +84,9 @@ describe('KMPAutomaton', () => {
     const kmp = new KMPAutomaton('aa')
     expect(kmp.search('aaaa')).toEqual([0, 1, 2])
   })
+
+  it('handles pattern not found', () => {
+    const kmp = new KMPAutomaton('xyz')
+    expect(kmp.search('abcabc')).toEqual([])
+  })
 })

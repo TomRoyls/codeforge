@@ -142,4 +142,12 @@ describe('KruskalMST', () => {
     expect(mstEdges.length).toBe(0)
     expect(totalWeight).toBe(0)
   })
+
+  it('handles two node graph', () => {
+    const { edges: mstEdges, totalWeight } = KruskalMST.findMST([
+      { from: 0, to: 1, weight: 5 },
+    ], 2)
+    expect(mstEdges.length).toBe(1)
+    expect(totalWeight).toBe(5)
+  })
 })

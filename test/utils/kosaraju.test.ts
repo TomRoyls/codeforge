@@ -110,4 +110,10 @@ describe('KosarajuSCC', () => {
     const adj = new Map<number, number[]>([[0, []], [1, []]])
     expect(KosarajuSCC.findSCCs(adj).length).toBe(2)
   })
+
+  it('handles self-loop', () => {
+    const adj = new Map<number, number[]>([[0, [0]]])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+  })
 })

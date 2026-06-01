@@ -65,4 +65,8 @@ describe('KnuthMorrisPratt', () => {
   it('firstOccurrence returns -1 for no match', () => {
     expect(KnuthMorrisPratt.firstOccurrence('hello', 'xyz')).toBe(-1)
   })
+
+  it('search returns all matches', () => {
+    expect(KnuthMorrisPratt.search('abababab', 'ab')).toEqual([0, 2, 4, 6])
+  })
 })

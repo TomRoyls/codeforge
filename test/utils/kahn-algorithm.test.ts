@@ -128,4 +128,9 @@ describe('KahnAlgorithm', () => {
     const kahn = new KahnAlgorithm(0)
     expect(kahn.sort()).toEqual([])
   })
+
+  it('handles single node', () => {
+    const kahn = new KahnAlgorithm(1)
+    expect(kahn.sort()).toEqual([0])
+  })
 })
