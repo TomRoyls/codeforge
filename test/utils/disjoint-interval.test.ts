@@ -104,4 +104,11 @@ describe('DisjointInterval', () => {
     expect(intervals.length).toBeGreaterThanOrEqual(1)
     expect(intervals.length).toBeLessThanOrEqual(2)
   })
+
+  it('totalCovered after removal', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(5, 5)
+    expect(di.totalCovered()).toBe(10)
+  })
 })

@@ -95,4 +95,10 @@ describe('DisjointSparseTable', () => {
     expect(dst.query(1, 1)).toBe(7)
     expect(dst.query(0, 1)).toBe(7)
   })
+
+  it('handles three element sum', () => {
+    const dst = new DisjointSparseTable([10, 20, 30], (a, b) => a + b)
+    expect(dst.query(0, 2)).toBe(60)
+    expect(dst.query(0, 0)).toBe(10)
+  })
 })

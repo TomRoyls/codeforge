@@ -117,4 +117,12 @@ describe('DinicMaxFlow', () => {
     ]
     expect(DinicMaxFlow.maxFlow(edges, 0, 3, 4)).toBe(0)
   })
+
+  it('handles two parallel edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 1, capacity: 7 },
+    ]
+    expect(DinicMaxFlow.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
 })

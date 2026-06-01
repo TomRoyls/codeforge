@@ -129,4 +129,14 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath([], 0, 1)
     expect(dist[0]).toBe(0)
   })
+
+  it('handles linear chain', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 1 },
+      { from: 2, to: 3, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[3]).toBe(3)
+  })
 })
