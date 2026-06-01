@@ -81,4 +81,8 @@ describe('bucketSort edge cases', () => {
   it('handles two element reverse', () => {
     expect(bucketSort([10, 1])).toEqual([1, 10])
   })
+
+  it('handles already sorted', () => {
+    expect(bucketSort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
+  })
 })

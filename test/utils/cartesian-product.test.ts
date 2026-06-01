@@ -84,4 +84,8 @@ describe('CartesianProduct', () => {
   it('generate with empty array returns empty', () => {
     expect(CartesianProduct.generate([1, 2], [])).toEqual([])
   })
+
+  it('generate with single element arrays', () => {
+    expect(CartesianProduct.generate([1], [2])).toEqual([[1, 2]])
+  })
 })
