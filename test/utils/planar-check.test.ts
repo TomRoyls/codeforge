@@ -98,4 +98,10 @@ describe('PlanarCheck', () => {
     const pc = new PlanarCheck(3)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('two nodes with edge is planar', () => {
+    const pc = new PlanarCheck(2)
+    pc.addEdge(0, 1)
+    expect(pc.isPlanar()).toBe(true)
+  })
 })

@@ -100,4 +100,11 @@ describe('RadixHeap', () => {
     expect(h.pop()).toBe(1000000)
     expect(h.pop()).toBe(1000001)
   })
+
+  it('handles single element', () => {
+    const h = new RadixHeap()
+    h.push(42)
+    expect(h.pop()).toBe(42)
+    expect(h.isEmpty).toBe(true)
+  })
 })

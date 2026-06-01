@@ -78,4 +78,10 @@ describe('RangeMinQuery', () => {
     const rmq = new RangeMinQuery([42])
     expect(rmq.query(0, 0)).toBe(42)
   })
+
+  it('handles sorted ascending', () => {
+    const rmq = new RangeMinQuery([1, 2, 3, 4, 5])
+    expect(rmq.query(0, 4)).toBe(1)
+    expect(rmq.query(3, 4)).toBe(4)
+  })
 })

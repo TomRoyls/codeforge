@@ -62,4 +62,9 @@ describe('PolynomialRollingHash', () => {
     const h2 = PolynomialRollingHash.hash('xyz')
     expect(h1).not.toBe(h2)
   })
+
+  it('empty string hash is consistent', () => {
+    const h = PolynomialRollingHash.hash('')
+    expect(typeof h).toBe('bigint')
+  })
 })
