@@ -139,4 +139,14 @@ describe('PairHeap', () => {
     expect(h.peek()).toBe(3)
     expect(h.size).toBe(3)
   })
+
+  it('pop returns elements in order', () => {
+    const h = new PairHeap<number>()
+    h.push(5)
+    h.push(1)
+    h.push(3)
+    expect(h.pop()).toBe(1)
+    expect(h.pop()).toBe(3)
+    expect(h.pop()).toBe(5)
+  })
 })

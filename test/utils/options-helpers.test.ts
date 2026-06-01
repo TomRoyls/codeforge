@@ -98,4 +98,9 @@ describe('extractRuleOptions', () => {
     const result = extractRuleOptions([{ a: 1 }], {})
     expect(result).toEqual({ a: 1 })
   })
+
+  it('overrides defaults with provided values', () => {
+    const result = extractRuleOptions([{ a: 1, b: 2 }], { b: 99, c: 3 })
+    expect(result).toEqual({ a: 1, b: 2, c: 3 })
+  })
 })

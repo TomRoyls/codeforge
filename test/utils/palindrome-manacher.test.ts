@@ -95,4 +95,9 @@ describe('PalindromeManacher', () => {
     expect(m.longestPalindrome().length).toBe(1)
     expect(m.isPalindrome(0, 0)).toBe(true)
   })
+
+  it('detects non-palindrome substring', () => {
+    const m = new PalindromeManacher('abc')
+    expect(m.isPalindrome(0, 2)).toBe(false)
+  })
 })

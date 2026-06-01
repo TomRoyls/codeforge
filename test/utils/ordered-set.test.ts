@@ -152,4 +152,9 @@ describe('OrderedSet', () => {
     expect(os.has(2)).toBe(false)
     expect(os.size).toBe(2)
   })
+
+  it('has returns false for missing element', () => {
+    const os = new OrderedSet<number>()
+    expect(os.has(42)).toBe(false)
+  })
 })
