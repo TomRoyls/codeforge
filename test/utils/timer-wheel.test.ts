@@ -129,4 +129,10 @@ describe('TimerWheel', () => {
     const result = tw.advance()
     expect(result.length).toBe(50)
   })
+
+  it('advance with no timers returns empty', () => {
+    const tw = new TimerWheel(8)
+    const result = tw.advance()
+    expect(result).toEqual([])
+  })
 })

@@ -110,4 +110,9 @@ describe('TokenBucket - wait', () => {
     expect(tb.consume(1)).toBe(true)
     expect(tb.available).toBe(4)
   })
+
+  it('consume rejects invalid count', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
+    expect(() => tb.consume(0)).toThrow()
+  })
 })

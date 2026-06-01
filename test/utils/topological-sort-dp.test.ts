@@ -124,4 +124,9 @@ describe('TopologicalSortDP', () => {
     ts.addEdge(2, 4)
     expect(ts.longestPath()).toBe(2)
   })
+
+  it('single node has zero longest path', () => {
+    const ts = new TopologicalSortDP(1)
+    expect(ts.longestPath()).toBe(0)
+  })
 })
