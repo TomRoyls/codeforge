@@ -72,4 +72,8 @@ describe('PrefixFunction', () => {
   it('search for single char pattern', () => {
     expect(PrefixFunction.search('abcabc', 'a')).toEqual([0, 3])
   })
+
+  it('compute handles repeating pattern', () => {
+    expect(PrefixFunction.compute('aabaab')).toEqual([0, 1, 0, 1, 2, 3])
+  })
 })

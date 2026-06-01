@@ -99,4 +99,8 @@ describe('PowerSet', () => {
     expect(bySize.get(1)!.length).toBe(3)
     expect(bySize.get(2)!.length).toBe(3)
   })
+
+  it('handles empty set', () => {
+    expect(PowerSet.generate([])).toEqual([[]])
+  })
 })

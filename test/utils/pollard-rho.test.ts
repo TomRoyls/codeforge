@@ -76,4 +76,10 @@ describe('PollardRho', () => {
   it('factorizes 1 returns empty', () => {
     expect(PollardRho.factorize(1)).toEqual([])
   })
+
+  it('factorizes 12', () => {
+    const factors = PollardRho.factorize(12)
+    const sorted = factors.map(Number).sort()
+    expect(sorted).toEqual([2, 2, 3])
+  })
 })
