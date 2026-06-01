@@ -104,4 +104,10 @@ describe('MonteCarlo', () => {
     const result = MonteCarlo.integrate((x) => x * x, 0, 1, 10000)
     expect(result).toBeCloseTo(1 / 3, 1)
   })
+
+  it('pi estimate is between 2 and 4', () => {
+    const result = MonteCarlo.pi(1000)
+    expect(result).toBeGreaterThan(2)
+    expect(result).toBeLessThan(4)
+  })
 })

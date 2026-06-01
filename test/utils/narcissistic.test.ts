@@ -92,4 +92,10 @@ describe('Narcissistic', () => {
     expect(result).toContain(153)
     expect(result).toContain(9474)
   })
+
+  it('isNarcissistic for single digits', () => {
+    for (let i = 0; i < 10; i++) {
+      expect(Narcissistic.isNarcissistic(i)).toBe(true)
+    }
+  })
 })
