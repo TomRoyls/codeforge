@@ -124,4 +124,9 @@ describe('TreeHash', () => {
     const th = new TreeHash(1)
     expect(th.rootedHash(0)).toBeGreaterThanOrEqual(0)
   })
+
+  it('finds center of single node', () => {
+    const th = new TreeHash(1)
+    expect(th.findCenter()).toEqual([0])
+  })
 })

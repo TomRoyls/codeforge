@@ -106,4 +106,11 @@ describe('TrieRadix', () => {
     trie.insert('abc')
     expect(trie.collectWords('xyz')).toEqual([])
   })
+
+  it('startsWith checks prefix', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello')
+    expect(trie.startsWith('hel')).toBe(true)
+    expect(trie.startsWith('xyz')).toBe(false)
+  })
 })

@@ -121,4 +121,11 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [0, 0])
     expect(path.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('handles 2x1 corridor', () => {
+    const maze = new TremauxMaze(2, 1)
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [1, 0])
+    expect(path.length).toBe(2)
+  })
 })

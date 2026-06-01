@@ -100,4 +100,12 @@ describe('TreeDecomposition', () => {
     const td = new TreeDecomposition(1)
     expect(td.treewidth()).toBe(0)
   })
+
+  it('handles triangle treewidth', () => {
+    const td = new TreeDecomposition(3)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(0, 2)
+    expect(td.treewidth()).toBe(2)
+  })
 })
