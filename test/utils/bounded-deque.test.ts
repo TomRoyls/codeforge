@@ -138,4 +138,11 @@ describe('BoundedDeque', () => {
     expect(evicted).toBe(2)
     expect(dq.toArray()).toEqual([0, 1])
   })
+
+  it('isFull returns true when at capacity', () => {
+    const dq = new BoundedDeque<number>(2)
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.isFull()).toBe(true)
+  })
 })

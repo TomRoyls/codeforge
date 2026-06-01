@@ -164,4 +164,12 @@ describe('BoundedPriorityQueue', () => {
     }
     expect(q.toArray()).toEqual(['apple', 'banana', 'cherry'])
   })
+
+  it('peek returns front without removing', () => {
+    const q = new BoundedPriorityQueue<string>(3, (a, b) => a.localeCompare(b))
+    q.push('cherry')
+    q.push('apple')
+    expect(q.peek()).toBe('cherry')
+    expect(q.size).toBe(2)
+  })
 })

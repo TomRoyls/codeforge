@@ -72,4 +72,8 @@ describe('BoyerMooreExtended', () => {
   it('handles single char pattern', () => {
     expect(BoyerMooreExtended.search('abc', 'b')).toEqual([1])
   })
+
+  it('handles no match', () => {
+    expect(BoyerMooreExtended.search('abc', 'x')).toEqual([])
+  })
 })

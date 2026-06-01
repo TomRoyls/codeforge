@@ -123,4 +123,12 @@ describe('BlockList', () => {
     expect(bl.size).toBe(1)
     expect(bl.get(0)).toBe(42)
   })
+
+  it('pushBack and size tracking', () => {
+    const bl = new BlockList<number>(2)
+    bl.pushBack(1)
+    bl.pushBack(2)
+    bl.pushBack(3)
+    expect(bl.size).toBe(3)
+  })
 })

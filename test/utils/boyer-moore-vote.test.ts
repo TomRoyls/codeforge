@@ -77,5 +77,9 @@ describe('BoyerMooreVote', () => {
     it('handles empty array', () => {
       expect(BoyerMooreVote.findAllFrequent([], 2)).toEqual([])
     })
+
+    it('finds majority in single element', () => {
+      expect(BoyerMooreVote.findMajority([5])).toBe(5)
+    })
   })
 })
