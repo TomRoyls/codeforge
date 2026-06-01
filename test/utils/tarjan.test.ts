@@ -109,4 +109,12 @@ describe('TarjanSCC', () => {
     const adj = new Map<number, number[]>([[0, []]])
     expect(TarjanSCC.findSCCs(adj).length).toBe(1)
   })
+
+  it('handles two separate cycles', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]], [2, [3]], [3, [2]],
+    ])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBe(2)
+  })
 })

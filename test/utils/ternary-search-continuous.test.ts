@@ -72,4 +72,9 @@ describe('TernarySearchContinuous', () => {
     expect(x).toBeGreaterThanOrEqual(-10)
     expect(x).toBeLessThanOrEqual(10)
   })
+
+  it('minimizes linear function at left bound', () => {
+    const x = TernarySearchContinuous.minimize((x) => x, -5, 5)
+    expect(x).toBeCloseTo(-5, 1)
+  })
 })

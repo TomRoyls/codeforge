@@ -131,4 +131,11 @@ describe('ThreadPool', () => {
     expect(outcome.error).toBe(false)
     if (!outcome.error) expect(outcome.result).toBe(42)
   })
+
+  it('handles error in task', async () => {
+    const pool = new ThreadPool({ maxConcurrency: 2 })
+    const outcome = await pool.submit(async () => { throw new Error('fail') })
+    expect(outcome.error).toBe(true)
+    if (outcome.error) expect(outcome.message).toBe('fail')
+  })
 })

@@ -99,4 +99,13 @@ describe('SuffixAutomatonLight', () => {
     expect(sa.contains('ab')).toBe(true)
     expect(sa.contains('ba')).toBe(false)
   })
+
+  it('handles abc string', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abc')
+    expect(sa.contains('abc')).toBe(true)
+    expect(sa.contains('bc')).toBe(true)
+    expect(sa.contains('c')).toBe(true)
+    expect(sa.contains('ac')).toBe(false)
+  })
 })

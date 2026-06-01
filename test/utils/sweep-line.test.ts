@@ -95,4 +95,11 @@ describe('SweepLine', () => {
     expect(result).not.toBeNull()
     expect(result!.dist).toBe(5)
   })
+
+  it('handles collinear overlapping segments', () => {
+    expect(SweepLine.segmentsIntersect(
+      { x1: 0, y1: 0, x2: 4, y2: 0 },
+      { x1: 2, y1: 0, x2: 6, y2: 0 },
+    )).toBe(true)
+  })
 })
