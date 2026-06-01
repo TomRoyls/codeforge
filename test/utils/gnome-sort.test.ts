@@ -77,4 +77,8 @@ describe('GnomeSort', () => {
   it('handles empty array', () => {
     expect(GnomeSort.sort([])).toEqual([])
   })
+
+  it('sorts already sorted array', () => {
+    expect(GnomeSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
+  })
 })

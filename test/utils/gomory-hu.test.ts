@@ -131,4 +131,12 @@ describe('GomoryHu', () => {
     gh.addEdge(0, 1, 5)
     expect(gh.minCut(0, 2)).toBe(0)
   })
+
+  it('handles star graph', () => {
+    const gh = new GomoryHu(4)
+    gh.addEdge(0, 1, 3)
+    gh.addEdge(0, 2, 5)
+    gh.addEdge(0, 3, 7)
+    expect(gh.minCut(1, 2)).toBe(3)
+  })
 })

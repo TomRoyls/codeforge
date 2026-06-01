@@ -83,4 +83,9 @@ describe('GoldenRatioSearch', () => {
     const x = GoldenRatioSearch.minimize((t) => Math.pow(t - 3, 2), 0, 10)
     expect(x).toBeCloseTo(3, 2)
   })
+
+  it('minimizes with narrow range', () => {
+    const x = GoldenRatioSearch.minimize((t) => Math.pow(t, 2), -0.1, 0.1)
+    expect(x).toBeCloseTo(0, 2)
+  })
 })

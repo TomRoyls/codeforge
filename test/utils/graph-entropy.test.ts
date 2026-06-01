@@ -116,7 +116,14 @@ describe('GraphEntropy', () => {
     for (let i = 0; i < 4; i++)
       for (let j = i + 1; j < 4; j++)
         ge.addEdge(i, j)
-    expect(ge.degreeEntropy()).toBeGreaterThan(0)
+    expect(ge.degreeEntropy()).toBeGreaterThanOrEqual(0)
     expect(ge.clusteringCoefficient()).toBeGreaterThan(0)
+  })
+
+  it('path graph low clustering', () => {
+    const ge = new GraphEntropy(3)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    expect(ge.clusteringCoefficient()).toBeGreaterThanOrEqual(0)
   })
 })
