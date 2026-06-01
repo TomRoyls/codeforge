@@ -151,4 +151,10 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('two nodes no edges gives two components', () => {
+    const scc = new SCCTarjan(2)
+    const comps = scc.solve()
+    expect(comps.length).toBe(2)
+  })
 })

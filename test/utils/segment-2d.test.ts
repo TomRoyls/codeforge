@@ -119,4 +119,10 @@ describe('SegmentTree2D', () => {
     st.update(1, 1, 20)
     expect(st.query(0, 0, 1, 1)).toBe(30)
   })
+
+  it('single cell update and query', () => {
+    const st = new SegmentTree2D(1, 1)
+    st.update(0, 0, 42)
+    expect(st.query(0, 0, 0, 0)).toBe(42)
+  })
 })

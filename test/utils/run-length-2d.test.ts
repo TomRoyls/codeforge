@@ -96,4 +96,9 @@ describe('RunLength2D', () => {
     const encoded = RunLength2D.encode([])
     expect(encoded).toEqual([])
   })
+
+  it('1x1 grid returns single run', () => {
+    const encoded = RunLength2D.encode([['a']])
+    expect(encoded.length).toBe(1)
+  })
 })

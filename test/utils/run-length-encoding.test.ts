@@ -101,4 +101,10 @@ describe('RunLengthEncoding', () => {
     const encoded = RunLengthEncoding.encode([5, 5, 5, 5, 5])
     expect(encoded.length).toBe(1)
   })
+
+  it('decode roundtrip', () => {
+    const original = [1, 2, 2, 3, 3, 3]
+    const encoded = RunLengthEncoding.encode(original)
+    expect(RunLengthEncoding.decode(encoded)).toEqual(original)
+  })
 })
