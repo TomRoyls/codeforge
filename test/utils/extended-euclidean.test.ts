@@ -91,4 +91,10 @@ describe('ExtendedEuclidean', () => {
     expect(12n * x + 8n * y).toBe(gcd)
     expect(gcd).toBe(4n)
   })
+
+  it('solves coprime numbers', () => {
+    const { x, y, gcd } = ExtendedEuclidean.solve(15n, 28n)
+    expect(15n * x + 28n * y).toBe(gcd)
+    expect(gcd).toBe(1n)
+  })
 })

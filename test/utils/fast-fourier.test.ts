@@ -104,4 +104,9 @@ describe('FastFourierTransform', () => {
     const result = FastFourierTransform.multiplyPolynomials([1, 1], [1, 1])
     expect(result).toEqual([1, 2, 1])
   })
+
+  it('multiplyPolynomials quadratic by linear', () => {
+    const result = FastFourierTransform.multiplyPolynomials([1, 1, 1], [1, 1])
+    expect(result).toEqual([1, 2, 2, 1])
+  })
 })

@@ -153,4 +153,9 @@ describe('EventSink', () => {
     const handler = () => {}
     expect(() => sink.off('click', handler)).not.toThrow()
   })
+
+  it('emit with no listeners does not throw', () => {
+    const sink = new EventSink<Events>()
+    expect(() => sink.emit('click', { x: 0, y: 0 })).not.toThrow()
+  })
 })
