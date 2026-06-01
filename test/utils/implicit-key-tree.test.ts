@@ -131,4 +131,12 @@ describe('ImplicitKeyTree', () => {
     for (let i = 0; i < 5; i++) t.insert(i, i * 10)
     expect(t.length).toBe(5)
   })
+
+  it('get returns correct value', () => {
+    const t = new ImplicitKeyTree<number, number>()
+    t.insert(0, 42)
+    t.insert(1, 99)
+    expect(t.get(0)).toBe(42)
+    expect(t.get(1)).toBe(99)
+  })
 })
