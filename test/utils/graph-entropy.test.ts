@@ -110,4 +110,13 @@ describe('GraphEntropy', () => {
     ge.addEdge(3, 0)
     expect(ge.clusteringCoefficient()).toBeGreaterThanOrEqual(0)
   })
+
+  it('complete graph high entropy', () => {
+    const ge = new GraphEntropy(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        ge.addEdge(i, j)
+    expect(ge.degreeEntropy()).toBeGreaterThan(0)
+    expect(ge.clusteringCoefficient()).toBeGreaterThan(0)
+  })
 })

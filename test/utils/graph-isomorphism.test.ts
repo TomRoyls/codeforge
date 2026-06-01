@@ -127,4 +127,9 @@ describe('GraphIsomorphism', () => {
     gi.addEdgeG2(2, 1)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('handles empty graphs isomorphic', () => {
+    const gi = new GraphIsomorphism(3)
+    expect(gi.isomorphic()).toBe(true)
+  })
 })

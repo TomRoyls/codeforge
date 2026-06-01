@@ -125,4 +125,10 @@ describe('GomoryHu', () => {
     const cuts = gh.allPairsMinCut()
     expect(cuts[0]![1]).toBe(10)
   })
+
+  it('handles disconnected nodes', () => {
+    const gh = new GomoryHu(3)
+    gh.addEdge(0, 1, 5)
+    expect(gh.minCut(0, 2)).toBe(0)
+  })
 })

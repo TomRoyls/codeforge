@@ -111,4 +111,10 @@ describe('HamiltonianPath', () => {
     expect(hp.existsCycle()).toBe(true)
     expect(hp.existsPath()).toBe(true)
   })
+
+  it('handles empty graph', () => {
+    const hp = new HamiltonianPath(3)
+    expect(hp.existsPath()).toBe(false)
+    expect(hp.existsCycle()).toBe(false)
+  })
 })

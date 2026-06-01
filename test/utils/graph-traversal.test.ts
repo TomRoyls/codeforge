@@ -113,4 +113,13 @@ describe('GraphTraversal', () => {
     const comps = GraphTraversal.connectedComponents(adj)
     expect(comps.length).toBe(2)
   })
+
+  it('dfsIterative matches dfs', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, []], [2, []],
+    ])
+    const dfs = GraphTraversal.dfs(adj, 0)
+    const dfsIter = GraphTraversal.dfsIterative(adj, 0)
+    expect(new Set(dfs)).toEqual(new Set(dfsIter))
+  })
 })
