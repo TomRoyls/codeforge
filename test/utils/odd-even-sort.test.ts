@@ -71,4 +71,8 @@ describe('OddEvenSort', () => {
   it('handles floating point', () => {
     expect(OddEvenSort.sort([3.14, 1.41, 2.72])).toEqual([1.41, 2.72, 3.14])
   })
+
+  it('handles empty array', () => {
+    expect(OddEvenSort.sort([])).toEqual([])
+  })
 })

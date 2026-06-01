@@ -121,4 +121,13 @@ describe('PairHeap', () => {
     while (h.size > 0) sorted.push(h.pop()!)
     expect(sorted).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles single element lifecycle', () => {
+    const h = new PairHeap<number>()
+    h.push(42)
+    expect(h.size).toBe(1)
+    expect(h.pop()).toBe(42)
+    expect(h.size).toBe(0)
+    expect(h.isEmpty).toBe(true)
+  })
 })

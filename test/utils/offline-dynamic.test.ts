@@ -118,4 +118,10 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(0, 1, 5)
     expect(odc.solve()).toEqual([true, true])
   })
+
+  it('handles disconnected nodes query', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addQuery(0, 2, 5)
+    expect(odc.solve()).toEqual([false])
+  })
 })

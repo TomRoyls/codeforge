@@ -85,4 +85,9 @@ describe('NumberTheory', () => {
   it('gcd handles negatives', () => {
     expect(NumberTheory.gcd(-12, 8)).toBe(4)
   })
+
+  it('lcm works', () => {
+    expect(NumberTheory.lcm(4, 6)).toBe(12)
+    expect(NumberTheory.lcm(3, 5)).toBe(15)
+  })
 })
