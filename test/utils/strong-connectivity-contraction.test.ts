@@ -127,4 +127,11 @@ describe('StrongConnectivityContraction', () => {
     const { componentCount } = scc.contract()
     expect(componentCount).toBe(1)
   })
+
+  it('handles self loop is one component', () => {
+    const scc = new StrongConnectivityContraction(2)
+    scc.addEdge(0, 0)
+    const { componentCount } = scc.contract()
+    expect(componentCount).toBe(2)
+  })
 })

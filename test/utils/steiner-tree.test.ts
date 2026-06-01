@@ -135,4 +135,13 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([0, 1, 2])
     expect(result.totalWeight).toBeLessThanOrEqual(5)
   })
+
+  it('handles all nodes as terminals', () => {
+    const st = new SteinerTree(3)
+    st.addEdge(0, 1, 2)
+    st.addEdge(1, 2, 3)
+    const result = st.approximateSteiner([0, 1, 2])
+    expect(result.totalWeight).toBeLessThanOrEqual(5)
+    expect(result.edges.length).toBeGreaterThanOrEqual(2)
+  })
 })

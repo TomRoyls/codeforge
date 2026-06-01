@@ -106,4 +106,12 @@ describe('StoerWagner', () => {
     sw.addEdge(2, 3, 7)
     expect(sw.minCut()).toBe(3)
   })
+
+  it('handles star graph', () => {
+    const sw = new StoerWagner(4)
+    sw.addEdge(0, 1, 1)
+    sw.addEdge(0, 2, 1)
+    sw.addEdge(0, 3, 1)
+    expect(sw.minCut()).toBe(1)
+  })
 })

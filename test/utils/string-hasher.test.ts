@@ -79,4 +79,9 @@ describe('StringHasher', () => {
     const sh = new StringHasher('abcdef')
     expect(sh.equals(0, 3, 0, 3)).toBe(true)
   })
+
+  it('different substrings have different hashes', () => {
+    const sh = new StringHasher('abcdef')
+    expect(sh.equals(0, 2, 3, 5)).toBe(false)
+  })
 })

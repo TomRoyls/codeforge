@@ -80,4 +80,9 @@ describe('StringHash', () => {
     const sh = new StringHash('')
     expect(sh.hash(0, -1)).toBeGreaterThanOrEqual(0)
   })
+
+  it('same substring same hash', () => {
+    const sh = new StringHash('abcabc')
+    expect(sh.hash(0, 2)).toBe(sh.hash(3, 5))
+  })
 })
