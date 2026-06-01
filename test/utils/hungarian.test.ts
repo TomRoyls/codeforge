@@ -107,4 +107,11 @@ describe('Hungarian', () => {
     expect(totalCost).toBe(42)
     expect(assignment[0]).toBe(0)
   })
+
+  it('handles 2x3 rectangular matrix', () => {
+    const { totalCost } = Hungarian.solve([
+      [1, 2, 3], [4, 1, 2],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(4)
+  })
 })

@@ -106,4 +106,11 @@ describe('IntervalGraph', () => {
     expect(ig.isIntervalGraph()).toBe(true)
     expect(ig.maxOverlap()).toBe(1)
   })
+
+  it('adjacent intervals', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 3)
+    ig.addInterval(3, 6)
+    expect(ig.maxOverlap()).toBeLessThanOrEqual(2)
+  })
 })

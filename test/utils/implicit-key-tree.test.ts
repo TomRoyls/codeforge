@@ -110,4 +110,12 @@ describe('ImplicitKeyTree', () => {
     t.insert(0, 1)
     expect(t.get(-1)).toBeUndefined()
   })
+
+  it('length after mixed operations', () => {
+    const t = new ImplicitKeyTree()
+    t.insert(0, 1)
+    t.insert(1, 2)
+    t.remove(0)
+    expect(t.length).toBe(1)
+  })
 })

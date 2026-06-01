@@ -64,4 +64,10 @@ describe('Introsort', () => {
     const result = Introsort.sort(arr)
     expect(result).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles reverse sorted array', () => {
+    const arr = [5, 4, 3, 2, 1]
+    const result = Introsort.sort(arr)
+    expect(result).toEqual([1, 2, 3, 4, 5])
+  })
 })
