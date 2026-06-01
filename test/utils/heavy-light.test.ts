@@ -130,4 +130,13 @@ describe('HeavyLightDecomposition', () => {
     expect(hld.lca(4, 5)).toBe(0)
     expect(hld.lca(3, 4)).toBe(1)
   })
+
+  it('distance between root and leaf in chain', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, []],
+    ])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.distance(0, 3)).toBe(3)
+    expect(hld.distance(1, 3)).toBe(2)
+  })
 })

@@ -118,4 +118,13 @@ describe('GraphIsomorphism', () => {
     const gi = new GraphIsomorphism(1)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('isomorphic path graphs different labeling', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(1, 2)
+    gi.addEdgeG2(1, 0)
+    gi.addEdgeG2(2, 1)
+    expect(gi.isomorphic()).toBe(true)
+  })
 })

@@ -102,4 +102,13 @@ describe('HamiltonianPath', () => {
     expect(hp.existsPath()).toBe(true)
     expect(hp.existsCycle()).toBe(true)
   })
+
+  it('handles triangle', () => {
+    const hp = new HamiltonianPath(3)
+    hp.addEdge(0, 1)
+    hp.addEdge(1, 2)
+    hp.addEdge(0, 2)
+    expect(hp.existsCycle()).toBe(true)
+    expect(hp.existsPath()).toBe(true)
+  })
 })

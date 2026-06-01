@@ -105,4 +105,12 @@ describe('GraphTraversal', () => {
     const adj = new Map<number, number[]>([[0, []], [1, []]])
     expect(GraphTraversal.hasCycle(adj)).toBe(false)
   })
+
+  it('connectedComponents for two components', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]], [2, [3]], [3, [2]],
+    ])
+    const comps = GraphTraversal.connectedComponents(adj)
+    expect(comps.length).toBe(2)
+  })
 })
