@@ -67,4 +67,9 @@ describe('PolynomialRollingHash', () => {
     const h = PolynomialRollingHash.hash('')
     expect(typeof h).toBe('bigint')
   })
+
+  it('single character hash is positive', () => {
+    const h = PolynomialRollingHash.hash('a')
+    expect(h > 0n).toBe(true)
+  })
 })

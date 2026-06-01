@@ -116,4 +116,13 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.totalWeight).toBe(5)
   })
+
+  it('handles parallel edges picks minimum', () => {
+    const mst = new PrimMST(3)
+    mst.addEdge(0, 1, 5)
+    mst.addEdge(0, 1, 2)
+    mst.addEdge(1, 2, 3)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(5)
+  })
 })

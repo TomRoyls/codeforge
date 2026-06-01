@@ -104,4 +104,15 @@ describe('PlanarCheck', () => {
     pc.addEdge(0, 1)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('K4 is planar', () => {
+    const pc = new PlanarCheck(4)
+    pc.addEdge(0, 1)
+    pc.addEdge(0, 2)
+    pc.addEdge(0, 3)
+    pc.addEdge(1, 2)
+    pc.addEdge(1, 3)
+    pc.addEdge(2, 3)
+    expect(pc.isPlanar()).toBe(true)
+  })
 })

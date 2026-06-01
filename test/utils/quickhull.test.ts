@@ -80,4 +80,10 @@ describe('Quickhull', () => {
     expect(Quickhull.cross({ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 })).toBe(1)
     expect(Quickhull.cross({ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 0 })).toBe(0)
   })
+
+  it('hull of collinear points', () => {
+    const points = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBeGreaterThanOrEqual(2)
+  })
 })
