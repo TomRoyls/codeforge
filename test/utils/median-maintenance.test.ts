@@ -139,4 +139,12 @@ describe('MedianMaintenance', () => {
     mm.add(1)
     expect(mm.isEmpty).toBe(false)
   })
+
+  it('median of odd count is middle element', () => {
+    const mm = new MedianMaintenance()
+    mm.add(1)
+    mm.add(2)
+    mm.add(3)
+    expect(mm.getMedian()).toBe(2)
+  })
 })

@@ -100,4 +100,9 @@ describe('MergeSortTree', () => {
     expect(mst.queryKthSmallest(0, 99, 99)).toBe(100)
     expect(mst.queryCountLessThan(0, 99, 50)).toBe(49)
   })
+
+  it('single element tree', () => {
+    const mst = new MergeSortTree([42])
+    expect(mst.queryKthSmallest(0, 0, 0)).toBe(42)
+  })
 })

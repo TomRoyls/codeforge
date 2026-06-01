@@ -169,4 +169,12 @@ describe('memoize - edge cases', () => {
     expect(r1).toBe(r2)
     expect(calls).toBe(1)
   })
+
+  it('caches with string argument', () => {
+    let calls = 0
+    const fn = memoize((s: string) => { calls++; return s.length })
+    expect(fn('hello')).toBe(5)
+    expect(fn('hello')).toBe(5)
+    expect(calls).toBe(1)
+  })
 })

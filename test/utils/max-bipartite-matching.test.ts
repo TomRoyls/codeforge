@@ -125,4 +125,10 @@ describe('MaxBipartiteMatching', () => {
     const m = new MaxBipartiteMatching(2, 2)
     expect(m.getMatchingSize()).toBe(0)
   })
+
+  it('single edge matches', () => {
+    const m = new MaxBipartiteMatching(1, 1)
+    m.addEdge(0, 0)
+    expect(m.getMatchingSize()).toBe(1)
+  })
 })
