@@ -70,4 +70,9 @@ describe('StringHash', () => {
     const sh = new StringHash('a')
     expect(sh.hash(0, 0)).toBeGreaterThanOrEqual(0)
   })
+
+  it('different substrings have different hashes', () => {
+    const sh = new StringHash('abcdef')
+    expect(sh.equals(0, 1, 4, 5)).toBe(false)
+  })
 })

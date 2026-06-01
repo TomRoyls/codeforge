@@ -89,4 +89,10 @@ describe('SweepLine', () => {
       { x1: 0, y1: 1, x2: 2, y2: 1 },
     )).toBe(false)
   })
+
+  it('handles two points closestPair', () => {
+    const result = SweepLine.closestPair([{ x: 0, y: 0 }, { x: 3, y: 4 }])
+    expect(result).not.toBeNull()
+    expect(result!.dist).toBe(5)
+  })
 })

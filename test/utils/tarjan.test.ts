@@ -104,4 +104,9 @@ describe('TarjanSCC', () => {
     const adj = new Map<number, number[]>()
     expect(TarjanSCC.findSCCs(adj)).toEqual([])
   })
+
+  it('handles single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(TarjanSCC.findSCCs(adj).length).toBe(1)
+  })
 })
