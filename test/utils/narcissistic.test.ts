@@ -85,4 +85,11 @@ describe('Narcissistic', () => {
     expect(result).toContain(371)
     expect(result).toContain(407)
   })
+
+  it('generates up to 10000', () => {
+    const result = Narcissistic.generate(10000)
+    expect(result).toContain(1)
+    expect(result).toContain(153)
+    expect(result).toContain(9474)
+  })
 })
