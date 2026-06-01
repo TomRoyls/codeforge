@@ -124,4 +124,11 @@ describe('MarkovChain', () => {
     expect(states).toContain('a')
     expect(states).toContain('b')
   })
+
+  it('handles single state', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'a', 1)
+    const next = mc.next('a')
+    expect(next).toBe('a')
+  })
 })
