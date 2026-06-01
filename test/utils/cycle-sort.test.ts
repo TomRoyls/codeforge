@@ -94,4 +94,10 @@ describe('CycleSort', () => {
     expect(arr).toEqual([1, 2, 3, 4])
     expect(writes).toBe(0)
   })
+
+  it('handles single element', () => {
+    const arr = [42]
+    expect(CycleSort.sortInPlace(arr)).toBe(0)
+    expect(arr).toEqual([42])
+  })
 })

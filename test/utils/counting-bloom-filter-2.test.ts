@@ -155,4 +155,9 @@ describe('CountingBloomFilter2', () => {
     filter.remove('x')
     expect(filter.count('x')).toBeGreaterThanOrEqual(1)
   })
+
+  it('contains returns false for never-added item', () => {
+    const filter = new CountingBloomFilter2(100)
+    expect(filter.contains('never')).toBe(false)
+  })
 })

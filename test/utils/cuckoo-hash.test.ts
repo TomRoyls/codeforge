@@ -124,4 +124,11 @@ describe('CuckooHashTable', () => {
     expect(ht.size).toBe(10)
     expect(ht.get('key-5')).toBe(5)
   })
+
+  it('delete returns true for existing key', () => {
+    const ht = new CuckooHashTable<string, number>(32)
+    ht.set('a', 1)
+    expect(ht.delete('a')).toBe(true)
+    expect(ht.has('a')).toBe(false)
+  })
 })

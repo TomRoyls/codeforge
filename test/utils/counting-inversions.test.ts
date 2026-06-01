@@ -77,4 +77,8 @@ describe('CountingInversions', () => {
   it('handles two elements reversed', () => {
     expect(CountingInversions.count([2, 1])).toBe(1)
   })
+
+  it('handles single element', () => {
+    expect(CountingInversions.count([42])).toBe(0)
+  })
 })

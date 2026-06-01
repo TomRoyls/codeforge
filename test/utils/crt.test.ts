@@ -94,4 +94,10 @@ describe('ChineseRemainderTheorem', () => {
     expect(result!.remainder % 3).toBe(2)
     expect(result!.remainder % 5).toBe(3)
   })
+
+  it('handles single modulus', () => {
+    const result = ChineseRemainderTheorem.solve([4], [7])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 7).toBe(4)
+  })
 })
