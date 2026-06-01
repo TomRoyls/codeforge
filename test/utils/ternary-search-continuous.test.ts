@@ -77,4 +77,9 @@ describe('TernarySearchContinuous', () => {
     const x = TernarySearchContinuous.minimize((x) => x, -5, 5)
     expect(x).toBeCloseTo(-5, 1)
   })
+
+  it('maximizes linear function at right bound', () => {
+    const x = TernarySearchContinuous.maximize((x) => x, -5, 5)
+    expect(x).toBeCloseTo(5, 1)
+  })
 })

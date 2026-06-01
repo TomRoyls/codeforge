@@ -117,4 +117,11 @@ describe('TarjanSCC', () => {
     const sccs = TarjanSCC.findSCCs(adj)
     expect(sccs.length).toBe(2)
   })
+
+  it('handles self loop', () => {
+    const adj = new Map<number, number[]>([[0, [0]]])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+    expect(sccs[0]).toEqual([0])
+  })
 })

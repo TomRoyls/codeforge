@@ -88,4 +88,9 @@ describe('SubstringCounter', () => {
     expect(sc.countNaive('hello')).toBe(1)
     expect(sc.countNaive('Hello')).toBe(1)
   })
+
+  it('overlapping substrings', () => {
+    const sc = new SubstringCounter('aaa')
+    expect(sc.countNaive('aa')).toBe(2)
+  })
 })
