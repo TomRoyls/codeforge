@@ -115,4 +115,10 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
   })
+
+  it('two disconnected edges not eulerian', () => {
+    const adj = [[1], [0], [3], [2]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(false)
+  })
 })

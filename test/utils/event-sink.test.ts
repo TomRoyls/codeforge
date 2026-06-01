@@ -158,4 +158,12 @@ describe('EventSink', () => {
     const sink = new EventSink<Events>()
     expect(() => sink.emit('click', { x: 0, y: 0 })).not.toThrow()
   })
+
+  it('on registers listener that fires', () => {
+    const sink = new EventSink<Events>()
+    let received = false
+    sink.on('click', () => { received = true })
+    sink.emit('click', { x: 1, y: 2 })
+    expect(received).toBe(true)
+  })
 })

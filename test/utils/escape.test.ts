@@ -82,4 +82,8 @@ describe('escapeMarkdown', () => {
   it('handles empty string', () => {
     expect(escapeMarkdown('')).toBe('')
   })
+
+  it('escapes asterisks', () => {
+    expect(escapeMarkdown('hello *world*')).toBe('hello \\*world\\*')
+  })
 })
