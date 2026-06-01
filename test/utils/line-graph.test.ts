@@ -121,4 +121,14 @@ describe('LineGraph', () => {
     lg.addEdge(2, 3)
     expect(lg.maxDegree()).toBe(2)
   })
+
+  it('triangle line graph is complete', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.addEdge(0, 2)
+    const adj = lg.build()
+    expect(adj.length).toBe(3)
+    expect(lg.maxDegree()).toBe(2)
+  })
 })

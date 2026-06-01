@@ -90,4 +90,10 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'cba')
     expect(lcp.length).toBe(2)
   })
+
+  it('handles repeated characters', () => {
+    const sa = [2, 1, 0]
+    const lcp = LCPArray.build(sa, 'aaa')
+    expect(lcp[0]).toBe(1)
+  })
 })

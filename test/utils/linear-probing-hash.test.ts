@@ -119,4 +119,11 @@ describe('LinearProbingHashTable', () => {
     ht.set('', 42)
     expect(ht.get('')).toBe(42)
   })
+
+  it('handles has after delete', () => {
+    const ht = new LinearProbingHashTable<string, number>(32)
+    ht.set('a', 1)
+    ht.delete('a')
+    expect(ht.has('a')).toBe(false)
+  })
 })
