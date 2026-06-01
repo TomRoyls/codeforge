@@ -100,4 +100,9 @@ describe('WindowTinyLFU', () => {
     w.recordAccess('c')
     expect(w.totalAccessesCount).toBe(3)
   })
+
+  it('unseen key has estimate zero', () => {
+    const w = new WindowTinyLFU(100)
+    expect(w.estimate('unknown')).toBe(0)
+  })
 })

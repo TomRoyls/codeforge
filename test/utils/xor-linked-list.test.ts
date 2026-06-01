@@ -119,4 +119,12 @@ describe('XorLinkedList', () => {
     expect(list.get(5)).toBeUndefined()
     expect(list.get(2)).toBeUndefined()
   })
+
+  it('pushFront then pushBack alternates', () => {
+    const list = new XorLinkedList<number>()
+    list.pushFront(2)
+    list.pushBack(3)
+    list.pushFront(1)
+    expect(list.toArray()).toEqual([1, 2, 3])
+  })
 })

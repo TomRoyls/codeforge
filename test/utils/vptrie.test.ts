@@ -109,4 +109,9 @@ describe('VPTrie', () => {
     expect(result.length).toBe(1)
     expect(result[0]).toEqual([3, 4])
   })
+
+  it('handles findAllWithin empty trie', () => {
+    const vp = new VPTrie(2)
+    expect(vp.findAllWithin([0, 0], 10)).toEqual([])
+  })
 })

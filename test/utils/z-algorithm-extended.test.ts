@@ -65,4 +65,8 @@ describe('ZAlgorithmExtended', () => {
   it('handles repeated single character', () => {
     expect(ZAlgorithmExtended.search('aaaa', 'a')).toEqual([0, 1, 2, 3])
   })
+
+  it('handles empty pattern', () => {
+    expect(ZAlgorithmExtended.search('abc', '')).toEqual([])
+  })
 })
