@@ -130,4 +130,10 @@ describe('TarjanSCC', () => {
     const sccs = TarjanSCC.findSCCs(adj)
     expect(sccs.length).toBe(2)
   })
+
+  it('self loop creates single component', () => {
+    const adj = new Map<number, number[]>([[0, [0]]])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+  })
 })

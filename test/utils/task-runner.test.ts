@@ -160,4 +160,10 @@ describe('runWithConcurrency', () => {
     await runWithConcurrency([], async (x) => { results.push(x) }, 2)
     expect(results).toEqual([])
   })
+
+  it('single task completes', async () => {
+    const results: number[] = []
+    await runWithConcurrency([42], async (x) => { results.push(x) }, 2)
+    expect(results).toEqual([42])
+  })
 })

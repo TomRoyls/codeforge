@@ -87,4 +87,9 @@ describe('TernarySearchContinuous', () => {
     const x = TernarySearchContinuous.minimize((t) => (t - 3) * (t - 3), 0, 10)
     expect(x).toBeCloseTo(3, 1)
   })
+
+  it('maximizes inverted quadratic', () => {
+    const x = TernarySearchContinuous.maximize((t) => -(t - 5) * (t - 5), 0, 10)
+    expect(x).toBeCloseTo(5, 1)
+  })
 })

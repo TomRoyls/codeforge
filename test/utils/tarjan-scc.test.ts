@@ -109,5 +109,11 @@ describe('TarjanSCC', () => {
       const { componentId } = TarjanSCC.condensation(adj)
       expect(new Set(componentId).size).toBe(2)
     })
+
+    it('single node has one component', () => {
+      const adj = [[0]]
+      const { componentId } = TarjanSCC.condensation(adj)
+      expect(componentId.length).toBe(1)
+    })
   })
 })
