@@ -85,4 +85,9 @@ describe('SpiralMatrix', () => {
     expect(m[2]![2]).toBe(25)
     expect(m.flat().length).toBe(25)
   })
+
+  it('1x1 matrix is [[1]]', () => {
+    const m = SpiralMatrix.generate(1)
+    expect(m).toEqual([[1]])
+  })
 })

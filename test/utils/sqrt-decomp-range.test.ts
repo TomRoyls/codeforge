@@ -88,4 +88,10 @@ describe('SqrtDecompRange', () => {
     const sd = new SqrtDecompRange([42])
     expect(sd.rangeSum(0, 0)).toBe(42)
   })
+
+  it('handles point update', () => {
+    const sd = new SqrtDecompRange([1, 2, 3, 4, 5])
+    sd.update(2, 10)
+    expect(sd.rangeSum(0, 4)).toBe(22)
+  })
 })

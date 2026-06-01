@@ -140,4 +140,12 @@ describe('SparseBitSet - iteration', () => {
     expect(bs.size).toBe(0)
     expect(bs.isEmpty).toBe(true)
   })
+
+  it('clear unsets a bit', () => {
+    const bs = new SparseBitSet()
+    bs.set(5)
+    expect(bs.has(5)).toBe(true)
+    bs.clear(5)
+    expect(bs.has(5)).toBe(false)
+  })
 })

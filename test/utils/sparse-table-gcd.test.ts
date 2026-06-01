@@ -84,4 +84,10 @@ describe('SparseTableGCD', () => {
     const st = new SparseTableGCD([7])
     expect(st.query(0, 0)).toBe(7)
   })
+
+  it('handles two elements', () => {
+    const st = new SparseTableGCD([12, 8])
+    expect(st.query(0, 1)).toBe(4)
+    expect(st.query(0, 0)).toBe(12)
+  })
 })

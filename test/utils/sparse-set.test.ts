@@ -130,4 +130,11 @@ describe('SparseSet', () => {
     const vals = [...ss]
     expect(vals.sort()).toEqual([1, 3, 7])
   })
+
+  it('has returns false for missing', () => {
+    const ss = new SparseSet(10)
+    ss.add(5)
+    expect(ss.has(5)).toBe(true)
+    expect(ss.has(3)).toBe(false)
+  })
 })
