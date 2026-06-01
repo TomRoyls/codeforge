@@ -84,4 +84,8 @@ describe('BigIntUtils', () => {
     expect(BigIntUtils.lcm(4n, 6n)).toBe(12n)
     expect(BigIntUtils.lcm(3n, 5n)).toBe(15n)
   })
+
+  it('gcd of identical numbers', () => {
+    expect(BigIntUtils.gcd(7n, 7n)).toBe(7n)
+  })
 })

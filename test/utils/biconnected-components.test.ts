@@ -142,4 +142,13 @@ describe('BiconnectedComponents', () => {
     expect(ap).toContain(1)
     expect(ap).toContain(2)
   })
+
+  it('handles star graph center is articulation', () => {
+    const bc = new BiconnectedComponents(5)
+    bc.addEdge(0, 1)
+    bc.addEdge(0, 2)
+    bc.addEdge(0, 3)
+    bc.addEdge(0, 4)
+    expect(bc.findArticulationPoints()).toEqual([0])
+  })
 })

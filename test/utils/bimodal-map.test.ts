@@ -149,4 +149,12 @@ describe('BimodalMap', () => {
     expect(bm.has('a')).toBe(false)
     expect(bm.has('b')).toBe(true)
   })
+
+  it('size updates after freeze set', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.freeze()
+    bm.set('b', 2)
+    expect(bm.size).toBe(2)
+  })
 })

@@ -125,4 +125,12 @@ describe('BinaryTrie', () => {
     expect(bt.maxXor(0)).toBeGreaterThan(0)
     expect(bt.maxXor(7)).toBeGreaterThan(0)
   })
+
+  it('handles duplicate inserts', () => {
+    const bt = new BinaryTrie(4)
+    bt.insert(5)
+    bt.insert(5)
+    expect(bt.find(5)).toBe(true)
+    expect(bt.size).toBe(2)
+  })
 })

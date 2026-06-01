@@ -75,4 +75,8 @@ describe('BinaryExponentiation', () => {
   it('power with large exponent', () => {
     expect(BinaryExponentiation.power(2n, 10n, 1000n)).toBe(24n)
   })
+
+  it('power of 1 is base mod m', () => {
+    expect(BinaryExponentiation.power(7n, 1n, 100n)).toBe(7n)
+  })
 })
