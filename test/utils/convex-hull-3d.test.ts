@@ -132,4 +132,13 @@ describe('ConvexHull3D', () => {
     expect(c[1]).toBeCloseTo(2, 5)
     expect(c[2]).toBeCloseTo(3, 5)
   })
+
+  it('four coplanar points no volume', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(1, 0, 0)
+    ch.addPoint(1, 1, 0)
+    ch.addPoint(0, 1, 0)
+    expect(ch.convexHullVolume()).toBe(0)
+  })
 })

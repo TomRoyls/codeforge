@@ -73,4 +73,8 @@ describe('CountingInversions', () => {
     const arr = [4, 1, 3, 2]
     expect(CountingInversions.count(arr)).toBe(CountingInversions.countBruteForce(arr))
   })
+
+  it('handles two elements reversed', () => {
+    expect(CountingInversions.count([2, 1])).toBe(1)
+  })
 })

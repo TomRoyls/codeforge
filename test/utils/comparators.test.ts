@@ -96,4 +96,13 @@ describe('Comparators', () => {
     const comp = Comparators.byKey<{ len: number }, number>(x => x.len, Comparators.reverse<number>())
     expect(comp({ len: 1 }, { len: 2 })).toBeGreaterThan(0)
   })
+
+  it('chain with multiple comparators', () => {
+    const comp = Comparators.chain<{ a: number; b: number }>(
+      Comparators.byKey(x => x.a, Comparators.natural<number>()),
+      Comparators.byKey(x => x.b, Comparators.natural<number>()),
+    )
+    expect(comp({ a: 1, b: 2 }, { a: 1, b: 3 })).toBeLessThan(0)
+    expect(comp({ a: 2, b: 1 }, { a: 1, b: 2 })).toBeGreaterThan(0)
+  })
 })

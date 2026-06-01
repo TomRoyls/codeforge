@@ -109,4 +109,11 @@ describe('CountedBloomFilter', () => {
     expect(bf.contains('')).toBe(true)
     expect(bf.count('')).toBeGreaterThanOrEqual(1)
   })
+
+  it('remove then contains returns false', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('x')
+    bf.remove('x')
+    expect(bf.contains('x')).toBe(false)
+  })
 })
