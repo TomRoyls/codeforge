@@ -73,4 +73,9 @@ describe('GoldenRatioSearch', () => {
     const x = GoldenRatioSearch.minimize((x) => Math.pow(x, 2), -5, 5)
     expect(x).toBeCloseTo(0, 2)
   })
+
+  it('maximizes sine function', () => {
+    const x = GoldenRatioSearch.maximize(Math.sin, 0, Math.PI / 2)
+    expect(x).toBeCloseTo(Math.PI / 2, 2)
+  })
 })

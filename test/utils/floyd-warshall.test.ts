@@ -133,4 +133,14 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath([], 1)
     expect(dist[0]![0]).toBe(0)
   })
+
+  it('handles negative weight edge', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 2 },
+      { from: 1, to: 2, weight: -1 },
+      { from: 0, to: 2, weight: 5 },
+    ]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 3)
+    expect(dist[0]![2]).toBe(1)
+  })
 })

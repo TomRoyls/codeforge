@@ -101,4 +101,13 @@ describe('GraphEntropy', () => {
     const ge = new GraphEntropy(1)
     expect(ge.degreeEntropy()).toBe(0)
   })
+
+  it('cycle graph has clustering', () => {
+    const ge = new GraphEntropy(4)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    ge.addEdge(2, 3)
+    ge.addEdge(3, 0)
+    expect(ge.clusteringCoefficient()).toBeGreaterThanOrEqual(0)
+  })
 })

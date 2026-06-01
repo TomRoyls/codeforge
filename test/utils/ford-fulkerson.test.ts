@@ -103,4 +103,12 @@ describe('FordFulkerson', () => {
   it('handles source equals sink', () => {
     expect(FordFulkerson.maxFlow([], 0, 0, 1)).toBe(0)
   })
+
+  it('handles parallel edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 1, capacity: 7 },
+    ]
+    expect(FordFulkerson.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
 })

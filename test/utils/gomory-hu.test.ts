@@ -116,4 +116,13 @@ describe('GomoryHu', () => {
     const gh = new GomoryHu(1)
     expect(gh.minCut(0, 0)).toBe(0)
   })
+
+  it('handles triangle graph', () => {
+    const gh = new GomoryHu(3)
+    gh.addEdge(0, 1, 5)
+    gh.addEdge(1, 2, 5)
+    gh.addEdge(0, 2, 5)
+    const cuts = gh.allPairsMinCut()
+    expect(cuts[0]![1]).toBe(10)
+  })
 })
