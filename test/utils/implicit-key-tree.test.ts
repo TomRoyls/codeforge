@@ -125,4 +125,10 @@ describe('ImplicitKeyTree', () => {
     t.insert(1, 2)
     expect(t.get(5)).toBeUndefined()
   })
+
+  it('length after multiple inserts', () => {
+    const t = new ImplicitKeyTree<number, number>()
+    for (let i = 0; i < 5; i++) t.insert(i, i * 10)
+    expect(t.length).toBe(5)
+  })
 })

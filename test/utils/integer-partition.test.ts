@@ -90,4 +90,8 @@ describe('IntegerPartition', () => {
     expect(IntegerPartition.count(1)).toBe(1)
     expect(IntegerPartition.count(4)).toBe(5)
   })
+
+  it('counts partitions of 5', () => {
+    expect(IntegerPartition.count(5)).toBe(7)
+  })
 })

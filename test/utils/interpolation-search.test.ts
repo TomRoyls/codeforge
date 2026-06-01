@@ -88,4 +88,10 @@ describe('InterpolationSearch', () => {
     expect(InterpolationSearch.search([1, 3], 3)).toBe(1)
     expect(InterpolationSearch.search([1, 3], 2)).toBe(-1)
   })
+
+  it('handles large sorted array', () => {
+    const arr = Array.from({ length: 100 }, (_, i) => i * 2)
+    expect(InterpolationSearch.search(arr, 50)).toBe(25)
+    expect(InterpolationSearch.search(arr, 99)).toBe(-1)
+  })
 })
