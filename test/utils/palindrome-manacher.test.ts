@@ -89,4 +89,10 @@ describe('PalindromeManacher', () => {
     expect(m.isPalindrome(0, 4)).toBe(true)
     expect(m.isPalindrome(1, 3)).toBe(true)
   })
+
+  it('handles single character', () => {
+    const m = new PalindromeManacher('a')
+    expect(m.longestPalindrome().length).toBe(1)
+    expect(m.isPalindrome(0, 0)).toBe(true)
+  })
 })

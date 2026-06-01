@@ -130,4 +130,13 @@ describe('PairHeap', () => {
     expect(h.size).toBe(0)
     expect(h.isEmpty).toBe(true)
   })
+
+  it('handles peek on non-empty', () => {
+    const h = new PairHeap<number>()
+    h.push(5)
+    h.push(3)
+    h.push(7)
+    expect(h.peek()).toBe(3)
+    expect(h.size).toBe(3)
+  })
 })

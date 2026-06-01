@@ -142,4 +142,14 @@ describe('OrderedSet', () => {
     expect(os.toArray()).toEqual(['hello', 'world'])
     expect(os.has('hello')).toBe(true)
   })
+
+  it('handles delete', () => {
+    const os = new OrderedSet<number>()
+    os.add(1)
+    os.add(2)
+    os.add(3)
+    os.delete(2)
+    expect(os.has(2)).toBe(false)
+    expect(os.size).toBe(2)
+  })
 })

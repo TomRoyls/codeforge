@@ -79,4 +79,9 @@ describe('PalindromicTree', () => {
     const pt = PalindromicTree.from('a')
     expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(1)
   })
+
+  it('handles empty string', () => {
+    const pt = PalindromicTree.from('')
+    expect(pt.distinctPalindromes).toBe(0)
+  })
 })
