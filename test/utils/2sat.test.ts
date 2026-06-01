@@ -120,4 +120,13 @@ describe('TwoSAT', () => {
     ts.addClause(0, true, 0, false)
     expect(ts.solve()).not.toBeNull()
   })
+
+  it('handles implication chain', () => {
+    const ts = new TwoSAT(3)
+    ts.addClause(0, true, 1, true)
+    ts.addClause(1, true, 2, true)
+    ts.addClause(2, false, 0, false)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+  })
 })

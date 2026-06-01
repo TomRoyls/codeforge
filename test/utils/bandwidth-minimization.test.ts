@@ -115,4 +115,10 @@ describe('BandwidthMinimization', () => {
     bm.addEdge(0, 1)
     expect(bm.bandwidth()).toBe(1)
   })
+
+  it('handles disconnected nodes', () => {
+    const bm = new BandwidthMinimization(4)
+    bm.addEdge(0, 1)
+    expect(bm.bandwidth()).toBeLessThanOrEqual(3)
+  })
 })

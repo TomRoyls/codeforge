@@ -98,4 +98,10 @@ describe('AhoCorasickMulti', () => {
     expect(result.get(0)).toEqual([1])
     expect(result.get(1)).toEqual([2])
   })
+
+  it('handles pattern appearing multiple times', () => {
+    const ac = new AhoCorasickMulti(['aa'])
+    const result = ac.search('aaaa')
+    expect(result.get(0)).toEqual([1, 2, 3])
+  })
 })

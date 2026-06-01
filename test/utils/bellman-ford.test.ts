@@ -145,4 +145,14 @@ describe('BellmanFord', () => {
     expect(distances.get(0)).toBe(0)
     expect(distances.size).toBe(1)
   })
+
+  it('handles zero weight edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 0 },
+      { from: 1, to: 2, weight: 5 },
+    ]
+    const { distances } = BellmanFord.shortestPath(edges, 3, 0)
+    expect(distances.get(1)).toBe(0)
+    expect(distances.get(2)).toBe(5)
+  })
 })
