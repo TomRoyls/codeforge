@@ -117,4 +117,10 @@ describe('ChinesePostman', () => {
     cp.addEdge(2, 0, 1)
     expect(cp.solve()).toBe(6)
   })
+
+  it('handles two nodes with edge', () => {
+    const cp = new ChinesePostman(2)
+    cp.addEdge(0, 1, 3)
+    expect(cp.solve()).toBe(6)
+  })
 })

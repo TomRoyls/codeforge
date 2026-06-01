@@ -149,4 +149,14 @@ describe('CentroidDecomposition', () => {
     expect(parent.length).toBe(3)
     expect(depth.length).toBe(3)
   })
+
+  it('handles four node star', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    cd.addEdge(0, 3)
+    cd.addEdge(0, 4)
+    const { parent } = cd.decompose()
+    expect(parent.length).toBe(5)
+  })
 })

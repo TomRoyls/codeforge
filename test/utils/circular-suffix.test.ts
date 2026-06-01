@@ -88,4 +88,9 @@ describe('CircularSuffix', () => {
     const cs = CircularSuffix.build('banana')
     expect(cs.suffixArray().length).toBe(6)
   })
+
+  it('empty string suffix array', () => {
+    const cs = CircularSuffix.build('')
+    expect(cs.suffixArray()).toEqual([])
+  })
 })

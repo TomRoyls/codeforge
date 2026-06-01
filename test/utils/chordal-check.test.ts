@@ -128,4 +128,12 @@ describe('ChordalCheck', () => {
     cc.addEdge(3, 4)
     expect(cc.isChordal()).toBe(true)
   })
+
+  it('K4 is chordal', () => {
+    const cc = new ChordalCheck(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        cc.addEdge(i, j)
+    expect(cc.isChordal()).toBe(true)
+  })
 })
