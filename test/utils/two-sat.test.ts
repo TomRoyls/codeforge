@@ -149,4 +149,11 @@ describe('TwoSAT', () => {
     const sat = new TwoSAT(1)
     expect(sat.solve()).not.toBeNull()
   })
+
+  it('two variables with constraint is satisfiable', () => {
+    const sat = new TwoSAT(2)
+    sat.addClause(0, false, 1, false)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+  })
 })

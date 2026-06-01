@@ -104,4 +104,10 @@ describe('VByte', () => {
     const { values: decoded } = VByte.decodeMany(encoded)
     expect(decoded).toEqual([0])
   })
+
+  it('encode and decode single large number', () => {
+    const encoded = VByte.encodeMany([300])
+    const { values: decoded } = VByte.decodeMany(encoded)
+    expect(decoded).toEqual([300])
+  })
 })

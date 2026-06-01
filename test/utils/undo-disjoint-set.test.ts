@@ -161,4 +161,11 @@ describe('UndoDisjointSet', () => {
     expect(dsu.find(0)).toBe(0)
     expect(dsu.components).toBe(1)
   })
+
+  it('two separate nodes have two components', () => {
+    const dsu = new UndoDisjointSet(2)
+    expect(dsu.components).toBe(2)
+    expect(dsu.find(0)).toBe(0)
+    expect(dsu.find(1)).toBe(1)
+  })
 })

@@ -136,4 +136,10 @@ describe('TrieRadix', () => {
     expect(trie.search('hello')).toBe(true)
     expect(trie.search('hell')).toBe(false)
   })
+
+  it('handles empty string', () => {
+    const trie = new TrieRadix()
+    trie.insert('')
+    expect(trie.search('')).toBe(true)
+  })
 })
