@@ -157,4 +157,11 @@ describe('AdjacencyListGraph - topologicalSort', () => {
     const g = new AdjacencyListGraph(1)
     expect(g.topologicalSort()).toEqual([0])
   })
+
+  it('edgeCount tracks edges', () => {
+    const g = new AdjacencyListGraph(3)
+    g.addEdge(0, 1)
+    g.addEdge(1, 2)
+    expect(g.edgeCount).toBeGreaterThanOrEqual(2)
+  })
 })

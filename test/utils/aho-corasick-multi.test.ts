@@ -111,4 +111,10 @@ describe('AhoCorasickMulti', () => {
     expect(result.get(0)).toEqual([0])
     expect(result.get(1)).toEqual([1])
   })
+
+  it('no match returns empty or undefined', () => {
+    const ac = new AhoCorasickMulti(['xyz'])
+    const result = ac.search('abc')
+    expect(result.get(0)?.length ?? 0).toBe(0)
+  })
 })

@@ -138,4 +138,11 @@ describe('TwoSAT', () => {
     expect(result).not.toBeNull()
     if (result) expect(result.length).toBe(3)
   })
+
+  it('empty formula is satisfiable', () => {
+    const ts = new TwoSAT(0)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    expect(result!.length).toBe(0)
+  })
 })
