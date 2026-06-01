@@ -131,4 +131,11 @@ describe('LineGraph', () => {
     expect(adj.length).toBe(3)
     expect(lg.maxDegree()).toBe(2)
   })
+
+  it('handles single edge graph', () => {
+    const lg = new LineGraph(2)
+    lg.addEdge(0, 1)
+    const adj = lg.build()
+    expect(adj.length).toBe(1)
+  })
 })

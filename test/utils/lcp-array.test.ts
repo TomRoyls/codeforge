@@ -96,4 +96,10 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'aaa')
     expect(lcp[0]).toBe(1)
   })
+
+  it('handles single character string', () => {
+    const sa = [0]
+    const lcp = LCPArray.build(sa, 'a')
+    expect(lcp.length).toBe(0)
+  })
 })

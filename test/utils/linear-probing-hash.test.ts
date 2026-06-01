@@ -126,4 +126,12 @@ describe('LinearProbingHashTable', () => {
     ht.delete('a')
     expect(ht.has('a')).toBe(false)
   })
+
+  it('handles update existing key', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('a', 1)
+    ht.set('a', 2)
+    expect(ht.get('a')).toBe(2)
+    expect(ht.size).toBe(1)
+  })
 })

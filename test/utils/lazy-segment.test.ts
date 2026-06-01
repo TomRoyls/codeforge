@@ -114,4 +114,10 @@ describe('LazySegmentTree', () => {
     expect(st.getPoint(3)).toBe(5)
     expect(st.getPoint(4)).toBe(0)
   })
+
+  it('handles range update full range', () => {
+    const st = new LazySegmentTree(5)
+    st.updateRange(0, 4, 3)
+    expect(st.queryRange(0, 4)).toBe(15)
+  })
 })
