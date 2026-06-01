@@ -75,4 +75,8 @@ describe('LongestIncreasingSubsequence', () => {
     const lis = LongestIncreasingSubsequence.find([1, 2, 3, 4, 5])
     expect(lis.length).toBe(5)
   })
+
+  it('handles empty array', () => {
+    expect(LongestIncreasingSubsequence.find([])).toEqual([])
+  })
 })

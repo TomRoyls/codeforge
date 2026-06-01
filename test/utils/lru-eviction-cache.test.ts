@@ -142,4 +142,11 @@ describe('LRUEvictionCache', () => {
     expect(cache.has('a')).toBe(true)
     expect(cache.has('b')).toBe(false)
   })
+
+  it('delete removes key', () => {
+    const cache = new LRUEvictionCache<string, number>(3)
+    cache.set('a', 1)
+    cache.delete('a')
+    expect(cache.has('a')).toBe(false)
+  })
 })

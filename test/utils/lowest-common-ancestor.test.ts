@@ -150,4 +150,14 @@ describe('LowestCommonAncestor', () => {
     const lca = new LowestCommonAncestor(adj, 0)
     expect(lca.query(1, 2)).toBe(1)
   })
+
+  it('lca of root with any node is root', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]],
+      [1, []],
+      [2, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(0, 2)).toBe(0)
+  })
 })

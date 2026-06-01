@@ -134,4 +134,10 @@ describe('LRUTTLCache', () => {
     const cache = new LRUTTLCache<string, number>(3)
     expect(cache.get('missing')).toBeUndefined()
   })
+
+  it('set and get returns value', () => {
+    const cache = new LRUTTLCache<string, number>(3)
+    cache.set('a', 42)
+    expect(cache.get('a')).toBe(42)
+  })
 })
