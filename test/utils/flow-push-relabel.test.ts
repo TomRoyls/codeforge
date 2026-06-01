@@ -129,4 +129,9 @@ describe('FlowPushRelabel', () => {
     const edges = [{ from: 0, to: 1, capacity: 5 }]
     expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(5)
   })
+
+  it('no path gives zero flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    expect(FlowPushRelabel.maxFlow(edges, 1, 0, 2)).toBe(0)
+  })
 })
