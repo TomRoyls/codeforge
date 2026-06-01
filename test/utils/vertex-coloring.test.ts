@@ -98,4 +98,12 @@ describe('VertexColoring', () => {
     vc.addEdge(0, 2)
     expect(vc.chromaticNumber()).toBe(3)
   })
+
+  it('handles star graph', () => {
+    const vc = new VertexColoring(4)
+    vc.addEdge(0, 1)
+    vc.addEdge(0, 2)
+    vc.addEdge(0, 3)
+    expect(vc.chromaticNumber()).toBe(2)
+  })
 })

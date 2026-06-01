@@ -128,4 +128,14 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [1, 0])
     expect(path.length).toBe(2)
   })
+
+  it('handles L-shaped maze', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [0, 2])
+    maze.addPassage([0, 2], [1, 2])
+    maze.addPassage([1, 2], [2, 2])
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path.length).toBe(5)
+  })
 })

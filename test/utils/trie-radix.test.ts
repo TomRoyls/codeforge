@@ -113,4 +113,11 @@ describe('TrieRadix', () => {
     expect(trie.startsWith('hel')).toBe(true)
     expect(trie.startsWith('xyz')).toBe(false)
   })
+
+  it('handles empty string insert', () => {
+    const trie = new TrieRadix()
+    trie.insert('')
+    expect(trie.search('')).toBe(true)
+    expect(trie.startsWith('')).toBe(true)
+  })
 })

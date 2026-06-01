@@ -141,4 +141,13 @@ describe('TypedEventEmitter - max listeners', () => {
     emitter.emit('message', 'second')
     expect(received).toBe('first')
   })
+
+  it('on with multiple handlers', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let sum = 0
+    emitter.on('count', (n) => { sum += n })
+    emitter.on('count', (n) => { sum += n * 10 })
+    emitter.emit('count', 5)
+    expect(sum).toBe(55)
+  })
 })

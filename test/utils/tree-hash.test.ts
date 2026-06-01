@@ -129,4 +129,11 @@ describe('TreeHash', () => {
     const th = new TreeHash(1)
     expect(th.findCenter()).toEqual([0])
   })
+
+  it('handles two node tree hash', () => {
+    const th = new TreeHash(2)
+    th.addEdge(0, 1)
+    expect(th.rootedHash(0)).toBeGreaterThanOrEqual(0)
+    expect(th.rootedHash(1)).toBeGreaterThanOrEqual(0)
+  })
 })
