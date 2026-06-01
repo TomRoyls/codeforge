@@ -117,4 +117,13 @@ describe('DynamicConvexHull', () => {
     ch.add(5, 5)
     expect(ch.getHull().length).toBeGreaterThanOrEqual(0)
   })
+
+  it('square hull area', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(4, 0)
+    ch.add(4, 4)
+    ch.add(0, 4)
+    expect(ch.area).toBe(16)
+  })
 })

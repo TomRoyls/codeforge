@@ -119,4 +119,15 @@ describe('DominatorTree', () => {
     const dom = dt.build(0)
     expect(dom[0]).toBe(0)
   })
+
+  it('two edges to same target', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(2, 3)
+    const dom = dt.build(0)
+    expect(dom[3]).toBe(0)
+    expect(dom[1]).toBe(0)
+  })
 })

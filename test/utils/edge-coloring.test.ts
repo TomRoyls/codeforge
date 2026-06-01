@@ -116,4 +116,12 @@ describe('EdgeColoring', () => {
     const ec = new EdgeColoring(3)
     expect(ec.chromaticIndex()).toBe(0)
   })
+
+  it('handles triangle graph', () => {
+    const ec = new EdgeColoring(3)
+    ec.addEdge(0, 1)
+    ec.addEdge(1, 2)
+    ec.addEdge(0, 2)
+    expect(ec.chromaticIndex()).toBe(3)
+  })
 })
