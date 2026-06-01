@@ -123,4 +123,13 @@ describe('ArtGallery', () => {
     ag.addPoint(0, 4)
     expect(ag.polygonArea()).toBeCloseTo(8, 5)
   })
+
+  it('convex quadrilateral', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.isConvex()).toBe(true)
+  })
 })

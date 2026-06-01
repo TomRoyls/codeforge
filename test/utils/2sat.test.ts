@@ -114,4 +114,10 @@ describe('TwoSAT', () => {
     expect(result).not.toBeNull()
     expect(result!.length).toBe(3)
   })
+
+  it('handles tautology clause', () => {
+    const ts = new TwoSAT(1)
+    ts.addClause(0, true, 0, false)
+    expect(ts.solve()).not.toBeNull()
+  })
 })

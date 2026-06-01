@@ -91,4 +91,11 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('')
     expect(result.size).toBe(0)
   })
+
+  it('handles overlapping patterns', () => {
+    const ac = new AhoCorasickMulti(['ab', 'bc'])
+    const result = ac.search('abc')
+    expect(result.get(0)).toEqual([1])
+    expect(result.get(1)).toEqual([2])
+  })
 })

@@ -139,4 +139,10 @@ describe('BellmanFord', () => {
     const { distances } = BellmanFord.shortestPath([], 1, 0)
     expect(distances.get(0)).toBe(0)
   })
+
+  it('handles single node', () => {
+    const { distances } = BellmanFord.shortestPath([], 1, 0)
+    expect(distances.get(0)).toBe(0)
+    expect(distances.size).toBe(1)
+  })
 })
