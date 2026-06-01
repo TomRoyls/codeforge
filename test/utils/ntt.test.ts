@@ -89,4 +89,9 @@ describe('NTT', () => {
     const result = NTT.multiplyPolynomials([1n, 1n], [1n, 1n])
     expect(result).toEqual([1n, 2n, 1n])
   })
+
+  it('multiplyPolynomials quadratic by constant', () => {
+    const result = NTT.multiplyPolynomials([1n, 2n, 1n], [3n])
+    expect(result).toEqual([3n, 6n, 3n])
+  })
 })

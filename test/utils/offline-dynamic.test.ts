@@ -124,4 +124,12 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(0, 2, 5)
     expect(odc.solve()).toEqual([false])
   })
+
+  it('handles always connected', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 5)
+    odc.addQuery(2, 0, 1)
+    const result = odc.solve()
+    expect(result.length).toBe(1)
+  })
 })

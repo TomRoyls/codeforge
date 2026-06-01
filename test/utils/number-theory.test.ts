@@ -90,4 +90,9 @@ describe('NumberTheory', () => {
     expect(NumberTheory.lcm(4, 6)).toBe(12)
     expect(NumberTheory.lcm(3, 5)).toBe(15)
   })
+
+  it('gcd of prime numbers is 1', () => {
+    expect(NumberTheory.gcd(7, 13)).toBe(1)
+    expect(NumberTheory.gcd(17, 23)).toBe(1)
+  })
 })

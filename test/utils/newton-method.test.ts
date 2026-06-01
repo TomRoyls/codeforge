@@ -131,4 +131,13 @@ describe('NewtonMethod', () => {
     )
     expect(root).toBeCloseTo(0, 8)
   })
+
+  it('finds root of x^2 - 4', () => {
+    const root = NewtonMethod.findRoot(
+      (x) => x * x - 4,
+      (x) => 2 * x,
+      3
+    )
+    expect(Math.abs(root - 2)).toBeLessThan(0.001)
+  })
 })
