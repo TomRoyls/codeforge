@@ -147,4 +147,11 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [3, 0])
     expect(path.length).toBe(4)
   })
+
+  it('start equals end returns single point', () => {
+    const maze = new TremauxMaze()
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [0, 0])
+    expect(path.length).toBeGreaterThanOrEqual(1)
+  })
 })

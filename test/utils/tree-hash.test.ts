@@ -143,4 +143,14 @@ describe('TreeHash', () => {
     th.addEdge(0, 2)
     expect(th.rootedHash(1)).toBe(th.rootedHash(2))
   })
+
+  it('leaf nodes return bigint hashes', () => {
+    const th = new TreeHash(3)
+    th.addEdge(0, 1)
+    th.addEdge(0, 2)
+    const h1 = th.rootedHash(1)
+    const h2 = th.rootedHash(2)
+    expect(typeof h1).toBe('bigint')
+    expect(typeof h2).toBe('bigint')
+  })
 })
