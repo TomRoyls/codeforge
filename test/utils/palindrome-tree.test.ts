@@ -101,4 +101,9 @@ describe('PalindromeTree', () => {
     const pt = new PalindromeTree('a')
     expect(pt.getPalindromeLengths()).toContain(1)
   })
+
+  it('handles empty string', () => {
+    const pt = new PalindromeTree('')
+    expect(pt.getPalindromeLengths()).toEqual([])
+  })
 })

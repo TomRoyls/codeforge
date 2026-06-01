@@ -73,4 +73,9 @@ describe('PartialSort', () => {
     const result = PartialSort.smallestK([5, 3, 1, 4, 2], 3)
     expect(result.sort()).toEqual([1, 2, 3])
   })
+
+  it('smallestK with k=0 returns empty', () => {
+    const result = PartialSort.smallestK([5, 3, 1], 0)
+    expect(result).toEqual([])
+  })
 })
