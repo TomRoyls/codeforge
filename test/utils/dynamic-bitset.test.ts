@@ -107,4 +107,13 @@ describe('DynamicBitset', () => {
     expect(bs.length).toBe(11)
     expect(bs.get(10)).toBe(true)
   })
+
+  it('handles flip operation', () => {
+    const bs = new DynamicBitset(4)
+    bs.set(0)
+    bs.flip(0)
+    expect(bs.get(0)).toBe(false)
+    bs.flip(0)
+    expect(bs.get(0)).toBe(true)
+  })
 })

@@ -126,4 +126,11 @@ describe('DynamicConvexHull', () => {
     ch.add(0, 4)
     expect(ch.area).toBe(16)
   })
+
+  it('handles two points no area', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(5, 5)
+    expect(ch.area).toBe(0)
+  })
 })

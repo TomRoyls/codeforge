@@ -111,4 +111,9 @@ describe('EdmondsBlossom', () => {
     eb.addEdge(1, 2)
     expect(eb.maxMatchingSize()).toBe(1)
   })
+
+  it('handles empty graph', () => {
+    const eb = new EdmondsBlossom(4)
+    expect(eb.maxMatchingSize()).toBe(0)
+  })
 })
