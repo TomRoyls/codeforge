@@ -187,4 +187,15 @@ describe('retryAsync - edge cases', () => {
     }, { maxAttempts: 5, maxDelayMs: 1, onRetry: () => { retryCount++ } })
     expect(retryCount).toBe(2)
   })
+
+  it('resolves immediately on first success', async () => {
+    let calls = 0
+    const result = await retryAsync(async () => {
+      calls++
+      return 'ok'
+    }, { maxAttempts: 3, maxDelayMs: 1 })
+    expect(result.isOk()).toBe(true)
+    expect(result.unwrap()).toBe('ok')
+    expect(calls).toBe(1)
+  })
 })

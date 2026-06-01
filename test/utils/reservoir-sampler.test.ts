@@ -160,4 +160,9 @@ describe('ReservoirSampler', () => {
     sampler.add(3)
     expect(sampler.sample).toEqual([3])
   })
+
+  it('sample returns empty for no items', () => {
+    const sampler = new ReservoirSampler<number>(1)
+    expect(sampler.sample).toEqual([])
+  })
 })

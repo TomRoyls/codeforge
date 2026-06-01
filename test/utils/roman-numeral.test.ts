@@ -74,4 +74,8 @@ describe('RomanNumeral', () => {
     expect(RomanNumeral.toRoman(40)).toBe('XL')
     expect(RomanNumeral.toRoman(90)).toBe('XC')
   })
+
+  it('handles 1', () => {
+    expect(RomanNumeral.toRoman(1)).toBe('I')
+  })
 })
