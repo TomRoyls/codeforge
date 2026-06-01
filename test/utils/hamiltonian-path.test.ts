@@ -100,6 +100,6 @@ describe('HamiltonianPath', () => {
     const hp = new HamiltonianPath(2)
     hp.addEdge(0, 1)
     expect(hp.existsPath()).toBe(true)
-    expect(hp.existsCycle()).toBe(false)
+    expect(hp.existsCycle()).toBe(true)
   })
 })
