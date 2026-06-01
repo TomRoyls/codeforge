@@ -154,4 +154,11 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [0, 0])
     expect(path.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('adjacent cells have a path', () => {
+    const maze = new TremauxMaze(2, 2)
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [1, 0])
+    expect(path.length).toBeGreaterThanOrEqual(2)
+  })
 })

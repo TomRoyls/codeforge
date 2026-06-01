@@ -153,4 +153,11 @@ describe('TreeHash', () => {
     expect(typeof h1).toBe('bigint')
     expect(typeof h2).toBe('bigint')
   })
+
+  it('same tree structure gives same hash', () => {
+    const th = new TreeHash(3)
+    const h1 = th.rootedHash(0)
+    const h2 = th.rootedHash(0)
+    expect(h1).toBe(h2)
+  })
 })

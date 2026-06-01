@@ -86,4 +86,10 @@ describe('TriangularNumber', () => {
     expect(TriangularNumber.isTriangular(10)).toBe(true)
     expect(TriangularNumber.isTriangular(7)).toBe(false)
   })
+
+  it('nth triangular number is correct', () => {
+    expect(TriangularNumber.nth(1)).toBe(1)
+    expect(TriangularNumber.nth(3)).toBe(6)
+    expect(TriangularNumber.nth(4)).toBe(10)
+  })
 })
