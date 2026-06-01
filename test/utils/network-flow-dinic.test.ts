@@ -101,4 +101,10 @@ describe('NetworkFlowDinic', () => {
     nf.addEdge(1, 2, 3)
     expect(nf.maxFlow(0, 2)).toBe(3)
   })
+
+  it('handles two node single edge', () => {
+    const nf = new NetworkFlowDinic(2)
+    nf.addEdge(0, 1, 7)
+    expect(nf.maxFlow(0, 1)).toBe(7)
+  })
 })

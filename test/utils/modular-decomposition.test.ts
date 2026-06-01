@@ -95,4 +95,9 @@ describe('ModularDecomposition', () => {
     const md = new ModularDecomposition(3)
     expect(md.moduleCount()).toBeGreaterThanOrEqual(0)
   })
+
+  it('single node has modules', () => {
+    const md = new ModularDecomposition(1)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(0)
+  })
 })

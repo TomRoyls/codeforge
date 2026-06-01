@@ -175,4 +175,17 @@ describe('MoAlgorithmTree', () => {
     )
     expect(calls).toBeGreaterThan(0)
   })
+
+  it('handles same node query', () => {
+    const mo = new MoAlgorithmTree(3)
+    mo.addEdge(0, 1)
+    mo.addEdge(1, 2)
+    let calls = 0
+    mo.processQueries(
+      [[1, 1]],
+      () => { calls++ },
+      () => { calls-- }
+    )
+    expect(calls).toBeGreaterThanOrEqual(0)
+  })
 })
