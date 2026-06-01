@@ -124,4 +124,13 @@ describe('LowestCommonAncestor', () => {
     expect(lca.query(1, 3)).toBe(1)
     expect(lca.distance(1, 3)).toBe(2)
   })
+
+  it('two-node tree LCA', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(0, 1)).toBe(0)
+    expect(lca.distance(0, 1)).toBe(1)
+  })
 })

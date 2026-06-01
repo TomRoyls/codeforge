@@ -80,4 +80,9 @@ describe('LZCompression', () => {
   it('compressionRatio is 1 for empty', () => {
     expect(LZCompression.compressRatio('')).toBe(1)
   })
+
+  it('round-trip with empty string', () => {
+    const tokens = LZCompression.compress('')
+    expect(LZCompression.decompress(tokens)).toBe('')
+  })
 })

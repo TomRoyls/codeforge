@@ -113,4 +113,12 @@ describe('LineGraph', () => {
     expect(lg.edgeCount()).toBe(0)
     expect(lg.build().length).toBe(0)
   })
+
+  it('path of 3 has maxDegree 2', () => {
+    const lg = new LineGraph(4)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.addEdge(2, 3)
+    expect(lg.maxDegree()).toBe(2)
+  })
 })
