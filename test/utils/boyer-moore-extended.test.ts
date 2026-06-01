@@ -68,4 +68,8 @@ describe('BoyerMooreExtended', () => {
   it('handles pattern at end', () => {
     expect(BoyerMooreExtended.search('xyzabc', 'abc')).toEqual([3])
   })
+
+  it('handles single char pattern', () => {
+    expect(BoyerMooreExtended.search('abc', 'b')).toEqual([1])
+  })
 })

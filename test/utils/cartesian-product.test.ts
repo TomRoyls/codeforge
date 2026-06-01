@@ -80,4 +80,8 @@ describe('CartesianProduct', () => {
     const result = CartesianProduct.generate([1, 2, 3], [4, 5])
     expect(result.length).toBe(CartesianProduct.count(3, 2))
   })
+
+  it('generate with empty array returns empty', () => {
+    expect(CartesianProduct.generate([1, 2], [])).toEqual([])
+  })
 })
