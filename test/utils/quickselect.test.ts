@@ -77,4 +77,8 @@ describe('QuickSelect', () => {
     const result = QuickSelect.partitionAround([5, 3, 1, 4, 2], 2)
     expect(result.left.every(x => x <= 3)).toBe(true)
   })
+
+  it('select handles single element', () => {
+    expect(QuickSelect.select([42], 0)).toBe(42)
+  })
 })

@@ -127,4 +127,12 @@ describe('RadixHeap', () => {
     expect(h.pop()).toBe(3)
     expect(h.pop()).toBe(3)
   })
+
+  it('handles single element', () => {
+    const h = new RadixHeap()
+    h.push(5)
+    expect(h.size).toBe(1)
+    expect(h.pop()).toBe(5)
+    expect(h.isEmpty).toBe(true)
+  })
 })

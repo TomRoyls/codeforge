@@ -99,4 +99,10 @@ describe('RandomWalk', () => {
     expect(walk.length).toBe(6)
     expect(walk[0]).toEqual({ x: 0, y: 0 })
   })
+
+  it('walk1D starts at 0', () => {
+    const walk = RandomWalk.walk1D(3)
+    expect(walk[0]).toBe(0)
+    expect(walk.length).toBe(4)
+  })
 })

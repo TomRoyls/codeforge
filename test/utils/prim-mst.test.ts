@@ -133,4 +133,12 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.totalWeight).toBe(2)
   })
+
+  it('handles single edge', () => {
+    const mst = new PrimMST(2)
+    mst.addEdge(0, 1, 7)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(7)
+    expect(result.edges.length).toBe(1)
+  })
 })
