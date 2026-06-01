@@ -124,4 +124,10 @@ describe('Manacher2D', () => {
     const result = Manacher2D.longestPalindromicSubgrid(grid)
     expect(result.len).toBeGreaterThanOrEqual(1)
   })
+
+  it('handles 1x2 grid', () => {
+    const grid = [['a', 'a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
 })

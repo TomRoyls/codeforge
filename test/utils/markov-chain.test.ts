@@ -115,4 +115,13 @@ describe('MarkovChain', () => {
     mc.train(['a', 'b'])
     expect(mc.getTransitionProbability('a', 'b')).toBeCloseTo(1, 6)
   })
+
+  it('getStates returns source states', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    mc.addTransition('b', 'c')
+    const states = mc.getStates()
+    expect(states).toContain('a')
+    expect(states).toContain('b')
+  })
 })

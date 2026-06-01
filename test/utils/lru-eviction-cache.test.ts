@@ -123,4 +123,13 @@ describe('LRUEvictionCache', () => {
     expect(evicted).toEqual([])
     expect(cache.get('a')).toBe(10)
   })
+
+  it('clear removes all entries', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.clear()
+    expect(cache.size).toBe(0)
+    expect(cache.has('a')).toBe(false)
+  })
 })
