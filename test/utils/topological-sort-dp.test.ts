@@ -129,4 +129,11 @@ describe('TopologicalSortDP', () => {
     const ts = new TopologicalSortDP(1)
     expect(ts.longestPath()).toBe(0)
   })
+
+  it('linear chain has correct longest path', () => {
+    const ts = new TopologicalSortDP(3)
+    ts.addEdge(0, 1)
+    ts.addEdge(1, 2)
+    expect(ts.longestPath()).toBe(2)
+  })
 })
