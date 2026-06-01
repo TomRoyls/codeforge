@@ -105,4 +105,11 @@ describe('WindowTinyLFU', () => {
     const w = new WindowTinyLFU(100)
     expect(w.estimate('unknown')).toBe(0)
   })
+
+  it('recordAccess increases estimate', () => {
+    const w = new WindowTinyLFU(100)
+    w.recordAccess('item')
+    w.recordAccess('item')
+    expect(w.estimate('item')).toBeGreaterThan(0)
+  })
 })

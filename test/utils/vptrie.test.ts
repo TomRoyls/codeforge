@@ -114,4 +114,12 @@ describe('VPTrie', () => {
     const vp = new VPTrie(2)
     expect(vp.findAllWithin([0, 0], 10)).toEqual([])
   })
+
+  it('addPoint and nearest basic', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([1, 1])
+    vp.addPoint([5, 5])
+    const nearest = vp.nearest([2, 2])
+    expect(nearest).toEqual([1, 1])
+  })
 })

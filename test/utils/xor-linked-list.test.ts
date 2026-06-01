@@ -127,4 +127,12 @@ describe('XorLinkedList', () => {
     list.pushFront(1)
     expect(list.toArray()).toEqual([1, 2, 3])
   })
+
+  it('size tracks length', () => {
+    const list = new XorLinkedList<number>()
+    expect(list.size).toBe(0)
+    list.pushBack(1)
+    list.pushBack(2)
+    expect(list.size).toBe(2)
+  })
 })

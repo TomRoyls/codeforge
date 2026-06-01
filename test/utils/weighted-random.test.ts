@@ -217,4 +217,14 @@ describe('WeightedRandom', () => {
     }
     expect(bigCount).toBe(100)
   })
+
+  it('sampleMultiple returns correct count', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', 1)
+    sampler.add('b', 1)
+    sampler.add('c', 1)
+    sampler.build()
+    const samples = sampler.sampleMultiple(3)
+    expect(samples.length).toBe(3)
+  })
 })
