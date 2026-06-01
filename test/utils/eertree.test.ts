@@ -80,4 +80,12 @@ describe('Eertree', () => {
     const tree = Eertree.build('')
     expect(tree.getPalindromes().length).toBe(0)
   })
+
+  it('handles repeated characters', () => {
+    const tree = Eertree.build('aaa')
+    const pals = tree.getPalindromes()
+    expect(pals.length).toBeGreaterThanOrEqual(2)
+    expect(tree.hasPalindrome('a')).toBe(true)
+    expect(tree.hasPalindrome('aa')).toBe(true)
+  })
 })

@@ -80,4 +80,9 @@ describe('ExtendedEuclidean', () => {
     const result = ExtendedEuclidean.solve(42n, 42n)
     expect(result.gcd).toBe(42n)
   })
+
+  it('modular inverse of 1 is 1', () => {
+    const inv = ExtendedEuclidean.modularInverseNumber(1, 7)
+    expect(inv).toBe(1)
+  })
 })

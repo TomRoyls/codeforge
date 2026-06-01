@@ -84,4 +84,11 @@ describe('EliasCoding', () => {
     expect(encoded.length).toBeGreaterThanOrEqual(1)
     expect(EliasCoding.deltaDecode(encoded).value).toBe(1)
   })
+
+  it('delta roundtrip multiple values', () => {
+    for (const n of [2, 4, 8, 16]) {
+      const encoded = EliasCoding.deltaEncode(n)
+      expect(EliasCoding.deltaDecode(encoded).value).toBe(n)
+    }
+  })
 })
