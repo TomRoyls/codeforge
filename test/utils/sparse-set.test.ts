@@ -121,4 +121,13 @@ describe('SparseSet', () => {
     expect(ss.has(0)).toBe(true)
     expect(ss.size).toBe(1)
   })
+
+  it('values returns all inserted', () => {
+    const ss = new SparseSet(10)
+    ss.add(3)
+    ss.add(7)
+    ss.add(1)
+    const vals = [...ss]
+    expect(vals.sort()).toEqual([1, 3, 7])
+  })
 })

@@ -143,4 +143,14 @@ describe('StablePriorityQueue', () => {
     const arr = pq.toArray()
     expect(arr.map(x => x.id)).toEqual([1, 2, 3])
   })
+
+  it('size tracks correctly', () => {
+    const pq = new StablePriorityQueue<number>()
+    expect(pq.size).toBe(0)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.size).toBe(2)
+    pq.dequeue()
+    expect(pq.size).toBe(1)
+  })
 })
