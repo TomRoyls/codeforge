@@ -74,4 +74,8 @@ describe('Combination', () => {
   it('with strings', () => {
     expect(Combination.generate(['a', 'b', 'c'], 2)).toEqual([['a', 'b'], ['a', 'c'], ['b', 'c']])
   })
+
+  it('handles choose 1', () => {
+    expect(Combination.generate([1, 2, 3], 1)).toEqual([[1], [2], [3]])
+  })
 })

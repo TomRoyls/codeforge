@@ -115,4 +115,13 @@ describe('ClosestPairBrute', () => {
     const cp = new ClosestPairBrute()
     expect(cp.findClosest()).toBeNull()
   })
+
+  it('handles equidistant points', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 0)
+    cp.addPoint(2, 0)
+    const result = cp.findClosest()
+    expect(result!.distance).toBe(1)
+  })
 })

@@ -96,4 +96,12 @@ describe('ClosestPair', () => {
   it('distance handles negative coordinates', () => {
     expect(ClosestPair.distance({ x: -1, y: -1 }, { x: 2, y: 3 })).toBeCloseTo(5, 8)
   })
+
+  it('finds closest in grid pattern', () => {
+    const points = [
+      { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 },
+    ]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(1, 8)
+  })
 })
