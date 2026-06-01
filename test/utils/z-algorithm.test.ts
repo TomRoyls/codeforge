@@ -72,4 +72,8 @@ describe('ZAlgorithm', () => {
   it('zFunction for single character', () => {
     expect(ZAlgorithm.zFunction('a')).toEqual([1])
   })
+
+  it('search finds pattern', () => {
+    expect(ZAlgorithm.search('abcabc', 'abc')).toEqual([0, 3])
+  })
 })

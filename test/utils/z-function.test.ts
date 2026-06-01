@@ -80,4 +80,9 @@ describe('ZFunction', () => {
     const zf = new ZFunction('abaaba')
     expect(zf.z[0]).toBe(6)
   })
+
+  it('z array length matches string', () => {
+    const zf = new ZFunction('abc')
+    expect(zf.z.length).toBe(3)
+  })
 })
