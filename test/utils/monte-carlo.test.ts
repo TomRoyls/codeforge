@@ -94,4 +94,9 @@ describe('MonteCarlo', () => {
     const result = MonteCarlo.integrate((x) => x * x, 0, 1, 10000)
     expect(result).toBeCloseTo(1 / 3, 1)
   })
+
+  it('integrates constant function', () => {
+    const result = MonteCarlo.integrate(() => 3, 0, 2, 10000)
+    expect(result).toBeCloseTo(6, 0)
+  })
 })

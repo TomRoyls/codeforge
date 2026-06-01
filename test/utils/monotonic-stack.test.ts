@@ -93,4 +93,8 @@ describe('MonotonicStack', () => {
   it('nextGreaterElements increasing', () => {
     expect(MonotonicStack.nextGreaterElements([1, 2, 3])).toEqual([2, 3, -1])
   })
+
+  it('previousSmallerElements all same', () => {
+    expect(MonotonicStack.previousSmallerElements([3, 3, 3])).toEqual([-1, -1, -1])
+  })
 })

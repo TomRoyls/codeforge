@@ -116,4 +116,11 @@ describe('NetworkFlowDinic', () => {
     nf.addEdge(2, 3, 10)
     expect(nf.maxFlow(0, 3)).toBe(20)
   })
+
+  it('handles parallel edges', () => {
+    const nf = new NetworkFlowDinic(2)
+    nf.addEdge(0, 1, 3)
+    nf.addEdge(0, 1, 7)
+    expect(nf.maxFlow(0, 1)).toBe(10)
+  })
 })

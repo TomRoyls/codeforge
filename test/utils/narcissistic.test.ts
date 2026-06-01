@@ -77,4 +77,12 @@ describe('Narcissistic', () => {
   it('isPerfectDigitalInvariant 3-digit Armstrong', () => {
     expect(Narcissistic.isPerfectDigitalInvariant(371, 3)).toBe(true)
   })
+
+  it('generate up to 1000 includes known values', () => {
+    const result = Narcissistic.generate(1000)
+    expect(result).toContain(153)
+    expect(result).toContain(370)
+    expect(result).toContain(371)
+    expect(result).toContain(407)
+  })
 })
