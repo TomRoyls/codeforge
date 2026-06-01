@@ -155,4 +155,13 @@ describe('TypedEventEmitter - max listeners', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     expect(() => emitter.emit('message', 'test')).not.toThrow()
   })
+
+  it('removeAllListeners clears handlers', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count = 0
+    emitter.on('message', () => { count++ })
+    emitter.removeAllListeners('message')
+    emitter.emit('message', 'test')
+    expect(count).toBe(0)
+  })
 })

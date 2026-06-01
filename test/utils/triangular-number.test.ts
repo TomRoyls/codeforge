@@ -80,4 +80,10 @@ describe('TriangularNumber', () => {
   it('nth handles n=0', () => {
     expect(TriangularNumber.nth(0)).toBe(0)
   })
+
+  it('isTriangular identifies triangular numbers', () => {
+    expect(TriangularNumber.isTriangular(6)).toBe(true)
+    expect(TriangularNumber.isTriangular(10)).toBe(true)
+    expect(TriangularNumber.isTriangular(7)).toBe(false)
+  })
 })

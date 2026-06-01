@@ -128,4 +128,11 @@ describe('TrieMap', () => {
     const trie = new TrieMap<number>()
     expect(trie.keysWithPrefix('a')).toEqual([])
   })
+
+  it('set and get basic', () => {
+    const trie = new TrieMap<number>()
+    trie.set('key', 42)
+    expect(trie.get('key')).toBe(42)
+    expect(trie.get('missing')).toBeUndefined()
+  })
 })

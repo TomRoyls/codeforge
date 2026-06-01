@@ -129,4 +129,11 @@ describe('TrieRadix', () => {
     const words = trie.collectWords('').sort()
     expect(words).toEqual(['car', 'cat', 'dog'])
   })
+
+  it('search checks word existence', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello')
+    expect(trie.search('hello')).toBe(true)
+    expect(trie.search('hell')).toBe(false)
+  })
 })
