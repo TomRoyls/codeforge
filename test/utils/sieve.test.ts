@@ -112,4 +112,9 @@ describe('Sieve', () => {
     expect(sieve.isPrime[4]).toBe(false)
     expect(sieve.isPrime[7]).toBe(true)
   })
+
+  it('primesUpTo returns correct list', () => {
+    const sieve = new Sieve(10)
+    expect(sieve.primes).toEqual([2, 3, 5, 7])
+  })
 })

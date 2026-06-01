@@ -91,4 +91,10 @@ describe('SieveOfEratosthenes', () => {
     expect(factors.get(2)).toBe(2)
     expect(factors.get(3)).toBe(1)
   })
+
+  it('isPrime for small primes', () => {
+    expect(SieveOfEratosthenes.isPrime(2)).toBe(true)
+    expect(SieveOfEratosthenes.isPrime(3)).toBe(true)
+    expect(SieveOfEratosthenes.isPrime(4)).toBe(false)
+  })
 })

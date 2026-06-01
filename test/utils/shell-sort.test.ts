@@ -79,4 +79,8 @@ describe('ShellSort', () => {
   it('handles already sorted', () => {
     expect(ShellSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles empty array', () => {
+    expect(ShellSort.sort([])).toEqual([])
+  })
 })

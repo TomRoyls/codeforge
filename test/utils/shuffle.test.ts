@@ -93,4 +93,8 @@ describe('Shuffle', () => {
     expect(shuffled.length).toBe(5)
     expect([...shuffled].sort()).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('fisherYates single element returns same', () => {
+    expect(Shuffle.fisherYates([42])).toEqual([42])
+  })
 })
