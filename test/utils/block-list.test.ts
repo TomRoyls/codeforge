@@ -104,4 +104,9 @@ describe('BlockList', () => {
     expect(bl.popBack()).toBe(1)
     expect(bl.isEmpty).toBe(true)
   })
+
+  it('handles get on empty', () => {
+    const bl = new BlockList<number>(4)
+    expect(bl.get(0)).toBeUndefined()
+  })
 })

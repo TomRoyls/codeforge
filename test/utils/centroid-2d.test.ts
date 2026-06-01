@@ -86,4 +86,12 @@ describe('Centroid2D', () => {
     expect(c.x).toBe(0)
     expect(c.y).toBe(0)
   })
+
+  it('polygon centroid of square', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 4 }, { x: 0, y: 4 },
+    ])
+    expect(c.x).toBeCloseTo(2, 5)
+    expect(c.y).toBeCloseTo(2, 5)
+  })
 })

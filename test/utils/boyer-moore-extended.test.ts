@@ -60,4 +60,8 @@ describe('BoyerMooreExtended', () => {
   it('handles text shorter than pattern', () => {
     expect(BoyerMooreExtended.search('ab', 'abcdef')).toEqual([])
   })
+
+  it('handles repeated pattern', () => {
+    expect(BoyerMooreExtended.search('aaaaaa', 'aaa')).toEqual([0, 1, 2, 3])
+  })
 })

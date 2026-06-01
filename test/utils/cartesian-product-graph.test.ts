@@ -102,4 +102,11 @@ describe('CartesianProductGraph', () => {
     expect(cg.productNodeCount()).toBe(1)
     expect(cg.productEdgeCount()).toBe(0)
   })
+
+  it('1x2 product with edge', () => {
+    const cg = new CartesianProductGraph(1, 2)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productNodeCount()).toBe(2)
+    expect(cg.areAdjacent([0, 0], [0, 1])).toBe(true)
+  })
 })
