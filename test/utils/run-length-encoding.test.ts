@@ -96,4 +96,9 @@ describe('RunLengthEncoding', () => {
     const encoded = RunLengthEncoding.encode([42])
     expect(RunLengthEncoding.decode(encoded)).toEqual([42])
   })
+
+  it('encodes all same elements efficiently', () => {
+    const encoded = RunLengthEncoding.encode([5, 5, 5, 5, 5])
+    expect(encoded.length).toBe(1)
+  })
 })

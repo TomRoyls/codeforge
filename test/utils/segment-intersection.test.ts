@@ -101,4 +101,9 @@ describe('pointToSegmentDistance', () => {
     const seg = { a: { x: 0, y: 0 }, b: { x: 4, y: 0 } }
     expect(pointToSegmentDistance({ x: 6, y: 0 }, seg)).toBeCloseTo(2, 5)
   })
+
+  it('perpendicular point distance', () => {
+    const seg = { a: { x: 0, y: 0 }, b: { x: 4, y: 0 } }
+    expect(pointToSegmentDistance({ x: 2, y: 3 }, seg)).toBeCloseTo(3, 5)
+  })
 })

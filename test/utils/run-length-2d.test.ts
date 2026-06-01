@@ -91,4 +91,9 @@ describe('RunLength2D', () => {
     const encoded = RunLength2D.encode(grid)
     expect(encoded.length).toBeLessThan(10)
   })
+
+  it('empty grid returns empty encoding', () => {
+    const encoded = RunLength2D.encode([])
+    expect(encoded).toEqual([])
+  })
 })

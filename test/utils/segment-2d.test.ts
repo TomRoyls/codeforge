@@ -112,4 +112,11 @@ describe('SegmentTree2D', () => {
     st.update(1, 1, 42)
     expect(st.query(1, 1, 1, 1)).toBe(42)
   })
+
+  it('query full range returns sum', () => {
+    const st = new SegmentTree2D(2, 2)
+    st.update(0, 0, 10)
+    st.update(1, 1, 20)
+    expect(st.query(0, 0, 1, 1)).toBe(30)
+  })
 })

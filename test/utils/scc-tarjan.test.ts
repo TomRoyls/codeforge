@@ -143,4 +143,12 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(2)
   })
+
+  it('self-loop forms SCC', () => {
+    const scc = new SCCTarjan(2)
+    scc.addEdge(0, 0)
+    scc.addEdge(0, 1)
+    const comps = scc.solve()
+    expect(comps.length).toBeGreaterThanOrEqual(1)
+  })
 })
