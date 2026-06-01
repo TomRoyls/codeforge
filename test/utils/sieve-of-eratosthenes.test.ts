@@ -85,4 +85,10 @@ describe('SieveOfEratosthenes', () => {
     expect(f.get(3)).toBe(2)
     expect(f.get(5)).toBe(1)
   })
+
+  it('factorizes composite correctly', () => {
+    const factors = SieveOfEratosthenes.primeFactors(12)
+    expect(factors.get(2)).toBe(2)
+    expect(factors.get(3)).toBe(1)
+  })
 })

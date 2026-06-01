@@ -86,4 +86,11 @@ describe('Shuffle', () => {
   it('isShuffled handles single element', () => {
     expect(Shuffle.isShuffled([1], [1])).toBe(true)
   })
+
+  it('shuffle returns same length', () => {
+    const arr = [1, 2, 3, 4, 5]
+    const shuffled = Shuffle.fisherYates([...arr])
+    expect(shuffled.length).toBe(5)
+    expect([...shuffled].sort()).toEqual([1, 2, 3, 4, 5])
+  })
 })

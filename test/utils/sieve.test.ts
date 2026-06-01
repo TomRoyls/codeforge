@@ -105,4 +105,11 @@ describe('Sieve', () => {
     expect(sieve.primes[0]).toBe(2)
     expect(sieve.primes[24]).toBe(97)
   })
+
+  it('isPrime property works for small numbers', () => {
+    const sieve = new Sieve(20)
+    expect(sieve.isPrime[2]).toBe(true)
+    expect(sieve.isPrime[4]).toBe(false)
+    expect(sieve.isPrime[7]).toBe(true)
+  })
 })
