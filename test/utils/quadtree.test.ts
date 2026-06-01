@@ -129,4 +129,11 @@ describe('Quadtree', () => {
     }
     expect(qt.size).toBe(100)
   })
+
+  it('query empty region returns empty', () => {
+    const qt = new Quadtree<number>({ x: 0, y: 0, width: 100, height: 100 })
+    qt.insert({ x: 50, y: 50, data: 1 })
+    const results = qt.query({ x: 0, y: 0, width: 10, height: 10 })
+    expect(results.length).toBe(0)
+  })
 })

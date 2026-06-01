@@ -144,4 +144,11 @@ describe('PrioritySearchTree', () => {
     const results = tree.query(0, 50, 50)
     expect(results.length).toBe(51)
   })
+
+  it('query returns empty for no matching points', () => {
+    const tree = new PrioritySearchTree<number>()
+    tree.insert({ x: 10, y: 10, priority: 1, data: 42 })
+    const results = tree.query(100, 200, 50)
+    expect(results.length).toBe(0)
+  })
 })

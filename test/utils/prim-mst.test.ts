@@ -141,4 +141,11 @@ describe('PrimMST', () => {
     expect(result.totalWeight).toBe(7)
     expect(result.edges.length).toBe(1)
   })
+
+  it('single node has empty mst', () => {
+    const mst = new PrimMST(1)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(0)
+    expect(result.edges.length).toBe(0)
+  })
 })
