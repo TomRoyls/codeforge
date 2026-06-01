@@ -116,4 +116,10 @@ describe('EdmondsBlossom', () => {
     const eb = new EdmondsBlossom(4)
     expect(eb.maxMatchingSize()).toBe(0)
   })
+
+  it('handles single edge', () => {
+    const eb = new EdmondsBlossom(2)
+    eb.addEdge(0, 1)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
 })

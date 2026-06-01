@@ -118,4 +118,9 @@ describe('EdmondsKarp', () => {
     ]
     expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
   })
+
+  it('handles single edge', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(5)
+  })
 })

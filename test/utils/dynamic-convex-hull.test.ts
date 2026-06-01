@@ -133,4 +133,12 @@ describe('DynamicConvexHull', () => {
     ch.add(5, 5)
     expect(ch.area).toBe(0)
   })
+
+  it('triangle hull area', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(4, 0)
+    ch.add(0, 4)
+    expect(ch.area).toBe(8)
+  })
 })

@@ -132,4 +132,11 @@ describe('EdgeColoring', () => {
     ec.addEdge(2, 3)
     expect(ec.chromaticIndex()).toBe(2)
   })
+
+  it('handles K3 star', () => {
+    const ec = new EdgeColoring(3)
+    ec.addEdge(0, 1)
+    ec.addEdge(0, 2)
+    expect(ec.chromaticIndex()).toBe(2)
+  })
 })

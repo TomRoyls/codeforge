@@ -93,4 +93,9 @@ describe('Eertree', () => {
     const tree = Eertree.build('')
     expect(tree.getPalindromes().length).toBe(0)
   })
+
+  it('handles single character', () => {
+    const tree = Eertree.build('a')
+    expect(tree.getPalindromes()).toContain('a')
+  })
 })
