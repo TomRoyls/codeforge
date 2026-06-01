@@ -79,4 +79,9 @@ describe('KMPAutomaton', () => {
     const kmp = new KMPAutomaton('xyz')
     expect(kmp.search('abcxyz')).toEqual([3])
   })
+
+  it('handles overlapping matches', () => {
+    const kmp = new KMPAutomaton('aa')
+    expect(kmp.search('aaaa')).toEqual([0, 1, 2])
+  })
 })

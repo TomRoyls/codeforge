@@ -123,4 +123,9 @@ describe('KahnAlgorithm', () => {
     expect(result).not.toBeNull()
     expect(result!.length).toBe(3)
   })
+
+  it('handles empty graph', () => {
+    const kahn = new KahnAlgorithm(0)
+    expect(kahn.sort()).toEqual([])
+  })
 })

@@ -105,4 +105,9 @@ describe('KosarajuSCC', () => {
     ])
     expect(KosarajuSCC.findSCCs(adj).length).toBe(3)
   })
+
+  it('handles two nodes no edges', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, []]])
+    expect(KosarajuSCC.findSCCs(adj).length).toBe(2)
+  })
 })

@@ -70,4 +70,8 @@ describe('Introsort', () => {
     const result = Introsort.sort(arr)
     expect(result).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles single element', () => {
+    expect(Introsort.sort([42])).toEqual([42])
+  })
 })
