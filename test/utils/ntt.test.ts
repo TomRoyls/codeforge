@@ -79,4 +79,9 @@ describe('NTT', () => {
     const result = NTT.multiplyPolynomials([5n], [3n])
     expect(result).toEqual([15n])
   })
+
+  it('multiplyPolynomials by one', () => {
+    const result = NTT.multiplyPolynomials([1n], [1n, 2n, 3n])
+    expect(result).toEqual([1n, 2n, 3n])
+  })
 })

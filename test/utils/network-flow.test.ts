@@ -110,4 +110,13 @@ describe('NetworkFlow', () => {
     const edges = [{ from: 0, to: 1, capacity: 7 }]
     expect(NetworkFlow.maxFlow(edges, 0, 1, 2)).toBe(7)
   })
+
+  it('handles reverse edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 0, capacity: 5 },
+      { from: 1, to: 2, capacity: 10 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 2, 3)).toBe(10)
+  })
 })

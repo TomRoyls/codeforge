@@ -110,4 +110,12 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(1, 4, 5)
     expect(odc.solve()).toEqual([true])
   })
+
+  it('handles multiple queries at different times', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(0, 1, 1)
+    odc.addQuery(0, 1, 5)
+    expect(odc.solve()).toEqual([true, true])
+  })
 })

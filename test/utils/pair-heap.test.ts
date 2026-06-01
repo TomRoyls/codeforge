@@ -112,4 +112,13 @@ describe('PairHeap', () => {
     h.push(2)
     expect(h.pop()).toBe(2)
   })
+
+  it('handles many elements sorted order', () => {
+    const h = new PairHeap<number>()
+    const items = [5, 3, 1, 4, 2]
+    for (const x of items) h.push(x)
+    const sorted: number[] = []
+    while (h.size > 0) sorted.push(h.pop()!)
+    expect(sorted).toEqual([1, 2, 3, 4, 5])
+  })
 })
