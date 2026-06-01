@@ -129,4 +129,9 @@ describe('LRUTTLCache', () => {
     cache.set('c', 3)
     expect(cache.evictions).toBe(2)
   })
+
+  it('handles get for missing key', () => {
+    const cache = new LRUTTLCache<string, number>(3)
+    expect(cache.get('missing')).toBeUndefined()
+  })
 })

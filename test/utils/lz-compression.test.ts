@@ -91,4 +91,9 @@ describe('LZCompression', () => {
     const tokens = LZCompression.compress(data)
     expect(LZCompression.decompress(tokens)).toBe(data)
   })
+
+  it('handles empty string', () => {
+    const tokens = LZCompression.compress('')
+    expect(LZCompression.decompress(tokens)).toBe('')
+  })
 })

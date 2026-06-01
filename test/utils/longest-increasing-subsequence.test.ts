@@ -70,4 +70,9 @@ describe('LongestIncreasingSubsequence', () => {
     const lis = LongestIncreasingSubsequence.find([2, 2, 2, 3, 3])
     expect(lis.length).toBe(2)
   })
+
+  it('handles strictly increasing', () => {
+    const lis = LongestIncreasingSubsequence.find([1, 2, 3, 4, 5])
+    expect(lis.length).toBe(5)
+  })
 })

@@ -132,4 +132,14 @@ describe('LRUEvictionCache', () => {
     expect(cache.size).toBe(0)
     expect(cache.has('a')).toBe(false)
   })
+
+  it('handles re-access updating recency', () => {
+    const cache = new LRUEvictionCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.get('a')
+    cache.set('c', 3)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.has('b')).toBe(false)
+  })
 })
