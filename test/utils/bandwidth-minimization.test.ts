@@ -121,4 +121,12 @@ describe('BandwidthMinimization', () => {
     bm.addEdge(0, 1)
     expect(bm.bandwidth()).toBeLessThanOrEqual(3)
   })
+
+  it('handles star graph', () => {
+    const bm = new BandwidthMinimization(4)
+    bm.addEdge(0, 1)
+    bm.addEdge(0, 2)
+    bm.addEdge(0, 3)
+    expect(bm.bandwidth()).toBeLessThanOrEqual(3)
+  })
 })

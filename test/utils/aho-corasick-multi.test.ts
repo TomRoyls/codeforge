@@ -104,4 +104,11 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('aaaa')
     expect(result.get(0)).toEqual([1, 2, 3])
   })
+
+  it('handles single character patterns', () => {
+    const ac = new AhoCorasickMulti(['a', 'b'])
+    const result = ac.search('ab')
+    expect(result.get(0)).toEqual([0])
+    expect(result.get(1)).toEqual([1])
+  })
 })

@@ -129,4 +129,13 @@ describe('TwoSAT', () => {
     const result = ts.solve()
     expect(result).not.toBeNull()
   })
+
+  it('handles three variable all true', () => {
+    const ts = new TwoSAT(3)
+    ts.addClause(0, true, 1, true)
+    ts.addClause(1, true, 2, true)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    if (result) expect(result.length).toBe(3)
+  })
 })
