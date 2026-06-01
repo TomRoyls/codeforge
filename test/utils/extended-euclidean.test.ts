@@ -97,4 +97,9 @@ describe('ExtendedEuclidean', () => {
     expect(15n * x + 28n * y).toBe(gcd)
     expect(gcd).toBe(1n)
   })
+
+  it('solves gcd of 12 and 8', () => {
+    const { gcd } = ExtendedEuclidean.solve(12n, 8n)
+    expect(gcd).toBe(4n)
+  })
 })

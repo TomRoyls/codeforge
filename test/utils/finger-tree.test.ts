@@ -92,4 +92,9 @@ describe('FingerTree', () => {
     for (let i = 0; i < 5; i++) ft = ft.pushFront(i)
     expect(ft.toArray()).toEqual([4, 3, 2, 1, 0])
   })
+
+  it('empty tree has size 0', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.size).toBe(0)
+  })
 })

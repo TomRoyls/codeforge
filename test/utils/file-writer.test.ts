@@ -140,4 +140,10 @@ describe('writeToFileAtomic', () => {
     writeToFile(testFile, 'short')
     expect(fs.readFileSync(testFile, 'utf8')).toBe('short')
   })
+
+  it('writeToFileAtomic writes content', () => {
+    const testFile = path.join(tmpDir, 'atomic.txt')
+    writeToFileAtomic(testFile, 'atomic content')
+    expect(fs.readFileSync(testFile, 'utf8')).toBe('atomic content')
+  })
 })
