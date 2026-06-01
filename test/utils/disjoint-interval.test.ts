@@ -123,4 +123,9 @@ describe('DisjointInterval', () => {
     di.add(0, 100)
     expect(di.covers(0, 100)).toBe(true)
   })
+
+  it('empty interval covers nothing', () => {
+    const di = new DisjointInterval()
+    expect(di.covers(0, 1)).toBe(false)
+  })
 })

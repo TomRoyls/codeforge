@@ -151,4 +151,10 @@ describe('DisjointSet - stats and clear', () => {
     ds.union(1, 2)
     expect(ds.union(1, 2)).toBe(false)
   })
+
+  it('connected returns false for separate sets', () => {
+    const ds = new DisjointSet<number>()
+    ds.add(1); ds.add(2)
+    expect(ds.connected(1, 2)).toBe(false)
+  })
 })

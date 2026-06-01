@@ -147,4 +147,10 @@ describe('DominatorTree', () => {
     expect(dom[0]).toBe(0)
     expect(dom[1]).toBe(0)
   })
+
+  it('single node dominates itself', () => {
+    const dt = new DominatorTree(1)
+    const dom = dt.build(0)
+    expect(dom[0]).toBe(0)
+  })
 })

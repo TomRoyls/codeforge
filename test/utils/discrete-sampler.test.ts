@@ -120,4 +120,10 @@ describe('DiscreteSampler', () => {
       expect(c).toBeGreaterThan(500)
     }
   })
+
+  it('handles single item', () => {
+    const sampler = new DiscreteSampler([1], [10])
+    const result = sampler.sample()
+    expect(result).toBe(0)
+  })
 })
