@@ -132,4 +132,15 @@ describe('GraphIsomorphism', () => {
     const gi = new GraphIsomorphism(3)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('star graphs isomorphic', () => {
+    const gi = new GraphIsomorphism(4)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(0, 2)
+    gi.addEdgeG1(0, 3)
+    gi.addEdgeG2(1, 0)
+    gi.addEdgeG2(2, 0)
+    gi.addEdgeG2(3, 0)
+    expect(gi.isomorphic()).toBe(true)
+  })
 })

@@ -122,4 +122,11 @@ describe('GraphTraversal', () => {
     const dfsIter = GraphTraversal.dfsIterative(adj, 0)
     expect(new Set(dfs)).toEqual(new Set(dfsIter))
   })
+
+  it('shortestPathBFS unreachable returns empty', () => {
+    const adj = new Map<number, number[]>([
+      [0, []], [1, []],
+    ])
+    expect(GraphTraversal.shortestPathBFS(adj, 0, 1)).toBeNull()
+  })
 })

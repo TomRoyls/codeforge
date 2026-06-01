@@ -122,4 +122,12 @@ describe('HashMapOpen', () => {
     map.delete('a')
     expect(map.has('a')).toBe(false)
   })
+
+  it('handles update existing key', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('a', 2)
+    expect(map.get('a')).toBe(2)
+    expect(map.size).toBe(1)
+  })
 })

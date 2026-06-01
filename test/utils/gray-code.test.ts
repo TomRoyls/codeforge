@@ -90,4 +90,9 @@ describe('GrayCode', () => {
     const numbers = GrayCode.generateNumbers(4)
     expect(numbers).toEqual(strings.map(s => parseInt(s, 2)))
   })
+
+  it('generate 0 bits returns empty', () => {
+    const result = GrayCode.generate(0)
+    expect(result.length).toBe(1)
+  })
 })
