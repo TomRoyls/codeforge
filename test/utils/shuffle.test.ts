@@ -82,4 +82,8 @@ describe('Shuffle', () => {
   it('isShuffled handles empty arrays', () => {
     expect(Shuffle.isShuffled([], [])).toBe(true)
   })
+
+  it('isShuffled handles single element', () => {
+    expect(Shuffle.isShuffled([1], [1])).toBe(true)
+  })
 })

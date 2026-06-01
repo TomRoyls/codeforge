@@ -122,4 +122,13 @@ describe('SkewHeap', () => {
     expect(h.pop()).toBe('apple')
     expect(h.pop()).toBe('banana')
   })
+
+  it('merge empty into non-empty', () => {
+    const h1 = new SkewHeap<number>()
+    h1.push(1)
+    const h2 = new SkewHeap<number>()
+    h1.merge(h2)
+    expect(h1.size).toBe(1)
+    expect(h1.pop()).toBe(1)
+  })
 })

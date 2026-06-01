@@ -71,4 +71,8 @@ describe('ShellSort', () => {
   it('handles floating point', () => {
     expect(ShellSort.sort([3.14, 1.41, 2.72])).toEqual([1.41, 2.72, 3.14])
   })
+
+  it('handles single element', () => {
+    expect(ShellSort.sort([42])).toEqual([42])
+  })
 })

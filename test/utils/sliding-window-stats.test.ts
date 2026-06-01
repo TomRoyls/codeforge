@@ -130,4 +130,12 @@ describe('SlidingWindowStats', () => {
     expect(sw.mean).toBeCloseTo(99)
     expect(sw.total).toBeCloseTo(297)
   })
+
+  it('handles window size 1', () => {
+    const sw = new SlidingWindowStats(1)
+    sw.push(10)
+    sw.push(20)
+    expect(sw.mean).toBe(20)
+    expect(sw.count).toBe(1)
+  })
 })
