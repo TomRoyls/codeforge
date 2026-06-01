@@ -324,4 +324,20 @@ describe('MoAlgorithm', () => {
     )
     expect(answers).toEqual([15])
   })
+
+  it('handles single element array', () => {
+    const data = [42]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      [{ l: 0, r: 0 }],
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state,
+    )
+    expect(answers[0]).toBe(42)
+  })
 })
