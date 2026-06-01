@@ -122,4 +122,14 @@ describe('ConvexHull3D', () => {
     expect(bb.min).toEqual([5, 5, 5])
     expect(bb.max).toEqual([5, 5, 5])
   })
+
+  it('centroid of two points', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(2, 4, 6)
+    const c = ch.centroid()
+    expect(c[0]).toBeCloseTo(1, 5)
+    expect(c[1]).toBeCloseTo(2, 5)
+    expect(c[2]).toBeCloseTo(3, 5)
+  })
 })

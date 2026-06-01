@@ -102,4 +102,13 @@ describe('ConvexHullTrick', () => {
     expect(cht.query(0)).toBe(5)
     expect(cht.query(100)).toBe(5)
   })
+
+  it('handles decreasing slopes min', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(5, 0)
+    cht.addLine(3, 0)
+    cht.addLine(1, 0)
+    expect(cht.query(0)).toBe(0)
+    expect(cht.query(100)).toBe(100)
+  })
 })

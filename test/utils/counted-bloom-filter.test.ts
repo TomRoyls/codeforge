@@ -102,4 +102,11 @@ describe('CountedBloomFilter', () => {
     const bf = new CountedBloomFilter()
     expect(bf.count('absent')).toBe(0)
   })
+
+  it('handles empty string key', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('')
+    expect(bf.contains('')).toBe(true)
+    expect(bf.count('')).toBeGreaterThanOrEqual(1)
+  })
 })

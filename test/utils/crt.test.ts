@@ -79,4 +79,12 @@ describe('ChineseRemainderTheorem', () => {
     expect(result).not.toBeNull()
     expect(result!.remainder % 11).toBe(7)
   })
+
+  it('handles congruence of zero', () => {
+    const result = ChineseRemainderTheorem.solve([0, 0], [3, 5])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 3).toBe(0)
+    expect(result!.remainder % 5).toBe(0)
+    expect(result!.remainder).toBe(0)
+  })
 })
