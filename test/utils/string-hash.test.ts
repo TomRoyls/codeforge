@@ -75,4 +75,9 @@ describe('StringHash', () => {
     const sh = new StringHash('abcdef')
     expect(sh.equals(0, 1, 4, 5)).toBe(false)
   })
+
+  it('handles empty string', () => {
+    const sh = new StringHash('')
+    expect(sh.hash(0, -1)).toBeGreaterThanOrEqual(0)
+  })
 })

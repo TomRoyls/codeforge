@@ -115,4 +115,16 @@ describe('StrongConnectivityContraction', () => {
     const { componentCount } = scc.contract()
     expect(componentCount).toBe(2)
   })
+
+  it('handles complete graph is one component', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 0)
+    scc.addEdge(1, 2)
+    scc.addEdge(2, 1)
+    scc.addEdge(0, 2)
+    scc.addEdge(2, 0)
+    const { componentCount } = scc.contract()
+    expect(componentCount).toBe(1)
+  })
 })

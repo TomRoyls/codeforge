@@ -126,4 +126,13 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([0, 0])
     expect(result.edges.length).toBe(0)
   })
+
+  it('handles star graph with center terminal', () => {
+    const st = new SteinerTree(4)
+    st.addEdge(0, 1, 2)
+    st.addEdge(0, 2, 3)
+    st.addEdge(0, 3, 4)
+    const result = st.approximateSteiner([0, 1, 2])
+    expect(result.totalWeight).toBeLessThanOrEqual(5)
+  })
 })

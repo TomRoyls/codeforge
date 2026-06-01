@@ -98,4 +98,12 @@ describe('StoerWagner', () => {
     const sw = new StoerWagner(3)
     expect(sw.minCut()).toBe(0)
   })
+
+  it('handles chain graph', () => {
+    const sw = new StoerWagner(4)
+    sw.addEdge(0, 1, 5)
+    sw.addEdge(1, 2, 3)
+    sw.addEdge(2, 3, 7)
+    expect(sw.minCut()).toBe(3)
+  })
 })
