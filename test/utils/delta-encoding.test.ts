@@ -93,4 +93,12 @@ describe('DeltaEncoding', () => {
     const encoded = DeltaEncoding.encodeZigzag(arr)
     expect(DeltaEncoding.decodeZigzag(encoded.first, encoded.deltas)).toEqual(arr)
   })
+
+  it('handles single element', () => {
+    const arr = [42]
+    const encoded = DeltaEncoding.encode(arr)
+    expect(encoded.first).toBe(42)
+    expect(encoded.deltas).toEqual([])
+    expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(arr)
+  })
 })

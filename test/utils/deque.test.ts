@@ -138,4 +138,14 @@ describe('Deque', () => {
     for (let i = 0; i < 200; i++) dq.popFront()
     expect(dq.isEmpty).toBe(true)
   })
+
+  it('handles popBack operation', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.pushBack(3)
+    expect(dq.popBack()).toBe(3)
+    expect(dq.back()).toBe(2)
+    expect(dq.size).toBe(2)
+  })
 })

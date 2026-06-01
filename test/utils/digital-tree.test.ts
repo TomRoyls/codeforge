@@ -116,4 +116,12 @@ describe('DigitalTree', () => {
     expect(dt.search('123')).toBe(true)
     expect(dt.startsWith('12')).toBe(true)
   })
+
+  it('handles remove then re-insert', () => {
+    const dt = new DigitalTree()
+    dt.insert('abc')
+    dt.remove('abc')
+    dt.insert('abc')
+    expect(dt.search('abc')).toBe(true)
+  })
 })

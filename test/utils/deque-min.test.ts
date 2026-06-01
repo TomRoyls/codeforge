@@ -130,4 +130,13 @@ describe('DequeMin', () => {
     dq.popFront()
     expect(dq.min).toBe(0)
   })
+
+  it('handles decreasing then increasing', () => {
+    const dq = new DequeMin()
+    dq.pushBack(5)
+    dq.pushBack(3)
+    dq.pushBack(1)
+    dq.pushBack(4)
+    expect(dq.min).toBe(1)
+  })
 })

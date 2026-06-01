@@ -139,4 +139,14 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
     expect(dist[3]).toBe(3)
   })
+
+  it('handles self loop ignored', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 5 },
+      { from: 1, to: 1, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[1]).toBe(5)
+    expect(dist[2]).toBe(Infinity)
+  })
 })
