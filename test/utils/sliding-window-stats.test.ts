@@ -138,4 +138,12 @@ describe('SlidingWindowStats', () => {
     expect(sw.mean).toBe(20)
     expect(sw.count).toBe(1)
   })
+
+  it('variance increases with spread', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(1)
+    sw.push(2)
+    sw.push(10)
+    expect(sw.variance).toBeGreaterThan(0)
+  })
 })

@@ -131,4 +131,14 @@ describe('SkewHeap', () => {
     expect(h1.size).toBe(1)
     expect(h1.pop()).toBe(1)
   })
+
+  it('pop returns elements in order', () => {
+    const h = new SkewHeap<number>()
+    h.push(5)
+    h.push(1)
+    h.push(3)
+    expect(h.pop()).toBe(1)
+    expect(h.pop()).toBe(3)
+    expect(h.pop()).toBe(5)
+  })
 })

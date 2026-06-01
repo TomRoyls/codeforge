@@ -191,4 +191,9 @@ describe('SortedSet', () => {
     expect(set.at(0)!.id).toBe(3)
     expect(set.at(2)!.id).toBe(7)
   })
+
+  it('has returns false for missing', () => {
+    const set = new SortedSet<{ id: number }>((a, b) => a.id - b.id)
+    expect(set.has({ id: 5 })).toBe(false)
+  })
 })

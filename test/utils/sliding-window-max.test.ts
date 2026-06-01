@@ -70,4 +70,8 @@ describe('SlidingWindowMin', () => {
   it('handles decreasing sequence', () => {
     expect(SlidingWindowMax.solveMin([5, 4, 3, 2, 1], 3)).toEqual([3, 2, 1])
   })
+
+  it('solve handles increasing sequence', () => {
+    expect(SlidingWindowMax.solve([1, 2, 3, 4, 5], 3)).toEqual([3, 4, 5])
+  })
 })
