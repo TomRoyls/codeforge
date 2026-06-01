@@ -87,4 +87,11 @@ describe('ChineseRemainderTheorem', () => {
     expect(result!.remainder % 5).toBe(0)
     expect(result!.remainder).toBe(0)
   })
+
+  it('handles two coprime moduli', () => {
+    const result = ChineseRemainderTheorem.solve([2, 3], [3, 5])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 3).toBe(2)
+    expect(result!.remainder % 5).toBe(3)
+  })
 })

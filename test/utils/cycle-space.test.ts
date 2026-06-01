@@ -119,4 +119,13 @@ describe('CycleSpace', () => {
     expect(cs.findCycles()).toEqual([])
     expect(cs.cycleSpaceDimension()).toBe(0)
   })
+
+  it('tree has dimension zero', () => {
+    const cs = new CycleSpace(4)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    cs.addEdge(2, 3)
+    expect(cs.cycleSpaceDimension()).toBe(0)
+    expect(cs.isTree()).toBe(true)
+  })
 })

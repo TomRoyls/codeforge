@@ -87,4 +87,11 @@ describe('CycleSort', () => {
     expect(writes).toBeGreaterThanOrEqual(0)
     expect(arr).toEqual([1, 2, 3])
   })
+
+  it('handles already sorted array', () => {
+    const arr = [1, 2, 3, 4]
+    const writes = CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4])
+    expect(writes).toBe(0)
+  })
 })

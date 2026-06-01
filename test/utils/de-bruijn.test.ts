@@ -90,4 +90,9 @@ describe('DeBruijnSequence', () => {
       expect(doubled.slice(i, i + 3)).toBeTruthy()
     }
   })
+
+  it('binary n=2 has length 4', () => {
+    const seq = DeBruijnSequence.generateBinary(2)
+    expect(seq.length).toBe(4)
+  })
 })

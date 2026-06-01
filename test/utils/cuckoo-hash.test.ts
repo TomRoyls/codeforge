@@ -117,4 +117,11 @@ describe('CuckooHashTable', () => {
     ht.set('', 42)
     expect(ht.get('')).toBe(42)
   })
+
+  it('handles multiple insertions', () => {
+    const ht = new CuckooHashTable<string, number>(32)
+    for (let i = 0; i < 10; i++) ht.set(`key-${i}`, i)
+    expect(ht.size).toBe(10)
+    expect(ht.get('key-5')).toBe(5)
+  })
 })
