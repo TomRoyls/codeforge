@@ -100,4 +100,14 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(0, 0, 5)
     expect(odc.solve()).toEqual([true])
   })
+
+  it('handles star graph', () => {
+    const odc = new OfflineDynamicConnectivity(5)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(0, 2, 0, 10)
+    odc.addEdge(0, 3, 0, 10)
+    odc.addEdge(0, 4, 0, 10)
+    odc.addQuery(1, 4, 5)
+    expect(odc.solve()).toEqual([true])
+  })
 })

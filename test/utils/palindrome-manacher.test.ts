@@ -70,4 +70,10 @@ describe('PalindromeManacher', () => {
     expect(m.isPalindrome(0, 0)).toBe(true)
     expect(m.countAllPalindromes()).toBe(1)
   })
+
+  it('handles two same characters', () => {
+    const m = new PalindromeManacher('aa')
+    expect(m.longestPalindrome().length).toBe(2)
+    expect(m.isPalindrome(0, 1)).toBe(true)
+  })
 })

@@ -104,4 +104,12 @@ describe('PairHeap', () => {
     const h = new PairHeap<number>()
     expect(h.pop()).toBeUndefined()
   })
+
+  it('handles push after pop to empty', () => {
+    const h = new PairHeap<number>()
+    h.push(1)
+    h.pop()
+    h.push(2)
+    expect(h.pop()).toBe(2)
+  })
 })
