@@ -77,4 +77,8 @@ describe('CombSort', () => {
   it('handles floating point', () => {
     expect(CombSort.sort([3.14, 1.41, 2.72])).toEqual([1.41, 2.72, 3.14])
   })
+
+  it('handles single element', () => {
+    expect(CombSort.sort([42])).toEqual([42])
+  })
 })

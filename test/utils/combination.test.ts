@@ -78,4 +78,8 @@ describe('Combination', () => {
   it('handles choose 1', () => {
     expect(Combination.generate([1, 2, 3], 1)).toEqual([[1], [2], [3]])
   })
+
+  it('choose 0 returns empty combination', () => {
+    expect(Combination.generate([1, 2, 3], 0)).toEqual([[]])
+  })
 })

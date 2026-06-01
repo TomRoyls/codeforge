@@ -104,4 +104,10 @@ describe('ClosestPair', () => {
     const result = ClosestPair.find(points)
     expect(result!.distance).toBeCloseTo(1, 8)
   })
+
+  it('handles two points', () => {
+    const points = [{ x: 0, y: 0 }, { x: 3, y: 4 }]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(5, 8)
+  })
 })

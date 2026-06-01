@@ -124,4 +124,13 @@ describe('ClosestPairBrute', () => {
     const result = cp.findClosest()
     expect(result!.distance).toBe(1)
   })
+
+  it('findKNearest with 2 points', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 1)
+    const pairs = cp.findKNearest(1)
+    expect(pairs.length).toBe(1)
+    expect(pairs[0]!.distance).toBeCloseTo(Math.sqrt(2), 5)
+  })
 })
