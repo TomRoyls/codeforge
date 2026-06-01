@@ -123,4 +123,9 @@ describe('ChinesePostman', () => {
     cp.addEdge(0, 1, 3)
     expect(cp.solve()).toBe(6)
   })
+
+  it('single node has zero cost', () => {
+    const cp = new ChinesePostman(1)
+    expect(cp.solve()).toBe(0)
+  })
 })

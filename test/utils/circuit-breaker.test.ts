@@ -161,4 +161,10 @@ describe('CircuitBreaker - canAttempt', () => {
     }
     expect(cb.canAttempt()).toBe(false)
   })
+
+  it('successful call resets failure count', async () => {
+    const cb = new CircuitBreaker({ maxFailures: 2, resetTimeout: 100 })
+    await cb.execute(() => Promise.resolve('ok'))
+    expect(cb.canAttempt()).toBe(true)
+  })
 })
