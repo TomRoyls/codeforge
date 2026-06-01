@@ -111,4 +111,11 @@ describe('TreeDiameter', () => {
     td.addEdge(0, 1)
     expect(td.findDiameter()).toBe(1)
   })
+
+  it('handles three node chain', () => {
+    const td = new TreeDiameter(3)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    expect(td.findDiameter()).toBe(2)
+  })
 })

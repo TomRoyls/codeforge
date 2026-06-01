@@ -109,4 +109,10 @@ describe('TopologicalSortDP', () => {
     expect(ts.longestPath()).toBe(1)
     expect(ts.countPaths()).toBe(2)
   })
+
+  it('handles empty graph', () => {
+    const ts = new TopologicalSortDP(3)
+    expect(ts.longestPath()).toBe(0)
+    expect(ts.countPaths()).toBe(3)
+  })
 })

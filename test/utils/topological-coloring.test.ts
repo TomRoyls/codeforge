@@ -110,4 +110,12 @@ describe('TopologicalColoring', () => {
     tc.addEdge(0, 2)
     expect(tc.chromaticNumber()).toBe(3)
   })
+
+  it('handles K4', () => {
+    const tc = new TopologicalColoring(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        tc.addEdge(i, j)
+    expect(tc.chromaticNumber()).toBe(4)
+  })
 })

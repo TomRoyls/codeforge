@@ -108,4 +108,12 @@ describe('TreeDecomposition', () => {
     td.addEdge(0, 2)
     expect(td.treewidth()).toBe(2)
   })
+
+  it('handles star graph treewidth', () => {
+    const td = new TreeDecomposition(4)
+    td.addEdge(0, 1)
+    td.addEdge(0, 2)
+    td.addEdge(0, 3)
+    expect(td.treewidth()).toBe(1)
+  })
 })
