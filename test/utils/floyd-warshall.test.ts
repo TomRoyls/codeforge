@@ -143,4 +143,14 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath(edges, 3)
     expect(dist[0]![2]).toBe(1)
   })
+
+  it('handles triangle graph', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 2 },
+      { from: 2, to: 0, weight: 3 },
+    ]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 3)
+    expect(dist[0]![2]).toBe(3)
+  })
 })

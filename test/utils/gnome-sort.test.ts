@@ -73,4 +73,8 @@ describe('GnomeSort', () => {
   it('all same elements', () => {
     expect(GnomeSort.sort([5, 5, 5])).toEqual([5, 5, 5])
   })
+
+  it('handles empty array', () => {
+    expect(GnomeSort.sort([])).toEqual([])
+  })
 })

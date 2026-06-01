@@ -78,4 +78,9 @@ describe('GoldenRatioSearch', () => {
     const x = GoldenRatioSearch.maximize(Math.sin, 0, Math.PI / 2)
     expect(x).toBeCloseTo(Math.PI / 2, 2)
   })
+
+  it('minimizes shifted parabola', () => {
+    const x = GoldenRatioSearch.minimize((t) => Math.pow(t - 3, 2), 0, 10)
+    expect(x).toBeCloseTo(3, 2)
+  })
 })

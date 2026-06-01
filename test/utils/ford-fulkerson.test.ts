@@ -111,4 +111,13 @@ describe('FordFulkerson', () => {
     ]
     expect(FordFulkerson.maxFlow(edges, 0, 1, 2)).toBe(10)
   })
+
+  it('handles bottleneck graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 100 },
+      { from: 1, to: 2, capacity: 1 },
+      { from: 2, to: 3, capacity: 100 },
+    ]
+    expect(FordFulkerson.maxFlow(edges, 0, 3, 4)).toBe(1)
+  })
 })

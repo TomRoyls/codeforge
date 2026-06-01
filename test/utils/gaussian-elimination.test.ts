@@ -98,4 +98,8 @@ describe('GaussianElimination', () => {
     expect(result![0]).toBeCloseTo(-2, 8)
     expect(result![1]).toBeCloseTo(2, 8)
   })
+
+  it('rank of identity matrix', () => {
+    expect(GaussianElimination.rank([[1, 0], [0, 1]])).toBe(2)
+  })
 })
