@@ -128,4 +128,13 @@ describe('HeavyHitters', () => {
     const hh = new HeavyHitters<string>()
     expect(hh.getCount('x')).toBe(0)
   })
+
+  it('tracks multiple items with sufficient capacity', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a')
+    hh.add('a')
+    hh.add('b')
+    expect(hh.getCount('a')).toBe(2)
+    expect(hh.getCount('b')).toBe(1)
+  })
 })

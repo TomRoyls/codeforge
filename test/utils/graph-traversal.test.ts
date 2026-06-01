@@ -129,4 +129,10 @@ describe('GraphTraversal', () => {
     ])
     expect(GraphTraversal.shortestPathBFS(adj, 0, 1)).toBeNull()
   })
+
+  it('dfs returns all reachable nodes', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []]])
+    const order = GraphTraversal.dfs(adj, 0)
+    expect(order.sort()).toEqual([0, 1])
+  })
 })

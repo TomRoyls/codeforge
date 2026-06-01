@@ -129,4 +129,11 @@ describe('HamiltonianPath', () => {
     expect(hp.existsCycle()).toBe(true)
     expect(hp.existsPath()).toBe(true)
   })
+
+  it('disconnected graph has no path', () => {
+    const hp = new HamiltonianPath(4)
+    hp.addEdge(0, 1)
+    hp.addEdge(2, 3)
+    expect(hp.existsPath()).toBe(false)
+  })
 })

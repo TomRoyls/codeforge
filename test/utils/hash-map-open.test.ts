@@ -130,4 +130,13 @@ describe('HashMapOpen', () => {
     expect(map.get('a')).toBe(2)
     expect(map.size).toBe(1)
   })
+
+  it('delete reduces size', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    map.delete('a')
+    expect(map.size).toBe(1)
+    expect(map.get('a')).toBeUndefined()
+  })
 })
