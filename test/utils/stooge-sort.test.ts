@@ -76,4 +76,8 @@ describe('StoogeSort', () => {
     const result = StoogeSort.sortWithComparator(items, (a, b) => a.x - b.x)
     expect(result.map(i => i.y)).toEqual(['a', 'b', 'c'])
   })
+
+  it('handles empty array', () => {
+    expect(StoogeSort.sort([])).toEqual([])
+  })
 })

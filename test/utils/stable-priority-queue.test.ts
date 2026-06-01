@@ -153,4 +153,12 @@ describe('StablePriorityQueue', () => {
     pq.dequeue()
     expect(pq.size).toBe(1)
   })
+
+  it('peek returns front without removing', () => {
+    const pq = new StablePriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    expect(pq.peek()).toBe(1)
+    expect(pq.size).toBe(2)
+  })
 })
