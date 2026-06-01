@@ -64,4 +64,9 @@ describe('PalindromicTree', () => {
     const pt = new PalindromicTree('x')
     expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(0)
   })
+
+  it('handles empty string', () => {
+    const pt = new PalindromicTree('')
+    expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(0)
+  })
 })

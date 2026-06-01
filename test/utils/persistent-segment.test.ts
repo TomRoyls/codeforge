@@ -105,4 +105,9 @@ describe('PersistentSegmentTree', () => {
     expect(pst.getPoint(v1, 0)).toBe(42)
     expect(pst.query(v1, 0, 0)).toBe(42)
   })
+
+  it('handles query on initial version', () => {
+    const pst = new PersistentSegmentTree(5)
+    expect(pst.query(0, 0, 4)).toBe(0)
+  })
 })

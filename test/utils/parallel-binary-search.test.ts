@@ -108,4 +108,12 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search(queries)
     expect(results[0]).toBe(5)
   })
+
+  it('handles descending threshold', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= 75 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(75)
+  })
 })

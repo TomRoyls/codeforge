@@ -83,4 +83,11 @@ describe('PersistentArray', () => {
     expect(v1.get(0)).toBe(99)
     expect(v1.get(1)).toBe(2)
   })
+
+  it('set and get single element', () => {
+    const v0 = PersistentArray.from([0])
+    const v1 = v0.set(0, 99)
+    expect(v0.get(0)).toBe(0)
+    expect(v1.get(0)).toBe(99)
+  })
 })
