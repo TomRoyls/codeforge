@@ -113,5 +113,9 @@ describe('LineSweep', () => {
     it('returns 0 for empty', () => {
       expect(LineSweep.totalCoveredLength([])).toBe(0)
     })
+
+    it('single interval returns its length', () => {
+      expect(LineSweep.totalCoveredLength([{ start: 2, end: 5 }])).toBe(4)
+    })
   })
 })

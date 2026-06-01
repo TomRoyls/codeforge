@@ -138,4 +138,10 @@ describe('LineGraph', () => {
     const adj = lg.build()
     expect(adj.length).toBe(1)
   })
+
+  it('no edges gives empty adjacency', () => {
+    const lg = new LineGraph(3)
+    const adj = lg.build()
+    expect(adj.every(a => a.length === 0)).toBe(true)
+  })
 })

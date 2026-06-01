@@ -134,4 +134,13 @@ describe('LinearProbingHashTable', () => {
     expect(ht.get('a')).toBe(2)
     expect(ht.size).toBe(1)
   })
+
+  it('delete removes entry', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('a', 1)
+    ht.set('b', 2)
+    ht.delete('a')
+    expect(ht.get('a')).toBeUndefined()
+    expect(ht.size).toBe(1)
+  })
 })

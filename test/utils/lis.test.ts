@@ -94,4 +94,8 @@ describe('LongestIncreasingSubsequence', () => {
   it('countLIS handles empty array', () => {
     expect(LongestIncreasingSubsequence.countLIS([])).toBe(0)
   })
+
+  it('find for single element', () => {
+    expect(LongestIncreasingSubsequence.find([42])).toEqual([42])
+  })
 })

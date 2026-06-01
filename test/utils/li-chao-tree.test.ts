@@ -124,4 +124,10 @@ describe('LiChaoTree', () => {
     tree.insert(0, 7)
     expect(tree.query(5)).toBe(7)
   })
+
+  it('handles single point query', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(1, 0)
+    expect(tree.query(5)).toBe(5)
+  })
 })
