@@ -117,4 +117,10 @@ describe('BlockList', () => {
     expect(bl.get(0)).toBe(0)
     expect(bl.get(19)).toBe(19)
   })
+
+  it('handles from with single element', () => {
+    const bl = BlockList.from([42], 2)
+    expect(bl.size).toBe(1)
+    expect(bl.get(0)).toBe(42)
+  })
 })

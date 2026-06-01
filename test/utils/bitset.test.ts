@@ -115,4 +115,9 @@ describe('Bitset', () => {
     const bs = new Bitset(42)
     expect(bs.length).toBe(42)
   })
+
+  it('none returns true for empty bitset', () => {
+    const bs = new Bitset(5)
+    expect(bs.none()).toBe(true)
+  })
 })

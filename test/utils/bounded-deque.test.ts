@@ -129,4 +129,13 @@ describe('BoundedDeque', () => {
     expect(evicted).toBe(1)
     expect(dq.toArray()).toEqual([2])
   })
+
+  it('handles pushFront eviction', () => {
+    const dq = new BoundedDeque<number>(2)
+    dq.pushBack(1)
+    dq.pushBack(2)
+    const evicted = dq.pushFront(0)
+    expect(evicted).toBe(2)
+    expect(dq.toArray()).toEqual([0, 1])
+  })
 })

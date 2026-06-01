@@ -152,4 +152,13 @@ describe('BlockCutTree', () => {
     expect(isArticulation[1]).toBe(true)
     expect(isArticulation[2]).toBe(true)
   })
+
+  it('handles triangle no articulation', () => {
+    const bct = new BlockCutTree(3)
+    bct.addEdge(0, 1)
+    bct.addEdge(1, 2)
+    bct.addEdge(2, 0)
+    const { isArticulation } = bct.build()
+    expect(isArticulation.every(v => !v)).toBe(true)
+  })
 })

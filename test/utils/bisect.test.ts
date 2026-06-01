@@ -82,4 +82,8 @@ describe('Bisect', () => {
     expect(Bisect.bisectLeft([1, 2, 2, 2, 3], 2)).toBe(1)
     expect(Bisect.bisectRight([1, 2, 2, 2, 3], 2)).toBe(4)
   })
+
+  it('bisectLeft for value less than all', () => {
+    expect(Bisect.bisectLeft([5, 10, 15], 0)).toBe(0)
+  })
 })
