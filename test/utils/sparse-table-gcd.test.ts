@@ -69,4 +69,9 @@ describe('SparseTableGCD', () => {
     const st = new SparseTableGCD([7, 13])
     expect(st.query(0, 1)).toBe(1)
   })
+
+  it('handles all same values', () => {
+    const st = new SparseTableGCD([6, 6, 6, 6])
+    expect(st.query(0, 3)).toBe(6)
+  })
 })

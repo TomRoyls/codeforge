@@ -73,4 +73,11 @@ describe('SquareDecomposition', () => {
     const sd = new SquareDecomposition([42])
     expect(sd.query(0, 0)).toBe(42)
   })
+
+  it('handles update then query', () => {
+    const sd = new SquareDecomposition([1, 2, 3])
+    sd.update(1, 10)
+    expect(sd.query(0, 2)).toBe(14)
+    expect(sd.get(1)).toBe(10)
+  })
 })

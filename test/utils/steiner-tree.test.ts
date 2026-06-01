@@ -119,4 +119,11 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([1])
     expect(result.edges.length).toBe(0)
   })
+
+  it('handles two terminal same node', () => {
+    const st = new SteinerTree(3)
+    st.addEdge(0, 1, 5)
+    const result = st.approximateSteiner([0, 0])
+    expect(result.edges.length).toBe(0)
+  })
 })

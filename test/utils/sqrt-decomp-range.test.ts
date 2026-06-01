@@ -72,4 +72,9 @@ describe('SqrtDecompRange', () => {
     const sd = new SqrtDecompRange([])
     expect(sd.length).toBe(0)
   })
+
+  it('handles single element', () => {
+    const sd = new SqrtDecompRange([42])
+    expect(sd.rangeSum(0, 0)).toBe(42)
+  })
 })
