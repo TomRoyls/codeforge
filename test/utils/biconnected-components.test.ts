@@ -132,4 +132,14 @@ describe('BiconnectedComponents', () => {
     expect(bc.findArticulationPoints()).toEqual([])
     expect(bc.findComponents().length).toBe(1)
   })
+
+  it('handles chain graph articulation', () => {
+    const bc = new BiconnectedComponents(4)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 3)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toContain(1)
+    expect(ap).toContain(2)
+  })
 })

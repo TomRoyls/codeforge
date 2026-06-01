@@ -116,4 +116,13 @@ describe('BinaryTrie', () => {
     expect(bt.find(7)).toBe(true)
     expect(bt.size).toBe(1)
   })
+
+  it('handles maxXor with multiple values', () => {
+    const bt = new BinaryTrie(4)
+    bt.insert(3)
+    bt.insert(5)
+    bt.insert(10)
+    expect(bt.maxXor(0)).toBeGreaterThan(0)
+    expect(bt.maxXor(7)).toBeGreaterThan(0)
+  })
 })

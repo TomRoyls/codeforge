@@ -139,4 +139,14 @@ describe('BimodalMap', () => {
     const entries = [...bm.entries()]
     expect(entries).toEqual([['b', 2]])
   })
+
+  it('has returns false after delete', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.freeze()
+    bm.delete('a')
+    expect(bm.has('a')).toBe(false)
+    expect(bm.has('b')).toBe(true)
+  })
 })

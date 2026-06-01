@@ -79,4 +79,9 @@ describe('BigIntUtils', () => {
     expect(BigIntUtils.gcd(15n, 28n)).toBe(1n)
     expect(BigIntUtils.gcd(12n, 8n)).toBe(4n)
   })
+
+  it('lcm works', () => {
+    expect(BigIntUtils.lcm(4n, 6n)).toBe(12n)
+    expect(BigIntUtils.lcm(3n, 5n)).toBe(15n)
+  })
 })
