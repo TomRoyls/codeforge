@@ -90,4 +90,12 @@ describe('VertexColoring', () => {
     const vc = new VertexColoring(1)
     expect(vc.maxDegree()).toBe(0)
   })
+
+  it('handles K3', () => {
+    const vc = new VertexColoring(3)
+    vc.addEdge(0, 1)
+    vc.addEdge(1, 2)
+    vc.addEdge(0, 2)
+    expect(vc.chromaticNumber()).toBe(3)
+  })
 })

@@ -96,4 +96,9 @@ describe('VPTrie', () => {
     vp.addPoint([5, 5])
     expect(vp.nearest([0, 0])).toEqual([5, 5])
   })
+
+  it('handles empty trie nearest', () => {
+    const vp = new VPTrie(2)
+    expect(vp.nearest([0, 0])).toBeNull()
+  })
 })

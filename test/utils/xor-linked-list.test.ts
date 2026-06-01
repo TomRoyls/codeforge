@@ -103,4 +103,12 @@ describe('XorLinkedList', () => {
     expect(list.get(0)).toBeUndefined()
     expect(list.size).toBe(0)
   })
+
+  it('toArrayReverse matches reverse of toArray', () => {
+    const list = new XorLinkedList<number>()
+    list.pushBack(1)
+    list.pushBack(2)
+    list.pushBack(3)
+    expect(list.toArrayReverse()).toEqual([3, 2, 1])
+  })
 })

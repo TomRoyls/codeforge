@@ -132,4 +132,13 @@ describe('TypedEventEmitter - max listeners', () => {
     emitter.off('message', () => {})
     expect(emitter.listenerCount('message')).toBe(0)
   })
+
+  it('once with multiple events', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let received = ''
+    emitter.once('message', (msg) => { received = msg })
+    emitter.emit('message', 'first')
+    emitter.emit('message', 'second')
+    expect(received).toBe('first')
+  })
 })
