@@ -129,4 +129,9 @@ describe('BandwidthMinimization', () => {
     bm.addEdge(0, 3)
     expect(bm.bandwidth()).toBeLessThanOrEqual(3)
   })
+
+  it('single node has zero bandwidth', () => {
+    const bm = new BandwidthMinimization(1)
+    expect(bm.bandwidth()).toBe(0)
+  })
 })

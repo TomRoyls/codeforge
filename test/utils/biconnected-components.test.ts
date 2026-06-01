@@ -151,4 +151,12 @@ describe('BiconnectedComponents', () => {
     bc.addEdge(0, 4)
     expect(bc.findArticulationPoints()).toEqual([0])
   })
+
+  it('triangle has no articulation points', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(0, 2)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
 })
