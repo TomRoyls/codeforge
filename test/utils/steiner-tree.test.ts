@@ -151,4 +151,11 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([0])
     expect(result.totalWeight).toBe(0)
   })
+
+  it('single edge with both terminals', () => {
+    const st = new SteinerTree(2)
+    st.addEdge(0, 1, 5)
+    const result = st.approximateSteiner([0, 1])
+    expect(result.totalWeight).toBe(5)
+  })
 })

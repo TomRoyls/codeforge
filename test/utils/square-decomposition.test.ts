@@ -98,4 +98,10 @@ describe('SquareDecomposition', () => {
     expect(sd.get(1)).toBe(10)
     expect(sd.query(0, 3)).toBe(18)
   })
+
+  it('get returns initial values', () => {
+    const sd = new SquareDecomposition([10, 20, 30])
+    expect(sd.get(0)).toBe(10)
+    expect(sd.get(2)).toBe(30)
+  })
 })

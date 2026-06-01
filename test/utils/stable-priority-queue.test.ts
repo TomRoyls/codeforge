@@ -161,4 +161,14 @@ describe('StablePriorityQueue', () => {
     expect(pq.peek()).toBe(1)
     expect(pq.size).toBe(2)
   })
+
+  it('dequeue returns in priority order', () => {
+    const pq = new StablePriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.dequeue()).toBe(1)
+    expect(pq.dequeue()).toBe(2)
+    expect(pq.dequeue()).toBe(3)
+  })
 })
