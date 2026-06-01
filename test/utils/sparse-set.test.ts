@@ -114,4 +114,11 @@ describe('SparseSet', () => {
     for (const v of ss) result.push(v)
     expect(result).toEqual([])
   })
+
+  it('add and has for zero', () => {
+    const ss = new SparseSet(5)
+    ss.add(0)
+    expect(ss.has(0)).toBe(true)
+    expect(ss.size).toBe(1)
+  })
 })

@@ -113,4 +113,13 @@ describe('SkewHeap', () => {
     h.push(2)
     expect(h.pop()).toBe(2)
   })
+
+  it('handles strings with comparator', () => {
+    const h = new SkewHeap<string>((a, b) => a.localeCompare(b))
+    h.push('cherry')
+    h.push('apple')
+    h.push('banana')
+    expect(h.pop()).toBe('apple')
+    expect(h.pop()).toBe('banana')
+  })
 })
