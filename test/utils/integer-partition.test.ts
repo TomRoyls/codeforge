@@ -85,4 +85,9 @@ describe('IntegerPartition', () => {
     const result = IntegerPartition.generateDistinct(6)
     expect(result.length).toBe(4)
   })
+
+  it('counts partitions correctly', () => {
+    expect(IntegerPartition.count(1)).toBe(1)
+    expect(IntegerPartition.count(4)).toBe(5)
+  })
 })

@@ -114,4 +114,11 @@ describe('Hungarian', () => {
     ])
     expect(totalCost).toBeLessThanOrEqual(4)
   })
+
+  it('handles 3x2 rectangular', () => {
+    const { totalCost } = Hungarian.solve([
+      [1, 10], [10, 1], [2, 2],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(3)
+  })
 })

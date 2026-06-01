@@ -113,4 +113,12 @@ describe('IntervalGraph', () => {
     ig.addInterval(3, 6)
     expect(ig.maxOverlap()).toBeLessThanOrEqual(2)
   })
+
+  it('nested intervals have max overlap', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 10)
+    ig.addInterval(2, 8)
+    ig.addInterval(4, 6)
+    expect(ig.maxOverlap()).toBe(3)
+  })
 })

@@ -82,4 +82,10 @@ describe('InterpolationSearch', () => {
     expect(InterpolationSearch.search(arr, 500)).toBe(250)
     expect(InterpolationSearch.search(arr, 501)).toBe(-1)
   })
+
+  it('handles two element array', () => {
+    expect(InterpolationSearch.search([1, 3], 1)).toBe(0)
+    expect(InterpolationSearch.search([1, 3], 3)).toBe(1)
+    expect(InterpolationSearch.search([1, 3], 2)).toBe(-1)
+  })
 })

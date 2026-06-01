@@ -118,4 +118,11 @@ describe('ImplicitKeyTree', () => {
     t.remove(0)
     expect(t.length).toBe(1)
   })
+
+  it('handles get out of bounds', () => {
+    const t = new ImplicitKeyTree()
+    t.insert(0, 1)
+    t.insert(1, 2)
+    expect(t.get(5)).toBeUndefined()
+  })
 })
