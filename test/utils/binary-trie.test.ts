@@ -106,4 +106,14 @@ describe('BinaryTrie', () => {
     expect(bt.size).toBe(0)
     expect(bt.find(5)).toBe(false)
   })
+
+  it('handles multiple insert remove', () => {
+    const bt = new BinaryTrie(4)
+    bt.insert(3)
+    bt.insert(7)
+    bt.remove(3)
+    expect(bt.find(3)).toBe(false)
+    expect(bt.find(7)).toBe(true)
+    expect(bt.size).toBe(1)
+  })
 })

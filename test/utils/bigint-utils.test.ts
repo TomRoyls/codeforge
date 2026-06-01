@@ -74,4 +74,9 @@ describe('BigIntUtils', () => {
   it('modInverse throws for non-coprime', () => {
     expect(() => BigIntUtils.modInverse(2n, 4n)).toThrow()
   })
+
+  it('gcd works for coprime', () => {
+    expect(BigIntUtils.gcd(15n, 28n)).toBe(1n)
+    expect(BigIntUtils.gcd(12n, 8n)).toBe(4n)
+  })
 })

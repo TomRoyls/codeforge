@@ -67,4 +67,8 @@ describe('BinaryExponentiation', () => {
   it('power of zero is one', () => {
     expect(BinaryExponentiation.power(5n, 0n, 100n)).toBe(1n)
   })
+
+  it('power with modulus 1 is always 0', () => {
+    expect(BinaryExponentiation.power(123n, 456n, 1n)).toBe(0n)
+  })
 })

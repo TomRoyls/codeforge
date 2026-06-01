@@ -132,4 +132,14 @@ describe('BlockCutTree', () => {
     const { isArticulation } = bct.build()
     expect(isArticulation.every(v => !v)).toBe(true)
   })
+
+  it('handles star graph', () => {
+    const bct = new BlockCutTree(5)
+    bct.addEdge(0, 1)
+    bct.addEdge(0, 2)
+    bct.addEdge(0, 3)
+    bct.addEdge(0, 4)
+    const { isArticulation } = bct.build()
+    expect(isArticulation[0]).toBe(true)
+  })
 })

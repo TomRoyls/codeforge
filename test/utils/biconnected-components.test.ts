@@ -125,4 +125,11 @@ describe('BiconnectedComponents', () => {
     const ap = bc.findArticulationPoints()
     expect(ap).toEqual([])
   })
+
+  it('handles single edge graph', () => {
+    const bc = new BiconnectedComponents(2)
+    bc.addEdge(0, 1)
+    expect(bc.findArticulationPoints()).toEqual([])
+    expect(bc.findComponents().length).toBe(1)
+  })
 })
