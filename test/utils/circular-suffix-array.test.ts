@@ -123,4 +123,9 @@ describe('CircularSuffixArray', () => {
       expect(csa.rank(csa.index(i)!)).toBe(i)
     }
   })
+
+  it('single character', () => {
+    const csa = new CircularSuffixArray('a')
+    expect(csa.index(0)).toBe(0)
+  })
 })

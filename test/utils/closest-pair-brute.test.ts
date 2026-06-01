@@ -133,4 +133,12 @@ describe('ClosestPairBrute', () => {
     expect(pairs.length).toBe(1)
     expect(pairs[0]!.distance).toBeCloseTo(Math.sqrt(2), 5)
   })
+
+  it('constructor accepts points', () => {
+    const cp = new ClosestPairBrute([
+      { x: 0, y: 0 },
+      { x: 3, y: 4 },
+    ])
+    expect(cp).toBeDefined()
+  })
 })

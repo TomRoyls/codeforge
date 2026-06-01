@@ -194,4 +194,13 @@ describe('CircularDeque', () => {
     for (let i = 0; i < 10; i++) expect(deque.popFront()).toBe(i)
     expect(deque.isEmpty()).toBe(true)
   })
+
+  it('pushFront and popBack work correctly', () => {
+    const deque = new CircularDeque<number>(10)
+    deque.pushFront(3)
+    deque.pushFront(2)
+    deque.pushFront(1)
+    expect(deque.popBack()).toBe(3)
+    expect(deque.popBack()).toBe(2)
+  })
 })
