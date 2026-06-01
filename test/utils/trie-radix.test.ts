@@ -120,4 +120,13 @@ describe('TrieRadix', () => {
     expect(trie.search('')).toBe(true)
     expect(trie.startsWith('')).toBe(true)
   })
+
+  it('collectWords returns all inserted words', () => {
+    const trie = new TrieRadix()
+    trie.insert('cat')
+    trie.insert('car')
+    trie.insert('dog')
+    const words = trie.collectWords('').sort()
+    expect(words).toEqual(['car', 'cat', 'dog'])
+  })
 })

@@ -138,4 +138,12 @@ describe('VirtualTree', () => {
     expect(lca(1, 2)).toBe(0)
     expect(vtree.has(0)).toBe(true)
   })
+
+  it('handles adjacent nodes in chain', () => {
+    const vt = new VirtualTree(3)
+    vt.addEdge(0, 1)
+    vt.addEdge(1, 2)
+    const { lca } = vt.build([1, 2])
+    expect(lca(1, 2)).toBe(1)
+  })
 })

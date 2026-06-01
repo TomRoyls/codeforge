@@ -150,4 +150,9 @@ describe('TypedEventEmitter - max listeners', () => {
     emitter.emit('count', 5)
     expect(sum).toBe(55)
   })
+
+  it('emit with no listeners does not throw', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    expect(() => emitter.emit('message', 'test')).not.toThrow()
+  })
 })

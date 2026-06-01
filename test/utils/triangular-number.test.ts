@@ -76,4 +76,8 @@ describe('TriangularNumber', () => {
   it('nth handles large n', () => {
     expect(TriangularNumber.nth(1000)).toBe(500500)
   })
+
+  it('nth handles n=0', () => {
+    expect(TriangularNumber.nth(0)).toBe(0)
+  })
 })
