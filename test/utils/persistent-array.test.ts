@@ -103,4 +103,13 @@ describe('PersistentArray', () => {
     const v0 = PersistentArray.from([])
     expect(v0.get(0)).toBeUndefined()
   })
+
+  it('handles set multiple versions', () => {
+    const v0 = PersistentArray.from([1, 2, 3])
+    const v1 = v0.set(0, 10)
+    const v2 = v0.set(0, 20)
+    expect(v0.get(0)).toBe(1)
+    expect(v1.get(0)).toBe(10)
+    expect(v2.get(0)).toBe(20)
+  })
 })

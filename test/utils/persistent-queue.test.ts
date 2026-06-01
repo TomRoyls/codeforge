@@ -126,4 +126,10 @@ describe('PersistentQueue', () => {
     expect(r.value).toBe(42)
     expect(r.queue.isEmpty).toBe(true)
   })
+
+  it('handles multiple enqueues', () => {
+    let q = PersistentQueue.create<number>()
+    q = q.enqueue(1).enqueue(2).enqueue(3)
+    expect(q.size).toBe(3)
+  })
 })

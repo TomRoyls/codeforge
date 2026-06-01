@@ -128,4 +128,11 @@ describe('PersistentSegmentTree', () => {
     const v4 = pst.update(v3, 3, 4)
     expect(pst.query(v4, 0, 3)).toBe(10)
   })
+
+  it('handles point update on small tree', () => {
+    const pst = new PersistentSegmentTree(4)
+    expect(pst.query(0, 0, 0)).toBe(0)
+    pst.update(0, 0, 5)
+    expect(pst.query(1, 0, 0)).toBe(5)
+  })
 })
