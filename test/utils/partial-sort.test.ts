@@ -68,4 +68,9 @@ describe('PartialSort', () => {
   it('partitionPoint finds first false', () => {
     expect(PartialSort.partitionPoint([1, 2, 3, 4, 5], (x) => x < 3)).toBe(2)
   })
+
+  it('smallestK returns correct elements', () => {
+    const result = PartialSort.smallestK([5, 3, 1, 4, 2], 3)
+    expect(result.sort()).toEqual([1, 2, 3])
+  })
 })

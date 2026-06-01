@@ -130,4 +130,12 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search([])
     expect(results).toEqual([])
   })
+
+  it('handles single query', () => {
+    const results = ParallelBinarySearch.search([
+      { lo: 0, hi: 10, check: (x: number) => x >= 5 },
+    ])
+    expect(results.length).toBe(1)
+    expect(results[0]).toBeGreaterThanOrEqual(0)
+  })
 })

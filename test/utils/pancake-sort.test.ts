@@ -78,4 +78,8 @@ describe('PancakeSort', () => {
       expect(result[i]!).toBeGreaterThanOrEqual(result[i - 1]!)
     }
   })
+
+  it('handles single element', () => {
+    expect(PancakeSort.sort([42])).toEqual([42])
+  })
 })

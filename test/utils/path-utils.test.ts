@@ -105,4 +105,8 @@ describe('path-utils', () => {
     const result = resolvePath('/this/does/not/exist')
     expect(result.startsWith('/')).toBe(true)
   })
+
+  it('resolveAndValidatePath throws for non-existent', () => {
+    expect(() => resolveAndValidatePath('/no/such/path/ever')).toThrow()
+  })
 })

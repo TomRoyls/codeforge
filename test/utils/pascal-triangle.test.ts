@@ -81,4 +81,9 @@ describe('PascalTriangle', () => {
   it('row 0 is [1]', () => {
     expect(PascalTriangle.row(0)).toEqual([1])
   })
+
+  it('row 4 sum is 16', () => {
+    const row = PascalTriangle.row(4)
+    expect(row.reduce((a, b) => a + b, 0)).toBe(16)
+  })
 })
