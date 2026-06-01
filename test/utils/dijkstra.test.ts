@@ -167,4 +167,13 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(1)).toBe(7)
   })
+
+  it('handles two node graph with path reconstruction', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 3 }]],
+      [1, []],
+    ])
+    const { parents } = Dijkstra.shortestPath(adj, 0)
+    expect(Dijkstra.reconstructPath(parents, 0, 1)).toEqual([0, 1])
+  })
 })

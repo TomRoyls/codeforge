@@ -148,4 +148,9 @@ describe('Deque', () => {
     expect(dq.back()).toBe(2)
     expect(dq.size).toBe(2)
   })
+
+  it('handles isEmpty on new deque', () => {
+    const dq = new Deque<number>()
+    expect(dq.isEmpty).toBe(true)
+  })
 })

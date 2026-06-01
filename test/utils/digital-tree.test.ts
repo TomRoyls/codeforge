@@ -124,4 +124,11 @@ describe('DigitalTree', () => {
     dt.insert('abc')
     expect(dt.search('abc')).toBe(true)
   })
+
+  it('handles remove then search prefix', () => {
+    const dt = new DigitalTree()
+    dt.insert('abcd')
+    dt.remove('abcd')
+    expect(dt.startsWith('abc')).toBe(false)
+  })
 })

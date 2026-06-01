@@ -149,4 +149,10 @@ describe('DijkstraFibonacci', () => {
     expect(dist[1]).toBe(5)
     expect(dist[2]).toBe(Infinity)
   })
+
+  it('handles two node graph', () => {
+    const edges = [{ from: 0, to: 1, weight: 7 }]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
+    expect(dist[1]).toBe(7)
+  })
 })
