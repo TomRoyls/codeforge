@@ -98,4 +98,9 @@ describe('PersistentArray', () => {
     expect(v1.get(1)).toBe(4)
     expect(v1.get(2)).toBe(6)
   })
+
+  it('handles empty array', () => {
+    const v0 = PersistentArray.from([])
+    expect(v0.get(0)).toBeUndefined()
+  })
 })

@@ -77,4 +77,8 @@ describe('PascalTriangle', () => {
     const row10 = PascalTriangle.row(10)
     expect(row10).toEqual([1, 10, 45, 120, 210, 252, 210, 120, 45, 10, 1])
   })
+
+  it('row 0 is [1]', () => {
+    expect(PascalTriangle.row(0)).toEqual([1])
+  })
 })

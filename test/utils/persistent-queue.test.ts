@@ -119,4 +119,11 @@ describe('PersistentQueue', () => {
     const r = q.dequeue()!
     expect(r.queue.toArray()).toEqual([1, 2, 3, 4])
   })
+
+  it('handles enqueue dequeue single element', () => {
+    const q = PersistentQueue.create<number>().enqueue(42)
+    const r = q.dequeue()!
+    expect(r.value).toBe(42)
+    expect(r.queue.isEmpty).toBe(true)
+  })
 })

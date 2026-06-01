@@ -119,4 +119,13 @@ describe('PersistentSegmentTree', () => {
     expect(pst.getPoint(v2, 0)).toBe(5)
     expect(pst.getPoint(v2, 1)).toBe(10)
   })
+
+  it('handles full range query', () => {
+    const pst = new PersistentSegmentTree(4)
+    const v1 = pst.update(0, 0, 1)
+    const v2 = pst.update(v1, 1, 2)
+    const v3 = pst.update(v2, 2, 3)
+    const v4 = pst.update(v3, 3, 4)
+    expect(pst.query(v4, 0, 3)).toBe(10)
+  })
 })

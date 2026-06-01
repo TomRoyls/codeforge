@@ -86,4 +86,9 @@ describe('PermutationIterator', () => {
       expect(curr > prev).toBe(true)
     }
   })
+
+  it('handles duplicate elements', () => {
+    const result = PermutationIterator.all([1, 1])
+    expect(result.length).toBe(2)
+  })
 })
