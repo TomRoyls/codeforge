@@ -115,4 +115,13 @@ describe('TopologicalSortDP', () => {
     expect(ts.longestPath()).toBe(0)
     expect(ts.countPaths()).toBe(3)
   })
+
+  it('handles V shaped DAG', () => {
+    const ts = new TopologicalSortDP(5)
+    ts.addEdge(0, 2)
+    ts.addEdge(1, 2)
+    ts.addEdge(2, 3)
+    ts.addEdge(2, 4)
+    expect(ts.longestPath()).toBe(2)
+  })
 })

@@ -104,4 +104,10 @@ describe('TokenBucket - wait', () => {
     expect(stats.fillRate).toBe(2)
     expect(stats.totalGranted).toBe(0)
   })
+
+  it('consume one token from full bucket', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
+    expect(tb.consume(1)).toBe(true)
+    expect(tb.available).toBe(4)
+  })
 })

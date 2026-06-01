@@ -78,4 +78,9 @@ describe('TernarySearch', () => {
     const result = TernarySearch.findMinInteger((x) => x * x, 3, 3)
     expect(result.index).toBe(3)
   })
+
+  it('findMinInteger finds minimum', () => {
+    const result = TernarySearch.findMinInteger((x) => Math.abs(x - 5), 0, 10)
+    expect(result.index).toBe(5)
+  })
 })

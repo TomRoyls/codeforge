@@ -118,4 +118,10 @@ describe('TopologicalColoring', () => {
         tc.addEdge(i, j)
     expect(tc.chromaticNumber()).toBe(4)
   })
+
+  it('handles two nodes with edge', () => {
+    const tc = new TopologicalColoring(2)
+    tc.addEdge(0, 1)
+    expect(tc.chromaticNumber()).toBe(2)
+  })
 })
