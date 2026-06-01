@@ -91,4 +91,9 @@ describe('RunLengthEncoding', () => {
   it('decode empty runs', () => {
     expect(RunLengthEncoding.decode([])).toEqual([])
   })
+
+  it('single element roundtrip', () => {
+    const encoded = RunLengthEncoding.encode([42])
+    expect(RunLengthEncoding.decode(encoded)).toEqual([42])
+  })
 })

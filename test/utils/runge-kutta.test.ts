@@ -102,4 +102,10 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(0, 2)
   })
+
+  it('solve exponential decay', () => {
+    const result = RungeKutta.solve((_t, y) => -y, 0, 1, 1, 0.01)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(Math.exp(-1), 3)
+  })
 })

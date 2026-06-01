@@ -85,4 +85,10 @@ describe('RunLength2D', () => {
     )
     expect(RunLength2D.decode(RunLength2D.encode(grid))).toEqual(grid)
   })
+
+  it('uniform grid encodes efficiently', () => {
+    const grid = Array.from({ length: 5 }, () => Array.from({ length: 5 }, () => 'x'))
+    const encoded = RunLength2D.encode(grid)
+    expect(encoded.length).toBeLessThan(10)
+  })
 })
