@@ -95,4 +95,8 @@ describe('NumberTheory', () => {
     expect(NumberTheory.gcd(7, 13)).toBe(1)
     expect(NumberTheory.gcd(17, 23)).toBe(1)
   })
+
+  it('lcm of 4 and 6 is 12', () => {
+    expect(NumberTheory.lcm(4, 6)).toBe(12)
+  })
 })
