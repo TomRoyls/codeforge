@@ -107,4 +107,13 @@ describe('NetworkFlowDinic', () => {
     nf.addEdge(0, 1, 7)
     expect(nf.maxFlow(0, 1)).toBe(7)
   })
+
+  it('handles diamond graph', () => {
+    const nf = new NetworkFlowDinic(4)
+    nf.addEdge(0, 1, 10)
+    nf.addEdge(0, 2, 10)
+    nf.addEdge(1, 3, 10)
+    nf.addEdge(2, 3, 10)
+    expect(nf.maxFlow(0, 3)).toBe(20)
+  })
 })

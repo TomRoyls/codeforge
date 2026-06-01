@@ -89,4 +89,9 @@ describe('MonteCarlo', () => {
     const result = MonteCarlo.integrate((x) => 2 * x, 0, 1, 10000)
     expect(result).toBeCloseTo(1, 1)
   })
+
+  it('integrates x^2 from 0 to 1', () => {
+    const result = MonteCarlo.integrate((x) => x * x, 0, 1, 10000)
+    expect(result).toBeCloseTo(1 / 3, 1)
+  })
 })

@@ -77,4 +77,9 @@ describe('ModuloCombinatorics', () => {
     const mc = new ModuloCombinatorics(5)
     expect(mc.nPr(2, 5)).toBe(0)
   })
+
+  it('nCr(5,0) is 1', () => {
+    const mc = new ModuloCombinatorics(5)
+    expect(mc.nCr(5, 0)).toBe(1)
+  })
 })
