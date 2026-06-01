@@ -131,4 +131,12 @@ describe('MarkovChain', () => {
     const next = mc.next('a')
     expect(next).toBe('a')
   })
+
+  it('multiple transitions from same state', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b', 1)
+    mc.addTransition('a', 'c', 1)
+    const next = mc.next('a')
+    expect(['b', 'c']).toContain(next)
+  })
 })

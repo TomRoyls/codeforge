@@ -125,4 +125,11 @@ describe('append', () => {
     append(map, 'key', 'val')
     expect(map.get('key')).toEqual(['val'])
   })
+
+  it('increment adds to existing value', () => {
+    const map = new Map<string, number>()
+    increment(map, 'a', 5)
+    increment(map, 'a', 3)
+    expect(map.get('a')).toBe(8)
+  })
 })
