@@ -124,4 +124,11 @@ describe('ThreadPool', () => {
     }
     expect(sum).toBe(45)
   })
+
+  it('handles single task pool', async () => {
+    const pool = new ThreadPool({ maxConcurrency: 1 })
+    const outcome = await pool.submit(async () => 42)
+    expect(outcome.error).toBe(false)
+    if (!outcome.error) expect(outcome.result).toBe(42)
+  })
 })

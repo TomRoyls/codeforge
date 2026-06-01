@@ -102,4 +102,12 @@ describe('TopologicalColoring', () => {
     const tc = new TopologicalColoring(1)
     expect(tc.chromaticNumber()).toBe(1)
   })
+
+  it('handles K3', () => {
+    const tc = new TopologicalColoring(3)
+    tc.addEdge(0, 1)
+    tc.addEdge(1, 2)
+    tc.addEdge(0, 2)
+    expect(tc.chromaticNumber()).toBe(3)
+  })
 })

@@ -66,4 +66,10 @@ describe('TernarySearchContinuous', () => {
     const x = TernarySearchContinuous.maximize((x) => -(x - 3) * (x - 3) + 10, 0, 10)
     expect(x).toBeCloseTo(3, 2)
   })
+
+  it('minimizes flat function', () => {
+    const x = TernarySearchContinuous.minimize(() => 5, -10, 10)
+    expect(x).toBeGreaterThanOrEqual(-10)
+    expect(x).toBeLessThanOrEqual(10)
+  })
 })

@@ -102,4 +102,11 @@ describe('TopologicalSortDP', () => {
     expect(ts.longestPath()).toBe(0)
     expect(ts.countPaths()).toBe(1)
   })
+
+  it('handles two node DAG', () => {
+    const ts = new TopologicalSortDP(2)
+    ts.addEdge(0, 1)
+    expect(ts.longestPath()).toBe(1)
+    expect(ts.countPaths()).toBe(2)
+  })
 })
