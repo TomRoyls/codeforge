@@ -108,4 +108,12 @@ describe('DigitalTree', () => {
     expect(dt.remove('xyz')).toBe(false)
     expect(dt.search('abc')).toBe(true)
   })
+
+  it('handles numeric strings', () => {
+    const dt = new DigitalTree()
+    dt.insert('123')
+    dt.insert('1234')
+    expect(dt.search('123')).toBe(true)
+    expect(dt.startsWith('12')).toBe(true)
+  })
 })

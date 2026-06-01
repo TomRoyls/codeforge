@@ -113,4 +113,10 @@ describe('CycleSpace', () => {
     expect(cs.cycleSpaceDimension()).toBe(0)
     expect(cs.isTree()).toBe(true)
   })
+
+  it('two isolated nodes no cycles', () => {
+    const cs = new CycleSpace(2)
+    expect(cs.findCycles()).toEqual([])
+    expect(cs.cycleSpaceDimension()).toBe(0)
+  })
 })

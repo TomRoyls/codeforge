@@ -121,4 +121,13 @@ describe('DequeMin', () => {
     dq.popFront()
     expect(dq.size).toBe(0)
   })
+
+  it('handles zero values', () => {
+    const dq = new DequeMin()
+    dq.pushBack(0)
+    dq.pushBack(0)
+    expect(dq.min).toBe(0)
+    dq.popFront()
+    expect(dq.min).toBe(0)
+  })
 })

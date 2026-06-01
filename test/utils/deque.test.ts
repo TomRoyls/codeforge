@@ -130,4 +130,12 @@ describe('Deque', () => {
     expect(dq.front()).toBe(1)
     expect(dq.back()).toBe(3)
   })
+
+  it('handles large batch push and pop', () => {
+    const dq = new Deque<number>()
+    for (let i = 0; i < 200; i++) dq.pushBack(i)
+    expect(dq.size).toBe(200)
+    for (let i = 0; i < 200; i++) dq.popFront()
+    expect(dq.isEmpty).toBe(true)
+  })
 })

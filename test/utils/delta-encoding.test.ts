@@ -87,4 +87,10 @@ describe('DeltaEncoding', () => {
     expect(encoded.deltas).toEqual([0, 0, 0])
     expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(arr)
   })
+
+  it('handles descending sequence', () => {
+    const arr = [10, 7, 4, 1]
+    const encoded = DeltaEncoding.encodeZigzag(arr)
+    expect(DeltaEncoding.decodeZigzag(encoded.first, encoded.deltas)).toEqual(arr)
+  })
 })
