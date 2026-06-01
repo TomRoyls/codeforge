@@ -101,4 +101,9 @@ describe('DisjointSparseTable', () => {
     expect(dst.query(0, 2)).toBe(60)
     expect(dst.query(0, 0)).toBe(10)
   })
+
+  it('handles single element', () => {
+    const dst = new DisjointSparseTable([42], (a, b) => a + b)
+    expect(dst.query(0, 0)).toBe(42)
+  })
 })

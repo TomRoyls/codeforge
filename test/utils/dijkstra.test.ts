@@ -158,4 +158,13 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(3)).toBe(9)
   })
+
+  it('handles single edge', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 1, weight: 7 }]],
+      [1, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(1)).toBe(7)
+  })
 })

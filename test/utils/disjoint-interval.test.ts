@@ -111,4 +111,10 @@ describe('DisjointInterval', () => {
     di.remove(5, 5)
     expect(di.totalCovered()).toBe(10)
   })
+
+  it('handles empty interval set', () => {
+    const di = new DisjointInterval()
+    expect(di.getIntervals()).toEqual([])
+    expect(di.totalCovered()).toBe(0)
+  })
 })

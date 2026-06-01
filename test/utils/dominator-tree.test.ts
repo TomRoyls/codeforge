@@ -130,4 +130,12 @@ describe('DominatorTree', () => {
     expect(dom[3]).toBe(0)
     expect(dom[1]).toBe(0)
   })
+
+  it('handles two node chain', () => {
+    const dt = new DominatorTree(2)
+    dt.addEdge(0, 1)
+    const dom = dt.build(0)
+    expect(dom[0]).toBe(0)
+    expect(dom[1]).toBe(0)
+  })
 })
