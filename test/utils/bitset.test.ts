@@ -120,4 +120,13 @@ describe('Bitset', () => {
     const bs = new Bitset(5)
     expect(bs.none()).toBe(true)
   })
+
+  it('all returns true when all bits set', () => {
+    const bs = new Bitset(4)
+    bs.set(0)
+    bs.set(1)
+    bs.set(2)
+    bs.set(3)
+    expect(bs.all()).toBe(true)
+  })
 })

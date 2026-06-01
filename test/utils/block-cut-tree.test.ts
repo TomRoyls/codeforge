@@ -161,4 +161,14 @@ describe('BlockCutTree', () => {
     const { isArticulation } = bct.build()
     expect(isArticulation.every(v => !v)).toBe(true)
   })
+
+  it('chain has internal articulation points', () => {
+    const bct = new BlockCutTree(4)
+    bct.addEdge(0, 1)
+    bct.addEdge(1, 2)
+    bct.addEdge(2, 3)
+    const { isArticulation } = bct.build()
+    expect(isArticulation[1]).toBe(true)
+    expect(isArticulation[2]).toBe(true)
+  })
 })

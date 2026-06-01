@@ -133,4 +133,13 @@ describe('BinaryTrie', () => {
     expect(bt.find(5)).toBe(true)
     expect(bt.size).toBe(2)
   })
+
+  it('remove removes element', () => {
+    const bt = new BinaryTrie()
+    bt.insert(3)
+    bt.insert(7)
+    bt.remove(3)
+    expect(bt.find(3)).toBe(false)
+    expect(bt.find(7)).toBe(true)
+  })
 })

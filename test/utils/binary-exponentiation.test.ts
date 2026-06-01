@@ -79,4 +79,8 @@ describe('BinaryExponentiation', () => {
   it('power of 1 is base mod m', () => {
     expect(BinaryExponentiation.power(7n, 1n, 100n)).toBe(7n)
   })
+
+  it('power of 0 is 1 mod m', () => {
+    expect(BinaryExponentiation.power(5n, 0n, 100n)).toBe(1n)
+  })
 })
