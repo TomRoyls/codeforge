@@ -139,4 +139,9 @@ describe('DequeMin', () => {
     dq.pushBack(4)
     expect(dq.min).toBe(1)
   })
+
+  it('handles empty deque min is undefined', () => {
+    const dq = new DequeMin()
+    expect(dq.min).toBeUndefined()
+  })
 })

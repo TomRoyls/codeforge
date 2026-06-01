@@ -101,4 +101,9 @@ describe('DeltaEncoding', () => {
     expect(encoded.deltas).toEqual([])
     expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(arr)
   })
+
+  it('handles empty array', () => {
+    const encoded = DeltaEncoding.encode([])
+    expect(encoded.deltas).toEqual([])
+  })
 })
