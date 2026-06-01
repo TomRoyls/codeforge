@@ -284,4 +284,14 @@ describe('HeavyLightDecomposition', () => {
     expect(hld.lca(0, 0)).toBe(0)
     expect(hld.lca(1, 1)).toBe(1)
   })
+
+  it('pathDistance of node to itself is 0', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]],
+      [1, []],
+      [2, []],
+    ])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.pathDistance(1, 1)).toBe(0)
+  })
 })

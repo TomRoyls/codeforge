@@ -126,4 +126,9 @@ describe('Hungarian', () => {
     const { totalCost } = Hungarian.solve([[7]])
     expect(totalCost).toBe(7)
   })
+
+  it('handles 2x2 matrix', () => {
+    const { totalCost } = Hungarian.solve([[1, 10], [10, 1]])
+    expect(totalCost).toBe(2)
+  })
 })
