@@ -101,4 +101,9 @@ describe('RangeMinQuery', () => {
     const rmq = new RangeMinQuery([42])
     expect(rmq.query(0, 0)).toBe(42)
   })
+
+  it('query full range finds minimum', () => {
+    const rmq = new RangeMinQuery([5, 3, 7, 1, 4])
+    expect(rmq.query(0, 4)).toBe(1)
+  })
 })

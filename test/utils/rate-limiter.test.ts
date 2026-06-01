@@ -160,4 +160,11 @@ describe('RateLimiter', () => {
     expect(result.allowed).toBe(false)
     expect(typeof result.retryAfterMs).toBe('number')
   })
+
+  it('allows request after reset', () => {
+    const rl = new RateLimiter(5, 1000)
+    for (let i = 0; i < 5; i++) rl.tryAcquire()
+    rl.reset()
+    expect(rl.tryAcquire().allowed).toBe(true)
+  })
 })

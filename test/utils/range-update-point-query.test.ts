@@ -130,4 +130,11 @@ describe('RangeUpdatePointQuery', () => {
     expect(result[0]).toBe(1)
     expect(result[2]).toBe(4)
   })
+
+  it('single element update', () => {
+    const rq = new RangeUpdatePointQuery(1)
+    rq.addPoint(0, 5)
+    const result = rq.build()
+    expect(result[0]).toBe(5)
+  })
 })
