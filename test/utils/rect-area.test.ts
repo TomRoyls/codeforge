@@ -84,4 +84,10 @@ describe('RectArea', () => {
     expect(inter).not.toBeNull()
     expect(RectArea.area(inter!)).toBe(4)
   })
+
+  it('union of disjoint rects sums areas', () => {
+    const r1 = { x1: 0, y1: 0, x2: 2, y2: 2 }
+    const r2 = { x1: 5, y1: 5, x2: 7, y2: 7 }
+    expect(RectArea.unionArea([r1, r2])).toBe(8)
+  })
 })

@@ -87,4 +87,10 @@ describe('RandomWalk', () => {
   it('uniquePositions2D counts single point', () => {
     expect(RandomWalk.uniquePositions2D([{ x: 0, y: 0 }])).toBe(1)
   })
+
+  it('walk1D returns correct length', () => {
+    const walk = RandomWalk.walk1D(10)
+    expect(walk.length).toBe(11)
+    expect(walk[0]).toBe(0)
+  })
 })

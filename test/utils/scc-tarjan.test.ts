@@ -125,4 +125,14 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(2)
   })
+
+  it('handles cycle with tail', () => {
+    const scc = new SCCTarjan(4)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    scc.addEdge(2, 1)
+    scc.addEdge(2, 3)
+    const comps = scc.solve()
+    expect(comps.length).toBe(3)
+  })
 })
