@@ -126,4 +126,10 @@ describe('DeferredBarrier', () => {
     d.resolve()
     await expect(d.promise).resolves.toBeUndefined()
   })
+
+  it('reject propagates', async () => {
+    const d = createDeferred<string>()
+    d.reject(new Error('test error'))
+    await expect(d.promise).rejects.toThrow('test error')
+  })
 })

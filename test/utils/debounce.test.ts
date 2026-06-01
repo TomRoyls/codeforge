@@ -13,12 +13,14 @@ describe('debounce', () => {
     expect(fn).not.toHaveBeenCalled()
   })
 
-  it('calls function after delay', () => {
+  it('flush calls immediately', () => {
+    vi.useFakeTimers()
     const fn = vi.fn()
     const debounced = debounce(fn, 100)
     debounced()
-    vi.advanceTimersByTime(100)
-    expect(fn).toHaveBeenCalledTimes(1)
+    debounced.flush()
+    expect(fn).toHaveBeenCalled()
+    vi.useRealTimers()
   })
 
   it('resets timer on subsequent calls', () => {

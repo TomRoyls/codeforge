@@ -106,4 +106,10 @@ describe('DeltaEncoding', () => {
     const encoded = DeltaEncoding.encode([])
     expect(encoded.deltas).toEqual([])
   })
+
+  it('roundtrip with single element', () => {
+    const encoded = DeltaEncoding.encode([42])
+    const decoded = DeltaEncoding.decode(encoded.first, encoded.deltas)
+    expect(decoded).toEqual([42])
+  })
 })

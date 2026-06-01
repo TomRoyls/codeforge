@@ -128,4 +128,12 @@ describe('deepClone - edge cases', () => {
     expect(clone[0]).toBe(1)
     expect(clone[3]).toBe(4)
   })
+
+  it('clones nested objects', () => {
+    const obj = { a: { b: 1 } }
+    const clone = deepClone(obj)
+    expect(clone.a.b).toBe(1)
+    clone.a.b = 2
+    expect(obj.a.b).toBe(1)
+  })
 })
