@@ -146,4 +146,10 @@ describe('SlidingWindowStats', () => {
     sw.push(10)
     expect(sw.variance).toBeGreaterThan(0)
   })
+
+  it('single element has zero variance', () => {
+    const sw = new SlidingWindowStats(5)
+    sw.push(42)
+    expect(sw.variance).toBe(0)
+  })
 })

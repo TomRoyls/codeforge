@@ -196,4 +196,11 @@ describe('SortedSet', () => {
     const set = new SortedSet<{ id: number }>((a, b) => a.id - b.id)
     expect(set.has({ id: 5 })).toBe(false)
   })
+
+  it('size returns correct count', () => {
+    const set = new SortedSet<{ id: number }>((a, b) => a.id - b.id)
+    set.add({ id: 1 })
+    set.add({ id: 2 })
+    expect(set.size).toBe(2)
+  })
 })

@@ -138,4 +138,10 @@ describe('SlopeTrick', () => {
     st.addShiftRight(-3)
     expect(typeof st.min).toBe('number')
   })
+
+  it('addAbsolute increases min', () => {
+    const st = new SlopeTrick()
+    st.addAbsolute()
+    expect(st.min).toBeGreaterThanOrEqual(0)
+  })
 })

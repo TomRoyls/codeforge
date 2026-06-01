@@ -97,5 +97,9 @@ describe('SlidingWindowMin', () => {
     it('handles single element window', () => {
       expect(SlidingWindowMin.solve([3, 1, 2], 1)).toEqual([3, 1, 2])
     })
+
+    it('handles all same elements', () => {
+      expect(SlidingWindowMin.solve([5, 5, 5], 2)).toEqual([5, 5])
+    })
   })
 })
