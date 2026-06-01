@@ -139,4 +139,10 @@ describe('EdgeColoring', () => {
     ec.addEdge(0, 2)
     expect(ec.chromaticIndex()).toBe(2)
   })
+
+  it('single edge needs 1 color', () => {
+    const ec = new EdgeColoring(2)
+    ec.addEdge(0, 1)
+    expect(ec.chromaticIndex()).toBe(1)
+  })
 })

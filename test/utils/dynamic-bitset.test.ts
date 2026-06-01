@@ -124,4 +124,11 @@ describe('DynamicBitset', () => {
     bs.flip(0)
     expect(bs.count()).toBe(1)
   })
+
+  it('flip toggles bits', () => {
+    const bs = new DynamicBitset()
+    bs.set(0)
+    bs.flip(0)
+    expect(bs.get(0)).toBe(false)
+  })
 })

@@ -141,4 +141,10 @@ describe('DynamicConvexHull', () => {
     ch.add(0, 4)
     expect(ch.area).toBe(8)
   })
+
+  it('single point has zero area', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    expect(ch.area).toBe(0)
+  })
 })
