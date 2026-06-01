@@ -114,4 +114,9 @@ describe('ModularDecomposition', () => {
     md.addEdge(2, 3)
     expect(md.moduleCount()).toBeGreaterThanOrEqual(0)
   })
+
+  it('handles single node', () => {
+    const md = new ModularDecomposition(1)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
 })

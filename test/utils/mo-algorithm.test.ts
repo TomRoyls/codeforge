@@ -309,4 +309,19 @@ describe('MoAlgorithm', () => {
     )
     expect(answers).toEqual([6, 9, 12])
   })
+
+  it('handles single query', () => {
+    const arr = [1, 2, 3, 4, 5]
+    const answers = MoAlgorithm.solve(
+      arr,
+      [{ l: 0, r: 4 }],
+      (state, idx) => { state.sum += arr[idx]! },
+      (state, idx) => { state.sum += arr[idx]! },
+      (state, idx) => { state.sum -= arr[idx]! },
+      (state, idx) => { state.sum -= arr[idx]! },
+      (state) => state.sum,
+      { sum: 0 },
+    )
+    expect(answers).toEqual([15])
+  })
 })
