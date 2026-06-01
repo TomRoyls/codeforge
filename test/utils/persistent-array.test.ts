@@ -112,4 +112,10 @@ describe('PersistentArray', () => {
     expect(v1.get(0)).toBe(10)
     expect(v2.get(0)).toBe(20)
   })
+
+  it('get returns default for unset indices', () => {
+    const pa = PersistentArray.create(3, 0)
+    expect(pa.get(0)).toBe(0)
+    expect(pa.get(1)).toBe(0)
+  })
 })

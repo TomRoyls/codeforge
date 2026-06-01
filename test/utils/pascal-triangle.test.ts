@@ -86,4 +86,8 @@ describe('PascalTriangle', () => {
     const row = PascalTriangle.row(4)
     expect(row.reduce((a, b) => a + b, 0)).toBe(16)
   })
+
+  it('row 0 is [1]', () => {
+    expect(PascalTriangle.row(0)).toEqual([1])
+  })
 })

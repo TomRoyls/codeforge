@@ -132,4 +132,13 @@ describe('PersistentQueue', () => {
     q = q.enqueue(1).enqueue(2).enqueue(3)
     expect(q.size).toBe(3)
   })
+
+  it('dequeue returns first element', () => {
+    let q = PersistentQueue.create<number>()
+    q = q.enqueue(10).enqueue(20)
+    const result = q.dequeue()
+    expect(result).not.toBeNull()
+    expect(result!.value).toBe(10)
+    expect(result!.queue.size).toBe(1)
+  })
 })

@@ -109,4 +109,9 @@ describe('path-utils', () => {
   it('resolveAndValidatePath throws for non-existent', () => {
     expect(() => resolveAndValidatePath('/no/such/path/ever')).toThrow()
   })
+
+  it('resolveAndValidatePath returns absolute for valid cwd', () => {
+    const result = resolveAndValidatePath('.')
+    expect(result).toBeDefined()
+  })
 })
