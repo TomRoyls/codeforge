@@ -155,4 +155,14 @@ describe('ApproximateSet', () => {
     const set = new ApproximateSet(1000)
     expect(set.has('not-added')).toBe(false)
   })
+
+  it('add multiple items all report as members', () => {
+    const set = new ApproximateSet(1000)
+    set.add('a')
+    set.add('b')
+    set.add('c')
+    expect(set.has('a')).toBe(true)
+    expect(set.has('b')).toBe(true)
+    expect(set.has('c')).toBe(true)
+  })
 })

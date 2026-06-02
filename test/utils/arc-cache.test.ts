@@ -160,4 +160,11 @@ describe('ARCCache', () => {
     expect(cache.has('x')).toBe(true)
     expect(cache.has('y')).toBe(false)
   })
+
+  it('delete removes key', () => {
+    const cache = new ARCCache<string, number>(10)
+    cache.set('x', 1)
+    cache.delete('x')
+    expect(cache.has('x')).toBe(false)
+  })
 })

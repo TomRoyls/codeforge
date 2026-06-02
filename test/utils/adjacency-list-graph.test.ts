@@ -174,4 +174,10 @@ describe('AdjacencyListGraph - topologicalSort', () => {
     const g = new AdjacencyListGraph(3)
     expect(g.edgeCount).toBe(0)
   })
+
+  it('addEdge increases edgeCount', () => {
+    const g = new AdjacencyListGraph(3)
+    g.addEdge(0, 1)
+    expect(g.edgeCount).toBe(1)
+  })
 })

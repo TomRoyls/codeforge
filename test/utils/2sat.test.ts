@@ -160,4 +160,11 @@ describe('TwoSAT', () => {
     const result = ts.solve()
     expect(result).not.toBeNull()
   })
+
+  it('satisfiable with two variables', () => {
+    const ts = new TwoSAT(2)
+    ts.addClause(0, true, 1, false)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+  })
 })
