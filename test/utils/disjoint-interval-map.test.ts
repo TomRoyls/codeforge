@@ -163,4 +163,9 @@ describe('DisjointIntervalMap', () => {
     map.split(4)
     expect(map.get(4)).toBe('test')
   })
+
+  it('has returns false for unset key', () => {
+    const map = new DisjointIntervalMap<number, string>()
+    expect(map.has(0)).toBe(false)
+  })
 })

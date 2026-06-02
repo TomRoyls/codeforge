@@ -157,4 +157,12 @@ describe('DisjointSet - stats and clear', () => {
     ds.add(1); ds.add(2)
     expect(ds.connected(1, 2)).toBe(false)
   })
+
+  it('size returns number of elements', () => {
+    const ds = new DisjointSet<number>()
+    ds.add(1)
+    ds.add(2)
+    ds.add(3)
+    expect(ds.elementCount).toBe(3)
+  })
 })

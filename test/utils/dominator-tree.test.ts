@@ -153,4 +153,13 @@ describe('DominatorTree', () => {
     const dom = dt.build(0)
     expect(dom[0]).toBe(0)
   })
+
+  it('linear chain dominators', () => {
+    const dt = new DominatorTree(3)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    const dom = dt.build(0)
+    expect(dom[1]).toBe(0)
+    expect(dom[2]).toBe(1)
+  })
 })

@@ -128,4 +128,11 @@ describe('DisjointInterval', () => {
     const di = new DisjointInterval()
     expect(di.covers(0, 1)).toBe(false)
   })
+
+  it('add and covers single interval', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    expect(di.covers(0, 5)).toBe(true)
+    expect(di.covers(0, 6)).toBe(false)
+  })
 })
