@@ -126,4 +126,10 @@ describe('PersistentStack', () => {
     const s1 = s0.push(42)
     expect(s1.peek()).toBe(42)
   })
+
+  it('empty stack via empty() factory', () => {
+    const s = PersistentStack.empty<number>()
+    expect(s.isEmpty()).toBe(true)
+    expect(s.size).toBe(0)
+  })
 })

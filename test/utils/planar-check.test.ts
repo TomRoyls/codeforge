@@ -144,4 +144,9 @@ describe('PlanarCheck', () => {
     }
     expect(pc.isPlanar()).toBe(false)
   })
+
+  it('single node is planar', () => {
+    const pc = new PlanarCheck(1)
+    expect(pc.isPlanar()).toBe(true)
+  })
 })
