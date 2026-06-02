@@ -177,4 +177,11 @@ describe('BlockCutTree', () => {
     const { isArticulation } = bct.build()
     expect(isArticulation[0]).toBe(false)
   })
+
+  it('bridge edge in 2-node graph', () => {
+    const bct = new BlockCutTree(2)
+    bct.addEdge(0, 1)
+    const { isArticulation } = bct.build()
+    expect(isArticulation[0]).toBe(false)
+  })
 })

@@ -153,4 +153,11 @@ describe('BoundedDeque', () => {
     dq.pushBack(3)
     expect(dq.evictions).toBe(1)
   })
+
+  it('size reflects current elements', () => {
+    const dq = new BoundedDeque<number>(3)
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.size).toBe(2)
+  })
 })

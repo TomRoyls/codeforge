@@ -230,4 +230,10 @@ describe('BloomFilter', () => {
     expect(filter.mightContain('hello')).toBe(true)
     expect(filter.mightContain('world')).toBe(true)
   })
+
+  it('add and mightContain work', () => {
+    const filter = new BloomFilter({ expectedItems: 1000, falsePositiveRate: 0.01 })
+    filter.add('test-item')
+    expect(filter.mightContain('test-item')).toBe(true)
+  })
 })

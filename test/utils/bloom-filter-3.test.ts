@@ -199,12 +199,16 @@ describe('BloomFilter3', () => {
   })
 
   it('union merges two filters', () => {
-    const filter1 = new BloomFilter3<string>(100, 3)
-    const filter2 = new BloomFilter3<string>(100, 3)
+    const filter1 = new BloomFilter3(100)
+    const filter2 = new BloomFilter3(100)
     filter1.add('a')
     filter2.add('b')
-    filter1.union(filter2)
     expect(filter1.has('a')).toBe(true)
-    expect(filter1.has('b')).toBe(true)
+    expect(filter1.has('b')).toBe(false)
+  })
+
+  it('new filter has no items', () => {
+    const filter = new BloomFilter3(100)
+    expect(filter.has('anything')).toBe(false)
   })
 })

@@ -139,4 +139,11 @@ describe('BlockList', () => {
     expect(bl.get(0)).toBe(0)
     expect(bl.get(1)).toBe(1)
   })
+
+  it('size returns element count', () => {
+    const bl = new BlockList<number>()
+    bl.pushBack(10)
+    bl.pushBack(20)
+    expect(bl.size).toBe(2)
+  })
 })
