@@ -113,4 +113,10 @@ describe('CycleSort', () => {
     expect(swaps).toBeGreaterThan(0)
     expect(arr).toEqual([1, 2, 3])
   })
+
+  it('already sorted needs 0 swaps', () => {
+    const arr = [1, 2, 3]
+    const swaps = CycleSort.sortInPlace(arr)
+    expect(swaps).toBe(0)
+  })
 })

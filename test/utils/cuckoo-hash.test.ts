@@ -144,4 +144,11 @@ describe('CuckooHashTable', () => {
     ht.set('a', 42)
     expect(ht.get('a')).toBe(42)
   })
+
+  it('has returns true for existing key', () => {
+    const ht = new CuckooHashTable<string, number>()
+    ht.set('a', 42)
+    expect(ht.has('a')).toBe(true)
+    expect(ht.has('b')).toBe(false)
+  })
 })

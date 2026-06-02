@@ -173,4 +173,11 @@ describe('CuckooFilter edge cases', () => {
     cf.remove('test')
     expect(cf.contains('test')).toBe(false)
   })
+
+  it('size tracks insertions', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('a')
+    cf.insert('b')
+    expect(cf.size).toBe(2)
+  })
 })

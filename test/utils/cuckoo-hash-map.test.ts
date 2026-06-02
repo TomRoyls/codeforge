@@ -173,4 +173,11 @@ describe('CuckooHashMap', () => {
     map.delete('x')
     expect(map.has('x')).toBe(false)
   })
+
+  it('size reflects element count', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    expect(map.size).toBe(2)
+  })
 })
