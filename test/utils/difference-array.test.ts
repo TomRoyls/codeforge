@@ -176,4 +176,11 @@ describe('DifferenceArray', () => {
     expect(result[3]).toBe(10)
     expect(result[4]).toBe(10)
   })
+
+  it('single update on full range', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(0, 4, 7)
+    const result = da.toArray()
+    expect(result).toEqual([7, 7, 7, 7, 7])
+  })
 })

@@ -167,4 +167,10 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 1)
     expect(dist[0]).toBe(0)
   })
+
+  it('two node path', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
+    expect(dist[1]).toBe(5)
+  })
 })

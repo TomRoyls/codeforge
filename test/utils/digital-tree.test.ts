@@ -149,4 +149,11 @@ describe('DigitalTree', () => {
     expect(dt.search('dog')).toBe(true)
     expect(dt.search('cow')).toBe(false)
   })
+
+  it('startsWith checks prefix', () => {
+    const dt = new DigitalTree()
+    dt.insert('hello')
+    expect(dt.startsWith('hel')).toBe(true)
+    expect(dt.startsWith('xyz')).toBe(false)
+  })
 })
