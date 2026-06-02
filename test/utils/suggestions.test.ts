@@ -110,4 +110,11 @@ describe('RULE_SUGGESTIONS known rules', () => {
       expect(typeof v).toBe('string')
     }
   })
+
+  it('has valid rule keys', () => {
+    for (const key of Object.keys(RULE_SUGGESTIONS)) {
+      expect(typeof key).toBe('string')
+      expect(key.length).toBeGreaterThan(0)
+    }
+  })
 })

@@ -143,4 +143,10 @@ describe('SuffixArray', () => {
     const sa = new SuffixArray('a')
     expect(sa.length).toBe(1)
   })
+
+  it('contains substring', () => {
+    const sa = new SuffixArray('banana')
+    expect(sa.contains('ana')).toBe(true)
+    expect(sa.contains('xyz')).toBe(false)
+  })
 })

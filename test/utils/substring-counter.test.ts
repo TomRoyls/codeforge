@@ -108,4 +108,9 @@ describe('SubstringCounter', () => {
     const sc = new SubstringCounter('aaa')
     expect(sc.countNaive('a')).toBe(3)
   })
+
+  it('count in empty string', () => {
+    const sc = new SubstringCounter('')
+    expect(sc.countNaive('a')).toBe(0)
+  })
 })

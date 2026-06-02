@@ -135,4 +135,10 @@ describe('SuffixAutomatonLight', () => {
     expect(sa.contains('cde')).toBe(true)
     expect(sa.contains('xyz')).toBe(false)
   })
+
+  it('empty string is always contained', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abc')
+    expect(sa.contains('')).toBe(true)
+  })
 })
