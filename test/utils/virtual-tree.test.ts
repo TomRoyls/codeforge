@@ -157,4 +157,9 @@ describe('VirtualTree', () => {
     const vt = new VirtualTree(5)
     expect(vt).toBeDefined()
   })
+
+  it('buildVirtualTree with single node', () => {
+    const vt = new VirtualTree(1)
+    expect(vt).toBeDefined()
+  })
 })

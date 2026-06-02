@@ -110,4 +110,10 @@ describe('VByte', () => {
     const { values: decoded } = VByte.decodeMany(encoded)
     expect(decoded).toEqual([300])
   })
+
+  it('encode and decode 0', () => {
+    const encoded = VByte.encodeMany([0])
+    const { values: decoded } = VByte.decodeMany(encoded)
+    expect(decoded).toEqual([0])
+  })
 })

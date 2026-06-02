@@ -168,4 +168,12 @@ describe('VersionVector - edge cases', () => {
     expect(vv1.get('a')).toBe(1)
     expect(vv1.get('b')).toBe(1)
   })
+
+  it('increment returns new version', () => {
+    const vv = new VersionVector({ nodeId: 'node1' })
+    vv.increment('node1')
+    expect(vv.get('node1')).toBe(1)
+    vv.increment('node1')
+    expect(vv.get('node1')).toBe(2)
+  })
 })

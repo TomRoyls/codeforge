@@ -168,4 +168,12 @@ describe('UndoDisjointSet', () => {
     expect(dsu.find(0)).toBe(0)
     expect(dsu.find(1)).toBe(1)
   })
+
+  it('undo reverts union', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    expect(dsu.components).toBe(2)
+    dsu.undo()
+    expect(dsu.components).toBe(3)
+  })
 })
