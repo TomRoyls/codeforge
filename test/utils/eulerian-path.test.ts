@@ -121,4 +121,10 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(false)
   })
+
+  it('single node graph is eulerian', () => {
+    const adj = [[]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
+  })
 })

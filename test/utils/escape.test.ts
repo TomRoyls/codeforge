@@ -86,4 +86,8 @@ describe('escapeMarkdown', () => {
   it('escapes asterisks', () => {
     expect(escapeMarkdown('hello *world*')).toBe('hello \\*world\\*')
   })
+
+  it('escapes backticks', () => {
+    expect(escapeMarkdown('use `code`')).toBe('use \\`code\\`')
+  })
 })

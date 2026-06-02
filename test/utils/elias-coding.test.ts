@@ -106,4 +106,9 @@ describe('EliasCoding', () => {
     const encoded = EliasCoding.gammaEncode(5)
     expect(EliasCoding.gammaDecode(encoded).value).toBe(5)
   })
+
+  it('gamma roundtrip for 1', () => {
+    const encoded = EliasCoding.gammaEncode(1)
+    expect(EliasCoding.gammaDecode(encoded).value).toBe(1)
+  })
 })
