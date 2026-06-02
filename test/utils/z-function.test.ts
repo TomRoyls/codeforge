@@ -96,4 +96,12 @@ describe('ZFunction', () => {
     expect(zf.z[0]).toBe(3)
     expect(zf.z[1]).toBe(0)
   })
+
+  it('all zeros for unique characters', () => {
+    const zf = new ZFunction('abcdef')
+    expect(zf.z[0]).toBe(6)
+    for (let i = 1; i < 6; i++) {
+      expect(zf.z[i]).toBe(0)
+    }
+  })
 })

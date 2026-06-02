@@ -81,4 +81,8 @@ describe('ZAlgorithmExtended', () => {
   it('finds match at start', () => {
     expect(ZAlgorithmExtended.search('abcdef', 'abc')).toEqual([0])
   })
+
+  it('finds multiple matches', () => {
+    expect(ZAlgorithmExtended.search('abcabc', 'abc')).toEqual([0, 3])
+  })
 })
