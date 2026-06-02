@@ -161,4 +161,14 @@ describe('ThreadPool', () => {
     const outcome = await pool.submit(async () => 'hello')
     expect(outcome.result).toBe('hello')
   })
+
+  it('submit multiple tasks', async () => {
+    const pool = new ThreadPool({ maxConcurrency: 3 })
+    const results = await Promise.all([
+      pool.submit(async () => 1),
+      pool.submit(async () => 2),
+      pool.submit(async () => 3),
+    ])
+    expect(results.map(r => r.result).sort()).toEqual([1, 2, 3])
+  })
 })

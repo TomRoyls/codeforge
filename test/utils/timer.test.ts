@@ -148,4 +148,10 @@ describe('Timer - utility', () => {
     const ms = timer.elapsed()
     expect(ms).toBeGreaterThanOrEqual(0)
   })
+
+  it('elapsed is non-negative after reset', () => {
+    const timer = new Timer()
+    timer.reset()
+    expect(timer.elapsed()).toBeGreaterThanOrEqual(0)
+  })
 })

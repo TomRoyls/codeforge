@@ -149,4 +149,12 @@ describe('TimerWheel', () => {
     const result = tw.advance()
     expect(result).toEqual([])
   })
+
+  it('advance to scheduled tick fires callback', () => {
+    const tw = new TimerWheel<string>(10)
+    tw.schedule(3, 'hello')
+    for (let i = 0; i < 3; i++) tw.advance()
+    const result = tw.advance()
+    expect(result).toContain('hello')
+  })
 })

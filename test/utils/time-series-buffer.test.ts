@@ -176,4 +176,9 @@ describe('TimeSeriesBuffer', () => {
     tsb1.merge(tsb2)
     expect(tsb1.size).toBe(1)
   })
+
+  it('empty buffer size is 0', () => {
+    const tsb = new TimeSeriesBuffer()
+    expect(tsb.size).toBe(0)
+  })
 })
