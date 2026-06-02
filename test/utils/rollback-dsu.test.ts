@@ -144,4 +144,10 @@ describe('RollbackDSU', () => {
     dsu.rollback(snap1)
     expect(dsu.components).toBe(5)
   })
+
+  it('find returns same root after union', () => {
+    const dsu = new RollbackDSU(3)
+    dsu.union(0, 1)
+    expect(dsu.find(0)).toBe(dsu.find(1))
+  })
 })

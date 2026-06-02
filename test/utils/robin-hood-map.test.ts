@@ -146,4 +146,11 @@ describe('RobinHopMap', () => {
     map.set('key', 42)
     expect(map.get('key')).toBe(42)
   })
+
+  it('has returns true for set key', () => {
+    const map = new RobinHopMap<string, number>()
+    map.set('a', 1)
+    expect(map.has('a')).toBe(true)
+    expect(map.has('b')).toBe(false)
+  })
 })

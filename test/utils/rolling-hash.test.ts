@@ -167,4 +167,14 @@ describe('RollingHash static methods', () => {
     rh2.push(2)
     expect(rh1.push(0)).not.toBe(rh2.push(0))
   })
+
+  it('same sequence same hash', () => {
+    const rh1 = new RollingHash(100)
+    const rh2 = new RollingHash(100)
+    rh1.push(1)
+    const h1 = rh1.push(2)
+    rh2.push(1)
+    const h2 = rh2.push(2)
+    expect(h1).toBe(h2)
+  })
 })
