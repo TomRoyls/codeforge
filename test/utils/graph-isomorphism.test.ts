@@ -157,4 +157,12 @@ describe('GraphIsomorphism', () => {
     gi.addEdgeG2(0, 1)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('different edge counts are not isomorphic', () => {
+    const gi = new GraphIsomorphism(3, 3)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG2(0, 1)
+    gi.addEdgeG2(1, 2)
+    expect(gi.isomorphic()).toBe(false)
+  })
 })

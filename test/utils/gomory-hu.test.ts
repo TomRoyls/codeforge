@@ -151,4 +151,9 @@ describe('GomoryHu', () => {
     gh.addEdge(0, 1, 10)
     expect(gh.minCut(0, 1)).toBe(10)
   })
+
+  it('no edges has zero min cut', () => {
+    const gh = new GomoryHu(3)
+    expect(gh.minCut(0, 1)).toBe(0)
+  })
 })

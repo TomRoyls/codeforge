@@ -138,4 +138,9 @@ describe('GraphEntropy', () => {
     ge.addEdge(1, 2)
     expect(ge.edgeEntropy()).toBeGreaterThan(0)
   })
+
+  it('single node has zero entropy', () => {
+    const ge = new GraphEntropy(1)
+    expect(ge.edgeEntropy()).toBe(0)
+  })
 })

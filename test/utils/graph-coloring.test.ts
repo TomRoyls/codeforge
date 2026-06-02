@@ -99,4 +99,11 @@ describe('GraphColoring', () => {
       expect(GraphColoring.isValidColoring([], [])).toBe(true)
     })
   })
+
+  it('greedy coloring uses colors', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const colors = GraphColoring.greedyColor(adj)
+    expect(colors.length).toBe(3)
+    expect(GraphColoring.isValidColoring(adj, colors)).toBe(true)
+  })
 })
