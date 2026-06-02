@@ -132,4 +132,10 @@ describe('CoordinateCompressor', () => {
     expect(cc.compress(10)).toBe(0)
     expect(cc.compress(30)).toBe(2)
   })
+
+  it('decompress returns original value', () => {
+    const cc = new CoordinateCompressor([10, 20, 30])
+    expect(cc.decompress(0)).toBe(10)
+    expect(cc.decompress(2)).toBe(30)
+  })
 })

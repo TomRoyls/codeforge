@@ -167,4 +167,11 @@ describe('ConvexHull3D', () => {
     ch.addPoint(0, 0, 1)
     expect(ch.convexHullVolume()).toBeGreaterThan(0)
   })
+
+  it('two identical points volume 0', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(0, 0, 0)
+    expect(ch.convexHullVolume()).toBe(0)
+  })
 })

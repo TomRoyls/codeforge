@@ -140,4 +140,10 @@ describe('CountedBloomFilter', () => {
     const bf = new CountedBloomFilter(100)
     expect(bf.count('missing')).toBe(0)
   })
+
+  it('add increments count', () => {
+    const bf = new CountedBloomFilter(100)
+    bf.add('item')
+    expect(bf.count('item')).toBeGreaterThan(0)
+  })
 })
