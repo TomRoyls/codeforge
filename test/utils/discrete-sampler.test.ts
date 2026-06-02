@@ -126,4 +126,10 @@ describe('DiscreteSampler', () => {
     const result = sampler.sample()
     expect(result).toBe(0)
   })
+
+  it('sample with equal weights', () => {
+    const sampler = new DiscreteSampler([0, 1], [1, 1])
+    const result = sampler.sample()
+    expect(result === 0 || result === 1).toBe(true)
+  })
 })

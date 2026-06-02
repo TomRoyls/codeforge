@@ -161,4 +161,10 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
     expect(dist[2]).toBe(Infinity)
   })
+
+  it('single node has zero distance to itself', () => {
+    const edges: { from: number; to: number; weight: number }[] = []
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 1)
+    expect(dist[0]).toBe(0)
+  })
 })
