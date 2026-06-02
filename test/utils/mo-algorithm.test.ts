@@ -340,4 +340,16 @@ describe('MoAlgorithm', () => {
     )
     expect(answers[0]).toBe(42)
   })
+
+  it('static solve with empty queries', () => {
+    const answers = MoAlgorithm.solve(
+      [1, 2, 3],
+      [],
+      (s) => s,
+      (s, i) => { s += 0 },
+      (s, i) => { s += 0 },
+      0,
+    )
+    expect(answers).toEqual([])
+  })
 })

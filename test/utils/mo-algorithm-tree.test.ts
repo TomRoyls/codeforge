@@ -238,4 +238,15 @@ describe('MoAlgorithmTree', () => {
     )
     expect(addCalls).toBeGreaterThanOrEqual(1)
   })
+
+  it('single node tree', () => {
+    let addCalls = 0
+    const tree = new MoAlgorithmTree(1)
+    tree.processQueries(
+      [],
+      () => { addCalls++ },
+      () => {},
+    )
+    expect(addCalls).toBe(0)
+  })
 })
