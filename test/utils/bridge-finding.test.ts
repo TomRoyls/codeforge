@@ -160,4 +160,12 @@ describe('BridgeFinding', () => {
     bf.addEdge(1, 2)
     expect(bf.findBridges().length).toBe(2)
   })
+
+  it('cycle has no bridges', () => {
+    const bf = new BridgeFinding(3)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    expect(bf.findBridges().length).toBe(0)
+  })
 })
