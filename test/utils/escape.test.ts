@@ -90,4 +90,8 @@ describe('escapeMarkdown', () => {
   it('escapes backticks', () => {
     expect(escapeMarkdown('use `code`')).toBe('use \\`code\\`')
   })
+
+  it('escapes pipe character', () => {
+    expect(escapeMarkdown('a|b')).toBe('a\\|b')
+  })
 })

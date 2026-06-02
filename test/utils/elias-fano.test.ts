@@ -140,4 +140,9 @@ describe('EliasFano', () => {
     expect(ef.get(1)).toBe(1000)
     expect(ef.get(2)).toBe(1000000)
   })
+
+  it('length returns correct count', () => {
+    const ef = EliasFano.fromSorted([10, 20, 30])
+    expect(ef.length).toBe(3)
+  })
 })

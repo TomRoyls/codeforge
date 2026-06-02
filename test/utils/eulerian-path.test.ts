@@ -127,4 +127,10 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
   })
+
+  it('non-eulerian graph', () => {
+    const adj = [[1], []]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(false)
+  })
 })
