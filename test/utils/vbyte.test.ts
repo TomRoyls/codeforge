@@ -116,4 +116,10 @@ describe('VByte', () => {
     const { values: decoded } = VByte.decodeMany(encoded)
     expect(decoded).toEqual([0])
   })
+
+  it('roundtrip for multiple values', () => {
+    const encoded = VByte.encodeMany([1, 128, 300])
+    const { values: decoded } = VByte.decodeMany(encoded)
+    expect(decoded).toEqual([1, 128, 300])
+  })
 })

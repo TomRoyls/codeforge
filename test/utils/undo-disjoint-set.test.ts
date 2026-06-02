@@ -176,4 +176,10 @@ describe('UndoDisjointSet', () => {
     dsu.undo()
     expect(dsu.components).toBe(3)
   })
+
+  it('find returns root after union', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    expect(dsu.find(0)).toBe(dsu.find(1))
+  })
 })

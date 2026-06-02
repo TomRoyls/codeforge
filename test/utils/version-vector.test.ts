@@ -176,4 +176,9 @@ describe('VersionVector - edge cases', () => {
     vv.increment('node1')
     expect(vv.get('node1')).toBe(2)
   })
+
+  it('get unset node returns 0', () => {
+    const vv = new VersionVector({ nodeId: 'test' })
+    expect(vv.get('unknown')).toBe(0)
+  })
 })

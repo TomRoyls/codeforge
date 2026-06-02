@@ -128,4 +128,10 @@ describe('VertexColoring', () => {
     const vc = new VertexColoring(1)
     expect(vc.chromaticNumber()).toBeGreaterThanOrEqual(1)
   })
+
+  it('edge increases chromatic number', () => {
+    const vc = new VertexColoring(2)
+    vc.addEdge(0, 1)
+    expect(vc.chromaticNumber()).toBeGreaterThanOrEqual(2)
+  })
 })

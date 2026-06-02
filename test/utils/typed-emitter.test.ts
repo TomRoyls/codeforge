@@ -177,4 +177,9 @@ describe('TypedEventEmitter - max listeners', () => {
     emitter.removeAllListeners('message')
     expect(emitter.listenerCount('message')).toBe(0)
   })
+
+  it('emit with no listeners does not throw', () => {
+    const emitter = new TypedEventEmitter<{ click: void }>()
+    expect(() => emitter.emit('click')).not.toThrow()
+  })
 })
