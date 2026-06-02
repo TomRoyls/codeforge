@@ -128,4 +128,11 @@ describe('SuffixAutomatonLight', () => {
     expect(sa.contains('a')).toBe(true)
     expect(sa.contains('b')).toBe(false)
   })
+
+  it('contains checks longer substring', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abcdef')
+    expect(sa.contains('cde')).toBe(true)
+    expect(sa.contains('xyz')).toBe(false)
+  })
 })

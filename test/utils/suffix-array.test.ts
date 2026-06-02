@@ -138,4 +138,9 @@ describe('SuffixArray', () => {
     const sa = new SuffixArray('')
     expect(sa.length).toBe(0)
   })
+
+  it('single char has length 1', () => {
+    const sa = new SuffixArray('a')
+    expect(sa.length).toBe(1)
+  })
 })

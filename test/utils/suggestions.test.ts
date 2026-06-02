@@ -103,4 +103,11 @@ describe('RULE_SUGGESTIONS known rules', () => {
   it('RULE_SUGGESTIONS has at least 1 entry', () => {
     expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(0)
   })
+
+  it('RULE_SUGGESTIONS entries are strings', () => {
+    const values = Object.values(RULE_SUGGESTIONS)
+    for (const v of values) {
+      expect(typeof v).toBe('string')
+    }
+  })
 })

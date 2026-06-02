@@ -125,4 +125,10 @@ describe('SweepLine', () => {
     expect(result).not.toBeNull()
     expect(result!.dist).toBe(0)
   })
+
+  it('closestPair with three points', () => {
+    const result = SweepLine.closestPair([{ x: 0, y: 0 }, { x: 5, y: 5 }, { x: 1, y: 1 }])
+    expect(result).not.toBeNull()
+    expect(result!.dist).toBeCloseTo(Math.sqrt(2), 5)
+  })
 })

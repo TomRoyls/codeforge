@@ -103,4 +103,9 @@ describe('SubstringCounter', () => {
     const sc = new SubstringCounter('hello')
     expect(sc.countNaive('xyz')).toBe(0)
   })
+
+  it('count single char occurrences', () => {
+    const sc = new SubstringCounter('aaa')
+    expect(sc.countNaive('a')).toBe(3)
+  })
 })
