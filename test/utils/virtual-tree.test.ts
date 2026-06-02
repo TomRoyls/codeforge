@@ -152,4 +152,9 @@ describe('VirtualTree', () => {
     const { lca } = vt.build([0])
     expect(lca(0, 0)).toBe(0)
   })
+
+  it('constructor accepts node count', () => {
+    const vt = new VirtualTree(5)
+    expect(vt).toBeDefined()
+  })
 })

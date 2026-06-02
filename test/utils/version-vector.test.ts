@@ -158,4 +158,14 @@ describe('VersionVector - edge cases', () => {
     const arr = vv.toArray()
     expect(arr.length).toBeGreaterThanOrEqual(0)
   })
+
+  it('merge combines vectors', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv1.merge(vv2)
+    expect(vv1.get('a')).toBe(1)
+    expect(vv1.get('b')).toBe(1)
+  })
 })

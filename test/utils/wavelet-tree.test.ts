@@ -146,4 +146,9 @@ describe('WaveletTree', () => {
     const wt = new WaveletTree([42]);
     expect(wt.access(0)).toBe(42);
   });
+
+  it('rank of absent element is 0', () => {
+    const wt = new WaveletTree([1, 2, 3, 1, 2]);
+    expect(wt.rank(5, 5)).toBe(0);
+  });
 });
