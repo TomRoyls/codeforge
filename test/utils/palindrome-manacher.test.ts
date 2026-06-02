@@ -105,4 +105,9 @@ describe('PalindromeManacher', () => {
     const m = new PalindromeManacher('a')
     expect(m.isPalindrome(0, 0)).toBe(true)
   })
+
+  it('non-palindrome segment', () => {
+    const m = new PalindromeManacher('abc')
+    expect(m.isPalindrome(0, 2)).toBe(false)
+  })
 })

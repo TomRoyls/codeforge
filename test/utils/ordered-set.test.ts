@@ -165,4 +165,10 @@ describe('OrderedSet', () => {
     os.add(3)
     expect(os.size).toBe(3)
   })
+
+  it('has returns true for added element', () => {
+    const os = new OrderedSet<number>()
+    os.add(42)
+    expect(os.has(42)).toBe(true)
+  })
 })

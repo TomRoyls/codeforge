@@ -154,4 +154,12 @@ describe('PairHeap', () => {
     const h = new PairHeap<number>()
     expect(h.size).toBe(0)
   })
+
+  it('push and pop in order', () => {
+    const h = new PairHeap<number>()
+    h.push(5)
+    h.push(3)
+    h.push(7)
+    expect(h.pop()).toBe(3)
+  })
 })

@@ -111,4 +111,9 @@ describe('PalindromeTree', () => {
     const pt = new PalindromeTree('a')
     expect(pt.getPalindromeLengths()).toEqual([1])
   })
+
+  it('aa has two palindromes', () => {
+    const pt = new PalindromeTree('aa')
+    expect(pt.getPalindromeLengths().length).toBe(2)
+  })
 })
