@@ -168,4 +168,10 @@ describe('DisjointIntervalMap', () => {
     const map = new DisjointIntervalMap<number, string>()
     expect(map.has(0)).toBe(false)
   })
+
+  it('set and get work', () => {
+    const map = new DisjointIntervalMap<number, string>()
+    map.set(0, 5, 'hello')
+    expect(map.get(2)).toBe('hello')
+  })
 })

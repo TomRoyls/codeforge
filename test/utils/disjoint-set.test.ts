@@ -165,4 +165,12 @@ describe('DisjointSet - stats and clear', () => {
     ds.add(3)
     expect(ds.elementCount).toBe(3)
   })
+
+  it('connected after union', () => {
+    const ds = new DisjointSet()
+    ds.add(0)
+    ds.add(1)
+    ds.union(0, 1)
+    expect(ds.connected(0, 1)).toBe(true)
+  })
 })

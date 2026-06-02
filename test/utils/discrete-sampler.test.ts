@@ -132,4 +132,11 @@ describe('DiscreteSampler', () => {
     const result = sampler.sample()
     expect(result === 0 || result === 1).toBe(true)
   })
+
+  it('sample always returns valid index', () => {
+    const sampler = new DiscreteSampler([1])
+    for (let i = 0; i < 10; i++) {
+      expect(sampler.sample()).toBe(0)
+    }
+  })
 })
