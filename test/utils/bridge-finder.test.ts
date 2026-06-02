@@ -127,4 +127,10 @@ describe('BridgeFinder', () => {
     expect(bf.bridges.length).toBe(3)
     expect(bf.articulationPoints.length).toBe(2)
   })
+
+  it('single edge graph has one bridge', () => {
+    const adj = [[1], [0]]
+    const bf = new BridgeFinder(adj)
+    expect(bf.bridges.length).toBe(1)
+  })
 })

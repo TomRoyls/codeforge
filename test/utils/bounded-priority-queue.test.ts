@@ -177,4 +177,9 @@ describe('BoundedPriorityQueue', () => {
     const q = new BoundedPriorityQueue<string>(10)
     expect(q.maxSize).toBe(10)
   })
+
+  it('size on new queue is 0', () => {
+    const q = new BoundedPriorityQueue<string>(10)
+    expect(q.size).toBe(0)
+  })
 })

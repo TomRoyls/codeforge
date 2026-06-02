@@ -80,4 +80,8 @@ describe('BoyerMooreExtended', () => {
   it('finds pattern at start', () => {
     expect(BoyerMooreExtended.search('abc', 'ab')).toEqual([0])
   })
+
+  it('finds pattern in middle', () => {
+    expect(BoyerMooreExtended.search('xabcy', 'abc')).toEqual([1])
+  })
 })
