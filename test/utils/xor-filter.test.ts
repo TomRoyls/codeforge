@@ -142,4 +142,11 @@ describe('XorFilter', () => {
     expect(f.has('b')).toBe(true);
     expect(f.has('c')).toBe(true);
   });
+
+  it('has returns true for all members via create', () => {
+    const f = XorFilter.create(['x', 'y', 'z']);
+    expect(f.has('x')).toBe(true);
+    expect(f.has('y')).toBe(true);
+    expect(f.has('z')).toBe(true);
+  });
 });

@@ -77,4 +77,8 @@ describe('ZAlgorithmExtended', () => {
   it('finds no match', () => {
     expect(ZAlgorithmExtended.search('hello', 'xyz')).toEqual([])
   })
+
+  it('finds match at start', () => {
+    expect(ZAlgorithmExtended.search('abcdef', 'abc')).toEqual([0])
+  })
 })

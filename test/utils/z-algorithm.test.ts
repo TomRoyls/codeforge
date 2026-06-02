@@ -80,4 +80,8 @@ describe('ZAlgorithm', () => {
   it('search empty pattern returns empty', () => {
     expect(ZAlgorithm.search('abc', '')).toEqual([])
   })
+
+  it('search finds match at start', () => {
+    expect(ZAlgorithm.search('abcdef', 'abc')).toEqual([0])
+  })
 })

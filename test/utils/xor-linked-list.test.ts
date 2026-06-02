@@ -140,4 +140,11 @@ describe('XorLinkedList', () => {
     const list = new XorLinkedList<number>()
     expect(list.size).toBe(0)
   })
+
+  it('pushBack and iterate', () => {
+    const list = new XorLinkedList<number>()
+    list.pushBack(1)
+    list.pushBack(2)
+    expect(list.size).toBe(2)
+  })
 })
