@@ -166,4 +166,9 @@ describe('SimilarityIndex', () => {
     const results = index.findSimilar('unknown', 0.5)
     expect(results).toEqual([])
   })
+
+  it('findSimilar with missing query returns empty', () => {
+    const index = new SimilarityIndex<string>()
+    expect(index.findSimilar('nothing', 0.9)).toEqual([])
+  })
 })

@@ -151,4 +151,10 @@ describe('SkipListMap', () => {
     expect(sl.has(1)).toBe(true)
     expect(sl.has(2)).toBe(false)
   })
+
+  it('get returns value for set key', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'a')
+    expect(sl.get(1)).toBe('a')
+  })
 })

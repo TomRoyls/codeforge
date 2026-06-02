@@ -158,4 +158,12 @@ describe('SkewHeap', () => {
     expect(merged.size).toBe(4)
     expect(merged.pop()).toBe(1)
   })
+
+  it('empty heap merge with non-empty', () => {
+    const h1 = new SkewHeap()
+    const h2 = new SkewHeap()
+    h2.push(5)
+    const merged = h1.merge(h2)
+    expect(merged.pop()).toBe(5)
+  })
 })
