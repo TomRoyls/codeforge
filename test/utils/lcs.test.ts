@@ -90,5 +90,9 @@ describe('LCS', () => {
       expect(sim).toBeGreaterThan(0)
       expect(sim).toBeLessThanOrEqual(1)
     })
+
+    it('similarity of same string is 1', () => {
+      expect(LCS.similarity('abc', 'abc')).toBe(1)
+    })
   })
 })

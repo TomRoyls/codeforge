@@ -143,4 +143,10 @@ describe('LeakyBucket', () => {
     const bucket = new LeakyBucket(5, 1)
     expect(bucket.pour(100)).toBe(false)
   })
+
+  it('bucket drains over time', () => {
+    const bucket = new LeakyBucket(10, 1000)
+    bucket.pour(5)
+    expect(bucket.pour(5)).toBe(true)
+  })
 })

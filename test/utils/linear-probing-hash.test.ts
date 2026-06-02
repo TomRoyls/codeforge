@@ -143,4 +143,11 @@ describe('LinearProbingHashTable', () => {
     expect(ht.get('a')).toBeUndefined()
     expect(ht.size).toBe(1)
   })
+
+  it('has returns true for existing key', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('x', 42)
+    expect(ht.has('x')).toBe(true)
+    expect(ht.has('y')).toBe(false)
+  })
 })

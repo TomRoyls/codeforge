@@ -130,4 +130,11 @@ describe('LiChaoTree', () => {
     tree.insert(1, 0)
     expect(tree.query(5)).toBe(5)
   })
+
+  it('query at boundary', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(0, 5)
+    expect(tree.query(0)).toBe(5)
+    expect(tree.query(10)).toBe(5)
+  })
 })

@@ -82,4 +82,8 @@ describe('LevenshteinDistance', () => {
   it('distance for empty strings is 0', () => {
     expect(LevenshteinDistance.distance('', '')).toBe(0)
   })
+
+  it('distance for single char substitution', () => {
+    expect(LevenshteinDistance.distance('a', 'b')).toBe(1)
+  })
 })
