@@ -217,4 +217,12 @@ describe('CircularDeque', () => {
     deque.pushFront(2)
     expect(deque.size).toBe(2)
   })
+
+  it('pushBack and popFront works as queue', () => {
+    const deque = new CircularDeque<number>(10)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    expect(deque.popFront()).toBe(1)
+    expect(deque.popFront()).toBe(2)
+  })
 })

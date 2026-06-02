@@ -139,4 +139,10 @@ describe('CircularSuffixArray', () => {
     const csa = new CircularSuffixArray('hello')
     expect(csa.length).toBe(5)
   })
+
+  it('index returns valid suffix index', () => {
+    const csa = new CircularSuffixArray('abc')
+    expect(csa.index(0)).toBeGreaterThanOrEqual(0)
+    expect(csa.index(0)).toBeLessThan(3)
+  })
 })

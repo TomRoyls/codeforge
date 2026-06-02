@@ -108,4 +108,11 @@ describe('CircularSuffix', () => {
     const cs = CircularSuffix.build('aaa')
     expect(cs.suffixArray().length).toBe(3)
   })
+
+  it('abc suffix array is sorted', () => {
+    const cs = CircularSuffix.build('abc')
+    const sa = cs.suffixArray()
+    const sorted = [...sa].sort((a, b) => a - b)
+    expect(sa).toEqual(sorted)
+  })
 })
