@@ -119,4 +119,9 @@ describe('CartesianTree', () => {
     expect(tree.size).toBe(5)
     expect([...tree.inorder()]).toEqual([5, 4, 3, 2, 1])
   })
+
+  it('fromArray with single element', () => {
+    const tree = CartesianTree.fromArray([42])
+    expect(tree.size).toBe(1)
+  })
 })

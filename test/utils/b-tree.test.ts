@@ -187,4 +187,10 @@ describe('BTree height', () => {
     for (let i = 0; i < 100; i++) tree.insert(i, i)
     expect(tree.height).toBeLessThanOrEqual(8)
   })
+
+  it('find returns inserted value', () => {
+    const tree = new BTree<number, number>(2)
+    tree.insert(42, 99)
+    expect(tree.find(42)).toBe(99)
+  })
 })
