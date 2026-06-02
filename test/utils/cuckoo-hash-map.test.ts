@@ -180,4 +180,10 @@ describe('CuckooHashMap', () => {
     map.set('b', 2)
     expect(map.size).toBe(2)
   })
+
+  it('get returns value for existing key', () => {
+    const map = new CuckooHashMap<string, number>(16)
+    map.set('x', 42)
+    expect(map.get('x')).toBe(42)
+  })
 })

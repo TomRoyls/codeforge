@@ -180,4 +180,10 @@ describe('CuckooFilter edge cases', () => {
     cf.insert('b')
     expect(cf.size).toBe(2)
   })
+
+  it('contains returns true for inserted item', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('a')
+    expect(cf.contains('a')).toBe(true)
+  })
 })

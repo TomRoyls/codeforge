@@ -151,4 +151,11 @@ describe('CuckooHashTable', () => {
     expect(ht.has('a')).toBe(true)
     expect(ht.has('b')).toBe(false)
   })
+
+  it('delete removes key', () => {
+    const ht = new CuckooHashTable<string, number>(16)
+    ht.set('a', 42)
+    ht.delete('a')
+    expect(ht.has('a')).toBe(false)
+  })
 })

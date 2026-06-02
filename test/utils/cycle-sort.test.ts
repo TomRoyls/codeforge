@@ -119,4 +119,11 @@ describe('CycleSort', () => {
     const swaps = CycleSort.sortInPlace(arr)
     expect(swaps).toBe(0)
   })
+
+  it('sorts reverse array with swaps', () => {
+    const arr = [3, 2, 1]
+    const swaps = CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+    expect(swaps).toBeGreaterThan(0)
+  })
 })
