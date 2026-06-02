@@ -166,4 +166,11 @@ describe('CuckooHashMap', () => {
     expect(map.has('x')).toBe(true)
     expect(map.has('y')).toBe(false)
   })
+
+  it('delete removes key', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('x', 10)
+    map.delete('x')
+    expect(map.has('x')).toBe(false)
+  })
 })

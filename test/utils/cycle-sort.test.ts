@@ -106,4 +106,11 @@ describe('CycleSort', () => {
     expect(CycleSort.sortInPlace(arr)).toBe(0)
     expect(arr).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('sorts reverse array', () => {
+    const arr = [3, 2, 1]
+    const swaps = CycleSort.sortInPlace(arr)
+    expect(swaps).toBeGreaterThan(0)
+    expect(arr).toEqual([1, 2, 3])
+  })
 })

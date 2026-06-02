@@ -138,4 +138,10 @@ describe('CuckooHashTable', () => {
     ht.set('b', 2)
     expect(ht.size).toBe(2)
   })
+
+  it('get returns correct value', () => {
+    const ht = new CuckooHashTable<string, number>()
+    ht.set('a', 42)
+    expect(ht.get('a')).toBe(42)
+  })
 })

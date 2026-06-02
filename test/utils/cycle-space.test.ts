@@ -143,4 +143,12 @@ describe('CycleSpace', () => {
     cs.addEdge(1, 2)
     expect(cs.cycleSpaceDimension()).toBe(0)
   })
+
+  it('single cycle has dimension 1', () => {
+    const cs = new CycleSpace(3)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    cs.addEdge(2, 0)
+    expect(cs.cycleSpaceDimension()).toBe(1)
+  })
 })
