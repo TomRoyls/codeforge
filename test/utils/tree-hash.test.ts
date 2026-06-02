@@ -170,4 +170,12 @@ describe('TreeHash', () => {
     const h2 = th.rootedHash(0)
     expect(h1).toBe(h2)
   })
+
+  it('hash is a bigint', () => {
+    const th = new TreeHash(3)
+    th.addEdge(0, 1)
+    th.addEdge(1, 2)
+    const h = th.rootedHash(0)
+    expect(typeof h).toBe('bigint')
+  })
 })
