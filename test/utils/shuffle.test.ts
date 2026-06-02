@@ -103,4 +103,10 @@ describe('Shuffle', () => {
     const shuffled = Shuffle.fisherYates([...arr])
     expect(shuffled.sort()).toEqual(arr)
   })
+
+  it('shuffle preserves elements', () => {
+    const arr = [10, 20, 30]
+    const shuffled = Shuffle.fisherYates([...arr])
+    expect(shuffled.sort()).toEqual([10, 20, 30])
+  })
 })

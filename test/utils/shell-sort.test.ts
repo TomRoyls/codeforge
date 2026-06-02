@@ -87,4 +87,8 @@ describe('ShellSort', () => {
   it('handles single element', () => {
     expect(ShellSort.sort([1])).toEqual([1])
   })
+
+  it('handles already sorted', () => {
+    expect(ShellSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  })
 })
