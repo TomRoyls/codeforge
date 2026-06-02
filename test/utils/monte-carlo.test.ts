@@ -110,4 +110,13 @@ describe('MonteCarlo', () => {
     expect(result).toBeGreaterThan(2)
     expect(result).toBeLessThan(4)
   })
+
+  it('integrate approximates area', () => {
+    const result = MonteCarlo.integrate(
+      (x) => x * x,
+      0, 1, 10000,
+    )
+    expect(result).toBeGreaterThan(0.2)
+    expect(result).toBeLessThan(0.5)
+  })
 })

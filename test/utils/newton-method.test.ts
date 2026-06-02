@@ -149,4 +149,13 @@ describe('NewtonMethod', () => {
     )
     expect(Math.abs(root - 2)).toBeLessThan(0.001)
   })
+
+  it('finds root of x-5 near 5', () => {
+    const root = NewtonMethod.findRoot(
+      (x) => x - 5,
+      (x) => 1,
+      4,
+    )
+    expect(Math.abs(root - 5)).toBeLessThan(0.001)
+  })
 })
