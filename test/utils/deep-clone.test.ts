@@ -136,4 +136,12 @@ describe('deepClone - edge cases', () => {
     clone.a.b = 2
     expect(obj.a.b).toBe(1)
   })
+
+  it('clones arrays deeply', () => {
+    const obj = { arr: [1, 2, 3] }
+    const clone = deepClone(obj)
+    expect(clone.arr).toEqual([1, 2, 3])
+    clone.arr.push(4)
+    expect(obj.arr).toEqual([1, 2, 3])
+  })
 })

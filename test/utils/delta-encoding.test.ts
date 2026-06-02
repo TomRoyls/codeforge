@@ -112,4 +112,10 @@ describe('DeltaEncoding', () => {
     const decoded = DeltaEncoding.decode(encoded.first, encoded.deltas)
     expect(decoded).toEqual([42])
   })
+
+  it('encode empty array returns zero first', () => {
+    const encoded = DeltaEncoding.encode([])
+    expect(encoded.first).toBe(0)
+    expect(encoded.deltas).toEqual([])
+  })
 })

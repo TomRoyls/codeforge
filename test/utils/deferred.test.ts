@@ -132,4 +132,11 @@ describe('DeferredBarrier', () => {
     d.reject(new Error('test error'))
     await expect(d.promise).rejects.toThrow('test error')
   })
+
+  it('resolves with number value', async () => {
+    const d = createDeferred<number>()
+    d.resolve(42)
+    const result = await d.promise
+    expect(result).toBe(42)
+  })
 })

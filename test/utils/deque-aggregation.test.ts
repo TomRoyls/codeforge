@@ -191,4 +191,9 @@ describe('DequeAggregation', () => {
     deque.pushBack(3)
     expect(deque.aggregate()).toBe(6)
   })
+
+  it('size of empty deque is 0', () => {
+    const deque = new DequeAggregation<number>()
+    expect(deque.size).toBe(0)
+  })
 })
