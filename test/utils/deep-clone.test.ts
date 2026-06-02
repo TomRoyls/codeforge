@@ -144,4 +144,11 @@ describe('deepClone - edge cases', () => {
     clone.arr.push(4)
     expect(obj.arr).toEqual([1, 2, 3])
   })
+
+  it('clones nested objects', () => {
+    const obj = { a: { b: 1 } }
+    const clone = deepClone(obj)
+    clone.a.b = 99
+    expect(obj.a.b).toBe(1)
+  })
 })

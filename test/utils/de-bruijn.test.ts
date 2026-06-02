@@ -110,4 +110,9 @@ describe('DeBruijnSequence', () => {
     const seq = DeBruijnSequence.generateBinary(3)
     expect(seq.length).toBe(8)
   })
+
+  it('binary n=1 has length 2', () => {
+    const seq = DeBruijnSequence.generateBinary(1)
+    expect(seq.length).toBe(2)
+  })
 })

@@ -151,4 +151,11 @@ describe('CycleSpace', () => {
     cs.addEdge(2, 0)
     expect(cs.cycleSpaceDimension()).toBe(1)
   })
+
+  it('path has cycle space dimension 0', () => {
+    const cs = new CycleSpace(3)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    expect(cs.cycleSpaceDimension()).toBe(0)
+  })
 })

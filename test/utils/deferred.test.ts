@@ -139,4 +139,10 @@ describe('DeferredBarrier', () => {
     const result = await d.promise
     expect(result).toBe(42)
   })
+
+  it('reject propagates error', async () => {
+    const d = createDeferred<number>()
+    d.reject(new Error('fail'))
+    await expect(d.promise).rejects.toThrow('fail')
+  })
 })

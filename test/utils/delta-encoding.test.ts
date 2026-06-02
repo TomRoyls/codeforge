@@ -118,4 +118,10 @@ describe('DeltaEncoding', () => {
     expect(encoded.first).toBe(0)
     expect(encoded.deltas).toEqual([])
   })
+
+  it('encode and decode roundtrip', () => {
+    const data = [10, 15, 12, 20]
+    const encoded = DeltaEncoding.encode(data)
+    expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(data)
+  })
 })
