@@ -143,4 +143,11 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search([])
     expect(results).toEqual([])
   })
+
+  it('finds value in sorted array', () => {
+    const results = ParallelBinarySearch.search([
+      { lo: 0, hi: 9, check: (mid) => mid >= 5 },
+    ])
+    expect(results.length).toBe(1)
+  })
 })
