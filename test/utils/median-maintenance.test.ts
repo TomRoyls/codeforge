@@ -153,4 +153,11 @@ describe('MedianMaintenance', () => {
     mm.add(42)
     expect(mm.getMedian()).toBe(42)
   })
+
+  it('two elements returns first', () => {
+    const mm = new MedianMaintenance()
+    mm.add(10)
+    mm.add(20)
+    expect(mm.getMedian()).toBe(10)
+  })
 })
