@@ -150,4 +150,11 @@ describe('StreamSampler', () => {
     expect(sampler.size).toBe(0)
     expect(sampler.totalSeen).toBe(0)
   })
+
+  it('sample after adding items', () => {
+    const sampler = new StreamSampler<string>(3)
+    sampler.add('a')
+    sampler.add('b')
+    expect(sampler.size).toBe(2)
+  })
 })
