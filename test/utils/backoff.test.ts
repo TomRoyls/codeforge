@@ -136,4 +136,10 @@ describe('calculateBackoff - edge cases', () => {
     expect(calculateUniformBackoff(0, 100, 100)).toBe(100)
     expect(calculateUniformBackoff(1, 100, 100)).toBe(100)
   })
+
+  it('calculateBackoff with higher attempt gives larger delay', () => {
+    const b0 = calculateBackoff(0, 100, 10000)
+    const b3 = calculateBackoff(3, 100, 10000)
+    expect(b3).toBeGreaterThanOrEqual(b0)
+  })
 })

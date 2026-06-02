@@ -273,4 +273,10 @@ describe('batch-processor', () => {
     const result = await processBatch([3], handler)
     expect(result.isOk()).toBe(true)
   })
+
+  it('processes empty batch', async () => {
+    const handler = async (x: number) => x * 2
+    const result = await processBatch([], handler)
+    expect(result.isOk()).toBe(true)
+  })
 })
