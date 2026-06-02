@@ -131,4 +131,12 @@ describe('DynamicBitset', () => {
     bs.flip(0)
     expect(bs.get(0)).toBe(false)
   })
+
+  it('count returns number of set bits', () => {
+    const bs = new DynamicBitset(8)
+    bs.set(0)
+    bs.set(3)
+    bs.set(7)
+    expect(bs.count()).toBe(3)
+  })
 })

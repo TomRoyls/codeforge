@@ -145,4 +145,12 @@ describe('EdgeColoring', () => {
     ec.addEdge(0, 1)
     expect(ec.chromaticIndex()).toBe(1)
   })
+
+  it('triangle needs 3 colors', () => {
+    const ec = new EdgeColoring(3)
+    ec.addEdge(0, 1)
+    ec.addEdge(1, 2)
+    ec.addEdge(2, 0)
+    expect(ec.chromaticIndex()).toBe(3)
+  })
 })
