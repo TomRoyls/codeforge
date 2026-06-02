@@ -182,4 +182,12 @@ describe('BoundedPriorityQueue', () => {
     const q = new BoundedPriorityQueue<string>(10)
     expect(q.size).toBe(0)
   })
+
+  it('push and pop returns highest priority', () => {
+    const q = new BoundedPriorityQueue<number>(10, minCmp)
+    q.push(1)
+    q.push(3)
+    q.push(2)
+    expect(q.pop()).toBe(3)
+  })
 })

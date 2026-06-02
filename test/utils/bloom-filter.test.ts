@@ -236,4 +236,9 @@ describe('BloomFilter', () => {
     filter.add('test-item')
     expect(filter.mightContain('test-item')).toBe(true)
   })
+
+  it('mightContain returns false for unseen item', () => {
+    const filter = new BloomFilter({ expectedItems: 1000, falsePositiveRate: 0.01 })
+    expect(filter.mightContain('not-added')).toBe(false)
+  })
 })

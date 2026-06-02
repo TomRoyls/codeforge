@@ -160,4 +160,12 @@ describe('BoundedDeque', () => {
     dq.pushBack(2)
     expect(dq.size).toBe(2)
   })
+
+  it('popBack returns last element', () => {
+    const dq = new BoundedDeque<number>(10)
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.popBack()).toBe(2)
+    expect(dq.size).toBe(1)
+  })
 })
