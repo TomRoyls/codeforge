@@ -179,4 +179,11 @@ describe('ConsistentHash edge cases', () => {
     ch.removeNode('node-b')
     expect(ch.getNode('any-key')).toBe('node-a')
   })
+
+  it('getNode with single node always returns it', () => {
+    const ch = new ConsistentHash<string>()
+    ch.addNode('only')
+    expect(ch.getNode('key1')).toBe('only')
+    expect(ch.getNode('key2')).toBe('only')
+  })
 })

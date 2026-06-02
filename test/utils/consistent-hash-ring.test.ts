@@ -155,4 +155,10 @@ describe('ConsistentHashRing', () => {
       expect(ring.getNode(`key-${i}`)).toBe('only-node')
     }
   })
+
+  it('removeNode removes a node', () => {
+    const ring = new ConsistentHashRing<string>(['a', 'b'])
+    ring.removeNode('b')
+    expect(ring.getNode('any-key')).toBe('a')
+  })
 })

@@ -129,4 +129,9 @@ describe('Comparators', () => {
     expect(comp(1, 2)).toBeLessThan(0)
     expect(comp(2, 1)).toBeGreaterThan(0)
   })
+
+  it('natural comparator returns 0 for equal', () => {
+    const comp = Comparators.natural<number>()
+    expect(comp(5, 5)).toBe(0)
+  })
 })

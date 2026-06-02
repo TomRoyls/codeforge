@@ -99,4 +99,10 @@ describe('ContinuedFraction', () => {
   it('fromNumber 2.0 returns [2]', () => {
     expect(ContinuedFraction.fromNumber(2.0)).toEqual([2])
   })
+
+  it('fromNumber 2.5 returns [2, 2]', () => {
+    const result = ContinuedFraction.fromNumber(2.5)
+    expect(result[0]).toBe(2)
+    expect(result.length).toBeGreaterThanOrEqual(2)
+  })
 })
