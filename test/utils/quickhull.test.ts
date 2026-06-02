@@ -110,4 +110,10 @@ describe('Quickhull', () => {
     const hull = Quickhull.convexHull(points)
     expect(hull.length).toBe(3)
   })
+
+  it('collinear points return 2 endpoints', () => {
+    const points = [{ x: 0, y: 0 }, { x: 5, y: 5 }, { x: 10, y: 10 }]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBeGreaterThanOrEqual(2)
+  })
 })

@@ -94,4 +94,8 @@ describe('RabinKarp', () => {
   it('finds no match returns empty', () => {
     expect(new RabinKarp().search('abcdef', 'xyz')).toEqual([])
   })
+
+  it('finds match at start', () => {
+    expect(new RabinKarp().search('abcdef', 'abc')).toEqual([0])
+  })
 })

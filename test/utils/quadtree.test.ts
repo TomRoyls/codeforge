@@ -143,4 +143,11 @@ describe('Quadtree', () => {
     const results = qt.query({ x: 0, y: 0, w: 100, h: 100 })
     expect(results.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('query outside bounds returns empty', () => {
+    const qt = new Quadtree<string>(0, 0, 100, 100)
+    qt.insert({ x: 50, y: 50, data: 'test' })
+    const results = qt.query({ x: 200, y: 200, w: 50, h: 50 })
+    expect(results.length).toBe(0)
+  })
 })
