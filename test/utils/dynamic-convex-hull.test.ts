@@ -154,4 +154,12 @@ describe('DynamicConvexHull', () => {
     ch.add(1, 0)
     expect(ch.area).toBe(0)
   })
+
+  it('three non-collinear points form triangle', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(0, 1)
+    expect(ch.getHull().length).toBe(3)
+  })
 })

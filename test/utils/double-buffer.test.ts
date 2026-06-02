@@ -175,4 +175,12 @@ describe('DoubleBuffer', () => {
     db.swap()
     expect(db.pendingCount).toBe(0)
   })
+
+  it('swap clears pending', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    db.swap()
+    expect(db.pendingCount).toBe(0)
+  })
 })

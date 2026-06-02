@@ -139,4 +139,13 @@ describe('DynamicBitset', () => {
     bs.set(7)
     expect(bs.count()).toBe(3)
   })
+
+  it('unset individual bits', () => {
+    const bs = new DynamicBitset(8)
+    bs.set(0)
+    bs.set(4)
+    bs.clear(0)
+    bs.clear(4)
+    expect(bs.count()).toBe(0)
+  })
 })
