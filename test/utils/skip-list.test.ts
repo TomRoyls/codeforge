@@ -179,4 +179,12 @@ describe('SkipList stress', () => {
     const sl = new SkipList<number>()
     expect(sl.find(999)).toBeUndefined()
   })
+
+  it('size reflects inserted elements', () => {
+    const sl = new SkipList<number>()
+    sl.insert(1)
+    sl.insert(2)
+    sl.insert(3)
+    expect(sl.size).toBe(3)
+  })
 })

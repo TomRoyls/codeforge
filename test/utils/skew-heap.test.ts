@@ -146,4 +146,16 @@ describe('SkewHeap', () => {
     const h = new SkewHeap<number>()
     expect(h.pop()).toBeUndefined()
   })
+
+  it('merge two heaps', () => {
+    const h1 = new SkewHeap<number>()
+    h1.push(1)
+    h1.push(3)
+    const h2 = new SkewHeap<number>()
+    h2.push(2)
+    h2.push(4)
+    const merged = h1.merge(h2)
+    expect(merged.size).toBe(4)
+    expect(merged.pop()).toBe(1)
+  })
 })

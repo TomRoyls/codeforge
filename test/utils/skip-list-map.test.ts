@@ -144,4 +144,11 @@ describe('SkipListMap', () => {
     sl.delete(1)
     expect(sl.get(1)).toBeUndefined()
   })
+
+  it('has returns true for existing key', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'a')
+    expect(sl.has(1)).toBe(true)
+    expect(sl.has(2)).toBe(false)
+  })
 })
