@@ -106,4 +106,9 @@ describe('PalindromeTree', () => {
     const pt = new PalindromeTree('')
     expect(pt.getPalindromeLengths()).toEqual([])
   })
+
+  it('single character has one palindrome', () => {
+    const pt = new PalindromeTree('a')
+    expect(pt.getPalindromeLengths()).toEqual([1])
+  })
 })

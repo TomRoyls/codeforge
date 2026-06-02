@@ -119,4 +119,8 @@ describe('compareKeys', () => {
   it('returns negative for a less than b', () => {
     expect(compareKeys('a', 'b')).toBeLessThan(0)
   })
+
+  it('returns 0 for equal strings', () => {
+    expect(compareKeys('x', 'x')).toBe(0)
+  })
 })

@@ -157,4 +157,12 @@ describe('OrderedSet', () => {
     const os = new OrderedSet<number>()
     expect(os.has(42)).toBe(false)
   })
+
+  it('size returns count of elements', () => {
+    const os = new OrderedSet<number>()
+    os.add(1)
+    os.add(2)
+    os.add(3)
+    expect(os.size).toBe(3)
+  })
 })

@@ -149,4 +149,9 @@ describe('PairHeap', () => {
     expect(h.pop()).toBe(3)
     expect(h.pop()).toBe(5)
   })
+
+  it('size on new heap is 0', () => {
+    const h = new PairHeap<number>()
+    expect(h.size).toBe(0)
+  })
 })
