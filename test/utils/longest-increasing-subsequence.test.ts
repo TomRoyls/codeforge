@@ -83,4 +83,8 @@ describe('LongestIncreasingSubsequence', () => {
   it('handles single element', () => {
     expect(LongestIncreasingSubsequence.find([42])).toEqual([42])
   })
+
+  it('handles already sorted', () => {
+    expect(LongestIncreasingSubsequence.find([1, 2, 3])).toEqual([1, 2, 3])
+  })
 })

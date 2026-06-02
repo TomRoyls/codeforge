@@ -115,4 +115,9 @@ describe('Logger methods', () => {
     const log = new Logger({ level: LogLevel.INFO, colorize: false })
     expect(() => log.info('info msg')).not.toThrow()
   })
+
+  it('warn outputs without throwing', () => {
+    const log = new Logger({ level: LogLevel.WARN, colorize: false })
+    expect(() => log.warn('warning')).not.toThrow()
+  })
 })

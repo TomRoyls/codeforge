@@ -80,4 +80,8 @@ describe('LongestCommonSubstring', () => {
   it('finds common substring at start', () => {
     expect(LongestCommonSubstring.find('abcdef', 'abcxyz')).toBe('abc')
   })
+
+  it('no common returns empty', () => {
+    expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
+  })
 })

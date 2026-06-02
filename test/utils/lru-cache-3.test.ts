@@ -173,4 +173,10 @@ describe('LRUCache3', () => {
     cache.clear()
     expect(cache.size).toBe(0)
   })
+
+  it('has returns true for existing key', () => {
+    const cache = new LRUCache3<string, number>(5)
+    cache.set('a', 1)
+    expect(cache.has('a')).toBe(true)
+  })
 })
