@@ -120,4 +120,10 @@ describe('PersistentStack', () => {
     expect(popped2.size).toBe(1)
     expect(popped3.size).toBe(0)
   })
+
+  it('push and peek', () => {
+    const s0 = new PersistentStack<number>()
+    const s1 = s0.push(42)
+    expect(s1.peek()).toBe(42)
+  })
 })

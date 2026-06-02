@@ -134,4 +134,14 @@ describe('PlanarCheck', () => {
     pc.addEdge(0, 1)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('K5 is not planar', () => {
+    const pc = new PlanarCheck(5)
+    for (let i = 0; i < 5; i++) {
+      for (let j = i + 1; j < 5; j++) {
+        pc.addEdge(i, j)
+      }
+    }
+    expect(pc.isPlanar()).toBe(false)
+  })
 })

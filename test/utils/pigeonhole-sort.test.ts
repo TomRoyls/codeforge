@@ -82,4 +82,8 @@ describe('PigeonholeSort', () => {
   it('handles empty array', () => {
     expect(PigeonholeSort.sort([])).toEqual([])
   })
+
+  it('handles single element', () => {
+    expect(PigeonholeSort.sort([42])).toEqual([42])
+  })
 })

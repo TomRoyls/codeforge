@@ -87,4 +87,9 @@ describe('PollardRho', () => {
     const factors = PollardRho.factorize(7n)
     expect(factors).toEqual([7n])
   })
+
+  it('factorize 12 returns prime factors', () => {
+    const factors = PollardRho.factorize(12n)
+    expect(factors.sort((a, b) => (a < b ? -1 : 1))).toEqual([2n, 2n, 3n])
+  })
 })
