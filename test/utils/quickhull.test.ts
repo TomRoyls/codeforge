@@ -104,4 +104,10 @@ describe('Quickhull', () => {
     const hull = Quickhull.convexHull(points)
     expect(hull.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('three non-collinear points form triangle hull', () => {
+    const points = [{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 10 }]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(3)
+  })
 })

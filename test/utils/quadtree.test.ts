@@ -136,4 +136,11 @@ describe('Quadtree', () => {
     const results = qt.query({ x: 0, y: 0, width: 10, height: 10 })
     expect(results.length).toBe(0)
   })
+
+  it('query finds inserted point in range', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 50, y: 50, data: 'test' })
+    const results = qt.query({ x: 0, y: 0, w: 100, h: 100 })
+    expect(results.length).toBeGreaterThanOrEqual(1)
+  })
 })
