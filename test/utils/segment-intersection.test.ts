@@ -111,4 +111,9 @@ describe('pointToSegmentDistance', () => {
     const seg = { a: { x: 0, y: 0 }, b: { x: 4, y: 0 } }
     expect(pointToSegmentDistance({ x: 2, y: 0 }, seg)).toBeCloseTo(0, 5)
   })
+
+  it('point above horizontal segment has correct distance', () => {
+    const seg = { a: { x: 0, y: 0 }, b: { x: 4, y: 0 } }
+    expect(pointToSegmentDistance({ x: 2, y: 3 }, seg)).toBeCloseTo(3, 5)
+  })
 })

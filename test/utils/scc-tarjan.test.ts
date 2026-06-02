@@ -157,4 +157,11 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(2)
   })
+
+  it('single node has one component', () => {
+    const scc = new SCCTarjan(1)
+    const comps = scc.solve()
+    expect(comps.length).toBe(1)
+    expect(comps[0]).toEqual([0])
+  })
 })
