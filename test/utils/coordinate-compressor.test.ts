@@ -126,4 +126,10 @@ describe('CoordinateCompressor', () => {
     const cc = new CoordinateCompressor([10, 30, 20])
     expect(cc.decompress(cc.compress(20)!)).toBe(20)
   })
+
+  it('compress returns index', () => {
+    const cc = new CoordinateCompressor([10, 20, 30])
+    expect(cc.compress(10)).toBe(0)
+    expect(cc.compress(30)).toBe(2)
+  })
 })

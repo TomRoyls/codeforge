@@ -158,4 +158,13 @@ describe('ConvexHull3D', () => {
     ch.addPoint(5, 5, 5)
     expect(ch.convexHullVolume()).toBe(0)
   })
+
+  it('four non-coplanar points form tetrahedron', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(1, 0, 0)
+    ch.addPoint(0, 1, 0)
+    ch.addPoint(0, 0, 1)
+    expect(ch.convexHullVolume()).toBeGreaterThan(0)
+  })
 })

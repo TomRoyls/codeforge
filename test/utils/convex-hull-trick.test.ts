@@ -139,4 +139,10 @@ describe('ConvexHullTrick', () => {
     expect(cht.query(0)).toBe(3)
     expect(cht.query(5)).toBe(13)
   })
+
+  it('single line query', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(1, 0)
+    expect(cht.query(5)).toBe(5)
+  })
 })
