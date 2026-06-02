@@ -147,4 +147,10 @@ describe('ARCCache', () => {
     const cache = new ARCCache<string, number>(100)
     expect(cache.get('nonexistent')).toBeUndefined()
   })
+
+  it('set and get returns value', () => {
+    const cache = new ARCCache<string, number>(10)
+    cache.set('key', 42)
+    expect(cache.get('key')).toBe(42)
+  })
 })

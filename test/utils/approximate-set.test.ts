@@ -144,4 +144,10 @@ describe('ApproximateSet', () => {
     const rate = set.estimatedFalsePositiveRate
     expect(rate).toBeLessThan(0.1)
   })
+
+  it('has returns true after add', () => {
+    const set = new ApproximateSet(1000)
+    set.add('my-item')
+    expect(set.has('my-item')).toBe(true)
+  })
 })

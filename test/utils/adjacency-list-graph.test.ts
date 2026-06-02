@@ -164,4 +164,9 @@ describe('AdjacencyListGraph - topologicalSort', () => {
     g.addEdge(1, 2)
     expect(g.edgeCount).toBeGreaterThanOrEqual(2)
   })
+
+  it('nodeCount is correct', () => {
+    const g = new AdjacencyListGraph(5)
+    expect(g.nodeCount).toBe(5)
+  })
 })
