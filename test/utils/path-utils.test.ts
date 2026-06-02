@@ -120,4 +120,8 @@ describe('path-utils', () => {
     expect(result).toBeDefined()
     expect(typeof result).toBe('string')
   })
+
+  it('resolveAndValidatePath returns string', () => {
+    expect(typeof resolveAndValidatePath('.')).toBe('string')
+  })
 })

@@ -149,4 +149,10 @@ describe('PersistentQueue', () => {
     expect(result).not.toBeNull()
     expect(result!.value).toBe(10)
   })
+
+  it('empty queue dequeue returns null', () => {
+    const q = PersistentQueue.create<number>()
+    const result = q.dequeue()
+    expect(result).toBeNull()
+  })
 })

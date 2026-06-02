@@ -125,4 +125,9 @@ describe('PersistentArray', () => {
     expect(pa.get(1)).toBe(0)
     expect(v1.get(1)).toBe(99)
   })
+
+  it('get returns default for unset index', () => {
+    const pa = PersistentArray.create(5, 0)
+    expect(pa.get(3)).toBe(0)
+  })
 })
