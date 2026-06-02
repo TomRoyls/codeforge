@@ -93,4 +93,8 @@ describe('CountingInversions', () => {
   it('sorted array has 0 inversions', () => {
     expect(CountingInversions.count([1, 2, 3, 4, 5])).toBe(0)
   })
+
+  it('reverse sorted has maximum inversions', () => {
+    expect(CountingInversions.count([5, 4, 3, 2, 1])).toBe(10)
+  })
 })

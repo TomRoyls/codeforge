@@ -146,4 +146,9 @@ describe('CountMinSketch - edge cases', () => {
     cms.update('x')
     expect(cms.estimate('x')).toBeGreaterThanOrEqual(3)
   })
+
+  it('estimate for unseen item is small', () => {
+    const cms = new CountMinSketch({ width: 1000, depth: 5 })
+    expect(cms.estimate('unseen')).toBeLessThan(10)
+  })
 })

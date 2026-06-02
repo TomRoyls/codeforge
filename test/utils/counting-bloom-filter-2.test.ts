@@ -178,4 +178,10 @@ describe('CountingBloomFilter2', () => {
     const filter = new CountingBloomFilter2(100)
     expect(filter.contains('unknown')).toBe(false)
   })
+
+  it('add then contains returns true', () => {
+    const filter = new CountingBloomFilter2(100)
+    filter.add('hello')
+    expect(filter.contains('hello')).toBe(true)
+  })
 })
