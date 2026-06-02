@@ -105,4 +105,9 @@ describe('MergeSortTree', () => {
     const mst = new MergeSortTree([42])
     expect(mst.queryKthSmallest(0, 0, 0)).toBe(42)
   })
+
+  it('queryCountLessThan for small range', () => {
+    const mst = new MergeSortTree([1, 3, 2, 3, 4])
+    expect(mst.queryCountLessThan(0, 2, 3)).toBe(2)
+  })
 })

@@ -199,4 +199,11 @@ describe('MinCostFlow', () => {
     const result = mcf.solve(1, 0)
     expect(result.flow).toBe(0)
   })
+
+  it('single edge with flow', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 5, 1)
+    const result = mcf.solve(0, 1)
+    expect(result.flow).toBe(5)
+  })
 })

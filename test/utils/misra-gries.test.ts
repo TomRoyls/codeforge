@@ -135,4 +135,9 @@ describe('MisraGries', () => {
     expect(mg.getCount('a')).toBe(2)
     expect(mg.getCount('b')).toBe(1)
   })
+
+  it('empty stream has zero counts', () => {
+    const mg = new MisraGries<string>(3)
+    expect(mg.getCount('any')).toBe(0)
+  })
 })

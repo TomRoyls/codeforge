@@ -111,4 +111,8 @@ describe('MillerRabin', () => {
     expect(MillerRabin.primeCount(10)).toBe(4)
     expect(MillerRabin.primeCount(1000)).toBe(168)
   })
+
+  it('identifies 2 as prime', () => {
+    expect(MillerRabin.isPrime(2n)).toBe(true)
+  })
 })

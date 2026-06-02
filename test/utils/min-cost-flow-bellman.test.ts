@@ -162,4 +162,11 @@ describe('MinCostFlow', () => {
     const { maxFlow } = MinCostFlow.minCostMaxFlow(edges, 1, 0, 2)
     expect(maxFlow).toBe(0)
   })
+
+  it('single edge flow equals capacity', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10, cost: 1 }]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 1, 2)
+    expect(maxFlow).toBe(10)
+    expect(minCost).toBe(10)
+  })
 })
