@@ -149,4 +149,11 @@ describe('LRUEvictionCache', () => {
     cache.delete('a')
     expect(cache.has('a')).toBe(false)
   })
+
+  it('size tracks entries', () => {
+    const cache = new LRUEvictionCache<string, number>({ maxSize: 5 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.size).toBe(2)
+  })
 })

@@ -139,4 +139,10 @@ describe('LRUKCache', () => {
     const cache = new LRUKCache<string, number>({ k: 2, capacity: 5 })
     expect(cache.delete('missing')).toBe(false)
   })
+
+  it('get returns value after set', () => {
+    const cache = new LRUKCache<string, number>({ k: 2, capacity: 5 })
+    cache.set('a', 42)
+    expect(cache.get('a')).toBe(42)
+  })
 })
