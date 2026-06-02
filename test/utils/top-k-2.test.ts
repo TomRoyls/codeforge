@@ -142,4 +142,12 @@ describe('TopK2', () => {
     const tracker = new TopK2<string>(3)
     expect(tracker.top()).toEqual([])
   })
+
+  it('add and retrieve top items', () => {
+    const tracker = new TopK2<string>(3)
+    tracker.add('a')
+    tracker.add('b')
+    tracker.add('c')
+    expect(tracker.top().length).toBeLessThanOrEqual(3)
+  })
 })

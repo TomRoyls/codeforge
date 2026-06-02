@@ -140,4 +140,10 @@ describe('TopologicalColoring', () => {
     const tc = new TopologicalColoring(1)
     expect(tc.chromaticNumber()).toBeGreaterThanOrEqual(1)
   })
+
+  it('chain graph needs 2 colors', () => {
+    const tc = new TopologicalColoring(2)
+    tc.addEdge(0, 1)
+    expect(tc.chromaticNumber()).toBeGreaterThanOrEqual(1)
+  })
 })

@@ -133,4 +133,10 @@ describe('TokenBucket2', () => {
     expect(bucket.tryConsume(5)).toBe(true)
     expect(bucket.tryConsume(1)).toBe(false)
   })
+
+  it('available tokens decreases after consume', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume(5)
+    expect(bucket.availableTokens).toBe(5)
+  })
 })

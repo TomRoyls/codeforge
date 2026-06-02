@@ -128,4 +128,9 @@ describe('TokenBucket - wait', () => {
     expect(tb.consume(1)).toBe(true)
     expect(tb.consume(1)).toBe(false)
   })
+
+  it('bucket starts with full capacity', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
+    expect(tb.consume(5)).toBe(true)
+  })
 })
