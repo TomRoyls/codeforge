@@ -147,4 +147,13 @@ describe('ClosestPairBrute', () => {
     const result = cp.findClosest()
     expect(result).toBeNull()
   })
+
+  it('findClosest returns distance for two points', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(3, 4)
+    const result = cp.findClosest()
+    expect(result).not.toBeNull()
+    expect(result!.distance).toBeCloseTo(5, 5)
+  })
 })
