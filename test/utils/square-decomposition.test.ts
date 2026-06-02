@@ -109,4 +109,9 @@ describe('SquareDecomposition', () => {
     const sd = new SquareDecomposition([1, 2, 3, 4])
     expect(sd.query(0, 3)).toBe(10)
   })
+
+  it('query single element', () => {
+    const sd = new SquareDecomposition([7])
+    expect(sd.query(0, 0)).toBe(7)
+  })
 })

@@ -100,4 +100,9 @@ describe('SpiralMatrix', () => {
     const m = SpiralMatrix.generate(3)
     expect(m[1]![1]).toBe(9)
   })
+
+  it('1x1 matrix has value 1', () => {
+    const m = SpiralMatrix.generate(1)
+    expect(m[0]![0]).toBe(1)
+  })
 })
