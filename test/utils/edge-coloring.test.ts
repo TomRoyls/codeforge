@@ -153,4 +153,12 @@ describe('EdgeColoring', () => {
     ec.addEdge(2, 0)
     expect(ec.chromaticIndex()).toBe(3)
   })
+
+  it('bipartite graph chromatic index equals max degree', () => {
+    const ec = new EdgeColoring(4)
+    ec.addEdge(0, 2)
+    ec.addEdge(1, 3)
+    ec.addEdge(0, 3)
+    expect(ec.chromaticIndex()).toBe(2)
+  })
 })
