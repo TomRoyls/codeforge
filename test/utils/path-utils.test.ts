@@ -114,4 +114,10 @@ describe('path-utils', () => {
     const result = resolveAndValidatePath('.')
     expect(result).toBeDefined()
   })
+
+  it('resolvePath normalizes path', () => {
+    const result = resolvePath('.')
+    expect(result).toBeDefined()
+    expect(typeof result).toBe('string')
+  })
 })

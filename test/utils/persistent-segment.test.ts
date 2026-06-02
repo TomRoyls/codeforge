@@ -143,4 +143,9 @@ describe('PersistentSegmentTree', () => {
     expect(pst.query(v0, 0, 0)).toBe(2)
     expect(pst.query(v1, 0, 0)).toBe(3)
   })
+
+  it('version count starts at 1', () => {
+    const pst = new PersistentSegmentTree(8)
+    expect(pst.versionCount).toBe(1)
+  })
 })

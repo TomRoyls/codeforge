@@ -141,4 +141,12 @@ describe('PersistentQueue', () => {
     expect(result!.value).toBe(10)
     expect(result!.queue.size).toBe(1)
   })
+
+  it('enqueue and dequeue roundtrip', () => {
+    const q0 = new PersistentQueue<number>([], [])
+    const q1 = q0.enqueue(10)
+    const result = q1.dequeue()
+    expect(result).not.toBeNull()
+    expect(result!.value).toBe(10)
+  })
 })
