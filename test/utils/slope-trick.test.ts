@@ -151,4 +151,9 @@ describe('SlopeTrick', () => {
     st.addAbsolute()
     expect(st.min).toBe(0)
   })
+
+  it('empty trick has zero min', () => {
+    const st = new SlopeTrick()
+    expect(st.min).toBe(0)
+  })
 })

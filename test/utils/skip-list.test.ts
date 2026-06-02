@@ -187,4 +187,11 @@ describe('SkipList stress', () => {
     sl.insert(3)
     expect(sl.size).toBe(3)
   })
+
+  it('contains returns true for inserted', () => {
+    const sl = new SkipList<number, string>()
+    sl.insert(10, 'a')
+    expect(sl.contains(10)).toBe(true)
+    expect(sl.contains(20)).toBe(false)
+  })
 })

@@ -160,4 +160,12 @@ describe('SlidingWindowStats', () => {
     sw.push(3)
     expect(sw.mean).toBeCloseTo(2, 5)
   })
+
+  it('count tracks pushes', () => {
+    const sw = new SlidingWindowStats(5)
+    sw.push(1)
+    sw.push(2)
+    sw.push(3)
+    expect(sw.count).toBe(3)
+  })
 })
