@@ -176,4 +176,10 @@ describe('BellmanFord', () => {
     const { distances } = BellmanFord.shortestPath([], 1, 0)
     expect(distances.get(0)).toBe(0)
   })
+
+  it('handles two nodes with edge', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const { distances } = BellmanFord.shortestPath(edges, 2, 0)
+    expect(distances.get(1)).toBe(5)
+  })
 })
