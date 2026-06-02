@@ -27,7 +27,7 @@ jobs:
       - name: CodeForge Analyze
         run: node dist/bin/run.js analyze --format json --output results.json --cache-results
       - name: Upload results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: analysis-results
           path: results.json
