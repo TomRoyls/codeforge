@@ -131,4 +131,11 @@ describe('GraphEntropy', () => {
     const ge = new GraphEntropy(3)
     expect(ge.degreeEntropy()).toBe(0)
   })
+
+  it('edge entropy for connected graph', () => {
+    const ge = new GraphEntropy(3)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    expect(ge.edgeEntropy()).toBeGreaterThan(0)
+  })
 })

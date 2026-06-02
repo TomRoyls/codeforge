@@ -100,4 +100,10 @@ describe('GrayCode', () => {
     const result = GrayCode.generate(1)
     expect(result).toEqual(['0', '1'])
   })
+
+  it('generate 2 bits returns four codes', () => {
+    const result = GrayCode.generate(2)
+    expect(result.length).toBe(4)
+    expect(result).toEqual(['00', '01', '11', '10'])
+  })
 })

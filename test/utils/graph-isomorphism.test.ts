@@ -150,4 +150,11 @@ describe('GraphIsomorphism', () => {
     gi.addEdgeG2(0, 1)
     expect(gi.isomorphic()).toBe(false)
   })
+
+  it('same single edge graphs are isomorphic', () => {
+    const gi = new GraphIsomorphism(2)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG2(0, 1)
+    expect(gi.isomorphic()).toBe(true)
+  })
 })

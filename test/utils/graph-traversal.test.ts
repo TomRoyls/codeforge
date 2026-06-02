@@ -135,4 +135,10 @@ describe('GraphTraversal', () => {
     const order = GraphTraversal.dfs(adj, 0)
     expect(order.sort()).toEqual([0, 1])
   })
+
+  it('bfs visits in level order', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [3]], [2, []], [3, []]])
+    const order = GraphTraversal.bfs(adj, 0)
+    expect(order).toEqual([0, 1, 2, 3])
+  })
 })

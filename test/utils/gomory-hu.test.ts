@@ -145,4 +145,10 @@ describe('GomoryHu', () => {
     gh.addEdge(0, 1, 5)
     expect(gh.minCut(0, 0)).toBe(0)
   })
+
+  it('two node min cut equals edge weight', () => {
+    const gh = new GomoryHu(2)
+    gh.addEdge(0, 1, 10)
+    expect(gh.minCut(0, 1)).toBe(10)
+  })
 })
