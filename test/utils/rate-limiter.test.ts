@@ -173,4 +173,10 @@ describe('RateLimiter', () => {
     const result = rl.tryAcquire()
     expect(result).toHaveProperty('allowed')
   })
+
+  it('tryAcquire returns allowed initially', () => {
+    const rl = new RateLimiter({ tokensPerSecond: 100, maxTokens: 10 })
+    const result = rl.tryAcquire()
+    expect(result.allowed).toBe(true)
+  })
 })

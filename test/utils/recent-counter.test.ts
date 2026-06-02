@@ -154,4 +154,10 @@ describe('RecentCounter', () => {
     rc.reset()
     expect(rc.totalPings).toBe(0)
   })
+
+  it('single ping counted', () => {
+    const rc = new RecentCounter(3000)
+    rc.ping(1000)
+    expect(rc.totalPings).toBe(1)
+  })
 })

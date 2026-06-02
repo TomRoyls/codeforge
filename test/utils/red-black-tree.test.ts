@@ -176,4 +176,12 @@ describe('RedBlackTree root & clear', () => {
     expect(tree.size).toBe(0)
     expect(tree.isEmpty()).toBe(true)
   })
+
+  it('insert and contains', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(10, 'a')
+    tree.insert(20, 'b')
+    expect(tree.contains(10)).toBe(true)
+    expect(tree.contains(30)).toBe(false)
+  })
 })
