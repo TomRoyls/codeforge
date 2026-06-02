@@ -142,4 +142,10 @@ describe('TrieMap', () => {
     expect(trie.has('abc')).toBe(true)
     expect(trie.has('ab')).toBe(false)
   })
+
+  it('get returns value for existing key', () => {
+    const trie = new TrieMap<number>()
+    trie.set('hello', 42)
+    expect(trie.get('hello')).toBe(42)
+  })
 })

@@ -142,4 +142,11 @@ describe('TrieRadix', () => {
     trie.insert('')
     expect(trie.search('')).toBe(true)
   })
+
+  it('startsWith checks prefix', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello')
+    expect(trie.startsWith('hel')).toBe(true)
+    expect(trie.startsWith('xyz')).toBe(false)
+  })
 })

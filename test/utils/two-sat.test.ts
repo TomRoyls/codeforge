@@ -156,4 +156,12 @@ describe('TwoSAT', () => {
     const result = sat.solve()
     expect(result).not.toBeNull()
   })
+
+  it('satisfiable single variable returns assignment', () => {
+    const sat = new TwoSAT(1)
+    sat.addClause(0, true, 0, false)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+    expect(result!.length).toBe(1)
+  })
 })
