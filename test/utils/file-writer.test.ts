@@ -146,4 +146,12 @@ describe('writeToFileAtomic', () => {
     writeToFileAtomic(testFile, 'atomic content')
     expect(fs.readFileSync(testFile, 'utf8')).toBe('atomic content')
   })
+
+  it('writeToFile overwrites content', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const testFile = path.join(tmpDir, 'overwrite.txt')
+    writeToFile(testFile, 'first')
+    writeToFile(testFile, 'second')
+    expect(fs.readFileSync(testFile, 'utf8')).toBe('second')
+  })
 })

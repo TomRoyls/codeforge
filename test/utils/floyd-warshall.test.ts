@@ -168,4 +168,11 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath([], 1)
     expect(dist[0]![0]).toBe(0)
   })
+
+  it('two node graph distance', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 2)
+    expect(dist[0]![1]).toBe(5)
+    expect(dist[1]![0]).toBe(Infinity)
+  })
 })
