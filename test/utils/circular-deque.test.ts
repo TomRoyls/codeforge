@@ -210,4 +210,11 @@ describe('CircularDeque', () => {
     deque.pushBack(2)
     expect(deque.size).toBe(2)
   })
+
+  it('pushFront adds to front', () => {
+    const deque = new CircularDeque(5)
+    deque.pushFront(1)
+    deque.pushFront(2)
+    expect(deque.size).toBe(2)
+  })
 })

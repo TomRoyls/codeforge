@@ -103,4 +103,9 @@ describe('CircularSuffix', () => {
     const cs = CircularSuffix.build('ab')
     expect(cs.suffixArray()).toEqual([0, 1])
   })
+
+  it('aaa suffix array', () => {
+    const cs = CircularSuffix.build('aaa')
+    expect(cs.suffixArray().length).toBe(3)
+  })
 })

@@ -134,4 +134,9 @@ describe('CircularSuffixArray', () => {
     expect(csa.index(0)).toBe(0)
     expect(csa.index(1)).toBe(1)
   })
+
+  it('length returns string length', () => {
+    const csa = new CircularSuffixArray('hello')
+    expect(csa.length).toBe(5)
+  })
 })
