@@ -126,4 +126,9 @@ describe('FractionalCascading', () => {
     const fc = new FractionalCascading([[10, 20, 30]])
     expect(fc.search(10)).toEqual([0])
   })
+
+  it('search for value not in lists', () => {
+    const fc = new FractionalCascading([[10, 20, 30]])
+    expect(fc.search(15)).toEqual([-1])
+  })
 })

@@ -93,4 +93,9 @@ describe('GoldenRatioSearch', () => {
     const x = GoldenRatioSearch.maximize((t) => -(t - 2) * (t - 2), 0, 5)
     expect(x).toBeCloseTo(2, 1)
   })
+
+  it('minimizes quadratic', () => {
+    const x = GoldenRatioSearch.minimize((t) => (t - 3) * (t - 3), 0, 5)
+    expect(x).toBeCloseTo(3, 1)
+  })
 })
