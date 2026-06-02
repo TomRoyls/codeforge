@@ -195,4 +195,9 @@ describe('IntervalMap', () => {
     expect(im.get(15)).toBe('a')
     expect(im.get(19)).toBe('a')
   })
+
+  it('get returns undefined for unset range', () => {
+    const im = new IntervalMap<string>()
+    expect(im.get(100)).toBeUndefined()
+  })
 })

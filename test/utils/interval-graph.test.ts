@@ -141,4 +141,11 @@ describe('IntervalGraph', () => {
     ig.addInterval(10, 15)
     expect(ig.maxOverlap()).toBe(1)
   })
+
+  it('overlapping intervals have overlap 2', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 10)
+    ig.addInterval(5, 15)
+    expect(ig.maxOverlap()).toBe(2)
+  })
 })

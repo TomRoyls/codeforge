@@ -152,4 +152,12 @@ describe('IntegerIntervalTree', () => {
     const tree = new IntegerIntervalTree<string>()
     expect(tree.remove(1, 5)).toBe(0)
   })
+
+  it('queryPoint returns inserted value', () => {
+    const tree = new IntegerIntervalTree<string>()
+    tree.insert(0, 10, 'hello')
+    const result = tree.queryPoint(5)
+    expect(result.length).toBe(1)
+    expect(result[0]!.value).toBe('hello')
+  })
 })
