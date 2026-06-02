@@ -125,4 +125,9 @@ describe('StoerWagner', () => {
     sw.addEdge(0, 1, 5)
     expect(sw.minCut()).toBe(5)
   })
+
+  it('disconnected graph has min cut 0', () => {
+    const sw = new StoerWagner(3)
+    expect(sw.minCut()).toBe(0)
+  })
 })

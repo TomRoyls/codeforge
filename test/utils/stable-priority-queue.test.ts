@@ -171,4 +171,11 @@ describe('StablePriorityQueue', () => {
     expect(pq.dequeue()).toBe(2)
     expect(pq.dequeue()).toBe(3)
   })
+
+  it('isEmpty on new queue', () => {
+    const pq = new StablePriorityQueue<number>()
+    expect(pq.isEmpty()).toBe(true)
+    pq.enqueue(1, 1)
+    expect(pq.isEmpty()).toBe(false)
+  })
 })

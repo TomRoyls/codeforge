@@ -141,4 +141,13 @@ describe('StreamSampler', () => {
     expect(sampler.size).toBe(1)
     expect(sampler.totalSeen).toBe(2)
   })
+
+  it('reset clears state', () => {
+    const sampler = new StreamSampler<number>(3)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.reset()
+    expect(sampler.size).toBe(0)
+    expect(sampler.totalSeen).toBe(0)
+  })
 })
