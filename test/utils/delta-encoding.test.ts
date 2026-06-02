@@ -124,4 +124,11 @@ describe('DeltaEncoding', () => {
     const encoded = DeltaEncoding.encode(data)
     expect(DeltaEncoding.decode(encoded.first, encoded.deltas)).toEqual(data)
   })
+
+  it('encode single element', () => {
+    const data = [42]
+    const encoded = DeltaEncoding.encode(data)
+    expect(encoded.first).toBe(42)
+    expect(encoded.deltas.length).toBe(0)
+  })
 })

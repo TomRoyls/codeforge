@@ -201,4 +201,10 @@ describe('DequeAggregation', () => {
     const deque = new DequeAggregation<number>()
     expect(deque.aggregate()).toBeUndefined()
   })
+
+  it('aggregate with single element returns it', () => {
+    const deque = new DequeAggregation<number>()
+    deque.pushBack(5)
+    expect(deque.aggregate()).toBe(5)
+  })
 })

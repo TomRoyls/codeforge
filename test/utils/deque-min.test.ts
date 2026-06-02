@@ -167,4 +167,11 @@ describe('DequeMin', () => {
     dq.pushBack(42)
     expect(dq.min).toBe(42)
   })
+
+  it('min updates after pushBack of smaller', () => {
+    const dq = new DequeMin()
+    dq.pushBack(5)
+    dq.pushBack(3)
+    expect(dq.min).toBe(3)
+  })
 })

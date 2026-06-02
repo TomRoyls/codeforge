@@ -149,4 +149,11 @@ describe('DeterministicRng', () => {
     const rng = new DeterministicRng(42)
     expect(rng).toBeDefined()
   })
+
+  it('next returns number between 0 and 1', () => {
+    const rng = new DeterministicRng(42)
+    const val = rng.next()
+    expect(val).toBeGreaterThanOrEqual(0)
+    expect(val).toBeLessThan(1)
+  })
 })
