@@ -150,4 +150,11 @@ describe('BinaryTrie', () => {
     bt.insert(3)
     expect(bt.size).toBe(3)
   })
+
+  it('find returns true for inserted element', () => {
+    const bt = new BinaryTrie()
+    bt.insert(7)
+    expect(bt.find(7)).toBe(true)
+    expect(bt.find(6)).toBe(false)
+  })
 })

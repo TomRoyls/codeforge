@@ -158,4 +158,10 @@ describe('BinaryLifting', () => {
     const bl = new BinaryLifting(adj, 0)
     expect(bl.lca(0, 2)).toBe(0)
   })
+
+  it('lca of same node is itself', () => {
+    const adj = [[1], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(0, 0)).toBe(0)
+  })
 })

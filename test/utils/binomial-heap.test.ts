@@ -235,4 +235,11 @@ describe('BinomialHeap', () => {
     const heap = new BinomialHeap<number>()
     expect(heap.isEmpty()).toBe(true)
   })
+
+  it('insert increases size', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(5, 5)
+    heap.insert(3, 3)
+    expect(heap.size).toBe(2)
+  })
 })
