@@ -115,5 +115,12 @@ describe('TarjanSCC', () => {
       const { componentId } = TarjanSCC.condensation(adj)
       expect(componentId.length).toBe(1)
     })
+
+    it('DAG has each node as own component', () => {
+      const adj = [[1], [2], []] as number[][]
+      const { componentId } = TarjanSCC.condensation(adj)
+      const uniqueIds = new Set(componentId)
+      expect(uniqueIds.size).toBe(3)
+    })
   })
 })

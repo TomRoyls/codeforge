@@ -166,4 +166,10 @@ describe('runWithConcurrency', () => {
     await runWithConcurrency([42], async (x) => { results.push(x) }, 2)
     expect(results).toEqual([42])
   })
+
+  it('respects concurrency limit', async () => {
+    const order: number[] = []
+    await runWithConcurrency([1, 2, 3, 4], async (x) => { order.push(x) }, 2)
+    expect(order.length).toBe(4)
+  })
 })
