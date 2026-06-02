@@ -168,4 +168,10 @@ describe('CentroidDecomposition', () => {
     const cd = new CentroidDecomposition(adj)
     expect(cd.getCentroidTree().length).toBe(2)
   })
+
+  it('single node has trivial centroid tree', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getCentroidTree().length).toBe(1)
+  })
 })

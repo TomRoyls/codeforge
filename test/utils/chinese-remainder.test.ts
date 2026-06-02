@@ -108,5 +108,12 @@ describe('CRT', () => {
       expect(result!.remainder % 997).toBe(1)
       expect(result!.remainder % 991).toBe(2)
     })
+
+    it('solve x=1 mod 3, x=2 mod 5', () => {
+      const result = CRT.solve([1, 2], [3, 5])
+      expect(result).not.toBeNull()
+      expect(result!.remainder % 3).toBe(1)
+      expect(result!.remainder % 5).toBe(2)
+    })
   })
 })
