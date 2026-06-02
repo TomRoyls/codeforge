@@ -107,4 +107,8 @@ describe('FibonacciIterator', () => {
   it('nth handles 1', () => {
     expect(FibonacciIterator.nth(1)).toBe(1n)
   })
+
+  it('nth handles 10', () => {
+    expect(FibonacciIterator.nth(10)).toBe(55n)
+  })
 })

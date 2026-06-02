@@ -114,4 +114,9 @@ describe('FastFourierTransform', () => {
     const result = FastFourierTransform.multiplyPolynomials([2, 3], [5])
     expect(result).toEqual([10, 15])
   })
+
+  it('multiplyPolynomials degree 0', () => {
+    const result = FastFourierTransform.multiplyPolynomials([3], [4])
+    expect(result).toEqual([12])
+  })
 })

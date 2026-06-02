@@ -166,4 +166,15 @@ describe('EventSink', () => {
     sink.emit('click', { x: 1, y: 2 })
     expect(received).toBe(true)
   })
+
+  it('off stops events', () => {
+    let count = 0
+    const handler = () => { count++ }
+    const sink = new EventSink<{ click: { x: number; y: number } }>()
+    sink.on('click', handler)
+    sink.emit('click', { x: 1, y: 2 })
+    sink.off('click', handler)
+    sink.emit('click', { x: 3, y: 4 })
+    expect(count).toBe(1)
+  })
 })

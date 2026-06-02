@@ -139,4 +139,10 @@ describe('EulerTour', () => {
     expect(et.isAncestor(0, 29)).toBe(true)
     expect(et.getSubtreeSize(0)).toBe(30)
   })
+
+  it('single node tour', () => {
+    const adj = [[]]
+    const et = new EulerTour(adj, 0)
+    expect(et.isAncestor(0, 0)).toBe(true)
+  })
 })
