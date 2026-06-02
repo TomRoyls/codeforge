@@ -294,4 +294,10 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj, 0)
     expect(hld.pathDistance(1, 1)).toBe(0)
   })
+
+  it('path distance of parent to child', () => {
+    const adj = [[1, 2], [3], [], []]
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.pathDistance(0, 3)).toBeGreaterThanOrEqual(0)
+  })
 })

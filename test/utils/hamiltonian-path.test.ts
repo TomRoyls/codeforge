@@ -136,4 +136,12 @@ describe('HamiltonianPath', () => {
     hp.addEdge(2, 3)
     expect(hp.existsPath()).toBe(false)
   })
+
+  it('triangle graph has hamiltonian path', () => {
+    const hp = new HamiltonianPath(3)
+    hp.addEdge(0, 1)
+    hp.addEdge(1, 2)
+    hp.addEdge(2, 0)
+    expect(hp.existsPath()).toBe(true)
+  })
 })

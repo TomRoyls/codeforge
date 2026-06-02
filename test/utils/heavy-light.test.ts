@@ -162,4 +162,10 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj, 0)
     expect(hld.lca(0, 0)).toBe(0)
   })
+
+  it('lca of two children is parent', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [0]], [2, [0]]])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(1, 2)).toBe(0)
+  })
 })
