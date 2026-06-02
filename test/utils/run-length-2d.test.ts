@@ -107,4 +107,10 @@ describe('RunLength2D', () => {
     expect(encoded.length).toBe(2)
     expect(encoded[0]).toEqual([{ value: 'a', count: 2 }])
   })
+
+  it('encode single row single element', () => {
+    const encoded = RunLength2D.encode([['x']])
+    expect(encoded.length).toBe(1)
+    expect(encoded[0]).toEqual([{ value: 'x', count: 1 }])
+  })
 })

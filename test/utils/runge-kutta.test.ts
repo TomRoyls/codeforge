@@ -126,4 +126,10 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(5, 3)
   })
+
+  it('zero derivative constant solution', () => {
+    const result = RungeKutta.solve(() => 0, 0, 42, 10, 5)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(42, 3)
+  })
 })

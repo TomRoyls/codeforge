@@ -164,4 +164,10 @@ describe('SCCTarjan', () => {
     expect(comps.length).toBe(1)
     expect(comps[0]).toEqual([0])
   })
+
+  it('two separate nodes have two SCCs', () => {
+    const scc = new SCCTarjan(2)
+    const comps = scc.solve()
+    expect(comps.length).toBe(2)
+  })
 })
