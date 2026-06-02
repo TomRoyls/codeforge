@@ -148,4 +148,9 @@ describe('TrieMap', () => {
     trie.set('hello', 42)
     expect(trie.get('hello')).toBe(42)
   })
+
+  it('get missing key returns undefined', () => {
+    const trie = new TrieMap<number>()
+    expect(trie.get('missing')).toBeUndefined()
+  })
 })

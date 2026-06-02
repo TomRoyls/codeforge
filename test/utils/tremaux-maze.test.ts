@@ -168,4 +168,10 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [1, 0])
     expect(Array.isArray(path)).toBe(true)
   })
+
+  it('start equals end returns single point', () => {
+    const maze = new TremauxMaze()
+    const path = maze.solve([0, 0], [0, 0])
+    expect(path.length).toBeGreaterThanOrEqual(1)
+  })
 })

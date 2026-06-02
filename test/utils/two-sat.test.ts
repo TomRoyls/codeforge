@@ -164,4 +164,10 @@ describe('TwoSAT', () => {
     expect(result).not.toBeNull()
     expect(result!.length).toBe(1)
   })
+
+  it('trivially satisfiable', () => {
+    const sat = new TwoSAT(1)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+  })
 })

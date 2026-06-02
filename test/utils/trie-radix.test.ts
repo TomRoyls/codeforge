@@ -149,4 +149,11 @@ describe('TrieRadix', () => {
     expect(trie.startsWith('hel')).toBe(true)
     expect(trie.startsWith('xyz')).toBe(false)
   })
+
+  it('search exact match', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello')
+    expect(trie.search('hello')).toBe(true)
+    expect(trie.search('hell')).toBe(false)
+  })
 })
