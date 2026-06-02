@@ -191,4 +191,12 @@ describe('PriorityQueue - edge cases', () => {
       prev = val
     }
   })
+
+  it('size returns element count', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.size).toBe(3)
+  })
 })

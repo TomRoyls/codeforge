@@ -104,4 +104,9 @@ describe('Polynomial', () => {
     const p = Polynomial.fromRoots([])
     expect(p.coefficients).toEqual([1])
   })
+
+  it('evaluate at 0 returns constant term', () => {
+    const p = new Polynomial([3, 2, 1])
+    expect(p.evaluate(0)).toBe(3)
+  })
 })

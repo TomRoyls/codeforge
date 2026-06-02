@@ -148,4 +148,12 @@ describe('PrimMST', () => {
     expect(result.totalWeight).toBe(0)
     expect(result.edges.length).toBe(0)
   })
+
+  it('two node MST', () => {
+    const mst = new PrimMST(2)
+    mst.addEdge(0, 1, 5)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(5)
+    expect(result.edges.length).toBe(1)
+  })
 })

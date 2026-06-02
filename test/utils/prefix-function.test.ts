@@ -80,4 +80,8 @@ describe('PrefixFunction', () => {
   it('compute handles single character', () => {
     expect(PrefixFunction.compute('a')).toEqual([0])
   })
+
+  it('compute for repeated chars', () => {
+    expect(PrefixFunction.compute('aaa')).toEqual([0, 1, 2])
+  })
 })
