@@ -140,4 +140,12 @@ describe('MisraGries', () => {
     const mg = new MisraGries<string>(3)
     expect(mg.getCount('any')).toBe(0)
   })
+
+  it('tracks frequent items', () => {
+    const mg = new MisraGries<string>(2)
+    mg.process('a')
+    mg.process('a')
+    mg.process('b')
+    expect(mg.getCount('a')).toBeGreaterThanOrEqual(2)
+  })
 })

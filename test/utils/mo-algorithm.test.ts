@@ -352,4 +352,22 @@ describe('MoAlgorithm', () => {
     )
     expect(answers).toEqual([])
   })
+
+  it('single element query', () => {
+    const arr = [5]
+    const queries = [{ l: 0, r: 0 }]
+    const state = { count: 0 }
+    const answers = MoAlgorithm.solve(
+      arr,
+      queries,
+      (s, idx) => { s.count++ },
+      (s, idx) => { s.count++ },
+      (s, idx) => { s.count-- },
+      (s, idx) => { s.count-- },
+      (s) => s.count,
+      state
+    )
+    expect(answers.length).toBe(1)
+    expect(answers[0]).toBe(1)
+  })
 })
