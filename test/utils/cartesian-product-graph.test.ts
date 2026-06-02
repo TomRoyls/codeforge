@@ -129,4 +129,9 @@ describe('CartesianProductGraph', () => {
     const cg = new CartesianProductGraph(1, 1)
     expect(cg.productNodeCount()).toBe(1)
   })
+
+  it('2x2 graphs have 4 product nodes', () => {
+    const cg = new CartesianProductGraph(2, 2)
+    expect(cg.productNodeCount()).toBe(4)
+  })
 })

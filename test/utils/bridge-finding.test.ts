@@ -145,4 +145,12 @@ describe('BridgeFinding', () => {
     bf.addEdge(0, 1)
     expect(bf.findBridges()).toEqual([[0, 1]])
   })
+
+  it('triangle graph has no bridges', () => {
+    const bf = new BridgeFinding(3)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    expect(bf.findBridges()).toEqual([])
+  })
 })
