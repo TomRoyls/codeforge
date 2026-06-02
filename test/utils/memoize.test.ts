@@ -177,4 +177,12 @@ describe('memoize - edge cases', () => {
     expect(fn('hello')).toBe(5)
     expect(calls).toBe(1)
   })
+
+  it('memoizes with number arguments', () => {
+    let calls = 0
+    const fn = memoize((n: number) => { calls++; return n * 2 })
+    expect(fn(5)).toBe(10)
+    expect(fn(5)).toBe(10)
+    expect(calls).toBe(1)
+  })
 })

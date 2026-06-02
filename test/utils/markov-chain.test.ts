@@ -139,4 +139,10 @@ describe('MarkovChain', () => {
     const next = mc.next('a')
     expect(['b', 'c']).toContain(next)
   })
+
+  it('single state always returns same state', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('x', 'x', 1)
+    expect(mc.next('x')).toBe('x')
+  })
 })

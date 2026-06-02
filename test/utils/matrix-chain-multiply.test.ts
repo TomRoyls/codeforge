@@ -91,4 +91,9 @@ describe('MatrixChainMultiply', () => {
     const result = MatrixChainMultiply.minCost([10, 20])
     expect(result.cost).toBe(0)
   })
+
+  it('minCost for single matrix is 0', () => {
+    const result = MatrixChainMultiply.minCost([10])
+    expect(result.cost).toBe(0)
+  })
 })
