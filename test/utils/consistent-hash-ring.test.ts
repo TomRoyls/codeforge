@@ -148,4 +148,11 @@ describe('ConsistentHashRing', () => {
     }
     expect(nodes.size).toBeGreaterThan(1)
   })
+
+  it('single node handles all keys', () => {
+    const ring = new ConsistentHashRing<string>(['only-node'])
+    for (let i = 0; i < 10; i++) {
+      expect(ring.getNode(`key-${i}`)).toBe('only-node')
+    }
+  })
 })

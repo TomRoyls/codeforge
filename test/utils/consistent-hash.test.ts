@@ -171,4 +171,12 @@ describe('ConsistentHash edge cases', () => {
     ch.addNode('node-a')
     expect(ch.getNode('key')).toBe('node-a')
   })
+
+  it('removeNode shifts keys', () => {
+    const ch = new ConsistentHash<string>({ virtualNodes: 100 })
+    ch.addNode('node-a')
+    ch.addNode('node-b')
+    ch.removeNode('node-b')
+    expect(ch.getNode('any-key')).toBe('node-a')
+  })
 })

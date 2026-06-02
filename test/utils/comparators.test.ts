@@ -123,4 +123,10 @@ describe('Comparators', () => {
     expect(comp(2, 1)).toBeGreaterThan(0)
     expect(comp(1, 1)).toBe(0)
   })
+
+  it('reverse comparator inverts order', () => {
+    const comp = Comparators.natural<number>()
+    expect(comp(1, 2)).toBeLessThan(0)
+    expect(comp(2, 1)).toBeGreaterThan(0)
+  })
 })

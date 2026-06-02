@@ -95,4 +95,8 @@ describe('ContinuedFraction', () => {
   it('fromNumber 1.5 returns [1, 2]', () => {
     expect(ContinuedFraction.fromNumber(1.5)).toEqual([1, 2])
   })
+
+  it('fromNumber 2.0 returns [2]', () => {
+    expect(ContinuedFraction.fromNumber(2.0)).toEqual([2])
+  })
 })
