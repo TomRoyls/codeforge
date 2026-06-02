@@ -166,4 +166,11 @@ describe('CountingBloomFilter2', () => {
     filter.add('test')
     expect(filter.contains('test')).toBe(true)
   })
+
+  it('remove makes item not contained', () => {
+    const filter = new CountingBloomFilter2(100)
+    filter.add('test')
+    filter.remove('test')
+    expect(filter.contains('test')).toBe(false)
+  })
 })
