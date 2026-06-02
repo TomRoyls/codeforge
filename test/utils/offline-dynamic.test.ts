@@ -147,4 +147,11 @@ describe('OfflineDynamicConnectivity', () => {
     const result = odc.solve()
     expect(result.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('no queries returns empty', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 5)
+    const result = odc.solve()
+    expect(result).toEqual([])
+  })
 })

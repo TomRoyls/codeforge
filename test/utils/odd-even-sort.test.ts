@@ -87,4 +87,8 @@ describe('OddEvenSort', () => {
   it('handles single element', () => {
     expect(OddEvenSort.sort([42])).toEqual([42])
   })
+
+  it('handles already sorted', () => {
+    expect(OddEvenSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  })
 })

@@ -108,4 +108,9 @@ describe('extractRuleOptions', () => {
     const result = extractRuleOptions([], { x: 1, y: 2 })
     expect(result).toEqual({ x: 1, y: 2 })
   })
+
+  it('override default value', () => {
+    const result = extractRuleOptions([{ x: 10 }], { x: 1, y: 2 })
+    expect(result.x).toBe(10)
+  })
 })
