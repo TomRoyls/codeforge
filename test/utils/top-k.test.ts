@@ -156,4 +156,12 @@ describe('TopK - edge cases', () => {
     const tk = new TopK<string>(3)
     expect(tk.topValues).toEqual([])
   })
+
+  it('add and query top values', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 5)
+    tk.add('b', 3)
+    const top = tk.topValues
+    expect(top.length).toBeGreaterThan(0)
+  })
 })
