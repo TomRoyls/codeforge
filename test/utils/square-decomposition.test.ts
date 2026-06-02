@@ -104,4 +104,9 @@ describe('SquareDecomposition', () => {
     expect(sd.get(0)).toBe(10)
     expect(sd.get(2)).toBe(30)
   })
+
+  it('query for full array sum', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4])
+    expect(sd.query(0, 3)).toBe(10)
+  })
 })

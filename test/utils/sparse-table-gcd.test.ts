@@ -95,4 +95,9 @@ describe('SparseTableGCD', () => {
     const st = new SparseTableGCD([6])
     expect(st.query(0, 0)).toBe(6)
   })
+
+  it('GCD of coprime numbers is 1', () => {
+    const st = new SparseTableGCD([6, 5])
+    expect(st.query(0, 1)).toBe(1)
+  })
 })

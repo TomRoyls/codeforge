@@ -95,4 +95,9 @@ describe('SpiralMatrix', () => {
     const m = SpiralMatrix.generate(2)
     expect(m).toEqual([[1, 2], [4, 3]])
   })
+
+  it('3x3 matrix center is 9', () => {
+    const m = SpiralMatrix.generate(3)
+    expect(m[1]![1]).toBe(9)
+  })
 })

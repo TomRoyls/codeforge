@@ -168,4 +168,11 @@ describe('SplayTree custom comparator', () => {
     tree.insert('b', 2)
     expect(tree.size).toBe(2)
   })
+
+  it('contains returns true for existing key', () => {
+    const tree = new SplayTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.contains(1)).toBe(true)
+    expect(tree.contains(99)).toBe(false)
+  })
 })
