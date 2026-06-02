@@ -158,4 +158,14 @@ describe('NewtonMethod', () => {
     )
     expect(Math.abs(root - 5)).toBeLessThan(0.001)
   })
+
+  it('finds root of x squared', () => {
+    const root = NewtonMethod.findRoot(
+      (x) => x * x,
+      (x) => 2 * x,
+      1,
+      2,
+    )
+    expect(Math.abs(root)).toBeLessThan(0.001)
+  })
 })

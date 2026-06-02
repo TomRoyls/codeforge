@@ -143,4 +143,9 @@ describe('NetworkFlow', () => {
     const edges = [{ from: 0, to: 1, capacity: 7 }]
     expect(NetworkFlow.maxFlow(edges, 0, 1, 2)).toBe(7)
   })
+
+  it('disconnected graph has zero flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 7 }]
+    expect(NetworkFlow.maxFlow(edges, 2, 3, 4)).toBe(0)
+  })
 })

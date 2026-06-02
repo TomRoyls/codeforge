@@ -130,4 +130,9 @@ describe('morris traversals additional', () => {
     const postorder = morrisPostorder(root)
     expect(postorder[postorder.length - 1]).toBe(5)
   })
+
+  it('empty tree returns empty arrays', () => {
+    expect([...morrisInorder(null)]).toEqual([])
+    expect([...morrisPreorder(null)]).toEqual([])
+  })
 })
