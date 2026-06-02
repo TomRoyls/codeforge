@@ -156,4 +156,9 @@ describe('ClosestPairBrute', () => {
     expect(result).not.toBeNull()
     expect(result!.distance).toBeCloseTo(5, 5)
   })
+
+  it('constructor with points array', () => {
+    const cp = new ClosestPairBrute([{ x: 0, y: 0 }, { x: 1, y: 1 }])
+    expect(cp).toBeDefined()
+  })
 })

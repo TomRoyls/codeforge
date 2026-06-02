@@ -96,4 +96,8 @@ describe('Collatz', () => {
   it('sequence for 1 is [1]', () => {
     expect(Collatz.sequence(1)).toEqual([1])
   })
+
+  it('sequence for 2 is [2, 1]', () => {
+    expect(Collatz.sequence(2)).toEqual([2, 1])
+  })
 })

@@ -97,4 +97,9 @@ describe('Combination', () => {
     const result = Combination.generate([1, 2], 2)
     expect(result).toEqual([[1, 2]])
   })
+
+  it('choose 0 returns empty combination', () => {
+    const result = Combination.generate([1, 2, 3], 0)
+    expect(result).toEqual([[]])
+  })
 })
