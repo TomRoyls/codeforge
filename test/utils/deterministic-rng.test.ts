@@ -138,4 +138,10 @@ describe('DeterministicRng', () => {
     expect(val).toBeGreaterThanOrEqual(1)
     expect(val).toBeLessThanOrEqual(10)
   })
+
+  it('produces same sequence with same seed', () => {
+    const rng1 = new DeterministicRng(42)
+    const rng2 = new DeterministicRng(42)
+    expect(rng1.nextInt()).toBe(rng2.nextInt())
+  })
 })

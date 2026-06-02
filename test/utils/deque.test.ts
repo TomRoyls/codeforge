@@ -161,4 +161,9 @@ describe('Deque', () => {
     expect(dq.popBack()).toBe(2)
     expect(dq.popBack()).toBe(1)
   })
+
+  it('isEmpty on new deque', () => {
+    const dq = new Deque<number>()
+    expect(dq.isEmpty).toBe(true)
+  })
 })

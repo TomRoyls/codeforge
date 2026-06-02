@@ -138,4 +138,15 @@ describe('DigitalTree', () => {
     dt.remove('hello')
     expect(dt.search('hello')).toBe(false)
   })
+
+  it('insert and search multiple words', () => {
+    const dt = new DigitalTree()
+    dt.insert('cat')
+    dt.insert('car')
+    dt.insert('dog')
+    expect(dt.search('cat')).toBe(true)
+    expect(dt.search('car')).toBe(true)
+    expect(dt.search('dog')).toBe(true)
+    expect(dt.search('cow')).toBe(false)
+  })
 })

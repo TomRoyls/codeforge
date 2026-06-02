@@ -153,4 +153,12 @@ describe('DifferenceArray2D', () => {
     da2.add(1, 1, 1, 1, 7)
     expect(da1.buildGrid()).toEqual(da2.buildGrid())
   })
+
+  it('single cell add', () => {
+    const da = new DifferenceArray2D(2, 2)
+    da.add(0, 0, 0, 0, 5)
+    const grid = da.buildGrid()
+    expect(grid[0]![0]).toBe(5)
+    expect(grid[1]![1]).toBe(0)
+  })
 })
