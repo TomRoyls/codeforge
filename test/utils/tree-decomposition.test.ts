@@ -133,4 +133,9 @@ describe('TreeDecomposition', () => {
     td.addEdge(0, 1)
     expect(td.treewidth()).toBeGreaterThanOrEqual(1)
   })
+
+  it('single node has treewidth 0', () => {
+    const td = new TreeDecomposition(1)
+    expect(td.treewidth()).toBeGreaterThanOrEqual(0)
+  })
 })

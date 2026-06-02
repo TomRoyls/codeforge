@@ -161,4 +161,11 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [1, 0])
     expect(path.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('solve returns an array', () => {
+    const maze = new TremauxMaze()
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [1, 0])
+    expect(Array.isArray(path)).toBe(true)
+  })
 })

@@ -160,4 +160,14 @@ describe('TreeHash', () => {
     const h2 = th.rootedHash(0)
     expect(h1).toBe(h2)
   })
+
+  it('hash is deterministic for same tree', () => {
+    const th = new TreeHash(4)
+    th.addEdge(0, 1)
+    th.addEdge(0, 2)
+    th.addEdge(0, 3)
+    const h1 = th.rootedHash(0)
+    const h2 = th.rootedHash(0)
+    expect(h1).toBe(h2)
+  })
 })
