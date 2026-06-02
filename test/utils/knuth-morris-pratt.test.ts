@@ -73,4 +73,8 @@ describe('KnuthMorrisPratt', () => {
   it('handles pattern longer than text', () => {
     expect(KnuthMorrisPratt.search('ab', 'abcd')).toEqual([])
   })
+
+  it('finds pattern at end', () => {
+    expect(KnuthMorrisPratt.search('abcd', 'cd')).toEqual([2])
+  })
 })

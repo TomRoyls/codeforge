@@ -154,4 +154,10 @@ describe('KruskalMST', () => {
   it('isConnected for single node', () => {
     expect(KruskalMST.isConnected([], 1)).toBe(true)
   })
+
+  it('findMST returns total weight', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const mst = KruskalMST.findMST(edges, 2)
+    expect(mst.totalWeight).toBe(5)
+  })
 })

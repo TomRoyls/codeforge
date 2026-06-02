@@ -126,4 +126,10 @@ describe('LazySegmentTree', () => {
     st.updateRange(1, 1, 7)
     expect(st.queryRange(1, 1)).toBe(7)
   })
+
+  it('update and query full range sums', () => {
+    const st = new LazySegmentTree(3)
+    st.updateRange(0, 2, 5)
+    expect(st.queryRange(0, 2)).toBe(15)
+  })
 })
