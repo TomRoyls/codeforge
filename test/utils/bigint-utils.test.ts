@@ -99,4 +99,9 @@ describe('BigIntUtils', () => {
     expect(inv).not.toBeNull()
     expect((3n * inv!) % 7n).toBe(1n)
   })
+
+  it('modInverse of 1 is 1', () => {
+    const inv = BigIntUtils.modInverse(1n, 7n)
+    expect(inv).toBe(1n)
+  })
 })

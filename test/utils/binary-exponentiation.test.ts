@@ -87,4 +87,8 @@ describe('BinaryExponentiation', () => {
   it('power of 2^10 mod 1000', () => {
     expect(BinaryExponentiation.power(2n, 10n, 1000n)).toBe(24n)
   })
+
+  it('power of 0 exponent is 1', () => {
+    expect(BinaryExponentiation.power(5n, 0n, 100n)).toBe(1n)
+  })
 })

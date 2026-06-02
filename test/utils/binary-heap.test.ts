@@ -178,4 +178,14 @@ describe('BinaryHeap stress', () => {
     expect(heap.peek()).toBe(3)
     expect(heap.size).toBe(3)
   })
+
+  it('pop returns elements in order', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(5)
+    heap.push(1)
+    heap.push(3)
+    expect(heap.pop()).toBe(1)
+    expect(heap.pop()).toBe(3)
+    expect(heap.pop()).toBe(5)
+  })
 })
