@@ -150,4 +150,12 @@ describe('RadixHeap', () => {
     const h = new RadixHeap()
     expect(h.size).toBe(0)
   })
+
+  it('push and pop returns in order', () => {
+    const h = new RadixHeap()
+    h.push(5)
+    h.push(3)
+    h.push(7)
+    expect(h.pop()).toBe(3)
+  })
 })

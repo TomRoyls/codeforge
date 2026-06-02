@@ -146,4 +146,9 @@ describe('RangeUpdatePointQuery', () => {
     const result = rq.build()
     expect(result).toEqual([1, 2, 3])
   })
+
+  it('empty build returns empty', () => {
+    const rq = new RangeUpdatePointQuery(0)
+    expect(rq.build()).toEqual([])
+  })
 })

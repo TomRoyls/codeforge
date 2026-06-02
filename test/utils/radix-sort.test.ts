@@ -123,4 +123,8 @@ describe('RadixSort', () => {
   it('sorts negative numbers', () => {
     expect(RadixSort.sort([-3, -1, -2, 0])).toEqual([-3, -2, -1, 0])
   })
+
+  it('handles already sorted', () => {
+    expect(RadixSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  })
 })
