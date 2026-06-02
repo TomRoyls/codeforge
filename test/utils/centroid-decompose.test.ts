@@ -179,4 +179,13 @@ describe('CentroidDecomposition', () => {
     const { parent } = cd.decompose()
     expect(parent.length).toBe(2)
   })
+
+  it('decompose on triangle', () => {
+    const cd = new CentroidDecomposition(3)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(0, 2)
+    const { parent } = cd.decompose()
+    expect(parent.length).toBe(3)
+  })
 })

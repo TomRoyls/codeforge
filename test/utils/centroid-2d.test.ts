@@ -132,4 +132,10 @@ describe('Centroid2D', () => {
     expect(c.x).toBeCloseTo(5, 5)
     expect(c.y).toBeCloseTo(10, 5)
   })
+
+  it('centroid of symmetric points is origin', () => {
+    const c = Centroid2D.compute([{ x: -1, y: -1 }, { x: 1, y: 1 }])
+    expect(c.x).toBeCloseTo(0, 5)
+    expect(c.y).toBeCloseTo(0, 5)
+  })
 })

@@ -115,5 +115,11 @@ describe('CRT', () => {
       expect(result!.remainder % 3).toBe(1)
       expect(result!.remainder % 5).toBe(2)
     })
+
+    it('single congruence', () => {
+      const result = CRT.solve([2], [5])
+      expect(result).not.toBeNull()
+      expect(result!.remainder % 5).toBe(2)
+    })
   })
 })

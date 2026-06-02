@@ -174,4 +174,10 @@ describe('CentroidDecomposition', () => {
     const cd = new CentroidDecomposition(adj)
     expect(cd.getCentroidTree().length).toBe(1)
   })
+
+  it('two node tree decomposes', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getCentroidTree().length).toBe(2)
+  })
 })
