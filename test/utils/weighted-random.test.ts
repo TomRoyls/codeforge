@@ -227,4 +227,11 @@ describe('WeightedRandom', () => {
     const samples = sampler.sampleMultiple(3)
     expect(samples.length).toBe(3)
   })
+
+  it('single item always samples that item', () => {
+    const sampler = new WeightedRandom<string>()
+    sampler.add('only', 1.0)
+    sampler.build()
+    expect(sampler.sample()).toBe('only')
+  })
 })

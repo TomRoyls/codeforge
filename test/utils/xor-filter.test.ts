@@ -135,4 +135,11 @@ describe('XorFilter', () => {
     }
     expect(falsePositives).toBeLessThan(10);
   });
+
+  it('filter with 3 items contains all', () => {
+    const f = XorFilter.create(['a', 'b', 'c']);
+    expect(f.has('a')).toBe(true);
+    expect(f.has('b')).toBe(true);
+    expect(f.has('c')).toBe(true);
+  });
 });

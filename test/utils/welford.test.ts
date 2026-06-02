@@ -111,4 +111,9 @@ describe('Welford', () => {
     expect(w.mean).toBe(42)
     expect(w.variance).toBe(0)
   })
+
+  it('fromArray with two elements has correct mean', () => {
+    const w = Welford.fromArray([10, 20])
+    expect(w.mean).toBe(15)
+  })
 })

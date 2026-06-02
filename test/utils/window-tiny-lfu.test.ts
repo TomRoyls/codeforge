@@ -112,4 +112,9 @@ describe('WindowTinyLFU', () => {
     w.recordAccess('item')
     expect(w.estimate('item')).toBeGreaterThan(0)
   })
+
+  it('unseen item has zero estimate', () => {
+    const w = new WindowTinyLFU(10)
+    expect(w.estimate('ghost')).toBe(0)
+  })
 })
