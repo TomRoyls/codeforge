@@ -169,4 +169,13 @@ describe('BinaryHeap stress', () => {
       expect(heap.pop()).toBe(i)
     }
   })
+
+  it('peek returns minimum without removing', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(5)
+    heap.push(3)
+    heap.push(7)
+    expect(heap.peek()).toBe(3)
+    expect(heap.size).toBe(3)
+  })
 })

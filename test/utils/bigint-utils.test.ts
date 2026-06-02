@@ -93,4 +93,10 @@ describe('BigIntUtils', () => {
     expect(BigIntUtils.lcm(4n, 6n)).toBe(12n)
     expect(BigIntUtils.lcm(3n, 5n)).toBe(15n)
   })
+
+  it('mod inverse exists for coprime', () => {
+    const inv = BigIntUtils.modInverse(3n, 7n)
+    expect(inv).not.toBeNull()
+    expect((3n * inv!) % 7n).toBe(1n)
+  })
 })

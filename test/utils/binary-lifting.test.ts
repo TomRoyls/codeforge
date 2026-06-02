@@ -152,4 +152,10 @@ describe('BinaryLifting', () => {
     expect(bl.kthAncestor(4, 2)).toBe(2)
     expect(bl.kthAncestor(4, 4)).toBe(0)
   })
+
+  it('lca of root with any node is root', () => {
+    const adj = [[1, 2], [], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(0, 2)).toBe(0)
+  })
 })
