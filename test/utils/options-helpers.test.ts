@@ -103,4 +103,9 @@ describe('extractRuleOptions', () => {
     const result = extractRuleOptions([{ a: 1, b: 2 }], { b: 99, c: 3 })
     expect(result).toEqual({ a: 1, b: 2, c: 3 })
   })
+
+  it('empty objects returns defaults', () => {
+    const result = extractRuleOptions([], { x: 1, y: 2 })
+    expect(result).toEqual({ x: 1, y: 2 })
+  })
 })

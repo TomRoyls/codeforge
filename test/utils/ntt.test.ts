@@ -99,4 +99,9 @@ describe('NTT', () => {
     const result = NTT.multiplyPolynomials([1n, 2n], [0n])
     expect(result).toEqual([0n, 0n])
   })
+
+  it('multiplyPolynomials by identity', () => {
+    const result = NTT.multiplyPolynomials([1n, 1n], [1n])
+    expect(result).toEqual([1n, 1n])
+  })
 })

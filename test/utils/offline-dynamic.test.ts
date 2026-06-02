@@ -139,4 +139,12 @@ describe('OfflineDynamicConnectivity', () => {
     const result = odc.solve()
     expect(result).toEqual([])
   })
+
+  it('single edge query', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 5)
+    odc.addQuery(0, 1, 3)
+    const result = odc.solve()
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
 })
