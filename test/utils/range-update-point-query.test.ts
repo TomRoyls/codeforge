@@ -137,4 +137,13 @@ describe('RangeUpdatePointQuery', () => {
     const result = rq.build()
     expect(result[0]).toBe(5)
   })
+
+  it('multiple points', () => {
+    const rq = new RangeUpdatePointQuery(3)
+    rq.addPoint(0, 1)
+    rq.addPoint(1, 2)
+    rq.addPoint(2, 3)
+    const result = rq.build()
+    expect(result).toEqual([1, 2, 3])
+  })
 })

@@ -145,4 +145,9 @@ describe('RadixHeap', () => {
     expect(h.pop()).toBe(5)
     expect(h.pop()).toBe(10)
   })
+
+  it('size on new heap is 0', () => {
+    const h = new RadixHeap()
+    expect(h.size).toBe(0)
+  })
 })
