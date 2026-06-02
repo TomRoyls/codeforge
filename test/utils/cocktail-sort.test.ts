@@ -83,4 +83,8 @@ describe('CocktailSort', () => {
   it('handles already sorted', () => {
     expect(CocktailSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles single element', () => {
+    expect(CocktailSort.sort([42])).toEqual([42])
+  })
 })

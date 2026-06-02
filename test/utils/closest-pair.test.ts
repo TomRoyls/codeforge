@@ -116,4 +116,9 @@ describe('ClosestPair', () => {
     const result = ClosestPair.find(points)
     expect(result!.distance).toBeCloseTo(1, 8)
   })
+
+  it('returns null for single point', () => {
+    const result = ClosestPair.find([{ x: 0, y: 0 }])
+    expect(result).toBeNull()
+  })
 })

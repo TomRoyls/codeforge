@@ -141,4 +141,10 @@ describe('ClosestPairBrute', () => {
     ])
     expect(cp).toBeDefined()
   })
+
+  it('returns null for empty set', () => {
+    const cp = new ClosestPairBrute()
+    const result = cp.findClosest()
+    expect(result).toBeNull()
+  })
 })
