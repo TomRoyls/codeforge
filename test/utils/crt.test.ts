@@ -105,4 +105,11 @@ describe('ChineseRemainderTheorem', () => {
     const result = ChineseRemainderTheorem.solve([0], [1])
     expect(result).not.toBeNull()
   })
+
+  it('solves x=2 mod 3, x=3 mod 5', () => {
+    const result = ChineseRemainderTheorem.solve([2, 3], [3, 5])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 3).toBe(2)
+    expect(result!.remainder % 5).toBe(3)
+  })
 })

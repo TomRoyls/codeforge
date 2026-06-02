@@ -132,4 +132,10 @@ describe('CountMinSketch - edge cases', () => {
     const est = cms.estimate('never-seen')
     expect(est).toBeLessThan(100)
   })
+
+  it('estimate for seen item is at least count', () => {
+    const cms = new CountMinSketch(100, 5)
+    for (let i = 0; i < 50; i++) cms.update('key')
+    expect(cms.estimate('key')).toBeGreaterThanOrEqual(50)
+  })
 })

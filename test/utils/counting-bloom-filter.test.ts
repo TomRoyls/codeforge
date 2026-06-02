@@ -157,4 +157,12 @@ describe('CountingBloomFilter clear', () => {
     bf.add('b')
     expect(bf.size).toBe(2)
   })
+
+  it('remove decrements count', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('x')
+    bf.add('x')
+    bf.remove('x')
+    expect(bf.has('x')).toBe(true)
+  })
 })
