@@ -150,4 +150,11 @@ describe('LinearProbingHashTable', () => {
     expect(ht.has('x')).toBe(true)
     expect(ht.has('y')).toBe(false)
   })
+
+  it('delete removes key', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('a', 1)
+    ht.delete('a')
+    expect(ht.has('a')).toBe(false)
+  })
 })

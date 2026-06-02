@@ -151,4 +151,10 @@ describe('LineGraph', () => {
     const adj = lg.build()
     expect(adj.length).toBe(1)
   })
+
+  it('no edges has empty adj', () => {
+    const lg = new LineGraph(3)
+    const adj = lg.build()
+    expect(adj.length).toBe(0)
+  })
 })
