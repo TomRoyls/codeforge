@@ -135,4 +135,9 @@ describe('FordFulkerson', () => {
     const edges = [{ from: 0, to: 1, capacity: 8 }]
     expect(FordFulkerson.maxFlow(edges, 0, 1, 2)).toBe(8)
   })
+
+  it('disconnected nodes have zero flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 8 }]
+    expect(FordFulkerson.maxFlow(edges, 2, 3, 4)).toBe(0)
+  })
 })

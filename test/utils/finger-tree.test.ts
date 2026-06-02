@@ -102,4 +102,9 @@ describe('FingerTree', () => {
     const ft = FingerTree.empty<number>().pushFront(1).pushFront(2)
     expect(ft.size).toBe(2)
   })
+
+  it('empty tree has size 0', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.size).toBe(0)
+  })
 })
