@@ -160,4 +160,10 @@ describe('HyperLogLog - edge cases', () => {
     const hll = new HyperLogLog(10)
     expect(hll.count()).toBe(0)
   })
+
+  it('single element estimates at least 1', () => {
+    const hll = new HyperLogLog(10)
+    hll.add('unique-item')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
 })

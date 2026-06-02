@@ -168,4 +168,9 @@ describe('HyperLogLog', () => {
     for (let i = 0; i < 100; i++) hll.add(`item-${i}`)
     expect(hll.count()).toBeGreaterThan(50)
   })
+
+  it('empty estimates zero', () => {
+    const hll = new HyperLogLog()
+    expect(hll.count()).toBe(0)
+  })
 })

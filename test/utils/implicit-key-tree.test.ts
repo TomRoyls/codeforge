@@ -147,4 +147,9 @@ describe('ImplicitKeyTree', () => {
     t.insert(2, 30)
     expect(t.toArray()).toEqual([10, 20, 30])
   })
+
+  it('toArray returns empty for empty tree', () => {
+    const t = new ImplicitKeyTree<number>()
+    expect(t.toArray()).toEqual([])
+  })
 })

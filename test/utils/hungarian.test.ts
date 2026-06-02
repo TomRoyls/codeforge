@@ -136,4 +136,9 @@ describe('Hungarian', () => {
     const { totalCost } = Hungarian.solve([[5]])
     expect(totalCost).toBe(5)
   })
+
+  it('2x2 matrix optimal cost', () => {
+    const { totalCost } = Hungarian.solve([[1, 2], [2, 1]])
+    expect(totalCost).toBe(2)
+  })
 })
