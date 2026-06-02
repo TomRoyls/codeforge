@@ -128,4 +128,10 @@ describe('CircularSuffixArray', () => {
     const csa = new CircularSuffixArray('a')
     expect(csa.index(0)).toBe(0)
   })
+
+  it('ab has correct indices', () => {
+    const csa = new CircularSuffixArray('ab')
+    expect(csa.index(0)).toBe(0)
+    expect(csa.index(1)).toBe(1)
+  })
 })

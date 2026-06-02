@@ -203,4 +203,11 @@ describe('CircularDeque', () => {
     expect(deque.popBack()).toBe(3)
     expect(deque.popBack()).toBe(2)
   })
+
+  it('size tracks elements', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(1)
+    deque.pushBack(2)
+    expect(deque.size).toBe(2)
+  })
 })

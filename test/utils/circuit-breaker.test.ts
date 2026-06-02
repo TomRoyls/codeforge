@@ -167,4 +167,9 @@ describe('CircuitBreaker - canAttempt', () => {
     await cb.execute(() => Promise.resolve('ok'))
     expect(cb.canAttempt()).toBe(true)
   })
+
+  it('state starts as closed', () => {
+    const cb = new CircuitBreaker({ maxFailures: 3, resetTimeout: 1000 })
+    expect(cb.state).toBe('closed')
+  })
 })
