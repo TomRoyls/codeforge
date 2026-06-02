@@ -73,4 +73,8 @@ describe('ZAlgorithmExtended', () => {
   it('finds single match', () => {
     expect(ZAlgorithmExtended.search('hello world', 'world')).toEqual([6])
   })
+
+  it('finds no match', () => {
+    expect(ZAlgorithmExtended.search('hello', 'xyz')).toEqual([])
+  })
 })

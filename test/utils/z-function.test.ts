@@ -85,4 +85,9 @@ describe('ZFunction', () => {
     const zf = new ZFunction('abc')
     expect(zf.z.length).toBe(3)
   })
+
+  it('z function for repeated chars', () => {
+    const zf = new ZFunction('aaa')
+    expect(zf.z[0]).toBe(3)
+  })
 })

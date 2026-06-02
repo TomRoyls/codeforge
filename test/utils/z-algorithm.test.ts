@@ -76,4 +76,8 @@ describe('ZAlgorithm', () => {
   it('search finds pattern', () => {
     expect(ZAlgorithm.search('abcabc', 'abc')).toEqual([0, 3])
   })
+
+  it('search empty pattern returns empty', () => {
+    expect(ZAlgorithm.search('abc', '')).toEqual([])
+  })
 })

@@ -148,4 +148,11 @@ describe('ZigguratNormal', () => {
     const variance = samples.reduce((a, b) => a + (b - mean) ** 2, 0) / n
     expect(Math.abs(variance - 1)).toBeLessThan(0.15)
   })
+
+  it('generates values in reasonable range', () => {
+    const rng = new ZigguratNormal()
+    const val = rng.sample()
+    expect(typeof val).toBe('number')
+    expect(Math.abs(val)).toBeLessThan(10)
+  })
 })

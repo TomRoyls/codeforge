@@ -116,4 +116,11 @@ describe('ZobristHashing', () => {
     const state = new Map([['x', 42]])
     expect(z.hash(state)).toBe(z.hash(state))
   })
+
+  it('different states give different hashes', () => {
+    const z = new ZobristHashing()
+    const s1 = new Map([['a', 1]])
+    const s2 = new Map([['a', 2]])
+    expect(z.hash(s1)).not.toBe(z.hash(s2))
+  })
 })
