@@ -143,4 +143,12 @@ describe('HeavyHitters', () => {
     hh.add('a')
     expect(hh.getCount('z')).toBe(0)
   })
+
+  it('tracks multiple items', () => {
+    const hh = new HeavyHitters(5)
+    hh.add('x')
+    hh.add('y')
+    hh.add('x')
+    expect(hh.getCount('x')).toBeGreaterThanOrEqual(2)
+  })
 })

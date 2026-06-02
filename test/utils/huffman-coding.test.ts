@@ -110,4 +110,10 @@ describe('HuffmanCoding', () => {
     const { encoded, tree } = HuffmanCoding.encode(data)
     expect(HuffmanCoding.decode(encoded, tree)).toBe(data)
   })
+
+  it('roundtrip with repeated chars', () => {
+    const data = 'aaa'
+    const { encoded, tree } = HuffmanCoding.encode(data)
+    expect(HuffmanCoding.decode(encoded, tree)).toBe(data)
+  })
 })

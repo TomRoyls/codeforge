@@ -190,4 +190,11 @@ describe('HierarchicalTimer', () => {
     timer.end('op')
     expect(timer.totalTime).toBeGreaterThanOrEqual(0)
   })
+
+  it('format returns string', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('op')
+    timer.end('op')
+    expect(typeof timer.format()).toBe('string')
+  })
 })

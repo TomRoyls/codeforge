@@ -168,4 +168,10 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj, 0)
     expect(hld.lca(1, 2)).toBe(0)
   })
+
+  it('lca of same node is itself', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(0, 0)).toBe(0)
+  })
 })

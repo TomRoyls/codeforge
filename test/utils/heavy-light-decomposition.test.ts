@@ -300,4 +300,10 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj, 0)
     expect(hld.pathDistance(0, 3)).toBeGreaterThanOrEqual(0)
   })
+
+  it('lca of node with itself is itself', () => {
+    const adj = [[1], [0]]
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(0, 0)).toBe(0)
+  })
 })
