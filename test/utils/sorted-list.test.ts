@@ -160,4 +160,11 @@ describe('SortedList', () => {
     expect(sl.get(0)).toBe('apple')
     expect(sl.get(2)).toBe('cherry')
   })
+
+  it('size tracks inserts', () => {
+    const sl = new SortedList<string>()
+    sl.insert('a')
+    sl.insert('b')
+    expect(sl.size).toBe(2)
+  })
 })

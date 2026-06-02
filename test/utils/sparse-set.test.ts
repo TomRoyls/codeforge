@@ -153,4 +153,9 @@ describe('SparseSet', () => {
     expect(ss.has(1)).toBe(false)
     expect(ss.has(2)).toBe(false)
   })
+
+  it('remove returns false for absent', () => {
+    const ss = new SparseSet(10)
+    expect(ss.remove(5)).toBe(false)
+  })
 })

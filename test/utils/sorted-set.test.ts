@@ -210,4 +210,11 @@ describe('SortedSet', () => {
     expect(set.has({ id: 1 })).toBe(true)
     expect(set.has({ id: 99 })).toBe(false)
   })
+
+  it('size tracks elements', () => {
+    const set = new SortedSet<{ id: number }>((a, b) => a.id - b.id)
+    set.add({ id: 1 })
+    set.add({ id: 2 })
+    expect(set.size).toBe(2)
+  })
 })
