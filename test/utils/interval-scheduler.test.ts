@@ -163,4 +163,9 @@ describe('greedyIntervalSchedule', () => {
     const result = greedyIntervalSchedule(intervals)
     expect(result.length).toBe(2)
   })
+
+  it('no intervals returns empty', () => {
+    const result = greedyIntervalSchedule([])
+    expect(result).toEqual([])
+  })
 })

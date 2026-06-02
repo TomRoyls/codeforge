@@ -133,4 +133,8 @@ describe('KahnTopologicalSort', () => {
   it('isDAG for simple chain', () => {
     expect(KahnTopologicalSort.isDAG([[1], []])).toBe(true)
   })
+
+  it('isDAG false for cycle', () => {
+    expect(KahnTopologicalSort.isDAG([[1], [0]])).toBe(false)
+  })
 })

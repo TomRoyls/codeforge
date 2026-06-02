@@ -145,4 +145,11 @@ describe('KahnAlgorithm', () => {
     const kahn = new KahnAlgorithm(1)
     expect(kahn.sort()).toEqual([0])
   })
+
+  it('chain of 3 sorts linearly', () => {
+    const kahn = new KahnAlgorithm(3)
+    kahn.addEdge(0, 1)
+    kahn.addEdge(1, 2)
+    expect(kahn.sort()).toEqual([0, 1, 2])
+  })
 })
