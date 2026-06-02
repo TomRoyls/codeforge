@@ -171,4 +171,10 @@ describe('BlockCutTree', () => {
     expect(isArticulation[1]).toBe(true)
     expect(isArticulation[2]).toBe(true)
   })
+
+  it('single node has no articulation points', () => {
+    const bct = new BlockCutTree(1)
+    const { isArticulation } = bct.build()
+    expect(isArticulation[0]).toBe(false)
+  })
 })

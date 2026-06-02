@@ -230,4 +230,9 @@ describe('BinomialHeap', () => {
     expect(min3).toBeDefined()
     expect(min3!.value).toBe(25)
   })
+
+  it('isEmpty on empty heap', () => {
+    const heap = new BinomialHeap<number>()
+    expect(heap.isEmpty()).toBe(true)
+  })
 })

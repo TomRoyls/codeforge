@@ -90,4 +90,8 @@ describe('Bisect', () => {
   it('bisectRight for value greater than all', () => {
     expect(Bisect.bisectRight([5, 10, 15], 20)).toBe(3)
   })
+
+  it('bisectLeft for empty array returns 0', () => {
+    expect(Bisect.bisectLeft([], 5)).toBe(0)
+  })
 })

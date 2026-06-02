@@ -142,4 +142,12 @@ describe('BinaryTrie', () => {
     expect(bt.find(3)).toBe(false)
     expect(bt.find(7)).toBe(true)
   })
+
+  it('count returns number of insertions', () => {
+    const bt = new BinaryTrie()
+    bt.insert(5)
+    bt.insert(5)
+    bt.insert(3)
+    expect(bt.size).toBe(3)
+  })
 })
