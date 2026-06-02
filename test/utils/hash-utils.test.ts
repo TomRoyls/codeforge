@@ -116,4 +116,10 @@ describe('hash64 - additional', () => {
     const h2 = hash64('test', 999)
     expect(h1).not.toBe(h2)
   })
+
+  it('same input same seed produces same hash', () => {
+    const h1 = hash64('hello', 42)
+    const h2 = hash64('hello', 42)
+    expect(h1).toBe(h2)
+  })
 })

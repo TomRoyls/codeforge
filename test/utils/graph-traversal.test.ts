@@ -141,4 +141,10 @@ describe('GraphTraversal', () => {
     const order = GraphTraversal.bfs(adj, 0)
     expect(order).toEqual([0, 1, 2, 3])
   })
+
+  it('dfs returns correct order', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, []], [2, []]])
+    const order = GraphTraversal.dfs(adj, 0)
+    expect(order).toEqual([0, 1, 2])
+  })
 })

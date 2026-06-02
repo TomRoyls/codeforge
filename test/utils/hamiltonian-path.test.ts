@@ -144,4 +144,10 @@ describe('HamiltonianPath', () => {
     hp.addEdge(2, 0)
     expect(hp.existsPath()).toBe(true)
   })
+
+  it('disconnected graph has no path', () => {
+    const hp = new HamiltonianPath(3)
+    hp.addEdge(0, 1)
+    expect(hp.existsPath()).toBe(false)
+  })
 })

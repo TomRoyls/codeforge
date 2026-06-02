@@ -144,4 +144,10 @@ describe('HashMapOpen', () => {
     const map = new HashMapOpen<string, number>()
     expect(map.has('missing')).toBe(false)
   })
+
+  it('set and get work', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('key', 42)
+    expect(map.get('key')).toBe(42)
+  })
 })

@@ -106,4 +106,9 @@ describe('GrayCode', () => {
     expect(result.length).toBe(4)
     expect(result).toEqual(['00', '01', '11', '10'])
   })
+
+  it('generate 3 bits produces 8 codes', () => {
+    const result = GrayCode.generate(3)
+    expect(result.length).toBe(8)
+  })
 })
