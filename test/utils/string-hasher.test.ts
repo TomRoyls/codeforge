@@ -105,4 +105,11 @@ describe('StringHasher', () => {
     const h2 = sh.hash(3, 5)
     expect(h1).not.toBe(h2)
   })
+
+  it('full string hash is consistent', () => {
+    const sh = new StringHasher('hello')
+    const h1 = sh.hash(0, 4)
+    const h2 = sh.hash(0, 4)
+    expect(h1).toBe(h2)
+  })
 })

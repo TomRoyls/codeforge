@@ -154,4 +154,10 @@ describe('StrongConnectivityContraction', () => {
     const { componentCount } = scc.contract()
     expect(componentCount).toBe(1)
   })
+
+  it('two disconnected nodes have 2 components', () => {
+    const scc = new StrongConnectivityContraction(2)
+    const { componentCount } = scc.contract()
+    expect(componentCount).toBe(2)
+  })
 })

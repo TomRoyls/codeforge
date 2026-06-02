@@ -173,4 +173,12 @@ describe('SCCGraph', () => {
     const comps = g.findSCCs()
     expect(comps.length).toBe(1)
   })
+
+  it('two disconnected nodes have 2 SCCs', () => {
+    const g = new SCCGraph()
+    g.addNode(0)
+    g.addNode(1)
+    const comps = g.findSCCs()
+    expect(comps.length).toBe(2)
+  })
 })
