@@ -90,4 +90,8 @@ describe('PancakeSort', () => {
   it('handles single element', () => {
     expect(PancakeSort.sort([42])).toEqual([42])
   })
+
+  it('handles already sorted', () => {
+    expect(PancakeSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  })
 })

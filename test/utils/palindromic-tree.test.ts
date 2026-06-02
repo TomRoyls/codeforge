@@ -94,4 +94,9 @@ describe('PalindromicTree', () => {
     const pt = PalindromicTree.from('aba')
     expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(2)
   })
+
+  it('empty string has zero palindromes', () => {
+    const pt = PalindromicTree.from('')
+    expect(pt.distinctPalindromes).toBe(0)
+  })
 })
