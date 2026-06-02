@@ -186,4 +186,15 @@ describe('HungarianAssignment', () => {
     const { totalCost } = ha.solve()
     expect(totalCost).toBe(2)
   })
+
+  it('3x3 identity matrix cost is 3', () => {
+    const ha = new HungarianAssignment(3, 3)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        ha.setCost(i, j, i === j ? 1 : 100)
+      }
+    }
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBe(3)
+  })
 })

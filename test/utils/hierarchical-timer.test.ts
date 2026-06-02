@@ -183,4 +183,11 @@ describe('HierarchicalTimer', () => {
     expect(opDuration).toBeGreaterThan(0)
     expect(opDuration!).toBeGreaterThan(timer.results[0]!.duration)
   })
+
+  it('totalTime after single operation', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('op')
+    timer.end('op')
+    expect(timer.totalTime).toBeGreaterThanOrEqual(0)
+  })
 })

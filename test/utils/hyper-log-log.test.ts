@@ -155,4 +155,9 @@ describe('HyperLogLog - edge cases', () => {
     expect(hll14.count()).toBeGreaterThan(0)
     expect(hll8.count()).toBeGreaterThan(0)
   })
+
+  it('empty HLL estimates zero', () => {
+    const hll = new HyperLogLog(10)
+    expect(hll.count()).toBe(0)
+  })
 })
