@@ -131,4 +131,12 @@ describe('BlockList', () => {
     bl.pushBack(3)
     expect(bl.size).toBe(3)
   })
+
+  it('pushFront adds to front', () => {
+    const bl = new BlockList<number>()
+    bl.pushBack(1)
+    bl.pushFront(0)
+    expect(bl.get(0)).toBe(0)
+    expect(bl.get(1)).toBe(1)
+  })
 })

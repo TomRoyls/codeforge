@@ -145,4 +145,12 @@ describe('BoundedDeque', () => {
     dq.pushBack(2)
     expect(dq.isFull()).toBe(true)
   })
+
+  it('tracks evictions when overwriting', () => {
+    const dq = new BoundedDeque<number>(2)
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.pushBack(3)
+    expect(dq.evictions).toBe(1)
+  })
 })

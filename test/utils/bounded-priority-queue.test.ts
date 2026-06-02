@@ -172,4 +172,9 @@ describe('BoundedPriorityQueue', () => {
     expect(q.peek()).toBe('cherry')
     expect(q.size).toBe(2)
   })
+
+  it('maxSize returns capacity', () => {
+    const q = new BoundedPriorityQueue<string>(10)
+    expect(q.maxSize).toBe(10)
+  })
 })

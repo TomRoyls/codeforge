@@ -222,4 +222,12 @@ describe('BloomFilter', () => {
     filter.add(longStr)
     expect(filter.mightContain(longStr)).toBe(true)
   })
+
+  it('handles multiple items correctly', () => {
+    const filter = new BloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
+    filter.add('hello')
+    filter.add('world')
+    expect(filter.mightContain('hello')).toBe(true)
+    expect(filter.mightContain('world')).toBe(true)
+  })
 })
