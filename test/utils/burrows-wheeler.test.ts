@@ -134,4 +134,9 @@ describe('BurrowsWheelerTransform', () => {
     const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
     expect(restored).toBe(original)
   })
+
+  it('transform of single char', () => {
+    const transformed = BurrowsWheelerTransform.transform('a')
+    expect(transformed.data).toBe('a')
+  })
 })
