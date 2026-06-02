@@ -116,4 +116,10 @@ describe('Welford', () => {
     const w = Welford.fromArray([10, 20])
     expect(w.mean).toBe(15)
   })
+
+  it('fromArray with single element has variance 0', () => {
+    const w = Welford.fromArray([42])
+    expect(w.mean).toBe(42)
+    expect(w.variance).toBe(0)
+  })
 })

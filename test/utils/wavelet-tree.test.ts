@@ -151,4 +151,10 @@ describe('WaveletTree', () => {
     const wt = new WaveletTree([1, 2, 3, 1, 2]);
     expect(wt.rank(5, 5)).toBe(0);
   });
+
+  it('access returns element at index', () => {
+    const wt = new WaveletTree([1, 2, 3, 1, 2]);
+    expect(wt.access(0)).toBe(1);
+    expect(wt.access(2)).toBe(3);
+  });
 });
