@@ -242,4 +242,13 @@ describe('BinomialHeap', () => {
     heap.insert(3, 3)
     expect(heap.size).toBe(2)
   })
+
+  it('peek returns min without removing', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(5, 5)
+    heap.insert(3, 3)
+    const peeked = heap.peek()
+    expect(peeked).not.toBeUndefined()
+    expect(heap.size).toBe(2)
+  })
 })

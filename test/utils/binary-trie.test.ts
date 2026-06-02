@@ -157,4 +157,12 @@ describe('BinaryTrie', () => {
     expect(bt.find(7)).toBe(true)
     expect(bt.find(6)).toBe(false)
   })
+
+  it('remove decreases count', () => {
+    const bt = new BinaryTrie()
+    bt.insert(5)
+    bt.insert(5)
+    bt.remove(5)
+    expect(bt.find(5)).toBe(true)
+  })
 })

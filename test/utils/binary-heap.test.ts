@@ -188,4 +188,9 @@ describe('BinaryHeap stress', () => {
     expect(heap.pop()).toBe(3)
     expect(heap.pop()).toBe(5)
   })
+
+  it('peek on empty heap returns undefined', () => {
+    const heap = new BinaryHeap<number>()
+    expect(heap.peek()).toBeUndefined()
+  })
 })

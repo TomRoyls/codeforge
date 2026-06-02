@@ -164,4 +164,10 @@ describe('BinaryLifting', () => {
     const bl = new BinaryLifting(adj, 0)
     expect(bl.lca(0, 0)).toBe(0)
   })
+
+  it('parent of root is -1', () => {
+    const adj = [[1], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(1, 1)).toBe(1)
+  })
 })

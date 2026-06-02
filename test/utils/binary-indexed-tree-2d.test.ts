@@ -150,4 +150,10 @@ describe('BinaryIndexedTree2D', () => {
     const bit = new BinaryIndexedTree2D(3, 3)
     expect(bit.query(2, 2)).toBe(0)
   })
+
+  it('update then query returns updated value', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(1, 1, 5)
+    expect(bit.query(1, 1)).toBe(5)
+  })
 })
