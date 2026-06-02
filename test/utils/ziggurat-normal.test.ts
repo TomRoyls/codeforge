@@ -155,4 +155,11 @@ describe('ZigguratNormal', () => {
     expect(typeof val).toBe('number')
     expect(Math.abs(val)).toBeLessThan(10)
   })
+
+  it('sample returns finite numbers', () => {
+    const rng = new ZigguratNormal()
+    for (let i = 0; i < 10; i++) {
+      expect(Number.isFinite(rng.sample())).toBe(true)
+    }
+  })
 })

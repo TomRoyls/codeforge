@@ -123,4 +123,11 @@ describe('ZobristHashing', () => {
     const s2 = new Map([['a', 2]])
     expect(z.hash(s1)).not.toBe(z.hash(s2))
   })
+
+  it('same set produces same hash', () => {
+    const z = new ZobristHashing(42)
+    const s1 = new Map([['a', 1], ['b', 2]])
+    const s2 = new Map([['a', 1], ['b', 2]])
+    expect(z.hash(s1)).toBe(z.hash(s2))
+  })
 })
