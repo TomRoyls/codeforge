@@ -199,4 +199,14 @@ describe('PriorityQueue - edge cases', () => {
     pq.enqueue(2)
     expect(pq.size).toBe(3)
   })
+
+  it('dequeue returns elements in priority order', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.dequeue()).toBe(1)
+    expect(pq.dequeue()).toBe(2)
+    expect(pq.dequeue()).toBe(3)
+  })
 })

@@ -156,4 +156,10 @@ describe('PrimMST', () => {
     expect(result.totalWeight).toBe(5)
     expect(result.edges.length).toBe(1)
   })
+
+  it('single node has zero weight', () => {
+    const mst = new PrimMST(1)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(0)
+  })
 })
