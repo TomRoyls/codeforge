@@ -147,4 +147,11 @@ describe('LRUTTLCache', () => {
     expect(cache.has('a')).toBe(true)
     expect(cache.has('b')).toBe(false)
   })
+
+  it('delete removes key', () => {
+    const cache = new LRUTTLCache<string, number>(1000)
+    cache.set('x', 42)
+    cache.delete('x')
+    expect(cache.has('x')).toBe(false)
+  })
 })

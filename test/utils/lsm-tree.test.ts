@@ -141,4 +141,11 @@ describe('LSMTree', () => {
     expect(tree.get('key1')).toBe('newvalue')
     expect(tree.has('key1')).toBe(true)
   })
+
+  it('delete removes key', () => {
+    const tree = new LSMTree<string, string>()
+    tree.set('key1', 'val')
+    tree.delete('key1')
+    expect(tree.get('key1')).toBeUndefined()
+  })
 })

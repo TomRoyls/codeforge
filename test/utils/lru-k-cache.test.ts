@@ -145,4 +145,9 @@ describe('LRUKCache', () => {
     cache.set('a', 42)
     expect(cache.get('a')).toBe(42)
   })
+
+  it('has returns false for missing key', () => {
+    const cache = new LRUKCache<string, number>({ k: 2, capacity: 5 })
+    expect(cache.has('z')).toBe(false)
+  })
 })
