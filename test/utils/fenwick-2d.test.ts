@@ -132,4 +132,9 @@ describe('FenwickTree2D', () => {
     expect(tree.rows).toBe(5);
     expect(tree.cols).toBe(5);
   });
+
+  it('query on empty tree returns 0', () => {
+    const tree = new FenwickTree2D(3, 3);
+    expect(tree.query(2, 2)).toBe(0);
+  });
 });

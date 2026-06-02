@@ -154,4 +154,12 @@ describe('writeToFileAtomic', () => {
     writeToFile(testFile, 'second')
     expect(fs.readFileSync(testFile, 'utf8')).toBe('second')
   })
+
+  it('writeToFile creates parent directories', () => {
+    const dir = path.join(os.tmpdir(), `fw-test-${Date.now()}`)
+    const fp = path.join(dir, 'nested', 'file.txt')
+    writeToFile(fp, 'deep')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('deep')
+    fs.rmSync(dir, { recursive: true })
+  })
 })

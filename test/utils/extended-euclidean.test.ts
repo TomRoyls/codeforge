@@ -108,4 +108,9 @@ describe('ExtendedEuclidean', () => {
     expect(gcd).toBe(1n)
     expect(3n * x + 7n * y).toBe(1n)
   })
+
+  it('coprime numbers have gcd 1', () => {
+    const { gcd } = ExtendedEuclidean.solve(8n, 15n)
+    expect(gcd).toBe(1n)
+  })
 })
