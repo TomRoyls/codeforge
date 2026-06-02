@@ -191,4 +191,10 @@ describe('createWatcher', () => {
     expect(w2).not.toBe(w1)
     w2.stop()
   })
+
+  it('watcher has stop method', () => {
+    const w = createWatcher()
+    expect(typeof w.stop).toBe('function')
+    w.stop()
+  })
 })

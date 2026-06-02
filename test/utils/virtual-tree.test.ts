@@ -162,4 +162,9 @@ describe('VirtualTree', () => {
     const vt = new VirtualTree(1)
     expect(vt).toBeDefined()
   })
+
+  it('size is set on construction', () => {
+    const vt = new VirtualTree(5)
+    expect(vt).toBeDefined()
+  })
 })
