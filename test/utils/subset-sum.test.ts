@@ -86,4 +86,8 @@ describe('SubsetSum', () => {
     expect(SubsetSum.hasSubset([5], 5)).toBe(true)
     expect(SubsetSum.hasSubset([5], 3)).toBe(false)
   })
+
+  it('empty set cannot match non-zero target', () => {
+    expect(SubsetSum.hasSubset([], 1)).toBe(false)
+  })
 })

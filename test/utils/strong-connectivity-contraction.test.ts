@@ -146,4 +146,12 @@ describe('StrongConnectivityContraction', () => {
     const { componentCount } = scc.contract()
     expect(componentCount).toBe(1)
   })
+
+  it('two nodes with edge form one component', () => {
+    const scc = new StrongConnectivityContraction(2)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 0)
+    const { componentCount } = scc.contract()
+    expect(componentCount).toBe(1)
+  })
 })

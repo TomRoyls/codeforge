@@ -96,4 +96,11 @@ describe('StringHash', () => {
     const sh = new StringHash('abcabc')
     expect(sh.hash(0, 2)).toBe(sh.hash(3, 5))
   })
+
+  it('full string hash is consistent', () => {
+    const sh = new StringHash('hello')
+    const h1 = sh.hash(0, 4)
+    const h2 = sh.hash(0, 4)
+    expect(h1).toBe(h2)
+  })
 })

@@ -165,4 +165,12 @@ describe('SCCGraph', () => {
     g.addEdge(0, 1)
     expect(g.nodeCount).toBe(2)
   })
+
+  it('SCC for cycle has single component', () => {
+    const g = new SCCGraph()
+    g.addEdge(0, 1)
+    g.addEdge(1, 0)
+    const comps = g.findSCCs()
+    expect(comps.length).toBe(1)
+  })
 })
