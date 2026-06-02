@@ -200,4 +200,9 @@ describe('DancingLinks', () => {
 
     expect(count1).toBe(count2)
   })
+
+  it('constructor takes columns and rows', () => {
+    const dlx = new DancingLinks(3, 3)
+    expect(dlx).toBeDefined()
+  })
 })

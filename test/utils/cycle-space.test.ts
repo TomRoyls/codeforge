@@ -158,4 +158,9 @@ describe('CycleSpace', () => {
     cs.addEdge(1, 2)
     expect(cs.cycleSpaceDimension()).toBe(0)
   })
+
+  it('single node has dimension 0', () => {
+    const cs = new CycleSpace(1)
+    expect(cs.cycleSpaceDimension()).toBe(0)
+  })
 })
