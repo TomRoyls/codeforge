@@ -140,4 +140,10 @@ describe('RobinHopMap', () => {
     const map = new RobinHopMap<string, number>()
     expect(map.has('missing')).toBe(false)
   })
+
+  it('set and get work together', () => {
+    const map = new RobinHopMap<string, number>()
+    map.set('key', 42)
+    expect(map.get('key')).toBe(42)
+  })
 })

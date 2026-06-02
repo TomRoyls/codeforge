@@ -198,4 +198,15 @@ describe('retryAsync - edge cases', () => {
     expect(result.unwrap()).toBe('ok')
     expect(calls).toBe(1)
   })
+
+  it('retries on error then succeeds', async () => {
+    let calls = 0
+    const result = await retryAsync(() => {
+      calls++
+      if (calls < 2) throw new Error('fail')
+      return 'ok'
+    }, { maxRetries: 2, delay: 1 })
+    expect(result.isOk()).toBe(true)
+    expect(calls).toBe(2)
+  })
 })

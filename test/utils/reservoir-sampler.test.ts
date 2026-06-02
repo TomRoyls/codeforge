@@ -165,4 +165,10 @@ describe('ReservoirSampler', () => {
     const sampler = new ReservoirSampler<number>(1)
     expect(sampler.sample).toEqual([])
   })
+
+  it('add and sample single item', () => {
+    const sampler = new ReservoirSampler<number>(1)
+    sampler.add(42)
+    expect(sampler.sample).toEqual([42])
+  })
 })
