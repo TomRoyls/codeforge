@@ -134,4 +134,10 @@ describe('BandwidthMinimization', () => {
     const bm = new BandwidthMinimization(1)
     expect(bm.bandwidth()).toBe(0)
   })
+
+  it('two nodes connected has bandwidth 1', () => {
+    const bm = new BandwidthMinimization(2)
+    bm.addEdge(0, 1)
+    expect(bm.bandwidth()).toBe(1)
+  })
 })

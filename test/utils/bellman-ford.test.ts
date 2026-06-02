@@ -171,4 +171,9 @@ describe('BellmanFord', () => {
     const { hasNegativeCycle } = BellmanFord.shortestPath(edges, 3, 0)
     expect(hasNegativeCycle).toBe(true)
   })
+
+  it('handles single node', () => {
+    const { distances } = BellmanFord.shortestPath([], 1, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })

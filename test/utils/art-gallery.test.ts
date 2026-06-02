@@ -160,4 +160,13 @@ describe('ArtGallery', () => {
     ag.addPoint(0, 4)
     expect(ag.pointInPolygon(5, 5)).toBe(false)
   })
+
+  it('point inside square is detected', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.pointInPolygon(2, 2)).toBe(true)
+  })
 })
