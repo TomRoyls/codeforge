@@ -123,4 +123,10 @@ describe('TarjanSCC', () => {
       expect(uniqueIds.size).toBe(3)
     })
   })
+
+  it('single node has one component', () => {
+    const adj = [[0].slice(0, 0)]
+    const sccs = new TarjanSCC(adj).solve()
+    expect(sccs.length).toBe(1)
+  })
 })

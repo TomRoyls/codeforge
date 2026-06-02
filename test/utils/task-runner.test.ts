@@ -172,4 +172,10 @@ describe('runWithConcurrency', () => {
     await runWithConcurrency([1, 2, 3, 4], async (x) => { order.push(x) }, 2)
     expect(order.length).toBe(4)
   })
+
+  it('empty array completes immediately', async () => {
+    const order: number[] = []
+    await runWithConcurrency([], async (x) => { order.push(x) }, 2)
+    expect(order.length).toBe(0)
+  })
 })
