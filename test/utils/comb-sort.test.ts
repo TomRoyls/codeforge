@@ -85,4 +85,8 @@ describe('CombSort', () => {
   it('handles already sorted', () => {
     expect(CombSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles single element', () => {
+    expect(CombSort.sort([42])).toEqual([42])
+  })
 })

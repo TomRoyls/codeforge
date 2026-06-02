@@ -152,4 +152,10 @@ describe('ConvexHull3D', () => {
     ch.addPoint(0, 0, 0)
     expect(ch.convexHullVolume()).toBe(0)
   })
+
+  it('single point has zero volume', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(5, 5, 5)
+    expect(ch.convexHullVolume()).toBe(0)
+  })
 })

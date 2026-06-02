@@ -165,4 +165,10 @@ describe('ConsistentHash edge cases', () => {
     const ch = new ConsistentHash<string>({ virtualNodes: 10 })
     expect(ch.getNode('key')).toBeUndefined()
   })
+
+  it('getNode returns a node after adding', () => {
+    const ch = new ConsistentHash<string>({ virtualNodes: 10 })
+    ch.addNode('node-a')
+    expect(ch.getNode('key')).toBe('node-a')
+  })
 })

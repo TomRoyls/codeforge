@@ -116,4 +116,11 @@ describe('Comparators', () => {
     const rev = Comparators.reverse(comp)
     expect(rev(1, 2)).toBeGreaterThan(0)
   })
+
+  it('natural comparator orders numbers', () => {
+    const comp = Comparators.natural<number>()
+    expect(comp(1, 2)).toBeLessThan(0)
+    expect(comp(2, 1)).toBeGreaterThan(0)
+    expect(comp(1, 1)).toBe(0)
+  })
 })
