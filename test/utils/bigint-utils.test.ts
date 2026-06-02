@@ -104,4 +104,9 @@ describe('BigIntUtils', () => {
     const inv = BigIntUtils.modInverse(1n, 7n)
     expect(inv).toBe(1n)
   })
+
+  it('modInverse of 3 mod 7', () => {
+    const inv = BigIntUtils.modInverse(3n, 7n)
+    expect((3n * inv) % 7n).toBe(1n)
+  })
 })

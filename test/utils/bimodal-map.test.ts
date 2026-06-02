@@ -178,4 +178,11 @@ describe('BimodalMap', () => {
     bm.set('b', 2)
     expect(bm.size).toBe(2)
   })
+
+  it('has returns true for existing key', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    expect(bm.has('a')).toBe(true)
+    expect(bm.has('b')).toBe(false)
+  })
 })

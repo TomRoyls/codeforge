@@ -149,4 +149,12 @@ describe('BiMap', () => {
     bm.forEach((k, v) => collected.push([k, v]))
     expect(collected.length).toBe(2)
   })
+
+  it('clear removes all entries', () => {
+    const bm = new BiMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.clear()
+    expect(bm.size).toBe(0)
+  })
 })

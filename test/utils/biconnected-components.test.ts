@@ -175,4 +175,12 @@ describe('BiconnectedComponents', () => {
     bc.addEdge(0, 2)
     expect(bc.findArticulationPoints()).toEqual([])
   })
+
+  it('findComponents on linear graph', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    const comps = bc.findComponents()
+    expect(comps.length).toBeGreaterThan(0)
+  })
 })
