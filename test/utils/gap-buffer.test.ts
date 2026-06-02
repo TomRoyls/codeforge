@@ -168,4 +168,12 @@ describe('GapBuffer', () => {
     buffer.insert(4)
     expect(buffer.toArray()).toEqual([1, 20, 4, 3])
   })
+
+  it('length reflects total elements', () => {
+    const buffer = new GapBuffer<number>()
+    buffer.insert(1)
+    buffer.insert(2)
+    buffer.insert(3)
+    expect(buffer.length).toBe(3)
+  })
 })

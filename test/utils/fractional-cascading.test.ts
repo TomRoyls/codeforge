@@ -131,4 +131,9 @@ describe('FractionalCascading', () => {
     const fc = new FractionalCascading([[10, 20, 30]])
     expect(fc.search(15)).toEqual([-1])
   })
+
+  it('search for exact match', () => {
+    const fc = new FractionalCascading([[5, 10, 15]])
+    expect(fc.search(10)).toEqual([1])
+  })
 })

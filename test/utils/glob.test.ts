@@ -130,4 +130,8 @@ describe('matchGlob edge cases', () => {
   it('wildcard matches empty segment', () => {
     expect(matchGlob('file.ts', 'file*.ts')).toBe(true)
   })
+
+  it('star matches multiple characters', () => {
+    expect(matchGlob('foobarbaz', 'foo*baz')).toBe(true)
+  })
 })
