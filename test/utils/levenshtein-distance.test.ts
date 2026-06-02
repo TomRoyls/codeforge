@@ -86,4 +86,8 @@ describe('LevenshteinDistance', () => {
   it('distance for single char substitution', () => {
     expect(LevenshteinDistance.distance('a', 'b')).toBe(1)
   })
+
+  it('distance for identical strings is 0', () => {
+    expect(LevenshteinDistance.distance('hello', 'hello')).toBe(0)
+  })
 })

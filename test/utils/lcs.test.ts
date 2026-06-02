@@ -95,4 +95,8 @@ describe('LCS', () => {
       expect(LCS.similarity('abc', 'abc')).toBe(1)
     })
   })
+
+  it('length of empty strings is 0', () => {
+    expect(LCS.length('', '')).toBe(0)
+  })
 })
