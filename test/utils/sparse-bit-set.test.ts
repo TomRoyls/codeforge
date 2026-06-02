@@ -155,4 +155,11 @@ describe('SparseBitSet - iteration', () => {
     bs.set(0)
     expect(bs.has(0)).toBe(true)
   })
+
+  it('set and has for large index', () => {
+    const bs = new SparseBitSet()
+    bs.set(1000)
+    expect(bs.has(1000)).toBe(true)
+    expect(bs.has(999)).toBe(false)
+  })
 })

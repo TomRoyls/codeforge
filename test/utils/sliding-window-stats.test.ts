@@ -152,4 +152,12 @@ describe('SlidingWindowStats', () => {
     sw.push(42)
     expect(sw.variance).toBe(0)
   })
+
+  it('mean of 1,2,3 is 2', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(1)
+    sw.push(2)
+    sw.push(3)
+    expect(sw.mean).toBeCloseTo(2, 5)
+  })
 })

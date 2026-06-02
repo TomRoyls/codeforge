@@ -144,4 +144,13 @@ describe('SparseSet', () => {
     ss.remove(5)
     expect(ss.has(5)).toBe(false)
   })
+
+  it('clear removes all elements', () => {
+    const ss = new SparseSet()
+    ss.add(1)
+    ss.add(2)
+    ss.clear()
+    expect(ss.has(1)).toBe(false)
+    expect(ss.has(2)).toBe(false)
+  })
 })

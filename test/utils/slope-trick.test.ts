@@ -144,4 +144,11 @@ describe('SlopeTrick', () => {
     st.addAbsolute()
     expect(st.min).toBeGreaterThanOrEqual(0)
   })
+
+  it('addAbsolute preserves min of 0', () => {
+    const st = new SlopeTrick()
+    st.addAbsolute()
+    st.addAbsolute()
+    expect(st.min).toBe(0)
+  })
 })
