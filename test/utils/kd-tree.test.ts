@@ -149,4 +149,12 @@ describe('KdTree', () => {
     const nearest = tree.nearest([-10, -10])
     expect(nearest[0]!.coords[0]).toBe(-5)
   })
+
+  it('nearest returns single point', () => {
+    const tree = new KdTree<{ coords: [number, number] }>(2, p => p.coords)
+    tree.insert({ coords: [3, 3] })
+    const nearest = tree.nearest([0, 0])
+    expect(nearest.length).toBe(1)
+    expect(nearest[0]!.coords).toEqual([3, 3])
+  })
 })

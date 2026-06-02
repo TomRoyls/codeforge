@@ -82,4 +82,8 @@ describe('Introsort', () => {
   it('handles empty array', () => {
     expect(Introsort.sort([])).toEqual([])
   })
+
+  it('handles single element', () => {
+    expect(Introsort.sort([42])).toEqual([42])
+  })
 })

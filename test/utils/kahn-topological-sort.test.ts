@@ -129,4 +129,8 @@ describe('KahnTopologicalSort', () => {
   it('isDAG for empty graph', () => {
     expect(KahnTopologicalSort.isDAG([[]])).toBe(true)
   })
+
+  it('isDAG for simple chain', () => {
+    expect(KahnTopologicalSort.isDAG([[1], []])).toBe(true)
+  })
 })
