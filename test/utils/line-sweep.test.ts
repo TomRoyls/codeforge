@@ -117,5 +117,12 @@ describe('LineSweep', () => {
     it('single interval returns its length', () => {
       expect(LineSweep.totalCoveredLength([{ start: 2, end: 5 }])).toBe(4)
     })
+
+    it('two overlapping intervals merge', () => {
+      expect(LineSweep.totalCoveredLength([
+        { start: 0, end: 5 },
+        { start: 3, end: 8 },
+      ])).toBe(9)
+    })
   })
 })

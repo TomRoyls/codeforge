@@ -144,4 +144,11 @@ describe('LineGraph', () => {
     const adj = lg.build()
     expect(adj.every(a => a.length === 0)).toBe(true)
   })
+
+  it('single edge creates line graph', () => {
+    const lg = new LineGraph(2)
+    lg.addEdge(0, 1)
+    const adj = lg.build()
+    expect(adj.length).toBe(1)
+  })
 })
