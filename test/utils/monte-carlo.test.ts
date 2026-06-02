@@ -119,4 +119,10 @@ describe('MonteCarlo', () => {
     expect(result).toBeGreaterThan(0.2)
     expect(result).toBeLessThan(0.5)
   })
+
+  it('pi estimate is roughly accurate', () => {
+    const result = MonteCarlo.pi(10000)
+    expect(result).toBeGreaterThan(2.5)
+    expect(result).toBeLessThan(3.9)
+  })
 })
