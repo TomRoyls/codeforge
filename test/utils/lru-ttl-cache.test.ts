@@ -140,4 +140,11 @@ describe('LRUTTLCache', () => {
     cache.set('a', 42)
     expect(cache.get('a')).toBe(42)
   })
+
+  it('has returns true for existing key', () => {
+    const cache = new LRUTTLCache<string, number>(3)
+    cache.set('a', 1)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.has('b')).toBe(false)
+  })
 })

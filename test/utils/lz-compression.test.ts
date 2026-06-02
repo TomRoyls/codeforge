@@ -101,4 +101,9 @@ describe('LZCompression', () => {
     const tokens = LZCompression.compress('a')
     expect(LZCompression.decompress(tokens)).toBe('a')
   })
+
+  it('roundtrip repeated characters', () => {
+    const tokens = LZCompression.compress('aaaa')
+    expect(LZCompression.decompress(tokens)).toBe('aaaa')
+  })
 })

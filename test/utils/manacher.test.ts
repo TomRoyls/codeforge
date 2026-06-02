@@ -113,4 +113,9 @@ describe('Manacher', () => {
     const palindromes = m.getAllPalindromes()
     expect(palindromes.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('longest palindrome in aba', () => {
+    const m = new Manacher('aba')
+    expect(m.longestPalindrome().length).toBe(3)
+  })
 })
