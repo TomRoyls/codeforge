@@ -149,4 +149,10 @@ describe('XorFilter', () => {
     expect(f.has('y')).toBe(true);
     expect(f.has('z')).toBe(true);
   });
+
+  it('reports false for items not in filter', () => {
+    const f = XorFilter.create(['a', 'b']);
+    expect(f.has('a')).toBe(true);
+    expect(f.has('c')).toBe(false);
+  });
 });

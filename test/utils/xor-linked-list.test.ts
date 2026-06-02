@@ -147,4 +147,9 @@ describe('XorLinkedList', () => {
     list.pushBack(2)
     expect(list.size).toBe(2)
   })
+
+  it('empty list size is 0', () => {
+    const list = new XorLinkedList<number>()
+    expect(list.size).toBe(0)
+  })
 })
