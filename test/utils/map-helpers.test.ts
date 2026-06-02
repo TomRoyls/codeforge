@@ -139,4 +139,10 @@ describe('append', () => {
     append(map, 'a', 2)
     expect(map.get('a')).toEqual([1, 2])
   })
+
+  it('increment creates key if missing', () => {
+    const map = new Map<string, number>()
+    increment(map, 'z')
+    expect(map.get('z')).toBe(1)
+  })
 })
