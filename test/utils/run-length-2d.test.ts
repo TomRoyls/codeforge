@@ -101,4 +101,10 @@ describe('RunLength2D', () => {
     const encoded = RunLength2D.encode([['a']])
     expect(encoded.length).toBe(1)
   })
+
+  it('2x2 uniform grid encodes correctly', () => {
+    const encoded = RunLength2D.encode([['a', 'a'], ['a', 'a']])
+    expect(encoded.length).toBe(2)
+    expect(encoded[0]).toEqual([{ value: 'a', count: 2 }])
+  })
 })

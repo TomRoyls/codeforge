@@ -159,4 +159,12 @@ describe('RollingHash static methods', () => {
     const h = rh.push(0)
     expect(Number.isFinite(h)).toBe(true)
   })
+
+  it('different inputs produce different hashes', () => {
+    const rh1 = new RollingHash(7)
+    const rh2 = new RollingHash(7)
+    rh1.push(1)
+    rh2.push(2)
+    expect(rh1.push(0)).not.toBe(rh2.push(0))
+  })
 })

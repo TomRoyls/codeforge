@@ -78,4 +78,8 @@ describe('RomanNumeral', () => {
   it('handles 1', () => {
     expect(RomanNumeral.toRoman(1)).toBe('I')
   })
+
+  it('handles 4', () => {
+    expect(RomanNumeral.toRoman(4)).toBe('IV')
+  })
 })

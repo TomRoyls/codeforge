@@ -120,4 +120,10 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(7, 3)
   })
+
+  it('solve linear ODE y=x', () => {
+    const result = RungeKutta.solve((x: number) => 1, 0, 0, 5, 1)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(5, 3)
+  })
 })

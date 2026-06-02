@@ -107,4 +107,8 @@ describe('RunLengthEncoding', () => {
     const encoded = RunLengthEncoding.encode(original)
     expect(RunLengthEncoding.decode(encoded)).toEqual(original)
   })
+
+  it('encode handles empty array', () => {
+    expect(RunLengthEncoding.encode([])).toEqual([])
+  })
 })
