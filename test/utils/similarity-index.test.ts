@@ -159,4 +159,11 @@ describe('SimilarityIndex', () => {
     const lowThreshold = index.findSimilar('item1', 0.0)
     expect(highThreshold.length).toBeLessThanOrEqual(lowThreshold.length)
   })
+
+  it('findSimilar returns empty for unknown item', () => {
+    const index = new SimilarityIndex<string>()
+    index.add('item1', 'doc1', ['word1', 'word2', 'word3'])
+    const results = index.findSimilar('unknown', 0.5)
+    expect(results).toEqual([])
+  })
 })
