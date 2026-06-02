@@ -142,4 +142,11 @@ describe('TimerWheel', () => {
     const result = tw.advance()
     expect(result).toContain('hello')
   })
+
+  it('advance with no due tasks returns empty', () => {
+    const tw = new TimerWheel<string>(8, 100)
+    tw.schedule(5, 'delayed')
+    const result = tw.advance()
+    expect(result).toEqual([])
+  })
 })

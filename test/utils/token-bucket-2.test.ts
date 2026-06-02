@@ -126,4 +126,11 @@ describe('TokenBucket2', () => {
     expect(bucket.tryConsume(3)).toBe(true)
     expect(bucket.tryConsume(8)).toBe(false)
   })
+
+  it('bucket with tokens available', () => {
+    const bucket = new TokenBucket2(10, 10)
+    expect(bucket.tryConsume(5)).toBe(true)
+    expect(bucket.tryConsume(5)).toBe(true)
+    expect(bucket.tryConsume(1)).toBe(false)
+  })
 })

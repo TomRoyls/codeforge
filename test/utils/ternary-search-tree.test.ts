@@ -155,4 +155,11 @@ describe('TernarySearchTree clear', () => {
     const tst = new TernarySearchTree<number>()
     expect(tst.contains('anything')).toBe(false)
   })
+
+  it('insert and contains work', () => {
+    const tst = new TernarySearchTree<number>()
+    tst.insert('key')
+    expect(tst.contains('key')).toBe(true)
+    expect(tst.contains('notkey')).toBe(false)
+  })
 })

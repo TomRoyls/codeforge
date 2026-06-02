@@ -155,4 +155,10 @@ describe('ThreadPool', () => {
     const outcome = await pool.submit(async () => 99)
     expect(typeof outcome.duration).toBe('number')
   })
+
+  it('submit resolves with correct value', async () => {
+    const pool = new ThreadPool({ maxConcurrency: 2 })
+    const outcome = await pool.submit(async () => 'hello')
+    expect(outcome.result).toBe('hello')
+  })
 })

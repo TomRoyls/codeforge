@@ -142,4 +142,10 @@ describe('Timer - utility', () => {
     const ms = timer.stop()
     expect(ms).toBeGreaterThanOrEqual(0)
   })
+
+  it('elapsed returns time since start', () => {
+    const timer = new Timer()
+    const ms = timer.elapsed()
+    expect(ms).toBeGreaterThanOrEqual(0)
+  })
 })
