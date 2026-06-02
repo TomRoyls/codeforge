@@ -138,4 +138,12 @@ describe('CountMinSketch - edge cases', () => {
     for (let i = 0; i < 50; i++) cms.update('key')
     expect(cms.estimate('key')).toBeGreaterThanOrEqual(50)
   })
+
+  it('estimate is at least update count', () => {
+    const cms = new CountMinSketch(100, 5)
+    cms.update('x')
+    cms.update('x')
+    cms.update('x')
+    expect(cms.estimate('x')).toBeGreaterThanOrEqual(3)
+  })
 })

@@ -173,4 +173,9 @@ describe('CountingBloomFilter2', () => {
     filter.remove('test')
     expect(filter.contains('test')).toBe(false)
   })
+
+  it('contains returns false for unknown', () => {
+    const filter = new CountingBloomFilter2(100)
+    expect(filter.contains('unknown')).toBe(false)
+  })
 })

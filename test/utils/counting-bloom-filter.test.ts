@@ -165,4 +165,9 @@ describe('CountingBloomFilter clear', () => {
     bf.remove('x')
     expect(bf.has('x')).toBe(true)
   })
+
+  it('has returns false for unknown item', () => {
+    const bf = new CountingBloomFilter(100)
+    expect(bf.has('unknown')).toBe(false)
+  })
 })
