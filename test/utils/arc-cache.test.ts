@@ -153,4 +153,11 @@ describe('ARCCache', () => {
     cache.set('key', 42)
     expect(cache.get('key')).toBe(42)
   })
+
+  it('has returns true for cached key', () => {
+    const cache = new ARCCache<string, number>(10)
+    cache.set('x', 1)
+    expect(cache.has('x')).toBe(true)
+    expect(cache.has('y')).toBe(false)
+  })
 })

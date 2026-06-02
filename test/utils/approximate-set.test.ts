@@ -150,4 +150,9 @@ describe('ApproximateSet', () => {
     set.add('my-item')
     expect(set.has('my-item')).toBe(true)
   })
+
+  it('has returns false for non-member', () => {
+    const set = new ApproximateSet(1000)
+    expect(set.has('not-added')).toBe(false)
+  })
 })

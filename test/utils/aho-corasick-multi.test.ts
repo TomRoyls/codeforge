@@ -123,4 +123,10 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('abc')
     expect(result.size).toBe(0)
   })
+
+  it('single pattern found in text', () => {
+    const ac = new AhoCorasickMulti(['abc'])
+    const result = ac.search('xabcyabcz')
+    expect(result.get(0)!.length).toBeGreaterThanOrEqual(2)
+  })
 })
