@@ -160,4 +160,9 @@ describe('KruskalMST', () => {
     const mst = KruskalMST.findMST(edges, 2)
     expect(mst.totalWeight).toBe(5)
   })
+
+  it('no edges has zero weight', () => {
+    const mst = KruskalMST.findMST([], 1)
+    expect(mst.totalWeight).toBe(0)
+  })
 })

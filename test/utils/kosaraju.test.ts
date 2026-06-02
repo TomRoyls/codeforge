@@ -128,4 +128,10 @@ describe('KosarajuSCC', () => {
     const sccs = KosarajuSCC.findSCCs(adj)
     expect(sccs.length).toBe(1)
   })
+
+  it('self loop is single SCC', () => {
+    const adj = new Map<number, number[]>([[0, [0]]])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+  })
 })
