@@ -163,4 +163,10 @@ describe('BitmapIndex', () => {
     expect(index.documentCount).toBe(1)
     expect(index.query('tag1')).toEqual([])
   })
+
+  it('query for non-existent tag returns empty', () => {
+    const index = new BitmapIndex()
+    index.add('doc1', ['tag1'])
+    expect(index.query('tag99')).toEqual([])
+  })
 })

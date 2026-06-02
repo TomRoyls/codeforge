@@ -174,4 +174,9 @@ describe('BipartiteMatching', () => {
     expect(graph.maxMatching()).toBe(3)
     expect(graph.maxMatching()).toBe(3)
   })
+
+  it('empty graph has 0 matching', () => {
+    const graph = new BipartiteMatching(0, 0)
+    expect(graph.maxMatching()).toBe(0)
+  })
 })

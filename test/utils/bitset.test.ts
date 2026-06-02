@@ -144,4 +144,11 @@ describe('Bitset', () => {
     bs.set(2)
     expect(bs.all()).toBe(true)
   })
+
+  it('none returns true when all bits are 0', () => {
+    const bs = new Bitset(3)
+    expect(bs.none()).toBe(true)
+    bs.set(1)
+    expect(bs.none()).toBe(false)
+  })
 })

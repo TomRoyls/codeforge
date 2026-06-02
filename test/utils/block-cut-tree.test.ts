@@ -184,4 +184,12 @@ describe('BlockCutTree', () => {
     const { isArticulation } = bct.build()
     expect(isArticulation[0]).toBe(false)
   })
+
+  it('two edges in a line creates articulation point', () => {
+    const bct = new BlockCutTree(3)
+    bct.addEdge(0, 1)
+    bct.addEdge(1, 2)
+    const { isArticulation } = bct.build()
+    expect(isArticulation[1]).toBe(true)
+  })
 })
