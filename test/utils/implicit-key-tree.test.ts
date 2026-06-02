@@ -139,4 +139,12 @@ describe('ImplicitKeyTree', () => {
     expect(t.get(0)).toBe(42)
     expect(t.get(1)).toBe(99)
   })
+
+  it('toArray returns all elements', () => {
+    const t = new ImplicitKeyTree<number, number>()
+    t.insert(0, 10)
+    t.insert(1, 20)
+    t.insert(2, 30)
+    expect(t.toArray()).toEqual([10, 20, 30])
+  })
 })

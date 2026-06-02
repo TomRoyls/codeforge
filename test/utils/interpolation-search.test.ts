@@ -98,4 +98,8 @@ describe('InterpolationSearch', () => {
   it('finds first element', () => {
     expect(InterpolationSearch.search([1, 2, 3, 4, 5], 1)).toBe(0)
   })
+
+  it('finds last element', () => {
+    expect(InterpolationSearch.search([1, 2, 3, 4, 5], 5)).toBe(4)
+  })
 })

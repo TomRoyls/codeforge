@@ -162,4 +162,10 @@ describe('HyperLogLog', () => {
     hll.add('')
     expect(hll.count()).toBeCloseTo(1, 0)
   })
+
+  it('multiple adds approximate count', () => {
+    const hll = new HyperLogLog()
+    for (let i = 0; i < 100; i++) hll.add(`item-${i}`)
+    expect(hll.count()).toBeGreaterThan(50)
+  })
 })
