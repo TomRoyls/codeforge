@@ -196,4 +196,9 @@ describe('DequeAggregation', () => {
     const deque = new DequeAggregation<number>()
     expect(deque.size).toBe(0)
   })
+
+  it('aggregate on empty returns undefined', () => {
+    const deque = new DequeAggregation<number>()
+    expect(deque.aggregate()).toBeUndefined()
+  })
 })

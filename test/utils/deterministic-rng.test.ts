@@ -144,4 +144,9 @@ describe('DeterministicRng', () => {
     const rng2 = new DeterministicRng(42)
     expect(rng1.nextInt()).toBe(rng2.nextInt())
   })
+
+  it('constructor accepts seed', () => {
+    const rng = new DeterministicRng(42)
+    expect(rng).toBeDefined()
+  })
 })

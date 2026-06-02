@@ -161,4 +161,10 @@ describe('DequeMin', () => {
     dq.popFront()
     expect(dq.min).toBe(3)
   })
+
+  it('single element min is itself', () => {
+    const dq = new DequeMin()
+    dq.pushBack(42)
+    expect(dq.min).toBe(42)
+  })
 })
