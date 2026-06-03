@@ -181,4 +181,11 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath(edges, 2)
     expect(dist[0]![0]).toBe(0)
   })
+
+  it('distance to self is 0', () => {
+    const edges: { from: number; to: number; weight: number }[] = []
+    const dist = FloydWarshall.allPairsShortestPath(edges, 3)
+    expect(dist[0]![0]).toBe(0)
+    expect(dist[1]![1]).toBe(0)
+  })
 })

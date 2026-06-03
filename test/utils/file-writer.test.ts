@@ -162,4 +162,12 @@ describe('writeToFileAtomic', () => {
     expect(fs.readFileSync(fp, 'utf8')).toBe('deep')
     fs.rmSync(dir, { recursive: true })
   })
+
+  it('writeToFileAtomic creates file', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'atomic.txt')
+    writeToFileAtomic(fp, 'atomic content')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('atomic content')
+    fs.rmSync(dir, { recursive: true })
+  })
 })
