@@ -135,4 +135,10 @@ describe('TarjanSCC', () => {
     const sccs = new TarjanSCC(adj).solve()
     expect(sccs.length).toBe(2)
   })
+
+  it('single node has one SCC', () => {
+    const adj = [[]]
+    const sccs = new TarjanSCC(adj).solve()
+    expect(sccs.length).toBe(1)
+  })
 })

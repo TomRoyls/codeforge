@@ -122,4 +122,8 @@ describe('RULE_SUGGESTIONS known rules', () => {
     const keys = Object.keys(RULE_SUGGESTIONS)
     expect(new Set(keys).size).toBe(keys.length)
   })
+
+  it('RULE_SUGGESTIONS is non-empty', () => {
+    expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(0)
+  })
 })
