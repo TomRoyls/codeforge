@@ -133,4 +133,10 @@ describe('BoyerMoore', () => {
     const count = bm.count('AB ab Ab')
     expect(count).toBe(3)
   })
+
+  it('search returns positions', () => {
+    const bm = new BoyerMoore('ab')
+    const results = bm.search('ababab')
+    expect(results.length).toBe(3)
+  })
 })

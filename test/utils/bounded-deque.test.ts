@@ -173,4 +173,12 @@ describe('BoundedDeque', () => {
     const dq = new BoundedDeque<number>(2)
     expect(dq.capacity).toBe(2)
   })
+
+  it('pushBack respects capacity', () => {
+    const dq = new BoundedDeque<number>(2)
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.pushBack(3)
+    expect(dq.size).toBeLessThanOrEqual(2)
+  })
 })

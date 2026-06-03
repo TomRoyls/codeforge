@@ -198,4 +198,13 @@ describe('BoundedPriorityQueue', () => {
     expect(q.peek()).toBe(3)
     expect(q.size).toBe(2)
   })
+
+  it('pop returns and removes top element', () => {
+    const q = new BoundedPriorityQueue<number>((a, b) => b - a, 5)
+    q.push(1)
+    q.push(3)
+    q.push(2)
+    expect(q.pop()).toBe(3)
+    expect(q.size).toBe(2)
+  })
 })

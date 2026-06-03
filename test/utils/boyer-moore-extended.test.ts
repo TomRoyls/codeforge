@@ -92,4 +92,8 @@ describe('BoyerMooreExtended', () => {
   it('no match returns empty', () => {
     expect(BoyerMooreExtended.search('abcdef', 'xyz')).toEqual([])
   })
+
+  it('finds pattern at start', () => {
+    expect(BoyerMooreExtended.search('abcdef', 'abc')).toEqual([0])
+  })
 })
