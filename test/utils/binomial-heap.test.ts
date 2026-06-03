@@ -260,4 +260,9 @@ describe('BinomialHeap', () => {
     const result = heap.extractMin()
     expect(result!.value).toBe(3)
   })
+
+  it('isEmpty on empty heap returns true', () => {
+    const heap = new BinomialHeap<number, number>()
+    expect(heap.isEmpty()).toBe(true)
+  })
 })

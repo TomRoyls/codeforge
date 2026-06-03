@@ -106,4 +106,8 @@ describe('Bisect', () => {
   it('bisectRight returns position after equal elements', () => {
     expect(Bisect.bisectRight([1, 2, 2, 3], 2)).toBe(3)
   })
+
+  it('bisectLeft on empty array returns 0', () => {
+    expect(Bisect.bisectLeft([], 5)).toBe(0)
+  })
 })

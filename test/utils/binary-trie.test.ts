@@ -171,4 +171,10 @@ describe('BinaryTrie', () => {
     bt.insert(1)
     expect(bt.find(1)).toBe(true)
   })
+
+  it('find returns false for absent value', () => {
+    const bt = new BinaryTrie()
+    bt.insert(1)
+    expect(bt.find(2)).toBe(false)
+  })
 })
