@@ -109,4 +109,10 @@ describe('NTT', () => {
     const result = NTT.multiplyPolynomials([3n], [4n])
     expect(result).toEqual([12n])
   })
+
+  it('multiplyPolynomials linear by linear', () => {
+    const result = NTT.multiplyPolynomials([1n, 1n], [1n, 1n])
+    expect(result[0]).toBe(1n)
+    expect(result[2]).toBe(1n)
+  })
 })
