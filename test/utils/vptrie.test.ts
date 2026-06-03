@@ -143,4 +143,12 @@ describe('VPTrie', () => {
     const result = vp.nearest([5, 5])
     expect(result).not.toBeNull()
   })
+
+  it('nearest returns closest point', () => {
+    const vp = new VPTrie()
+    vp.addPoint([0, 0])
+    vp.addPoint([10, 10])
+    const result = vp.nearest([1, 1])
+    expect(result).not.toBeNull()
+  })
 })

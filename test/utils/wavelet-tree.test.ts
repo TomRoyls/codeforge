@@ -162,4 +162,9 @@ describe('WaveletTree', () => {
     const wt = new WaveletTree([1, 2, 1, 2, 1]);
     expect(wt.rank(1, 5)).toBe(3);
   });
+
+  it('rank with 0 occurrences returns 0', () => {
+    const wt = new WaveletTree([2, 2, 2]);
+    expect(wt.rank(1, 3)).toBe(0);
+  });
 });

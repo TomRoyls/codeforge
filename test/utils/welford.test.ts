@@ -127,4 +127,9 @@ describe('Welford', () => {
     const w = Welford.fromArray([1, 2, 3])
     expect(w.variance).toBeCloseTo(2 / 3, 5)
   })
+
+  it('mean of [10, 20, 30] is 20', () => {
+    const w = Welford.fromArray([10, 20, 30])
+    expect(w.mean).toBeCloseTo(20, 5)
+  })
 })
