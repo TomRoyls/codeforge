@@ -155,4 +155,9 @@ describe('XorFilter', () => {
     expect(f.has('a')).toBe(true);
     expect(f.has('c')).toBe(false);
   });
+
+  it('has returns false for empty filter', () => {
+    const f = XorFilter.create([]);
+    expect(f.has('anything')).toBe(false);
+  });
 });

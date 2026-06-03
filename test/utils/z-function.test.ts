@@ -104,4 +104,9 @@ describe('ZFunction', () => {
       expect(zf.z[i]).toBe(0)
     }
   })
+
+  it('repeated pattern has large z values', () => {
+    const zf = new ZFunction('aaaa')
+    expect(zf.z[1]).toBe(3)
+  })
 })

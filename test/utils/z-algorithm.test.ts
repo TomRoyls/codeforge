@@ -88,4 +88,8 @@ describe('ZAlgorithm', () => {
   it('search finds multiple matches', () => {
     expect(ZAlgorithm.search('abcabc', 'abc')).toEqual([0, 3])
   })
+
+  it('no match returns empty', () => {
+    expect(ZAlgorithm.search('abcdef', 'xyz')).toEqual([])
+  })
 })
