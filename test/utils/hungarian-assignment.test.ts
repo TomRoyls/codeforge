@@ -212,4 +212,14 @@ describe('HungarianAssignment', () => {
     const ha = new HungarianAssignment(3, 3)
     expect(ha).toBeDefined()
   })
+
+  it('solve returns assignment', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 2)
+    ha.setCost(1, 0, 2)
+    ha.setCost(1, 1, 1)
+    const result = ha.solve()
+    expect(result).toBeDefined()
+  })
 })

@@ -158,4 +158,12 @@ describe('HuffmanCoder', () => {
     expect(result).toHaveProperty('encoded')
     expect(result).toHaveProperty('tree')
   })
+
+  it('decode recovers original', () => {
+    const coder = new HuffmanCoder()
+    const text = 'abc'
+    const result = coder.encode(text)
+    const decoded = coder.decode(result.encoded, result.tree)
+    expect(decoded).toBe(text)
+  })
 })

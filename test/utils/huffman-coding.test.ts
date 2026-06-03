@@ -122,4 +122,9 @@ describe('HuffmanCoding', () => {
     const { encoded, tree } = HuffmanCoding.encode(data)
     expect(HuffmanCoding.decode(encoded, tree)).toBe(data)
   })
+
+  it('encode empty string', () => {
+    const { encoded, tree } = HuffmanCoding.encode('')
+    expect(HuffmanCoding.decode(encoded, tree)).toBe('')
+  })
 })
