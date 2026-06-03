@@ -113,4 +113,9 @@ describe('PermutationIterator', () => {
     const result = PermutationIterator.all([1, 2])
     expect(result.length).toBe(2)
   })
+
+  it('single element has 1 permutation', () => {
+    const result = PermutationIterator.all([42])
+    expect(result).toEqual([[42]])
+  })
 })

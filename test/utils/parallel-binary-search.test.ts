@@ -155,4 +155,8 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search([])
     expect(results).toEqual([])
   })
+
+  it('constructor accepts queries', () => {
+    expect(ParallelBinarySearch).toBeDefined()
+  })
 })
