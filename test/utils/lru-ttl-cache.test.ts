@@ -154,4 +154,9 @@ describe('LRUTTLCache', () => {
     cache.delete('x')
     expect(cache.has('x')).toBe(false)
   })
+
+  it('get returns undefined for missing key', () => {
+    const cache = new LRUTTLCache<string, number>(5, 1000)
+    expect(cache.get('missing')).toBeUndefined()
+  })
 })

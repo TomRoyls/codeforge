@@ -182,4 +182,9 @@ describe('LRUCache - peek', () => {
     cache.set('c', 3)
     expect(cache.has('a')).toBe(false)
   })
+
+  it('get returns undefined for missing key', () => {
+    const cache = new LRUCache<string, number>(2)
+    expect(cache.get('missing')).toBeUndefined()
+  })
 })

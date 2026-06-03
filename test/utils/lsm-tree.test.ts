@@ -148,4 +148,9 @@ describe('LSMTree', () => {
     tree.delete('key1')
     expect(tree.get('key1')).toBeUndefined()
   })
+
+  it('get for missing key returns undefined', () => {
+    const tree = new LSMTree<string, string>()
+    expect(tree.get('missing')).toBeUndefined()
+  })
 })
