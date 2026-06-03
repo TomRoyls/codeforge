@@ -178,4 +178,10 @@ describe('SparseBitSet - iteration', () => {
     const bs = new SparseBitSet()
     expect(bs.has(0)).toBe(false)
   })
+
+  it('set and has roundtrip', () => {
+    const bs = new SparseBitSet()
+    bs.set(42)
+    expect(bs.has(42)).toBe(true)
+  })
 })

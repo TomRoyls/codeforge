@@ -168,4 +168,10 @@ describe('SlopeTrick', () => {
     st.addAbsolute()
     expect(st).toBeDefined()
   })
+
+  it('addShiftLeft does not throw', () => {
+    const st = new SlopeTrick()
+    st.addShiftLeft(5)
+    expect(st).toBeDefined()
+  })
 })

@@ -183,4 +183,10 @@ describe('SlidingWindowStats', () => {
     sw.push(3)
     expect(sw.variance).toBeGreaterThanOrEqual(0)
   })
+
+  it('mean of single value is that value', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(42)
+    expect(sw.mean).toBe(42)
+  })
 })

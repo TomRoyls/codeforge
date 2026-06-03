@@ -183,4 +183,11 @@ describe('SortedList', () => {
     sl.insert(2)
     expect(sl.get(0)).toBe(1)
   })
+
+  it('size reflects number of elements', () => {
+    const sl = new SortedList<number>()
+    sl.insert(5)
+    sl.insert(3)
+    expect(sl.size).toBe(2)
+  })
 })
