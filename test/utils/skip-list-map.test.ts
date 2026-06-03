@@ -157,4 +157,9 @@ describe('SkipListMap', () => {
     sl.set(1, 'a')
     expect(sl.get(1)).toBe('a')
   })
+
+  it('has returns false for missing key', () => {
+    const sl = new SkipListMap<number, string>()
+    expect(sl.has(99)).toBe(false)
+  })
 })

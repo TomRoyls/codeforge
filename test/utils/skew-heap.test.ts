@@ -166,4 +166,9 @@ describe('SkewHeap', () => {
     const merged = h1.merge(h2)
     expect(merged.pop()).toBe(5)
   })
+
+  it('empty heap pop returns undefined', () => {
+    const h = new SkewHeap<number>()
+    expect(h.pop()).toBeUndefined()
+  })
 })
