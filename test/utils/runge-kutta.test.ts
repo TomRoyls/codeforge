@@ -144,4 +144,10 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(0, 3)
   })
+
+  it('solve linear dy/dx=1', () => {
+    const result = RungeKutta.solve((_x: number, _y: number) => 1, 0, 0, 1, 0.5)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(1, 2)
+  })
 })

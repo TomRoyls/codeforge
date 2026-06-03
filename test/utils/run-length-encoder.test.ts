@@ -146,4 +146,9 @@ describe('RunLengthEncoder', () => {
     enc.append({ v: 2 })
     expect(enc.length).toBe(3)
   })
+
+  it('empty encoder has length 0', () => {
+    const enc = new RunLengthEncoder<{ v: number }>()
+    expect(enc.length).toBe(0)
+  })
 })
