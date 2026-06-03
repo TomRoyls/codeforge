@@ -147,4 +147,10 @@ describe('GraphTraversal', () => {
     const order = GraphTraversal.dfs(adj, 0)
     expect(order).toEqual([0, 1, 2])
   })
+
+  it('bfs on single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const order = GraphTraversal.bfs(adj, 0)
+    expect(order).toEqual([0])
+  })
 })

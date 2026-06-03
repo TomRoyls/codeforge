@@ -143,4 +143,9 @@ describe('GraphEntropy', () => {
     const ge = new GraphEntropy(1)
     expect(ge.edgeEntropy()).toBe(0)
   })
+
+  it('constructor accepts node count', () => {
+    const ge = new GraphEntropy(5)
+    expect(ge).toBeDefined()
+  })
 })

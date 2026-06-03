@@ -111,4 +111,9 @@ describe('GrayCode', () => {
     const result = GrayCode.generate(3)
     expect(result.length).toBe(8)
   })
+
+  it('generate 0 bits produces 1 code', () => {
+    const result = GrayCode.generate(0)
+    expect(result.length).toBe(1)
+  })
 })

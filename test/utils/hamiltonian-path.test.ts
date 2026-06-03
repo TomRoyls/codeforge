@@ -150,4 +150,10 @@ describe('HamiltonianPath', () => {
     hp.addEdge(0, 1)
     expect(hp.existsPath()).toBe(false)
   })
+
+  it('two nodes with edge has path', () => {
+    const hp = new HamiltonianPath(2)
+    hp.addEdge(0, 1)
+    expect(hp.existsPath()).toBe(true)
+  })
 })
