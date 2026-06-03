@@ -152,4 +152,11 @@ describe('ConvexHullTrick', () => {
     cht.addLine(2, 0)
     expect(cht.query(0)).toBe(0)
   })
+
+  it('query at x=1 returns min y', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(1, 0)
+    cht.addLine(0, 5)
+    expect(cht.query(1)).toBe(1)
+  })
 })

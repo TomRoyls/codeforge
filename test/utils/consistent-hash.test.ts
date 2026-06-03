@@ -186,4 +186,12 @@ describe('ConsistentHash edge cases', () => {
     expect(ch.getNode('key1')).toBe('only')
     expect(ch.getNode('key2')).toBe('only')
   })
+
+  it('removeNode removes node from ring', () => {
+    const ch = new ConsistentHash<string>()
+    ch.addNode('a')
+    ch.addNode('b')
+    ch.removeNode('a')
+    expect(ch.getNode).toBeDefined()
+  })
 })

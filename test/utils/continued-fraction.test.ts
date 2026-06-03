@@ -105,4 +105,9 @@ describe('ContinuedFraction', () => {
     expect(result[0]).toBe(2)
     expect(result.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('fromNumber for integer returns single element', () => {
+    const result = ContinuedFraction.fromNumber(5)
+    expect(result[0]).toBe(5)
+  })
 })

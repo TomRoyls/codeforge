@@ -174,4 +174,13 @@ describe('ConvexHull3D', () => {
     ch.addPoint(0, 0, 0)
     expect(ch.convexHullVolume()).toBe(0)
   })
+
+  it('tetrahedron has positive volume', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(1, 0, 0)
+    ch.addPoint(0, 1, 0)
+    ch.addPoint(0, 0, 1)
+    expect(ch.convexHullVolume()).toBeGreaterThan(0)
+  })
 })
