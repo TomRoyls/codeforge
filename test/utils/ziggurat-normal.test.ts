@@ -187,4 +187,16 @@ describe('ZigguratNormal', () => {
       expect(Number.isFinite(z.sample())).toBe(true)
     }
   })
+
+  it('sample is within reasonable range', () => {
+    const z = new ZigguratNormal()
+    let min = Infinity
+    let max = -Infinity
+    for (let i = 0; i < 100; i++) {
+      const v = z.sample()
+      if (v < min) min = v
+      if (v > max) max = v
+    }
+    expect(max - min).toBeLessThan(100)
+  })
 })

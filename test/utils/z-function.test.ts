@@ -114,4 +114,9 @@ describe('ZFunction', () => {
     const zf = new ZFunction('abcd')
     expect(zf.z[1]).toBe(0)
   })
+
+  it('repeating prefix has non-zero z value', () => {
+    const zf = new ZFunction('abab')
+    expect(zf.z[2]).toBe(2)
+  })
 })

@@ -93,4 +93,8 @@ describe('ZAlgorithmExtended', () => {
   it('finds pattern at start', () => {
     expect(ZAlgorithmExtended.search('abcdef', 'abc')).toEqual([0])
   })
+
+  it('no match returns empty', () => {
+    expect(ZAlgorithmExtended.search('abcdef', 'xyz')).toEqual([])
+  })
 })
