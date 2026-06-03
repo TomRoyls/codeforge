@@ -148,4 +148,10 @@ describe('FractionalCascading', () => {
     const result = fc.search(10)
     expect(result).toBeDefined()
   })
+
+  it('search for missing value returns result', () => {
+    const fc = new FractionalCascading([[1, 3, 5]])
+    const result = fc.search(4)
+    expect(result).toBeDefined()
+  })
 })

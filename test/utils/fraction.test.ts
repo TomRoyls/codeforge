@@ -120,4 +120,12 @@ describe('Fraction', () => {
     expect(f.num).toBe(5)
     expect(f.den).toBe(1)
   })
+
+  it('add two fractions', () => {
+    const a = new Fraction(1, 2)
+    const b = new Fraction(1, 3)
+    const result = a.add(b)
+    expect(result.num).toBe(5)
+    expect(result.den).toBe(6)
+  })
 })

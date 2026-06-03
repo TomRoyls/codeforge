@@ -126,4 +126,8 @@ describe('GaussianElimination', () => {
   it('rank of identity 2x2 is 2', () => {
     expect(GaussianElimination.rank([[1, 0], [0, 1]])).toBe(2)
   })
+
+  it('rank of zero matrix is 0', () => {
+    expect(GaussianElimination.rank([[0, 0], [0, 0]])).toBe(0)
+  })
 })

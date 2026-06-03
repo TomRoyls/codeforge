@@ -191,4 +191,9 @@ describe('GapBuffer', () => {
     buffer.insert(2)
     expect(buffer.toArray()).toEqual([1, 2])
   })
+
+  it('empty buffer toArray returns empty', () => {
+    const buffer = new GapBuffer<number>()
+    expect(buffer.toArray()).toEqual([])
+  })
 })

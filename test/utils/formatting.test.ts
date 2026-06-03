@@ -104,4 +104,8 @@ describe('getGrade edge cases', () => {
   it('handles score 95', () => {
     expect(getGrade(95)).toBe('(A)')
   })
+
+  it('handles score 50', () => {
+    expect(getGrade(50)).toBe('(F)')
+  })
 })
