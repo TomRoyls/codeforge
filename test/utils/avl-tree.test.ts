@@ -222,4 +222,10 @@ describe('AVLTree clear', () => {
     tree.insert(5, 50)
     expect(tree.find(5)).toBe(50)
   })
+
+  it('find missing key returns undefined', () => {
+    const tree = new AVLTree<number, number>()
+    tree.insert(5, 50)
+    expect(tree.find(99)).toBeUndefined()
+  })
 })

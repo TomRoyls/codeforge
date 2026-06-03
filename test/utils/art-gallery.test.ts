@@ -205,4 +205,13 @@ describe('ArtGallery', () => {
     ag.addPoint(0, 4)
     expect(ag.pointInPolygon(2, 2)).toBe(true)
   })
+
+  it('point outside polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.pointInPolygon(10, 10)).toBe(false)
+  })
 })

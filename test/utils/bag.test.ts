@@ -184,4 +184,11 @@ describe('Bag', () => {
     const bag = new Bag<number>()
     expect(bag.count(42)).toBe(0)
   })
+
+  it('add and count tracks items', () => {
+    const bag = new Bag<number>()
+    bag.add(1)
+    bag.add(1)
+    expect(bag.count(1)).toBe(2)
+  })
 })
