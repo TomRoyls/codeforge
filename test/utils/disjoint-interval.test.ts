@@ -146,4 +146,10 @@ describe('DisjointInterval', () => {
     di.add(0, 5)
     expect(di.covers(2, 3)).toBe(true)
   })
+
+  it('does not cover outside range', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    expect(di.covers(6, 8)).toBe(false)
+  })
 })

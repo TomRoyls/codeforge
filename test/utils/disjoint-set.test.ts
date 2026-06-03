@@ -179,4 +179,12 @@ describe('DisjointSet - stats and clear', () => {
     ds.add(42)
     expect(ds.find(42)).toBe(42)
   })
+
+  it('union merges two sets', () => {
+    const ds = new DisjointSet()
+    ds.add(1)
+    ds.add(2)
+    ds.union(1, 2)
+    expect(ds.find(1)).toBe(ds.find(2))
+  })
 })

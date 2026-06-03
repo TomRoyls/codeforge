@@ -132,4 +132,9 @@ describe('DisjointSparseTable', () => {
     const dst = new DisjointSparseTable([5, 10, 15], (a, b) => a + b)
     expect(dst.query(0, 2)).toBe(30)
   })
+
+  it('query single element', () => {
+    const dst = new DisjointSparseTable([5, 10, 15], (a, b) => a + b)
+    expect(dst.query(1, 1)).toBe(10)
+  })
 })

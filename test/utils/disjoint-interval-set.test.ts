@@ -174,4 +174,10 @@ describe('DisjointIntervalSet - utility', () => {
     dis.forEach(() => { count++ })
     expect(count).toBe(0)
   })
+
+  it('add single interval and contains', () => {
+    const dis = new DisjointIntervalSet()
+    dis.add(0, 5)
+    expect(dis.contains(3)).toBe(true)
+  })
 })

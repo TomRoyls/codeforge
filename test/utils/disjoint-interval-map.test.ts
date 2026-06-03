@@ -180,4 +180,10 @@ describe('DisjointIntervalMap', () => {
     map.set(0, 5, 'hello')
     expect(map.get(10)).toBeUndefined()
   })
+
+  it('set and get overlapping', () => {
+    const map = new DisjointIntervalMap<number, string>()
+    map.set(0, 10, 'a')
+    expect(map.get(5)).toBe('a')
+  })
 })
