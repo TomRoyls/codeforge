@@ -139,4 +139,13 @@ describe('DiscreteSampler', () => {
       expect(sampler.sample()).toBe(0)
     }
   })
+
+  it('constructor takes weights array', () => {
+    const sampler = new DiscreteSampler([1, 1])
+    for (let i = 0; i < 10; i++) {
+      const idx = sampler.sample()
+      expect(idx).toBeGreaterThanOrEqual(0)
+      expect(idx).toBeLessThan(2)
+    }
+  })
 })

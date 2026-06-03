@@ -174,4 +174,10 @@ describe('DisjointIntervalMap', () => {
     map.set(0, 5, 'hello')
     expect(map.get(2)).toBe('hello')
   })
+
+  it('get outside interval returns undefined', () => {
+    const map = new DisjointIntervalMap<number, string>()
+    map.set(0, 5, 'hello')
+    expect(map.get(10)).toBeUndefined()
+  })
 })

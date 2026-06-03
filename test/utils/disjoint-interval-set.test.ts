@@ -167,4 +167,11 @@ describe('DisjointIntervalSet - utility', () => {
     dis.forEach((iv) => ivs.push(iv.start))
     expect(ivs).toEqual([1, 10])
   })
+
+  it('empty set forEach does nothing', () => {
+    const dis = new DisjointIntervalSet()
+    let count = 0
+    dis.forEach(() => { count++ })
+    expect(count).toBe(0)
+  })
 })
