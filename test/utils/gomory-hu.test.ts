@@ -156,4 +156,10 @@ describe('GomoryHu', () => {
     const gh = new GomoryHu(3)
     expect(gh.minCut(0, 1)).toBe(0)
   })
+
+  it('single edge min cut equals capacity', () => {
+    const gh = new GomoryHu(2)
+    gh.addEdge(0, 1, 5)
+    expect(gh.minCut(0, 1)).toBe(5)
+  })
 })

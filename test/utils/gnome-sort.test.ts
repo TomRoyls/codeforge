@@ -93,4 +93,8 @@ describe('GnomeSort', () => {
   it('handles already sorted', () => {
     expect(GnomeSort.sort([1, 2, 3])).toEqual([1, 2, 3])
   })
+
+  it('handles reverse sorted', () => {
+    expect(GnomeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  })
 })

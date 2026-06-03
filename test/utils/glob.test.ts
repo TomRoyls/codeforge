@@ -134,4 +134,9 @@ describe('matchGlob edge cases', () => {
   it('star matches multiple characters', () => {
     expect(matchGlob('foobarbaz', 'foo*baz')).toBe(true)
   })
+
+  it('question mark matches single character', () => {
+    expect(matchGlob('abc', 'a?c')).toBe(true)
+    expect(matchGlob('ab', 'a?c')).toBe(false)
+  })
 })

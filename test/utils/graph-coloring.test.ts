@@ -106,4 +106,10 @@ describe('GraphColoring', () => {
     expect(colors.length).toBe(3)
     expect(GraphColoring.isValidColoring(adj, colors)).toBe(true)
   })
+
+  it('single node gets one color', () => {
+    const adj = [[0]]
+    const colors = GraphColoring.greedyColor(adj)
+    expect(colors.length).toBe(1)
+  })
 })
