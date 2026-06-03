@@ -148,4 +148,9 @@ describe('TreeDiameter', () => {
     td.addEdge(0, 1)
     expect(td.findDiameter()).toBe(1)
   })
+
+  it('single node has diameter 0', () => {
+    const td = new TreeDiameter(1)
+    expect(td.findDiameter()).toBe(0)
+  })
 })

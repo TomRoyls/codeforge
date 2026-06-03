@@ -191,4 +191,12 @@ describe('Treap getRoot', () => {
     expect(root!.value).toBe('a')
     expect(root!.priority).toBeGreaterThanOrEqual(0)
   })
+
+  it('delete removes node', () => {
+    const t = new Treap<number, string>()
+    t.insert(5, 'x')
+    t.insert(3, 'y')
+    t.delete(5)
+    expect(t.find(5)).toBeUndefined()
+  })
 })
