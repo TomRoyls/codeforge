@@ -105,4 +105,9 @@ describe('SparseTableGCD', () => {
     const st = new SparseTableGCD([7])
     expect(st.query(0, 0)).toBe(7)
   })
+
+  it('GCD of 6 and 9 is 3', () => {
+    const st = new SparseTableGCD([6, 9])
+    expect(st.query(0, 1)).toBe(3)
+  })
 })

@@ -124,4 +124,9 @@ describe('SparseTable2D', () => {
     const st = new SparseTable2D([[5]], Math.min)
     expect(st.query(0, 0, 0, 0)).toBe(5)
   })
+
+  it('2x2 min query', () => {
+    const st = new SparseTable2D([[3, 1], [4, 2]], Math.min)
+    expect(st.query(0, 0, 1, 1)).toBe(1)
+  })
 })

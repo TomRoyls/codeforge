@@ -158,4 +158,11 @@ describe('SparseSet', () => {
     const ss = new SparseSet(10)
     expect(ss.remove(5)).toBe(false)
   })
+
+  it('has returns false for removed value', () => {
+    const ss = new SparseSet(10)
+    ss.add(3)
+    ss.remove(3)
+    expect(ss.has(3)).toBe(false)
+  })
 })

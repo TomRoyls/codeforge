@@ -181,4 +181,9 @@ describe('SplayTree custom comparator', () => {
     tree.insert(5, 'hello')
     expect(tree.find(5)).toBe('hello')
   })
+
+  it('find returns undefined for missing key', () => {
+    const tree = new SplayTree<number, string>()
+    expect(tree.find(99)).toBeUndefined()
+  })
 })
