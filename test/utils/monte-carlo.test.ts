@@ -137,4 +137,9 @@ describe('MonteCarlo', () => {
     expect(result).toBeGreaterThan(2)
     expect(result).toBeLessThan(4)
   })
+
+  it('pi approximation with small sample returns finite', () => {
+    const result = MonteCarlo.pi(1)
+    expect(isFinite(result)).toBe(true)
+  })
 })
