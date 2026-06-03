@@ -176,4 +176,12 @@ describe('GapBuffer', () => {
     buffer.insert(3)
     expect(buffer.length).toBe(3)
   })
+
+  it('delete reduces length', () => {
+    const buffer = new GapBuffer<number>()
+    buffer.insert(1)
+    buffer.insert(2)
+    buffer.delete()
+    expect(buffer.length).toBe(1)
+  })
 })

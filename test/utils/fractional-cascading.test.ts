@@ -136,4 +136,10 @@ describe('FractionalCascading', () => {
     const fc = new FractionalCascading([[5, 10, 15]])
     expect(fc.search(10)).toEqual([1])
   })
+
+  it('search for value not present', () => {
+    const fc = new FractionalCascading([[5, 10, 15]])
+    const result = fc.search(7)
+    expect(result).toBeDefined()
+  })
 })
