@@ -176,4 +176,12 @@ describe('DifferenceArray2D', () => {
     expect(grid[0]![0]).toBe(5)
     expect(grid[1]![1]).toBe(0)
   })
+
+  it('overlapping ranges accumulate', () => {
+    const da = new DifferenceArray2D(3, 3)
+    da.add(0, 0, 1, 1, 5)
+    da.add(0, 0, 1, 1, 3)
+    const grid = da.buildGrid()
+    expect(grid[0]![0]).toBe(8)
+  })
 })

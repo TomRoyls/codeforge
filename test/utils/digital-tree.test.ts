@@ -163,4 +163,9 @@ describe('DigitalTree', () => {
     expect(dt.remove('hello')).toBe(true)
     expect(dt.search('hello')).toBe(false)
   })
+
+  it('search returns false for never-inserted', () => {
+    const dt = new DigitalTree<string>()
+    expect(dt.search('missing')).toBe(false)
+  })
 })

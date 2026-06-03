@@ -190,4 +190,13 @@ describe('DifferenceArray', () => {
     const result = da.toArray()
     expect(result).toEqual([0, 0, 0, 0, 0])
   })
+
+  it('range add at start', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(0, 2, 7)
+    const result = da.toArray()
+    expect(result[0]).toBe(7)
+    expect(result[2]).toBe(7)
+    expect(result[3]).toBe(0)
+  })
 })

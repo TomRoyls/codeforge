@@ -181,4 +181,11 @@ describe('Deque', () => {
     dq.pushFront(2)
     expect(dq.popFront()).toBe(2)
   })
+
+  it('size tracks elements', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.size).toBe(2)
+  })
 })

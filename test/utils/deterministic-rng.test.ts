@@ -156,4 +156,11 @@ describe('DeterministicRng', () => {
     expect(val).toBeGreaterThanOrEqual(0)
     expect(val).toBeLessThan(1)
   })
+
+  it('nextInt respects bounds', () => {
+    const rng = new DeterministicRng(42)
+    const val = rng.nextInt(10, 20)
+    expect(val).toBeGreaterThanOrEqual(10)
+    expect(val).toBeLessThanOrEqual(20)
+  })
 })
