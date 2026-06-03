@@ -157,4 +157,10 @@ describe('StreamSampler', () => {
     sampler.add('b')
     expect(sampler.size).toBe(2)
   })
+
+  it('sample returns array of at most k items', () => {
+    const sampler = new StreamSampler<string>(2)
+    for (let i = 0; i < 10; i++) sampler.add('item' + i)
+    expect(sampler.sample.length).toBeLessThanOrEqual(2)
+  })
 })

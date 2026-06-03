@@ -92,4 +92,8 @@ describe('StoogeSort', () => {
   it('handles single element', () => {
     expect(StoogeSort.sort([42])).toEqual([42])
   })
+
+  it('handles reverse sorted', () => {
+    expect(StoogeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  })
 })

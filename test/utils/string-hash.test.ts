@@ -110,4 +110,11 @@ describe('StringHash', () => {
     const h2 = sh.hash(3, 5)
     expect(h1).not.toBe(h2)
   })
+
+  it('same substring same hash', () => {
+    const sh = new StringHash('abcabc')
+    const h1 = sh.hash(0, 2)
+    const h2 = sh.hash(3, 5)
+    expect(h1).toBe(h2)
+  })
 })
