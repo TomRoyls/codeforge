@@ -115,4 +115,9 @@ describe('SparseTableGCD', () => {
     const st = new SparseTableGCD([7])
     expect(st.query(0, 0)).toBe(7)
   })
+
+  it('GCD of same numbers is that number', () => {
+    const st = new SparseTableGCD([6, 6, 6])
+    expect(st.query(0, 2)).toBe(6)
+  })
 })

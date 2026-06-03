@@ -172,4 +172,10 @@ describe('SparseSet', () => {
     ss.add(2)
     expect(ss.size).toBe(2)
   })
+
+  it('has returns false for non-member', () => {
+    const ss = new SparseSet(10)
+    ss.add(1)
+    expect(ss.has(5)).toBe(false)
+  })
 })

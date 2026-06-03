@@ -134,4 +134,9 @@ describe('SparseTable2D', () => {
     const st = new SparseTable2D([[3, 1], [4, 2]], Math.min)
     expect(st.query(0, 0, 0, 0)).toBe(3)
   })
+
+  it('full range query returns min', () => {
+    const st = new SparseTable2D([[3, 1], [4, 2]], Math.min)
+    expect(st.query(0, 0, 1, 1)).toBe(1)
+  })
 })

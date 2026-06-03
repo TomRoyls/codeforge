@@ -116,4 +116,9 @@ describe('SpiralMatrix', () => {
     const m = SpiralMatrix.generate(1)
     expect(m).toEqual([[1]])
   })
+
+  it('generate 2x2 returns correct spiral', () => {
+    const m = SpiralMatrix.generate(2)
+    expect(m).toEqual([[1, 2], [4, 3]])
+  })
 })
