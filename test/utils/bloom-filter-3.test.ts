@@ -217,4 +217,9 @@ describe('BloomFilter3', () => {
     filter.add('hello')
     expect(filter.has('hello')).toBe(true)
   })
+
+  it('has returns false for absent item', () => {
+    const filter = new BloomFilter3(100)
+    expect(filter.has('missing')).toBe(false)
+  })
 })

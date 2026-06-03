@@ -168,4 +168,9 @@ describe('BoundedDeque', () => {
     expect(dq.popBack()).toBe(2)
     expect(dq.size).toBe(1)
   })
+
+  it('capacity is set from constructor', () => {
+    const dq = new BoundedDeque<number>(2)
+    expect(dq.capacity).toBe(2)
+  })
 })

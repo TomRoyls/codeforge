@@ -192,4 +192,12 @@ describe('BlockCutTree', () => {
     const { isArticulation } = bct.build()
     expect(isArticulation[1]).toBe(true)
   })
+
+  it('chain of 2 has middle articulation', () => {
+    const bct = new BlockCutTree(3)
+    bct.addEdge(0, 1)
+    bct.addEdge(1, 2)
+    const { isArticulation } = bct.build()
+    expect(isArticulation[1]).toBe(true)
+  })
 })

@@ -153,4 +153,11 @@ describe('BlockList', () => {
     bl.pushFront(5)
     expect(bl.size).toBe(2)
   })
+
+  it('get returns element at index', () => {
+    const bl = new BlockList<number>()
+    bl.pushBack(10)
+    bl.pushBack(20)
+    expect(bl.get(0)).toBe(10)
+  })
 })
