@@ -126,4 +126,9 @@ describe('StringHasher', () => {
     const h2 = sh.hash(0, 2)
     expect(h1).toBe(h2)
   })
+
+  it('hash of single char', () => {
+    const sh = new StringHasher('abc')
+    expect(sh.hash(0, 1)).toBeDefined()
+  })
 })

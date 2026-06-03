@@ -168,4 +168,11 @@ describe('StreamSampler', () => {
     const sampler = new StreamSampler<string>(2)
     expect(sampler.sample()).toEqual([])
   })
+
+  it('single item sampler keeps last', () => {
+    const sampler = new StreamSampler<string>(1)
+    sampler.add('a')
+    sampler.add('b')
+    expect(sampler.sample()).toEqual(['b'])
+  })
 })

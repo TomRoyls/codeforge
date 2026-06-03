@@ -210,4 +210,12 @@ describe('StringMatcher', () => {
     const results = matcher.search('abcdef')
     expect(results).toEqual([])
   })
+
+  it('match single pattern', () => {
+    const matcher = new StringMatcher(['abc'])
+    matcher.build()
+    const results = matcher.search('xabcx')
+    expect(results.length).toBeGreaterThanOrEqual(1)
+    expect(results[0]!.pattern).toBe('abc')
+  })
 })

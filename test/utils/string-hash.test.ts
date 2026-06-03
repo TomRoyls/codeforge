@@ -124,4 +124,11 @@ describe('StringHash', () => {
     const h2 = sh.hash(1, 3)
     expect(h1).not.toBe(h2)
   })
+
+  it('hash of same range is equal', () => {
+    const sh = new StringHash('aaa')
+    const h1 = sh.hash(0, 2)
+    const h2 = sh.hash(0, 2)
+    expect(h1).toBe(h2)
+  })
 })
