@@ -132,4 +132,10 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'a')
     expect(lcp).toEqual([])
   })
+
+  it('build for repeated chars', () => {
+    const sa = [2, 1, 0]
+    const lcp = LCPArray.build(sa, 'aaa')
+    expect(lcp.length).toBe(2)
+  })
 })

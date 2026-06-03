@@ -146,4 +146,10 @@ describe('KosarajuSCC', () => {
     const sccs = KosarajuSCC.findSCCs(adj)
     expect(sccs.length).toBe(1)
   })
+
+  it('two node cycle is one SCC', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+  })
 })

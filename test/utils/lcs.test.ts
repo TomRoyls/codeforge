@@ -107,4 +107,8 @@ describe('LCS', () => {
   it('length of empty strings is 0', () => {
     expect(LCS.length('', '')).toBe(0)
   })
+
+  it('identical strings have full length', () => {
+    expect(LCS.length('abc', 'abc')).toBe(3)
+  })
 })
