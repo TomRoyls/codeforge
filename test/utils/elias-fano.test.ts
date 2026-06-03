@@ -156,4 +156,9 @@ describe('EliasFano', () => {
     const ef = EliasFano.fromSorted([10, 20, 30])
     expect(ef.indexOf(20)).toBe(1)
   })
+
+  it('indexOf missing value returns -1', () => {
+    const ef = EliasFano.fromSorted([10, 20, 30])
+    expect(ef.indexOf(15)).toBeLessThan(0)
+  })
 })

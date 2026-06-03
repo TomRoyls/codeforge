@@ -148,4 +148,9 @@ describe('EdmondsKarp', () => {
     const edges = [{ from: 0, to: 1, capacity: 5 }]
     expect(EdmondsKarp.maxFlow(edges, 1, 0, 2)).toBe(0)
   })
+
+  it('single edge flow equals capacity', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10 }]
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
 })
