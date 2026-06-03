@@ -166,4 +166,9 @@ describe('ImplicitKeyTree', () => {
     expect(t.get(0)).toBe(10)
     expect(t.get(1)).toBe(20)
   })
+
+  it('get returns undefined for missing key', () => {
+    const t = new ImplicitKeyTree<number>()
+    expect(t.get(99)).toBeUndefined()
+  })
 })

@@ -188,4 +188,9 @@ describe('HyperLogLog', () => {
     hll1.merge(hll2)
     expect(hll1.count()).toBeGreaterThanOrEqual(2)
   })
+
+  it('empty count is near zero', () => {
+    const hll = new HyperLogLog(10)
+    expect(hll.count()).toBeLessThan(1)
+  })
 })

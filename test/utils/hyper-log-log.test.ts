@@ -181,4 +181,11 @@ describe('HyperLogLog - edge cases', () => {
     const hll = new HyperLogLog(10)
     expect(hll.count()).toBeLessThan(1)
   })
+
+  it('add increases count', () => {
+    const hll = new HyperLogLog(10)
+    hll.add('hello')
+    hll.add('world')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
 })
