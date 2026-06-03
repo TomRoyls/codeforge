@@ -170,4 +170,11 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(2)
   })
+
+  it('self loop forms single component', () => {
+    const scc = new SCCTarjan(1)
+    scc.addEdge(0, 0)
+    const comps = scc.solve()
+    expect(comps.length).toBe(1)
+  })
 })

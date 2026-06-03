@@ -143,4 +143,9 @@ describe('LazySegmentTree', () => {
     tree.rangeUpdate(0, 2, 10)
     expect(tree.rangeQuery(0, 2)).toBe(36)
   })
+
+  it('single element update and query', () => {
+    const tree = new LazySegmentTree([5])
+    expect(tree.rangeQuery(0, 0)).toBe(5)
+  })
 })

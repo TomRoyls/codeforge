@@ -122,4 +122,10 @@ describe('pointToSegmentDistance', () => {
     const s2 = { a: { x: 5, y: 5 }, b: { x: 6, y: 6 } }
     expect(segmentsIntersect(s1, s2)).toBe(false)
   })
+
+  it('parallel segments do not intersect', () => {
+    const s1 = { a: { x: 0, y: 0 }, b: { x: 1, y: 0 } }
+    const s2 = { a: { x: 0, y: 1 }, b: { x: 1, y: 1 } }
+    expect(segmentsIntersect(s1, s2)).toBe(false)
+  })
 })

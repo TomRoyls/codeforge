@@ -136,4 +136,13 @@ describe('SegmentTree2D', () => {
     st.update(1, 1, 10)
     expect(st.query(1, 1, 1, 1)).toBe(10)
   })
+
+  it('query full range returns sum', () => {
+    const st = new SegmentTree2D(2, 2)
+    st.update(0, 0, 1)
+    st.update(0, 1, 2)
+    st.update(1, 0, 3)
+    st.update(1, 1, 4)
+    expect(st.query(0, 0, 1, 1)).toBe(10)
+  })
 })
