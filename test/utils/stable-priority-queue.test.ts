@@ -193,4 +193,12 @@ describe('StablePriorityQueue', () => {
     pq.enqueue(2)
     expect(pq.size).toBe(2)
   })
+
+  it('dequeue returns lowest priority', () => {
+    const pq = new StablePriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.dequeue()).toBe(1)
+  })
 })

@@ -178,4 +178,11 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([0])
     expect(result.totalWeight).toBe(0)
   })
+
+  it('two connected nodes min steiner', () => {
+    const st = new SteinerTree(2)
+    st.addEdge(0, 1, 5)
+    const result = st.approximateSteiner([0, 1])
+    expect(result.totalWeight).toBeGreaterThanOrEqual(0)
+  })
 })
