@@ -139,4 +139,10 @@ describe('TokenBucket2', () => {
     bucket.consume(5)
     expect(bucket.availableTokens).toBe(5)
   })
+
+  it('refill adds tokens over time', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume(5)
+    expect(bucket.availableTokens).toBe(5)
+  })
 })

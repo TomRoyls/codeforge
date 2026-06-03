@@ -157,4 +157,13 @@ describe('TimerWheel', () => {
     const result = tw.advance()
     expect(result).toContain('hello')
   })
+
+  it('schedule at slot 0 fires on advance', () => {
+    const tw = new TimerWheel<string>(8)
+    tw.schedule(0, 'x')
+    tw.schedule(0, 'y')
+    const result = tw.advance()
+    expect(result).toContain('x')
+    expect(result).toContain('y')
+  })
 })

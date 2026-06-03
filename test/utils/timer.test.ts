@@ -154,4 +154,9 @@ describe('Timer - utility', () => {
     timer.reset()
     expect(timer.elapsed()).toBeGreaterThanOrEqual(0)
   })
+
+  it('elapsed returns number', () => {
+    const timer = new Timer()
+    expect(typeof timer.elapsed()).toBe('number')
+  })
 })
