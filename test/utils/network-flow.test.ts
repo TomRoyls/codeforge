@@ -158,4 +158,9 @@ describe('NetworkFlow', () => {
     const edges = [{ from: 0, to: 1, capacity: 5 }]
     expect(NetworkFlow.maxFlow(edges, 1, 0, 2)).toBe(0)
   })
+
+  it('single edge yields correct flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10 }]
+    expect(NetworkFlow.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
 })

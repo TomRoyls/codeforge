@@ -181,4 +181,12 @@ describe('MovingWindow', () => {
     arr.push(999)
     expect(window.size).toBe(2)
   })
+
+  it('toArray returns snapshot', () => {
+    const window = new MovingWindow<number>(3)
+    window.push(1)
+    window.push(2)
+    const arr = window.toArray()
+    expect(arr).toEqual([1, 2])
+  })
 })
