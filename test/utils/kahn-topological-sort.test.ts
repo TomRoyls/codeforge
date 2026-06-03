@@ -141,4 +141,9 @@ describe('KahnTopologicalSort', () => {
   it('isDAG true for empty graph', () => {
     expect(KahnTopologicalSort.isDAG([])).toBe(true)
   })
+
+  it('sort single node', () => {
+    const sort = new KahnTopologicalSort([[]])
+    expect(sort.order).toEqual([0])
+  })
 })

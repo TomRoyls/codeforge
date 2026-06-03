@@ -157,4 +157,10 @@ describe('KahnAlgorithm', () => {
     const kahn = new KahnAlgorithm(1)
     expect(kahn.sort()).toEqual([0])
   })
+
+  it('two nodes linear dependency', () => {
+    const kahn = new KahnAlgorithm(2)
+    kahn.addEdge(0, 1)
+    expect(kahn.sort()).toEqual([0, 1])
+  })
 })
