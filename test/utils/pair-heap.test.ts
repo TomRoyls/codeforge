@@ -162,4 +162,9 @@ describe('PairHeap', () => {
     h.push(7)
     expect(h.pop()).toBe(3)
   })
+
+  it('empty heap pop returns undefined', () => {
+    const h = new PairHeap<number>()
+    expect(h.pop()).toBeUndefined()
+  })
 })

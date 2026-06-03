@@ -116,4 +116,9 @@ describe('PalindromeTree', () => {
     const pt = new PalindromeTree('aa')
     expect(pt.getPalindromeLengths().length).toBe(2)
   })
+
+  it('empty string has zero palindromes', () => {
+    const pt = new PalindromeTree('')
+    expect(pt.getPalindromeLengths().length).toBe(0)
+  })
 })
