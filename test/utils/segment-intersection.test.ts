@@ -128,4 +128,10 @@ describe('pointToSegmentDistance', () => {
     const s2 = { a: { x: 0, y: 1 }, b: { x: 1, y: 1 } }
     expect(segmentsIntersect(s1, s2)).toBe(false)
   })
+
+  it('collinear overlapping segments intersect', () => {
+    const s1 = { a: { x: 0, y: 0 }, b: { x: 2, y: 0 } }
+    const s2 = { a: { x: 1, y: 0 }, b: { x: 3, y: 0 } }
+    expect(segmentsIntersect(s1, s2)).toBe(true)
+  })
 })

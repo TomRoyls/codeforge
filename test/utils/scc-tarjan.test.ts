@@ -177,4 +177,10 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(1)
   })
+
+  it('no edges each node is own SCC', () => {
+    const scc = new SCCTarjan(3)
+    const comps = scc.solve()
+    expect(comps.length).toBe(3)
+  })
 })
