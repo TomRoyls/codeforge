@@ -137,4 +137,11 @@ describe('ChineseRemainderTheorem', () => {
     expect(result).not.toBeNull()
     expect(result!.remainder % 7).toBe(3)
   })
+
+  it('solve with two congruences', () => {
+    const result = ChineseRemainderTheorem.solve([2, 3], [3, 5])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 3).toBe(2)
+    expect(result!.remainder % 5).toBe(3)
+  })
 })
