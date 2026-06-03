@@ -186,4 +186,10 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [1, 0])
     expect(Array.isArray(path)).toBe(true)
   })
+
+  it('solve same start and end returns path', () => {
+    const maze = new TremauxMaze()
+    const path = maze.solve([0, 0], [0, 0])
+    expect(Array.isArray(path)).toBe(true)
+  })
 })

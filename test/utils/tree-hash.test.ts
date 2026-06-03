@@ -191,4 +191,11 @@ describe('TreeHash', () => {
     const h = th.rootedHash(0)
     expect(typeof h).toBe('bigint')
   })
+
+  it('single node has consistent hash', () => {
+    const th = new TreeHash(1)
+    const h1 = th.rootedHash(0)
+    const h2 = th.rootedHash(0)
+    expect(h1).toBe(h2)
+  })
 })

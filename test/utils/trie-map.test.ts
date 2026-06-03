@@ -164,4 +164,10 @@ describe('TrieMap', () => {
     const trie = new TrieMap<number>()
     expect(trie.has('xyz')).toBe(false)
   })
+
+  it('set and get roundtrip', () => {
+    const trie = new TrieMap<number>()
+    trie.set('abc', 42)
+    expect(trie.get('abc')).toBe(42)
+  })
 })

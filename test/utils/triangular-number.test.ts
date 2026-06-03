@@ -108,4 +108,8 @@ describe('TriangularNumber', () => {
   it('nth(1) returns 1', () => {
     expect(TriangularNumber.nth(1)).toBe(1)
   })
+
+  it('nth(0) returns 0', () => {
+    expect(TriangularNumber.nth(0)).toBe(0)
+  })
 })
