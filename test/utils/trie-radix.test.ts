@@ -162,4 +162,10 @@ describe('TrieRadix', () => {
     trie.insert('hello')
     expect(trie.startsWith('hel')).toBe(true)
   })
+
+  it('startsWith returns false for absent prefix', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello')
+    expect(trie.startsWith('xyz')).toBe(false)
+  })
 })

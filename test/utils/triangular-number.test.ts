@@ -104,4 +104,8 @@ describe('TriangularNumber', () => {
   it('nth(3) returns 6', () => {
     expect(TriangularNumber.nth(3)).toBe(6)
   })
+
+  it('nth(1) returns 1', () => {
+    expect(TriangularNumber.nth(1)).toBe(1)
+  })
 })

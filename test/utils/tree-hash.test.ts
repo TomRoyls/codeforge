@@ -184,4 +184,11 @@ describe('TreeHash', () => {
     const h = th.rootedHash(0)
     expect(typeof h).toBe('bigint')
   })
+
+  it('two node tree gives valid hash', () => {
+    const th = new TreeHash(2)
+    th.addEdge(0, 1)
+    const h = th.rootedHash(0)
+    expect(typeof h).toBe('bigint')
+  })
 })

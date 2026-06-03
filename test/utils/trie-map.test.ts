@@ -159,4 +159,9 @@ describe('TrieMap', () => {
     trie.set('abc', 42)
     expect(trie.has('abc')).toBe(true)
   })
+
+  it('has returns false for missing key', () => {
+    const trie = new TrieMap<number>()
+    expect(trie.has('xyz')).toBe(false)
+  })
 })
