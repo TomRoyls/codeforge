@@ -145,4 +145,10 @@ describe('BridgeFinder', () => {
     const bf = new BridgeFinder(adj)
     expect(bf.bridges.length).toBe(2)
   })
+
+  it('cycle has no bridges', () => {
+    const adj = [[1], [0, 2], [1, 0]]
+    const bf = new BridgeFinder(adj)
+    expect(bf.bridges.length).toBe(0)
+  })
 })

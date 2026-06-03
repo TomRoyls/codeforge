@@ -205,4 +205,10 @@ describe('BTree height', () => {
     tree.insert(2, 20)
     expect(tree.size).toBe(2)
   })
+
+  it('find returns value for existing key', () => {
+    const tree = new BTree<number, number>()
+    tree.insert(5, 50)
+    expect(tree.find(5)).toBe(50)
+  })
 })

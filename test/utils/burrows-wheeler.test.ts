@@ -145,4 +145,10 @@ describe('BurrowsWheelerTransform', () => {
     expect(typeof transformed.data).toBe('string')
     expect(typeof transformed.index).toBe('number')
   })
+
+  it('transform of single char', () => {
+    const transformed = BurrowsWheelerTransform.transform('a')
+    expect(transformed.data).toBe('a')
+    expect(transformed.index).toBe(0)
+  })
 })
