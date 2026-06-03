@@ -143,4 +143,11 @@ describe('FenwickTree2D', () => {
     tree.update(1, 1, 5);
     expect(tree.query(1, 1)).toBe(5);
   });
+
+  it('query prefix sum includes updates', () => {
+    const tree = new FenwickTree2D(3, 3);
+    tree.update(1, 1, 5);
+    tree.update(2, 2, 3);
+    expect(tree.query(2, 2)).toBe(8);
+  });
 });

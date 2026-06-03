@@ -149,4 +149,10 @@ describe('ExponentialCounter', () => {
     const counter = new ExponentialCounter()
     expect(counter.approximate).toBe(0)
   })
+
+  it('increment increases approximate', () => {
+    const counter = new ExponentialCounter()
+    counter.increment()
+    expect(counter.approximate).toBeGreaterThan(0)
+  })
 })
