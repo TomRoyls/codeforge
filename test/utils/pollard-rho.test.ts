@@ -102,4 +102,9 @@ describe('PollardRho', () => {
     const factors = PollardRho.factorize(4n)
     expect(factors.sort()).toEqual([2n, 2n])
   })
+
+  it('factorize prime returns itself', () => {
+    const factors = PollardRho.factorize(7n)
+    expect(factors).toEqual([7n])
+  })
 })

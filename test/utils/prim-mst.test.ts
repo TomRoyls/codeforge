@@ -169,4 +169,10 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.totalWeight).toBe(5)
   })
+
+  it('no edges yields zero weight', () => {
+    const mst = new PrimMST(3)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(0)
+  })
 })

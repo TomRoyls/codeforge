@@ -92,4 +92,8 @@ describe('PrefixFunction', () => {
   it('compute for repeated char', () => {
     expect(PrefixFunction.compute('aaa')).toEqual([0, 1, 2])
   })
+
+  it('compute for empty string', () => {
+    expect(PrefixFunction.compute('')).toEqual([])
+  })
 })
