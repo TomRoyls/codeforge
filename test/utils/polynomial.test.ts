@@ -114,4 +114,9 @@ describe('Polynomial', () => {
     const p = new Polynomial([5])
     expect(p.evaluate(100)).toBe(5)
   })
+
+  it('linear polynomial evaluates correctly', () => {
+    const p = new Polynomial([3, 2])
+    expect(p.evaluate(4)).toBe(11)
+  })
 })

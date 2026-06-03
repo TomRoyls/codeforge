@@ -102,4 +102,10 @@ describe('PolynomialRollingHash', () => {
     const h2 = PolynomialRollingHash.hash('test')
     expect(h1).toBe(h2)
   })
+
+  it('different strings have different hashes', () => {
+    const h1 = PolynomialRollingHash.hash('abc')
+    const h2 = PolynomialRollingHash.hash('xyz')
+    expect(h1).not.toBe(h2)
+  })
 })

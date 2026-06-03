@@ -97,4 +97,9 @@ describe('PollardRho', () => {
     const factors = PollardRho.factorize(7n)
     expect(factors).toEqual([7n])
   })
+
+  it('factorize 4 returns two 2s', () => {
+    const factors = PollardRho.factorize(4n)
+    expect(factors.sort()).toEqual([2n, 2n])
+  })
 })
