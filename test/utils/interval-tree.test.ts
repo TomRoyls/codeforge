@@ -177,4 +177,10 @@ describe('IntervalTree additional', () => {
     tree.insert({ start: 5, end: 15 }, 'b')
     expect(tree.query(7).length).toBe(2)
   })
+
+  it('query outside all intervals is empty', () => {
+    const tree = new IntervalTree<string>()
+    tree.insert({ start: 0, end: 10 }, 'a')
+    expect(tree.query(20).length).toBe(0)
+  })
 })

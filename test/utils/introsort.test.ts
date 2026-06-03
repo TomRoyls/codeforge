@@ -94,4 +94,8 @@ describe('Introsort', () => {
   it('handles reverse sorted', () => {
     expect(Introsort.sort([3, 2, 1])).toEqual([1, 2, 3])
   })
+
+  it('handles single element', () => {
+    expect(Introsort.sort([42])).toEqual([42])
+  })
 })

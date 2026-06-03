@@ -173,4 +173,13 @@ describe('greedyIntervalSchedule', () => {
     const result = greedyIntervalSchedule([{ start: 0, end: 5 }])
     expect(result.length).toBe(1)
   })
+
+  it('overlapping picks earliest end', () => {
+    const result = greedyIntervalSchedule([
+      { start: 0, end: 10 },
+      { start: 5, end: 7 },
+    ])
+    expect(result.length).toBe(1)
+    expect(result[0]!.end).toBe(7)
+  })
 })
