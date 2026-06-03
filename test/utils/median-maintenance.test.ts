@@ -160,4 +160,12 @@ describe('MedianMaintenance', () => {
     mm.add(20)
     expect(mm.getMedian()).toBe(10)
   })
+
+  it('odd count returns middle', () => {
+    const mm = new MedianMaintenance()
+    mm.add(5)
+    mm.add(1)
+    mm.add(9)
+    expect(mm.getMedian()).toBe(5)
+  })
 })

@@ -154,4 +154,10 @@ describe('MergeSortedIterators', () => {
     const merger = new MergeSortedIterators([it1, it2])
     expect(merger.toArray()).toEqual([])
   })
+
+  it('single iterator returns its values', () => {
+    const it1 = [1, 2, 3][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1])
+    expect(merger.toArray()).toEqual([1, 2, 3])
+  })
 })

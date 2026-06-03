@@ -20,13 +20,18 @@ describe('memoize', () => {
     expect(calls).toBe(2)
   })
 
-  it('handles no arguments', () => {
+  it('memoize caches undefined result', () => {
     let calls = 0
-    const fn = memoize(() => { calls++; return 42 })
-    fn()
-    fn()
+    const fn = memoize((x: number): number | undefined => {
+      calls++
+      void x
+      return undefined
+    })
+    fn(1)
+    fn(1)
     expect(calls).toBe(1)
   })
+})
 
   it('handles multiple arguments', () => {
     const fn = memoize((a: number, b: number) => a + b)
