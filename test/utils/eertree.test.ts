@@ -118,4 +118,9 @@ describe('Eertree', () => {
     const tree = Eertree.build('')
     expect(tree.getPalindromes().length).toBe(0)
   })
+
+  it('single char has one palindrome', () => {
+    const tree = Eertree.build('a')
+    expect(tree.getPalindromes().length).toBe(1)
+  })
 })

@@ -121,4 +121,9 @@ describe('EliasCoding', () => {
     const encoded = EliasCoding.gammaEncode(3)
     expect(EliasCoding.gammaDecode(encoded).value).toBe(3)
   })
+
+  it('delta roundtrip for 5', () => {
+    const encoded = EliasCoding.deltaEncode(5)
+    expect(EliasCoding.deltaDecode(encoded).value).toBe(5)
+  })
 })

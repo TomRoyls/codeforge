@@ -99,4 +99,8 @@ describe('EditDistance', () => {
       expect(sim).toBeLessThan(1)
     })
   })
+
+  it('distance from empty string is length', () => {
+    expect(EditDistance.levenshtein('', 'abc')).toBe(3)
+  })
 })
