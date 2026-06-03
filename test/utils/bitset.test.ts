@@ -165,4 +165,13 @@ describe('Bitset', () => {
     bs.clear(5)
     expect(bs.get(5)).toBe(false)
   })
+
+  it('set and get roundtrip for multiple bits', () => {
+    const bs = new Bitset(64)
+    bs.set(10)
+    bs.set(20)
+    expect(bs.get(10)).toBe(true)
+    expect(bs.get(20)).toBe(true)
+    expect(bs.get(15)).toBe(false)
+  })
 })

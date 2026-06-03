@@ -183,4 +183,11 @@ describe('BitmapIndex', () => {
     const results = index.query('unknown')
     expect(results.length).toBe(0)
   })
+
+  it('query matching tag returns document', () => {
+    const index = new BitmapIndex()
+    index.add('doc1', ['tag1'])
+    const results = index.query('tag1')
+    expect(results).toContain('doc1')
+  })
 })

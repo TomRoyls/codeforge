@@ -228,4 +228,9 @@ describe('BloomFilter3', () => {
     filter.add('hello')
     expect(filter.has('hello')).toBe(true)
   })
+
+  it('has returns false for non-added item', () => {
+    const filter = new BloomFilter3(100)
+    expect(filter.has('world')).toBe(false)
+  })
 })
