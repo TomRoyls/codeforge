@@ -154,4 +154,9 @@ describe('constants regex special chars', () => {
     expect(REGEX_SPECIAL_CHARS.has('[')).toBe(true)
     expect(REGEX_SPECIAL_CHARS.has('(')).toBe(true)
   })
+
+  it('includes asterisk and plus', () => {
+    expect(REGEX_SPECIAL_CHARS.has('*')).toBe(true)
+    expect(REGEX_SPECIAL_CHARS.has('+')).toBe(true)
+  })
 })

@@ -194,4 +194,12 @@ describe('ConsistentHash edge cases', () => {
     ch.removeNode('a')
     expect(ch.getNode).toBeDefined()
   })
+
+  it('getNode returns a valid node', () => {
+    const ch = new ConsistentHash<string>()
+    ch.addNode('a')
+    ch.addNode('b')
+    const node = ch.getNode('test-key')
+    expect(['a', 'b']).toContain(node)
+  })
 })

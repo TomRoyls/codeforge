@@ -167,4 +167,10 @@ describe('ConsistentHashRing', () => {
     ring.addNode('b')
     expect(ring.getNode).toBeDefined()
   })
+
+  it('getNode returns a node', () => {
+    const ring = new ConsistentHashRing<string>(['a', 'b', 'c'])
+    const node = ring.getNode('some-key')
+    expect(['a', 'b', 'c']).toContain(node)
+  })
 })

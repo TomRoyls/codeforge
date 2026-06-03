@@ -189,4 +189,9 @@ describe('ConcurrentHashMap', () => {
     map.delete('key')
     expect(map.has('key')).toBe(false)
   })
+
+  it('get returns undefined for missing key', () => {
+    const map = new ConcurrentHashMap<string, number>()
+    expect(map.get('missing')).toBeUndefined()
+  })
 })
