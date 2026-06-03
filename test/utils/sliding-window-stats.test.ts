@@ -168,4 +168,11 @@ describe('SlidingWindowStats', () => {
     sw.push(3)
     expect(sw.count).toBe(3)
   })
+
+  it('mean computes correctly', () => {
+    const sw = new SlidingWindowStats(5)
+    sw.push(2)
+    sw.push(4)
+    expect(sw.mean).toBe(3)
+  })
 })

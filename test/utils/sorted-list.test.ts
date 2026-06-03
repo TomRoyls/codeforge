@@ -167,4 +167,12 @@ describe('SortedList', () => {
     sl.insert('b')
     expect(sl.size).toBe(2)
   })
+
+  it('size tracks insertions', () => {
+    const sl = new SortedList<number>()
+    sl.insert(5)
+    sl.insert(3)
+    sl.insert(7)
+    expect(sl.size).toBe(3)
+  })
 })

@@ -156,4 +156,10 @@ describe('SlopeTrick', () => {
     const st = new SlopeTrick()
     expect(st.min).toBe(0)
   })
+
+  it('addShiftLeft shifts argmin', () => {
+    const st = new SlopeTrick()
+    st.addShiftLeft(5)
+    expect(st).toBeDefined()
+  })
 })

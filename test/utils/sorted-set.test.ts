@@ -217,4 +217,10 @@ describe('SortedSet', () => {
     set.add({ id: 2 })
     expect(set.size).toBe(2)
   })
+
+  it('has returns false for missing item', () => {
+    const set = new SortedSet<{ id: number }>((a, b) => a.id - b.id)
+    set.add({ id: 1 })
+    expect(set.has({ id: 99 })).toBe(false)
+  })
 })
