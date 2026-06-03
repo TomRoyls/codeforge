@@ -164,4 +164,11 @@ describe('BiMap', () => {
     bm.set('b', 2)
     expect(bm.size).toBe(2)
   })
+
+  it('clear empties the map', () => {
+    const bm = new BiMap<string, number>()
+    bm.set('a', 1)
+    bm.clear()
+    expect(bm.size).toBe(0)
+  })
 })

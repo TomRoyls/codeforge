@@ -113,4 +113,8 @@ describe('BigIntUtils', () => {
   it('gcd of 12n and 8n is 4n', () => {
     expect(BigIntUtils.gcd(12n, 8n)).toBe(4n)
   })
+
+  it('lcm of 4n and 6n is 12n', () => {
+    expect(BigIntUtils.lcm(4n, 6n)).toBe(12n)
+  })
 })

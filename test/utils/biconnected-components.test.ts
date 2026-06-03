@@ -191,4 +191,13 @@ describe('BiconnectedComponents', () => {
     const comps = bc.findComponents()
     expect(comps.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('triangle has one biconnected component', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 0)
+    const comps = bc.findComponents()
+    expect(comps.length).toBeGreaterThanOrEqual(1)
+  })
 })
