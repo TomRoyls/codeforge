@@ -165,4 +165,9 @@ describe('KdTree', () => {
     const nearest = tree.nearest([0, 0], 2)
     expect(nearest.length).toBe(2)
   })
+
+  it('empty tree nearest returns empty', () => {
+    const tree = new KdTree(2)
+    expect(tree.nearest([0, 0], 1)).toEqual([])
+  })
 })

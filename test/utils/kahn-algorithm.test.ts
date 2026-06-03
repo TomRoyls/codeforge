@@ -152,4 +152,9 @@ describe('KahnAlgorithm', () => {
     kahn.addEdge(1, 2)
     expect(kahn.sort()).toEqual([0, 1, 2])
   })
+
+  it('single node sorts to itself', () => {
+    const kahn = new KahnAlgorithm(1)
+    expect(kahn.sort()).toEqual([0])
+  })
 })

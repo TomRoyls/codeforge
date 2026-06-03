@@ -90,4 +90,8 @@ describe('Introsort', () => {
   it('handles already sorted', () => {
     expect(Introsort.sort([1, 2, 3])).toEqual([1, 2, 3])
   })
+
+  it('handles reverse sorted', () => {
+    expect(Introsort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  })
 })
