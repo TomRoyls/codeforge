@@ -158,4 +158,10 @@ describe('MarkovChain', () => {
     const result = mc.next('a')
     expect(result).toBe('b')
   })
+
+  it('no transition returns null', () => {
+    const mc = new MarkovChain<string>()
+    const result = mc.next('unknown')
+    expect(result).toBeNull()
+  })
 })

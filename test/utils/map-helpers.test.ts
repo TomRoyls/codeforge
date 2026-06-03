@@ -152,4 +152,11 @@ describe('append', () => {
     increment(map, 'a')
     expect(map.get('a')).toBe(2)
   })
+
+  it('append adds to array', () => {
+    const map = new Map<string, number[]>()
+    append(map, 'a', 1)
+    append(map, 'a', 2)
+    expect(map.get('a')).toEqual([1, 2])
+  })
 })

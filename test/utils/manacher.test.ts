@@ -128,4 +128,9 @@ describe('Manacher', () => {
     const m = new Manacher('aa')
     expect(m.longestPalindrome().length).toBe(2)
   })
+
+  it('single char has palindrome length 1', () => {
+    const m = new Manacher('a')
+    expect(m.longestPalindrome().length).toBe(1)
+  })
 })

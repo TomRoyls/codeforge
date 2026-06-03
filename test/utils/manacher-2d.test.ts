@@ -160,4 +160,10 @@ describe('Manacher2D', () => {
     const result = Manacher2D.longestPalindromicSubgrid(grid)
     expect(result.len).toBe(1)
   })
+
+  it('2x2 same char has at least 1', () => {
+    const grid = [['a', 'a'], ['a', 'a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
 })
