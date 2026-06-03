@@ -135,4 +135,8 @@ describe('RadixSort', () => {
   it('handles single element', () => {
     expect(RadixSort.sort([42])).toEqual([42])
   })
+
+  it('handles empty array', () => {
+    expect(RadixSort.sort([])).toEqual([])
+  })
 })

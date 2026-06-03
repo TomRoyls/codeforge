@@ -171,4 +171,9 @@ describe('RadixHeap', () => {
     h.push(2)
     expect(h.pop()).toBe(1)
   })
+
+  it('pop from empty returns undefined', () => {
+    const h = new RadixHeap()
+    expect(h.pop()).toBeUndefined()
+  })
 })
