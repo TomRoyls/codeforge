@@ -145,4 +145,9 @@ describe('LiChaoTree', () => {
     expect(tree.query(0)).toBe(10)
     expect(tree.query(10)).toBe(10)
   })
+
+  it('empty tree query returns -Infinity', () => {
+    const tree = new LiChaoTree()
+    expect(tree.query(5)).toBe(-Infinity)
+  })
 })

@@ -106,4 +106,8 @@ describe('LongestIncreasingSubsequence', () => {
   it('find for already sorted returns all', () => {
     expect(LongestIncreasingSubsequence.find([1, 2, 3])).toEqual([1, 2, 3])
   })
+
+  it('find for decreasing returns last element', () => {
+    expect(LongestIncreasingSubsequence.find([3, 2, 1])).toEqual([1])
+  })
 })

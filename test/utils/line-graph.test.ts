@@ -157,4 +157,11 @@ describe('LineGraph', () => {
     const adj = lg.build()
     expect(adj.length).toBe(0)
   })
+
+  it('single edge line graph has one node', () => {
+    const lg = new LineGraph(2)
+    lg.addEdge(0, 1)
+    const adj = lg.build()
+    expect(adj.length).toBe(1)
+  })
 })

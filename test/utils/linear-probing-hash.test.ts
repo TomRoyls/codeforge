@@ -157,4 +157,9 @@ describe('LinearProbingHashTable', () => {
     ht.delete('a')
     expect(ht.has('a')).toBe(false)
   })
+
+  it('get returns undefined for missing key', () => {
+    const ht = new LinearProbingHashTable<string, number>(16)
+    expect(ht.get('missing')).toBeUndefined()
+  })
 })
