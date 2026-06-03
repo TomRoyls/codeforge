@@ -122,4 +122,10 @@ describe('VByte', () => {
     const { values: decoded } = VByte.decodeMany(encoded)
     expect(decoded).toEqual([1, 128, 300])
   })
+
+  it('encode decode single value', () => {
+    const encoded = VByte.encode(42)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(42)
+  })
 })

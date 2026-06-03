@@ -167,4 +167,11 @@ describe('VirtualTree', () => {
     const vt = new VirtualTree(5)
     expect(vt).toBeDefined()
   })
+
+  it('build returns vtree object', () => {
+    const vt = new VirtualTree(3)
+    vt.addEdge(0, 1)
+    const { vtree } = vt.build([0, 1])
+    expect(vtree).toBeDefined()
+  })
 })

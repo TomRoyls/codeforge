@@ -182,4 +182,11 @@ describe('UndoDisjointSet', () => {
     dsu.union(0, 1)
     expect(dsu.find(0)).toBe(dsu.find(1))
   })
+
+  it('undo reverts last union', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    dsu.undo()
+    expect(dsu.find(0)).not.toBe(dsu.find(1))
+  })
 })
