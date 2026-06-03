@@ -127,4 +127,10 @@ describe('fromThrowable', () => {
     })
     expect(r.isErr()).toBe(true)
   })
+
+  it('ok maps value', () => {
+    const r = ok(5)
+    const mapped = r.map((x: number) => x * 2)
+    expect(mapped.isOk()).toBe(true)
+  })
 })

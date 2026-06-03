@@ -182,4 +182,9 @@ describe('ReservoirSampler', () => {
     for (let i = 0; i < 100; i++) sampler.add(i)
     expect(sampler.sample.length).toBeLessThanOrEqual(2)
   })
+
+  it('empty sampler has no samples', () => {
+    const sampler = new ReservoirSampler<number>(5)
+    expect(sampler.sample).toEqual([])
+  })
 })
