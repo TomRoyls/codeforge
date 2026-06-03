@@ -223,4 +223,10 @@ describe('SortedSet', () => {
     set.add({ id: 1 })
     expect(set.has({ id: 99 })).toBe(false)
   })
+
+  it('has returns true for existing element', () => {
+    const set = new SortedSet<{ id: number }>((a, b) => a.id - b.id)
+    set.add({ id: 5 })
+    expect(set.has({ id: 5 })).toBe(true)
+  })
 })

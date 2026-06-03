@@ -175,4 +175,12 @@ describe('SortedList', () => {
     sl.insert(7)
     expect(sl.size).toBe(3)
   })
+
+  it('get returns element at index', () => {
+    const sl = new SortedList<number>()
+    sl.insert(3)
+    sl.insert(1)
+    sl.insert(2)
+    expect(sl.get(0)).toBe(1)
+  })
 })

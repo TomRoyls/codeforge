@@ -173,4 +173,9 @@ describe('SparseBitSet - iteration', () => {
     bs.set(42)
     expect(bs.has(42)).toBe(true)
   })
+
+  it('has returns false for unset bit', () => {
+    const bs = new SparseBitSet()
+    expect(bs.has(0)).toBe(false)
+  })
 })

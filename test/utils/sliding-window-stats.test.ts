@@ -175,4 +175,12 @@ describe('SlidingWindowStats', () => {
     sw.push(4)
     expect(sw.mean).toBe(3)
   })
+
+  it('variance is non-negative', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(1)
+    sw.push(2)
+    sw.push(3)
+    expect(sw.variance).toBeGreaterThanOrEqual(0)
+  })
 })
