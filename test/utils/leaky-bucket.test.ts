@@ -154,4 +154,9 @@ describe('LeakyBucket', () => {
     const bucket = new LeakyBucket(5, 1000)
     expect(bucket.pour(10)).toBe(false)
   })
+
+  it('exact capacity returns true', () => {
+    const bucket = new LeakyBucket(5, 1000)
+    expect(bucket.pour(5)).toBe(true)
+  })
 })

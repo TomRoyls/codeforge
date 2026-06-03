@@ -99,4 +99,8 @@ describe('LCS', () => {
   it('length of empty strings is 0', () => {
     expect(LCS.length('', '')).toBe(0)
   })
+
+  it('length of abc and abc is 3', () => {
+    expect(LCS.length('abc', 'abc')).toBe(3)
+  })
 })

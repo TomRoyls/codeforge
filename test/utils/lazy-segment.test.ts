@@ -138,4 +138,9 @@ describe('LazySegmentTree', () => {
     st.updateRange(1, 1, 10)
     expect(st.queryRange(1, 1)).toBe(10)
   })
+
+  it('query on unmodified tree returns 0', () => {
+    const st = new LazySegmentTree(5)
+    expect(st.queryRange(0, 4)).toBe(0)
+  })
 })
