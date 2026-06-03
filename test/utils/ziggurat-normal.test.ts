@@ -174,4 +174,10 @@ describe('ZigguratNormal', () => {
     }
     expect(max - min).toBeLessThan(20)
   })
+
+  it('sample returns finite number', () => {
+    const z = new ZigguratNormal()
+    const v = z.sample()
+    expect(Number.isFinite(v)).toBe(true)
+  })
 })

@@ -137,4 +137,11 @@ describe('ZobristHashing', () => {
     const s2 = new Map([['b', 1]])
     expect(z.hash(s1)).not.toBe(z.hash(s2))
   })
+
+  it('hash of empty set is consistent', () => {
+    const z = new ZobristHashing<string>()
+    const h1 = z.hash(new Map())
+    const h2 = z.hash(new Map())
+    expect(h1).toBe(h2)
+  })
 })
