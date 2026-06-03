@@ -188,4 +188,10 @@ describe('CentroidDecomposition', () => {
     const { parent } = cd.decompose()
     expect(parent.length).toBe(3)
   })
+
+  it('single node decompose', () => {
+    const cd = new CentroidDecomposition(1)
+    const { parent } = cd.decompose()
+    expect(parent.length).toBe(1)
+  })
 })
