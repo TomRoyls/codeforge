@@ -132,4 +132,11 @@ describe('CycleSort', () => {
     const swaps = CycleSort.sortInPlace(arr)
     expect(swaps).toBe(0)
   })
+
+  it('handles single element', () => {
+    const arr = [42]
+    const swaps = CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([42])
+    expect(swaps).toBe(0)
+  })
 })

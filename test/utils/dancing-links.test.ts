@@ -211,4 +211,9 @@ describe('DancingLinks', () => {
     const solutions = dlx.solve()
     expect(solutions).toEqual([])
   })
+
+  it('constructor creates instance', () => {
+    const dlx = new DancingLinks(0, 0)
+    expect(dlx).toBeDefined()
+  })
 })
