@@ -128,4 +128,9 @@ describe('path-utils', () => {
   it('resolvePath returns string', () => {
     expect(typeof resolvePath('.')).toBe('string')
   })
+
+  it('resolvePath with absolute stays absolute', () => {
+    const result = resolvePath('/foo/bar')
+    expect(result).toBe('/foo/bar')
+  })
 })

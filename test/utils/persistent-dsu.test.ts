@@ -161,4 +161,15 @@ describe('PersistentDSU', () => {
     expect(dsu.connected(0, 1)).toBe(true);
     expect(dsu.connected(1, 2)).toBe(false);
   });
+
+  it('snapshot preserves state', () => {
+    const dsu = new PersistentDSU(3);
+    dsu.union(0, 1);
+    const snap = dsu.snapshot();
+    dsu.union(1, 2);
+    expect(dsu.connected(0, 2)).toBe(true);
+    dsu.rollback(snap);
+    expect(dsu.connected(0, 1)).toBe(true);
+    expect(dsu.connected(0, 2)).toBe(false);
+  });
 });
