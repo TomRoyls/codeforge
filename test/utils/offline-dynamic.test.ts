@@ -159,4 +159,10 @@ describe('OfflineDynamicConnectivity', () => {
     const odc = new OfflineDynamicConnectivity(5)
     expect(odc).toBeDefined()
   })
+
+  it('addEdge and hasEdge', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1)
+    expect(odc).toBeDefined()
+  })
 })

@@ -115,4 +115,9 @@ describe('NTT', () => {
     expect(result[0]).toBe(1n)
     expect(result[2]).toBe(1n)
   })
+
+  it('multiplyPolynomials with zero', () => {
+    const result = NTT.multiplyPolynomials([0n], [1n, 2n])
+    expect(result[0]).toBe(0n)
+  })
 })
