@@ -199,4 +199,10 @@ describe('DifferenceArray', () => {
     expect(result[2]).toBe(7)
     expect(result[3]).toBe(0)
   })
+
+  it('rangeAdd with zero does nothing', () => {
+    const da = new DifferenceArray(3)
+    da.rangeAdd(0, 2, 0)
+    expect(da.get(0)).toBe(0)
+  })
 })

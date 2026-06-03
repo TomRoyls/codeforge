@@ -184,4 +184,11 @@ describe('DifferenceArray2D', () => {
     const grid = da.buildGrid()
     expect(grid[0]![0]).toBe(8)
   })
+
+  it('add single cell increments value', () => {
+    const da = new DifferenceArray2D(2, 2)
+    da.add(0, 0, 0, 0, 5)
+    const grid = da.buildGrid()
+    expect(grid[0]![0]).toBe(5)
+  })
 })

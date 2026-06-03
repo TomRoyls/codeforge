@@ -111,4 +111,8 @@ describe('DigitSum', () => {
   it('isHappy 1 is happy', () => {
     expect(DigitSum.isHappy(1)).toBe(true)
   })
+
+  it('digitalRoot of 123 is 6', () => {
+    expect(DigitSum.digitalRoot(123)).toBe(6)
+  })
 })
