@@ -103,4 +103,8 @@ describe('DigitSum', () => {
   it('isHappy 7 is happy', () => {
     expect(DigitSum.isHappy(7)).toBe(true)
   })
+
+  it('isHappy 4 is not happy', () => {
+    expect(DigitSum.isHappy(4)).toBe(false)
+  })
 })

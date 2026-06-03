@@ -173,4 +173,10 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
     expect(dist[1]).toBe(5)
   })
+
+  it('unreachable node has Infinity distance', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[2]).toBe(Infinity)
+  })
 })

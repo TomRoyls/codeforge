@@ -183,4 +183,11 @@ describe('DifferenceArray', () => {
     const result = da.toArray()
     expect(result).toEqual([7, 7, 7, 7, 7])
   })
+
+  it('rangeAdd 0 length does nothing', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(2, 1, 10)
+    const result = da.toArray()
+    expect(result).toEqual([0, 0, 0, 0, 0])
+  })
 })
