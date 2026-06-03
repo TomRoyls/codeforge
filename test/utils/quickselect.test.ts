@@ -101,4 +101,8 @@ describe('QuickSelect', () => {
   it('select finds maximum', () => {
     expect(QuickSelect.select([5, 3, 1, 4, 2], 4)).toBe(5)
   })
+
+  it('select on single element', () => {
+    expect(QuickSelect.select([42], 0)).toBe(42)
+  })
 })

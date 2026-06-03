@@ -164,4 +164,10 @@ describe('Quadtree', () => {
     const results = q.query({ x: 200, y: 200, w: 10, h: 10 })
     expect(results.length).toBe(0)
   })
+
+  it('query on empty tree returns empty', () => {
+    const q = new Quadtree<string>({ x: 0, y: 0, w: 100, h: 100 })
+    const results = q.query({ x: 0, y: 0, w: 100, h: 100 })
+    expect(results.length).toBe(0)
+  })
 })

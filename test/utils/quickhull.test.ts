@@ -126,4 +126,9 @@ describe('Quickhull', () => {
     const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 10, y: 0 }])
     expect(hull.length).toBe(2)
   })
+
+  it('three non-collinear points returns all', () => {
+    const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 5 }])
+    expect(hull.length).toBe(3)
+  })
 })

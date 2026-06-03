@@ -224,4 +224,10 @@ describe('QuadTree', () => {
     const result = qt.queryRange({ x: 0, y: 0, width: 100, height: 100 });
     expect(result[0].data).toBe('center');
   });
+
+  it('queryRange on empty returns empty', () => {
+    const qt = new QuadTree<string>({ x: 0, y: 0, width: 100, height: 100 });
+    const result = qt.queryRange({ x: 0, y: 0, width: 100, height: 100 });
+    expect(result.length).toBe(0);
+  });
 });
