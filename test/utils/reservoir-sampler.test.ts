@@ -176,4 +176,10 @@ describe('ReservoirSampler', () => {
     const sampler = new ReservoirSampler<number>(3)
     expect(sampler.sample).toEqual([])
   })
+
+  it('sample size limited to reservoir size', () => {
+    const sampler = new ReservoirSampler<number>(2)
+    for (let i = 0; i < 100; i++) sampler.add(i)
+    expect(sampler.sample.length).toBeLessThanOrEqual(2)
+  })
 })
