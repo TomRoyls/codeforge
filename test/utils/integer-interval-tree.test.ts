@@ -166,4 +166,12 @@ describe('IntegerIntervalTree', () => {
     tree.insert(0, 5, 'hello')
     expect(tree.queryPoint(10)).toEqual([])
   })
+
+  it('queryPoint inside interval returns entry', () => {
+    const tree = new IntegerIntervalTree<string>()
+    tree.insert(0, 10, 'data')
+    const result = tree.queryPoint(5)
+    expect(result.length).toBe(1)
+    expect(result[0]!.value).toBe('data')
+  })
 })

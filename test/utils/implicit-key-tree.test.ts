@@ -158,4 +158,12 @@ describe('ImplicitKeyTree', () => {
     t.insert(5)
     expect(t.toArray().length).toBe(1)
   })
+
+  it('insert at index and get', () => {
+    const t = new ImplicitKeyTree<number>()
+    t.insert(0, 10)
+    t.insert(1, 20)
+    expect(t.get(0)).toBe(10)
+    expect(t.get(1)).toBe(20)
+  })
 })

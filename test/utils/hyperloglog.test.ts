@@ -179,4 +179,13 @@ describe('HyperLogLog', () => {
     hll.add('test')
     expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
+
+  it('merge combines cardinalities', () => {
+    const hll1 = new HyperLogLog()
+    const hll2 = new HyperLogLog()
+    hll1.add('a')
+    hll2.add('b')
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThanOrEqual(2)
+  })
 })
