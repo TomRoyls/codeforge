@@ -185,4 +185,13 @@ describe('ThreadPool', () => {
     const result = await pool.submit(async () => 42)
     expect(result.result).toBe(42)
   })
+
+  it('pool with multiple workers', async () => {
+    const pool = new ThreadPool(2)
+    const [r1, r2] = await Promise.all([
+      pool.submit(async () => 1),
+      pool.submit(async () => 2),
+    ])
+    expect(r1.result + r2.result).toBe(3)
+  })
 })

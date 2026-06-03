@@ -127,4 +127,9 @@ describe('TimSort.stable', () => {
     const result = TimSort.stable([{ value: 1 }], (x) => x.value)
     expect(result).toEqual([{ value: 1 }])
   })
+
+  it('handles empty array', () => {
+    const result = TimSort.stable([], (x: { value: number }) => x.value)
+    expect(result).toEqual([])
+  })
 })

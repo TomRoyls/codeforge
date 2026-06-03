@@ -164,4 +164,10 @@ describe('Timer - utility', () => {
     const timer = new Timer()
     expect(timer.elapsed()).toBeGreaterThanOrEqual(0)
   })
+
+  it('reset allows fresh measurement', () => {
+    const timer = new Timer()
+    timer.reset()
+    expect(timer.elapsed()).toBeGreaterThanOrEqual(0)
+  })
 })

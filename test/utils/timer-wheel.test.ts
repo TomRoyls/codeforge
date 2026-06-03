@@ -173,4 +173,12 @@ describe('TimerWheel', () => {
     const result = tw.advance()
     expect(result).toEqual([])
   })
+
+  it('schedule and advance fires callback', () => {
+    const tw = new TimerWheel(4)
+    const fired: string[] = []
+    tw.schedule('test', 0, () => fired.push('test'))
+    tw.advance()
+    expect(fired).toEqual(['test'])
+  })
 })
