@@ -179,4 +179,9 @@ describe('SkewHeap', () => {
     h.push(2)
     expect(h.pop()).toBe(1)
   })
+
+  it('pop from empty returns undefined', () => {
+    const h = new SkewHeap<number>()
+    expect(h.pop()).toBeUndefined()
+  })
 })

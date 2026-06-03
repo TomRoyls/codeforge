@@ -207,4 +207,9 @@ describe('SkipList stress', () => {
     sl.insert(1, 'a')
     expect(sl.contains(99)).toBe(false)
   })
+
+  it('contains on empty returns false', () => {
+    const sl = new SkipList<number>()
+    expect(sl.contains(1)).toBe(false)
+  })
 })

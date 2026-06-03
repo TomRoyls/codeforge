@@ -168,4 +168,9 @@ describe('SkipListMap', () => {
     sl.set(1, 'a')
     expect(sl.get(1)).toBe('a')
   })
+
+  it('get missing key returns undefined', () => {
+    const sl = new SkipListMap<number, string>()
+    expect(sl.get(99)).toBeUndefined()
+  })
 })
