@@ -187,4 +187,9 @@ describe('TimeSeriesBuffer', () => {
     tsb.push(1, 10)
     expect(tsb.size).toBe(1)
   })
+
+  it('empty buffer has size 0', () => {
+    const tsb = new TimeSeriesBuffer()
+    expect(tsb.size).toBe(0)
+  })
 })

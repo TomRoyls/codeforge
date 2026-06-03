@@ -159,4 +159,9 @@ describe('Timer - utility', () => {
     const timer = new Timer()
     expect(typeof timer.elapsed()).toBe('number')
   })
+
+  it('elapsed is non-negative', () => {
+    const timer = new Timer()
+    expect(timer.elapsed()).toBeGreaterThanOrEqual(0)
+  })
 })

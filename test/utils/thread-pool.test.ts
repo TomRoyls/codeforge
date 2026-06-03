@@ -179,4 +179,10 @@ describe('ThreadPool', () => {
     ])
     expect(results[0]!.result).toBe(10)
   })
+
+  it('handles single task submission', async () => {
+    const pool = new ThreadPool(1)
+    const result = await pool.submit(async () => 42)
+    expect(result.result).toBe(42)
+  })
 })
