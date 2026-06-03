@@ -164,4 +164,9 @@ describe('CuckooHashTable', () => {
     ht.set('x', 10)
     expect(ht.get('x')).toBe(10)
   })
+
+  it('has returns false for missing key', () => {
+    const ht = new CuckooHashTable<string, number>(16)
+    expect(ht.has('missing')).toBe(false)
+  })
 })

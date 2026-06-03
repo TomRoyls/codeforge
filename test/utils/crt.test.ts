@@ -131,4 +131,10 @@ describe('ChineseRemainderTheorem', () => {
     expect(result).not.toBeNull()
     expect(result!.remainder % 2).toBe(1)
   })
+
+  it('single modulus returns trivial solution', () => {
+    const result = ChineseRemainderTheorem.solve([3], [7])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 7).toBe(3)
+  })
 })

@@ -157,4 +157,9 @@ describe('CountMinSketch - edge cases', () => {
     cms.update('hello', 10)
     expect(cms.estimate('hello')).toBeGreaterThanOrEqual(10)
   })
+
+  it('estimate returns 0 for unseen item', () => {
+    const cms = new CountMinSketch({ width: 1000, depth: 5 })
+    expect(cms.estimate('never-seen')).toBe(0)
+  })
 })
