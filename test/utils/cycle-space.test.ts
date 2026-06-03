@@ -163,4 +163,11 @@ describe('CycleSpace', () => {
     const cs = new CycleSpace(1)
     expect(cs.cycleSpaceDimension()).toBe(0)
   })
+
+  it('tree has dimension 0', () => {
+    const cs = new CycleSpace(3)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    expect(cs.cycleSpaceDimension()).toBe(0)
+  })
 })

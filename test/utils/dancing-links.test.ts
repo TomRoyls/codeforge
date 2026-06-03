@@ -205,4 +205,10 @@ describe('DancingLinks', () => {
     const dlx = new DancingLinks(3, 3)
     expect(dlx).toBeDefined()
   })
+
+  it('solve returns empty for no rows', () => {
+    const dlx = new DancingLinks(3, 0)
+    const solutions = dlx.solve()
+    expect(solutions).toEqual([])
+  })
 })

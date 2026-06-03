@@ -158,4 +158,10 @@ describe('CuckooHashTable', () => {
     ht.delete('a')
     expect(ht.has('a')).toBe(false)
   })
+
+  it('get returns value for existing key', () => {
+    const ht = new CuckooHashTable<string, number>(16)
+    ht.set('x', 10)
+    expect(ht.get('x')).toBe(10)
+  })
 })
