@@ -150,4 +150,13 @@ describe('RollbackDSU', () => {
     dsu.union(0, 1)
     expect(dsu.find(0)).toBe(dsu.find(1))
   })
+
+  it('snapshot and rollback restores components', () => {
+    const dsu = new RollbackDSU(3)
+    const snap = dsu.snapshot()
+    dsu.union(0, 1)
+    expect(dsu.components).toBe(2)
+    dsu.rollback(snap)
+    expect(dsu.components).toBe(3)
+  })
 })

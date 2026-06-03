@@ -113,4 +113,8 @@ describe('RunLength2D', () => {
     expect(encoded.length).toBe(1)
     expect(encoded[0]).toEqual([{ value: 'x', count: 1 }])
   })
+
+  it('encode empty array returns empty', () => {
+    expect(RunLength2D.encode([])).toEqual([])
+  })
 })

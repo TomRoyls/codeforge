@@ -132,4 +132,10 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(42, 3)
   })
+
+  it('solve constant derivative returns linear', () => {
+    const result = RungeKutta.solve(() => 1, 0, 0, 5, 0.5)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(5, 3)
+  })
 })

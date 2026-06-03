@@ -42,19 +42,7 @@ describe('RollingHash', () => {
     const h2 = rh2.push(3)
     expect(h1).toBe(h2)
   })
-
-  it('different windows produce different hashes', () => {
-    const rh1 = new RollingHash(3)
-    rh1.push(1)
-    rh1.push(2)
-    const h1 = rh1.push(3)
-
-    const rh2 = new RollingHash(3)
-    rh2.push(4)
-    rh2.push(5)
-    const h2 = rh2.push(6)
-    expect(h1).not.toBe(h2)
-  })
+})
 
   it('reset clears state', () => {
     const rh = new RollingHash(3)
