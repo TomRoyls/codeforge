@@ -147,4 +147,9 @@ describe('SweepLine', () => {
     const result = SweepLine.closestPair([])
     expect(result).toBeNull()
   })
+
+  it('closestPair returns null for single point', () => {
+    const result = SweepLine.closestPair([{ x: 0, y: 0 }])
+    expect(result).toBeNull()
+  })
 })

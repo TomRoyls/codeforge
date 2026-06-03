@@ -153,4 +153,10 @@ describe('SuffixAutomatonLight', () => {
     sa.build('abcde')
     expect(sa.contains('cde')).toBe(true)
   })
+
+  it('contains returns false for non-substring', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abcde')
+    expect(sa.contains('xyz')).toBe(false)
+  })
 })

@@ -126,4 +126,10 @@ describe('RULE_SUGGESTIONS known rules', () => {
   it('RULE_SUGGESTIONS is non-empty', () => {
     expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(0)
   })
+
+  it('RULE_SUGGESTIONS has valid structure', () => {
+    const keys = Object.keys(RULE_SUGGESTIONS)
+    const first = RULE_SUGGESTIONS[keys[0]!]
+    expect(first).toBeDefined()
+  })
 })

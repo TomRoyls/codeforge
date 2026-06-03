@@ -141,4 +141,10 @@ describe('TarjanSCC', () => {
     const sccs = new TarjanSCC(adj).solve()
     expect(sccs.length).toBe(1)
   })
+
+  it('two node cycle has one SCC', () => {
+    const adj = [[1], [0]]
+    const sccs = new TarjanSCC(adj).solve()
+    expect(sccs.length).toBe(1)
+  })
 })
