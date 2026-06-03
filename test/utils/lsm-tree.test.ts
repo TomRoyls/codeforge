@@ -153,4 +153,10 @@ describe('LSMTree', () => {
     const tree = new LSMTree<string, string>()
     expect(tree.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const tree = new LSMTree<string, string>()
+    tree.set('key', 'value')
+    expect(tree.get('key')).toBe('value')
+  })
 })
