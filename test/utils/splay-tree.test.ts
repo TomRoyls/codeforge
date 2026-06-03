@@ -186,4 +186,10 @@ describe('SplayTree custom comparator', () => {
     const tree = new SplayTree<number, string>()
     expect(tree.find(99)).toBeUndefined()
   })
+
+  it('insert and find roundtrip', () => {
+    const tree = new SplayTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.find(1)).toBe('a')
+  })
 })

@@ -165,4 +165,11 @@ describe('SparseSet', () => {
     ss.remove(3)
     expect(ss.has(3)).toBe(false)
   })
+
+  it('size tracks elements', () => {
+    const ss = new SparseSet()
+    ss.add(1)
+    ss.add(2)
+    expect(ss.size).toBe(2)
+  })
 })

@@ -110,4 +110,9 @@ describe('SparseTableGCD', () => {
     const st = new SparseTableGCD([6, 9])
     expect(st.query(0, 1)).toBe(3)
   })
+
+  it('single element GCD is itself', () => {
+    const st = new SparseTableGCD([7])
+    expect(st.query(0, 0)).toBe(7)
+  })
 })
