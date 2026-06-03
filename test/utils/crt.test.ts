@@ -125,4 +125,10 @@ describe('ChineseRemainderTheorem', () => {
     expect(result!.remainder % 3).toBe(2)
     expect(result!.remainder % 5).toBe(3)
   })
+
+  it('solve with coprime moduli', () => {
+    const result = ChineseRemainderTheorem.solve([1, 1], [2, 3])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 2).toBe(1)
+  })
 })

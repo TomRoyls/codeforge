@@ -186,4 +186,9 @@ describe('CuckooFilter edge cases', () => {
     cf.insert('a')
     expect(cf.contains('a')).toBe(true)
   })
+
+  it('contains returns false for absent', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    expect(cf.contains('missing')).toBe(false)
+  })
 })

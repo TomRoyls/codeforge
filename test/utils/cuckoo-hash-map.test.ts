@@ -186,4 +186,9 @@ describe('CuckooHashMap', () => {
     map.set('x', 42)
     expect(map.get('x')).toBe(42)
   })
+
+  it('has returns false for missing key', () => {
+    const map = new CuckooHashMap<string, number>(16)
+    expect(map.has('missing')).toBe(false)
+  })
 })
