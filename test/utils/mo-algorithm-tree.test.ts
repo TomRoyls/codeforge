@@ -260,4 +260,10 @@ describe('MoAlgorithmTree', () => {
     )
     expect(addCalls).toBeGreaterThan(0)
   })
+
+  it('constructor with adjacency list', () => {
+    const adj = [[1], [0]]
+    const mo = new MoAlgorithmTree(adj, [])
+    expect(mo).toBeDefined()
+  })
 })

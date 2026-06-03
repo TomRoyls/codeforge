@@ -370,4 +370,16 @@ describe('MoAlgorithm', () => {
     expect(answers.length).toBe(1)
     expect(answers[0]).toBe(1)
   })
+
+  it('empty queries returns empty answers', () => {
+    const answers = MoAlgorithm.solve(
+      [1, 2, 3],
+      [],
+      (state, idx) => { state.count += [1, 2, 3][idx]! },
+      (state, idx) => { state.count -= [1, 2, 3][idx]! },
+      (state) => state.count,
+      { count: 0 },
+    )
+    expect(answers).toEqual([])
+  })
 })

@@ -148,4 +148,9 @@ describe('MisraGries', () => {
     mg.process('b')
     expect(mg.getCount('a')).toBeGreaterThanOrEqual(2)
   })
+
+  it('getCount for unseen item is 0', () => {
+    const mg = new MisraGries<string>(3)
+    expect(mg.getCount('z')).toBe(0)
+  })
 })
