@@ -202,4 +202,10 @@ describe('ConsistentHash edge cases', () => {
     const node = ch.getNode('test-key')
     expect(['a', 'b']).toContain(node)
   })
+
+  it('single node always returns that node', () => {
+    const ch = new ConsistentHash<string>()
+    ch.addNode('only')
+    expect(ch.getNode('any-key')).toBe('only')
+  })
 })

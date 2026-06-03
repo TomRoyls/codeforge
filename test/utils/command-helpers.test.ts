@@ -153,4 +153,9 @@ describe('getProfileSeverityOverrides', () => {
     const overrides = getProfileSeverityOverrides('default')
     expect(typeof overrides).toBe('object')
   })
+
+  it('getProfileSeverityOverrides returns object for unknown profile', () => {
+    const overrides = getProfileSeverityOverrides('nonexistent')
+    expect(typeof overrides).toBe('object')
+  })
 })

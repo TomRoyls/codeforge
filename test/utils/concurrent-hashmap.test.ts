@@ -194,4 +194,10 @@ describe('ConcurrentHashMap', () => {
     const map = new ConcurrentHashMap<string, number>()
     expect(map.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const map = new ConcurrentHashMap<string, number>()
+    map.set('key', 42)
+    expect(map.get('key')).toBe(42)
+  })
 })

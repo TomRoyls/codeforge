@@ -173,4 +173,9 @@ describe('ConsistentHashRing', () => {
     const node = ring.getNode('some-key')
     expect(['a', 'b', 'c']).toContain(node)
   })
+
+  it('single node always returns that node', () => {
+    const ring = new ConsistentHashRing<string>(['only'])
+    expect(ring.getNode('any-key')).toBe('only')
+  })
 })
