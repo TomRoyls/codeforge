@@ -159,4 +159,9 @@ describe('VPTrie', () => {
     const result = vp.nearest([1, 1])
     expect(result).not.toBeNull()
   })
+
+  it('nearest on empty returns null', () => {
+    const vp = new VPTrie<number[]>((a, b) => Math.abs(a[0]! - b[0]!))
+    expect(vp.nearest([1, 1])).toBeNull()
+  })
 })

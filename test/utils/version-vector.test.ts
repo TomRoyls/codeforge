@@ -192,4 +192,10 @@ describe('VersionVector - edge cases', () => {
     const vv = new VersionVector({ nodeId: 'a' })
     expect(vv.get('b')).toBe(0)
   })
+
+  it('increment updates own counter', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    expect(vv.get('a')).toBe(1)
+  })
 })

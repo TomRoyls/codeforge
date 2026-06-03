@@ -134,4 +134,10 @@ describe('VByte', () => {
     const decoded = VByte.decode(encoded)
     expect(decoded.value).toBe(0)
   })
+
+  it('encode and decode 1', () => {
+    const encoded = VByte.encode(1)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(1)
+  })
 })

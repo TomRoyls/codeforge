@@ -180,4 +180,11 @@ describe('VirtualTree', () => {
     const { vtree } = vt.build([0])
     expect(vtree).toBeDefined()
   })
+
+  it('build with single node returns valid tree', () => {
+    const vt = new VirtualTree(3)
+    vt.lca = { binaryLifting: () => {} } as never
+    const { vtree } = vt.build([0])
+    expect(vtree).toBeDefined()
+  })
 })
