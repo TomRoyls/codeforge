@@ -97,4 +97,8 @@ describe('QuickSelect', () => {
   it('select finds minimum', () => {
     expect(QuickSelect.select([5, 3, 1, 4, 2], 0)).toBe(1)
   })
+
+  it('select finds maximum', () => {
+    expect(QuickSelect.select([5, 3, 1, 4, 2], 4)).toBe(5)
+  })
 })

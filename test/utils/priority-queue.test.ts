@@ -216,4 +216,12 @@ describe('PriorityQueue - edge cases', () => {
     pq.enqueue(2)
     expect(pq.size).toBe(2)
   })
+
+  it('dequeue returns min element', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.dequeue()).toBe(1)
+  })
 })

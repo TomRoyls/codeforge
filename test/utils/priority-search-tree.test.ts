@@ -172,4 +172,11 @@ describe('PrioritySearchTree', () => {
     const results = t.query(0, 20, 20)
     expect(results.length).toBe(1)
   })
+
+  it('query outside range returns empty', () => {
+    const t = new PrioritySearchTree<string>()
+    t.insert(10, 10, 'pt')
+    const results = t.query(100, 200, 200)
+    expect(results.length).toBe(0)
+  })
 })
