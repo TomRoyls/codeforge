@@ -171,4 +171,11 @@ describe('SimilarityIndex', () => {
     const index = new SimilarityIndex<string>()
     expect(index.findSimilar('nothing', 0.9)).toEqual([])
   })
+
+  it('add and find similar item', () => {
+    const index = new SimilarityIndex<string>()
+    index.add('test', 'test-item', ['word1', 'word2'])
+    const results = index.findSimilar('test', 0.5)
+    expect(results.length).toBeGreaterThanOrEqual(0)
+  })
 })

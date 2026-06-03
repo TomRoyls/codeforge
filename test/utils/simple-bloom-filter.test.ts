@@ -163,4 +163,10 @@ describe('SimpleBloomFilter - edge cases', () => {
     bf.add('hello')
     expect(bf.has('hello')).toBe(true)
   })
+
+  it('has returns false for missing item', () => {
+    const bf = new SimpleBloomFilter(100)
+    bf.add('hello')
+    expect(bf.has('world')).toBe(false)
+  })
 })

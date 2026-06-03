@@ -105,4 +105,8 @@ describe('SieveOfEratosthenes', () => {
   it('isPrime 2 is true', () => {
     expect(SieveOfEratosthenes.isPrime(2)).toBe(true)
   })
+
+  it('isPrime 4 is false', () => {
+    expect(SieveOfEratosthenes.isPrime(4)).toBe(false)
+  })
 })
