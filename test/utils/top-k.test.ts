@@ -175,4 +175,9 @@ describe('TopK - edge cases', () => {
     tk.add('hello')
     expect(tk.topValues).toContain('hello')
   })
+
+  it('empty tracker has no top values', () => {
+    const tk = new TopK<string>(3)
+    expect(tk.topValues).toEqual([])
+  })
 })

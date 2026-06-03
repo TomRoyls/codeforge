@@ -155,4 +155,10 @@ describe('TopK2', () => {
     const tracker = new TopK2<string>(3)
     expect(tracker.top()).toEqual([])
   })
+
+  it('add and retrieve single item', () => {
+    const tracker = new TopK2<string>(3)
+    tracker.add('a')
+    expect(tracker.top()[0]!.item).toBe('a')
+  })
 })

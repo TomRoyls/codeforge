@@ -151,4 +151,9 @@ describe('TopologicalColoring', () => {
     const tc = new TopologicalColoring(1)
     expect(tc.chromaticNumber()).toBe(1)
   })
+
+  it('two unconnected nodes have chromatic number 1', () => {
+    const tc = new TopologicalColoring(2)
+    expect(tc.chromaticNumber()).toBe(1)
+  })
 })
