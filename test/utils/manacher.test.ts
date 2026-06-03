@@ -123,4 +123,9 @@ describe('Manacher', () => {
     const m = new Manacher('a')
     expect(m.longestPalindrome().length).toBe(1)
   })
+
+  it('aa has palindrome length 2', () => {
+    const m = new Manacher('aa')
+    expect(m.longestPalindrome().length).toBe(2)
+  })
 })

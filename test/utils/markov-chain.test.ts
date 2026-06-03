@@ -150,4 +150,12 @@ describe('MarkovChain', () => {
     const mc = new MarkovChain<string>()
     expect(mc.next('unknown')).toBeNull()
   })
+
+  it('single state transition always returns same value', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    mc.addTransition('a', 'b')
+    const result = mc.next('a')
+    expect(result).toBe('b')
+  })
 })

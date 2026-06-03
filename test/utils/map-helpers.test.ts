@@ -145,4 +145,11 @@ describe('append', () => {
     increment(map, 'z')
     expect(map.get('z')).toBe(1)
   })
+
+  it('increment twice gives 2', () => {
+    const map = new Map<string, number>()
+    increment(map, 'a')
+    increment(map, 'a')
+    expect(map.get('a')).toBe(2)
+  })
 })
