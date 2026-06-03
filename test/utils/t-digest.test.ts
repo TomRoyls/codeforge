@@ -150,4 +150,9 @@ describe('TDigest', () => {
     td.push(20)
     expect(td.size).toBe(2)
   })
+
+  it('size stays zero with no pushes', () => {
+    const td = new TDigest()
+    expect(td.size).toBe(0)
+  })
 })

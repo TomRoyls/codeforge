@@ -184,4 +184,10 @@ describe('runWithConcurrency', () => {
     await runWithConcurrency([42], async (x) => { order.push(x) }, 2)
     expect(order).toEqual([42])
   })
+
+  it('handles empty task list', async () => {
+    const order: number[] = []
+    await runWithConcurrency([], async (x) => { order.push(x) }, 2)
+    expect(order).toEqual([])
+  })
 })

@@ -173,4 +173,10 @@ describe('TernarySearchTree clear', () => {
     const tst = new TernarySearchTree()
     expect(tst.contains('abc')).toBe(false)
   })
+
+  it('insert and contains single char', () => {
+    const tst = new TernarySearchTree()
+    tst.insert('a')
+    expect(tst.contains('a')).toBe(true)
+  })
 })
