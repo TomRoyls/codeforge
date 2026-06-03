@@ -98,4 +98,8 @@ describe('Introsort', () => {
   it('handles single element', () => {
     expect(Introsort.sort([42])).toEqual([42])
   })
+
+  it('handles reverse sorted', () => {
+    expect(Introsort.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5])
+  })
 })

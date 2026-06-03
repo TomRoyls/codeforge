@@ -183,4 +183,10 @@ describe('IntervalTree additional', () => {
     tree.insert({ start: 0, end: 10 }, 'a')
     expect(tree.query(20).length).toBe(0)
   })
+
+  it('query overlapping interval returns match', () => {
+    const tree = new IntervalTree<string>()
+    tree.insert({ start: 0, end: 10 }, 'a')
+    expect(tree.query(5).length).toBe(1)
+  })
 })

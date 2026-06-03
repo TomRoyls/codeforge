@@ -182,4 +182,8 @@ describe('greedyIntervalSchedule', () => {
     expect(result.length).toBe(1)
     expect(result[0]!.end).toBe(7)
   })
+
+  it('greedy with empty returns empty', () => {
+    expect(greedyIntervalSchedule([])).toEqual([])
+  })
 })

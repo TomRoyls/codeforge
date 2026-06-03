@@ -116,4 +116,8 @@ describe('Josephus', () => {
   it('survivor n=7 k=3 is known', () => {
     expect(Josephus.survivor(7, 3)).toBe(3)
   })
+
+  it('survivor n=1 k=1 is 0', () => {
+    expect(Josephus.survivor(1, 1)).toBe(0)
+  })
 })
