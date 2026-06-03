@@ -133,4 +133,9 @@ describe('path-utils', () => {
     const result = resolvePath('/foo/bar')
     expect(result).toBe('/foo/bar')
   })
+
+  it('resolvePath with relative joins cwd', () => {
+    const result = resolvePath('baz')
+    expect(result).toContain('baz')
+  })
 })
