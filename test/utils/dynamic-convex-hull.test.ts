@@ -170,4 +170,11 @@ describe('DynamicConvexHull', () => {
     ch.add(2, 0)
     expect(ch.getHull().length).toBe(2)
   })
+
+  it('two non-collinear points have hull of 2', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 1)
+    expect(ch.getHull().length).toBe(2)
+  })
 })

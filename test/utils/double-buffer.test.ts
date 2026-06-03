@@ -192,4 +192,12 @@ describe('DoubleBuffer', () => {
     db.swap()
     expect(db.pendingCount).toBe(0)
   })
+
+  it('swap returns flushed items', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    const items = db.swap()
+    expect(items).toEqual([1, 2])
+  })
 })

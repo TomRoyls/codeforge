@@ -175,4 +175,12 @@ describe('DominatorTree', () => {
     const dom = dt.build(0)
     expect(dom[1]).toBe(0)
   })
+
+  it('dominates returns true for immediate dominator', () => {
+    const dt = new DominatorTree(3)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    const dom = dt.build(0)
+    expect(dom[2]).toBe(1)
+  })
 })

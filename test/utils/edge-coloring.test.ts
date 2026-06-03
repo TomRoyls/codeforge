@@ -167,4 +167,9 @@ describe('EdgeColoring', () => {
     ec.addEdge(0, 1)
     expect(ec.chromaticIndex()).toBe(1)
   })
+
+  it('no edges has chromatic index 0', () => {
+    const ec = new EdgeColoring(3)
+    expect(ec.chromaticIndex()).toBe(0)
+  })
 })
