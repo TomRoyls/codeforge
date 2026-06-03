@@ -159,4 +159,10 @@ describe('GraphTraversal', () => {
     const order = GraphTraversal.dfs(adj, 0)
     expect(order.sort()).toEqual([0, 1])
   })
+
+  it('bfs visits all connected nodes', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [0]], [2, [0]]])
+    const order = GraphTraversal.bfs(adj, 0)
+    expect(order.sort()).toEqual([0, 1, 2])
+  })
 })

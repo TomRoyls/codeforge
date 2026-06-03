@@ -155,4 +155,9 @@ describe('GraphEntropy', () => {
     ge.addEdge(1, 2)
     expect(typeof ge.degreeEntropy()).toBe('number')
   })
+
+  it('single node entropy is 0', () => {
+    const ge = new GraphEntropy(1)
+    expect(ge.degreeEntropy()).toBe(0)
+  })
 })
