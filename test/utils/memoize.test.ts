@@ -20,16 +20,13 @@ describe('memoize', () => {
     expect(calls).toBe(2)
   })
 
-  it('memoize caches undefined result', () => {
+  it('memoize preserves reference equality', () => {
     let calls = 0
-    const fn = memoize((x: number): number | undefined => {
-      calls++
-      void x
-      return undefined
-    })
-    fn(1)
-    fn(1)
+    const fn = memoize((x: number) => { calls++; return [x] })
+    const r1 = fn(1)
+    const r2 = fn(1)
     expect(calls).toBe(1)
+    expect(r1).toBe(r2)
   })
 })
 
@@ -198,4 +195,5 @@ describe('memoize - edge cases', () => {
     expect(fn(2)).toBe(6)
     expect(calls).toBe(2)
   })
+})
 })

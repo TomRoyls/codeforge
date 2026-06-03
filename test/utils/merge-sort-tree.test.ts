@@ -115,4 +115,9 @@ describe('MergeSortTree', () => {
     const mst = new MergeSortTree([5, 10, 15])
     expect(mst.queryCountLessThan(0, 2, 0)).toBe(0)
   })
+
+  it('constructor creates tree from array', () => {
+    const mst = new MergeSortTree([1, 2, 3])
+    expect(mst).toBeDefined()
+  })
 })
