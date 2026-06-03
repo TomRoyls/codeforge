@@ -159,4 +159,10 @@ describe('append', () => {
     append(map, 'a', 2)
     expect(map.get('a')).toEqual([1, 2])
   })
+
+  it('increment on new key sets to 1', () => {
+    const map = new Map<string, number>()
+    increment(map, 'new')
+    expect(map.get('new')).toBe(1)
+  })
 })

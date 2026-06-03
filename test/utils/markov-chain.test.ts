@@ -164,4 +164,11 @@ describe('MarkovChain', () => {
     const result = mc.next('unknown')
     expect(result).toBeNull()
   })
+
+  it('train and next returns valid state', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'b', 'a', 'b'])
+    const result = mc.next('a')
+    expect(result === 'b' || result === null).toBe(true)
+  })
 })

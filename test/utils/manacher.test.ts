@@ -133,4 +133,9 @@ describe('Manacher', () => {
     const m = new Manacher('a')
     expect(m.longestPalindrome().length).toBe(1)
   })
+
+  it('repeated char has full palindrome', () => {
+    const m = new Manacher('aaa')
+    expect(m.longestPalindrome().length).toBe(3)
+  })
 })
