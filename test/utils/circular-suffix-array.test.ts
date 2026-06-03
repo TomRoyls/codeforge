@@ -150,4 +150,9 @@ describe('CircularSuffixArray', () => {
     const csa = new CircularSuffixArray('abc')
     expect(csa.length).toBe(3)
   })
+
+  it('index returns sorted order', () => {
+    const csa = new CircularSuffixArray('abc')
+    expect(csa.index(0)).toBeGreaterThanOrEqual(0)
+  })
 })

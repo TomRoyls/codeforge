@@ -169,4 +169,12 @@ describe('ClosestPairBrute', () => {
     const result = cp.findClosest()
     expect(result.distance).toBeCloseTo(5, 5)
   })
+
+  it('identical points have zero distance', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(1, 1)
+    cp.addPoint(1, 1)
+    const result = cp.findClosest()
+    expect(result.distance).toBe(0)
+  })
 })
