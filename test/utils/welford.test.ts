@@ -132,4 +132,9 @@ describe('Welford', () => {
     const w = Welford.fromArray([10, 20, 30])
     expect(w.mean).toBeCloseTo(20, 5)
   })
+
+  it('variance of single value is 0', () => {
+    const w = Welford.fromArray([42])
+    expect(w.variance).toBe(0)
+  })
 })

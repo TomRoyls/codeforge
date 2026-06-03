@@ -134,4 +134,9 @@ describe('WindowTinyLFU', () => {
     w.recordAccess('key')
     expect(w.estimate('key')).toBeGreaterThan(0)
   })
+
+  it('estimate returns 0 for unseen key', () => {
+    const w = new WindowTinyLFU(10)
+    expect(w.estimate('unseen')).toBe(0)
+  })
 })
