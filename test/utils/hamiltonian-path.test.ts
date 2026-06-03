@@ -156,4 +156,9 @@ describe('HamiltonianPath', () => {
     hp.addEdge(0, 1)
     expect(hp.existsPath()).toBe(true)
   })
+
+  it('disconnected nodes have no path', () => {
+    const hp = new HamiltonianPath(3)
+    expect(hp.existsPath()).toBe(false)
+  })
 })

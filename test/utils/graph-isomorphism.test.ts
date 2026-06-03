@@ -170,4 +170,11 @@ describe('GraphIsomorphism', () => {
     const gi = new GraphIsomorphism(1, 1)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('addEdge and isomorphic with edge', () => {
+    const gi = new GraphIsomorphism(2)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG2(0, 1)
+    expect(gi.isomorphic()).toBe(true)
+  })
 })

@@ -153,4 +153,10 @@ describe('GraphTraversal', () => {
     const order = GraphTraversal.bfs(adj, 0)
     expect(order).toEqual([0])
   })
+
+  it('dfs visits all reachable', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    const order = GraphTraversal.dfs(adj, 0)
+    expect(order.sort()).toEqual([0, 1])
+  })
 })
