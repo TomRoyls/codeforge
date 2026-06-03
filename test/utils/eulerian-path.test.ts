@@ -145,4 +145,11 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
   })
+
+  it('single node is eulerian circuit', () => {
+    const adj: number[][] = [[]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
+    expect(ep.type).toBe('circuit')
+  })
 })

@@ -102,4 +102,8 @@ describe('escapeMarkdown', () => {
   it('escapes asterisk', () => {
     expect(escapeMarkdown('*bold*')).toContain('\\*')
   })
+
+  it('escapes brackets', () => {
+    expect(escapeMarkdown('[link]')).toContain('\\[')
+  })
 })

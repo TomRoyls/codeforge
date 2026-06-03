@@ -155,4 +155,13 @@ describe('ExponentialCounter', () => {
     counter.increment()
     expect(counter.approximate).toBeGreaterThan(0)
   })
+
+  it('multiple increments increase approximate', () => {
+    const counter = new ExponentialCounter()
+    counter.increment()
+    const val1 = counter.approximate
+    counter.increment()
+    counter.increment()
+    expect(counter.approximate).toBeGreaterThanOrEqual(val1)
+  })
 })

@@ -201,4 +201,9 @@ describe('EventSink', () => {
     sink.emit('test', null)
     expect(count).toBe(1)
   })
+
+  it('emit with no handlers does not throw', () => {
+    const sink = new EventSink()
+    expect(() => sink.emit('test', null)).not.toThrow()
+  })
 })
