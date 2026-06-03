@@ -171,4 +171,12 @@ describe('ThreadPool', () => {
     ])
     expect(results.map(r => r.result).sort()).toEqual([1, 2, 3])
   })
+
+  it('pool with single thread processes sequentially', async () => {
+    const pool = new ThreadPool(1)
+    const results = await Promise.all([
+      pool.submit(async () => 10),
+    ])
+    expect(results[0]!.result).toBe(10)
+  })
 })

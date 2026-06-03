@@ -143,4 +143,11 @@ describe('TDigest', () => {
     expect(td.mean).toBe(42)
     expect(td.quantile(0.5)).toBe(42)
   })
+
+  it('handles two values', () => {
+    const td = new TDigest()
+    td.push(10)
+    td.push(20)
+    expect(td.size).toBe(2)
+  })
 })
