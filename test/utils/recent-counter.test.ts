@@ -160,4 +160,11 @@ describe('RecentCounter', () => {
     rc.ping(1000)
     expect(rc.totalPings).toBe(1)
   })
+
+  it('count returns recent pings', () => {
+    const rc = new RecentCounter(3000)
+    rc.ping(1000)
+    rc.ping(2000)
+    expect(rc.count(2000)).toBe(2)
+  })
 })

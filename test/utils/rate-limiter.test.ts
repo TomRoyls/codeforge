@@ -179,4 +179,9 @@ describe('RateLimiter', () => {
     const result = rl.tryAcquire()
     expect(result.allowed).toBe(true)
   })
+
+  it('has configurable tokensPerSecond', () => {
+    const rl = new RateLimiter({ tokensPerSecond: 10, maxTokens: 5 })
+    expect(rl).toBeDefined()
+  })
 })

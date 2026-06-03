@@ -120,4 +120,9 @@ describe('RandomWalk', () => {
     const walk = RandomWalk.walk2D(0)
     expect(walk.length).toBe(1)
   })
+
+  it('walk1D starts at 0', () => {
+    const walk = RandomWalk.walk1D(0)
+    expect(walk[0]).toBe(0)
+  })
 })
