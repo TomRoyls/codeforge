@@ -159,4 +159,8 @@ describe('constants regex special chars', () => {
     expect(REGEX_SPECIAL_CHARS.has('*')).toBe(true)
     expect(REGEX_SPECIAL_CHARS.has('+')).toBe(true)
   })
+
+  it('REGEX_SPECIAL_CHARS does not include letters', () => {
+    expect(REGEX_SPECIAL_CHARS.has('a')).toBe(false)
+  })
 })
