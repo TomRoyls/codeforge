@@ -140,4 +140,8 @@ describe('morris traversals additional', () => {
     const root = new TreeNode(1)
     expect([...morrisInorder(root)]).toEqual([1])
   })
+
+  it('null root returns empty', () => {
+    expect([...morrisInorder(null)]).toEqual([])
+  })
 })
