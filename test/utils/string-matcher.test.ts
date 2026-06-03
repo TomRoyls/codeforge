@@ -202,4 +202,12 @@ describe('StringMatcher', () => {
     expect(results[1]!.start).toBe(5)
     expect(results[2]!.start).toBe(10)
   })
+
+  it('no match returns empty', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('xyz')
+    matcher.build()
+    const results = matcher.search('abcdef')
+    expect(results).toEqual([])
+  })
 })

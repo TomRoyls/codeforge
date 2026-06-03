@@ -163,4 +163,9 @@ describe('StreamSampler', () => {
     for (let i = 0; i < 10; i++) sampler.add('item' + i)
     expect(sampler.sample.length).toBeLessThanOrEqual(2)
   })
+
+  it('empty sampler has no samples', () => {
+    const sampler = new StreamSampler<string>(2)
+    expect(sampler.sample()).toEqual([])
+  })
 })

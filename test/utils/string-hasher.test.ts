@@ -119,4 +119,11 @@ describe('StringHasher', () => {
     const h2 = sh.hash(2, 3)
     expect(h1).not.toBe(h2)
   })
+
+  it('same range gives same hash', () => {
+    const sh = new StringHasher('abcdef')
+    const h1 = sh.hash(0, 2)
+    const h2 = sh.hash(0, 2)
+    expect(h1).toBe(h2)
+  })
 })
