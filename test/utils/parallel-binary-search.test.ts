@@ -159,4 +159,11 @@ describe('ParallelBinarySearch', () => {
   it('constructor accepts queries', () => {
     expect(ParallelBinarySearch).toBeDefined()
   })
+
+  it('search with check queries', () => {
+    const results = ParallelBinarySearch.search([
+      { lo: 0, hi: 4, check: (mid: number) => [1, 3, 5, 7, 9][mid]! >= 5 },
+    ])
+    expect(results[0]).toBeGreaterThanOrEqual(0)
+  })
 })

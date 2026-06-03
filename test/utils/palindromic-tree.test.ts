@@ -104,4 +104,9 @@ describe('PalindromicTree', () => {
     const pt = PalindromicTree.from('a')
     expect(pt.distinctPalindromes).toBe(1)
   })
+
+  it('aa has two palindromes', () => {
+    const pt = PalindromicTree.from('aa')
+    expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(2)
+  })
 })
