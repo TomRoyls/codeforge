@@ -207,4 +207,12 @@ describe('DequeAggregation', () => {
     deque.pushBack(5)
     expect(deque.aggregate()).toBe(5)
   })
+
+  it('aggregate of multiple values', () => {
+    const deque = new DequeAggregation<number>((a, b) => a + b)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    expect(deque.aggregate()).toBe(6)
+  })
 })

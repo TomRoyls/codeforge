@@ -174,4 +174,9 @@ describe('DequeMin', () => {
     dq.pushBack(3)
     expect(dq.min).toBe(3)
   })
+
+  it('empty deque min is undefined', () => {
+    const dq = new DequeMin<number>()
+    expect(dq.min).toBeUndefined()
+  })
 })
