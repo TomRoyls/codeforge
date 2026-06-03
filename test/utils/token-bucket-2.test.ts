@@ -151,4 +151,10 @@ describe('TokenBucket2', () => {
     bucket.consume(10)
     expect(bucket.availableTokens).toBe(0)
   })
+
+  it('consume zero tokens succeeds', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume(0)
+    expect(bucket.availableTokens).toBe(10)
+  })
 })

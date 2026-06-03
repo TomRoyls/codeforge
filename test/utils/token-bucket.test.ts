@@ -143,4 +143,9 @@ describe('TokenBucket - wait', () => {
     const tb = new TokenBucket({ capacity: 10, fillRate: 1 })
     expect(tb.consume(5)).toBe(true)
   })
+
+  it('consume returns false when not enough tokens', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
+    expect(tb.consume(10)).toBe(false)
+  })
 })

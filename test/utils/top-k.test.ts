@@ -180,4 +180,10 @@ describe('TopK - edge cases', () => {
     const tk = new TopK<string>(3)
     expect(tk.topValues).toEqual([])
   })
+
+  it('single element is top', () => {
+    const tk = new TopK<string>(3)
+    tk.add('only')
+    expect(tk.topValues.length).toBeGreaterThanOrEqual(1)
+  })
 })

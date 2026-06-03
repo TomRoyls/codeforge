@@ -156,4 +156,12 @@ describe('TopologicalColoring', () => {
     const tc = new TopologicalColoring(2)
     expect(tc.chromaticNumber()).toBe(1)
   })
+
+  it('complete graph K3 has chromatic number 3', () => {
+    const tc = new TopologicalColoring(3)
+    tc.addEdge(0, 1)
+    tc.addEdge(1, 2)
+    tc.addEdge(0, 2)
+    expect(tc.chromaticNumber()).toBe(3)
+  })
 })
