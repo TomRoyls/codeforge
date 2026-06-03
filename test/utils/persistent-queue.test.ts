@@ -161,4 +161,12 @@ describe('PersistentQueue', () => {
     const q2 = q.enqueue(1).enqueue(2)
     expect(q2.size).toBe(2)
   })
+
+  it('dequeue returns result', () => {
+    const q = PersistentQueue.create<number>()
+    const q2 = q.enqueue(1).enqueue(2)
+    const result = q2.dequeue()
+    expect(result).not.toBeNull()
+    expect(result!.value).toBe(1)
+  })
 })

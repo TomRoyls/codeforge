@@ -139,4 +139,9 @@ describe('PersistentStack', () => {
     const popped = s.pop()
     expect(popped.peek()).toBe(42)
   })
+
+  it('empty stack pop returns same stack', () => {
+    const s = PersistentStack.empty<number>()
+    expect(s.pop()).toBe(s)
+  })
 })

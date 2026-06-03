@@ -94,4 +94,8 @@ describe('PigeonholeSort', () => {
   it('handles reverse sorted', () => {
     expect(PigeonholeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
   })
+
+  it('handles single element', () => {
+    expect(PigeonholeSort.sort([42])).toEqual([42])
+  })
 })

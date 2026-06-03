@@ -155,4 +155,9 @@ describe('PlanarCheck', () => {
     pc.addEdge(0, 1)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('no edges is planar', () => {
+    const pc = new PlanarCheck(3)
+    expect(pc.isPlanar()).toBe(true)
+  })
 })
