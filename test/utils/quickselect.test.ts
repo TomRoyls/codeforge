@@ -93,4 +93,8 @@ describe('QuickSelect', () => {
   it('select finds median', () => {
     expect(QuickSelect.select([3, 1, 2, 5, 4], 2)).toBe(3)
   })
+
+  it('select finds minimum', () => {
+    expect(QuickSelect.select([5, 3, 1, 4, 2], 0)).toBe(1)
+  })
 })

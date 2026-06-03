@@ -127,4 +127,8 @@ describe('RadixSort', () => {
   it('handles already sorted', () => {
     expect(RadixSort.sort([1, 2, 3])).toEqual([1, 2, 3])
   })
+
+  it('handles reverse sorted', () => {
+    expect(RadixSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  })
 })

@@ -116,4 +116,9 @@ describe('Quickhull', () => {
     const hull = Quickhull.convexHull(points)
     expect(hull.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('single point returns itself', () => {
+    const hull = Quickhull.convexHull([{ x: 5, y: 5 }])
+    expect(hull.length).toBe(1)
+  })
 })
