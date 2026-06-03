@@ -146,4 +146,9 @@ describe('TopologicalColoring', () => {
     tc.addEdge(0, 1)
     expect(tc.chromaticNumber()).toBeGreaterThanOrEqual(1)
   })
+
+  it('single node has chromatic number 1', () => {
+    const tc = new TopologicalColoring(1)
+    expect(tc.chromaticNumber()).toBe(1)
+  })
 })

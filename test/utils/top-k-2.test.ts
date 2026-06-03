@@ -150,4 +150,9 @@ describe('TopK2', () => {
     tracker.add('c')
     expect(tracker.top().length).toBeLessThanOrEqual(3)
   })
+
+  it('empty tracker returns empty top', () => {
+    const tracker = new TopK2<string>(3)
+    expect(tracker.top()).toEqual([])
+  })
 })

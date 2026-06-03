@@ -169,4 +169,10 @@ describe('TopK - edge cases', () => {
     const tk = new TopK<string>(3)
     expect(tk.topValues).toEqual([])
   })
+
+  it('add single value returns it in top', () => {
+    const tk = new TopK<string>(3)
+    tk.add('hello')
+    expect(tk.topValues).toContain('hello')
+  })
 })
