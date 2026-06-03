@@ -120,4 +120,10 @@ describe('FingerTree', () => {
     const ft3 = ft2.pushBack(2)
     expect(ft3.size).toBe(2)
   })
+
+  it('pushFront adds element', () => {
+    const ft = new FingerTree<number>()
+    const ft2 = ft.pushFront(5)
+    expect(ft2.size).toBe(1)
+  })
 })

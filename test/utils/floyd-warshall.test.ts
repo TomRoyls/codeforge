@@ -194,4 +194,10 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath(edges, 3)
     expect(dist[0]![2]).toBe(Infinity)
   })
+
+  it('self distance is 0', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 2)
+    expect(dist[0]![0]).toBe(0)
+  })
 })
