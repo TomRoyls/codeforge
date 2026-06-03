@@ -166,4 +166,12 @@ describe('HuffmanCoder', () => {
     const decoded = coder.decode(result.encoded, result.tree)
     expect(decoded).toBe(text)
   })
+
+  it('encode single character', () => {
+    const coder = new HuffmanCoder()
+    const text = 'a'
+    const result = coder.encode(text)
+    const decoded = coder.decode(result.encoded, result.tree)
+    expect(decoded).toBe('a')
+  })
 })

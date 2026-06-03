@@ -199,4 +199,9 @@ describe('HopscotchHashTable', () => {
     const value = table.get(1)
     expect(value).toEqual({ x: 10, y: 20 })
   })
+
+  it('has returns false for missing key', () => {
+    const table = new HopscotchHashTable<number, { x: number; y: number }>(16)
+    expect(table.has(999)).toBe(false)
+  })
 })

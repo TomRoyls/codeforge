@@ -209,4 +209,13 @@ describe('HierarchicalTimer', () => {
     timer.end('test')
     expect(timer).toBeDefined()
   })
+
+  it('multiple start-end pairs', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('a')
+    timer.end('a')
+    timer.start('b')
+    timer.end('b')
+    expect(timer).toBeDefined()
+  })
 })

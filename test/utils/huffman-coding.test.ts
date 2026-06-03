@@ -127,4 +127,9 @@ describe('HuffmanCoding', () => {
     const { encoded, tree } = HuffmanCoding.encode('')
     expect(HuffmanCoding.decode(encoded, tree)).toBe('')
   })
+
+  it('encode single char', () => {
+    const { encoded, tree } = HuffmanCoding.encode('a')
+    expect(HuffmanCoding.decode(encoded, tree)).toBe('a')
+  })
 })
