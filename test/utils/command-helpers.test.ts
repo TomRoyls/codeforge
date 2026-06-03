@@ -148,4 +148,9 @@ describe('getProfileSeverityOverrides', () => {
     expect(overrides['no-eval']).toBe('error')
     expect(overrides['no-explicit-any']).toBe('error')
   })
+
+  it('getProfileSeverityOverrides returns object', () => {
+    const overrides = getProfileSeverityOverrides('default')
+    expect(typeof overrides).toBe('object')
+  })
 })

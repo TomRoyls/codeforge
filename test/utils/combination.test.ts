@@ -107,4 +107,9 @@ describe('Combination', () => {
     const result = Combination.generate([1, 2], 1)
     expect(result).toEqual([[1], [2]])
   })
+
+  it('choose all returns single combination', () => {
+    const result = Combination.generate([1, 2, 3], 3)
+    expect(result).toEqual([[1, 2, 3]])
+  })
 })
