@@ -90,4 +90,8 @@ describe('PigeonholeSort', () => {
   it('handles already sorted', () => {
     expect(PigeonholeSort.sort([1, 2, 3])).toEqual([1, 2, 3])
   })
+
+  it('handles reverse sorted', () => {
+    expect(PigeonholeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  })
 })

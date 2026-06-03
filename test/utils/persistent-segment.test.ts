@@ -153,4 +153,10 @@ describe('PersistentSegmentTree', () => {
     const pst = new PersistentSegmentTree(4)
     expect(pst.query(0, 0, 3)).toBe(0)
   })
+
+  it('update changes value at index', () => {
+    const pst = new PersistentSegmentTree(4)
+    const v = pst.update(0, 2, 10)
+    expect(pst.query(v, 2, 2)).toBe(10)
+  })
 })

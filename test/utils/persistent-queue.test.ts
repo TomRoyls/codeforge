@@ -155,4 +155,10 @@ describe('PersistentQueue', () => {
     const result = q.dequeue()
     expect(result).toBeNull()
   })
+
+  it('size tracks elements', () => {
+    const q = PersistentQueue.create<number>()
+    const q2 = q.enqueue(1).enqueue(2)
+    expect(q2.size).toBe(2)
+  })
 })

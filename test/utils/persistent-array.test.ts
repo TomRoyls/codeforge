@@ -130,4 +130,11 @@ describe('PersistentArray', () => {
     const pa = PersistentArray.create(5, 0)
     expect(pa.get(3)).toBe(0)
   })
+
+  it('set creates new version without mutating original', () => {
+    const pa = PersistentArray.create(3, 0)
+    const pb = pa.set(1, 99)
+    expect(pa.get(1)).toBe(0)
+    expect(pb.get(1)).toBe(99)
+  })
 })

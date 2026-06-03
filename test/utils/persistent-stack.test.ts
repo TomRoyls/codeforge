@@ -132,4 +132,11 @@ describe('PersistentStack', () => {
     expect(s.isEmpty()).toBe(true)
     expect(s.size).toBe(0)
   })
+
+  it('push and peek round trip', () => {
+    const s = PersistentStack.empty<number>().push(42).push(7)
+    expect(s.peek()).toBe(7)
+    const popped = s.pop()
+    expect(popped.peek()).toBe(42)
+  })
 })
