@@ -122,4 +122,10 @@ describe('CRT', () => {
       expect(result!.remainder % 5).toBe(2)
     })
   })
+
+  it('simple congruence x=0 mod 2, x=0 mod 3', () => {
+    const result = CRT.solve([0, 0], [2, 3])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 6).toBe(0)
+  })
 })

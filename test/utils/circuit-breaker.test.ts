@@ -182,4 +182,9 @@ describe('CircuitBreaker - canAttempt', () => {
     const cb = new CircuitBreaker({ maxFailures: 3, resetTimeout: 1000 })
     expect(cb.state).toBe('closed')
   })
+
+  it('canAttempt returns true when closed', () => {
+    const cb = new CircuitBreaker({ maxFailures: 3, resetTimeout: 1000 })
+    expect(cb.canAttempt()).toBe(true)
+  })
 })
