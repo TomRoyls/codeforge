@@ -139,4 +139,8 @@ describe('matchGlob edge cases', () => {
     expect(matchGlob('abc', 'a?c')).toBe(true)
     expect(matchGlob('ab', 'a?c')).toBe(false)
   })
+
+  it('star matches empty', () => {
+    expect(matchGlob('', '*')).toBe(true)
+  })
 })

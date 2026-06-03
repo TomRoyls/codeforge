@@ -184,4 +184,11 @@ describe('GapBuffer', () => {
     buffer.delete()
     expect(buffer.length).toBe(1)
   })
+
+  it('toArray returns content', () => {
+    const buffer = new GapBuffer<number>()
+    buffer.insert(1)
+    buffer.insert(2)
+    expect(buffer.toArray()).toEqual([1, 2])
+  })
 })

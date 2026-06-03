@@ -142,4 +142,10 @@ describe('FractionalCascading', () => {
     const result = fc.search(7)
     expect(result).toBeDefined()
   })
+
+  it('search for exact value', () => {
+    const fc = new FractionalCascading([[5, 10, 15]])
+    const result = fc.search(10)
+    expect(result).toBeDefined()
+  })
 })
