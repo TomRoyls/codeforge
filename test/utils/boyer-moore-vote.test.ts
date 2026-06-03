@@ -101,5 +101,9 @@ describe('BoyerMooreVote', () => {
   it('all same elements returns that element', () => {
     expect(BoyerMooreVote.findMajority([5, 5, 5])).toBe(5)
   })
+
+  it('single element is majority', () => {
+    expect(BoyerMooreVote.findMajority([42])).toBe(42)
+  })
 })
 })

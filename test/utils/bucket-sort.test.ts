@@ -105,4 +105,8 @@ describe('bucketSort edge cases', () => {
   it('handles single element', () => {
     expect(bucketSort([42])).toEqual([42])
   })
+
+  it('handles empty array', () => {
+    expect(bucketSort([])).toEqual([])
+  })
 })

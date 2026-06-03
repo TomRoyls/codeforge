@@ -211,4 +211,10 @@ describe('BTree height', () => {
     tree.insert(5, 50)
     expect(tree.find(5)).toBe(50)
   })
+
+  it('find missing key returns undefined', () => {
+    const tree = new BTree<number, number>()
+    tree.insert(5, 50)
+    expect(tree.find(99)).toBeUndefined()
+  })
 })

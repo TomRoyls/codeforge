@@ -181,4 +181,9 @@ describe('BridgeFinding', () => {
     bf.addEdge(0, 1)
     expect(bf.findBridges().length).toBe(1)
   })
+
+  it('no edges has no bridges', () => {
+    const bf = new BridgeFinding(2)
+    expect(bf.findBridges().length).toBe(0)
+  })
 })

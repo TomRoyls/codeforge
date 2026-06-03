@@ -151,4 +151,10 @@ describe('BridgeFinder', () => {
     const bf = new BridgeFinder(adj)
     expect(bf.bridges.length).toBe(0)
   })
+
+  it('single edge is a bridge', () => {
+    const adj = [[1], [0]]
+    const bf = new BridgeFinder(adj)
+    expect(bf.bridges.length).toBe(1)
+  })
 })
