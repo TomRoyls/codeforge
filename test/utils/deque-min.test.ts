@@ -179,4 +179,10 @@ describe('DequeMin', () => {
     const dq = new DequeMin<number>()
     expect(dq.min).toBeUndefined()
   })
+
+  it('single element min is that element', () => {
+    const dq = new DequeMin<number>()
+    dq.pushBack(5)
+    expect(dq.min).toBe(5)
+  })
 })

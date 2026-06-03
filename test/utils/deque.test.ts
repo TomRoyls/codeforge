@@ -188,4 +188,11 @@ describe('Deque', () => {
     dq.pushBack(2)
     expect(dq.size).toBe(2)
   })
+
+  it('popFront returns first element', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.popFront()).toBe(1)
+  })
 })
