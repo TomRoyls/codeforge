@@ -179,4 +179,9 @@ describe('Bag', () => {
     bag.remove(1)
     expect(bag.count(1)).toBe(2)
   })
+
+  it('count returns 0 for absent item', () => {
+    const bag = new Bag<number>()
+    expect(bag.count(42)).toBe(0)
+  })
 })

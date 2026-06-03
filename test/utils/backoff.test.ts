@@ -147,4 +147,9 @@ describe('calculateBackoff - edge cases', () => {
     const result = calculateBackoff(100, 100, 1000)
     expect(result).toBeLessThanOrEqual(1000)
   })
+
+  it('calculateBackoff returns at least baseDelay', () => {
+    const result = calculateBackoff(5, 100, 1000)
+    expect(result).toBeGreaterThanOrEqual(100)
+  })
 })

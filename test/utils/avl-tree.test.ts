@@ -216,4 +216,10 @@ describe('AVLTree clear', () => {
     expect(tree.height).toBe(0)
     expect(tree.inOrder()).toEqual([])
   })
+
+  it('insert and find single value', () => {
+    const tree = new AVLTree<number, number>()
+    tree.insert(5, 50)
+    expect(tree.find(5)).toBe(50)
+  })
 })
