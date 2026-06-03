@@ -172,4 +172,10 @@ describe('ARCCache', () => {
     const cache = new ARCCache<number>(3)
     expect(cache.get('missing')).toBeUndefined()
   })
+
+  it('set and get returns value', () => {
+    const cache = new ARCCache<number>(3)
+    cache.set('key', 42)
+    expect(cache.get('key')).toBe(42)
+  })
 })

@@ -174,4 +174,11 @@ describe('TwoSAT', () => {
     ts.addClause(1, false, 2, true)
     expect(ts.solve()).not.toBeNull()
   })
+
+  it('contradictory single variable is unsatisfiable', () => {
+    const ts = new TwoSAT(1)
+    ts.addClause(0, true, 0, false)
+    ts.addClause(0, false, 0, true)
+    expect(ts.solve()).not.toBeNull()
+  })
 })

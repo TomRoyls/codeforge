@@ -186,4 +186,11 @@ describe('AdjacencyListGraph - topologicalSort', () => {
     g.addEdge(0, 1)
     expect(g.neighbors(0).length).toBe(1)
   })
+
+  it('addDirectedEdge adds one direction only', () => {
+    const g = new AdjacencyListGraph(3)
+    g.addDirectedEdge(0, 1)
+    expect(g.neighbors(0).length).toBe(1)
+    expect(g.neighbors(1).length).toBe(0)
+  })
 })

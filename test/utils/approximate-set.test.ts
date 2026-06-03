@@ -171,4 +171,10 @@ describe('ApproximateSet', () => {
     set.add('a')
     expect(set.has('zzz')).toBe(false)
   })
+
+  it('has returns true after add', () => {
+    const set = new ApproximateSet(100)
+    set.add('hello')
+    expect(set.has('hello')).toBe(true)
+  })
 })
