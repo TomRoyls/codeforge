@@ -153,4 +153,11 @@ describe('DiscreteSampler', () => {
     const sampler = new DiscreteSampler([1])
     expect(sampler.sample()).toBe(0)
   })
+
+  it('two items returns valid index', () => {
+    const sampler = new DiscreteSampler([1, 1])
+    const result = sampler.sample()
+    expect(result).toBeGreaterThanOrEqual(0)
+    expect(result).toBeLessThanOrEqual(1)
+  })
 })
