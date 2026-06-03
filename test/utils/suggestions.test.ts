@@ -117,4 +117,9 @@ describe('RULE_SUGGESTIONS known rules', () => {
       expect(key.length).toBeGreaterThan(0)
     }
   })
+
+  it('RULE_SUGGESTIONS keys are unique', () => {
+    const keys = Object.keys(RULE_SUGGESTIONS)
+    expect(new Set(keys).size).toBe(keys.length)
+  })
 })

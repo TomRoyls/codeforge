@@ -148,4 +148,10 @@ describe('TarjanSCC', () => {
     const sccs = TarjanSCC.findSCCs(adj)
     expect(sccs.length).toBe(1)
   })
+
+  it('two nodes no edge have two components', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, []]])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBe(2)
+  })
 })

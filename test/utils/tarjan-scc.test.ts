@@ -129,4 +129,10 @@ describe('TarjanSCC', () => {
     const sccs = new TarjanSCC(adj).solve()
     expect(sccs.length).toBe(1)
   })
+
+  it('two nodes no edge have two components', () => {
+    const adj = [[], []]
+    const sccs = new TarjanSCC(adj).solve()
+    expect(sccs.length).toBe(2)
+  })
 })
