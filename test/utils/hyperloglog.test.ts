@@ -173,4 +173,10 @@ describe('HyperLogLog', () => {
     const hll = new HyperLogLog()
     expect(hll.count()).toBe(0)
   })
+
+  it('add then count is positive', () => {
+    const hll = new HyperLogLog()
+    hll.add('test')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
 })

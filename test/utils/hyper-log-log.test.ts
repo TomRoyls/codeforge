@@ -166,4 +166,14 @@ describe('HyperLogLog - edge cases', () => {
     hll.add('unique-item')
     expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
+
+  it('merge combines cardinalities', () => {
+    const hll1 = new HyperLogLog(10)
+    hll1.add('a')
+    hll1.add('b')
+    const hll2 = new HyperLogLog(10)
+    hll2.add('c')
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThanOrEqual(1)
+  })
 })

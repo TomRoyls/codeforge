@@ -160,4 +160,10 @@ describe('IntegerIntervalTree', () => {
     expect(result.length).toBe(1)
     expect(result[0]!.value).toBe('hello')
   })
+
+  it('query outside all intervals returns empty', () => {
+    const tree = new IntegerIntervalTree<string>()
+    tree.insert(0, 5, 'hello')
+    expect(tree.queryPoint(10)).toEqual([])
+  })
 })

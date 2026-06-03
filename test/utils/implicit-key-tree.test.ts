@@ -152,4 +152,10 @@ describe('ImplicitKeyTree', () => {
     const t = new ImplicitKeyTree<number>()
     expect(t.toArray()).toEqual([])
   })
+
+  it('insert increases toArray length', () => {
+    const t = new ImplicitKeyTree<number>()
+    t.insert(5)
+    expect(t.toArray().length).toBe(1)
+  })
 })
