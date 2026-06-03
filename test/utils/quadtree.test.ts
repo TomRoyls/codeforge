@@ -150,4 +150,11 @@ describe('Quadtree', () => {
     const results = qt.query({ x: 200, y: 200, w: 50, h: 50 })
     expect(results.length).toBe(0)
   })
+
+  it('insert and query single point', () => {
+    const q = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    q.insert({ x: 50, y: 50, data: 'pt' })
+    const results = q.query({ x: 0, y: 0, w: 100, h: 100 })
+    expect(results.length).toBe(1)
+  })
 })

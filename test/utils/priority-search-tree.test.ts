@@ -165,4 +165,11 @@ describe('PrioritySearchTree', () => {
     const results = tree.query(100, 200, 200)
     expect(results.length).toBe(0)
   })
+
+  it('insert and query single point', () => {
+    const t = new PrioritySearchTree<string>()
+    t.insert(10, 10, 'pt')
+    const results = t.query(0, 20, 20)
+    expect(results.length).toBe(1)
+  })
 })
