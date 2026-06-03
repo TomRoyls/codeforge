@@ -117,4 +117,8 @@ describe('MonotonicStack', () => {
   it('previousSmallerElements for sorted array', () => {
     expect(MonotonicStack.previousSmallerElements([1, 2, 3])).toEqual([-1, 1, 2])
   })
+
+  it('nextGreaterElements for decreasing array', () => {
+    expect(MonotonicStack.nextGreaterElements([3, 2, 1])).toEqual([-1, -1, -1])
+  })
 })
