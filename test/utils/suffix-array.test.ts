@@ -159,4 +159,9 @@ describe('SuffixArray', () => {
     const sa = new SuffixArray('a')
     expect(sa).toBeDefined()
   })
+
+  it('suffix array of empty string', () => {
+    const sa = new SuffixArray('')
+    expect(sa).toBeDefined()
+  })
 })

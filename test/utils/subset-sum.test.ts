@@ -102,4 +102,8 @@ describe('SubsetSum', () => {
   it('no subset for impossible target', () => {
     expect(SubsetSum.hasSubset([1, 2, 3], 10)).toBe(false)
   })
+
+  it('empty set cannot sum to positive', () => {
+    expect(SubsetSum.hasSubset([], 1)).toBe(false)
+  })
 })

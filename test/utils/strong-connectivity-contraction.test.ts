@@ -174,4 +174,12 @@ describe('StrongConnectivityContraction', () => {
     const { componentCount } = scc.contract()
     expect(componentCount).toBe(1)
   })
+
+  it('DAG has each node as own SCC', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    const { componentCount } = scc.contract()
+    expect(componentCount).toBe(3)
+  })
 })
