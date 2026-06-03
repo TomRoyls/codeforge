@@ -139,4 +139,10 @@ describe('BridgeFinder', () => {
     const bf = new BridgeFinder(adj)
     expect(bf.bridges.length).toBe(0)
   })
+
+  it('chain has one bridge', () => {
+    const adj = [[1], [0, 2], [1]]
+    const bf = new BridgeFinder(adj)
+    expect(bf.bridges.length).toBe(2)
+  })
 })

@@ -91,7 +91,11 @@ describe('BoyerMooreVote', () => {
     })
 
     it('returns null when no majority', () => {
-      expect(BoyerMooreVote.findMajority([1, 2, 3])).toBeNull()
-    })
+    expect(BoyerMooreVote.findMajority([1, 2, 3])).toBeNull()
   })
+
+  it('finds majority in single element array', () => {
+    expect(BoyerMooreVote.findMajority([42])).toBe(42)
+  })
+})
 })

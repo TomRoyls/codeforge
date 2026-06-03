@@ -168,4 +168,11 @@ describe('BridgeFinding', () => {
     bf.addEdge(2, 0)
     expect(bf.findBridges().length).toBe(0)
   })
+
+  it('chain of 3 has 2 bridges', () => {
+    const bf = new BridgeFinding(3)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    expect(bf.findBridges().length).toBe(2)
+  })
 })

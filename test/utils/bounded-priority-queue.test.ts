@@ -190,4 +190,12 @@ describe('BoundedPriorityQueue', () => {
     q.push(2)
     expect(q.pop()).toBe(3)
   })
+
+  it('peek returns max without removing', () => {
+    const q = new BoundedPriorityQueue<number>(5, (a, b) => a - b)
+    q.push(1)
+    q.push(3)
+    expect(q.peek()).toBe(3)
+    expect(q.size).toBe(2)
+  })
 })

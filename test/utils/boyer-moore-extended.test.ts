@@ -88,4 +88,8 @@ describe('BoyerMooreExtended', () => {
   it('finds repeated pattern', () => {
     expect(BoyerMooreExtended.search('aaa', 'a')).toEqual([0, 1, 2])
   })
+
+  it('no match returns empty', () => {
+    expect(BoyerMooreExtended.search('abcdef', 'xyz')).toEqual([])
+  })
 })
