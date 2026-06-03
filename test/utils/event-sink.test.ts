@@ -182,4 +182,12 @@ describe('EventSink', () => {
     const sink = new EventSink()
     expect(() => sink.emit('unknown', null)).not.toThrow()
   })
+
+  it('on registers listener', () => {
+    const sink = new EventSink()
+    let received = false
+    sink.on('test', () => { received = true })
+    sink.emit('test', null)
+    expect(received).toBe(true)
+  })
 })

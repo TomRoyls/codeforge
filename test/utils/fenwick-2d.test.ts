@@ -137,4 +137,10 @@ describe('FenwickTree2D', () => {
     const tree = new FenwickTree2D(3, 3);
     expect(tree.query(2, 2)).toBe(0);
   });
+
+  it('update then query returns value', () => {
+    const tree = new FenwickTree2D(3, 3);
+    tree.update(1, 1, 5);
+    expect(tree.query(1, 1)).toBe(5);
+  });
 });

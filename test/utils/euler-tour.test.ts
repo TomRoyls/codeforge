@@ -151,4 +151,10 @@ describe('EulerTour', () => {
     const et = new EulerTour(adj, 0)
     expect(et.isAncestor(1, 2)).toBe(false)
   })
+
+  it('parent of root is itself', () => {
+    const adj = [[1], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.isAncestor(0, 0)).toBe(true)
+  })
 })
