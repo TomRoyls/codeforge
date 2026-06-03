@@ -106,4 +106,9 @@ describe('CartesianProduct', () => {
     const result = CartesianProduct.generate([], ['a'])
     expect(result).toEqual([])
   })
+
+  it('generate single element arrays', () => {
+    const result = CartesianProduct.generate([1], ['a'])
+    expect(result).toEqual([[1, 'a']])
+  })
 })
