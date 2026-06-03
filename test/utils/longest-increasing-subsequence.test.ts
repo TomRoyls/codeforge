@@ -91,4 +91,8 @@ describe('LongestIncreasingSubsequence', () => {
   it('handles single element', () => {
     expect(LongestIncreasingSubsequence.find([42])).toEqual([42])
   })
+
+  it('handles empty array', () => {
+    expect(LongestIncreasingSubsequence.find([])).toEqual([])
+  })
 })

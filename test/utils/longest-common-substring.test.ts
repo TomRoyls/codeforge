@@ -88,4 +88,8 @@ describe('LongestCommonSubstring', () => {
   it('identical strings returns the string', () => {
     expect(LongestCommonSubstring.find('abc', 'abc')).toBe('abc')
   })
+
+  it('no common returns empty', () => {
+    expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
+  })
 })

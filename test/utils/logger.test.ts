@@ -125,4 +125,9 @@ describe('Logger methods', () => {
     const log = new Logger({ level: LogLevel.ERROR, colorize: false })
     expect(() => log.error('error')).not.toThrow()
   })
+
+  it('warn at error level is suppressed', () => {
+    const log = new Logger({ level: LogLevel.ERROR, colorize: false })
+    expect(() => log.warn('warn')).not.toThrow()
+  })
 })
