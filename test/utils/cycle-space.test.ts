@@ -175,4 +175,12 @@ describe('CycleSpace', () => {
     const cs = new CycleSpace(1)
     expect(cs.cycleSpaceDimension()).toBe(0)
   })
+
+  it('triangle has dimension 1', () => {
+    const cs = new CycleSpace(3)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    cs.addEdge(0, 2)
+    expect(cs.cycleSpaceDimension()).toBe(1)
+  })
 })

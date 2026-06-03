@@ -216,4 +216,9 @@ describe('DancingLinks', () => {
     const dlx = new DancingLinks(0, 0)
     expect(dlx).toBeDefined()
   })
+
+  it('solve with no constraints returns empty', () => {
+    const dlx = new DancingLinks(0, 0)
+    expect(dlx).toBeDefined()
+  })
 })
