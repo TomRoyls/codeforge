@@ -174,4 +174,11 @@ describe('MedianMaintenance', () => {
     mm.add(42)
     expect(mm.getMedian()).toBe(42)
   })
+
+  it('two elements returns lower median', () => {
+    const mm = new MedianMaintenance()
+    mm.add(1)
+    mm.add(2)
+    expect(mm.getMedian()).toBe(1)
+  })
 })

@@ -126,4 +126,10 @@ describe('MergeSortTree', () => {
     const result = mst.querySorted(0, 2)
     expect(result).toEqual([1, 2, 3])
   })
+
+  it('single element query', () => {
+    const mst = new MergeSortTree([5, 3, 1])
+    const result = mst.querySorted(1, 1)
+    expect(result).toEqual([3])
+  })
 })

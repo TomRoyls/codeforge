@@ -167,4 +167,10 @@ describe('MergeSortedIterators', () => {
     const merger = new MergeSortedIterators([it1, it2])
     expect(merger.toArray()).toEqual([1, 2, 3, 4, 5, 6])
   })
+
+  it('handles single empty iterator', () => {
+    const it1 = [][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1])
+    expect(merger.toArray()).toEqual([])
+  })
 })

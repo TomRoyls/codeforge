@@ -127,4 +127,8 @@ describe('MillerRabin', () => {
   it('identifies 4 as not prime', () => {
     expect(MillerRabin.isPrime(4)).toBe(false)
   })
+
+  it('identifies 2 as prime', () => {
+    expect(MillerRabin.isPrime(2)).toBe(true)
+  })
 })
