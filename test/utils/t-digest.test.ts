@@ -155,4 +155,10 @@ describe('TDigest', () => {
     const td = new TDigest()
     expect(td.size).toBe(0)
   })
+
+  it('push single value', () => {
+    const td = new TDigest()
+    td.push(42)
+    expect(td.size).toBe(1)
+  })
 })

@@ -179,4 +179,10 @@ describe('TernarySearchTree clear', () => {
     tst.insert('a')
     expect(tst.contains('a')).toBe(true)
   })
+
+  it('contains returns false for missing', () => {
+    const tst = new TernarySearchTree()
+    tst.insert('abc')
+    expect(tst.contains('xyz')).toBe(false)
+  })
 })

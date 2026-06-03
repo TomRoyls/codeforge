@@ -113,4 +113,9 @@ describe('TernarySearch', () => {
     const result = TernarySearch.findMinInteger((x) => (x - 5) * (x - 5), 0, 10)
     expect(result.index).toBe(5)
   })
+
+  it('findMaxInteger finds maximum', () => {
+    const result = TernarySearch.findMaxInteger((x) => -(x - 3) * (x - 3), 0, 10)
+    expect(result.index).toBe(3)
+  })
 })
