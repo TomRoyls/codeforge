@@ -186,4 +186,11 @@ describe('StablePriorityQueue', () => {
     pq.enqueue(2)
     expect(pq.dequeue()).toBe(1)
   })
+
+  it('size tracks elements', () => {
+    const pq = new StablePriorityQueue<number>()
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.size).toBe(2)
+  })
 })

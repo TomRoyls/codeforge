@@ -172,4 +172,10 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([0, 1])
     expect(result.totalWeight).toBe(10)
   })
+
+  it('single terminal needs zero edges', () => {
+    const st = new SteinerTree(3)
+    const result = st.approximateSteiner([0])
+    expect(result.totalWeight).toBe(0)
+  })
 })

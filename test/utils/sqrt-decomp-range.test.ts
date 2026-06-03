@@ -109,4 +109,9 @@ describe('SqrtDecompRange', () => {
     const sd = new SqrtDecompRange([5, 3])
     expect(sd.rangeMin(0, 1)).toBe(3)
   })
+
+  it('rangeSum computes sum', () => {
+    const sd = new SqrtDecompRange([1, 2, 3])
+    expect(sd.rangeSum(0, 2)).toBe(6)
+  })
 })

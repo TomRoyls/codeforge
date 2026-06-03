@@ -136,4 +136,9 @@ describe('StoerWagner', () => {
     sw.addEdge(0, 1, 5)
     expect(sw.minCut()).toBe(5)
   })
+
+  it('single node has zero min cut', () => {
+    const sw = new StoerWagner(1)
+    expect(sw.minCut()).toBe(0)
+  })
 })
