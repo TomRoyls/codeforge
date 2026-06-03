@@ -165,4 +165,9 @@ describe('XorFilter', () => {
     const f = XorFilter.create(['a', 'b', 'c']);
     expect(f.has('a')).toBe(true);
   });
+
+  it('has returns false for non-contained item', () => {
+    const f = XorFilter.create(['x', 'y', 'z']);
+    expect(f.has('a')).toBe(false);
+  });
 });

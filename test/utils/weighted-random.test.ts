@@ -268,4 +268,11 @@ describe('WeightedRandom', () => {
     const result = sampler.sample()
     expect(['a', 'b']).toContain(result)
   })
+
+  it('sample from single item returns that item', () => {
+    const sampler = new WeightedRandom<string>()
+    sampler.add('only', 10)
+    sampler.build()
+    expect(sampler.sample()).toBe('only')
+  })
 })

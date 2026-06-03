@@ -172,4 +172,9 @@ describe('WaveletTree', () => {
     const wt = new WaveletTree([1, 2, 1, 2, 1]);
     expect(wt.rank(1, 5)).toBe(3);
   });
+
+  it('access returns correct element', () => {
+    const wt = new WaveletTree([10, 20, 30]);
+    expect(wt.access(1)).toBe(20);
+  });
 });
