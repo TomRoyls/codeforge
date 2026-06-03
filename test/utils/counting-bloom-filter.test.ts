@@ -181,4 +181,10 @@ describe('CountingBloomFilter clear', () => {
     const bf = new CountingBloomFilter(100)
     expect(bf.has('missing')).toBe(false)
   })
+
+  it('add and has returns true', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('hello')
+    expect(bf.has('hello')).toBe(true)
+  })
 })

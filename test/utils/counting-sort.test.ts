@@ -103,4 +103,8 @@ describe('CountingSort', () => {
   it('sorts already sorted', () => {
     expect(CountingSort.sort([1, 2, 3])).toEqual([1, 2, 3])
   })
+
+  it('handles single element', () => {
+    expect(CountingSort.sort([42])).toEqual([42])
+  })
 })
