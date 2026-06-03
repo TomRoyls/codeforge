@@ -179,4 +179,9 @@ describe('LRUCache3', () => {
     cache.set('a', 1)
     expect(cache.has('a')).toBe(true)
   })
+
+  it('get returns undefined for missing key', () => {
+    const cache = new LRUCache3<string, number>(5)
+    expect(cache.get('missing')).toBeUndefined()
+  })
 })

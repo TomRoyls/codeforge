@@ -120,4 +120,9 @@ describe('Logger methods', () => {
     const log = new Logger({ level: LogLevel.WARN, colorize: false })
     expect(() => log.warn('warning')).not.toThrow()
   })
+
+  it('error outputs without throwing', () => {
+    const log = new Logger({ level: LogLevel.ERROR, colorize: false })
+    expect(() => log.error('error')).not.toThrow()
+  })
 })
