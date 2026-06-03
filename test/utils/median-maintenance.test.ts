@@ -168,4 +168,10 @@ describe('MedianMaintenance', () => {
     mm.add(9)
     expect(mm.getMedian()).toBe(5)
   })
+
+  it('single element median is itself', () => {
+    const mm = new MedianMaintenance()
+    mm.add(42)
+    expect(mm.getMedian()).toBe(42)
+  })
 })

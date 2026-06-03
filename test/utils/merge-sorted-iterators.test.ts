@@ -160,4 +160,11 @@ describe('MergeSortedIterators', () => {
     const merger = new MergeSortedIterators([it1])
     expect(merger.toArray()).toEqual([1, 2, 3])
   })
+
+  it('merges two sorted iterators', () => {
+    const it1 = [1, 3, 5][Symbol.iterator]()
+    const it2 = [2, 4, 6][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    expect(merger.toArray()).toEqual([1, 2, 3, 4, 5, 6])
+  })
 })

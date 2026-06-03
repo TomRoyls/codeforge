@@ -120,4 +120,10 @@ describe('MergeSortTree', () => {
     const mst = new MergeSortTree([1, 2, 3])
     expect(mst).toBeDefined()
   })
+
+  it('querySorted returns sorted range', () => {
+    const mst = new MergeSortTree([3, 1, 2])
+    const result = mst.querySorted(0, 2)
+    expect(result).toEqual([1, 2, 3])
+  })
 })
