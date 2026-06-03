@@ -144,4 +144,9 @@ describe('PersistentStack', () => {
     const s = PersistentStack.empty<number>()
     expect(s.pop()).toBe(s)
   })
+
+  it('push and peek roundtrip', () => {
+    const s = PersistentStack.empty<number>().push(42)
+    expect(s.peek()).toBe(42)
+  })
 })

@@ -107,4 +107,10 @@ describe('PollardRho', () => {
     const factors = PollardRho.factorize(7n)
     expect(factors).toEqual([7n])
   })
+
+  it('factorize 12 returns correct factors', () => {
+    const factors = PollardRho.factorize(12n)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(12n)
+  })
 })
