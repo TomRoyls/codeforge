@@ -166,4 +166,9 @@ describe('ParallelBinarySearch', () => {
     ])
     expect(results[0]).toBeGreaterThanOrEqual(0)
   })
+
+  it('empty queries returns empty', () => {
+    const results = ParallelBinarySearch.search([])
+    expect(results).toEqual([])
+  })
 })

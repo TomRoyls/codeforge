@@ -109,4 +109,9 @@ describe('PalindromicTree', () => {
     const pt = PalindromicTree.from('aa')
     expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(2)
   })
+
+  it('single char has one palindrome', () => {
+    const pt = PalindromicTree.from('a')
+    expect(pt.distinctPalindromes).toBeGreaterThanOrEqual(1)
+  })
 })

@@ -106,4 +106,8 @@ describe('PascalTriangle', () => {
   it('row 2 is [1, 2, 1]', () => {
     expect(PascalTriangle.row(2)).toEqual([1, 2, 1])
   })
+
+  it('row 0 is [1]', () => {
+    expect(PascalTriangle.row(0)).toEqual([1])
+  })
 })
