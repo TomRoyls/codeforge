@@ -127,4 +127,8 @@ describe('compareKeys', () => {
   it('returns negative for smaller string', () => {
     expect(compareKeys('a', 'b')).toBeLessThan(0)
   })
+
+  it('returns positive for larger string', () => {
+    expect(compareKeys('b', 'a')).toBeGreaterThan(0)
+  })
 })

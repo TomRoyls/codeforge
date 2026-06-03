@@ -113,4 +113,10 @@ describe('extractRuleOptions', () => {
     const result = extractRuleOptions([{ x: 10 }], { x: 1, y: 2 })
     expect(result.x).toBe(10)
   })
+
+  it('uses default when not overridden', () => {
+    const result = extractRuleOptions([], { x: 1, y: 2 })
+    expect(result.x).toBe(1)
+    expect(result.y).toBe(2)
+  })
 })

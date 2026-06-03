@@ -171,4 +171,10 @@ describe('OrderedSet', () => {
     os.add(42)
     expect(os.has(42)).toBe(true)
   })
+
+  it('has returns false for non-member', () => {
+    const os = new OrderedSet<number>()
+    os.add(1)
+    expect(os.has(99)).toBe(false)
+  })
 })

@@ -154,4 +154,9 @@ describe('OfflineDynamicConnectivity', () => {
     const result = odc.solve()
     expect(result).toEqual([])
   })
+
+  it('constructor takes node count', () => {
+    const odc = new OfflineDynamicConnectivity(5)
+    expect(odc).toBeDefined()
+  })
 })
