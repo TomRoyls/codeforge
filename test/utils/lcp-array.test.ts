@@ -126,4 +126,10 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'ab')
     expect(lcp).toEqual([0])
   })
+
+  it('single character has empty LCP', () => {
+    const sa = [0]
+    const lcp = LCPArray.build(sa, 'a')
+    expect(lcp).toEqual([])
+  })
 })

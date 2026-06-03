@@ -94,4 +94,8 @@ describe('LevenshteinDistance', () => {
   it('distance for completely different is max length', () => {
     expect(LevenshteinDistance.distance('abc', 'xyz')).toBe(3)
   })
+
+  it('distance for identical is 0', () => {
+    expect(LevenshteinDistance.distance('abc', 'abc')).toBe(0)
+  })
 })

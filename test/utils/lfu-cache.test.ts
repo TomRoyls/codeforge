@@ -172,4 +172,11 @@ describe('LFUCache', () => {
     expect(cache.get('a')).toBe(undefined)
     expect(cache.get('b')).toBe(2)
   })
+
+  it('set updates existing key', () => {
+    const cache = new LFUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('a', 10)
+    expect(cache.get('a')).toBe(10)
+  })
 })
