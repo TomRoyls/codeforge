@@ -143,4 +143,10 @@ describe('CoordinateCompressor', () => {
     const cc = new CoordinateCompressor([5, 3, 5, 3, 1])
     expect(cc.size).toBe(3)
   })
+
+  it('compress returns 0-based indices', () => {
+    const cc = new CoordinateCompressor([10, 20, 30])
+    expect(cc.compress(10)).toBe(0)
+    expect(cc.compress(20)).toBe(1)
+  })
 })

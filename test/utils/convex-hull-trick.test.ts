@@ -159,4 +159,10 @@ describe('ConvexHullTrick', () => {
     cht.addLine(0, 5)
     expect(cht.query(1)).toBe(1)
   })
+
+  it('query at 0 returns intercept', () => {
+    const cht = new ConvexHullTrick()
+    cht.addLine(2, 5)
+    expect(cht.query(0)).toBe(5)
+  })
 })

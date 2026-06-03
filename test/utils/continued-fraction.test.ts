@@ -110,4 +110,9 @@ describe('ContinuedFraction', () => {
     const result = ContinuedFraction.fromNumber(5)
     expect(result[0]).toBe(5)
   })
+
+  it('fromNumber for simple fraction', () => {
+    const result = ContinuedFraction.fromNumber(1.5)
+    expect(result.length).toBeGreaterThanOrEqual(2)
+  })
 })
