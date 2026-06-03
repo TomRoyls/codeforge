@@ -177,4 +177,9 @@ describe('ApproximateSet', () => {
     set.add('hello')
     expect(set.has('hello')).toBe(true)
   })
+
+  it('has returns false for non-added item', () => {
+    const set = new ApproximateSet(100)
+    expect(set.has('world')).toBe(false)
+  })
 })

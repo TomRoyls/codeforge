@@ -147,4 +147,11 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('abc')
     expect(result.size).toBe(0)
   })
+
+  it('single pattern match', () => {
+    const ac = new AhoCorasickMulti(['abc'])
+    const result = ac.search('xabcx')
+    expect(result.size).toBeGreaterThanOrEqual(1)
+    expect(result.get(0)!.length).toBeGreaterThanOrEqual(1)
+  })
 })

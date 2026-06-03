@@ -181,4 +181,10 @@ describe('TwoSAT', () => {
     ts.addClause(0, false, 0, true)
     expect(ts.solve()).not.toBeNull()
   })
+
+  it('two variables with consistent clauses', () => {
+    const ts = new TwoSAT(2)
+    ts.addClause(0, true, 1, true)
+    expect(ts.solve()).not.toBeNull()
+  })
 })
