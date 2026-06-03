@@ -168,4 +168,9 @@ describe('LinearProbingHashTable', () => {
     ht.set('key', 42)
     expect(ht.get('key')).toBe(42)
   })
+
+  it('has returns false for missing key', () => {
+    const ht = new LinearProbingHashTable<string, number>(16)
+    expect(ht.has('missing')).toBe(false)
+  })
 })

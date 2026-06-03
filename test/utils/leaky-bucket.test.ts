@@ -165,4 +165,9 @@ describe('LeakyBucket', () => {
     expect(bucket.pour(5)).toBe(true)
     expect(bucket.pour(1)).toBe(false)
   })
+
+  it('empty bucket pour returns true', () => {
+    const bucket = new LeakyBucket(5, 1000)
+    expect(bucket.pour(1)).toBe(true)
+  })
 })

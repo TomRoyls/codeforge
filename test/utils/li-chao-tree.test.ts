@@ -156,4 +156,10 @@ describe('LiChaoTree', () => {
     tree.insert(1, 0)
     expect(tree.query(5)).toBe(5)
   })
+
+  it('query at 0 returns intercept', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(2, 3)
+    expect(tree.query(0)).toBe(3)
+  })
 })

@@ -179,4 +179,9 @@ describe('LFUCache', () => {
     cache.set('a', 10)
     expect(cache.get('a')).toBe(10)
   })
+
+  it('get returns undefined for missing key', () => {
+    const cache = new LFUCache<string, number>(3)
+    expect(cache.get('missing')).toBeUndefined()
+  })
 })
