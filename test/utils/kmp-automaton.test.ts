@@ -104,4 +104,9 @@ describe('KMPAutomaton', () => {
     const kmp = new KMPAutomaton('xyz')
     expect(kmp.search('abcdef')).toEqual([])
   })
+
+  it('match at start returns 0', () => {
+    const kmp = new KMPAutomaton('abc')
+    expect(kmp.search('abcdef')).toEqual([0])
+  })
 })

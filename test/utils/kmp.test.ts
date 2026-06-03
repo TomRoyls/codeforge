@@ -90,5 +90,9 @@ describe('KMP', () => {
     it('returns empty for no match', () => {
       expect(KMP.findAllOverlapping('ABC', 'XYZ')).toEqual([])
     })
+
+    it('finds single match', () => {
+      expect(KMP.search('xabcy', 'abc')).toEqual([1])
+    })
   })
 })
