@@ -114,4 +114,8 @@ describe('SlidingWindowMin', () => {
   it('solve handles window equals array length', () => {
     expect(SlidingWindowMin.solve([3, 1, 4], 3)).toEqual([1])
   })
+
+  it('solve single element window', () => {
+    expect(SlidingWindowMin.solve([3, 1, 4], 1)).toEqual([3, 1, 4])
+  })
 })

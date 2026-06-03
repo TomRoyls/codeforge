@@ -171,4 +171,12 @@ describe('SkewHeap', () => {
     const h = new SkewHeap<number>()
     expect(h.pop()).toBeUndefined()
   })
+
+  it('push and pop returns min', () => {
+    const h = new SkewHeap<number>()
+    h.push(3)
+    h.push(1)
+    h.push(2)
+    expect(h.pop()).toBe(1)
+  })
 })
