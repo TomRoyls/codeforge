@@ -160,4 +160,10 @@ describe('MisraGries', () => {
     mg.process('a')
     expect(mg.getCount('a')).toBeGreaterThanOrEqual(1)
   })
+
+  it('returns 0 for unseen element', () => {
+    const mg = new MisraGries(2)
+    mg.process('a')
+    expect(mg.getCount('z')).toBe(0)
+  })
 })

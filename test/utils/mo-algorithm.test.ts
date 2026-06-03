@@ -396,4 +396,18 @@ describe('MoAlgorithm', () => {
     )
     expect(answers).toEqual([10])
   })
+
+  it('empty queries returns empty answers', () => {
+    const answers = MoAlgorithm.solve(
+      [1, 2, 3],
+      [],
+      {
+        add: () => {},
+        remove: () => {},
+        getAnswer: () => ({ sum: 0 }),
+      },
+      { sum: 0 },
+    )
+    expect(answers).toEqual([])
+  })
 })

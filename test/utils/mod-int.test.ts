@@ -121,4 +121,9 @@ describe('ModInt', () => {
     const a = new ModInt(3, 7)
     expect(a.add(4).value).toBe(0)
   })
+
+  it('subtract works correctly', () => {
+    const a = new ModInt(5, 7)
+    expect(a.sub(3).value).toBe(2)
+  })
 })

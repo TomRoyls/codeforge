@@ -272,4 +272,10 @@ describe('MoAlgorithmTree', () => {
     const mo = new MoAlgorithmTree(adj, [])
     expect(mo).toBeDefined()
   })
+
+  it('single node tree handles empty queries', () => {
+    const adj: number[][] = [[], []]
+    const mo = new MoAlgorithmTree(adj, [])
+    expect(mo).toBeDefined()
+  })
 })
