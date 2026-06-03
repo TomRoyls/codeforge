@@ -174,4 +174,9 @@ describe('IntegerIntervalTree', () => {
     expect(result.length).toBe(1)
     expect(result[0]!.value).toBe('data')
   })
+
+  it('empty tree query returns empty', () => {
+    const tree = new IntegerIntervalTree<string>()
+    expect(tree.queryPoint(5)).toEqual([])
+  })
 })
