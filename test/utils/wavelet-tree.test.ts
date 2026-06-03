@@ -167,4 +167,9 @@ describe('WaveletTree', () => {
     const wt = new WaveletTree([2, 2, 2]);
     expect(wt.rank(1, 3)).toBe(0);
   });
+
+  it('rank counts occurrences correctly', () => {
+    const wt = new WaveletTree([1, 2, 1, 2, 1]);
+    expect(wt.rank(1, 5)).toBe(3);
+  });
 });

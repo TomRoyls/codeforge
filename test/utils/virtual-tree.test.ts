@@ -174,4 +174,10 @@ describe('VirtualTree', () => {
     const { vtree } = vt.build([0, 1])
     expect(vtree).toBeDefined()
   })
+
+  it('single vertex virtual tree', () => {
+    const vt = new VirtualTree(1)
+    const { vtree } = vt.build([0])
+    expect(vtree).toBeDefined()
+  })
 })
