@@ -109,4 +109,8 @@ describe('BigIntUtils', () => {
     const inv = BigIntUtils.modInverse(3n, 7n)
     expect((3n * inv) % 7n).toBe(1n)
   })
+
+  it('gcd of 12n and 8n is 4n', () => {
+    expect(BigIntUtils.gcd(12n, 8n)).toBe(4n)
+  })
 })

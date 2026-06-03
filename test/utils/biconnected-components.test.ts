@@ -183,4 +183,12 @@ describe('BiconnectedComponents', () => {
     const comps = bc.findComponents()
     expect(comps.length).toBeGreaterThan(0)
   })
+
+  it('bridge in chain is detected', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    const comps = bc.findComponents()
+    expect(comps.length).toBeGreaterThanOrEqual(2)
+  })
 })

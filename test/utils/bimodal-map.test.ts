@@ -185,4 +185,11 @@ describe('BimodalMap', () => {
     expect(bm.has('a')).toBe(true)
     expect(bm.has('b')).toBe(false)
   })
+
+  it('delete removes entry', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.delete('a')
+    expect(bm.has('a')).toBe(false)
+  })
 })

@@ -157,4 +157,11 @@ describe('BiMap', () => {
     bm.clear()
     expect(bm.size).toBe(0)
   })
+
+  it('size tracks entries', () => {
+    const bm = new BiMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    expect(bm.size).toBe(2)
+  })
 })
