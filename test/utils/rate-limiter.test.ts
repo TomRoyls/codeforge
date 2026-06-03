@@ -190,4 +190,11 @@ describe('RateLimiter', () => {
     const result = rl.tryAcquire()
     expect(result.allowed).toBe(true)
   })
+
+  it('second immediate acquire succeeds', () => {
+    const rl = new RateLimiter({ maxRequests: 5, windowMs: 1000 })
+    rl.tryAcquire()
+    const result = rl.tryAcquire()
+    expect(result.allowed).toBe(true)
+  })
 })

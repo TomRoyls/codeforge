@@ -197,4 +197,10 @@ describe('RedBlackTree root & clear', () => {
     tree.insert(1, 'a')
     expect(tree.find(1)).toBe('a')
   })
+
+  it('find missing key returns undefined', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.find(99)).toBeUndefined()
+  })
 })

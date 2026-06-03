@@ -164,4 +164,10 @@ describe('RangeUpdatePointQuery', () => {
     rq.addRange(1, 2, 2)
     expect(rq.build()).toEqual([1, 3, 3])
   })
+
+  it('single point update', () => {
+    const rq = new RangeUpdatePointQuery(3)
+    rq.addRange(1, 1, 10)
+    expect(rq.build()).toEqual([0, 10, 0])
+  })
 })

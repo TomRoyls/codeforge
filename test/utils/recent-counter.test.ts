@@ -173,4 +173,11 @@ describe('RecentCounter', () => {
     rc.ping(100)
     expect(rc.count(2000)).toBe(0)
   })
+
+  it('ping and count in same window', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(100)
+    rc.ping(200)
+    expect(rc.count(300)).toBe(2)
+  })
 })
