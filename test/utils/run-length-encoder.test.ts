@@ -138,4 +138,12 @@ describe('RunLengthEncoder', () => {
     expect(enc.get(0)).toBe(obj1)
     expect(enc.countOf(obj1)).toBe(2)
   })
+
+  it('totalLength is correct', () => {
+    const enc = new RunLengthEncoder<{ v: number }>()
+    enc.append({ v: 1 })
+    enc.append({ v: 1 })
+    enc.append({ v: 2 })
+    expect(enc.length).toBe(3)
+  })
 })

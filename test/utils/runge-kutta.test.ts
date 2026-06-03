@@ -138,4 +138,10 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(5, 3)
   })
+
+  it('solve constant zero stays zero', () => {
+    const result = RungeKutta.solve(() => 0, 0, 0, 5, 1)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(0, 3)
+  })
 })

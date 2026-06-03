@@ -117,4 +117,8 @@ describe('RunLength2D', () => {
   it('encode empty array returns empty', () => {
     expect(RunLength2D.encode([])).toEqual([])
   })
+
+  it('encode single row', () => {
+    expect(RunLength2D.encode([[1, 1, 2]])).toBeDefined()
+  })
 })

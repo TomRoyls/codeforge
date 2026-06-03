@@ -90,4 +90,8 @@ describe('RomanNumeral', () => {
   it('handles 4', () => {
     expect(RomanNumeral.toRoman(4)).toBe('IV')
   })
+
+  it('handles 9', () => {
+    expect(RomanNumeral.toRoman(9)).toBe('IX')
+  })
 })
