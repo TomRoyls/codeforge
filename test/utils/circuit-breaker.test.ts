@@ -193,4 +193,10 @@ describe('CircuitBreaker - canAttempt', () => {
     const stats = cb.getStats()
     expect(stats.failures).toBe(0)
   })
+
+  it('initial state is closed', () => {
+    const cb = new CircuitBreaker({ maxFailures: 3, resetTimeout: 1000 })
+    const stats = cb.getStats()
+    expect(stats.state).toBe('closed')
+  })
 })

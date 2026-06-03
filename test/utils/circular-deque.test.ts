@@ -240,4 +240,9 @@ describe('CircularDeque', () => {
     deque.pushFront(2)
     expect(deque.popFront()).toBe(2)
   })
+
+  it('empty deque popFront returns undefined', () => {
+    const deque = new CircularDeque<number>(5)
+    expect(deque.popFront()).toBeUndefined()
+  })
 })
