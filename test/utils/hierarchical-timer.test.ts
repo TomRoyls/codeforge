@@ -197,4 +197,9 @@ describe('HierarchicalTimer', () => {
     timer.end('op')
     expect(typeof timer.format()).toBe('string')
   })
+
+  it('timer has start method', () => {
+    const timer = new HierarchicalTimer()
+    expect(typeof timer.start).toBe('function')
+  })
 })

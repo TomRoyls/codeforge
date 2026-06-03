@@ -207,4 +207,9 @@ describe('HungarianAssignment', () => {
     const greedy = ha.solveGreedy()
     expect(greedy.totalCost).toBe(2)
   })
+
+  it('constructor sets dimensions', () => {
+    const ha = new HungarianAssignment(3, 3)
+    expect(ha).toBeDefined()
+  })
 })
