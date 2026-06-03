@@ -165,4 +165,10 @@ describe('BinaryIndexedTree2D', () => {
     bit.update(1, 1, 4)
     expect(bit.query(1, 1)).toBe(10)
   })
+
+  it('query single cell returns its value', () => {
+    const bit = new BinaryIndexedTree2D(2, 2)
+    bit.update(0, 0, 5)
+    expect(bit.query(0, 0)).toBe(5)
+  })
 })

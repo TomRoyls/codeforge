@@ -200,4 +200,12 @@ describe('BinaryHeap stress', () => {
     heap.push(2)
     expect(heap.size).toBe(2)
   })
+
+  it('pop returns minimum element', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    heap.push(2)
+    expect(heap.pop()).toBe(1)
+  })
 })

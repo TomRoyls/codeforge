@@ -176,4 +176,10 @@ describe('BinaryLifting', () => {
     const bl = new BinaryLifting(adj, 0)
     expect(bl.kthAncestor(0, 1)).toBe(-1)
   })
+
+  it('parent of child is correct', () => {
+    const adj = [[1], [0]]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(1, 1)).toBe(0)
+  })
 })

@@ -192,4 +192,11 @@ describe('BimodalMap', () => {
     bm.delete('a')
     expect(bm.has('a')).toBe(false)
   })
+
+  it('size reflects current entries', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    expect(bm.size).toBe(2)
+  })
 })
