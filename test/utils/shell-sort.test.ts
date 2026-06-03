@@ -99,4 +99,8 @@ describe('ShellSort', () => {
   it('handles single element', () => {
     expect(ShellSort.sort([42])).toEqual([42])
   })
+
+  it('handles empty array', () => {
+    expect(ShellSort.sort([])).toEqual([])
+  })
 })

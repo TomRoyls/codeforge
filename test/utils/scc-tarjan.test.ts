@@ -183,4 +183,10 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(3)
   })
+
+  it('single node graph has one SCC', () => {
+    const scc = new SCCTarjan(1)
+    const comps = scc.solve()
+    expect(comps.length).toBe(1)
+  })
 })

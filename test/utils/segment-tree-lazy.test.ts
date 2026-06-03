@@ -154,4 +154,10 @@ describe('LazySegmentTree', () => {
     tree.rangeUpdate(0, 2, 10)
     expect(tree.rangeQuery(0, 2)).toBeGreaterThanOrEqual(10)
   })
+
+  it('point query after range update', () => {
+    const tree = new LazySegmentTree([1, 2, 3])
+    tree.rangeUpdate(0, 0, 5)
+    expect(tree.rangeQuery(0, 0)).toBeGreaterThanOrEqual(5)
+  })
 })
