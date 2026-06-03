@@ -200,4 +200,11 @@ describe('BiconnectedComponents', () => {
     const comps = bc.findComponents()
     expect(comps.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('two nodes with one edge has one component', () => {
+    const bc = new BiconnectedComponents(2)
+    bc.addEdge(0, 1)
+    const comps = bc.findComponents()
+    expect(comps.length).toBeGreaterThanOrEqual(1)
+  })
 })

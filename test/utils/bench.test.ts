@@ -260,4 +260,9 @@ describe('bench', () => {
     expect(formatted).toContain('[1.00x]')
     expect(formatted).toContain('[2.00x]')
   })
+
+  it('formatSuite with empty array returns string', () => {
+    const result = formatSuite([])
+    expect(typeof result).toBe('string')
+  })
 })

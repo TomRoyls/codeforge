@@ -117,4 +117,8 @@ describe('BigIntUtils', () => {
   it('lcm of 4n and 6n is 12n', () => {
     expect(BigIntUtils.lcm(4n, 6n)).toBe(12n)
   })
+
+  it('lcm of 0n and any is 0n', () => {
+    expect(BigIntUtils.lcm(0n, 5n)).toBe(0n)
+  })
 })

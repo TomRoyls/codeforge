@@ -200,4 +200,9 @@ describe('BellmanFord', () => {
     const { distances } = BellmanFord.shortestPath(edges, 3, 0)
     expect(distances.get(2)).toBe(Infinity)
   })
+
+  it('single node distance is 0', () => {
+    const { distances } = BellmanFord.shortestPath([], 1, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })
