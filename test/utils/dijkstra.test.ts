@@ -203,4 +203,11 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(1)).toBe(3)
   })
+
+  it('source node has distance 0', () => {
+    const adj = new Map<number, [number, number][]>()
+    adj.set(0, [[1, 5]])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })

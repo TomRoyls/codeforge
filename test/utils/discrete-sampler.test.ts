@@ -148,4 +148,9 @@ describe('DiscreteSampler', () => {
       expect(idx).toBeLessThan(2)
     }
   })
+
+  it('single item always samples 0', () => {
+    const sampler = new DiscreteSampler([1])
+    expect(sampler.sample()).toBe(0)
+  })
 })

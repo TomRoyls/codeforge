@@ -179,4 +179,10 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
     expect(dist[2]).toBe(Infinity)
   })
+
+  it('returns zero distance to source', () => {
+    const edges = [{ from: 0, to: 1, weight: 3 }]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
+    expect(dist[0]).toBe(0)
+  })
 })
