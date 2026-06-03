@@ -175,4 +175,9 @@ describe('LRUEvictionCache', () => {
     cache.set('key', 42)
     expect(cache.get('key')).toBe(42)
   })
+
+  it('get returns undefined for missing key', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    expect(cache.get('missing')).toBeUndefined()
+  })
 })
