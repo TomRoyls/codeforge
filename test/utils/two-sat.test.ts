@@ -183,4 +183,10 @@ describe('TwoSAT', () => {
     sat.addClause(0, true, 0, true)
     expect(sat.solve()).not.toBeNull()
   })
+
+  it('contradictory clauses are unsatisfiable', () => {
+    const sat = new TwoSAT(1)
+    sat.addClause(0, true, 0, false)
+    expect(sat.solve()).not.toBeNull()
+  })
 })

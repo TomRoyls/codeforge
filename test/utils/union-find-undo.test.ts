@@ -294,4 +294,9 @@ describe('UnionFindUndo', () => {
     expect(dsu.componentCount).toBe(1)
     expect(dsu.getSize(0)).toBe(10)
   })
+
+  it('connected returns false for separate sets', () => {
+    const dsu = new UnionFindUndo(3)
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
 })

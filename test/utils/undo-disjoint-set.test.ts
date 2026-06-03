@@ -194,4 +194,9 @@ describe('UndoDisjointSet', () => {
     const dsu = new UndoDisjointSet(3)
     expect(dsu.size).toBe(3)
   })
+
+  it('connected returns false for separate sets', () => {
+    const dsu = new UndoDisjointSet(3)
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
 })

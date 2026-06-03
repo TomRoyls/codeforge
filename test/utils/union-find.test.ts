@@ -211,4 +211,10 @@ describe('UnionFind clear & reset', () => {
     expect(uf.connected(0, 1)).toBe(true)
     expect(uf.setCount).toBe(2)
   })
+
+  it('find returns same root for connected', () => {
+    const uf = new UnionFind({ initialCapacity: 3 })
+    uf.union(0, 1)
+    expect(uf.find(0)).toBe(uf.find(1))
+  })
 })

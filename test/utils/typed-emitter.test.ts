@@ -199,4 +199,9 @@ describe('TypedEventEmitter - max listeners', () => {
     emitter.emit('data', 1)
     expect(count).toBe(0)
   })
+
+  it('emit with no listeners does not throw', () => {
+    const emitter = new TypedEventEmitter()
+    expect(() => emitter.emit('data', 42)).not.toThrow()
+  })
 })
