@@ -184,4 +184,9 @@ describe('CountingBloomFilter2', () => {
     filter.add('hello')
     expect(filter.contains('hello')).toBe(true)
   })
+
+  it('contains returns false for absent', () => {
+    const filter = new CountingBloomFilter2(100)
+    expect(filter.contains('missing')).toBe(false)
+  })
 })

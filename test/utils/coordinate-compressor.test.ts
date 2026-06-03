@@ -138,4 +138,9 @@ describe('CoordinateCompressor', () => {
     expect(cc.decompress(0)).toBe(10)
     expect(cc.decompress(2)).toBe(30)
   })
+
+  it('size returns number of unique values', () => {
+    const cc = new CoordinateCompressor([5, 3, 5, 3, 1])
+    expect(cc.size).toBe(3)
+  })
 })
