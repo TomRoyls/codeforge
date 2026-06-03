@@ -133,4 +133,9 @@ describe('fromThrowable', () => {
     const mapped = r.map((x: number) => x * 2)
     expect(mapped.isOk()).toBe(true)
   })
+
+  it('ok unwrap returns value', () => {
+    const r = ok(42)
+    expect(r.unwrap()).toBe(42)
+  })
 })

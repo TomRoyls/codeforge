@@ -187,4 +187,11 @@ describe('ReservoirSampler', () => {
     const sampler = new ReservoirSampler<number>(5)
     expect(sampler.sample).toEqual([])
   })
+
+  it('sampler with pool 1 keeps last', () => {
+    const sampler = new ReservoirSampler<number>(1)
+    sampler.add(1)
+    sampler.add(2)
+    expect(sampler.sample).toEqual([2])
+  })
 })

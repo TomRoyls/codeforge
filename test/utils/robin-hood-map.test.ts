@@ -165,4 +165,9 @@ describe('RobinHopMap', () => {
     map.set('x', 42)
     expect(map.has('x')).toBe(true)
   })
+
+  it('has returns false for missing key', () => {
+    const map = new RobinHopMap<string, number>()
+    expect(map.has('missing')).toBe(false)
+  })
 })

@@ -240,4 +240,14 @@ describe('retryAsync - edge cases', () => {
     expect(result.isErr()).toBe(true)
     expect(calls).toBe(3)
   })
+
+  it('succeeds on first try', async () => {
+    let calls = 0
+    const result = await retryAsync(async () => {
+      calls++
+      return 42
+    }, { maxRetries: 2, delay: 1 })
+    expect(result.isOk()).toBe(true)
+    expect(calls).toBe(1)
+  })
 })
