@@ -139,4 +139,9 @@ describe('CartesianTree', () => {
     const tree = CartesianTree.fromArray([42])
     expect(tree.size).toBe(1)
   })
+
+  it('fromArray with empty array has size 0', () => {
+    const tree = CartesianTree.fromArray([])
+    expect(tree.size).toBe(0)
+  })
 })

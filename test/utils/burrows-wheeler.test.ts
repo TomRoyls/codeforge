@@ -151,4 +151,10 @@ describe('BurrowsWheelerTransform', () => {
     expect(transformed.data).toBe('a')
     expect(transformed.index).toBe(0)
   })
+
+  it('roundtrip banana', () => {
+    const transformed = BurrowsWheelerTransform.transform('banana')
+    const recovered = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(recovered).toBe('banana')
+  })
 })

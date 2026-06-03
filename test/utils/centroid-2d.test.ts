@@ -150,4 +150,10 @@ describe('Centroid2D', () => {
     expect(c.x).toBeCloseTo(1, 5)
     expect(c.y).toBeCloseTo(1, 5)
   })
+
+  it('single point is its own centroid', () => {
+    const c = Centroid2D.compute([{ x: 5, y: 10 }])
+    expect(c.x).toBeCloseTo(5, 5)
+    expect(c.y).toBeCloseTo(10, 5)
+  })
 })
