@@ -167,4 +167,12 @@ describe('PairHeap', () => {
     const h = new PairHeap<number>()
     expect(h.pop()).toBeUndefined()
   })
+
+  it('push and pop returns min', () => {
+    const h = new PairHeap<number>()
+    h.push(3)
+    h.push(1)
+    h.push(2)
+    expect(h.pop()).toBe(1)
+  })
 })

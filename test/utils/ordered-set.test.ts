@@ -177,4 +177,12 @@ describe('OrderedSet', () => {
     os.add(1)
     expect(os.has(99)).toBe(false)
   })
+
+  it('size tracks elements', () => {
+    const os = new OrderedSet<number>()
+    os.add(1)
+    os.add(2)
+    os.add(3)
+    expect(os.size).toBe(3)
+  })
 })

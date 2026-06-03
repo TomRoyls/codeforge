@@ -119,4 +119,9 @@ describe('extractRuleOptions', () => {
     expect(result.x).toBe(1)
     expect(result.y).toBe(2)
   })
+
+  it('extractRuleOptions uses defaults for empty rules', () => {
+    const result = extractRuleOptions([], { a: 10 })
+    expect(result.a).toBe(10)
+  })
 })
