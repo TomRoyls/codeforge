@@ -156,4 +156,13 @@ describe('BinaryIndexedTree2D', () => {
     bit.update(1, 1, 5)
     expect(bit.query(1, 1)).toBe(5)
   })
+
+  it('query full range returns sum', () => {
+    const bit = new BinaryIndexedTree2D(2, 2)
+    bit.update(0, 0, 1)
+    bit.update(0, 1, 2)
+    bit.update(1, 0, 3)
+    bit.update(1, 1, 4)
+    expect(bit.query(1, 1)).toBe(10)
+  })
 })

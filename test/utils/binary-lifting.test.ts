@@ -170,4 +170,10 @@ describe('BinaryLifting', () => {
     const bl = new BinaryLifting(adj, 0)
     expect(bl.lca(1, 1)).toBe(1)
   })
+
+  it('kthAncestor of root is -1', () => {
+    const adj = [[1], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(0, 1)).toBe(-1)
+  })
 })

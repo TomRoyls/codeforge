@@ -95,4 +95,8 @@ describe('BinaryExponentiation', () => {
   it('power of 1 exponent is base', () => {
     expect(BinaryExponentiation.power(7n, 1n, 100n)).toBe(7n)
   })
+
+  it('power of 0 exponent is 1', () => {
+    expect(BinaryExponentiation.power(5n, 0n, 100n)).toBe(1n)
+  })
 })

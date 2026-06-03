@@ -165,4 +165,10 @@ describe('BinaryTrie', () => {
     bt.remove(5)
     expect(bt.find(5)).toBe(true)
   })
+
+  it('find returns true for existing', () => {
+    const bt = new BinaryTrie()
+    bt.insert(1)
+    expect(bt.find(1)).toBe(true)
+  })
 })

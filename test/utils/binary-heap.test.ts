@@ -193,4 +193,11 @@ describe('BinaryHeap stress', () => {
     const heap = new BinaryHeap<number>()
     expect(heap.peek()).toBeUndefined()
   })
+
+  it('size tracks elements', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    expect(heap.size).toBe(2)
+  })
 })
