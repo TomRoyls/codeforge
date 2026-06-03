@@ -174,4 +174,9 @@ describe('HeavyKeeper', () => {
     hk.update('key', 1)
     expect(hk.isEmpty()).toBe(false)
   })
+
+  it('estimate returns 0 for unseen key', () => {
+    const hk = new HeavyKeeper(10, 0.9)
+    expect(hk.estimate('unseen')).toBe(0)
+  })
 })

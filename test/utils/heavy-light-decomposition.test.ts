@@ -318,4 +318,10 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj, 0)
     expect(hld.pathDistance(0, 0)).toBe(0)
   })
+
+  it('two node chain decomposes', () => {
+    const adj: number[][] = [[1], [0]]
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.pathDistance(0, 1)).toBeGreaterThanOrEqual(0)
+  })
 })

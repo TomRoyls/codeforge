@@ -161,4 +161,9 @@ describe('HashMapOpen', () => {
     map.set('key', 42)
     expect(map.get('key')).toBe(42)
   })
+
+  it('get returns undefined for missing key', () => {
+    const map = new HashMapOpen<string, number>()
+    expect(map.get('missing')).toBeUndefined()
+  })
 })
