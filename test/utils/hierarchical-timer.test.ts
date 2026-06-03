@@ -202,4 +202,11 @@ describe('HierarchicalTimer', () => {
     const timer = new HierarchicalTimer()
     expect(typeof timer.start).toBe('function')
   })
+
+  it('start and end work', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('test')
+    timer.end('test')
+    expect(timer).toBeDefined()
+  })
 })

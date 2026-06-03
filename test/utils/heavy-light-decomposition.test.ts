@@ -312,4 +312,10 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj, 0)
     expect(hld.lca(0, 0)).toBe(0)
   })
+
+  it('path distance on single node', () => {
+    const adj: number[][] = [[]]
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.pathDistance(0, 0)).toBe(0)
+  })
 })

@@ -128,4 +128,10 @@ describe('hash64 - additional', () => {
     const h2 = hash64('world', 42)
     expect(h1).not.toBe(h2)
   })
+
+  it('hash64 is deterministic', () => {
+    const h1 = hash64('test', 0)
+    const h2 = hash64('test', 0)
+    expect(h1).toBe(h2)
+  })
 })
