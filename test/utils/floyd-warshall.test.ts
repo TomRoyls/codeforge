@@ -188,4 +188,10 @@ describe('FloydWarshall', () => {
     expect(dist[0]![0]).toBe(0)
     expect(dist[1]![1]).toBe(0)
   })
+
+  it('distance to unreachable is Infinity', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 3)
+    expect(dist[0]![2]).toBe(Infinity)
+  })
 })

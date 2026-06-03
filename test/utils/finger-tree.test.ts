@@ -113,4 +113,11 @@ describe('FingerTree', () => {
     const ft2 = ft.pushFront(1)
     expect(ft2.size).toBe(1)
   })
+
+  it('pushBack increases size', () => {
+    const ft = FingerTree.empty<number>()
+    const ft2 = ft.pushBack(1)
+    const ft3 = ft2.pushBack(2)
+    expect(ft3.size).toBe(2)
+  })
 })

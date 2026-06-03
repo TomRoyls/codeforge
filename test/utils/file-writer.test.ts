@@ -170,4 +170,12 @@ describe('writeToFileAtomic', () => {
     expect(fs.readFileSync(fp, 'utf8')).toBe('atomic content')
     fs.rmSync(dir, { recursive: true })
   })
+
+  it('writeToFile creates file with content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'test.txt')
+    writeToFile(fp, 'hello')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('hello')
+    fs.rmSync(dir, { recursive: true })
+  })
 })
