@@ -164,4 +164,10 @@ describe('LineGraph', () => {
     const adj = lg.build()
     expect(adj.length).toBe(1)
   })
+
+  it('no edges yields empty', () => {
+    const lg = new LineGraph(2)
+    const adj = lg.build()
+    expect(adj.length).toBe(0)
+  })
 })

@@ -150,4 +150,10 @@ describe('LiChaoTree', () => {
     const tree = new LiChaoTree()
     expect(tree.query(5)).toBe(-Infinity)
   })
+
+  it('insert line and query', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(1, 0)
+    expect(tree.query(5)).toBe(5)
+  })
 })

@@ -110,4 +110,8 @@ describe('LongestIncreasingSubsequence', () => {
   it('find for decreasing returns last element', () => {
     expect(LongestIncreasingSubsequence.find([3, 2, 1])).toEqual([1])
   })
+
+  it('find for single element', () => {
+    expect(LongestIncreasingSubsequence.find([5])).toEqual([5])
+  })
 })
