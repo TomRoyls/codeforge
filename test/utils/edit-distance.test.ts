@@ -103,4 +103,8 @@ describe('EditDistance', () => {
   it('distance from empty string is length', () => {
     expect(EditDistance.levenshtein('', 'abc')).toBe(3)
   })
+
+  it('identical strings have distance 0', () => {
+    expect(EditDistance.levenshtein('abc', 'abc')).toBe(0)
+  })
 })

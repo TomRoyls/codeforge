@@ -200,4 +200,10 @@ describe('DoubleBuffer', () => {
     const items = db.swap()
     expect(items).toEqual([1, 2])
   })
+
+  it('empty swap returns empty array', () => {
+    const db = new DoubleBuffer<number>()
+    const items = db.swap()
+    expect(items).toEqual([])
+  })
 })

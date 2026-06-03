@@ -177,4 +177,10 @@ describe('DynamicConvexHull', () => {
     ch.add(1, 1)
     expect(ch.getHull().length).toBe(2)
   })
+
+  it('single point hull length is 0', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(5, 5)
+    expect(ch.getHull().length).toBe(0)
+  })
 })
