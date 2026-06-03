@@ -95,4 +95,8 @@ describe('KMP', () => {
       expect(KMP.search('xabcy', 'abc')).toEqual([1])
     })
   })
+
+  it('no match returns empty', () => {
+    expect(KMP.search('abcdef', 'xyz')).toEqual([])
+  })
 })

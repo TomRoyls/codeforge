@@ -85,4 +85,8 @@ describe('KnuthMorrisPratt', () => {
   it('finds pattern at start', () => {
     expect(KnuthMorrisPratt.search('abcdef', 'abc')).toEqual([0])
   })
+
+  it('no match returns empty', () => {
+    expect(KnuthMorrisPratt.search('abcdef', 'xyz')).toEqual([])
+  })
 })

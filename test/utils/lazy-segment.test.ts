@@ -143,4 +143,10 @@ describe('LazySegmentTree', () => {
     const st = new LazySegmentTree(5)
     expect(st.queryRange(0, 4)).toBe(0)
   })
+
+  it('update and query reflects change', () => {
+    const st = new LazySegmentTree(5)
+    st.updateRange(0, 2, 10)
+    expect(st.queryRange(0, 2)).toBeGreaterThanOrEqual(10)
+  })
 })
