@@ -150,4 +150,10 @@ describe('FenwickTree2D', () => {
     tree.update(2, 2, 3);
     expect(tree.query(2, 2)).toBe(8);
   });
+
+  it('single update query returns value', () => {
+    const tree = new FenwickTree2D(3, 3);
+    tree.update(0, 0, 7);
+    expect(tree.query(0, 0)).toBe(7);
+  });
 });

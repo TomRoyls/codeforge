@@ -123,4 +123,9 @@ describe('ExtendedEuclidean', () => {
     const { gcd } = ExtendedEuclidean.solve(7n, 3n)
     expect(gcd).toBe(1n)
   })
+
+  it('solve for 0 and n returns n', () => {
+    const { gcd } = ExtendedEuclidean.solve(0n, 5n)
+    expect(gcd).toBe(5n)
+  })
 })

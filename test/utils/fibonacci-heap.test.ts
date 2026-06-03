@@ -266,4 +266,12 @@ describe('FibonacciHeap', () => {
     expect(heap1.extractMin()).toBe(2)
     expect(heap1.extractMin()).toBe(5)
   })
+
+  it('insert and extractMin returns minimum', () => {
+    const heap = new FibonacciHeap<number>()
+    heap.insert(10)
+    heap.insert(3)
+    heap.insert(7)
+    expect(heap.extractMin()).toBe(3)
+  })
 })
