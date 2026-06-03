@@ -139,4 +139,10 @@ describe('BoyerMoore', () => {
     const results = bm.search('ababab')
     expect(results.length).toBe(3)
   })
+
+  it('no match returns empty', () => {
+    const bm = new BoyerMoore('xyz')
+    const results = bm.search('abcdef')
+    expect(results.length).toBe(0)
+  })
 })

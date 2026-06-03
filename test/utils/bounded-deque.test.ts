@@ -181,4 +181,12 @@ describe('BoundedDeque', () => {
     dq.pushBack(3)
     expect(dq.size).toBeLessThanOrEqual(2)
   })
+
+  it('popBack from bounded deque', () => {
+    const dq = new BoundedDeque<number>(3)
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.popBack()).toBe(2)
+    expect(dq.size).toBe(1)
+  })
 })

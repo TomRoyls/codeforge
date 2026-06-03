@@ -207,4 +207,9 @@ describe('BoundedPriorityQueue', () => {
     expect(q.pop()).toBe(3)
     expect(q.size).toBe(2)
   })
+
+  it('empty queue has size 0', () => {
+    const q = new BoundedPriorityQueue<number>((a, b) => a - b, 5)
+    expect(q.size).toBe(0)
+  })
 })
