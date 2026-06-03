@@ -139,4 +139,10 @@ describe('BurrowsWheelerTransform', () => {
     const transformed = BurrowsWheelerTransform.transform('a')
     expect(transformed.data).toBe('a')
   })
+
+  it('transform returns object with data and index', () => {
+    const transformed = BurrowsWheelerTransform.transform('abc')
+    expect(typeof transformed.data).toBe('string')
+    expect(typeof transformed.index).toBe('number')
+  })
 })

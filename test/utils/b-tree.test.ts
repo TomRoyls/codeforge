@@ -198,4 +198,11 @@ describe('BTree height', () => {
     const tree = new BTree<number, number>(2)
     expect(tree.find(99)).toBeUndefined()
   })
+
+  it('size tracks insertions', () => {
+    const tree = new BTree<number, number>(2)
+    tree.insert(1, 10)
+    tree.insert(2, 20)
+    expect(tree.size).toBe(2)
+  })
 })

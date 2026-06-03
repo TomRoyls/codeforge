@@ -101,4 +101,9 @@ describe('CartesianProduct', () => {
     const result = CartesianProduct.generate([1, 2], ['a'])
     expect(result.length).toBe(2)
   })
+
+  it('generate with empty array returns empty', () => {
+    const result = CartesianProduct.generate([], ['a'])
+    expect(result).toEqual([])
+  })
 })
