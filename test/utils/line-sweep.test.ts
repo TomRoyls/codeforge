@@ -142,4 +142,11 @@ describe('LineSweep', () => {
     ])
     expect(result).toBe(12)
   })
+
+  it('single interval totalCoveredLength', () => {
+    const result = LineSweep.totalCoveredLength([
+      { start: 0, end: 10 },
+    ])
+    expect(result).toBe(11)
+  })
 })
