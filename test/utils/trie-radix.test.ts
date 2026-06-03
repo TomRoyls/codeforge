@@ -156,4 +156,10 @@ describe('TrieRadix', () => {
     expect(trie.search('hello')).toBe(true)
     expect(trie.search('hell')).toBe(false)
   })
+
+  it('startsWith returns true for prefix', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello')
+    expect(trie.startsWith('hel')).toBe(true)
+  })
 })

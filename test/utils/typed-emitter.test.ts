@@ -182,4 +182,12 @@ describe('TypedEventEmitter - max listeners', () => {
     const emitter = new TypedEventEmitter<{ click: void }>()
     expect(() => emitter.emit('click')).not.toThrow()
   })
+
+  it('on registers listener that receives events', () => {
+    const emitter = new TypedEventEmitter<{ data: number }>()
+    let received = 0
+    emitter.on('data', (n) => { received = n })
+    emitter.emit('data', 42)
+    expect(received).toBe(42)
+  })
 })
