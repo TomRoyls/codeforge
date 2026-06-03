@@ -190,4 +190,10 @@ describe('BipartiteMatching', () => {
     const graph = new BipartiteMatching(2, 2)
     expect(graph.maxMatching()).toBe(0)
   })
+
+  it('single edge matching is 1', () => {
+    const graph = new BipartiteMatching(1, 1)
+    graph.addEdge(0, 0)
+    expect(graph.maxMatching()).toBe(1)
+  })
 })

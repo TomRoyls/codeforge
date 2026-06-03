@@ -182,4 +182,10 @@ describe('BinaryLifting', () => {
     const bl = new BinaryLifting(adj, 0)
     expect(bl.kthAncestor(1, 1)).toBe(0)
   })
+
+  it('root has no ancestor', () => {
+    const adj = [[1], [0]]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(0, 1)).toBe(-1)
+  })
 })

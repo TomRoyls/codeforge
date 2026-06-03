@@ -265,4 +265,10 @@ describe('BinomialHeap', () => {
     const heap = new BinomialHeap<number, number>()
     expect(heap.isEmpty()).toBe(true)
   })
+
+  it('insert then not empty', () => {
+    const heap = new BinomialHeap<number, number>()
+    heap.insert(5, 5)
+    expect(heap.isEmpty()).toBe(false)
+  })
 })

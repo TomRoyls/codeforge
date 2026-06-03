@@ -177,4 +177,9 @@ describe('BinaryTrie', () => {
     bt.insert(1)
     expect(bt.find(2)).toBe(false)
   })
+
+  it('find on empty returns false', () => {
+    const bt = new BinaryTrie()
+    expect(bt.find(0)).toBe(false)
+  })
 })
