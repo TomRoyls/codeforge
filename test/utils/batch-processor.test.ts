@@ -279,4 +279,10 @@ describe('batch-processor', () => {
     const result = await processBatch([], handler)
     expect(result.isOk()).toBe(true)
   })
+
+  it('processBatch with single item returns doubled', async () => {
+    const handler = async (x: number) => x * 2
+    const result = await processBatch([5], handler)
+    expect(result.isOk()).toBe(true)
+  })
 })

@@ -172,4 +172,11 @@ describe('Bag', () => {
     bag.add(NaN, 2)
     expect(bag.count(NaN)).toBe(2)
   })
+
+  it('remove decreases count', () => {
+    const bag = new Bag<number>()
+    bag.add(1, 3)
+    bag.remove(1)
+    expect(bag.count(1)).toBe(2)
+  })
 })
