@@ -167,4 +167,11 @@ describe('TwoSAT', () => {
     const result = ts.solve()
     expect(result).not.toBeNull()
   })
+
+  it('simple satisfiable with 3 variables', () => {
+    const ts = new TwoSAT(3)
+    ts.addClause(0, true, 1, true)
+    ts.addClause(1, false, 2, true)
+    expect(ts.solve()).not.toBeNull()
+  })
 })

@@ -165,4 +165,10 @@ describe('ApproximateSet', () => {
     expect(set.has('b')).toBe(true)
     expect(set.has('c')).toBe(true)
   })
+
+  it('has returns false for absent element', () => {
+    const set = new ApproximateSet(100)
+    set.add('a')
+    expect(set.has('zzz')).toBe(false)
+  })
 })

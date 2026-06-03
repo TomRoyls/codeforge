@@ -180,4 +180,10 @@ describe('AdjacencyListGraph - topologicalSort', () => {
     g.addEdge(0, 1)
     expect(g.edgeCount).toBe(1)
   })
+
+  it('neighbors returns array', () => {
+    const g = new AdjacencyListGraph(3)
+    g.addEdge(0, 1)
+    expect(g.neighbors(0).length).toBe(1)
+  })
 })

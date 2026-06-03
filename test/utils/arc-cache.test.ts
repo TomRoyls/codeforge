@@ -167,4 +167,9 @@ describe('ARCCache', () => {
     cache.delete('x')
     expect(cache.has('x')).toBe(false)
   })
+
+  it('get returns undefined for missing key', () => {
+    const cache = new ARCCache<number>(3)
+    expect(cache.get('missing')).toBeUndefined()
+  })
 })

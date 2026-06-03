@@ -135,4 +135,10 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('abcdef')
     expect(result.size).toBe(0)
   })
+
+  it('search returns matches map', () => {
+    const ac = new AhoCorasickMulti(['ab', 'bc'])
+    const result = ac.search('abc')
+    expect(result.size).toBeGreaterThanOrEqual(1)
+  })
 })
