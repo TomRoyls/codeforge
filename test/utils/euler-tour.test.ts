@@ -157,4 +157,10 @@ describe('EulerTour', () => {
     const et = new EulerTour(adj, 0)
     expect(et.isAncestor(0, 0)).toBe(true)
   })
+
+  it('non-ancestor returns false', () => {
+    const adj = [[1], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.isAncestor(1, 0)).toBe(false)
+  })
 })

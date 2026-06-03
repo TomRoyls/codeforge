@@ -151,4 +151,9 @@ describe('EliasFano', () => {
     expect(ef.get(0)).toBe(10)
     expect(ef.get(2)).toBe(30)
   })
+
+  it('indexOf existing value', () => {
+    const ef = EliasFano.fromSorted([10, 20, 30])
+    expect(ef.indexOf(20)).toBe(1)
+  })
 })

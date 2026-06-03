@@ -139,4 +139,10 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
   })
+
+  it('single vertex no edges', () => {
+    const adj: number[][] = [[]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
+  })
 })

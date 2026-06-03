@@ -98,4 +98,8 @@ describe('escapeMarkdown', () => {
   it('escapes backslash', () => {
     expect(escapeMarkdown('a\\b')).toContain('\\')
   })
+
+  it('escapes asterisk', () => {
+    expect(escapeMarkdown('*bold*')).toContain('\\*')
+  })
 })

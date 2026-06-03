@@ -190,4 +190,15 @@ describe('EventSink', () => {
     sink.emit('test', null)
     expect(received).toBe(true)
   })
+
+  it('off stops receiving events', () => {
+    const sink = new EventSink<Events>()
+    let count = 0
+    const handler = () => { count++ }
+    sink.on('test', handler)
+    sink.emit('test', null)
+    sink.off('test', handler)
+    sink.emit('test', null)
+    expect(count).toBe(1)
+  })
 })
