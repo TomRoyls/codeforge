@@ -221,7 +221,12 @@ describe('PriorityQueue - edge cases', () => {
     const pq = new PriorityQueue<number>()
     pq.enqueue(3)
     pq.enqueue(1)
-    pq.enqueue(2)
-    expect(pq.dequeue()).toBe(1)
+     pq.enqueue(2)
+     expect(pq.dequeue()).toBe(1)
+   })
+
+  it('dequeue from empty returns undefined', () => {
+    const pq = new PriorityQueue<number>()
+    expect(pq.dequeue()).toBeUndefined()
   })
 })

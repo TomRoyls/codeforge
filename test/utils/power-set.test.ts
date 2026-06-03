@@ -123,4 +123,8 @@ describe('PowerSet', () => {
   it('single element has 2 subsets', () => {
     expect(PowerSet.generate([1]).length).toBe(2)
   })
+
+  it('empty set has 1 subset', () => {
+    expect(PowerSet.generate([]).length).toBe(1)
+  })
 })

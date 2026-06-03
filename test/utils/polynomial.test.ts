@@ -124,4 +124,9 @@ describe('Polynomial', () => {
     const p = new Polynomial([5])
     expect(p.evaluate(100)).toBe(5)
   })
+
+  it('zero polynomial evaluates to 0', () => {
+    const p = new Polynomial([0])
+    expect(p.evaluate(999)).toBe(0)
+  })
 })
