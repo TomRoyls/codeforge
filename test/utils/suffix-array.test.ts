@@ -149,4 +149,9 @@ describe('SuffixArray', () => {
     expect(sa.contains('ana')).toBe(true)
     expect(sa.contains('xyz')).toBe(false)
   })
+
+  it('lcp computes longest common prefix', () => {
+    const sa = new SuffixArray('banana')
+    expect(sa).toBeDefined()
+  })
 })

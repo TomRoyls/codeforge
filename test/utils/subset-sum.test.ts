@@ -94,4 +94,8 @@ describe('SubsetSum', () => {
   it('empty set matches zero target', () => {
     expect(SubsetSum.hasSubset([], 0)).toBe(true)
   })
+
+  it('single element matches itself', () => {
+    expect(SubsetSum.hasSubset([5], 5)).toBe(true)
+  })
 })

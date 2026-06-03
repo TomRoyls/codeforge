@@ -181,4 +181,11 @@ describe('SCCGraph', () => {
     const comps = g.findSCCs()
     expect(comps.length).toBe(2)
   })
+
+  it('single node has one component', () => {
+    const g = new SCCGraph()
+    g.addNode(1)
+    const comps = g.findSCCs()
+    expect(comps.length).toBe(1)
+  })
 })
