@@ -185,4 +185,10 @@ describe('SimilarityIndex', () => {
     const results = index.findSimilar('test', 0)
     expect(results.length).toBeGreaterThanOrEqual(0)
   })
+
+  it('findSimilar with no data returns empty', () => {
+    const index = new SimilarityIndex()
+    const results = index.findSimilar('test', 0)
+    expect(results).toEqual([])
+  })
 })
