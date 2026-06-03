@@ -199,4 +199,9 @@ describe('BimodalMap', () => {
     bm.set('b', 2)
     expect(bm.size).toBe(2)
   })
+
+  it('get returns undefined for missing key', () => {
+    const bm = new BimodalMap<string, number>()
+    expect(bm.get('missing')).toBeUndefined()
+  })
 })

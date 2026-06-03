@@ -171,4 +171,11 @@ describe('BiMap', () => {
     bm.clear()
     expect(bm.size).toBe(0)
   })
+
+  it('deleteKey removes mapping', () => {
+    const bm = new BiMap<string, number>()
+    bm.set('a', 1)
+    bm.deleteKey('a')
+    expect(bm.get('a')).toBeUndefined()
+  })
 })

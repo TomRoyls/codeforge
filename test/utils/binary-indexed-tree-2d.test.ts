@@ -171,4 +171,9 @@ describe('BinaryIndexedTree2D', () => {
     bit.update(0, 0, 5)
     expect(bit.query(0, 0)).toBe(5)
   })
+
+  it('query on empty tree returns 0', () => {
+    const bit = new BinaryIndexedTree2D(2, 2)
+    expect(bit.query(0, 0)).toBe(0)
+  })
 })
