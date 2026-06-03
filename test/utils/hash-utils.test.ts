@@ -122,4 +122,10 @@ describe('hash64 - additional', () => {
     const h2 = hash64('hello', 42)
     expect(h1).toBe(h2)
   })
+
+  it('hash64 different strings differ', () => {
+    const h1 = hash64('hello', 42)
+    const h2 = hash64('world', 42)
+    expect(h1).not.toBe(h2)
+  })
 })

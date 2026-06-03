@@ -151,4 +151,9 @@ describe('HeavyHitters', () => {
     hh.add('x')
     expect(hh.getCount('x')).toBeGreaterThanOrEqual(2)
   })
+
+  it('getCount for unseen item is 0', () => {
+    const hh = new HeavyHitters<string>(10)
+    expect(hh.getCount('unseen')).toBe(0)
+  })
 })

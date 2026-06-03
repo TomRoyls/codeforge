@@ -306,4 +306,10 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj, 0)
     expect(hld.lca(0, 0)).toBe(0)
   })
+
+  it('single node decomposition', () => {
+    const adj: number[][] = [[]]
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(0, 0)).toBe(0)
+  })
 })
