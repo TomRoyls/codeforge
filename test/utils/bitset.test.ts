@@ -158,4 +158,11 @@ describe('Bitset', () => {
     expect(bs.get(5)).toBe(true)
     expect(bs.get(0)).toBe(false)
   })
+
+  it('clear unsets specific bit', () => {
+    const bs = new Bitset(10)
+    bs.set(5)
+    bs.clear(5)
+    expect(bs.get(5)).toBe(false)
+  })
 })
