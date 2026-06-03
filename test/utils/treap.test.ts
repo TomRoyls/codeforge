@@ -199,4 +199,10 @@ describe('Treap getRoot', () => {
     t.delete(5)
     expect(t.find(5)).toBeUndefined()
   })
+
+  it('find returns value for existing key', () => {
+    const t = new Treap<number, string>()
+    t.insert(1, 'a')
+    expect(t.find(1)).toBe('a')
+  })
 })

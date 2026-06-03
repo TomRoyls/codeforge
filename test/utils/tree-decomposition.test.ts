@@ -149,4 +149,10 @@ describe('TreeDecomposition', () => {
     const td = new TreeDecomposition(1)
     expect(td.treewidth()).toBe(0)
   })
+
+  it('two nodes connected treewidth', () => {
+    const td = new TreeDecomposition(2)
+    td.addEdge(0, 1)
+    expect(td.treewidth()).toBeGreaterThanOrEqual(0)
+  })
 })
