@@ -182,4 +182,9 @@ describe('MinCostFlow', () => {
     expect(maxFlow).toBe(10)
     expect(minCost).toBe(10)
   })
+
+  it('no edges yields zero flow', () => {
+    const { maxFlow } = MinCostFlow.minCostMaxFlow([], 0, 1, 2)
+    expect(maxFlow).toBe(0)
+  })
 })

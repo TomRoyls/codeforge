@@ -382,4 +382,18 @@ describe('MoAlgorithm', () => {
     )
     expect(answers).toEqual([])
   })
+
+  it('single element sum query', () => {
+    const answers = MoAlgorithm.solve(
+      [10],
+      [{ l: 0, r: 0 }],
+      (state: { sum: number }, idx: number) => { state.sum += [10][idx]! },
+      (state: { sum: number }, idx: number) => { state.sum += [10][idx]! },
+      (state: { sum: number }, idx: number) => { state.sum -= [10][idx]! },
+      (state: { sum: number }, idx: number) => { state.sum -= [10][idx]! },
+      (state: { sum: number }) => state.sum,
+      { sum: 0 },
+    )
+    expect(answers).toEqual([10])
+  })
 })

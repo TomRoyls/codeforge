@@ -220,4 +220,10 @@ describe('MinCostFlow', () => {
     const result = mcf.solve(0, 1)
     expect(result.flow).toBe(10)
   })
+
+  it('no edges yields zero flow', () => {
+    const mcf = new MinCostFlow(2)
+    const result = mcf.solve(0, 1)
+    expect(result.flow).toBe(0)
+  })
 })
