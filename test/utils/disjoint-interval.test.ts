@@ -140,4 +140,10 @@ describe('DisjointInterval', () => {
     const di = new DisjointInterval()
     expect(di.covers(0, 1)).toBe(false)
   })
+
+  it('add then covers returns true', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    expect(di.covers(2, 3)).toBe(true)
+  })
 })

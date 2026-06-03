@@ -173,4 +173,10 @@ describe('DisjointSet - stats and clear', () => {
     ds.union(0, 1)
     expect(ds.connected(0, 1)).toBe(true)
   })
+
+  it('find on single element returns itself', () => {
+    const ds = new DisjointSet()
+    ds.add(42)
+    expect(ds.find(42)).toBe(42)
+  })
 })
