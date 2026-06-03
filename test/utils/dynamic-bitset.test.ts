@@ -148,4 +148,9 @@ describe('DynamicBitset', () => {
     bs.clear(4)
     expect(bs.count()).toBe(0)
   })
+
+  it('length property returns bitset length', () => {
+    const bs = new DynamicBitset(8)
+    expect(bs.length).toBe(8)
+  })
 })

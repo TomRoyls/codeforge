@@ -162,4 +162,12 @@ describe('DynamicConvexHull', () => {
     ch.add(0, 1)
     expect(ch.getHull().length).toBe(3)
   })
+
+  it('collinear points have hull size 2', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(2, 0)
+    expect(ch.getHull().length).toBe(2)
+  })
 })
