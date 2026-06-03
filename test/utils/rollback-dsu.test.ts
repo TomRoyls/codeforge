@@ -159,4 +159,10 @@ describe('RollbackDSU', () => {
     dsu.rollback(snap)
     expect(dsu.components).toBe(3)
   })
+
+  it('find returns representative', () => {
+    const dsu = new RollbackDSU(3)
+    dsu.union(0, 1)
+    expect(dsu.find(0)).toBe(dsu.find(1))
+  })
 })
