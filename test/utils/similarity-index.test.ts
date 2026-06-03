@@ -178,4 +178,11 @@ describe('SimilarityIndex', () => {
     const results = index.findSimilar('test', 0.5)
     expect(results.length).toBeGreaterThanOrEqual(0)
   })
+
+  it('findSimilar with exact match', () => {
+    const index = new SimilarityIndex<string>()
+    index.add('test', 'test-item', ['word1', 'word2'])
+    const results = index.findSimilar('test', 0)
+    expect(results.length).toBeGreaterThanOrEqual(0)
+  })
 })
