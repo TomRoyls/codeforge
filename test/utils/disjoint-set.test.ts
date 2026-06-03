@@ -187,4 +187,11 @@ describe('DisjointSet - stats and clear', () => {
     ds.union(1, 2)
     expect(ds.find(1)).toBe(ds.find(2))
   })
+
+  it('find of unconnected elements differ', () => {
+    const ds = new DisjointSet()
+    ds.add(0)
+    ds.add(1)
+    expect(ds.find(0)).not.toBe(ds.find(1))
+  })
 })

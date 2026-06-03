@@ -137,4 +137,9 @@ describe('DisjointSparseTable', () => {
     const dst = new DisjointSparseTable([5, 10, 15], (a, b) => a + b)
     expect(dst.query(1, 1)).toBe(10)
   })
+
+  it('query full range returns sum', () => {
+    const dst = new DisjointSparseTable([5, 10, 15], (a, b) => a + b)
+    expect(dst.query(0, 2)).toBe(30)
+  })
 })
