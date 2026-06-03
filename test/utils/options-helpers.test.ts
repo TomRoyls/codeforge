@@ -124,4 +124,9 @@ describe('extractRuleOptions', () => {
     const result = extractRuleOptions([], { a: 10 })
     expect(result.a).toBe(10)
   })
+
+  it('extractRuleOptions merges with provided values', () => {
+    const result = extractRuleOptions([{ a: 5 }], { a: 10 })
+    expect(result.a).toBe(5)
+  })
 })

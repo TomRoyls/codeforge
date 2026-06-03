@@ -99,4 +99,8 @@ describe('OddEvenSort', () => {
   it('handles single element', () => {
     expect(OddEvenSort.sort([42])).toEqual([42])
   })
+
+  it('handles empty array', () => {
+    expect(OddEvenSort.sort([])).toEqual([])
+  })
 })

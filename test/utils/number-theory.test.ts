@@ -115,4 +115,8 @@ describe('NumberTheory', () => {
   it('lcm of 4 and 6 is 12', () => {
     expect(NumberTheory.lcm(4, 6)).toBe(12)
   })
+
+  it('lcm of 0 and any is 0', () => {
+    expect(NumberTheory.lcm(0, 5)).toBe(0)
+  })
 })
