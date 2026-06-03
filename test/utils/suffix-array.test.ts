@@ -154,4 +154,9 @@ describe('SuffixArray', () => {
     const sa = new SuffixArray('banana')
     expect(sa).toBeDefined()
   })
+
+  it('suffix array of single char', () => {
+    const sa = new SuffixArray('a')
+    expect(sa).toBeDefined()
+  })
 })

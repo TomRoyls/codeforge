@@ -98,4 +98,8 @@ describe('SubsetSum', () => {
   it('single element matches itself', () => {
     expect(SubsetSum.hasSubset([5], 5)).toBe(true)
   })
+
+  it('no subset for impossible target', () => {
+    expect(SubsetSum.hasSubset([1, 2, 3], 10)).toBe(false)
+  })
 })

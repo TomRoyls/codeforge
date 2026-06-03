@@ -188,4 +188,14 @@ describe('SCCGraph', () => {
     const comps = g.findSCCs()
     expect(comps.length).toBe(1)
   })
+
+  it('two node cycle is one SCC', () => {
+    const g = new SCCGraph()
+    g.addNode(0)
+    g.addNode(1)
+    g.addEdge(0, 1)
+    g.addEdge(1, 0)
+    const comps = g.findSCCs()
+    expect(comps.length).toBe(1)
+  })
 })

@@ -118,4 +118,9 @@ describe('SubstringCounter', () => {
     const sc = new SubstringCounter('abc')
     expect(sc.countNaive('abc')).toBe(1)
   })
+
+  it('count no match returns 0', () => {
+    const sc = new SubstringCounter('xyz')
+    expect(sc.countNaive('abcdef')).toBe(0)
+  })
 })
