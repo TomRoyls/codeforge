@@ -108,4 +108,9 @@ describe('GoldenRatioSearch', () => {
     const x = GoldenRatioSearch.minimize((t) => (t - 3) * (t - 3), 0, 6)
     expect(x).toBeCloseTo(3, 1)
   })
+
+  it('minimizes at left endpoint', () => {
+    const x = GoldenRatioSearch.minimize((t) => t, -5, 5)
+    expect(x).toBeCloseTo(-5, 0)
+  })
 })

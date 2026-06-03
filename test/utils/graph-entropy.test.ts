@@ -148,4 +148,11 @@ describe('GraphEntropy', () => {
     const ge = new GraphEntropy(5)
     expect(ge).toBeDefined()
   })
+
+  it('degreeEntropy returns number', () => {
+    const ge = new GraphEntropy(3)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    expect(typeof ge.degreeEntropy()).toBe('number')
+  })
 })

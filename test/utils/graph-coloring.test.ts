@@ -112,4 +112,10 @@ describe('GraphColoring', () => {
     const colors = GraphColoring.greedyColor(adj)
     expect(colors.length).toBe(1)
   })
+
+  it('two disconnected nodes use same color', () => {
+    const adj = [[], []]
+    const colors = GraphColoring.greedyColor(adj)
+    expect(colors[0]).toBe(colors[1])
+  })
 })
