@@ -177,4 +177,10 @@ describe('TwoSAT', () => {
     sat.addClause(0, false, 0, false)
     expect(sat.solve()).toBeNull()
   })
+
+  it('single variable satisfiable', () => {
+    const sat = new TwoSAT(1)
+    sat.addClause(0, true, 0, true)
+    expect(sat.solve()).not.toBeNull()
+  })
 })

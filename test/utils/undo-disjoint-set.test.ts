@@ -189,4 +189,9 @@ describe('UndoDisjointSet', () => {
     dsu.undo()
     expect(dsu.find(0)).not.toBe(dsu.find(1))
   })
+
+  it('size reports correct count', () => {
+    const dsu = new UndoDisjointSet(3)
+    expect(dsu.size).toBe(3)
+  })
 })

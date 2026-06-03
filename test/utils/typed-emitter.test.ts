@@ -190,4 +190,13 @@ describe('TypedEventEmitter - max listeners', () => {
     emitter.emit('data', 42)
     expect(received).toBe(42)
   })
+
+  it('removeAllListeners clears handlers', () => {
+    const emitter = new TypedEventEmitter<{ data: number }>()
+    let count = 0
+    emitter.on('data', () => { count++ })
+    emitter.removeAllListeners('data')
+    emitter.emit('data', 1)
+    expect(count).toBe(0)
+  })
 })
