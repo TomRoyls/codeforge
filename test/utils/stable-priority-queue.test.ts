@@ -201,4 +201,9 @@ describe('StablePriorityQueue', () => {
     pq.enqueue(2)
     expect(pq.dequeue()).toBe(1)
   })
+
+  it('dequeue from empty returns undefined', () => {
+    const pq = new StablePriorityQueue<number>()
+    expect(pq.dequeue()).toBeUndefined()
+  })
 })

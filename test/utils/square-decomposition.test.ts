@@ -124,4 +124,9 @@ describe('SquareDecomposition', () => {
     const sd = new SquareDecomposition([5, 10, 15])
     expect(sd.query(1, 1)).toBe(10)
   })
+
+  it('query full range returns sum', () => {
+    const sd = new SquareDecomposition([5, 10, 15])
+    expect(sd.query(0, 2)).toBe(30)
+  })
 })

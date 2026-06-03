@@ -185,4 +185,11 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([0, 1])
     expect(result.totalWeight).toBeGreaterThanOrEqual(0)
   })
+
+  it('no terminals returns zero weight', () => {
+    const st = new SteinerTree(2)
+    st.addEdge(0, 1, 5)
+    const result = st.approximateSteiner([])
+    expect(result.totalWeight).toBeGreaterThanOrEqual(0)
+  })
 })
