@@ -128,4 +128,10 @@ describe('CRT', () => {
     expect(result).not.toBeNull()
     expect(result!.remainder % 6).toBe(0)
   })
+
+  it('single congruence solves trivially', () => {
+    const result = CRT.solve([3], [5])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 5).toBe(3)
+  })
 })

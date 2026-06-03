@@ -187,4 +187,10 @@ describe('CircuitBreaker - canAttempt', () => {
     const cb = new CircuitBreaker({ maxFailures: 3, resetTimeout: 1000 })
     expect(cb.canAttempt()).toBe(true)
   })
+
+  it('getStats returns initial state', () => {
+    const cb = new CircuitBreaker({ maxFailures: 3, resetTimeout: 1000 })
+    const stats = cb.getStats()
+    expect(stats.failures).toBe(0)
+  })
 })

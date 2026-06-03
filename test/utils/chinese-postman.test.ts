@@ -150,4 +150,10 @@ describe('ChinesePostman', () => {
     const cp = new ChinesePostman(1)
     expect(cp.solve()).toBe(0)
   })
+
+  it('two nodes with edge has nonzero cost', () => {
+    const cp = new ChinesePostman(2)
+    cp.addEdge(0, 1, 5)
+    expect(cp.solve()).toBeGreaterThanOrEqual(5)
+  })
 })
