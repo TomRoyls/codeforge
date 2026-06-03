@@ -95,4 +95,8 @@ describe('CocktailSort', () => {
   it('handles reverse sorted', () => {
     expect(CocktailSort.sort([3, 2, 1])).toEqual([1, 2, 3])
   })
+
+  it('handles already sorted', () => {
+    expect(CocktailSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  })
 })

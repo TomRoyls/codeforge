@@ -115,4 +115,9 @@ describe('CircularSuffix', () => {
     const sorted = [...sa].sort((a, b) => a - b)
     expect(sa).toEqual(sorted)
   })
+
+  it('length returns input length', () => {
+    const cs = new CircularSuffix('abcd')
+    expect(cs.length).toBe(4)
+  })
 })

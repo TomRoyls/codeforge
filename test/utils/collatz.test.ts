@@ -100,4 +100,8 @@ describe('Collatz', () => {
   it('sequence for 2 is [2, 1]', () => {
     expect(Collatz.sequence(2)).toEqual([2, 1])
   })
+
+  it('sequence for 4 has 3 steps', () => {
+    expect(Collatz.sequence(4)).toEqual([4, 2, 1])
+  })
 })
