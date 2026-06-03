@@ -182,4 +182,11 @@ describe('ConcurrentHashMap', () => {
     expect(map.get('key')).toBe(20)
     expect(map.size).toBe(1)
   })
+
+  it('delete removes entry', () => {
+    const map = new ConcurrentHashMap<string, number>()
+    map.set('key', 10)
+    map.delete('key')
+    expect(map.has('key')).toBe(false)
+  })
 })

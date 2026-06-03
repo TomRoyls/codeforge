@@ -161,4 +161,10 @@ describe('ConsistentHashRing', () => {
     ring.removeNode('b')
     expect(ring.getNode('any-key')).toBe('a')
   })
+
+  it('addNode allows getNode to return it', () => {
+    const ring = new ConsistentHashRing<string>(['a'])
+    ring.addNode('b')
+    expect(ring.getNode).toBeDefined()
+  })
 })

@@ -97,4 +97,8 @@ describe('CombSort', () => {
   it('handles reverse sorted', () => {
     expect(CombSort.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles already sorted', () => {
+    expect(CombSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
+  })
 })
