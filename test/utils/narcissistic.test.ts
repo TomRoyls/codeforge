@@ -106,4 +106,8 @@ describe('Narcissistic', () => {
   it('10 is not narcissistic', () => {
     expect(Narcissistic.isNarcissistic(10)).toBe(false)
   })
+
+  it('0 is narcissistic', () => {
+    expect(Narcissistic.isNarcissistic(0)).toBe(true)
+  })
 })

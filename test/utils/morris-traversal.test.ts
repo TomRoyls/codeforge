@@ -135,4 +135,9 @@ describe('morris traversals additional', () => {
     expect([...morrisInorder(null)]).toEqual([])
     expect([...morrisPreorder(null)]).toEqual([])
   })
+
+  it('single node inorder returns it', () => {
+    const root = new TreeNode(1)
+    expect([...morrisInorder(root)]).toEqual([1])
+  })
 })

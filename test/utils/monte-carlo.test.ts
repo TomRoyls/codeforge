@@ -125,4 +125,10 @@ describe('MonteCarlo', () => {
     expect(result).toBeGreaterThan(2.5)
     expect(result).toBeLessThan(3.9)
   })
+
+  it('integration estimate', () => {
+    const result = MonteCarlo.integrate(Math.sin, 0, Math.PI, 10000)
+    expect(result).toBeGreaterThan(1.5)
+    expect(result).toBeLessThan(2.5)
+  })
 })
