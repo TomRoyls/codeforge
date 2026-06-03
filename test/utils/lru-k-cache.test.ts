@@ -161,4 +161,9 @@ describe('LRUKCache', () => {
     cache.set('key', 42)
     expect(cache.get('key')).toBe(42)
   })
+
+  it('get returns undefined for missing key', () => {
+    const cache = new LRUKCache<string, number>({ k: 2, capacity: 5 })
+    expect(cache.get('missing')).toBeUndefined()
+  })
 })

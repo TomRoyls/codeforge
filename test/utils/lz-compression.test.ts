@@ -121,4 +121,9 @@ describe('LZCompression', () => {
     const tokens = LZCompression.compress('a')
     expect(LZCompression.decompress(tokens)).toBe('a')
   })
+
+  it('roundtrip empty string', () => {
+    const tokens = LZCompression.compress('')
+    expect(LZCompression.decompress(tokens)).toBe('')
+  })
 })
