@@ -177,4 +177,12 @@ describe('ChordalCheck', () => {
     const cc = new ChordalCheck(1)
     expect(cc.isChordal()).toBe(true)
   })
+
+  it('triangle is chordal', () => {
+    const cc = new ChordalCheck(3)
+    cc.addEdge(0, 1)
+    cc.addEdge(1, 2)
+    cc.addEdge(0, 2)
+    expect(cc.isChordal()).toBe(true)
+  })
 })

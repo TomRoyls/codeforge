@@ -156,4 +156,9 @@ describe('ChinesePostman', () => {
     cp.addEdge(0, 1, 5)
     expect(cp.solve()).toBeGreaterThanOrEqual(5)
   })
+
+  it('no edges solve returns 0', () => {
+    const cp = new ChinesePostman(1)
+    expect(cp.solve()).toBe(0)
+  })
 })
