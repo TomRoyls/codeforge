@@ -191,4 +191,10 @@ describe('RedBlackTree root & clear', () => {
     tree.insert(2, 'b')
     expect(tree.size).toBe(2)
   })
+
+  it('find returns value for existing key', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.find(1)).toBe('a')
+  })
 })

@@ -167,4 +167,10 @@ describe('RecentCounter', () => {
     rc.ping(2000)
     expect(rc.count(2000)).toBe(2)
   })
+
+  it('count outside window is 0', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(100)
+    expect(rc.count(2000)).toBe(0)
+  })
 })

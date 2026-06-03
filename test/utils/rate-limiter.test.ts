@@ -184,4 +184,10 @@ describe('RateLimiter', () => {
     const rl = new RateLimiter({ tokensPerSecond: 10, maxTokens: 5 })
     expect(rl).toBeDefined()
   })
+
+  it('tryAcquire returns allowed when under limit', () => {
+    const rl = new RateLimiter({ maxRequests: 5, windowMs: 1000 })
+    const result = rl.tryAcquire()
+    expect(result.allowed).toBe(true)
+  })
 })
