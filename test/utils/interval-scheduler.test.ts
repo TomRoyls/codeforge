@@ -168,4 +168,9 @@ describe('greedyIntervalSchedule', () => {
     const result = greedyIntervalSchedule([])
     expect(result).toEqual([])
   })
+
+  it('single interval returns it', () => {
+    const result = greedyIntervalSchedule([{ start: 0, end: 5 }])
+    expect(result.length).toBe(1)
+  })
 })

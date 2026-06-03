@@ -170,4 +170,11 @@ describe('IntervalTree additional', () => {
     expect(tree.query(-7).map((r) => r.value)).toEqual(['neg'])
     expect(tree.query(0)).toEqual([])
   })
+
+  it('query returns all overlapping intervals', () => {
+    const tree = new IntervalTree<string>()
+    tree.insert({ start: 0, end: 10 }, 'a')
+    tree.insert({ start: 5, end: 15 }, 'b')
+    expect(tree.query(7).length).toBe(2)
+  })
 })

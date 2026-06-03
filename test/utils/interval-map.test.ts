@@ -200,4 +200,10 @@ describe('IntervalMap', () => {
     const im = new IntervalMap<string>()
     expect(im.get(100)).toBeUndefined()
   })
+
+  it('set then get returns value', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'hello')
+    expect(im.get(2)).toBe('hello')
+  })
 })
