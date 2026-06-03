@@ -118,4 +118,10 @@ describe('GraphColoring', () => {
     const colors = GraphColoring.greedyColor(adj)
     expect(colors[0]).toBe(colors[1])
   })
+
+  it('single node uses 1 color', () => {
+    const adj = [[]]
+    const colors = GraphColoring.greedyColor(adj)
+    expect(colors[0]).toBe(0)
+  })
 })

@@ -143,4 +143,8 @@ describe('matchGlob edge cases', () => {
   it('star matches empty', () => {
     expect(matchGlob('', '*')).toBe(true)
   })
+
+  it('exact string matches itself', () => {
+    expect(matchGlob('abc', 'abc')).toBe(true)
+  })
 })

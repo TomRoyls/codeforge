@@ -113,4 +113,9 @@ describe('GoldenRatioSearch', () => {
     const x = GoldenRatioSearch.minimize((t) => t, -5, 5)
     expect(x).toBeCloseTo(-5, 0)
   })
+
+  it('maximize negated function', () => {
+    const x = GoldenRatioSearch.maximize((t) => -(t - 3) * (t - 3), 0, 10)
+    expect(x).toBeCloseTo(3, 1)
+  })
 })
