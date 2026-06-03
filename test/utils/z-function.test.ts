@@ -109,4 +109,9 @@ describe('ZFunction', () => {
     const zf = new ZFunction('aaaa')
     expect(zf.z[1]).toBe(3)
   })
+
+  it('non-repeating string has z values of 0', () => {
+    const zf = new ZFunction('abcd')
+    expect(zf.z[1]).toBe(0)
+  })
 })

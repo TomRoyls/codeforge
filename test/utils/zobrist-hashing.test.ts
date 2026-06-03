@@ -144,4 +144,11 @@ describe('ZobristHashing', () => {
     const h2 = z.hash(new Map())
     expect(h1).toBe(h2)
   })
+
+  it('different maps produce different hashes', () => {
+    const z = new ZobristHashing()
+    const m1 = new Map([['a', 1]])
+    const m2 = new Map([['b', 2]])
+    expect(z.hash(m1)).not.toBe(z.hash(m2))
+  })
 })

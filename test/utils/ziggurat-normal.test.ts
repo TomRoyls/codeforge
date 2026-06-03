@@ -180,4 +180,11 @@ describe('ZigguratNormal', () => {
     const v = z.sample()
     expect(Number.isFinite(v)).toBe(true)
   })
+
+  it('multiple samples are all finite', () => {
+    const z = new ZigguratNormal()
+    for (let i = 0; i < 10; i++) {
+      expect(Number.isFinite(z.sample())).toBe(true)
+    }
+  })
 })
