@@ -251,4 +251,13 @@ describe('BinomialHeap', () => {
     expect(peeked).not.toBeUndefined()
     expect(heap.size).toBe(2)
   })
+
+  it('extractMin returns minimum priority item', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(5, 5)
+    heap.insert(3, 3)
+    heap.insert(7, 7)
+    const result = heap.extractMin()
+    expect(result!.value).toBe(3)
+  })
 })

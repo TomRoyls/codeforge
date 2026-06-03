@@ -151,4 +151,11 @@ describe('Bitset', () => {
     bs.set(1)
     expect(bs.none()).toBe(false)
   })
+
+  it('set and test bit', () => {
+    const bs = new Bitset(10)
+    bs.set(5)
+    expect(bs.get(5)).toBe(true)
+    expect(bs.get(0)).toBe(false)
+  })
 })

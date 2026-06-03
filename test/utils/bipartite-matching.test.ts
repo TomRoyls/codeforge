@@ -179,4 +179,10 @@ describe('BipartiteMatching', () => {
     const graph = new BipartiteMatching(0, 0)
     expect(graph.maxMatching()).toBe(0)
   })
+
+  it('single pair matching', () => {
+    const graph = new BipartiteMatching(1, 1)
+    graph.addEdge(0, 0)
+    expect(graph.maxMatching()).toBe(1)
+  })
 })

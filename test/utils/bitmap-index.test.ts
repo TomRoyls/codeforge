@@ -169,4 +169,11 @@ describe('BitmapIndex', () => {
     index.add('doc1', ['tag1'])
     expect(index.query('tag99')).toEqual([])
   })
+
+  it('query existing tag returns results', () => {
+    const index = new BitmapIndex()
+    index.add('doc1', ['tag1'])
+    const results = index.query('tag1')
+    expect(results.length).toBeGreaterThan(0)
+  })
 })
