@@ -133,4 +133,10 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(false)
   })
+
+  it('single edge is eulerian', () => {
+    const adj = [[1], [0]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
+  })
 })

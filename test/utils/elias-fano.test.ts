@@ -145,4 +145,10 @@ describe('EliasFano', () => {
     const ef = EliasFano.fromSorted([10, 20, 30])
     expect(ef.length).toBe(3)
   })
+
+  it('get returns value at index', () => {
+    const ef = EliasFano.fromSorted([10, 20, 30])
+    expect(ef.get(0)).toBe(10)
+    expect(ef.get(2)).toBe(30)
+  })
 })

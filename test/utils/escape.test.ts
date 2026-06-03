@@ -94,4 +94,8 @@ describe('escapeMarkdown', () => {
   it('escapes pipe character', () => {
     expect(escapeMarkdown('a|b')).toBe('a\\|b')
   })
+
+  it('escapes backslash', () => {
+    expect(escapeMarkdown('a\\b')).toContain('\\')
+  })
 })
