@@ -157,4 +157,9 @@ describe('CountedBloomFilter', () => {
     bf.add('hello')
     expect(bf.count('hello')).toBeGreaterThan(0)
   })
+
+  it('count for missing item is 0', () => {
+    const bf = new CountedBloomFilter(100)
+    expect(bf.count('missing')).toBe(0)
+  })
 })
