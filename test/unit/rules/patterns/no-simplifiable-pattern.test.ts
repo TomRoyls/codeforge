@@ -1870,7 +1870,7 @@ describe('no-simplifiable-pattern rule', () => {
         alternate: { type: 'BooleanLiteral', value: false },
       })
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
   })
 

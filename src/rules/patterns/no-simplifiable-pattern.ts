@@ -5,7 +5,8 @@ import { getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 function isBooleanLiteral(node: unknown, value: boolean): boolean {
   const n = toASTNode(node)
-  return n?.type === 'Literal' && n.value === value
+  if (!n) return false
+  return (n.type === 'BooleanLiteral' || (n.type === 'Literal' && typeof n.value === 'boolean')) && n.value === value
 }
 
 function isUnaryExpression(node: unknown, operator: string): boolean {
