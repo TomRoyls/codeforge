@@ -218,4 +218,11 @@ describe('HierarchicalTimer', () => {
     timer.end('b')
     expect(timer).toBeDefined()
   })
+
+  it('totalTime after measurement is positive', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('a')
+    timer.end('a')
+    expect(timer.totalTime).toBeGreaterThanOrEqual(0)
+  })
 })

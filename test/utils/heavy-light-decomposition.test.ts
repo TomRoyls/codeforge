@@ -324,4 +324,10 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj, 0)
     expect(hld.pathDistance(0, 1)).toBeGreaterThanOrEqual(0)
   })
+
+  it('lca of same node is itself', () => {
+    const adj: number[][] = [[1], [0]]
+    const hld = new HeavyLightDecomposition(adj, 0)
+    expect(hld.lca(0, 0)).toBe(0)
+  })
 })

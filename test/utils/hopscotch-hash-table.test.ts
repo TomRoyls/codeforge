@@ -204,4 +204,10 @@ describe('HopscotchHashTable', () => {
     const table = new HopscotchHashTable<number, { x: number; y: number }>(16)
     expect(table.has(999)).toBe(false)
   })
+
+  it('set and get roundtrip', () => {
+    const table = new HopscotchHashTable<number, string>(16)
+    table.set(1, 'hello')
+    expect(table.get(1)).toBe('hello')
+  })
 })

@@ -174,4 +174,11 @@ describe('HuffmanCoder', () => {
     const decoded = coder.decode(result.encoded, result.tree)
     expect(decoded).toBe('a')
   })
+
+  it('encode empty string returns empty', () => {
+    const coder = new HuffmanCoder()
+    const text = ''
+    const result = coder.encode(text)
+    expect(result.encoded.length).toBe(0)
+  })
 })
