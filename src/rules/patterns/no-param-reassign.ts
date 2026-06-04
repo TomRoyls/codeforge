@@ -1,16 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
-
-function getIdentifierName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n) return null
-  if (n.type === 'Identifier') return n.name ?? null
-  // Adapter wraps params as Parameter nodes
-  if (n.type === 'Parameter' && n.name) return getIdentifierName(n.name)
-  return null
-}
+import { getParamName, toASTNode } from '../../utils/ast-helpers.js'
 
 function getParams(node: unknown): unknown[] {
   return toASTNode(node)?.params ?? []
@@ -24,7 +15,7 @@ export const noParamReassignRule: RuleDefinition = {
       ArrowFunctionExpression(node: unknown): void {
         const params = getParams(node)
         for (const param of params) {
-          const name = getIdentifierName(param)
+          const name = getParamName(param)
           if (name) functionParameters.add(name)
         }
       },
@@ -36,8 +27,8 @@ export const noParamReassignRule: RuleDefinition = {
         const {left} = n
         if (n.operator && n.operator !== '=') return
 
-        if (getIdentifierName(left)) {
-          const name = getIdentifierName(left)
+        if (getParamName(left)) {
+          const name = getParamName(left)
           if (name && functionParameters.has(name)) {
             context.report({
               loc: extractLocation(node),
@@ -49,7 +40,7 @@ export const noParamReassignRule: RuleDefinition = {
 
         const member = toASTNode(left)
         if (member?.type === 'MemberExpression') {
-          const name = getIdentifierName(member.object)
+          const name = getParamName(member.object)
           if (name && functionParameters.has(name)) {
             context.report({
               loc: extractLocation(node),
@@ -62,7 +53,7 @@ export const noParamReassignRule: RuleDefinition = {
       FunctionDeclaration(node: unknown): void {
         const params = getParams(node)
         for (const param of params) {
-          const name = getIdentifierName(param)
+          const name = getParamName(param)
           if (name) functionParameters.add(name)
         }
       },
@@ -70,7 +61,7 @@ export const noParamReassignRule: RuleDefinition = {
       FunctionExpression(node: unknown): void {
         const params = getParams(node)
         for (const param of params) {
-          const name = getIdentifierName(param)
+          const name = getParamName(param)
           if (name) functionParameters.add(name)
         }
       },

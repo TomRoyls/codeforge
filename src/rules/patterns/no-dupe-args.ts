@@ -1,19 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
-
-function getParamName(param: unknown): null | string {
-  const p = toASTNode(param)
-  if (!p) return null
-  if (p.type === 'Identifier' && typeof p.name === 'string') return p.name
-  if (p.type === 'AssignmentPattern') return getParamName(p.left)
-  if (p.type === 'RestElement') return getParamName(p.argument)
-  if (p.type === 'ObjectPattern' || p.type === 'ArrayPattern') return null
-  // Adapter wraps params as Parameter nodes: { type: 'Parameter', name: Identifier | Pattern }
-  if (p.type === 'Parameter' && p.name) return getParamName(p.name)
-  return null
-}
+import { getParamName, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noDupeArgsRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
