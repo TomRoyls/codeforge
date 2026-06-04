@@ -220,4 +220,10 @@ describe('DequeAggregation', () => {
     const deque = new DequeAggregation<number>((a, b) => a + b)
     expect(deque.aggregate()).toBeUndefined()
   })
+
+  it('single element aggregate returns that element', () => {
+    const deque = new DequeAggregation<number>((a, b) => a + b)
+    deque.pushBack(42)
+    expect(deque.aggregate()).toBe(42)
+  })
 })

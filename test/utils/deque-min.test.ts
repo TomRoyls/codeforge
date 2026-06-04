@@ -185,4 +185,11 @@ describe('DequeMin', () => {
     dq.pushBack(5)
     expect(dq.min).toBe(5)
   })
+
+  it('min updates on push', () => {
+    const dq = new DequeMin<number>()
+    dq.pushBack(5)
+    dq.pushBack(3)
+    expect(dq.min).toBe(3)
+  })
 })

@@ -144,4 +144,11 @@ describe('DeltaEncoding', () => {
     const encoded = DeltaEncoding.encode(data)
     expect(encoded.deltas.length).toBe(0)
   })
+
+  it('encode and decode roundtrip', () => {
+    const data = [10, 15, 13, 20]
+    const encoded = DeltaEncoding.encode(data)
+    const decoded = DeltaEncoding.decode(encoded.first, encoded.deltas)
+    expect(decoded).toEqual(data)
+  })
 })
