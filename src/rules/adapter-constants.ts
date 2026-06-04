@@ -190,6 +190,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   DoStatement: { expression: 'test', statement: 'body' },
   ElementAccessExpression: { argumentExpression: 'property', expression: 'object' },
   ExportSpecifier: { name: 'exported', propertyName: 'imported' },
+  ExpressionStatement: { expression: 'expression' },
   ForInStatement: { expression: 'right', initializer: 'left', statement: 'body' },
   ForOfStatement: { expression: 'right', initializer: 'left', statement: 'body' },
   ForStatement: {
