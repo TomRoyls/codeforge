@@ -786,4 +786,31 @@ describe('no-negated-eq-null rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('ESTree null-literal compatibility', () => {
+    function makeEstreeNullLiteral(): unknown {
+      return { type: 'Literal', value: null }
+    }
+
+    test('reports x != null where null is ESTree Literal{value:null}', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noNegatedEqNullRule.create(context)
+      visitor.BinaryExpression(makeBinExpr('!=', makeIdentifier('x'), makeEstreeNullLiteral()))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports x !== null where null is ESTree Literal{value:null}', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noNegatedEqNullRule.create(context)
+      visitor.BinaryExpression(makeBinExpr('!==', makeIdentifier('x'), makeEstreeNullLiteral()))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports null != x where null is ESTree Literal{value:null} on left', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noNegatedEqNullRule.create(context)
+      visitor.BinaryExpression(makeBinExpr('!=', makeEstreeNullLiteral(), makeIdentifier('x')))
+      expect(reports.length).toBe(1)
+    })
+  })
 })

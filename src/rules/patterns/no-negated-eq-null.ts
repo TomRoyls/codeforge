@@ -29,6 +29,7 @@ export const noNegatedEqNullRule: RuleDefinition = {
           const astNd = toASTNode(nd)
           if (!astNd) return false
           if (astNd.type === 'NullLiteral') return true
+          if (astNd.type === 'Literal' && (astNd as { value?: unknown }).value === null) return true
           if (astNd.type === 'Identifier') {
             const name = (astNd as { name?: unknown }).name
             return name === 'undefined'
