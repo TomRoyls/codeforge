@@ -160,4 +160,9 @@ describe('LazySegmentTree', () => {
     tree.rangeUpdate(0, 0, 5)
     expect(tree.rangeQuery(0, 0)).toBeGreaterThanOrEqual(5)
   })
+
+  it('rangeQuery on unchanged returns original', () => {
+    const tree = new LazySegmentTree([3, 5, 7])
+    expect(tree.rangeQuery(1, 1)).toBe(5)
+  })
 })

@@ -142,4 +142,9 @@ describe('Sieve', () => {
     const sieve = new Sieve(2)
     expect(sieve.primes).toEqual([2])
   })
+
+  it('sieve of 10 returns 4 primes', () => {
+    const sieve = new Sieve(10)
+    expect(sieve.primes.length).toBe(4)
+  })
 })
