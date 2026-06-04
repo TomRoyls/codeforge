@@ -189,4 +189,12 @@ describe('MovingWindow', () => {
     const arr = window.toArray()
     expect(arr).toEqual([1, 2])
   })
+
+  it('exceeding capacity removes oldest', () => {
+    const window = new MovingWindow<number>(2)
+    window.push(1)
+    window.push(2)
+    window.push(3)
+    expect(window.toArray()).toEqual([2, 3])
+  })
 })

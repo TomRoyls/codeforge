@@ -165,4 +165,10 @@ describe('NetworkFlowDinic', () => {
     nf.addEdge(0, 1, 10)
     expect(nf.maxFlow(0, 1)).toBe(10)
   })
+
+  it('no path yields zero flow', () => {
+    const nf = new NetworkFlowDinic(2)
+    nf.addEdge(0, 1, 10)
+    expect(nf.maxFlow(1, 0)).toBe(0)
+  })
 })
