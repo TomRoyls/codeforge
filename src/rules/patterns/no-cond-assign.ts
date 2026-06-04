@@ -25,6 +25,21 @@ export const noCondAssignRule: RuleDefinition = {
         if (n?.type !== 'WhileStatement') return
         checkTest(n.test, context)
       },
+      DoWhileStatement(node: unknown): void {
+        const n = toASTNode(node)
+        if (n?.type !== 'DoWhileStatement') return
+        checkTest(n.test, context)
+      },
+      ForStatement(node: unknown): void {
+        const n = toASTNode(node)
+        if (n?.type !== 'ForStatement') return
+        checkTest(n.test, context)
+      },
+      ConditionalExpression(node: unknown): void {
+        const n = toASTNode(node)
+        if (n?.type !== 'ConditionalExpression') return
+        checkTest(n.test, context)
+      },
     }
   },
   meta: {
