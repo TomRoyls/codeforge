@@ -186,4 +186,9 @@ describe('TopK - edge cases', () => {
     tk.add('only')
     expect(tk.topValues.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('empty topK has no values', () => {
+    const tk = new TopK<string>(3)
+    expect(tk.topValues.length).toBe(0)
+  })
 })

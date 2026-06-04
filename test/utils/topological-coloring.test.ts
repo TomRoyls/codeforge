@@ -164,4 +164,9 @@ describe('TopologicalColoring', () => {
     tc.addEdge(0, 2)
     expect(tc.chromaticNumber()).toBe(3)
   })
+
+  it('no edges needs 1 color', () => {
+    const tc = new TopologicalColoring(3)
+    expect(tc.chromaticNumber()).toBe(1)
+  })
 })

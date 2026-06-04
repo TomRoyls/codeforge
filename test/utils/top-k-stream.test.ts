@@ -185,4 +185,9 @@ describe('TopKStream', () => {
     expect(result).toContain('apple')
     expect(result).toContain('banana')
   })
+
+  it('empty stream returns empty', () => {
+    const stream = new TopKStream<string>(3)
+    expect(stream.getItems()).toEqual([])
+  })
 })
