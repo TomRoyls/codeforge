@@ -158,4 +158,10 @@ describe('DisjointInterval', () => {
     di.add(0, 10)
     expect(di.covers(2, 8)).toBe(true)
   })
+
+  it('covers returns false for uncovered range', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    expect(di.covers(8, 15)).toBe(false)
+  })
 })

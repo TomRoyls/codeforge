@@ -194,4 +194,12 @@ describe('DisjointSet - stats and clear', () => {
     ds.add(1)
     expect(ds.find(0)).not.toBe(ds.find(1))
   })
+
+  it('union merges sets', () => {
+    const ds = new DisjointSet<number>()
+    ds.add(0)
+    ds.add(1)
+    ds.union(0, 1)
+    expect(ds.find(0)).toBe(ds.find(1))
+  })
 })

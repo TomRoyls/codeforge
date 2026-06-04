@@ -192,4 +192,10 @@ describe('DisjointIntervalMap', () => {
     map.set(0, 10, 'a')
     expect(map.get(15)).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const map = new DisjointIntervalMap<number, string>()
+    map.set(0, 10, 'a')
+    expect(map.get(5)).toBe('a')
+  })
 })
