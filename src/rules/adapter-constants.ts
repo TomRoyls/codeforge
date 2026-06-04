@@ -183,6 +183,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   AwaitExpression: { expression: 'argument' },
   CallExpression: { expression: 'callee' },
   CaseClause: { expression: 'test', statements: 'consequent' },
+  CatchClause: { block: 'body', variableDeclaration: 'param' },
   ClassDeclaration: { name: 'id' },
   DefaultClause: { statements: 'consequent' },
   DeleteExpression: { expression: 'argument' },
