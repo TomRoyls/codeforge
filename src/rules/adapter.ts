@@ -484,6 +484,27 @@ function applyRawPostFixups(
     }
   }
 
+  if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
+    const heritageClauses = raw.heritageClauses as Record<string, unknown>[] | undefined
+    if (Array.isArray(heritageClauses)) {
+      for (const clause of heritageClauses) {
+        if (typeof clause?.token === 'number') {
+          const tokenName = KIND_MAP[clause.token as number]
+          if (tokenName === 'ExtendsKeyword') {
+            const types = clause.types as Record<string, unknown>[]
+            if (Array.isArray(types) && types.length > 0) {
+              const expr = types[0]?.expression
+              if (expr && typeof expr === 'object' && typeof (expr as Record<string, unknown>).kind === 'number') {
+                result.superClass = convertRawCompilerNode(expr as Record<string, unknown>, 0)
+              }
+            }
+            break
+          }
+        }
+      }
+    }
+  }
+
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
     let flags: number | undefined
@@ -783,6 +804,27 @@ function applyPostConvertFixups(
     result.computed = false
     if (result.key && !result.value) {
       result.value = result.key
+    }
+  }
+
+  if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
+    const heritageClauses = compilerNode?.heritageClauses as Record<string, unknown>[] | undefined
+    if (Array.isArray(heritageClauses)) {
+      for (const clause of heritageClauses) {
+        if (typeof clause?.token === 'number') {
+          const tokenName = KIND_MAP[clause.token as number]
+          if (tokenName === 'ExtendsKeyword') {
+            const types = clause.types as Record<string, unknown>[]
+            if (Array.isArray(types) && types.length > 0) {
+              const expr = types[0]?.expression
+              if (expr && typeof expr === 'object' && typeof (expr as Record<string, unknown>).kind === 'number') {
+                result.superClass = convertRawCompilerNode(expr as Record<string, unknown>, 0)
+              }
+            }
+            break
+          }
+        }
+      }
     }
   }
 
