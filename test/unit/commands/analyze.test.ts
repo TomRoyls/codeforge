@@ -2512,14 +2512,14 @@ describe('Analyze Command', () => {
       const cmd = createCommandWithMockedParse({ rules: ['rule-a', 'rule-b'] })
       mockExit(cmd)
       await runQuietly(cmd)
-      expect(mockSetupRuleRegistry).toHaveBeenCalledWith(['rule-a', 'rule-b'])
+      expect(mockSetupRuleRegistry).toHaveBeenCalledWith(['rule-a', 'rule-b'], undefined)
     })
 
     it('calls setupRuleRegistryLazy with undefined when no rules specified', async () => {
       const cmd = createCommandWithMockedParse({})
       mockExit(cmd)
       await runQuietly(cmd)
-      expect(mockSetupRuleRegistry).toHaveBeenCalledWith(undefined)
+      expect(mockSetupRuleRegistry).toHaveBeenCalledWith(undefined, undefined)
     })
   })
 

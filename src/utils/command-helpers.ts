@@ -1,4 +1,4 @@
-import type { CodeForgeConfig } from '../config/types.js'
+import type { CodeForgeConfig, RuleEnvConfig } from '../config/types.js'
 
 import { ConfigCache } from '../config/cache.js'
 import { findConfigPath } from '../config/discovery.js'
@@ -189,7 +189,20 @@ export async function applyFixesToFiles(
   return fixResult
 }
 
-export async function setupRuleRegistryLazy(requestedRules?: string[]): Promise<RuleRegistry> {
+/**
+ * Set up the rule registry from CLI flags and/or config rules.
+ *
+ * Priority (highest first):
+ * 1. CLI --rules flag (requestedRules) — loads ONLY those rules
+ * 2. config.rules (configRules) — loads ONLY those rules with configured severity
+ * 3. Neither specified — loads ALL registered rules (default behavior)
+ *
+ * Rules explicitly set to severity "off" in config are disabled after registration.
+ */
+export async function setupRuleRegistryLazy(
+  requestedRules?: string[],
+  configRules?: RuleEnvConfig,
+): Promise<RuleRegistry> {
   const registry = new RuleRegistry()
 
   if (requestedRules && requestedRules.length > 0) {
@@ -203,6 +216,22 @@ export async function setupRuleRegistryLazy(requestedRules?: string[]): Promise<
 
     const knownRequested = requestedRules.filter((r) => validSet.has(r))
     const loadedRules = await lazyRuleLoader.loadRules(knownRequested)
+
+    for (const [ruleId, ruleDef] of Object.entries(loadedRules)) {
+      registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
+    }
+  } else if (configRules && Object.keys(configRules).length > 0) {
+    const validRuleIds = lazyRuleLoader.getRuleIds()
+    const validSet = new Set(validRuleIds)
+    const configRuleIds = Object.keys(configRules)
+    const unknownRules = configRuleIds.filter((r) => !validSet.has(r))
+
+    if (unknownRules.length > 0) {
+      logger.warn(`Unknown rules in config will be ignored: ${unknownRules.join(', ')}`)
+    }
+
+    const knownConfigRules = configRuleIds.filter((r) => validSet.has(r))
+    const loadedRules = await lazyRuleLoader.loadRules(knownConfigRules)
 
     for (const [ruleId, ruleDef] of Object.entries(loadedRules)) {
       registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
