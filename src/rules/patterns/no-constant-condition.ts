@@ -79,6 +79,19 @@ export const noConstantConditionRule: RuleDefinition = {
     }
 
     return {
+      ConditionalExpression(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n) return
+        const test = n.test
+        const result = isConstantCondition(test)
+        if (result.isConstant) {
+          context.report({
+            loc: extractLocation(n),
+            message: result.description,
+          })
+        }
+      },
+
       DoWhileStatement(node: unknown): void {
         checkNode(node)
       },

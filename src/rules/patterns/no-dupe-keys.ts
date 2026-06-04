@@ -6,10 +6,13 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 function getPropertyKey(prop: unknown): null | string {
   const p = toASTNode(prop)
   if (p?.type === 'Property' && p.key) {
+    if (p.computed) return null
     const key = toASTNode(p.key)
     if (!key) return null
+    // Computed property key: { [expr]: value } — adapter wraps in Literal with `argument`
+    if (key.argument) return null
     if (key.type === 'Identifier') return key.name ?? null
-    if (key.type === 'Literal') return String(key.value)
+    if (key.type === 'Literal' && 'value' in key) return String(key.value)
   }
 
   return null

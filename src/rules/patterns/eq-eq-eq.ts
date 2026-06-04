@@ -13,6 +13,10 @@ function isNullNullComparison(left: unknown, right: unknown): boolean {
   return isNullLiteral(left) && isNullLiteral(right)
 }
 
+function hasNullOperand(left: unknown, right: unknown): boolean {
+  return isNullLiteral(left) || isNullLiteral(right)
+}
+
 export const eqEqEqRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
@@ -30,6 +34,10 @@ export const eqEqEqRule: RuleDefinition = {
         }
 
         if (isNullNullComparison(n.left, n.right)) {
+          return
+        }
+
+        if (hasNullOperand(n.left, n.right)) {
           return
         }
 
