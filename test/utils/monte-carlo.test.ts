@@ -142,4 +142,10 @@ describe('MonteCarlo', () => {
     const result = MonteCarlo.pi(1)
     expect(isFinite(result)).toBe(true)
   })
+
+  it('pi approximation is between 0 and 4', () => {
+    const result = MonteCarlo.pi(1000)
+    expect(result).toBeGreaterThan(0)
+    expect(result).toBeLessThan(4)
+  })
 })

@@ -151,4 +151,10 @@ describe('ModularDecomposition', () => {
     const md = new ModularDecomposition(1)
     expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
   })
+
+  it('two node graph decomposition', () => {
+    const md = new ModularDecomposition(2)
+    md.addEdge(0, 1)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
 })

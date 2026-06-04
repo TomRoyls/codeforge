@@ -125,4 +125,8 @@ describe('MonotonicStack', () => {
   it('nextGreaterElements for empty array', () => {
     expect(MonotonicStack.nextGreaterElements([])).toEqual([])
   })
+
+  it('nextGreaterElements all same returns -1', () => {
+    expect(MonotonicStack.nextGreaterElements([5, 5, 5])).toEqual([-1, -1, -1])
+  })
 })
