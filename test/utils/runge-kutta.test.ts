@@ -150,4 +150,10 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(1, 2)
   })
+
+  it('solve with zero derivative stays constant', () => {
+    const result = RungeKutta.solve((_x: number, _y: number) => 0, 0, 5, 1, 0.5)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(5, 2)
+  })
 })

@@ -98,4 +98,8 @@ describe('RomanNumeral', () => {
   it('handles 4', () => {
     expect(RomanNumeral.toRoman(4)).toBe('IV')
   })
+
+  it('handles 1994', () => {
+    expect(RomanNumeral.toRoman(1994)).toBe('MCMXCIV')
+  })
 })

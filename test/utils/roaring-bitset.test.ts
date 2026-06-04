@@ -155,4 +155,11 @@ describe('RoaringBitSet', () => {
     expect(bs.has(0x10000)).toBe(true)
     expect(bs.has(0x20000)).toBe(true)
   })
+
+  it('has returns false for unset bit', () => {
+    const bs = new RoaringBitSet()
+    bs.set(5)
+    expect(bs.has(5)).toBe(true)
+    expect(bs.has(6)).toBe(false)
+  })
 })

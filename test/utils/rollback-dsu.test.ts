@@ -171,4 +171,10 @@ describe('RollbackDSU', () => {
     dsu.union(0, 1)
     expect(dsu.find(0)).not.toBe(dsu.find(2))
   })
+
+  it('union connects elements', () => {
+    const dsu = new RollbackDSU(3)
+    dsu.union(0, 1)
+    expect(dsu.find(0)).toBe(dsu.find(1))
+  })
 })
