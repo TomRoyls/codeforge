@@ -2,7 +2,7 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
-export const noUnnecessaryArrayIsArraySpreadRule: RuleDefinition = {
+export const noUnnecessaryIsNanSpreadRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -34,4 +34,4 @@ export const noUnnecessaryArrayIsArraySpreadRule: RuleDefinition = {
     type: 'suggestion',
   },
 }
-export default noUnnecessaryArrayIsArraySpreadRule
+export default noUnnecessaryIsNanSpreadRule
