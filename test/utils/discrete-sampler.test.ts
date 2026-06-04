@@ -160,4 +160,9 @@ describe('DiscreteSampler', () => {
     expect(result).toBeGreaterThanOrEqual(0)
     expect(result).toBeLessThanOrEqual(1)
   })
+
+  it('sample with single item always returns 0', () => {
+    const sampler = new DiscreteSampler([1])
+    expect(sampler.sample()).toBe(0)
+  })
 })

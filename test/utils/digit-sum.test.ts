@@ -115,4 +115,8 @@ describe('DigitSum', () => {
   it('digitalRoot of 123 is 6', () => {
     expect(DigitSum.digitalRoot(123)).toBe(6)
   })
+
+  it('digitalRoot of single digit returns itself', () => {
+    expect(DigitSum.digitalRoot(7)).toBe(7)
+  })
 })

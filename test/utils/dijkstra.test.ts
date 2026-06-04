@@ -216,4 +216,10 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(1)).toBe(Infinity)
   })
+
+  it('source distance is zero', () => {
+    const adj = new Map<number, [number, number][]>([[0, [[1, 5]]]])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })
