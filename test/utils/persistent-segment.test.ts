@@ -174,4 +174,10 @@ describe('PersistentSegmentTree', () => {
     pst.update(v0, 0, 2, 10)
     expect(pst.query(v0, 0, 0)).toBe(1)
   })
+
+  it('initial version has default values', () => {
+    const pst = new PersistentSegmentTree(3)
+    const v0 = pst.initialVersion
+    expect(pst.query(v0, 1, 1)).toBe(0)
+  })
 })

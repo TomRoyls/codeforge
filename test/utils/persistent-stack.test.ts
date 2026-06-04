@@ -149,4 +149,9 @@ describe('PersistentStack', () => {
     const s = PersistentStack.empty<number>().push(42)
     expect(s.peek()).toBe(42)
   })
+
+  it('empty stack peek returns undefined', () => {
+    const s = PersistentStack.empty<number>()
+    expect(s.peek()).toBeUndefined()
+  })
 })

@@ -166,4 +166,12 @@ describe('PlanarCheck', () => {
     pc.addEdge(0, 1)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('triangle graph is planar', () => {
+    const pc = new PlanarCheck(3)
+    pc.addEdge(0, 1)
+    pc.addEdge(1, 2)
+    pc.addEdge(0, 2)
+    expect(pc.isPlanar()).toBe(true)
+  })
 })
