@@ -134,7 +134,6 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   ObjectDestructuring: 'ObjectPattern',
   ObjectKeyword: 'TSObjectKeyword',
   ObjectLiteralExpression: 'ObjectExpression',
-  ParenthesizedExpression: 'SequenceExpression',
   PostfixUnaryExpression: 'UpdateExpression',
   PrefixUnaryExpression: 'UnaryExpression',
   PrivateIdentifier: 'PrivateIdentifier',
