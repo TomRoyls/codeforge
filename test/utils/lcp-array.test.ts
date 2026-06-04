@@ -138,4 +138,10 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'aaa')
     expect(lcp.length).toBe(2)
   })
+
+  it('single char LCP is empty', () => {
+    const sa = [0]
+    const lcp = LCPArray.build(sa, 'a')
+    expect(lcp.length).toBe(0)
+  })
 })
