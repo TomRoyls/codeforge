@@ -102,4 +102,8 @@ describe('LevenshteinDistance', () => {
   it('distance for empty strings is 0', () => {
     expect(LevenshteinDistance.distance('', '')).toBe(0)
   })
+
+  it('distance for insertions', () => {
+    expect(LevenshteinDistance.distance('', 'abc')).toBe(3)
+  })
 })

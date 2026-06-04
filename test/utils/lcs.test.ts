@@ -111,4 +111,8 @@ describe('LCS', () => {
   it('identical strings have full length', () => {
     expect(LCS.length('abc', 'abc')).toBe(3)
   })
+
+  it('completely different strings have 0 LCS', () => {
+    expect(LCS.length('abc', 'xyz')).toBe(0)
+  })
 })

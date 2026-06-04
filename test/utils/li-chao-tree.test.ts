@@ -162,4 +162,11 @@ describe('LiChaoTree', () => {
     tree.insert(2, 3)
     expect(tree.query(0)).toBe(3)
   })
+
+  it('query at midpoint returns min', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(1, 0)
+    tree.insert(-1, 10)
+    expect(tree.query(5)).toBe(5)
+  })
 })

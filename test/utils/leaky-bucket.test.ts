@@ -170,4 +170,11 @@ describe('LeakyBucket', () => {
     const bucket = new LeakyBucket(5, 1000)
     expect(bucket.pour(1)).toBe(true)
   })
+
+  it('bucket capacity limits pours', () => {
+    const bucket = new LeakyBucket(2, 100000)
+    expect(bucket.pour(1)).toBe(true)
+    expect(bucket.pour(1)).toBe(true)
+    expect(bucket.pour(1)).toBe(false)
+  })
 })

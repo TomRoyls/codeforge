@@ -184,4 +184,10 @@ describe('LFUCache', () => {
     const cache = new LFUCache<string, number>(3)
     expect(cache.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('key', 42)
+    expect(cache.get('key')).toBe(42)
+  })
 })
