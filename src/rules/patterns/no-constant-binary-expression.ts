@@ -7,12 +7,12 @@ function isUselessOperator(left: unknown, operator: string): boolean {
   const l = toASTNode(left)
   if (l?.type === 'RegExpLiteral' && (operator === '||' || operator === '??')) return true
 
-  if (l?.type === 'Literal') {
+  if (l?.type === 'Literal' || l?.type === 'BooleanLiteral') {
     if (operator === '||' && l.value) return true
     if (operator === '??' && l.value !== null && l.value !== undefined) return true
   }
 
-  if (operator === '&&' && l?.type === 'Literal' && !l.value && l.value !== 0 && l.value !== '') return true
+  if (operator === '&&' && (l?.type === 'Literal' || l?.type === 'BooleanLiteral') && !l.value && l.value !== 0 && l.value !== '') return true
 
   return false
 }
