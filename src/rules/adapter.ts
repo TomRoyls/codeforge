@@ -469,10 +469,10 @@ function applyRawPostFixups(
     result.computed = false
   }
 
-  if (kindName === 'PropertyAssignment') {
-    const key = result.key as Record<string, unknown> | undefined
-    if (key?.argument) {
-      result.computed = true
+  if (kindName === 'PropertyAssignment' || kindName === 'PropertyDeclaration') {
+    const rawName = raw.name as Record<string, unknown> | undefined
+    if (rawName && typeof rawName.kind === 'number') {
+      result.computed = KIND_MAP[rawName.kind as number] === 'ComputedPropertyName'
     }
   }
 
@@ -513,6 +513,11 @@ function convertRawCompilerNode(
 
   // ParenthesizedExpression: unwrap to inner expression (ESTree has no Parens node)
   if (kindName === 'ParenthesizedExpression' && raw.expression && typeof raw.expression === 'object') {
+    return convertRawCompilerNode(raw.expression as Record<string, unknown>, depth)
+  }
+
+  // ComputedPropertyName: unwrap to inner expression (ESTree uses computed:true on parent Property)
+  if (kindName === 'ComputedPropertyName' && raw.expression && typeof raw.expression === 'object') {
     return convertRawCompilerNode(raw.expression as Record<string, unknown>, depth)
   }
 
@@ -1060,6 +1065,17 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   // ParenthesizedExpression: unwrap to inner expression (ESTree convention)
   // ESTree doesn't have a ParenthesizedExpression node — parens are implicit
   if (kindName === 'ParenthesizedExpression') {
+    try {
+      const inner = (node as unknown as { getExpression?: () => Node }).getExpression?.()
+      if (inner) {
+        const innerGeneric = nodeToGeneric(inner)
+        return innerGeneric
+      }
+    } catch { /* fall through to default handling */ }
+  }
+
+  // ComputedPropertyName: unwrap to inner expression (ESTree uses computed:true on parent)
+  if (kindName === 'ComputedPropertyName') {
     try {
       const inner = (node as unknown as { getExpression?: () => Node }).getExpression?.()
       if (inner) {
