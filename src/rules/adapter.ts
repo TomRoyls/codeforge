@@ -1015,10 +1015,12 @@ function synthesizeChainExpression(base: Record<string, unknown>): void {
   base.end = savedRange.end
 }
 
-function fillLocFromRange(obj: unknown, sourceFile: SourceFile): void {
+function fillLocFromRange(obj: unknown, sourceFile: SourceFile, visited: WeakSet<object> = new WeakSet()): void {
   if (!obj || typeof obj !== 'object') return
+  if (visited.has(obj as object)) return
+  visited.add(obj as object)
   if (Array.isArray(obj)) {
-    for (const item of obj) fillLocFromRange(item, sourceFile)
+    for (const item of obj) fillLocFromRange(item, sourceFile, visited)
     return
   }
   const record = obj as Record<string, unknown>
@@ -1035,7 +1037,7 @@ function fillLocFromRange(obj: unknown, sourceFile: SourceFile): void {
   }
   for (const val of Object.values(record)) {
     if (val && typeof val === 'object') {
-      fillLocFromRange(val, sourceFile)
+      fillLocFromRange(val, sourceFile, visited)
     }
   }
 }
