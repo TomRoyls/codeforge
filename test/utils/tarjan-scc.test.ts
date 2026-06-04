@@ -147,4 +147,10 @@ describe('TarjanSCC', () => {
     const sccs = new TarjanSCC(adj).solve()
     expect(sccs.length).toBe(1)
   })
+
+  it('disconnected nodes are separate SCCs', () => {
+    const adj = [[], []]
+    const sccs = new TarjanSCC(adj).solve()
+    expect(sccs.length).toBe(2)
+  })
 })

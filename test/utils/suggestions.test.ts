@@ -132,4 +132,9 @@ describe('RULE_SUGGESTIONS known rules', () => {
     const first = RULE_SUGGESTIONS[keys[0]!]
     expect(first).toBeDefined()
   })
+
+  it('RULE_SUGGESTIONS has at least one entry', () => {
+    const keys = Object.keys(RULE_SUGGESTIONS)
+    expect(keys.length).toBeGreaterThanOrEqual(1)
+  })
 })

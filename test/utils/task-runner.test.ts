@@ -196,4 +196,10 @@ describe('runWithConcurrency', () => {
     await runWithConcurrency([42], async (x) => { order.push(x) }, 2)
     expect(order).toEqual([42])
   })
+
+  it('runs with concurrency 1 sequentially', async () => {
+    const order: number[] = []
+    await runWithConcurrency([1, 2, 3], async (x) => { order.push(x) }, 1)
+    expect(order).toEqual([1, 2, 3])
+  })
 })
