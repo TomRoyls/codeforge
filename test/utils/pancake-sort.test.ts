@@ -106,4 +106,8 @@ describe('PancakeSort', () => {
   it('handles empty array', () => {
     expect(PancakeSort.sort([])).toEqual([])
   })
+
+  it('handles single element', () => {
+    expect(PancakeSort.sort([42])).toEqual([42])
+  })
 })
