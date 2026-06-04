@@ -119,6 +119,17 @@ export function isIdentifier(node: unknown, name?: string): boolean {
   return name === undefined || n.name === name
 }
 
+export function getParamName(param: unknown): null | string {
+  const n = toASTNode(param)
+  if (!n) return null
+  if (n.type === 'Identifier' && typeof n.name === 'string') return n.name
+  // Adapter wraps function params as Parameter nodes
+  if (n.type === 'Parameter' && n.name) return getParamName(n.name)
+  if (n.type === 'AssignmentPattern') return getParamName(n.left)
+  if (n.type === 'RestElement') return getParamName(n.argument)
+  return null
+}
+
 export function isBinaryExpression(node: unknown): boolean {
   return toASTNode(node)?.type === 'BinaryExpression'
 }
