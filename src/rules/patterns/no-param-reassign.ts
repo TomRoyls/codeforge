@@ -5,8 +5,11 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getIdentifierName(node: unknown): null | string {
   const n = toASTNode(node)
-  if (n?.type !== 'Identifier') return null
-  return n.name ?? null
+  if (!n) return null
+  if (n.type === 'Identifier') return n.name ?? null
+  // Adapter wraps params as Parameter nodes
+  if (n.type === 'Parameter' && n.name) return getIdentifierName(n.name)
+  return null
 }
 
 function getParams(node: unknown): unknown[] {

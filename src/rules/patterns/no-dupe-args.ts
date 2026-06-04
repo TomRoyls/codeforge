@@ -10,6 +10,8 @@ function getParamName(param: unknown): null | string {
   if (p.type === 'AssignmentPattern') return getParamName(p.left)
   if (p.type === 'RestElement') return getParamName(p.argument)
   if (p.type === 'ObjectPattern' || p.type === 'ArrayPattern') return null
+  // Adapter wraps params as Parameter nodes: { type: 'Parameter', name: Identifier | Pattern }
+  if (p.type === 'Parameter' && p.name) return getParamName(p.name)
   return null
 }
 
