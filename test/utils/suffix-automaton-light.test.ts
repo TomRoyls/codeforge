@@ -159,4 +159,10 @@ describe('SuffixAutomatonLight', () => {
     sa.build('abcde')
     expect(sa.contains('xyz')).toBe(false)
   })
+
+  it('contains returns true for substring', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abcde')
+    expect(sa.contains('bcd')).toBe(true)
+  })
 })

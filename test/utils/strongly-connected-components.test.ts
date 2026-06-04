@@ -199,8 +199,17 @@ describe('SCCGraph', () => {
     expect(comps.length).toBe(1)
   })
 
-  it('single node has one SCC', () => {
+  it('single node with self-loop has one SCC', () => {
     const g = new SCCGraph(1)
+    g.addEdge(0, 0)
+    const comps = g.findSCCs()
+    expect(comps.length).toBe(1)
+  })
+
+  it('two connected nodes form one SCC', () => {
+    const g = new SCCGraph(2)
+    g.addEdge(0, 1)
+    g.addEdge(1, 0)
     const comps = g.findSCCs()
     expect(comps.length).toBe(1)
   })

@@ -106,4 +106,8 @@ describe('SubsetSum', () => {
   it('empty set cannot sum to positive', () => {
     expect(SubsetSum.hasSubset([], 1)).toBe(false)
   })
+
+  it('empty set can sum to 0', () => {
+    expect(SubsetSum.hasSubset([], 0)).toBe(true)
+  })
 })
