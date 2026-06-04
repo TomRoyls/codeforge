@@ -43,9 +43,15 @@ export const noUseBeforeDefineRule: RuleDefinition = {
     function collectPropertyNames(node: unknown): void {
       const n = toASTNode(node)
       if (!n) return
+      const computed = (n as { computed?: boolean }).computed
+      if (computed) return
       const prop = (n as { property?: { name?: string } }).property
-      if (prop && typeof prop.name === 'string' && !(n as { computed?: boolean }).computed) {
+      if (prop && typeof prop.name === 'string') {
         propertyNames.add(prop.name)
+      }
+      const key = (n as { key?: { name?: string } }).key
+      if (key && typeof key.name === 'string') {
+        propertyNames.add(key.name)
       }
     }
 
@@ -71,6 +77,43 @@ export const noUseBeforeDefineRule: RuleDefinition = {
         const id = (n as { id?: { name?: string } }).id
         if (id && typeof id.name === 'string') {
           definedVars.add(id.name)
+        }
+        const params = (n as { params?: unknown[] }).params
+        if (Array.isArray(params)) {
+          for (const p of params) {
+            const pNode = toASTNode(p)
+            if (pNode && pNode.type === 'Identifier' && typeof pNode.name === 'string') {
+              definedVars.add(pNode.name)
+            }
+          }
+        }
+      },
+
+      FunctionExpression(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n) return
+        const params = (n as { params?: unknown[] }).params
+        if (Array.isArray(params)) {
+          for (const p of params) {
+            const pNode = toASTNode(p)
+            if (pNode && pNode.type === 'Identifier' && typeof pNode.name === 'string') {
+              definedVars.add(pNode.name)
+            }
+          }
+        }
+      },
+
+      ArrowFunctionExpression(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n) return
+        const params = (n as { params?: unknown[] }).params
+        if (Array.isArray(params)) {
+          for (const p of params) {
+            const pNode = toASTNode(p)
+            if (pNode && pNode.type === 'Identifier' && typeof pNode.name === 'string') {
+              definedVars.add(pNode.name)
+            }
+          }
         }
       },
 
@@ -105,6 +148,22 @@ export const noUseBeforeDefineRule: RuleDefinition = {
       },
 
       Property(node: unknown): void {
+        collectPropertyNames(node)
+      },
+
+      MethodDefinition(node: unknown): void {
+        collectPropertyNames(node)
+      },
+
+      PropertyDefinition(node: unknown): void {
+        collectPropertyNames(node)
+      },
+
+      TSPropertySignature(node: unknown): void {
+        collectPropertyNames(node)
+      },
+
+      TSMethodSignature(node: unknown): void {
         collectPropertyNames(node)
       },
 

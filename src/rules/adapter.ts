@@ -1481,6 +1481,10 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             }
           }
 
+          if (kindName === 'ImportDeclaration') {
+            genericNode.specifiers = extractImportSpecifiers(node)
+          }
+
           // Dispatch by ts-morph kind name (for rules registered with ts-morph names)
           const handler = pluginVisitor[kindName]
           if (handler) {
@@ -1581,17 +1585,19 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             }
           }
 
-          // ImportDeclaration → add specifiers and source
+          // ImportDeclaration → dispatch specifier handlers (specifiers already set above)
           if (kindName === 'ImportDeclaration') {
-            genericNode.specifiers = extractImportSpecifiers(node)
-            for (const spec of genericNode.specifiers as unknown[]) {
-              if (spec && typeof spec === 'object') {
-                const specRec = spec as Record<string, unknown>
-                const specType = specRec.type as string
-                if (specType) {
-                  const specHandler = pluginVisitor[specType]
-                  if (specHandler) {
-                    specHandler(spec)
+            const specs = genericNode.specifiers as unknown[]
+            if (Array.isArray(specs)) {
+              for (const spec of specs) {
+                if (spec && typeof spec === 'object') {
+                  const specRec = spec as Record<string, unknown>
+                  const specType = specRec.type as string
+                  if (specType) {
+                    const specHandler = pluginVisitor[specType]
+                    if (specHandler) {
+                      specHandler(spec)
+                    }
                   }
                 }
               }
