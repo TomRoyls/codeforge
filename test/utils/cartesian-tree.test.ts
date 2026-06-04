@@ -144,4 +144,9 @@ describe('CartesianTree', () => {
     const tree = CartesianTree.fromArray([])
     expect(tree.size).toBe(0)
   })
+
+  it('fromArray with single element has size 1', () => {
+    const tree = CartesianTree.fromArray([5])
+    expect(tree.size).toBe(1)
+  })
 })
