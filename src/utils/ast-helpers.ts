@@ -124,7 +124,47 @@ export function isBinaryExpression(node: unknown): boolean {
 }
 
 export function isLiteral(node: unknown): boolean {
-  return toASTNode(node)?.type === 'Literal'
+  const n = toASTNode(node)
+  if (!n) return false
+  return (
+    n.type === 'Literal' ||
+    n.type === 'StringLiteral' ||
+    n.type === 'NumericLiteral' ||
+    n.type === 'BooleanLiteral' ||
+    n.type === 'NullLiteral' ||
+    n.type === 'BigIntLiteral' ||
+    n.type === 'RegExpLiteral'
+  )
+}
+
+export function isNullLiteral(node: unknown): boolean {
+  const n = toASTNode(node)
+  if (!n) return false
+  return n.type === 'NullLiteral' || (n.type === 'Literal' && n.value === null)
+}
+
+export function isStringLiteral(node: unknown): boolean {
+  const n = toASTNode(node)
+  if (!n) return false
+  return n.type === 'StringLiteral' || (n.type === 'Literal' && typeof n.value === 'string')
+}
+
+export function isNumericLiteral(node: unknown): boolean {
+  const n = toASTNode(node)
+  if (!n) return false
+  return n.type === 'NumericLiteral' || (n.type === 'Literal' && typeof n.value === 'number')
+}
+
+export function isBigIntLiteral(node: unknown): boolean {
+  const n = toASTNode(node)
+  if (!n) return false
+  return n.type === 'BigIntLiteral' || (n.type === 'Literal' && typeof n.value === 'bigint')
+}
+
+export function isBooleanLiteral(node: unknown): boolean {
+  const n = toASTNode(node)
+  if (!n) return false
+  return n.type === 'BooleanLiteral' || (n.type === 'Literal' && typeof n.value === 'boolean')
 }
 
 export function isLogicalExpression(node: unknown): boolean {
