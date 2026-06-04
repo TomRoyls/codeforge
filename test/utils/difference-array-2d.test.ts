@@ -191,4 +191,11 @@ describe('DifferenceArray2D', () => {
     const grid = da.buildGrid()
     expect(grid[0]![0]).toBe(5)
   })
+
+  it('buildGrid returns zeros when no adds', () => {
+    const da = new DifferenceArray2D(2, 2)
+    const grid = da.buildGrid()
+    expect(grid[0]![0]).toBe(0)
+    expect(grid[1]![1]).toBe(0)
+  })
 })

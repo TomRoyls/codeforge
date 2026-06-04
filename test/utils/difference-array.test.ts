@@ -205,4 +205,11 @@ describe('DifferenceArray', () => {
     da.rangeAdd(0, 2, 0)
     expect(da.get(0)).toBe(0)
   })
+
+  it('rangeAdd then get reflects sum', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(1, 3, 10)
+    expect(da.get(2)).toBe(10)
+    expect(da.get(4)).toBe(0)
+  })
 })

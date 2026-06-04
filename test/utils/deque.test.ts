@@ -195,4 +195,9 @@ describe('Deque', () => {
     dq.pushBack(2)
     expect(dq.popFront()).toBe(1)
   })
+
+  it('empty deque popFront returns undefined', () => {
+    const dq = new Deque<number>()
+    expect(dq.popFront()).toBeUndefined()
+  })
 })

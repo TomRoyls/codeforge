@@ -169,4 +169,13 @@ describe('DeterministicRng', () => {
     const r2 = new DeterministicRng(42)
     expect(r1.nextInt(0, 100)).toBe(r2.nextInt(0, 100))
   })
+
+  it('nextInt range is bounded', () => {
+    const rng = new DeterministicRng(123)
+    for (let i = 0; i < 50; i++) {
+      const v = rng.nextInt(10, 20)
+      expect(v).toBeGreaterThanOrEqual(10)
+      expect(v).toBeLessThanOrEqual(20)
+    }
+  })
 })

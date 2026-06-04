@@ -174,4 +174,9 @@ describe('DigitalTree', () => {
     dt.insert('hello')
     expect(dt.search('hello')).toBe(true)
   })
+
+  it('search returns false for missing key', () => {
+    const dt = new DigitalTree<string>()
+    expect(dt.search('missing')).toBe(false)
+  })
 })
