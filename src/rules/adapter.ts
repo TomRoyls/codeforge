@@ -476,6 +476,14 @@ function applyRawPostFixups(
     }
   }
 
+  if (kindName === 'ShorthandPropertyAssignment') {
+    result.shorthand = true
+    result.computed = false
+    if (result.key && !result.value) {
+      result.value = result.key
+    }
+  }
+
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
     let flags: number | undefined
@@ -768,6 +776,14 @@ function applyPostConvertFixups(
 
   if (kindName === 'PropertyAccessExpression') {
     result.computed = false
+  }
+
+  if (kindName === 'ShorthandPropertyAssignment') {
+    result.shorthand = true
+    result.computed = false
+    if (result.key && !result.value) {
+      result.value = result.key
+    }
   }
 
   if (result.type === 'VariableDeclaration') {
@@ -1407,6 +1423,14 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
 
           if (kindName === 'PropertyAccessExpression') {
             genericNode.computed = false
+          }
+
+          if (kindName === 'ShorthandPropertyAssignment') {
+            genericNode.shorthand = true
+            genericNode.computed = false
+            if (genericNode.key && !genericNode.value) {
+              genericNode.value = genericNode.key
+            }
           }
 
           // Dispatch exit handler by ts-morph kind name

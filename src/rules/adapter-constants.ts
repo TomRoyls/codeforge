@@ -216,6 +216,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   PropertyAccessExpression: { expression: 'object', name: 'property' },
   PropertyAssignment: { initializer: 'value', name: 'key' },
   PropertyDeclaration: { initializer: 'value', name: 'key' },
+  ShorthandPropertyAssignment: { name: 'key' },
   ReturnStatement: { expression: 'argument' },
   SetAccessor: { name: 'key' },
   SpreadAssignment: { expression: 'argument' },
