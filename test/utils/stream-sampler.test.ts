@@ -175,4 +175,12 @@ describe('StreamSampler', () => {
     sampler.add('b')
     expect(sampler.sample()).toEqual(['b'])
   })
+
+  it('sample with k=2 returns up to 2', () => {
+    const sampler = new StreamSampler<string>(2)
+    sampler.add('a')
+    sampler.add('b')
+    sampler.add('c')
+    expect(sampler.sample().length).toBe(2)
+  })
 })

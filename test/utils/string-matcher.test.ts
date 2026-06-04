@@ -212,10 +212,18 @@ describe('StringMatcher', () => {
   })
 
   it('match single pattern', () => {
-    const matcher = new StringMatcher(['abc'])
+    const matcher = new StringMatcher()
+    matcher.addPattern('abc')
     matcher.build()
     const results = matcher.search('xabcx')
     expect(results.length).toBeGreaterThanOrEqual(1)
     expect(results[0]!.pattern).toBe('abc')
+  })
+
+  it('no match returns empty', () => {
+    const matcher = new StringMatcher(['xyz'])
+    matcher.build()
+    const results = matcher.search('abcdef')
+    expect(results).toEqual([])
   })
 })

@@ -131,4 +131,9 @@ describe('StringHasher', () => {
     const sh = new StringHasher('abc')
     expect(sh.hash(0, 1)).toBeDefined()
   })
+
+  it('full string hash is defined', () => {
+    const sh = new StringHasher('abc')
+    expect(sh.hash(0, 3)).toBeDefined()
+  })
 })

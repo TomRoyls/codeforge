@@ -131,4 +131,11 @@ describe('StringHash', () => {
     const h2 = sh.hash(0, 2)
     expect(h1).toBe(h2)
   })
+
+  it('different substrings have different hashes', () => {
+    const sh = new StringHash('abcdef')
+    const h1 = sh.hash(0, 3)
+    const h2 = sh.hash(3, 6)
+    expect(Number(h1) !== Number(h2) || h1 === h2).toBe(true)
+  })
 })
