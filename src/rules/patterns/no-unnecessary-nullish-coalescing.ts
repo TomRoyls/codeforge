@@ -7,6 +7,26 @@ import type {
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
+// ESTree encodes null as `{ type: 'Literal', value: null }`; Babel/Flow use `{ type: 'NullLiteral' }`.
+// Both must be accepted so the rule is parser-agnostic.
+function isNullValue(node: unknown): boolean {
+  const n = toASTNode(node)
+  if (!n) return false
+  if (n.type === 'NullLiteral') return true
+  if (n.type === 'Literal' && (n as Record<string, unknown>).value === null) return true
+  return false
+}
+
+// ESTree has no undefined literal — `undefined` parses as Identifier{name:'undefined'}.
+// Babel occasionally emits `UndefinedLiteral`; accept both.
+function isUndefinedValue(node: unknown): boolean {
+  const n = toASTNode(node)
+  if (!n) return false
+  if (n.type === 'UndefinedLiteral') return true
+  if (n.type === 'Identifier' && (n as Record<string, unknown>).name === 'undefined') return true
+  return false
+}
+
 export const noUnnecessaryNullishCoalescingRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
@@ -20,22 +40,21 @@ export const noUnnecessaryNullishCoalescingRule: RuleDefinition = {
         const right = nn.right
         if (!right || typeof right !== 'object') return
 
-        const rightNode = toASTNode(right)
-        if (!rightNode) return
-
-        const r = rightNode as Record<string, unknown>
-        if (r.type === 'Identifier' && (r.name === 'null' || r.name === 'undefined')) {
+        if (isNullValue(right)) {
           context.report({
             loc: extractLocation(n),
             message:
-              'Unnecessary nullish coalescing with null or undefined. The right side of ?? should be a meaningful fallback value.',
+              'Unnecessary nullish coalescing: the right-hand side of `??` is `null`, which is always swallowed. Use a meaningful fallback value or remove the `??`.',
             node: n,
           })
-        } else if (r.type === 'NullLiteral') {
+          return
+        }
+
+        if (isUndefinedValue(right)) {
           context.report({
             loc: extractLocation(n),
             message:
-              'Unnecessary nullish coalescing with null. The right side of ?? should be a meaningful fallback value.',
+              'Unnecessary nullish coalescing: the right-hand side of `??` is `undefined`, which is always swallowed. Use a meaningful fallback value or remove the `??`.',
             node: n,
           })
         }
@@ -47,7 +66,7 @@ export const noUnnecessaryNullishCoalescingRule: RuleDefinition = {
     docs: {
       category: 'patterns',
       description:
-        'Disallow unnecessary nullish coalescing with null or undefined as fallback.',
+        'Disallow unnecessary nullish coalescing where the right-hand side is `null` or `undefined`. `x ?? null` collapses to `x` because `??` already short-circuits on null/undefined, making the fallback useless.',
       recommended: false,
       url: 'https://github.com/codeforge-dev/codeforge/blob/main/docs/rules/patterns/no-unnecessary-nullish-coalescing.md',
     },

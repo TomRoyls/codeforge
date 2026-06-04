@@ -1515,6 +1515,7 @@ export { noUnnecessaryFsExistsSpreadRule } from './no-unnecessary-fs-exists-spre
 export { noUnnecessaryFsExistsSyncSpreadRule } from './no-unnecessary-fs-exists-sync-spread.js'
 export { noUnnecessaryFsAccessSpreadRule } from './no-unnecessary-fs-access-spread.js'
 export { noUnnecessaryFsChmodSpreadRule } from './no-unnecessary-fs-chmod-spread.js'
+export { noUnnecessaryNullishCoalescingRule } from './no-unnecessary-nullish-coalescing.js'
 export { noUnnecessaryFsChownSpreadRule } from './no-unnecessary-fs-chown-spread.js'
 export { noUnnecessaryFsReadDirSyncSpreadRule } from './no-unnecessary-fs-read-dir-sync-spread.js'
 export { noUnnecessaryFsReadFileSyncSpreadRule } from './no-unnecessary-fs-read-file-sync-spread.js'
