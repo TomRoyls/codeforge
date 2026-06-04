@@ -52,7 +52,7 @@ export const noMisleadingAssertionRule: RuleDefinition = {
           }
         }
 
-        if (argNode.type === 'StringLiteral') {
+        if (argNode.type === 'StringLiteral' || (argNode.type === 'Literal' && typeof (argNode as { value?: unknown }).value === 'string')) {
           const val = (argNode as { value?: string }).value
           if (val !== undefined && val.length === 0) {
             context.report({
@@ -63,7 +63,7 @@ export const noMisleadingAssertionRule: RuleDefinition = {
           }
         }
 
-        if (argNode.type === 'NumericLiteral') {
+        if (argNode.type === 'NumericLiteral' || (argNode.type === 'Literal' && typeof (argNode as { value?: unknown }).value === 'number')) {
           const val = (argNode as { value?: number }).value
           if (val === 0) {
             context.report({
