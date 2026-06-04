@@ -15,9 +15,9 @@ const UNESCAPEABLE = new Set([
 export const noUnnecessaryEscapeRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
-      StringLiteral(node: unknown): void {
+      Literal(node: unknown): void {
         const n = toASTNode(node)
-        if (!n || n.type !== 'StringLiteral') return
+        if (!n || (n.type !== 'Literal' && n.type !== 'StringLiteral')) return
 
         const value = (n as { value?: string }).value
         if (!value || typeof value !== 'string') return

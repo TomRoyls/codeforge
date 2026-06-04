@@ -15,9 +15,9 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 export const noTabsRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
-      StringLiteral(node: unknown): void {
+      Literal(node: unknown): void {
         const n = toASTNode(node)
-        if (!n || n.type !== 'StringLiteral') return
+        if (!n || (n.type !== 'Literal' && n.type !== 'StringLiteral')) return
 
         const value = (n as { value?: unknown }).value
         if (typeof value !== 'string') return
