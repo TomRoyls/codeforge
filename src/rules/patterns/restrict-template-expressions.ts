@@ -29,7 +29,8 @@ function isNumberLiteral(node: unknown): boolean {
 
 function isBooleanLiteral(node: unknown): boolean {
   const n = toASTNode(node)
-  return n?.type === 'Literal' && typeof n.value === 'boolean'
+  if (!n) return false
+  return n.type === 'BooleanLiteral' || (n.type === 'Literal' && typeof n.value === 'boolean')
 }
 
 function isNullLiteral(node: unknown): boolean {

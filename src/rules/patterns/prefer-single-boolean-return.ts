@@ -5,14 +5,14 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isTruthyLiteral(n: ReturnType<typeof toASTNode>): boolean {
   if (!n) return false
-  if (n.type === 'Literal' && typeof n.value === 'boolean' && n.value === true) return true
+  if ((n.type === 'BooleanLiteral' || (n.type === 'Literal' && typeof n.value === 'boolean')) && n.value === true) return true
   if (n.type === 'UnaryExpression' && n.operator === '!' && isFalsyLiteral(toASTNode(n.argument))) return true
   return false
 }
 
 function isFalsyLiteral(n: ReturnType<typeof toASTNode>): boolean {
   if (!n) return false
-  if (n.type === 'Literal' && typeof n.value === 'boolean' && n.value === false) return true
+  if ((n.type === 'BooleanLiteral' || (n.type === 'Literal' && typeof n.value === 'boolean')) && n.value === false) return true
   if (n.type === 'UnaryExpression' && n.operator === '!' && isTruthyLiteral(toASTNode(n.argument))) return true
   return false
 }

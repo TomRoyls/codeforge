@@ -8,7 +8,7 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isBooleanLiteral(node: Record<string, unknown>): boolean {
-  return node.type === 'Literal' && typeof node.value === 'boolean'
+  return node.type === 'BooleanLiteral' || (node.type === 'Literal' && typeof node.value === 'boolean')
 }
 
 export const noUnnecessaryBooleanLiteralCompareRule: RuleDefinition = {

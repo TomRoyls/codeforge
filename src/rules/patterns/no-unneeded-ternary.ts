@@ -5,12 +5,12 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isBooleanLiteral(n: ReturnType<typeof toASTNode>): boolean {
   if (!n) return false
-  return n.type === 'Literal' && typeof n.value === 'boolean'
+  return n.type === 'BooleanLiteral' || (n.type === 'Literal' && typeof n.value === 'boolean')
 }
 
 function getBooleanValue(n: ReturnType<typeof toASTNode>): boolean | null {
   if (!n) return null
-  if (n.type === 'Literal' && typeof n.value === 'boolean') return n.value
+  if (n.type === 'BooleanLiteral' || (n.type === 'Literal' && typeof n.value === 'boolean')) return n.value as boolean
   return null
 }
 

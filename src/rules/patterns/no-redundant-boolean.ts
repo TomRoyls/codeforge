@@ -5,7 +5,7 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getLiteralValue(n: ReturnType<typeof toASTNode>): boolean | null {
   if (!n) return null
-  if (n.type === 'Literal' && typeof n.value === 'boolean') return n.value
+  if (n.type === 'BooleanLiteral' || (n.type === 'Literal' && typeof n.value === 'boolean')) return n.value as boolean
   return null
 }
 

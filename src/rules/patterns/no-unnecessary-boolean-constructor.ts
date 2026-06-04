@@ -28,7 +28,7 @@ export const noUnnecessaryBooleanConstructorRule: RuleDefinition = {
         if (!firstArg || typeof firstArg !== 'object') return
 
         const arg = firstArg as Record<string, unknown>
-        if (arg.type === 'Literal' && typeof arg.value === 'boolean') {
+        if (arg.type === 'BooleanLiteral' || (arg.type === 'Literal' && typeof arg.value === 'boolean')) {
           context.report({
             loc: extractLocation(n),
             message: 'Unnecessary Boolean() call on a boolean literal. Use the value directly.',
