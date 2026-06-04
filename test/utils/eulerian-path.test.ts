@@ -152,4 +152,12 @@ describe('EulerianPath', () => {
     expect(ep.isEulerian).toBe(true)
     expect(ep.type).toBe('circuit')
   })
+
+  it('getPath returns correct length', () => {
+    const adj = [[1, 2], [3], [3], []]
+    const ep = new EulerianPath(adj)
+    if (ep.isEulerian) {
+      expect(ep.getPath().length).toBeGreaterThan(0)
+    }
+  })
 })

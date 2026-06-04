@@ -206,4 +206,12 @@ describe('EventSink', () => {
     const sink = new EventSink()
     expect(() => sink.emit('test', null)).not.toThrow()
   })
+
+  it('on handler receives emitted data', () => {
+    const sink = new EventSink<string>()
+    let received = ''
+    sink.on('msg', (data) => { received = data })
+    sink.emit('msg', 'hello')
+    expect(received).toBe('hello')
+  })
 })

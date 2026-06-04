@@ -161,4 +161,10 @@ describe('EliasFano', () => {
     const ef = EliasFano.fromSorted([10, 20, 30])
     expect(ef.indexOf(15)).toBeLessThan(0)
   })
+
+  it('get returns correct value', () => {
+    const ef = EliasFano.fromSorted([10, 20, 30])
+    expect(ef.get(0)).toBe(10)
+    expect(ef.get(2)).toBe(30)
+  })
 })
