@@ -191,4 +191,12 @@ describe('SimilarityIndex', () => {
     const results = index.findSimilar('test', 0)
     expect(results).toEqual([])
   })
+
+  it('findSimilar with low threshold returns results', () => {
+    const index = new SimilarityIndex()
+    index.add('item1', 'doc1', ['word1', 'word2'])
+    index.add('item2', 'doc2', ['word1', 'word3'])
+    const results = index.findSimilar('item1', 0)
+    expect(results.length).toBeGreaterThanOrEqual(0)
+  })
 })

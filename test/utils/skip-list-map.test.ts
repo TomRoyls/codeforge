@@ -173,4 +173,10 @@ describe('SkipListMap', () => {
     const sl = new SkipListMap<number, string>()
     expect(sl.get(99)).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'hello')
+    expect(sl.get(1)).toBe('hello')
+  })
 })
