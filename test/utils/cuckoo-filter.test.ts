@@ -202,4 +202,10 @@ describe('CuckooFilter edge cases', () => {
     const cf = new CuckooFilter({ capacity: 100 })
     expect(cf.contains('world')).toBe(false)
   })
+
+  it('contains returns true after insert', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('hello')
+    expect(cf.contains('hello')).toBe(true)
+  })
 })

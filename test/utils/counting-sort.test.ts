@@ -111,4 +111,8 @@ describe('CountingSort', () => {
   it('handles empty array', () => {
     expect(CountingSort.sort([])).toEqual([])
   })
+
+  it('handles single element', () => {
+    expect(CountingSort.sort([5])).toEqual([5])
+  })
 })
