@@ -21,17 +21,20 @@ const BUILTIN_GLOBALS = new Set([
   'encodeURI', 'encodeURIComponent', 'escape', 'eval', 'globalThis',
   'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'process', 'undefined',
   'unescape',
-  // Node.js globals
   'Buffer', 'global', 'module', 'require', 'exports', '__dirname', '__filename',
   'setTimeout', 'setInterval', 'setImmediate', 'clearTimeout', 'clearInterval',
   'clearImmediate', 'queueMicrotask', 'performance', 'AbortController',
   'AbortSignal', 'URL', 'URLSearchParams', 'TextEncoder', 'TextDecoder',
   'fetch', 'crypto', 'navigator', 'Event', 'EventTarget', 'CustomEvent',
   'ReadableStream', 'WritableStream', 'TransformStream',
-  // TypeScript-specific
   'Promise', 'ArrayBuffer', 'DataView', 'Float32Array', 'Float64Array',
   'Int8Array', 'Int16Array', 'Int32Array', 'Uint8ClampedArray',
   'Uint16Array', 'Uint32Array', 'BigInt64Array', 'BigUint64Array',
+  'Record', 'Partial', 'Required', 'Readonly', 'Pick', 'Omit',
+  'Exclude', 'Extract', 'NonNullable', 'Parameters', 'ReturnType',
+  'InstanceType', 'ConstructorParameters', 'Promise', 'Awaited',
+  'ReadonlyArray', 'ReadonlyMap', 'ReadonlySet', 'Lowercase', 'Uppercase',
+  'Capitalize', 'Uncapitalize', 'ThisType', 'PropertyKey', 'Awaited',
 ])
 
 export const noUseBeforeDefineRule: RuleDefinition = {
@@ -52,6 +55,79 @@ export const noUseBeforeDefineRule: RuleDefinition = {
       const key = (n as { key?: { name?: string } }).key
       if (key && typeof key.name === 'string') {
         propertyNames.add(key.name)
+      }
+    }
+
+    function extractParamName(p: unknown): string | undefined {
+      const pn = toASTNode(p)
+      if (!pn) return undefined
+      // ESTree Identifier: { type: 'Identifier', name: 'x' }
+      if (typeof pn.name === 'string') return pn.name
+      // Parameter wrapping an Identifier: { type: 'Parameter', name: { type: 'Identifier', name: 'x' } }
+      const inner = (pn as { name?: { name?: string } }).name
+      if (inner && typeof inner.name === 'string') return inner.name
+      // AssignmentPattern: { type: 'AssignmentPattern', left: { name: 'x' } }
+      const left = (pn as { left?: { name?: string } }).left
+      if (left && typeof left.name === 'string') return left.name
+      // RestElement: { type: 'RestElement', argument: { name: 'x' } }
+      const arg = (pn as { argument?: { name?: string } }).argument
+      if (arg && typeof arg.name === 'string') return arg.name
+      return undefined
+    }
+
+    function extractParamNamesDeep(p: unknown): string[] {
+      const pn = toASTNode(p)
+      if (!pn) return []
+      const names: string[] = []
+      const direct = extractParamName(p)
+      if (direct) {
+        names.push(direct)
+        return names
+      }
+      // Parameter node: { name: ObjectBindingPattern | ArrayBindingPattern | Identifier }
+      const pnName = (pn as { name?: unknown }).name
+      if (pnName && typeof pnName === 'object') {
+        const inner = extractParamName(pnName)
+        if (inner) { names.push(inner); return names }
+        const sub = extractParamNamesDeep(pnName)
+        if (sub.length > 0) return sub
+      }
+      // ObjectPattern (ESTree): { properties: [{ key: { name }, value: { name } }] }
+      const props = (pn as { properties?: unknown[] }).properties
+      if (Array.isArray(props)) {
+        for (const prop of props) {
+          const propNode = toASTNode(prop)
+          if (!propNode) continue
+          const val = (propNode as { value?: { name?: string } }).value
+          if (val && typeof val.name === 'string') names.push(val.name)
+          const key = (propNode as { key?: { name?: string } }).key
+          if (key && typeof key.name === 'string' && !names.includes(key.name)) names.push(key.name)
+          const restArg = (propNode as { argument?: { name?: string } }).argument
+          if (restArg && typeof restArg.name === 'string') names.push(restArg.name)
+        }
+      }
+      // ObjectBindingPattern (ts-morph): { elements: [{ name: { name: 'x' } }] }
+      const elements = (pn as { elements?: unknown[] }).elements
+      if (Array.isArray(elements)) {
+        for (const el of elements) {
+          if (!el) continue
+          const elNode = toASTNode(el)
+          if (!elNode) continue
+          // BindingElement: { name: { type: 'Identifier', name: 'x' } }
+          const elName = (elNode as { name?: { name?: string } | string }).name
+          if (elName && typeof elName === 'string') { names.push(elName); continue }
+          if (elName && typeof elName === 'object' && typeof elName.name === 'string') { names.push(elName.name); continue }
+          const sub = extractParamNamesDeep(el)
+          names.push(...sub)
+        }
+      }
+      return names
+    }
+
+    function collectParamNames(params: unknown[]): void {
+      for (const p of params) {
+        const names = extractParamNamesDeep(p)
+        for (const name of names) definedVars.add(name)
       }
     }
 
@@ -79,42 +155,21 @@ export const noUseBeforeDefineRule: RuleDefinition = {
           definedVars.add(id.name)
         }
         const params = (n as { params?: unknown[] }).params
-        if (Array.isArray(params)) {
-          for (const p of params) {
-            const pNode = toASTNode(p)
-            if (pNode && pNode.type === 'Identifier' && typeof pNode.name === 'string') {
-              definedVars.add(pNode.name)
-            }
-          }
-        }
+        if (Array.isArray(params)) collectParamNames(params)
       },
 
       FunctionExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n) return
         const params = (n as { params?: unknown[] }).params
-        if (Array.isArray(params)) {
-          for (const p of params) {
-            const pNode = toASTNode(p)
-            if (pNode && pNode.type === 'Identifier' && typeof pNode.name === 'string') {
-              definedVars.add(pNode.name)
-            }
-          }
-        }
+        if (Array.isArray(params)) collectParamNames(params)
       },
 
       ArrowFunctionExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n) return
         const params = (n as { params?: unknown[] }).params
-        if (Array.isArray(params)) {
-          for (const p of params) {
-            const pNode = toASTNode(p)
-            if (pNode && pNode.type === 'Identifier' && typeof pNode.name === 'string') {
-              definedVars.add(pNode.name)
-            }
-          }
-        }
+        if (Array.isArray(params)) collectParamNames(params)
       },
 
       ClassDeclaration(node: unknown): void {

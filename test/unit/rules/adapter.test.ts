@@ -3480,3 +3480,93 @@ describe('literal type mapping regression tests', () => {
     expect(regexExitHandler).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('adapter integration tests with real ts-morph', () => {
+  let project: import('ts-morph').Project
+
+  beforeEach(() => {
+    const { Project } = require('ts-morph')
+    project = new Project({ useInMemoryFileSystem: true })
+  })
+
+  test('ImportDeclaration handler receives specifiers with local names', () => {
+    const importHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ImportDeclaration: importHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'import-test')
+    const result = adapted.create({})
+
+    const sf = project.createSourceFile('test.ts', `import { foo, bar } from 'mod';`)
+    sf.forEachChild((node) => {
+      if (node.getKindName() === 'ImportDeclaration') {
+        result.visitor.visitNode?.(node, createMockVisitorContext({ sourceFile: sf }))
+      }
+    })
+
+    expect(importHandler).toHaveBeenCalledTimes(1)
+    const receivedNode = importHandler.mock.calls[0]![0] as Record<string, unknown>
+    const specifiers = receivedNode.specifiers as Array<{ local?: { name?: string } }>
+    expect(specifiers).toBeDefined()
+    expect(specifiers).toHaveLength(2)
+    expect(specifiers[0]!.local!.name).toBe('foo')
+    expect(specifiers[1]!.local!.name).toBe('bar')
+  })
+
+  test('ImportDeclaration handler receives default import specifier', () => {
+    const importHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ImportDeclaration: importHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'import-default-test')
+    const result = adapted.create({})
+
+    const sf = project.createSourceFile('test.ts', `import React from 'react';`)
+    sf.forEachChild((node) => {
+      if (node.getKindName() === 'ImportDeclaration') {
+        result.visitor.visitNode?.(node, createMockVisitorContext({ sourceFile: sf }))
+      }
+    })
+
+    expect(importHandler).toHaveBeenCalledTimes(1)
+    const receivedNode = importHandler.mock.calls[0]![0] as Record<string, unknown>
+    const specifiers = receivedNode.specifiers as Array<{ type: string; local?: { name?: string } }>
+    expect(specifiers).toBeDefined()
+    expect(specifiers).toHaveLength(1)
+    expect(specifiers[0]!.type).toBe('ImportDefaultSpecifier')
+    expect(specifiers[0]!.local!.name).toBe('React')
+  })
+
+  test('ImportDeclaration handler receives namespace import specifier', () => {
+    const importHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        ImportDeclaration: importHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'import-namespace-test')
+    const result = adapted.create({})
+
+    const sf = project.createSourceFile('test.ts', `import * as utils from 'utils';`)
+    sf.forEachChild((node) => {
+      if (node.getKindName() === 'ImportDeclaration') {
+        result.visitor.visitNode?.(node, createMockVisitorContext({ sourceFile: sf }))
+      }
+    })
+
+    expect(importHandler).toHaveBeenCalledTimes(1)
+    const receivedNode = importHandler.mock.calls[0]![0] as Record<string, unknown>
+    const specifiers = receivedNode.specifiers as Array<{ type: string; local?: { name?: string } }>
+    expect(specifiers).toBeDefined()
+    expect(specifiers).toHaveLength(1)
+    expect(specifiers[0]!.type).toBe('ImportNamespaceSpecifier')
+    expect(specifiers[0]!.local!.name).toBe('utils')
+  })
+})
