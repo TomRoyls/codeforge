@@ -126,4 +126,9 @@ describe('PalindromeManacher', () => {
     expect(m.isPalindrome(0, 0)).toBe(true)
     expect(m.isPalindrome(0, 1)).toBe(false)
   })
+
+  it('full string palindrome', () => {
+    const m = new PalindromeManacher('aba')
+    expect(m.isPalindrome(0, 2)).toBe(true)
+  })
 })
