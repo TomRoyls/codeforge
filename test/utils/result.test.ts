@@ -138,4 +138,13 @@ describe('fromThrowable', () => {
     const r = ok(42)
     expect(r.unwrap()).toBe(42)
   })
+
+  it('err match returns error branch', () => {
+    const r = err('fail')
+    const result = r.match(
+      (v) => v,
+      (e) => e,
+    )
+    expect(result).toBe('fail')
+  })
 })

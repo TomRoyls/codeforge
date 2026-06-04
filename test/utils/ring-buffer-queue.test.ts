@@ -189,4 +189,10 @@ describe('RingBufferQueue', () => {
     expect(queue.capacity).toBe(16)
     expect(queue.isEmpty()).toBe(true)
   })
+
+  it('enqueue and dequeue roundtrip', () => {
+    const queue = new RingBufferQueue<number>(16)
+    queue.enqueue(42)
+    expect(queue.dequeue()).toBe(42)
+  })
 })

@@ -194,4 +194,12 @@ describe('ReservoirSampler', () => {
     sampler.add(2)
     expect(sampler.sample).toEqual([2])
   })
+
+  it('sample of 3 items with k=2 returns 2', () => {
+    const sampler = new ReservoirSampler<number>(2)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.add(3)
+    expect(sampler.sample.length).toBe(2)
+  })
 })
