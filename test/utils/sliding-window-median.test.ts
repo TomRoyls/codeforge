@@ -211,4 +211,12 @@ describe('SlidingWindowMedian', () => {
     expect(swm.min()).toBe(10)
     expect(swm.max()).toBe(10)
   })
+
+  it('multiple values median', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(1)
+    swm.push(2)
+    swm.push(3)
+    expect(swm.median()).toBe(2)
+  })
 })

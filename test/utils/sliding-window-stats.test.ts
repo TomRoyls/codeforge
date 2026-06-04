@@ -189,4 +189,12 @@ describe('SlidingWindowStats', () => {
     sw.push(42)
     expect(sw.mean).toBe(42)
   })
+
+  it('multiple pushes updates mean', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(10)
+    sw.push(20)
+    sw.push(30)
+    expect(sw.mean).toBe(20)
+  })
 })

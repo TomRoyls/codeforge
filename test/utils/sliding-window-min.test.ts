@@ -122,4 +122,8 @@ describe('SlidingWindowMin', () => {
   it('solve empty array', () => {
     expect(SlidingWindowMin.solve([], 1)).toEqual([])
   })
+
+  it('solve single element', () => {
+    expect(SlidingWindowMin.solve([5], 1)).toEqual([5])
+  })
 })

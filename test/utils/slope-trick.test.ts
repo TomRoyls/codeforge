@@ -174,4 +174,10 @@ describe('SlopeTrick', () => {
     st.addShiftLeft(5)
     expect(st).toBeDefined()
   })
+
+  it('addAbsolute is valid', () => {
+    const st = new SlopeTrick()
+    st.addAbsolute(0)
+    expect(st).toBeDefined()
+  })
 })

@@ -98,4 +98,8 @@ describe('SlidingWindowMin', () => {
   it('solve empty array', () => {
     expect(SlidingWindowMax.solve([], 1)).toEqual([])
   })
+
+  it('solve single element', () => {
+    expect(SlidingWindowMax.solve([5], 1)).toEqual([5])
+  })
 })
