@@ -114,4 +114,8 @@ describe('Bisect', () => {
   it('bisectRight on empty array returns 0', () => {
     expect(Bisect.bisectRight([], 5)).toBe(0)
   })
+
+  it('bisectLeft on empty array returns 0', () => {
+    expect(Bisect.bisectLeft([], 5)).toBe(0)
+  })
 })

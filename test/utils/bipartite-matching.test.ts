@@ -196,4 +196,9 @@ describe('BipartiteMatching', () => {
     graph.addEdge(0, 0)
     expect(graph.maxMatching()).toBe(1)
   })
+
+  it('no edges has 0 matching', () => {
+    const graph = new BipartiteMatching(2, 2)
+    expect(graph.maxMatching()).toBe(0)
+  })
 })

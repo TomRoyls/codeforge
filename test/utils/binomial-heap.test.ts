@@ -271,4 +271,9 @@ describe('BinomialHeap', () => {
     heap.insert(5, 5)
     expect(heap.isEmpty()).toBe(false)
   })
+
+  it('isEmpty on new heap is true', () => {
+    const heap = new BinomialHeap<number, number>()
+    expect(heap.isEmpty()).toBe(true)
+  })
 })

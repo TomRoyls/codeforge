@@ -182,4 +182,10 @@ describe('BinaryTrie', () => {
     const bt = new BinaryTrie()
     expect(bt.find(0)).toBe(false)
   })
+
+  it('insert and find returns true', () => {
+    const bt = new BinaryTrie()
+    bt.insert(5)
+    expect(bt.find(5)).toBe(true)
+  })
 })

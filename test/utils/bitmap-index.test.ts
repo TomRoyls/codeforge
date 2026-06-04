@@ -190,4 +190,11 @@ describe('BitmapIndex', () => {
     const results = index.query('tag1')
     expect(results).toContain('doc1')
   })
+
+  it('query missing tag returns empty', () => {
+    const index = new BitmapIndex<string>()
+    index.add('doc1', ['tag1'])
+    const results = index.query('tag999')
+    expect(results.length).toBe(0)
+  })
 })
