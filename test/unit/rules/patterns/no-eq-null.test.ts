@@ -199,7 +199,7 @@ describe('no-eq-null rule', () => {
       const visitor = noEqNullRule.create(context)
       visitor.BinaryExpression(makeBinaryExpr('!=', makeIdentifier('x'), makeNullLiteral()))
       expect(reports[0].message).toBe(
-        "Use '==== null' instead of '!= null' for type-safe comparison.",
+        "Use '!== null' instead of '!= null' for type-safe comparison.",
       )
     })
 
@@ -283,7 +283,7 @@ describe('no-eq-null rule', () => {
       const visitor = noEqNullRule.create(context)
       visitor.BinaryExpression(makeBinaryExpr('!=', makeIdentifier('x'), makeIdentifier('undefined')))
       expect(reports[0].message).toBe(
-        "Use '==== null' instead of '!= null' for type-safe comparison.",
+        "Use '!== null' instead of '!= null' for type-safe comparison.",
       )
     })
 
@@ -734,7 +734,7 @@ describe('no-eq-null rule', () => {
       visitor.BinaryExpression(makeBinaryExpr('!=', makeIdentifier('x'), makeNullLiteral()))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toContain('===')
-      expect(reports[1].message).toContain('====')
+      expect(reports[1].message).toContain('!==')
     })
 
     test('report loc reflects specific node location values', () => {
@@ -824,11 +824,11 @@ describe('no-eq-null rule', () => {
       expect(reports[0].message).toContain('===')
     })
 
-    test('report message for != mentions ====', () => {
+    test('report message for != mentions !==', () => {
       const { context, reports } = createMockContext()
       const visitor = noEqNullRule.create(context)
       visitor.BinaryExpression(makeBinaryExpr('!=', makeIdentifier('x'), makeNullLiteral()))
-      expect(reports[0].message).toContain('====')
+      expect(reports[0].message).toContain('!==')
     })
 
     test('all reports have the same message format for ==', () => {
@@ -844,6 +844,37 @@ describe('no-eq-null rule', () => {
       const visitor = noEqNullRule.create(context)
       visitor.BinaryExpression(makeBinaryExpr('==', makeIdentifier('x'), makeLiteral('foo')))
       expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('ESTree null-literal compatibility', () => {
+    test('reports x == null where null is ESTree Literal{value:null}', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noEqNullRule.create(context)
+      visitor.BinaryExpression(makeBinaryExpr('==', makeIdentifier('x'), makeLiteral(null)))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports null == x where null is ESTree Literal{value:null}', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noEqNullRule.create(context)
+      visitor.BinaryExpression(makeBinaryExpr('==', makeLiteral(null), makeIdentifier('x')))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports x != null where null is ESTree Literal{value:null}', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noEqNullRule.create(context)
+      visitor.BinaryExpression(makeBinaryExpr('!=', makeIdentifier('x'), makeLiteral(null)))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports message for != uses !== not ====', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noEqNullRule.create(context)
+      visitor.BinaryExpression(makeBinaryExpr('!=', makeIdentifier('x'), makeLiteral(null)))
+      expect(reports[0].message).toContain('!==')
+      expect(reports[0].message).not.toContain('====')
     })
   })
 })

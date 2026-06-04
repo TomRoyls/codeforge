@@ -31,13 +31,14 @@ export const noEqNullRule: RuleDefinition = {
 
         const isNullLiteral = (nd: Record<string, unknown>) =>
           nd.type === 'NullLiteral' ||
+          (nd.type === 'Literal' && nd.value === null) ||
           (nd.type === 'Identifier' && nd.name === 'undefined')
 
         if (!isNullLiteral(rightNode) && !isNullLiteral(leftNode)) return
 
         context.report({
           loc: extractLocation(n),
-          message: `Use '===${operator === '!=' ? '=' : ''} null' instead of '${operator} null' for type-safe comparison.`,
+          message: `Use '${operator === '!=' ? '!==' : '==='} null' instead of '${operator} null' for type-safe comparison.`,
           node: n,
         })
       },
