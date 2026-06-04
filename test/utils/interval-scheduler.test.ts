@@ -186,4 +186,8 @@ describe('greedyIntervalSchedule', () => {
   it('greedy with empty returns empty', () => {
     expect(greedyIntervalSchedule([])).toEqual([])
   })
+
+  it('single interval returns itself', () => {
+    expect(greedyIntervalSchedule([{ start: 0, end: 5 }])).toEqual([{ start: 0, end: 5 }])
+  })
 })
