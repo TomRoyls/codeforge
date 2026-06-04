@@ -128,4 +128,12 @@ describe('Fraction', () => {
     expect(result.num).toBe(5)
     expect(result.den).toBe(6)
   })
+
+  it('multiply fractions', () => {
+    const a = new Fraction(2, 3)
+    const b = new Fraction(3, 4)
+    const result = a.mul(b)
+    expect(result.num).toBe(1)
+    expect(result.den).toBe(2)
+  })
 })

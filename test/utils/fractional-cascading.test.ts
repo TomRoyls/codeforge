@@ -154,4 +154,10 @@ describe('FractionalCascading', () => {
     const result = fc.search(4)
     expect(result).toBeDefined()
   })
+
+  it('search in multiple lists', () => {
+    const fc = new FractionalCascading([[1, 3, 5], [2, 4, 6]])
+    const result = fc.search(3)
+    expect(result).toBeDefined()
+  })
 })
