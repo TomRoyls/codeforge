@@ -113,4 +113,10 @@ describe('PollardRho', () => {
     const product = factors.reduce((a, b) => a * b, 1n)
     expect(product).toBe(12n)
   })
+
+  it('prime number factorizes to itself', () => {
+    const factors = PollardRho.factorize(7n)
+    expect(factors.length).toBe(1)
+    expect(factors[0]).toBe(7n)
+  })
 })
