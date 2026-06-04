@@ -245,4 +245,10 @@ describe('CircularDeque', () => {
     const deque = new CircularDeque<number>(5)
     expect(deque.popFront()).toBeUndefined()
   })
+
+  it('pushBack and popFront roundtrip', () => {
+    const deque = new CircularDeque<number>(5)
+    deque.pushBack(10)
+    expect(deque.popFront()).toBe(10)
+  })
 })

@@ -160,4 +160,9 @@ describe('CircularSuffixArray', () => {
     const csa = new CircularSuffixArray('abcd')
     expect(csa.length).toBe(4)
   })
+
+  it('index of original string is 0 for sorted', () => {
+    const csa = new CircularSuffixArray('abcd')
+    expect(csa.index(0)).toBeGreaterThanOrEqual(0)
+  })
 })

@@ -130,4 +130,9 @@ describe('CircularSuffix', () => {
     const cs = new CircularSuffix('a')
     expect(cs.suffixArray().length).toBe(1)
   })
+
+  it('suffixArray of abc has length 3', () => {
+    const cs = new CircularSuffix('abc')
+    expect(cs.suffixArray().length).toBe(3)
+  })
 })
