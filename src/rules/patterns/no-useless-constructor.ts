@@ -3,6 +3,15 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
+function getParamIdentifierName(node: unknown): null | string {
+  const n = toASTNode(node)
+  if (!n) return null
+  if (n.type === 'Identifier' && typeof n.name === 'string') return n.name
+  // Adapter wraps params as Parameter nodes
+  if (n.type === 'Parameter' && n.name) return getParamIdentifierName(n.name)
+  return null
+}
+
 function isUselessConstructor(node: unknown): boolean {
   const n = toASTNode(node)
   if (!n) return false
@@ -57,15 +66,14 @@ function isUselessConstructor(node: unknown): boolean {
     if (params.length === 1) {
       const param = toASTNode(params[0])
       if (param?.type === 'RestElement') {
-        const paramArg = toASTNode(param.argument)
         if (superArgs.length === 1) {
           const superArg = toASTNode(superArgs[0])
           if (superArg?.type === 'SpreadElement') {
             const spreadArg = toASTNode(superArg.argument)
             if (
-              paramArg?.type === 'Identifier' &&
+              getParamIdentifierName(param) &&
               spreadArg?.type === 'Identifier' &&
-              paramArg.name === spreadArg.name
+              getParamIdentifierName(param) === spreadArg.name
             ) {
               return true
             }
@@ -77,9 +85,9 @@ function isUselessConstructor(node: unknown): boolean {
     // Check if super args match params exactly by name and position
     if (params.length === superArgs.length && params.length > 0) {
       const allMatch = params.every((param, i) => {
-        const p = toASTNode(param)
+        const paramName = getParamIdentifierName(param)
         const a = toASTNode(superArgs[i])
-        return p?.type === 'Identifier' && a?.type === 'Identifier' && p.name === a.name
+        return paramName !== null && a?.type === 'Identifier' && paramName === a.name
       })
       if (allMatch) return true
     }
