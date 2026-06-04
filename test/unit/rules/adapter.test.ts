@@ -3372,3 +3372,74 @@ describe('adaptPluginRule returns correct structure', () => {
     expect(typeof result.visitor.exitNode).toBe('function')
   })
 })
+
+describe('literal type mapping regression tests', () => {
+  const literalMappings = [
+    { kindName: 'NullKeyword', expectedType: 'Literal', expectedValue: null },
+    { kindName: 'NumericLiteral', expectedType: 'Literal' },
+    { kindName: 'StringLiteral', expectedType: 'Literal' },
+    { kindName: 'BigIntLiteral', expectedType: 'Literal' },
+    { kindName: 'TrueKeyword', expectedType: 'BooleanLiteral', expectedValue: true },
+    { kindName: 'FalseKeyword', expectedType: 'BooleanLiteral', expectedValue: false },
+    { kindName: 'RegularExpressionLiteral', expectedType: 'RegExpLiteral' },
+  ]
+
+  for (const { kindName, expectedType } of literalMappings) {
+    test(`${kindName} dispatches as ${expectedType}`, () => {
+      const handler = vi.fn()
+      const pluginRule = createMockPluginRule({
+        createVisitor: () => ({
+          [expectedType]: handler,
+        }),
+      })
+
+      const adapted = adaptPluginRule(pluginRule, 'literal-test')
+      const result = adapted.create({})
+      const mockNode = createMockNode({ kindName })
+
+      result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+      expect(handler).toHaveBeenCalledTimes(1)
+    })
+  }
+
+  test('NullKeyword dispatches as Literal (not NullLiteral)', () => {
+    const nullLiteralHandler = vi.fn()
+    const literalHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        NullLiteral: nullLiteralHandler,
+        Literal: literalHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'null-test')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'NullKeyword' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(literalHandler).toHaveBeenCalledTimes(1)
+    expect(nullLiteralHandler).not.toHaveBeenCalled()
+  })
+
+  test('TrueKeyword dispatches as BooleanLiteral (not Literal)', () => {
+    const literalHandler = vi.fn()
+    const booleanHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Literal: literalHandler,
+        BooleanLiteral: booleanHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'bool-test')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'TrueKeyword' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(booleanHandler).toHaveBeenCalledTimes(1)
+    expect(literalHandler).not.toHaveBeenCalled()
+  })
+})
