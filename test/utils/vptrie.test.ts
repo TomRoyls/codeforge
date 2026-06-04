@@ -164,4 +164,10 @@ describe('VPTrie', () => {
     const vp = new VPTrie<number[]>((a, b) => Math.abs(a[0]! - b[0]!))
     expect(vp.nearest([1, 1])).toBeNull()
   })
+
+  it('addPoint and nearest', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([5, 5])
+    expect(vp.nearest([4, 4])).not.toBeNull()
+  })
 })

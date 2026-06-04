@@ -177,4 +177,9 @@ describe('WaveletTree', () => {
     const wt = new WaveletTree([10, 20, 30]);
     expect(wt.access(1)).toBe(20);
   });
+
+  it('access first element', () => {
+    const wt = new WaveletTree([10, 20, 30]);
+    expect(wt.access(0)).toBe(10);
+  });
 });
