@@ -107,4 +107,8 @@ describe('CocktailSort', () => {
   it('handles empty array', () => {
     expect(CocktailSort.sort([])).toEqual([])
   })
+
+  it('handles single element', () => {
+    expect(CocktailSort.sort([1])).toEqual([1])
+  })
 })

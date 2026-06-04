@@ -109,4 +109,8 @@ describe('CombSort', () => {
   it('handles empty array', () => {
     expect(CombSort.sort([])).toEqual([])
   })
+
+  it('handles single element', () => {
+    expect(CombSort.sort([42])).toEqual([42])
+  })
 })
