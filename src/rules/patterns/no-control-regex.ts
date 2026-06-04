@@ -18,9 +18,23 @@ function hasControlChars(value: unknown): boolean {
 export const noControlRegexRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
+      // ESTree convention: regex as Literal with nested regex:{pattern,flags}
       Literal(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'Literal') return
+        const regex = n.regex as undefined | { pattern?: string }
+        if (regex && regex.pattern && hasControlChars(regex.pattern)) {
+          context.report({
+            loc: extractLocation(node),
+            message: 'Unexpected control character in regular expression.',
+          })
+        }
+      },
+
+      // Babel convention: RegExpLiteral with nested regex:{pattern,flags}
+      RegExpLiteral(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n || n.type !== 'RegExpLiteral') return
         const regex = n.regex as undefined | { pattern?: string }
         if (regex && regex.pattern && hasControlChars(regex.pattern)) {
           context.report({
