@@ -593,6 +593,26 @@ function convertRawCompilerNode(
       continue
     }
 
+    // ClassDeclaration/ClassExpression: wrap members in ClassBody node
+    // ESTree: class.body = { type: 'ClassBody', body: [...members] }
+    if (
+      (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') &&
+      key === 'members' &&
+      Array.isArray(val)
+    ) {
+      result.body = {
+        body: val.map(
+          (m: unknown) =>
+            m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+              ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+              : m,
+        ),
+        type: 'ClassBody',
+      }
+
+      continue
+    }
+
     if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
       synthesizeTemplateExpression(result, raw, depth)
 
@@ -910,6 +930,25 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
                   ? convertRawCompilerNode(d as Record<string, unknown>, depth)
                   : d,
             )
+          }
+
+          continue
+        }
+
+        // ClassDeclaration/ClassExpression: wrap members in ClassBody node
+        if (
+          (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') &&
+          key === 'members' &&
+          Array.isArray(val)
+        ) {
+          result.body = {
+            body: val.map(
+              (m: unknown) =>
+                m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+                  ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+                  : m,
+            ),
+            type: 'ClassBody',
           }
 
           continue
