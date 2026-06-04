@@ -177,4 +177,9 @@ describe('CompactIntSet', () => {
     expect(set.size).toBe(10)
     expect(set.toArray()).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
   })
+
+  it('empty set has size 0', () => {
+    const set = new CompactIntSet()
+    expect(set.size).toBe(0)
+  })
 })

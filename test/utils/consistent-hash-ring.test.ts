@@ -178,4 +178,10 @@ describe('ConsistentHashRing', () => {
     const ring = new ConsistentHashRing<string>(['only'])
     expect(ring.getNode('any-key')).toBe('only')
   })
+
+  it('multiple nodes returns a valid node', () => {
+    const ring = new ConsistentHashRing<string>(['a', 'b', 'c'])
+    const node = ring.getNode('test-key')
+    expect(['a', 'b', 'c']).toContain(node)
+  })
 })

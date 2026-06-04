@@ -149,4 +149,9 @@ describe('Comparators', () => {
     const comp = Comparators.natural<number>()
     expect(comp(1, 5)).toBeLessThan(0)
   })
+
+  it('natural comparator returns positive for greater', () => {
+    const comp = Comparators.natural<number>()
+    expect(comp(5, 1)).toBeGreaterThan(0)
+  })
 })
