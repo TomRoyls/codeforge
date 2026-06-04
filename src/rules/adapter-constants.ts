@@ -142,6 +142,7 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   PropertyDeclaration: 'PropertyDefinition',
   RegularExpressionLiteral: 'RegExpLiteral',
   ReturnStatement: 'ReturnStatement',
+  SatisfiesExpression: 'TSSatisfiesExpression',
   SetAccessor: 'MethodDefinition',
   ShorthandPropertyAssignment: 'Property',
   SpreadAssignment: 'SpreadElement',
@@ -193,6 +194,8 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   ExpressionStatement: { expression: 'expression' },
   AsExpression: { expression: 'expression' },
   NonNullExpression: { expression: 'expression' },
+  SatisfiesExpression: { expression: 'expression' },
+  TypeAssertion: { expression: 'expression' },
   ForInStatement: { expression: 'right', initializer: 'left', statement: 'body' },
   ForOfStatement: { expression: 'right', initializer: 'left', statement: 'body' },
   ForStatement: {
