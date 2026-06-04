@@ -135,4 +135,9 @@ describe('Logger methods', () => {
     const log = new Logger({ level: LogLevel.ERROR, colorize: false })
     expect(() => log.debug('debug')).not.toThrow()
   })
+
+  it('info at debug level is visible', () => {
+    const log = new Logger({ level: LogLevel.DEBUG, colorize: false })
+    expect(() => log.info('info')).not.toThrow()
+  })
 })

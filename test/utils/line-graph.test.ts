@@ -177,4 +177,11 @@ describe('LineGraph', () => {
     const adj = lg.build()
     expect(adj).toBeDefined()
   })
+
+  it('single edge line graph is empty', () => {
+    const lg = new LineGraph(2)
+    lg.addEdge(0, 1)
+    const adj = lg.build()
+    expect(adj.length).toBeGreaterThan(0)
+  })
 })

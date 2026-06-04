@@ -173,4 +173,10 @@ describe('LinearProbingHashTable', () => {
     const ht = new LinearProbingHashTable<string, number>(16)
     expect(ht.has('missing')).toBe(false)
   })
+
+  it('set and get roundtrip', () => {
+    const ht = new LinearProbingHashTable<string, number>(16)
+    ht.set('key', 42)
+    expect(ht.get('key')).toBe(42)
+  })
 })
