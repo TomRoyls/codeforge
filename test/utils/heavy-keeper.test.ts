@@ -179,4 +179,10 @@ describe('HeavyKeeper', () => {
     const hk = new HeavyKeeper(10, 0.9)
     expect(hk.estimate('unseen')).toBe(0)
   })
+
+  it('estimate after update is positive', () => {
+    const hk = new HeavyKeeper({ depth: 2, width: 100, decay: 0.9 })
+    hk.update('item')
+    expect(hk.estimate('item')).toBeGreaterThanOrEqual(1)
+  })
 })

@@ -140,4 +140,10 @@ describe('hash64 - additional', () => {
     const h2 = hash64('bar', 0)
     expect(h1).not.toBe(h2)
   })
+
+  it('same input same output', () => {
+    const h1 = hash64('foo', 0)
+    const h2 = hash64('foo', 0)
+    expect(h1).toBe(h2)
+  })
 })

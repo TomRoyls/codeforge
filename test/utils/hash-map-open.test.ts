@@ -166,4 +166,10 @@ describe('HashMapOpen', () => {
     const map = new HashMapOpen<string, number>()
     expect(map.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('key', 42)
+    expect(map.get('key')).toBe(42)
+  })
 })

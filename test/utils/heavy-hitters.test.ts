@@ -167,4 +167,10 @@ describe('HeavyHitters', () => {
     const hh = new HeavyHitters<string>(10)
     expect(hh.getCount('unseen')).toBe(0)
   })
+
+  it('add increases count', () => {
+    const hh = new HeavyHitters<string>(10)
+    hh.add('item')
+    expect(hh.getCount('item')).toBeGreaterThanOrEqual(1)
+  })
 })
