@@ -28,7 +28,6 @@ function calculateNestingDepth(node: Node, currentDepth: number = 0): number {
       TsNode.isWhileStatement(child) ||
       TsNode.isDoStatement(child) ||
       TsNode.isSwitchStatement(child) ||
-      TsNode.isBlock(child) ||
       TsNode.isTryStatement(child) ||
       TsNode.isCatchClause(child)
 

@@ -17,16 +17,36 @@ export function runRule(
   const project = new Project({ useInMemoryFileSystem: true })
   const sf = project.createSourceFile(filename, code)
 
-  const adapted = adaptPluginRule(rule, rule.meta?.docs?.category ?? 'test')
-  const result = adapted.create({})
+  const category = rule.meta?.docs?.category ?? 'test'
 
-  traverseAST(sf, result.visitor, [])
-  const violations = result.onComplete?.() ?? []
-  return violations.map((v) => ({
-    ruleId: v.ruleId,
-    message: v.message,
-    loc: v.loc,
-  }))
+  // Complexity/performance rules use ts-morph-native visitors (visitFunction etc.)
+  // Pattern/adapter rules use ESTree-style visitors (FunctionDeclaration etc.)
+  const isAdapterRule = category === 'patterns' || category === 'security'
+
+  if (isAdapterRule) {
+    const adapted = adaptPluginRule(rule, category)
+    const result = adapted.create({})
+    traverseAST(sf, result.visitor, [])
+    const violations = result.onComplete?.() ?? []
+    return violations.map((v) => ({
+      ruleId: v.ruleId,
+      message: v.message,
+      loc: v.loc,
+    }))
+  } else {
+    // Native ts-morph rule: call create() with options, traverse directly
+    const options = rule.defaultOptions ?? {}
+    const result = (rule as unknown as { create: (opts: unknown) => { visitor: unknown; onComplete?: () => unknown } }).create(options)
+    if (result.visitor) {
+      traverseAST(sf, result.visitor as Parameters<typeof traverseAST>[1], [])
+    }
+    const violations = (result.onComplete?.() ?? []) as Array<{ ruleId: string; message: string; loc?: unknown; filePath?: string }>
+    return violations.map((v) => ({
+      ruleId: v.ruleId,
+      message: v.message,
+      loc: v.loc,
+    }))
+  }
 }
 
 export function expectViolations(
