@@ -14,16 +14,24 @@ function hasTerminatingStatement(statements: undefined | unknown[]): boolean {
 export const noFallthroughRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
-      SwitchCase(node: unknown): void {
+      SwitchStatement(node: unknown): void {
         const n = toASTNode(node)
-        if (!n || n.type !== 'SwitchCase') return
-        const consequent = n.consequent as undefined | unknown[]
-        if (!consequent || consequent.length === 0) return
-        if (!hasTerminatingStatement(consequent)) {
-          context.report({
-            loc: extractLocation(consequent.at(-1)),
-            message: 'Expected a break statement before fallthrough.',
-          })
+        if (!n || n.type !== 'SwitchStatement') return
+        const cases = n.cases as unknown[] | undefined
+        if (!cases || cases.length === 0) return
+
+        // Check all cases EXCEPT the last one (last case has nothing to fall through to)
+        for (let i = 0; i < cases.length - 1; i++) {
+          const c = toASTNode(cases[i])
+          if (!c || c.type !== 'SwitchCase') continue
+          const consequent = c.consequent as undefined | unknown[]
+          if (!consequent || consequent.length === 0) continue // empty case = intentional fallthrough
+          if (!hasTerminatingStatement(consequent)) {
+            context.report({
+              loc: extractLocation(cases[i]),
+              message: 'Expected a break statement before fallthrough.',
+            })
+          }
         }
       },
     }

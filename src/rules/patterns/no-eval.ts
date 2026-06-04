@@ -10,11 +10,21 @@ function isDirectEvalCall(node: unknown): boolean {
   return isIdentifier(n.callee, 'eval')
 }
 
+function isIndirectEvalCall(node: unknown): boolean {
+  if (!isCallExpression(node)) return false
+  const n = toASTNode(node)
+  if (!n) return false
+  const callee = toASTNode(n.callee)
+  if (!callee || callee.type !== 'MemberExpression') return false
+  const prop = toASTNode(callee.property)
+  return isIdentifier(prop, 'eval')
+}
+
 export const noEvalRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
-        if (!isDirectEvalCall(node)) {
+        if (!isDirectEvalCall(node) && !isIndirectEvalCall(node)) {
           return
         }
 

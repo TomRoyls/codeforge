@@ -24,8 +24,7 @@ const INVALID_LITERAL_TYPES = new Set([
   'ArrayExpression',
   'BigIntLiteral',
   'BooleanLiteral',
-  'NullLiteral',
-  'NumericLiteral',
+  'Literal',
   'ObjectExpression',
   'RegExpLiteral',
   'StringLiteral',
@@ -75,6 +74,7 @@ function isInvalidThrowArgument(node: unknown): boolean {
     const type = argument.type as string | undefined
     if (!type) return false
     if (VALID_THROW_TYPES.has(type)) return false
+    if (argument.value === null) return false
     if (INVALID_LITERAL_TYPES.has(type)) return true
     if (argument.value !== undefined && type.includes('Literal')) return true
     return false
