@@ -191,4 +191,9 @@ describe('Bag', () => {
     bag.add(1)
     expect(bag.count(1)).toBe(2)
   })
+
+  it('count missing item is 0', () => {
+    const bag = new Bag<number>()
+    expect(bag.count(99)).toBe(0)
+  })
 })

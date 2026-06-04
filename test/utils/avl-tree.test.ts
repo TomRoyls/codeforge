@@ -228,4 +228,10 @@ describe('AVLTree clear', () => {
     tree.insert(5, 50)
     expect(tree.find(99)).toBeUndefined()
   })
+
+  it('insert and find returns value', () => {
+    const tree = new AVLTree<number, number>()
+    tree.insert(5, 50)
+    expect(tree.find(5)).toBe(50)
+  })
 })

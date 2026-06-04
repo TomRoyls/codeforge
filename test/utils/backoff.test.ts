@@ -157,4 +157,8 @@ describe('calculateBackoff - edge cases', () => {
     const result = calculateBackoff(100, 100, 1000)
     expect(result).toBeLessThanOrEqual(1000)
   })
+
+  it('calculateBackoff throws for negative attempt', () => {
+    expect(() => calculateBackoff(-1, 100, 1000)).toThrow()
+  })
 })
