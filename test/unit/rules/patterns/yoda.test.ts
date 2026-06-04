@@ -824,4 +824,38 @@ describe('yoda rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('ESTree literal compatibility', () => {
+    function makeEstreeLiteral(value: unknown): unknown {
+      return { type: 'Literal', value }
+    }
+
+    test('reports x === "hello" with ESTree Literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = yodaRule.create(context)
+      visitor.BinaryExpression(makeBinaryExpr('===', makeIdentifier('x'), makeEstreeLiteral('hello')))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports x !== 42 with ESTree Literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = yodaRule.create(context)
+      visitor.BinaryExpression(makeBinaryExpr('!==', makeIdentifier('x'), makeEstreeLiteral(42)))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports x === null with ESTree Literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = yodaRule.create(context)
+      visitor.BinaryExpression(makeBinaryExpr('===', makeIdentifier('x'), makeEstreeLiteral(null)))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports x === true with ESTree Literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = yodaRule.create(context)
+      visitor.BinaryExpression(makeBinaryExpr('===', makeIdentifier('x'), makeEstreeLiteral(true)))
+      expect(reports.length).toBe(1)
+    })
+  })
 })

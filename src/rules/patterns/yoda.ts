@@ -15,12 +15,19 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 function isLiteral(node: unknown): boolean {
   const n = toASTNode(node)
   if (!n) return false
-  return n.type === 'StringLiteral'
-    || n.type === 'NumericLiteral'
-    || n.type === 'BooleanLiteral'
-    || n.type === 'NullLiteral'
-    || n.type === 'BigIntLiteral'
-    || n.type === 'RegExpLiteral'
+  // Babel-style discrete literal types
+  if (
+    n.type === 'StringLiteral' ||
+    n.type === 'NumericLiteral' ||
+    n.type === 'BooleanLiteral' ||
+    n.type === 'NullLiteral' ||
+    n.type === 'BigIntLiteral' ||
+    n.type === 'RegExpLiteral'
+  ) {
+    return true
+  }
+  // ESTree encodes every primitive literal as { type: 'Literal', value: ... }
+  return n.type === 'Literal'
 }
 
 function isIdentifier(node: unknown): boolean {
