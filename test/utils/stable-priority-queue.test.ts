@@ -206,4 +206,11 @@ describe('StablePriorityQueue', () => {
     const pq = new StablePriorityQueue<number>()
     expect(pq.dequeue()).toBeUndefined()
   })
+
+  it('enqueue and dequeue returns min', () => {
+    const pq = new StablePriorityQueue<number>()
+    pq.enqueue(5)
+    pq.enqueue(3)
+    expect(pq.dequeue()).toBe(3)
+  })
 })

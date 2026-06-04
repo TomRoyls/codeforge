@@ -184,4 +184,10 @@ describe('StreamingMedian', () => {
     sm.push(2)
     expect(sm.median()).toBe(50.5)
   })
+
+  it('single value median is that value', () => {
+    const sm = new StreamingMedian()
+    sm.push(42)
+    expect(sm.median()).toBe(42)
+  })
 })

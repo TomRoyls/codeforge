@@ -152,4 +152,10 @@ describe('StoerWagner', () => {
     const sw = new StoerWagner(3)
     expect(sw.minCut()).toBe(0)
   })
+
+  it('single edge min cut equals weight', () => {
+    const sw = new StoerWagner(2)
+    sw.addEdge(0, 1, 5)
+    expect(sw.minCut()).toBe(5)
+  })
 })
