@@ -142,4 +142,9 @@ describe('Welford', () => {
     const w = Welford.fromArray([5, 5, 5])
     expect(w.mean).toBe(5)
   })
+
+  it('variance of identical values is 0', () => {
+    const w = Welford.fromArray([5, 5, 5])
+    expect(w.variance).toBe(0)
+  })
 })

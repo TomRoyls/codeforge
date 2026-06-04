@@ -170,4 +170,10 @@ describe('XorLinkedList', () => {
     list.pushBack(42)
     expect(list.size).toBe(1)
   })
+
+  it('pushFront increases size', () => {
+    const list = new XorLinkedList<number>()
+    list.pushFront(42)
+    expect(list.size).toBe(1)
+  })
 })
