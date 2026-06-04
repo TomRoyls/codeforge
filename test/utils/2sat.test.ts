@@ -187,4 +187,10 @@ describe('TwoSAT', () => {
     ts.addClause(0, true, 1, true)
     expect(ts.solve()).not.toBeNull()
   })
+
+  it('trivially satisfiable with single clause', () => {
+    const ts = new TwoSAT(1)
+    ts.addClause(0, true, 0, true)
+    expect(ts.solve()).not.toBeNull()
+  })
 })

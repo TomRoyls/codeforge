@@ -154,4 +154,10 @@ describe('AhoCorasickMulti', () => {
     expect(result.size).toBeGreaterThanOrEqual(1)
     expect(result.get(0)!.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('no match returns empty result', () => {
+    const ac = new AhoCorasickMulti(['abc'])
+    const result = ac.search('xyz')
+    expect(result.get(0)).toBeUndefined()
+  })
 })

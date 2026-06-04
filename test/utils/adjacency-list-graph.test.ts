@@ -198,4 +198,11 @@ describe('AdjacencyListGraph - topologicalSort', () => {
     const g = new AdjacencyListGraph(5)
     expect(g.nodeCount).toBe(5)
   })
+
+  it('edges added correctly', () => {
+    const g = new AdjacencyListGraph(3)
+    g.addEdge(0, 1)
+    g.addEdge(1, 2)
+    expect(g.edgeCount).toBe(2)
+  })
 })
