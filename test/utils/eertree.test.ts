@@ -133,4 +133,9 @@ describe('Eertree', () => {
     const tree = Eertree.build('a')
     expect(tree.getPalindromes().length).toBe(1)
   })
+
+  it('aa has palindromes a and aa', () => {
+    const tree = Eertree.build('aa')
+    expect(tree.getPalindromes().length).toBe(2)
+  })
 })

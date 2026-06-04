@@ -111,4 +111,8 @@ describe('EditDistance', () => {
   it('empty strings have distance 0', () => {
     expect(EditDistance.levenshtein('', '')).toBe(0)
   })
+
+  it('single char substitution', () => {
+    expect(EditDistance.levenshtein('a', 'b')).toBe(1)
+  })
 })
