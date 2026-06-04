@@ -178,4 +178,11 @@ describe('DeterministicRng', () => {
       expect(v).toBeLessThanOrEqual(20)
     }
   })
+
+  it('nextFloat returns value in [0, 1)', () => {
+    const rng = new DeterministicRng(12345)
+    const v = rng.nextFloat()
+    expect(v).toBeGreaterThanOrEqual(0)
+    expect(v).toBeLessThan(1)
+  })
 })

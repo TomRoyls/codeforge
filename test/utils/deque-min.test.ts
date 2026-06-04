@@ -192,4 +192,10 @@ describe('DequeMin', () => {
     dq.pushBack(3)
     expect(dq.min).toBe(3)
   })
+
+  it('single element min', () => {
+    const dq = new DequeMin<number>()
+    dq.pushBack(42)
+    expect(dq.min).toBe(42)
+  })
 })

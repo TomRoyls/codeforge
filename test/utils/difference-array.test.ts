@@ -212,4 +212,10 @@ describe('DifferenceArray', () => {
     expect(da.get(2)).toBe(10)
     expect(da.get(4)).toBe(0)
   })
+
+  it('single point add', () => {
+    const da = new DifferenceArray(3)
+    da.rangeAdd(1, 1, 5)
+    expect(da.get(1)).toBe(5)
+  })
 })

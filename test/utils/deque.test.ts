@@ -200,4 +200,10 @@ describe('Deque', () => {
     const dq = new Deque<number>()
     expect(dq.popFront()).toBeUndefined()
   })
+
+  it('pushBack and popFront roundtrip', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(10)
+    expect(dq.popFront()).toBe(10)
+  })
 })
