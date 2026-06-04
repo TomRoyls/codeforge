@@ -261,8 +261,13 @@ describe('bench', () => {
     expect(formatted).toContain('[2.00x]')
   })
 
-  it('formatSuite with empty array returns string', () => {
-    const result = formatSuite([])
+  it('formatSuite with empty results returns string', () => {
+    const result = formatSuite({ name: 'empty', results: [] })
+    expect(typeof result).toBe('string')
+  })
+
+  it('formatSuite with results returns string', () => {
+    const result = formatSuite({ name: 'test', results: [{ name: 'a', opsPerSec: 1000, avgNs: 1000000, margin: 1 }] })
     expect(typeof result).toBe('string')
   })
 })

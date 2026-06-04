@@ -207,4 +207,10 @@ describe('BiconnectedComponents', () => {
     const comps = bc.findComponents()
     expect(comps.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('single node has 0 components', () => {
+    const bc = new BiconnectedComponents(1)
+    const comps = bc.findComponents()
+    expect(comps.length).toBe(0)
+  })
 })
