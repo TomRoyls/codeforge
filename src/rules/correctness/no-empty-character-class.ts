@@ -22,6 +22,10 @@ function isEmptyCharacterClass(value: unknown): boolean {
   return false
 }
 
+function isEmptyPattern(pattern: string): boolean {
+  return pattern.includes('[]')
+}
+
 export const noEmptyCharacterClassRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
@@ -30,6 +34,21 @@ export const noEmptyCharacterClassRule: RuleDefinition = {
         if (!n) return
 
         if (isEmptyCharacterClass(n.value)) {
+          context.report({
+            loc: extractLocation(node),
+            message: 'Empty character class in regular expression',
+          })
+        }
+      },
+
+      // Babel convention: RegExpLiteral with pattern/flags fields
+      RegExpLiteral(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n) return
+
+        const regexInfo = n.regex as { flags?: string; pattern?: string } | undefined
+        const pattern = regexInfo?.pattern
+        if (pattern && isEmptyPattern(pattern)) {
           context.report({
             loc: extractLocation(node),
             message: 'Empty character class in regular expression',

@@ -10,8 +10,34 @@ function isLiteral(node: unknown): node is ASTNode {
 }
 
 function isRegexLiteral(node: unknown): boolean {
-  if (!isLiteral(node)) return false
-  return node.value instanceof RegExp
+  if (!node || typeof node !== 'object') return false
+  const n = node as ASTNode
+  // ESTree convention: Literal with RegExp value
+  if (n.type === 'Literal' && n.value instanceof RegExp) return true
+  // Babel convention: RegExpLiteral with pattern/flags fields
+  if (n.type === 'RegExpLiteral') return true
+  return false
+}
+
+function getRegExpFromNode(node: unknown): RegExp | null {
+  if (!node || typeof node !== 'object') return null
+  const n = node as ASTNode
+  // ESTree convention: Literal with RegExp value
+  if (n.type === 'Literal' && n.value instanceof RegExp) return n.value as RegExp
+  // Babel convention: RegExpLiteral — adapter nests under regex: { pattern, flags }
+  if (n.type === 'RegExpLiteral') {
+    const regexInfo = n.regex as { flags?: string; pattern?: string } | undefined
+    const pattern = (regexInfo?.pattern ?? n.pattern) as string | undefined
+    const flags = (regexInfo?.flags ?? n.flags) as string | undefined
+    if (pattern) {
+      try {
+        return new RegExp(pattern, flags ?? '')
+      } catch {
+        return null
+      }
+    }
+  }
+  return null
 }
 
 function isCallExpression(node: unknown): node is ASTNode {
@@ -178,16 +204,17 @@ export const preferStringStartsEndsWithRule: RuleDefinition = {
           if (isIdentifier(property, 'test') && args.length === 1) {
             const object = callee.object as unknown
             if (isRegexLiteral(object)) {
-              const regexObj = object as { value: RegExp }
-              const regex = regexObj.value
-              const pattern = getRegexPattern(regex)
-              if (pattern) {
-                const location = extractLocation(node)
-                const method = pattern.type === 'startsWith' ? 'startsWith' : 'endsWith'
-                context.report({
-                  loc: location,
-                  message: `Prefer String.${method}() over regex pattern for checking ${pattern.type === 'startsWith' ? 'start' : 'end'} of string.`,
-                })
+              const regex = getRegExpFromNode(object)
+              if (regex) {
+                const pattern = getRegexPattern(regex)
+                if (pattern) {
+                  const location = extractLocation(node)
+                  const method = pattern.type === 'startsWith' ? 'startsWith' : 'endsWith'
+                  context.report({
+                    loc: location,
+                    message: `Prefer String.${method}() over regex pattern for checking ${pattern.type === 'startsWith' ? 'start' : 'end'} of string.`,
+                  })
+                }
               }
             }
           }
@@ -196,16 +223,17 @@ export const preferStringStartsEndsWithRule: RuleDefinition = {
           if (isIdentifier(property, 'match') && args.length === 1) {
             const arg = args[0] as unknown
             if (isRegexLiteral(arg)) {
-              const regexObj = arg as { value: RegExp }
-              const regex = regexObj.value
-              const pattern = getRegexPattern(regex)
-              if (pattern) {
-                const location = extractLocation(node)
-                const method = pattern.type === 'startsWith' ? 'startsWith' : 'endsWith'
-                context.report({
-                  loc: location,
-                  message: `Prefer String.${method}() over regex pattern for checking ${pattern.type === 'startsWith' ? 'start' : 'end'} of string.`,
-                })
+              const regex = getRegExpFromNode(arg)
+              if (regex) {
+                const pattern = getRegexPattern(regex)
+                if (pattern) {
+                  const location = extractLocation(node)
+                  const method = pattern.type === 'startsWith' ? 'startsWith' : 'endsWith'
+                  context.report({
+                    loc: location,
+                    message: `Prefer String.${method}() over regex pattern for checking ${pattern.type === 'startsWith' ? 'start' : 'end'} of string.`,
+                  })
+                }
               }
             }
           }
