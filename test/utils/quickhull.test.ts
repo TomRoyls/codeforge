@@ -131,4 +131,9 @@ describe('Quickhull', () => {
     const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 5 }])
     expect(hull.length).toBe(3)
   })
+
+  it('collinear points returns 2 endpoints', () => {
+    const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 5, y: 0 }, { x: 10, y: 0 }])
+    expect(hull.length).toBe(2)
+  })
 })

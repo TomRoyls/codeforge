@@ -229,4 +229,11 @@ describe('PriorityQueue - edge cases', () => {
     const pq = new PriorityQueue<number>()
     expect(pq.dequeue()).toBeUndefined()
   })
+
+  it('enqueue and dequeue returns min', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(5)
+    pq.enqueue(3)
+    expect(pq.dequeue()).toBe(3)
+  })
 })

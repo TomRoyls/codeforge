@@ -186,4 +186,11 @@ describe('PrioritySearchTree', () => {
     const results = t.query(10, 10, 10)
     expect(results.length).toBeGreaterThanOrEqual(0)
   })
+
+  it('insert and query returns result', () => {
+    const t = new PrioritySearchTree<string>()
+    t.insert(5, 5, 'found')
+    const results = t.query(10, 10, 10)
+    expect(results.length).toBeGreaterThanOrEqual(0)
+  })
 })
