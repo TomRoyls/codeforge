@@ -866,4 +866,36 @@ describe('no-misleading-assertion rule', () => {
       expect(allContainFalse).toBe(true)
     })
   })
+
+  describe('ESTree literal compatibility', () => {
+    test('reports assertion with ESTree Literal empty string', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noMisleadingAssertionRule.create(context)
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', value: '' }]))
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('empty string')
+    })
+
+    test('reports assertion with ESTree Literal 0', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noMisleadingAssertionRule.create(context)
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', value: 0 }]))
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('always falsy')
+    })
+
+    test('does not report assertion with ESTree Literal non-empty string', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noMisleadingAssertionRule.create(context)
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', value: 'hello' }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report assertion with ESTree Literal non-zero number', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noMisleadingAssertionRule.create(context)
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', value: 42 }]))
+      expect(reports.length).toBe(0)
+    })
+  })
 })

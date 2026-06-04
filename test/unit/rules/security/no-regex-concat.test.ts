@@ -1127,4 +1127,39 @@ describe('no-regex-concat rule', () => {
       expect(typeof noRegexConcatRule.meta).toBe('object')
     })
   })
+
+  describe('ESTree literal compatibility', () => {
+    test('reports when left side is ESTree Literal string', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noRegexConcatRule.create(context)
+      const left = { type: 'Literal', value: 'foo' }
+      const right = makeIdentifier('bar')
+      const arg = makeBinaryExpr(left, '+', right)
+      const node = makeNewExpr(makeIdentifier('RegExp'), [arg])
+      visitor.NewExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports when right side is ESTree Literal string', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noRegexConcatRule.create(context)
+      const left = makeIdentifier('bar')
+      const right = { type: 'Literal', value: 'foo' }
+      const arg = makeBinaryExpr(left, '+', right)
+      const node = makeNewExpr(makeIdentifier('RegExp'), [arg])
+      visitor.NewExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('does not report when neither side is a string literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noRegexConcatRule.create(context)
+      const left = makeIdentifier('a')
+      const right = makeIdentifier('b')
+      const arg = makeBinaryExpr(left, '+', right)
+      const node = makeNewExpr(makeIdentifier('RegExp'), [arg])
+      visitor.NewExpression(node)
+      expect(reports.length).toBe(0)
+    })
+  })
 })
