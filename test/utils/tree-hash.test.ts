@@ -198,4 +198,13 @@ describe('TreeHash', () => {
     const h2 = th.rootedHash(0)
     expect(h1).toBe(h2)
   })
+
+  it('different trees have different hashes', () => {
+    const th1 = new TreeHash(2)
+    th1.addEdge(0, 1)
+    const th2 = new TreeHash(3)
+    th2.addEdge(0, 1)
+    th2.addEdge(0, 2)
+    expect(th1.rootedHash(0)).not.toBe(th2.rootedHash(0))
+  })
 })

@@ -174,4 +174,10 @@ describe('TrieRadix', () => {
     trie.insert('hello')
     expect(trie.startsWith('he')).toBe(true)
   })
+
+  it('startsWith returns false for non-prefix', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello')
+    expect(trie.startsWith('xyz')).toBe(false)
+  })
 })
