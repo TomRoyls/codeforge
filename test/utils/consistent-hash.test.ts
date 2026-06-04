@@ -208,4 +208,12 @@ describe('ConsistentHash edge cases', () => {
     ch.addNode('only')
     expect(ch.getNode('any-key')).toBe('only')
   })
+
+  it('multiple nodes returns valid node', () => {
+    const ch = new ConsistentHash<string>()
+    ch.addNode('a')
+    ch.addNode('b')
+    const node = ch.getNode('test-key')
+    expect(['a', 'b']).toContain(node)
+  })
 })

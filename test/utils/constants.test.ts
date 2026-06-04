@@ -163,4 +163,8 @@ describe('constants regex special chars', () => {
   it('REGEX_SPECIAL_CHARS does not include letters', () => {
     expect(REGEX_SPECIAL_CHARS.has('a')).toBe(false)
   })
+
+  it('REGEX_SPECIAL_CHARS includes dot', () => {
+    expect(REGEX_SPECIAL_CHARS.has('.')).toBe(true)
+  })
 })

@@ -121,4 +121,9 @@ describe('ContinuedFraction', () => {
     expect(result.length).toBeGreaterThanOrEqual(1)
     expect(result[0]).toBe(3)
   })
+
+  it('fromNumber of rational returns array', () => {
+    const result = ContinuedFraction.fromNumber(1.5)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
 })
