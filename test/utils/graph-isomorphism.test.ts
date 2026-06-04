@@ -183,4 +183,9 @@ describe('GraphIsomorphism', () => {
     gi.addEdgeG1(0, 1)
     expect(gi.isomorphic()).toBe(false)
   })
+
+  it('same single node is isomorphic', () => {
+    const gi = new GraphIsomorphism(1)
+    expect(gi.isomorphic()).toBe(true)
+  })
 })

@@ -160,4 +160,12 @@ describe('GraphEntropy', () => {
     const ge = new GraphEntropy(1)
     expect(ge.degreeEntropy()).toBe(0)
   })
+
+  it('star graph has positive entropy', () => {
+    const ge = new GraphEntropy(4)
+    ge.addEdge(0, 1)
+    ge.addEdge(0, 2)
+    ge.addEdge(0, 3)
+    expect(ge.degreeEntropy()).toBeGreaterThan(0)
+  })
 })

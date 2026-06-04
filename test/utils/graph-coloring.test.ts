@@ -124,4 +124,10 @@ describe('GraphColoring', () => {
     const colors = GraphColoring.greedyColor(adj)
     expect(colors[0]).toBe(0)
   })
+
+  it('two connected nodes use different colors', () => {
+    const adj = [[1], [0]]
+    const colors = GraphColoring.greedyColor(adj)
+    expect(colors[0]).not.toBe(colors[1])
+  })
 })
