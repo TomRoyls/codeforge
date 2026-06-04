@@ -141,4 +141,10 @@ describe('CRT', () => {
     expect(result!.remainder % 3).toBe(2)
     expect(result!.remainder % 5).toBe(3)
   })
+
+  it('single congruence returns remainder', () => {
+    const result = CRT.solve([[2, 3]])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 3).toBe(2)
+  })
 })
