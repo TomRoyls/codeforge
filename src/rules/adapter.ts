@@ -469,6 +469,13 @@ function applyRawPostFixups(
     result.computed = false
   }
 
+  if (kindName === 'PropertyAssignment') {
+    const key = result.key as Record<string, unknown> | undefined
+    if (key?.argument) {
+      result.computed = true
+    }
+  }
+
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
     let flags: number | undefined
