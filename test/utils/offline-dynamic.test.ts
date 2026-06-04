@@ -170,4 +170,9 @@ describe('OfflineDynamicConnectivity', () => {
     const odc = new OfflineDynamicConnectivity(2)
     expect(odc).toBeDefined()
   })
+
+  it('single node has no connectivity queries needed', () => {
+    const odc = new OfflineDynamicConnectivity(1)
+    expect(odc).toBeDefined()
+  })
 })

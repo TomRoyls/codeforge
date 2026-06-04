@@ -119,4 +119,8 @@ describe('NumberTheory', () => {
   it('lcm of 0 and any is 0', () => {
     expect(NumberTheory.lcm(0, 5)).toBe(0)
   })
+
+  it('gcd of same numbers is itself', () => {
+    expect(NumberTheory.gcd(12, 12)).toBe(12)
+  })
 })
