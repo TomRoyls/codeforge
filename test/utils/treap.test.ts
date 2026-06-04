@@ -211,4 +211,10 @@ describe('Treap getRoot', () => {
     t.insert(1, 'a')
     expect(t.find(99)).toBeUndefined()
   })
+
+  it('insert and find roundtrip', () => {
+    const t = new Treap<number, string>()
+    t.insert(1, 'a')
+    expect(t.find(1)).toBe('a')
+  })
 })

@@ -162,4 +162,9 @@ describe('TopologicalSort', () => {
     const adj = new Map<number, number[]>([[0, []]])
     expect(TopologicalSort.sort(adj)).toEqual([0])
   })
+
+  it('chain order is correct', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [2]], [2, []]])
+    expect(TopologicalSort.sort(adj)).toEqual([0, 1, 2])
+  })
 })
