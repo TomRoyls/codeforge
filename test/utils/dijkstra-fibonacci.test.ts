@@ -197,4 +197,9 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
     expect(dist[0]).toBe(0)
   })
+
+  it('single node distance is 0', () => {
+    const dist = DijkstraFibonacci.shortestPath([], 0, 1)
+    expect(dist[0]).toBe(0)
+  })
 })

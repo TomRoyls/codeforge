@@ -179,4 +179,10 @@ describe('DigitalTree', () => {
     const dt = new DigitalTree<string>()
     expect(dt.search('missing')).toBe(false)
   })
+
+  it('insert and search roundtrip', () => {
+    const dt = new DigitalTree<string>()
+    dt.insert('hello')
+    expect(dt.search('hello')).toBe(true)
+  })
 })

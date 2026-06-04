@@ -222,4 +222,10 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(0)).toBe(0)
   })
+
+  it('single node distance is 0', () => {
+    const adj = new Map<number, [number, number][]>([[0, []]])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })
