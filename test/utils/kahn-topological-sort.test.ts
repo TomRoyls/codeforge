@@ -151,4 +151,9 @@ describe('KahnTopologicalSort', () => {
     const sort = new KahnTopologicalSort([[1], [2], []])
     expect(sort.order).toEqual([0, 1, 2])
   })
+
+  it('single node order', () => {
+    const sort = new KahnTopologicalSort([[]])
+    expect(sort.order).toEqual([0])
+  })
 })

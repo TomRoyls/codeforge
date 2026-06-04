@@ -103,4 +103,8 @@ describe('KMP', () => {
   it('finds pattern at start', () => {
     expect(KMP.search('abcdef', 'abc')).toEqual([0])
   })
+
+  it('finds no match returns empty', () => {
+    expect(KMP.search('abcdef', 'xyz')).toEqual([])
+  })
 })
