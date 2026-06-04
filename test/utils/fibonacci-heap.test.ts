@@ -274,4 +274,9 @@ describe('FibonacciHeap', () => {
     heap.insert(7)
     expect(heap.extractMin()).toBe(3)
   })
+
+  it('extractMin from empty returns undefined', () => {
+    const heap = new FibonacciHeap<number>()
+    expect(heap.extractMin()).toBeUndefined()
+  })
 })

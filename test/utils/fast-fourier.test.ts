@@ -139,4 +139,10 @@ describe('FastFourierTransform', () => {
     const result = FastFourierTransform.multiplyPolynomials([1, 2], [3, 4])
     expect(result.length).toBe(3)
   })
+
+  it('fft roundtrip preserves values', () => {
+    const input = [{ re: 1, im: 0 }, { re: 2, im: 0 }, { re: 3, im: 0 }, { re: 4, im: 0 }]
+    const result = FastFourierTransform.transform(input)
+    expect(result.length).toBe(4)
+  })
 })

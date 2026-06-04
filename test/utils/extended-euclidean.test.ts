@@ -128,4 +128,9 @@ describe('ExtendedEuclidean', () => {
     const { gcd } = ExtendedEuclidean.solve(0n, 5n)
     expect(gcd).toBe(5n)
   })
+
+  it('solve for coprime numbers returns gcd 1', () => {
+    const { gcd } = ExtendedEuclidean.solve(14n, 15n)
+    expect(gcd).toBe(1n)
+  })
 })

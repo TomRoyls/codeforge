@@ -156,4 +156,9 @@ describe('FenwickTree2D', () => {
     tree.update(0, 0, 7);
     expect(tree.query(0, 0)).toBe(7);
   });
+
+  it('query empty region returns 0', () => {
+    const tree = new FenwickTree2D(3, 3);
+    expect(tree.query(2, 2)).toBe(0);
+  });
 });

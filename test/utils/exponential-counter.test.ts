@@ -164,4 +164,12 @@ describe('ExponentialCounter', () => {
     counter.increment()
     expect(counter.approximate).toBeGreaterThanOrEqual(val1)
   })
+
+  it('reset clears count', () => {
+    const counter = new ExponentialCounter()
+    counter.increment()
+    counter.increment()
+    counter.reset()
+    expect(counter.approximate).toBe(0)
+  })
 })
