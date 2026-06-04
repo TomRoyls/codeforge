@@ -171,4 +171,9 @@ describe('MarkovChain', () => {
     const result = mc.next('a')
     expect(result === 'b' || result === null).toBe(true)
   })
+
+  it('next on unknown state returns null', () => {
+    const mc = new MarkovChain<string>()
+    expect(mc.next('unknown')).toBeNull()
+  })
 })

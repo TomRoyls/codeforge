@@ -165,4 +165,11 @@ describe('append', () => {
     increment(map, 'new')
     expect(map.get('new')).toBe(1)
   })
+
+  it('increment existing key increases value', () => {
+    const map = new Map<string, number>()
+    map.set('key', 5)
+    increment(map, 'key')
+    expect(map.get('key')).toBe(6)
+  })
 })

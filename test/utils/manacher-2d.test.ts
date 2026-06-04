@@ -172,4 +172,10 @@ describe('Manacher2D', () => {
     const result = Manacher2D.longestPalindromicSubgrid(grid)
     expect(result.len).toBeGreaterThanOrEqual(1)
   })
+
+  it('all same chars in 2x2 has palindrome', () => {
+    const grid = [['a', 'a'], ['a', 'a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
 })
