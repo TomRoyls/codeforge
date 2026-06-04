@@ -181,4 +181,9 @@ describe('TimerWheel', () => {
     tw.advance()
     expect(fired).toEqual(['test'])
   })
+
+  it('advance with no tasks does not throw', () => {
+    const tw = new TimerWheel(4)
+    expect(() => tw.advance()).not.toThrow()
+  })
 })

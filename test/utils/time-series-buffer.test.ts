@@ -198,4 +198,11 @@ describe('TimeSeriesBuffer', () => {
     tsb.push(1, 42)
     expect(tsb.size).toBe(1)
   })
+
+  it('push multiple increases size', () => {
+    const tsb = new TimeSeriesBuffer()
+    tsb.push(1, 42)
+    tsb.push(2, 43)
+    expect(tsb.size).toBe(2)
+  })
 })

@@ -132,4 +132,9 @@ describe('TimSort.stable', () => {
     const result = TimSort.stable([], (x: { value: number }) => x.value)
     expect(result).toEqual([])
   })
+
+  it('handles single element', () => {
+    const result = TimSort.stable([{ value: 42 }], (x) => x.value)
+    expect(result).toEqual([{ value: 42 }])
+  })
 })

@@ -170,4 +170,10 @@ describe('Timer - utility', () => {
     timer.reset()
     expect(timer.elapsed()).toBeGreaterThanOrEqual(0)
   })
+
+  it('elapsed after reset is small', () => {
+    const timer = new Timer()
+    timer.reset()
+    expect(timer.elapsed()).toBeLessThan(1000)
+  })
 })
