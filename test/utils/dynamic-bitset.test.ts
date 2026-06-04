@@ -172,4 +172,9 @@ describe('DynamicBitset', () => {
     bs.set(10, true)
     expect(bs.get(10)).toBe(true)
   })
+
+  it('get unset bit returns false', () => {
+    const bs = new DynamicBitset()
+    expect(bs.get(99)).toBe(false)
+  })
 })

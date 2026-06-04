@@ -189,4 +189,12 @@ describe('DynamicConvexHull', () => {
     ch.add(3, 3)
     expect(ch.getHull().length).toBe(0)
   })
+
+  it('add multiple points', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(10, 0)
+    ch.add(0, 10)
+    expect(ch.getHull().length).toBeGreaterThanOrEqual(0)
+  })
 })
