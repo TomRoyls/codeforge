@@ -3442,4 +3442,41 @@ describe('literal type mapping regression tests', () => {
     expect(booleanHandler).toHaveBeenCalledTimes(1)
     expect(literalHandler).not.toHaveBeenCalled()
   })
+
+  test('RegularExpressionLiteral dispatches as RegExpLiteral (not Literal)', () => {
+    const literalHandler = vi.fn()
+    const regexHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        Literal: literalHandler,
+        RegExpLiteral: regexHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'regex-test')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'RegularExpressionLiteral', text: '/abc/g' })
+
+    result.visitor.visitNode?.(mockNode, createMockVisitorContext())
+
+    expect(regexHandler).toHaveBeenCalledTimes(1)
+    expect(literalHandler).not.toHaveBeenCalled()
+  })
+
+  test('RegularExpressionLiteral exit dispatches as RegExpLiteral:exit', () => {
+    const regexExitHandler = vi.fn()
+    const pluginRule = createMockPluginRule({
+      createVisitor: () => ({
+        'RegExpLiteral:exit': regexExitHandler,
+      }),
+    })
+
+    const adapted = adaptPluginRule(pluginRule, 'regex-exit-test')
+    const result = adapted.create({})
+    const mockNode = createMockNode({ kindName: 'RegularExpressionLiteral', text: '/abc/g' })
+
+    result.visitor.exitNode?.(mockNode, createMockVisitorContext())
+
+    expect(regexExitHandler).toHaveBeenCalledTimes(1)
+  })
 })
