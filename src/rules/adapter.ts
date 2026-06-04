@@ -511,6 +511,11 @@ function convertRawCompilerNode(
   const kindName: string = KIND_MAP[kind] ?? `Unknown(${kind})`
   const kindMap = KIND_SPECIFIC_MAP[kindName]
 
+  // ParenthesizedExpression: unwrap to inner expression (ESTree has no Parens node)
+  if (kindName === 'ParenthesizedExpression' && raw.expression && typeof raw.expression === 'object') {
+    return convertRawCompilerNode(raw.expression as Record<string, unknown>, depth)
+  }
+
   const result: Record<string, unknown> = {}
   if (typeof raw.pos === 'number' && typeof raw.end === 'number') {
     const startPos = skipTrivia(raw.pos as number)
@@ -1051,6 +1056,19 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
 
   // Base properties
   const kindName = node.getKindName()
+
+  // ParenthesizedExpression: unwrap to inner expression (ESTree convention)
+  // ESTree doesn't have a ParenthesizedExpression node — parens are implicit
+  if (kindName === 'ParenthesizedExpression') {
+    try {
+      const inner = (node as unknown as { getExpression?: () => Node }).getExpression?.()
+      if (inner) {
+        const innerGeneric = nodeToGeneric(inner)
+        return innerGeneric
+      }
+    } catch { /* fall through to default handling */ }
+  }
+
   const estreeType = KIND_NAME_ALIASES[kindName] ?? kindName
   const base: Record<string, unknown> = {
     end,
