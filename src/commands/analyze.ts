@@ -339,7 +339,8 @@ export default class Analyze extends Command {
       this.exit(0)
     }
 
-    const registry = await setupRuleRegistryLazy(flags.rules, config.rules)
+    const requestedRules = flags.rules?.flatMap((r) => r.split(',').map((s) => s.trim()).filter(Boolean))
+    const registry = await setupRuleRegistryLazy(requestedRules, config.rules)
     const parser = new Parser()
     await parser.initialize()
 
