@@ -167,4 +167,9 @@ describe('EliasFano', () => {
     expect(ef.get(0)).toBe(10)
     expect(ef.get(2)).toBe(30)
   })
+
+  it('single element', () => {
+    const ef = EliasFano.fromSorted([42])
+    expect(ef.get(0)).toBe(42)
+  })
 })
