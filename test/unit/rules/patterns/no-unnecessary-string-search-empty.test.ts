@@ -692,11 +692,11 @@ describe('no-unnecessary-string-search-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when argument is Literal type (not StringLiteral)', () => {
+    test('reports when argument is Literal type with empty string value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSearchEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'search', [{ type: 'Literal', value: '' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when argument is null', () => {

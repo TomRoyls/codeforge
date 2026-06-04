@@ -632,11 +632,11 @@ describe('no-unnecessary-string-starts-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when first argument type is Literal (not StringLiteral)', () => {
+    test('reports when first argument type is Literal with empty string value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when arguments is not an array', () => {

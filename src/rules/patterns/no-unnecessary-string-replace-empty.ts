@@ -14,11 +14,11 @@ export const noUnnecessaryStringReplaceEmpty: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'replace' && callee.property.name !== 'replaceAll') return
         const arg = n.arguments[1]
-        if (!arg || arg.type !== 'StringLiteral') return
+        if (!arg || (arg.type !== 'StringLiteral' && !(arg.type === 'Literal' && typeof arg.value === 'string'))) return
         if (arg.value !== '') return
         const firstArg = n.arguments[0]
         if (!firstArg) return
-        if (firstArg.type === 'StringLiteral') {
+        if (firstArg.type === 'StringLiteral' || (firstArg.type === 'Literal' && typeof firstArg.value === 'string')) {
           context.report({
             loc: extractLocation(n),
             message: `Replacing a string with an empty string removes it. Consider using remove() or a more explicit approach.`,

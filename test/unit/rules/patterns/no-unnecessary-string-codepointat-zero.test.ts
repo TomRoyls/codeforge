@@ -630,11 +630,11 @@ describe('no-unnecessary-string-codepointat-zero rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for .codePointAt with Literal type arg (not NumericLiteral)', () => {
+    test('reports for .codePointAt with Literal type arg and number value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCodepointatZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'codePointAt', [{ type: 'Literal', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when callee property is computed with string', () => {

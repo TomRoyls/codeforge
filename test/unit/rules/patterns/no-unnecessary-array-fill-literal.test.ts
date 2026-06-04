@@ -590,11 +590,11 @@ describe('no-unnecessary-array-fill-literal rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when first arg is Literal type (not NumericLiteral)', () => {
+    test('reports when first arg is Literal type with number value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
       visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when first arg is Identifier', () => {

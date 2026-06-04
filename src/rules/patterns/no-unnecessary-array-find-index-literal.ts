@@ -31,7 +31,7 @@ export const noUnnecessaryArrayFindIndexLiteral: RuleDefinition = {
           const identifierSide = left.type === 'Identifier' && left.name === param.name ? left : right.type === 'Identifier' && right.name === param.name ? right : null
           if (!identifierSide) return
           const literalSide = identifierSide === left ? right : left
-          if (literalSide.type === 'NumericLiteral' || literalSide.type === 'StringLiteral') {
+          if (literalSide.type === 'NumericLiteral' || literalSide.type === 'StringLiteral' || (literalSide.type === 'Literal' && (typeof literalSide.value === 'number' || typeof literalSide.value === 'string'))) {
             context.report({
               loc: extractLocation(n),
               message: `Array.prototype.findIndex() with a literal comparison can be replaced with indexOf().`,
@@ -47,7 +47,7 @@ export const noUnnecessaryArrayFindIndexLiteral: RuleDefinition = {
           const identifierSide = left.type === 'Identifier' && left.name === param.name ? left : right.type === 'Identifier' && right.name === param.name ? right : null
           if (!identifierSide) return
           const literalSide = identifierSide === left ? right : left
-          if (literalSide.type === 'NumericLiteral' || literalSide.type === 'StringLiteral') {
+          if (literalSide.type === 'NumericLiteral' || literalSide.type === 'StringLiteral' || (literalSide.type === 'Literal' && (typeof literalSide.value === 'number' || typeof literalSide.value === 'string'))) {
             context.report({
               loc: extractLocation(n),
               message: `Array.prototype.findIndex() with a literal comparison can be replaced with indexOf().`,

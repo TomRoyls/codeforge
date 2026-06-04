@@ -655,11 +655,11 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when first arg is Literal type instead of NumericLiteral', () => {
+    test('reports when first arg is Literal type with number value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when first arg is BigIntLiteral type', () => {

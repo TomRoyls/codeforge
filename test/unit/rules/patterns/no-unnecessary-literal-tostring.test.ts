@@ -669,11 +669,11 @@ describe('no-unnecessary-literal-tostring rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for Literal type with string value', () => {
+    test('reports for Literal type with string value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryLiteralTostringRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'toString'))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
   })
 

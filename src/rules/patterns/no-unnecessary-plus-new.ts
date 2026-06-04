@@ -24,7 +24,7 @@ export const noUnnecessaryPlusNewRule: RuleDefinition = {
         if (!arg) return
 
         const a = arg as Record<string, unknown>
-        if (a.type === 'NumericLiteral') {
+        if (a.type === 'NumericLiteral' || (a.type === 'Literal' && typeof a.value === 'number')) {
           context.report({
             loc: extractLocation(n),
             message:

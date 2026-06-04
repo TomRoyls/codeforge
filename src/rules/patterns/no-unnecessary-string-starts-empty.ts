@@ -38,7 +38,7 @@ export const noUnnecessaryStringStartsEmptyRule: RuleDefinition = {
         const argNode = toASTNode(firstArg) as Record<string, unknown>
         if (!argNode) return
 
-        if (argNode.type === 'StringLiteral' && (argNode as Record<string, unknown>).value === '') {
+        if ((argNode.type === 'StringLiteral' || (argNode.type === 'Literal' && typeof (argNode as Record<string, unknown>).value === 'string')) && (argNode as Record<string, unknown>).value === '') {
           const methodName = propNode.name as string
           context.report({
             loc: extractLocation(n),

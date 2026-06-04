@@ -453,11 +453,11 @@ describe('no-unnecessary-plus-new rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for + on Literal number', () => {
+    test('reports for + on Literal number', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryPlusNewRule.create(context)
       visitor.UnaryExpression(makeUnaryPlusNode({ type: 'Literal', value: 42 }))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report for + on CallExpression', () => {

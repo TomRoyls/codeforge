@@ -481,11 +481,11 @@ describe('no-unnecessary-string-match-all-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for str.matchAll(Literal instead of StringLiteral)', () => {
+    test('reports for str.matchAll(Literal with empty string value)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchAllEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'matchAll', [{ type: 'Literal', value: '' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report for null node', () => {

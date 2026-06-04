@@ -22,7 +22,7 @@ function getPropertyName(node: unknown): null | string {
   if (propNode.type === 'Identifier') {
     return (propNode as { value?: string }).value ?? (propNode as { name?: unknown }).name as string ?? null
   }
-  if (propNode.type === 'StringLiteral') {
+  if (propNode.type === 'StringLiteral' || (propNode.type === 'Literal' && typeof (propNode as { value?: unknown }).value === 'string')) {
     return (propNode as { value?: unknown }).value as string ?? null
   }
   return null

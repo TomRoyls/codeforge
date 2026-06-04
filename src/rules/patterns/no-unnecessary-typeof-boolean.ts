@@ -29,7 +29,8 @@ export const noUnnecessaryTypeofBooleanRule: RuleDefinition = {
         if (
           leftNode.type === 'UnaryExpression' &&
           (leftNode as Record<string, unknown>).operator === 'typeof' &&
-          rightNode.type === 'StringLiteral' &&
+          (rightNode.type === 'StringLiteral' ||
+            (rightNode.type === 'Literal' && typeof (rightNode as Record<string, unknown>).value === 'string')) &&
           (rightNode as Record<string, unknown>).value === 'boolean'
         ) {
           const argument = (leftNode as Record<string, unknown>).argument
@@ -50,7 +51,8 @@ export const noUnnecessaryTypeofBooleanRule: RuleDefinition = {
         if (
           rightNode.type === 'UnaryExpression' &&
           (rightNode as Record<string, unknown>).operator === 'typeof' &&
-          leftNode.type === 'StringLiteral' &&
+          (leftNode.type === 'StringLiteral' ||
+            (leftNode.type === 'Literal' && typeof (leftNode as Record<string, unknown>).value === 'string')) &&
           (leftNode as Record<string, unknown>).value === 'boolean'
         ) {
           const argument = (rightNode as Record<string, unknown>).argument

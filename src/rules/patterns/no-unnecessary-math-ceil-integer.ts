@@ -30,7 +30,7 @@ export const noUnnecessaryMathCeilInteger: RuleDefinition = {
             const arg = n.arguments[0]
             if (
               arg &&
-              arg.type === 'NumericLiteral' &&
+              (arg.type === 'NumericLiteral' || (arg.type === 'Literal' && typeof arg.value === 'number')) &&
               typeof arg.value === 'number' &&
               Number.isInteger(arg.value) &&
               arg.value >= 0
@@ -47,7 +47,7 @@ export const noUnnecessaryMathCeilInteger: RuleDefinition = {
         const arg = n.arguments[0]
         if (
           arg &&
-          arg.type === 'NumericLiteral' &&
+          (arg.type === 'NumericLiteral' || (arg.type === 'Literal' && typeof arg.value === 'number')) &&
           typeof arg.value === 'number' &&
           Number.isInteger(arg.value) &&
           arg.value >= 0

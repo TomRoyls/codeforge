@@ -37,7 +37,7 @@ export const noUnnecessaryArraySliceZeroRule: RuleDefinition = {
         const argNode = toASTNode(arg) as Record<string, unknown>
         if (!argNode) return
 
-        if (argNode.type === 'NumericLiteral' && (argNode as Record<string, unknown>).value === 0) {
+        if ((argNode.type === 'NumericLiteral' || (argNode.type === 'Literal' && typeof (argNode as Record<string, unknown>).value === 'number')) && (argNode as Record<string, unknown>).value === 0) {
           context.report({
             loc: extractLocation(n),
             message:

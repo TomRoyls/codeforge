@@ -673,11 +673,11 @@ describe('no-unnecessary-parse-int-radix-ten rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when second arg type is Literal instead of NumericLiteral', () => {
+    test('reports when second arg type is Literal with number value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
       visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'Literal', value: 10 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
   })
 

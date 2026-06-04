@@ -27,7 +27,7 @@ export const noUnnecessaryStringLengthCompareRule: RuleDefinition = {
         if (!leftNode || !rightNode) return
 
         const leftIsLengthAccess = isLengthAccess(leftNode)
-        const rightIsZero = rightNode.type === 'NumericLiteral' && (rightNode as Record<string, unknown>).value === 0
+        const rightIsZero = (rightNode.type === 'NumericLiteral' || (rightNode.type === 'Literal' && typeof (rightNode as Record<string, unknown>).value === 'number')) && (rightNode as Record<string, unknown>).value === 0
 
         if (leftIsLengthAccess && rightIsZero) {
           if (op === '>') {
