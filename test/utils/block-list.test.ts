@@ -176,4 +176,11 @@ describe('BlockList', () => {
     expect(bl.get(0)).toBe(10)
     expect(bl.get(1)).toBe(20)
   })
+
+  it('size tracks elements', () => {
+    const bl = new BlockList<number>()
+    bl.pushBack(10)
+    bl.pushBack(20)
+    expect(bl.size).toBe(2)
+  })
 })

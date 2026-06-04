@@ -233,4 +233,10 @@ describe('BloomFilter3', () => {
     const filter = new BloomFilter3(100)
     expect(filter.has('world')).toBe(false)
   })
+
+  it('has returns true for added item', () => {
+    const filter = new BloomFilter3(100)
+    filter.add('hello')
+    expect(filter.has('hello')).toBe(true)
+  })
 })

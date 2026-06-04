@@ -174,4 +174,12 @@ describe('Bitset', () => {
     expect(bs.get(20)).toBe(true)
     expect(bs.get(15)).toBe(false)
   })
+
+  it('clear resets bit', () => {
+    const bs = new Bitset()
+    bs.set(5)
+    expect(bs.get(5)).toBe(true)
+    bs.clear(5)
+    expect(bs.get(5)).toBe(false)
+  })
 })
