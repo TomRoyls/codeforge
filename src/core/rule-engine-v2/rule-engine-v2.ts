@@ -193,14 +193,15 @@ export class RuleEngineV2 {
         for (let i = 0; i < lines.length; i++) {
           const line = lines[i]!
           builtin.pattern.lastIndex = 0
-          if (builtin.pattern.test(line)) {
+          let match: RegExpExecArray | null
+          while ((match = builtin.pattern.exec(line)) !== null) {
             violations.push({
               ruleId,
               severity: rule.severity,
               message: builtin.message,
               filePath,
               line: i + 1,
-              column: this.findColumn(line, builtin.pattern),
+              column: match.index + 1,
               fix: builtin.fix,
             })
           }
@@ -217,14 +218,15 @@ export class RuleEngineV2 {
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i]!
               regex.lastIndex = 0
-              if (regex.test(line)) {
+              let match: RegExpExecArray | null
+              while ((match = regex.exec(line)) !== null) {
                 violations.push({
                   ruleId,
                   severity: rule.severity,
                   message: rule.description,
                   filePath,
                   line: i + 1,
-                  column: 1,
+                  column: match.index + 1,
                 })
               }
             }
@@ -256,12 +258,6 @@ export class RuleEngineV2 {
     this.totalDuration += duration
 
     return { violations, rulesApplied, rulesSkipped, duration, stats }
-  }
-
-  private findColumn(line: string, pattern: RegExp): number {
-    pattern.lastIndex = 0
-    const match = pattern.exec(line)
-    return match ? match.index + 1 : 1
   }
 
   analyzeMany(files: Map<string, string>): EngineResult[] {

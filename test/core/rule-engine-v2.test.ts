@@ -538,6 +538,23 @@ describe('RuleEngineV2', () => {
       expect(result.violations[0]!.ruleId).toBe('no-console')
     })
 
+    it('should detect multiple violations on the same line', () => {
+      const engine = new RuleEngineV2()
+      engine.configure({
+        name: 'test',
+        description: '',
+        rules: new Map([['no-console', { enabled: true }]]),
+      })
+      const result = engine.analyze(
+        'console.log("a"); console.log("b"); console.log("c")',
+        'test.ts',
+      )
+      expect(result.violations).toHaveLength(3)
+      expect(result.violations[0]!.ruleId).toBe('no-console')
+      expect(result.violations[1]!.ruleId).toBe('no-console')
+      expect(result.violations[2]!.ruleId).toBe('no-console')
+    })
+
     it('should detect eval() violations', () => {
       const engine = new RuleEngineV2()
       engine.configure({
