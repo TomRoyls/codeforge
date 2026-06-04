@@ -119,4 +119,9 @@ describe('ZFunction', () => {
     const zf = new ZFunction('abab')
     expect(zf.z[2]).toBe(2)
   })
+
+  it('z array length equals input', () => {
+    const zf = new ZFunction('abcd')
+    expect(zf.z.length).toBe(4)
+  })
 })

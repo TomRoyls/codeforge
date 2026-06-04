@@ -199,4 +199,12 @@ describe('ZigguratNormal', () => {
     }
     expect(max - min).toBeLessThan(100)
   })
+
+  it('generates many samples without error', () => {
+    const rng = new ZigguratNormal()
+    for (let i = 0; i < 1000; i++) {
+      rng.sample()
+    }
+    expect(true).toBe(true)
+  })
 })

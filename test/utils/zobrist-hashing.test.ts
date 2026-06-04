@@ -157,4 +157,11 @@ describe('ZobristHashing', () => {
     const m = new Map([['a', 1], ['b', 2]])
     expect(z.hash(m)).toBe(z.hash(m))
   })
+
+  it('different maps have different hashes', () => {
+    const z = new ZobristHashing<string>()
+    const m1 = new Map([['a', 1]])
+    const m2 = new Map([['a', 2]])
+    expect(z.hash(m1)).not.toBe(z.hash(m2))
+  })
 })
