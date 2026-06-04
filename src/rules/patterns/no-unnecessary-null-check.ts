@@ -23,7 +23,8 @@ export const noUnnecessaryNullCheckRule: RuleDefinition = {
 
         const isNullLiteral = (side: unknown): boolean => {
           if (!side || typeof side !== 'object') return false
-          return (side as { type?: string }).type === 'NullLiteral'
+          const s = side as { type?: string; value?: unknown }
+          return s.type === 'NullLiteral' || (s.type === 'Literal' && s.value === null)
         }
 
         const isUndefinedIdentifier = (side: unknown): boolean => {

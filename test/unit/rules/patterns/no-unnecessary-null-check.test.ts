@@ -1506,4 +1506,20 @@ describe('no-unnecessary-null-check rule', () => {
     visitor.BinaryExpression({ type: 'AssignmentExpression', operator: '=', left: makeLeft('x'), right: makeLeft('y'), loc: makeLoc(1, 0, 1, 5) })
     expect(reports.length).toBe(0)
   })
+
+  describe('ESTree null-literal compatibility', () => {
+    test('reports redundant check where outer null is ESTree Literal{value:null}', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryNullCheckRule.create(context)
+      const estreeNull = { type: 'Literal', value: null }
+      const node = buildRedundantNode({
+        outerOp: '!==',
+        outerRight: estreeNull,
+        innerOp: '!==',
+        innerRight: estreeNull,
+      })
+      visitor.BinaryExpression(node)
+      expect(reports.length).toBe(1)
+    })
+  })
 })
