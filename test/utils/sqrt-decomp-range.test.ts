@@ -124,4 +124,9 @@ describe('SqrtDecompRange', () => {
     const sd = new SqrtDecompRange([5, 10, 15])
     expect(sd.rangeSum(0, 2)).toBe(30)
   })
+
+  it('rangeSum single element', () => {
+    const sd = new SqrtDecompRange([5, 10, 15])
+    expect(sd.rangeSum(1, 1)).toBe(10)
+  })
 })

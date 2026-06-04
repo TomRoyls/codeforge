@@ -121,4 +121,9 @@ describe('SpiralMatrix', () => {
     const m = SpiralMatrix.generate(2)
     expect(m).toEqual([[1, 2], [4, 3]])
   })
+
+  it('generate 1x1 returns [[1]]', () => {
+    const m = SpiralMatrix.generate(1)
+    expect(m).toEqual([[1]])
+  })
 })
