@@ -47,12 +47,27 @@ function hasUselessEscape(raw: unknown, isRegex: boolean): boolean {
 export const noUselessEscapeRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
+      // ESTree convention: regex as Literal with nested regex:{pattern,flags}
       Literal(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'Literal') return
         if (typeof n.raw === 'string') {
           const isRegex = Boolean(n.regex)
           if (hasUselessEscape(n.raw, isRegex)) {
+            context.report({
+              loc: extractLocation(node),
+              message: 'Unnecessary escape character.',
+            })
+          }
+        }
+      },
+
+      // Babel convention: RegExpLiteral with raw and nested regex:{pattern,flags}
+      RegExpLiteral(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n || n.type !== 'RegExpLiteral') return
+        if (typeof n.raw === 'string') {
+          if (hasUselessEscape(n.raw, true)) {
             context.report({
               loc: extractLocation(node),
               message: 'Unnecessary escape character.',
