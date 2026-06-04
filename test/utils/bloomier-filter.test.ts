@@ -213,4 +213,9 @@ describe('BloomierFilter negative and zero values', () => {
     expect(bf.get('neg')).toBe(-42)
     expect(bf.get('pos')).toBe(42)
   })
+
+  it('create with empty map returns filter', () => {
+    const bf = BloomierFilter.create(new Map<string, number>())
+    expect(bf).toBeDefined()
+  })
 })

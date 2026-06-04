@@ -145,4 +145,10 @@ describe('BoyerMoore', () => {
     const results = bm.search('abcdef')
     expect(results.length).toBe(0)
   })
+
+  it('finds match at beginning', () => {
+    const bm = new BoyerMoore('abc')
+    const results = bm.search('abcdef')
+    expect(results).toEqual([0])
+  })
 })

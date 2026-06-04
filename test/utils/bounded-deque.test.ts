@@ -189,4 +189,10 @@ describe('BoundedDeque', () => {
     expect(dq.popBack()).toBe(2)
     expect(dq.size).toBe(1)
   })
+
+  it('pushFront and popFront', () => {
+    const dq = new BoundedDeque<number>(5)
+    dq.pushFront(10)
+    expect(dq.popFront()).toBe(10)
+  })
 })

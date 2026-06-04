@@ -212,4 +212,10 @@ describe('BoundedPriorityQueue', () => {
     const q = new BoundedPriorityQueue<number>((a, b) => a - b, 5)
     expect(q.size).toBe(0)
   })
+
+  it('push increases size', () => {
+    const q = new BoundedPriorityQueue<number>(5, (a, b) => a - b)
+    q.push(3)
+    expect(q.size).toBe(1)
+  })
 })
