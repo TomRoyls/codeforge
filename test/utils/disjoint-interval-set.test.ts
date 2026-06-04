@@ -192,4 +192,10 @@ describe('DisjointIntervalSet - utility', () => {
     dis.add(0, 5)
     expect(dis.contains(3)).toBe(true)
   })
+
+  it('contains outside interval returns false', () => {
+    const dis = new DisjointIntervalSet()
+    dis.add(0, 5)
+    expect(dis.contains(10)).toBe(false)
+  })
 })

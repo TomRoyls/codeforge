@@ -202,4 +202,11 @@ describe('DisjointSet - stats and clear', () => {
     ds.union(0, 1)
     expect(ds.find(0)).toBe(ds.find(1))
   })
+
+  it('separate sets have different roots', () => {
+    const ds = new DisjointSet<number>()
+    ds.add(0)
+    ds.add(1)
+    expect(ds.find(0)).not.toBe(ds.find(1))
+  })
 })
