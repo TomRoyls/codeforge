@@ -19,9 +19,19 @@ export function runRule(
 
   const category = rule.meta?.docs?.category ?? 'test'
 
-  // Complexity/performance rules use ts-morph-native visitors (visitFunction etc.)
-  // Pattern/adapter rules use ESTree-style visitors (FunctionDeclaration etc.)
-  const isAdapterRule = category === 'patterns' || category === 'security'
+  // Detect rule architecture: adapter-style rules use context.report() and
+  // return ESTree visitor keys (FunctionDeclaration, CallExpression, etc.)
+  // ts-morph-native rules use options and return visitFunction/visitNode/etc.
+  const probeContext = { config: { options: [] }, report: () => {}, getFilePath: () => '', getSource: () => '' }
+  const probeResult = (rule as unknown as { create: (ctx: unknown) => { visitor: Record<string, unknown> } }).create(probeContext)
+  const visitorKeys = Object.keys(probeResult.visitor ?? {})
+  const isAdapterRule =
+    category === 'patterns' ||
+    category === 'security' ||
+    (visitorKeys.some((k) =>
+      ['CallExpression', 'MemberExpression', 'AssignmentExpression', 'UnaryExpression', 'BinaryExpression', 'Identifier', 'Literal'].includes(k),
+    )
+    && !visitorKeys.some((k) => k.startsWith('visit')))
 
   if (isAdapterRule) {
     const adapted = adaptPluginRule(rule, category)
@@ -34,7 +44,6 @@ export function runRule(
       loc: v.loc,
     }))
   } else {
-    // Native ts-morph rule: call create() with options, traverse directly
     const options = rule.defaultOptions ?? {}
     const result = (rule as unknown as { create: (opts: unknown) => { visitor: unknown; onComplete?: () => unknown } }).create(options)
     if (result.visitor) {
