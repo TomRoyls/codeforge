@@ -138,4 +138,9 @@ describe('path-utils', () => {
     const result = resolvePath('baz')
     expect(result).toContain('baz')
   })
+
+  it('resolvePath with absolute returns as-is', () => {
+    const result = resolvePath('/absolute/path')
+    expect(result).toBe('/absolute/path')
+  })
 })

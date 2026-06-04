@@ -182,4 +182,9 @@ describe('PersistentDSU', () => {
     dsu.rollback(snap);
     expect(dsu.connected(0, 2)).toBe(false);
   });
+
+  it('single element is connected to itself', () => {
+    const dsu = new PersistentDSU(1);
+    expect(dsu.connected(0, 0)).toBe(true);
+  });
 });
