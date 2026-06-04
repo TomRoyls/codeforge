@@ -170,4 +170,10 @@ describe('RangeUpdatePointQuery', () => {
     rq.addRange(1, 1, 10)
     expect(rq.build()).toEqual([0, 10, 0])
   })
+
+  it('empty range update changes nothing', () => {
+    const rq = new RangeUpdatePointQuery(3)
+    rq.addRange(0, 0, 5)
+    expect(rq.build()).toEqual([5, 0, 0])
+  })
 })

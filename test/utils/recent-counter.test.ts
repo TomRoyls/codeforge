@@ -180,4 +180,9 @@ describe('RecentCounter', () => {
     rc.ping(200)
     expect(rc.count(300)).toBe(2)
   })
+
+  it('count with no pings returns 0', () => {
+    const rc = new RecentCounter()
+    expect(rc.count(100)).toBe(0)
+  })
 })

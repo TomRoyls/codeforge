@@ -197,4 +197,11 @@ describe('RateLimiter', () => {
     const result = rl.tryAcquire()
     expect(result.allowed).toBe(true)
   })
+
+  it('tryAcquire respects limit', () => {
+    const rl = new RateLimiter({ limit: 1, interval: 100000 })
+    rl.tryAcquire()
+    const result = rl.tryAcquire()
+    expect(result.allowed).toBe(false)
+  })
 })

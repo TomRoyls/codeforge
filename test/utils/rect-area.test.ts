@@ -122,4 +122,8 @@ describe('RectArea', () => {
   it('area of unit square is 1', () => {
     expect(RectArea.area({ x1: 0, y1: 0, x2: 1, y2: 1 })).toBe(1)
   })
+
+  it('area of zero-size rect is 0', () => {
+    expect(RectArea.area({ x1: 5, y1: 5, x2: 5, y2: 5 })).toBe(0)
+  })
 })
