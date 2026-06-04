@@ -170,4 +170,10 @@ describe('LRUTTLCache', () => {
     const cache = new LRUTTLCache<string, number>(5, 60000)
     expect(cache.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const cache = new LRUTTLCache<string, number>(5, 60000)
+    cache.set('key', 42)
+    expect(cache.get('key')).toBe(42)
+  })
 })

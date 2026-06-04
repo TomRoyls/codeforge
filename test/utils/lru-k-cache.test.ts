@@ -166,4 +166,10 @@ describe('LRUKCache', () => {
     const cache = new LRUKCache<string, number>({ k: 2, capacity: 5 })
     expect(cache.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const cache = new LRUKCache<string, number>({ k: 2, capacity: 5 })
+    cache.set('key', 42)
+    expect(cache.get('key')).toBe(42)
+  })
 })
