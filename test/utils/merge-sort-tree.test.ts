@@ -132,4 +132,10 @@ describe('MergeSortTree', () => {
     const result = mst.querySorted(1, 1)
     expect(result).toEqual([3])
   })
+
+  it('full range query returns sorted', () => {
+    const mst = new MergeSortTree([3, 1, 2])
+    const result = mst.querySorted(0, 2)
+    expect(result).toEqual([1, 2, 3])
+  })
 })

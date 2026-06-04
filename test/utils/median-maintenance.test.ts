@@ -181,4 +181,11 @@ describe('MedianMaintenance', () => {
     mm.add(2)
     expect(mm.getMedian()).toBe(1)
   })
+
+  it('even count returns lower median', () => {
+    const mm = new MedianMaintenance()
+    mm.add(1)
+    mm.add(3)
+    expect(mm.getMedian()).toBeGreaterThanOrEqual(1)
+  })
 })

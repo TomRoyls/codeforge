@@ -158,4 +158,10 @@ describe('MaxBipartiteMatching', () => {
     const m = new MaxBipartiteMatching(2, 2)
     expect(m.getMatchingSize()).toBe(0)
   })
+
+  it('single edge matching size is 1', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    m.addEdge(0, 0)
+    expect(m.getMatchingSize()).toBe(1)
+  })
 })
