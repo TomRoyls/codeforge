@@ -186,4 +186,10 @@ describe('BridgeFinding', () => {
     const bf = new BridgeFinding(2)
     expect(bf.findBridges().length).toBe(0)
   })
+
+  it('single edge is a bridge', () => {
+    const bf = new BridgeFinding(2)
+    bf.addEdge(0, 1)
+    expect(bf.findBridges().length).toBe(1)
+  })
 })

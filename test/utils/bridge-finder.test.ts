@@ -157,4 +157,10 @@ describe('BridgeFinder', () => {
     const bf = new BridgeFinder(adj)
     expect(bf.bridges.length).toBe(1)
   })
+
+  it('triangle has no bridges', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const bf = new BridgeFinder(adj)
+    expect(bf.bridges.length).toBe(0)
+  })
 })
