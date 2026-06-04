@@ -194,4 +194,10 @@ describe('ThreadPool', () => {
     ])
     expect(r1.result + r2.result).toBe(3)
   })
+
+  it('single task runs correctly', async () => {
+    const pool = new ThreadPool(2)
+    const r = await pool.submit(async () => 42)
+    expect(r.result).toBe(42)
+  })
 })

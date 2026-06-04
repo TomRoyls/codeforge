@@ -161,4 +161,10 @@ describe('TDigest', () => {
     td.push(42)
     expect(td.size).toBe(1)
   })
+
+  it('percentile on single value returns that value', () => {
+    const td = new TDigest()
+    td.push(42)
+    expect(td.percentile(0.5)).toBe(42)
+  })
 })
