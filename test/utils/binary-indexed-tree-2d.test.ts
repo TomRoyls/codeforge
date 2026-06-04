@@ -176,4 +176,10 @@ describe('BinaryIndexedTree2D', () => {
     const bit = new BinaryIndexedTree2D(2, 2)
     expect(bit.query(0, 0)).toBe(0)
   })
+
+  it('update and query', () => {
+    const bit = new BinaryIndexedTree2D(2, 2)
+    bit.update(0, 0, 5)
+    expect(bit.query(0, 0)).toBe(5)
+  })
 })

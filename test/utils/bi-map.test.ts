@@ -178,4 +178,10 @@ describe('BiMap', () => {
     bm.deleteKey('a')
     expect(bm.get('a')).toBeUndefined()
   })
+
+  it('size tracks entries', () => {
+    const bm = new BiMap<string, number>()
+    bm.set('a', 1)
+    expect(bm.size).toBe(1)
+  })
 })

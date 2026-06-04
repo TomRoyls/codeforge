@@ -204,4 +204,10 @@ describe('BimodalMap', () => {
     const bm = new BimodalMap<string, number>()
     expect(bm.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('key', 42)
+    expect(bm.get('key')).toBe(42)
+  })
 })

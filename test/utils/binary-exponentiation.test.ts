@@ -107,4 +107,8 @@ describe('BinaryExponentiation', () => {
   it('power of 0 exponent returns 1', () => {
     expect(BinaryExponentiation.power(5n, 0n, 7n)).toBe(1n)
   })
+
+  it('power of 1 exponent returns base mod m', () => {
+    expect(BinaryExponentiation.power(5n, 1n, 7n)).toBe(5n)
+  })
 })

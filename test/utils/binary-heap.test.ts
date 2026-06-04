@@ -42,10 +42,13 @@ describe('BinaryHeap min heap', () => {
     expect(heap.pop()).toBeUndefined()
   })
 
-  it('peeks undefined on empty', () => {
+  it('size tracks elements', () => {
     const heap = new BinaryHeap<number>()
-    expect(heap.peek()).toBeUndefined()
+    heap.push(1)
+    heap.push(2)
+    expect(heap.size).toBe(2)
   })
+})
 
   it('handles single element', () => {
     const heap = new BinaryHeap<number>()
