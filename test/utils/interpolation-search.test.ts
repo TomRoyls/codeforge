@@ -118,4 +118,8 @@ describe('InterpolationSearch', () => {
   it('finds first element', () => {
     expect(InterpolationSearch.search([1, 2, 3, 4, 5], 1)).toBe(0)
   })
+
+  it('returns -1 for missing element', () => {
+    expect(InterpolationSearch.search([1, 2, 3, 4, 5], 99)).toBe(-1)
+  })
 })

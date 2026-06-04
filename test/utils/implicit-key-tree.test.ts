@@ -171,4 +171,10 @@ describe('ImplicitKeyTree', () => {
     const t = new ImplicitKeyTree<number>()
     expect(t.get(99)).toBeUndefined()
   })
+
+  it('insert and get roundtrip', () => {
+    const t = new ImplicitKeyTree<number>()
+    t.insert(0, 42)
+    expect(t.get(0)).toBe(42)
+  })
 })
