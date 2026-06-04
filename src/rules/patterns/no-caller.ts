@@ -3,32 +3,29 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
-function isCallerAccess(node: unknown): boolean {
+function isArgumentsCalleeOrCaller(node: unknown): boolean {
   const n = toASTNode(node)
   if (n?.type !== 'MemberExpression') return false
 
   const obj = toASTNode(n.object)
+  if (!obj || obj.type !== 'Identifier' || obj.name !== 'arguments') return false
+
   const prop = toASTNode(n.property)
-  if (!obj || !prop) return false
+  if (!prop) return false
 
-  return obj.type === 'Identifier' && obj.name === 'arguments' && prop.type === 'Identifier' && prop.name === 'caller'
-}
+  if (n.computed === true) {
+    if (prop.type === 'Literal' && (prop.value === 'callee' || prop.value === 'caller')) return true
+    return false
+  }
 
-function isArgumentsCallee(node: unknown): boolean {
-  const n = toASTNode(node)
-  if (n?.type !== 'MemberExpression') return false
-
-  const obj = toASTNode(n.object)
-  if (!obj || obj.type !== 'Identifier') return false
-
-  return obj.name === 'arguments' && n.computed === true
+  return prop.type === 'Identifier' && (prop.name === 'callee' || prop.name === 'caller')
 }
 
 export const noCallerRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       MemberExpression(node: unknown): void {
-        if (isCallerAccess(node) || isArgumentsCallee(node)) {
+        if (isArgumentsCalleeOrCaller(node)) {
           const location = extractLocation(node)
 
           context.report({
