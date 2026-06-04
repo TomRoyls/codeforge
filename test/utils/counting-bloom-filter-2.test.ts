@@ -200,4 +200,10 @@ describe('CountingBloomFilter2', () => {
     const filter = new CountingBloomFilter2(100)
     expect(filter.contains('world')).toBe(false)
   })
+
+  it('contains returns true for added item', () => {
+    const filter = new CountingBloomFilter2(100)
+    filter.add('hello')
+    expect(filter.contains('hello')).toBe(true)
+  })
 })

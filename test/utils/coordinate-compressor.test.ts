@@ -154,4 +154,9 @@ describe('CoordinateCompressor', () => {
     const cc = new CoordinateCompressor([10, 20, 30])
     expect(cc.decompress(0)).toBe(10)
   })
+
+  it('compress maps to compressed index', () => {
+    const cc = new CoordinateCompressor([10, 20, 30])
+    expect(cc.compress(20)).toBe(1)
+  })
 })

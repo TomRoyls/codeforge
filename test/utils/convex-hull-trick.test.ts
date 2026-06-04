@@ -172,4 +172,9 @@ describe('ConvexHullTrick', () => {
     cht.addLine(0, 10)
     expect(cht.query(5)).toBe(5)
   })
+
+  it('query with no lines returns Infinity', () => {
+    const cht = new ConvexHullTrick()
+    expect(cht.query(0)).toBe(Infinity)
+  })
 })
