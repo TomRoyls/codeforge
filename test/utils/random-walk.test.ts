@@ -136,4 +136,9 @@ describe('RandomWalk', () => {
     expect(walk.length).toBe(1)
     expect(walk[0]).toBe(0)
   })
+
+  it('walk1D with 10 steps returns array', () => {
+    const walk = RandomWalk.walk1D(10)
+    expect(walk.length).toBeGreaterThanOrEqual(10)
+  })
 })

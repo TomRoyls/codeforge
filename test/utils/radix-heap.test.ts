@@ -176,4 +176,11 @@ describe('RadixHeap', () => {
     const h = new RadixHeap()
     expect(h.pop()).toBeUndefined()
   })
+
+  it('push and pop returns min', () => {
+    const h = new RadixHeap()
+    h.push(5)
+    h.push(3)
+    expect(h.pop()).toBe(3)
+  })
 })

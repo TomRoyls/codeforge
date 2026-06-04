@@ -105,4 +105,8 @@ describe('QuickSelect', () => {
   it('select on single element', () => {
     expect(QuickSelect.select([42], 0)).toBe(42)
   })
+
+  it('select finds min', () => {
+    expect(QuickSelect.select([5, 3, 1, 4, 2], 0)).toBe(1)
+  })
 })
