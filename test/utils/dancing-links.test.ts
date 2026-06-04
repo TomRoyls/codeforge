@@ -221,4 +221,9 @@ describe('DancingLinks', () => {
     const dlx = new DancingLinks(0, 0)
     expect(dlx).toBeDefined()
   })
+
+  it('solve with single column', () => {
+    const dlx = new DancingLinks(1, 1)
+    expect(dlx).toBeDefined()
+  })
 })

@@ -202,4 +202,10 @@ describe('CuckooHashMap', () => {
     const map = new CuckooHashMap<string, number>(16)
     expect(map.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const map = new CuckooHashMap<string, number>(16)
+    map.set('key', 42)
+    expect(map.get('key')).toBe(42)
+  })
 })
