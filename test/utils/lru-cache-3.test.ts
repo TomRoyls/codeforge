@@ -195,4 +195,10 @@ describe('LRUCache3', () => {
     const cache = new LRUCache3<string, number>(5)
     expect(cache.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const cache = new LRUCache3<string, number>(5)
+    cache.set('key', 42)
+    expect(cache.get('key')).toBe(42)
+  })
 })

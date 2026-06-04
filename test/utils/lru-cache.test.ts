@@ -198,4 +198,10 @@ describe('LRUCache - peek', () => {
     const cache = new LRUCache<string, number>(2)
     expect(cache.get('missing')).toBeUndefined()
   })
+
+  it('set and get roundtrip', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('key', 42)
+    expect(cache.get('key')).toBe(42)
+  })
 })
