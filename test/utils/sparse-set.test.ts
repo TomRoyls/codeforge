@@ -178,4 +178,10 @@ describe('SparseSet', () => {
     ss.add(1)
     expect(ss.has(5)).toBe(false)
   })
+
+  it('has returns true for added element', () => {
+    const ss = new SparseSet(10)
+    ss.add(3)
+    expect(ss.has(3)).toBe(true)
+  })
 })

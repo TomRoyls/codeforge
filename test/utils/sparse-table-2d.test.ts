@@ -139,4 +139,9 @@ describe('SparseTable2D', () => {
     const st = new SparseTable2D([[3, 1], [4, 2]], Math.min)
     expect(st.query(0, 0, 1, 1)).toBe(1)
   })
+
+  it('single cell query returns that cell', () => {
+    const st = new SparseTable2D([[3, 1], [4, 2]], Math.min)
+    expect(st.query(0, 0, 0, 0)).toBe(3)
+  })
 })
