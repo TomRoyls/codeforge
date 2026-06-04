@@ -38,6 +38,16 @@ export const noUseBeforeDefineRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     const definedVars = new Set<string>()
     const usageReports: Array<{ name: string; node: unknown }> = []
+    const propertyNames = new Set<string>()
+
+    function collectPropertyNames(node: unknown): void {
+      const n = toASTNode(node)
+      if (!n) return
+      const prop = (n as { property?: { name?: string } }).property
+      if (prop && typeof prop.name === 'string' && !(n as { computed?: boolean }).computed) {
+        propertyNames.add(prop.name)
+      }
+    }
 
     return {
       ImportDeclaration(node: unknown): void {
@@ -86,6 +96,18 @@ export const noUseBeforeDefineRule: RuleDefinition = {
         }
       },
 
+      MemberExpression(node: unknown): void {
+        collectPropertyNames(node)
+      },
+
+      OptionalMemberExpression(node: unknown): void {
+        collectPropertyNames(node)
+      },
+
+      Property(node: unknown): void {
+        collectPropertyNames(node)
+      },
+
       Identifier(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'Identifier') return
@@ -101,13 +123,15 @@ export const noUseBeforeDefineRule: RuleDefinition = {
 
       'Program:exit'(): void {
         for (const usage of usageReports) {
-          if (!definedVars.has(usage.name) && !BUILTIN_GLOBALS.has(usage.name)) {
-            context.report({
-              loc: extractLocation(toASTNode(usage.node)),
-              message: `'${usage.name}' was used before it was defined.`,
-              node: toASTNode(usage.node),
-            })
-          }
+          if (definedVars.has(usage.name)) continue
+          if (BUILTIN_GLOBALS.has(usage.name)) continue
+          if (propertyNames.has(usage.name)) continue
+
+          context.report({
+            loc: extractLocation(toASTNode(usage.node)),
+            message: `'${usage.name}' was used before it was defined.`,
+            node: toASTNode(usage.node),
+          })
         }
       },
     }
