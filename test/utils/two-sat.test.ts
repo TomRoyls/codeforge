@@ -189,4 +189,11 @@ describe('TwoSAT', () => {
     sat.addClause(0, true, 0, false)
     expect(sat.solve()).not.toBeNull()
   })
+
+  it('contradiction is unsatisfiable', () => {
+    const sat = new TwoSAT(2)
+    sat.addClause(0, true, 0, false)
+    sat.addClause(0, false, 0, true)
+    expect(sat.solve()).not.toBeNull()
+  })
 })

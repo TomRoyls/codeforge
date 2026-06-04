@@ -199,4 +199,12 @@ describe('UndoDisjointSet', () => {
     const dsu = new UndoDisjointSet(3)
     expect(dsu.connected(0, 1)).toBe(false)
   })
+
+  it('undo reverts last union', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    expect(dsu.connected(0, 1)).toBe(true)
+    dsu.undo()
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
 })

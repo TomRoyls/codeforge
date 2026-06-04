@@ -204,4 +204,10 @@ describe('TypedEventEmitter - max listeners', () => {
     const emitter = new TypedEventEmitter()
     expect(() => emitter.emit('data', 42)).not.toThrow()
   })
+
+  it('on returns unsubscribe function', () => {
+    const emitter = new TypedEventEmitter()
+    const unsub = emitter.on('data', () => {})
+    expect(typeof unsub).toBe('function')
+  })
 })

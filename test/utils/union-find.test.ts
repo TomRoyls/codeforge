@@ -217,4 +217,9 @@ describe('UnionFind clear & reset', () => {
     uf.union(0, 1)
     expect(uf.find(0)).toBe(uf.find(1))
   })
+
+  it('separate sets have different roots', () => {
+    const uf = new UnionFind({ initialCapacity: 3 })
+    expect(uf.find(0)).not.toBe(uf.find(2))
+  })
 })
