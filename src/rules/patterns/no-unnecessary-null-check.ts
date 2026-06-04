@@ -40,7 +40,7 @@ export const noUnnecessaryNullCheckRule: RuleDefinition = {
         }
 
         if (isNullLiteral(right) || isUndefinedIdentifier(right) || isVoidUnary(right)) {
-          const parent = (n as { _parent?: unknown })._parent
+          const parent = (n as { parent?: unknown }).parent
           if (parent && (parent as { type?: string }).type === 'IfStatement') {
             const consequent = (parent as { consequent?: unknown }).consequent
             if (consequent && (consequent as { type?: string }).type === 'BlockStatement') {

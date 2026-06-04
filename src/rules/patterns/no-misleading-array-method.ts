@@ -66,7 +66,7 @@ export const noMisleadingArrayMethodRule: RuleDefinition = {
             if (callback && (callback as { type?: string }).type === 'ArrowFunctionExpression') {
               const body = (callback as { body?: unknown }).body
               if (body && (body as { type?: string }).type !== 'BlockStatement') {
-                const parent = (n as { _parent?: unknown })._parent
+                const parent = (n as { parent?: unknown }).parent
                 if (parent && (parent as { type?: string }).type === 'ExpressionStatement') {
                   context.report({
                     loc: extractLocation(n),

@@ -33,7 +33,7 @@ export const noInnerDeclarationsRule: RuleDefinition = {
         const n = toASTNode(node)
         if (!n || n.type !== 'FunctionDeclaration') return
 
-        const parent = (n as { _parent?: unknown })._parent
+        const parent = (n as { parent?: unknown }).parent
         const parentNode = toASTNode(parent)
         if (!parentNode) return
 
@@ -52,7 +52,7 @@ export const noInnerDeclarationsRule: RuleDefinition = {
         const kind = (n as { kind?: unknown }).kind
         if (kind !== 'var') return
 
-        const parent = (n as { _parent?: unknown })._parent
+        const parent = (n as { parent?: unknown }).parent
         const parentNode = toASTNode(parent)
         if (!parentNode) return
 

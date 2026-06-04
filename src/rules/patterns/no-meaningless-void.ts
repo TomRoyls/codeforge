@@ -21,7 +21,7 @@ export const noMeaninglessVoidRule: RuleDefinition = {
 
         if ((n as { operator?: string }).operator !== 'void') return
 
-        const parent = (n as { _parent?: unknown })._parent
+        const parent = (n as { parent?: unknown }).parent
         if (!parent) return
 
         const parentNode = toASTNode(parent)

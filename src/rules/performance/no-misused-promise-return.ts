@@ -28,7 +28,7 @@ export const noMisusedPromiseReturnRule: RuleDefinition = {
         const calleeName = (callee as { name?: string }).name
         if (calleeName !== 'Promise') return
 
-        const parent = (n as { _parent?: unknown })._parent
+        const parent = (n as { parent?: unknown }).parent
         if (!parent) return
 
         const parentType = (parent as { type?: string }).type
