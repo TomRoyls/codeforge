@@ -188,4 +188,9 @@ describe('HyperLogLog - edge cases', () => {
     hll.add('world')
     expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
+
+  it('empty count is near zero', () => {
+    const hll = new HyperLogLog(10)
+    expect(hll.count()).toBeLessThan(1)
+  })
 })

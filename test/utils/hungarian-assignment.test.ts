@@ -229,4 +229,14 @@ describe('HungarianAssignment', () => {
     const result = ha.solve()
     expect(result.totalCost).toBe(5)
   })
+
+  it('2x2 optimal assignment', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 2)
+    ha.setCost(1, 0, 2)
+    ha.setCost(1, 1, 1)
+    const result = ha.solve()
+    expect(result.totalCost).toBe(2)
+  })
 })

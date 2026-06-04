@@ -132,4 +132,10 @@ describe('HuffmanCoding', () => {
     const { encoded, tree } = HuffmanCoding.encode('a')
     expect(HuffmanCoding.decode(encoded, tree)).toBe('a')
   })
+
+  it('encode and decode roundtrip', () => {
+    const text = 'hello world'
+    const { encoded, tree } = HuffmanCoding.encode(text)
+    expect(HuffmanCoding.decode(encoded, tree)).toBe(text)
+  })
 })
