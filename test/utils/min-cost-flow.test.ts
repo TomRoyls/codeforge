@@ -233,4 +233,11 @@ describe('MinCostFlow', () => {
     const result = mcf.solve(0, 1)
     expect(result.flow).toBe(5)
   })
+
+  it('no path yields zero flow', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    const result = mcf.solve(2, 0)
+    expect(result.flow).toBe(0)
+  })
 })

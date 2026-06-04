@@ -166,4 +166,11 @@ describe('MisraGries', () => {
     mg.process('a')
     expect(mg.getCount('z')).toBe(0)
   })
+
+  it('process increases count of seen item', () => {
+    const mg = new MisraGries(2)
+    mg.process('a')
+    mg.process('a')
+    expect(mg.getCount('a')).toBeGreaterThanOrEqual(1)
+  })
 })

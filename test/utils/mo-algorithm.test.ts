@@ -410,4 +410,18 @@ describe('MoAlgorithm', () => {
     )
     expect(answers).toEqual([])
   })
+
+  it('single element query returns value', () => {
+    const answers = MoAlgorithm.solve(
+      [42],
+      [{ left: 0, right: 0 }],
+      (s, idx) => { s.sum += 42 },
+      (s, idx) => { s.sum += 42 },
+      (s, idx) => { s.sum -= 42 },
+      (s, idx) => { s.sum -= 42 },
+      (s) => s.sum,
+      { sum: 0 },
+    )
+    expect(answers).toEqual([42])
+  })
 })
