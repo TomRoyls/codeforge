@@ -182,6 +182,45 @@ export const noUnsafeRegexRule: RuleDefinition = {
         }
       },
 
+      // Babel convention: RegExpLiteral with nested regex:{pattern,flags}
+      RegExpLiteral(node: unknown): void {
+        if (!isRegexNode(node)) {
+          return
+        }
+
+        const pattern = extractPattern(node)
+        if (!pattern) {
+          return
+        }
+
+        if (pattern === '__DYNAMIC__') {
+          if (checkInjection) {
+            const location = extractLocation(node)
+            context.report({
+              loc: location,
+              message:
+                'RegExp constructor with dynamic input detected. This can lead to regex injection vulnerabilities. Consider using a safe regex library or escaping user input.',
+              node,
+            })
+          }
+
+          return
+        }
+
+        const issues = analyzePattern(pattern)
+
+        if (issues.length > 0 && checkReDoS) {
+          const location = extractLocation(node)
+          const message = `Unsafe regex pattern detected: "${pattern}". Issues: ${issues.join('; ')}. Consider refactoring to avoid ReDoS vulnerabilities.`
+
+          context.report({
+              loc: location,
+              message,
+              node,
+            })
+        }
+      },
+
       NewExpression(node: unknown): void {
         if (!isRegexNode(node)) {
           return
