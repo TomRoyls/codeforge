@@ -446,6 +446,29 @@ function applyRawPostFixups(
     result.prefix = false
   }
 
+  if (kindName === 'DeleteExpression') {
+    result.operator = 'delete'
+    result.prefix = true
+  }
+
+  if (kindName === 'TypeOfExpression') {
+    result.operator = 'typeof'
+    result.prefix = true
+  }
+
+  if (kindName === "VoidExpression") {
+    result.operator = 'void'
+    result.prefix = true
+  }
+
+  if (kindName === 'ElementAccessExpression') {
+    result.computed = true
+  }
+
+  if (kindName === 'PropertyAccessExpression') {
+    result.computed = false
+  }
+
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
     let flags: number | undefined
@@ -689,6 +712,29 @@ function applyPostConvertFixups(
   // PostfixUnaryExpression: always UpdateExpression with prefix:false
   if (kindName === 'PostfixUnaryExpression') {
     result.prefix = false
+  }
+
+  if (kindName === 'DeleteExpression') {
+    result.operator = 'delete'
+    result.prefix = true
+  }
+
+  if (kindName === 'TypeOfExpression') {
+    result.operator = 'typeof'
+    result.prefix = true
+  }
+
+  if (kindName === "VoidExpression") {
+    result.operator = 'void'
+    result.prefix = true
+  }
+
+  if (kindName === 'ElementAccessExpression') {
+    result.computed = true
+  }
+
+  if (kindName === 'PropertyAccessExpression') {
+    result.computed = false
   }
 
   if (result.type === 'VariableDeclaration') {
@@ -1266,6 +1312,29 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             genericNode.prefix = false
           }
 
+          if (kindName === 'DeleteExpression') {
+            genericNode.operator = 'delete'
+            genericNode.prefix = true
+          }
+
+          if (kindName === 'TypeOfExpression') {
+            genericNode.operator = 'typeof'
+            genericNode.prefix = true
+          }
+
+          if (kindName === "VoidExpression") {
+            genericNode.operator = 'void'
+            genericNode.prefix = true
+          }
+
+          if (kindName === 'ElementAccessExpression') {
+            genericNode.computed = true
+          }
+
+          if (kindName === 'PropertyAccessExpression') {
+            genericNode.computed = false
+          }
+
           // Dispatch exit handler by ts-morph kind name
           const exitHandler = pluginVisitor[kindName + ':exit']
           if (exitHandler) {
@@ -1459,6 +1528,29 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
 
           if (kindName === 'PostfixUnaryExpression') {
             genericNode.prefix = false
+          }
+
+          if (kindName === 'DeleteExpression') {
+            genericNode.operator = 'delete'
+            genericNode.prefix = true
+          }
+
+          if (kindName === 'TypeOfExpression') {
+            genericNode.operator = 'typeof'
+            genericNode.prefix = true
+          }
+
+          if (kindName === "VoidExpression") {
+            genericNode.operator = 'void'
+            genericNode.prefix = true
+          }
+
+          if (kindName === 'ElementAccessExpression') {
+            genericNode.computed = true
+          }
+
+          if (kindName === 'PropertyAccessExpression') {
+            genericNode.computed = false
           }
 
           // === Export wrapper dispatch (before declaration handler for ESTree traversal order) ===
