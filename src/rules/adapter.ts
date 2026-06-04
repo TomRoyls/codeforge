@@ -548,6 +548,22 @@ function convertRawCompilerNode(
       continue
     }
 
+    // VariableStatement: flatten declarationList.declarations to declarations array
+    // ESTree VariableDeclaration has { kind, declarations[] } — no intermediate list node
+    if (kindName === 'VariableStatement' && key === 'declarationList') {
+      const declList = val as Record<string, unknown>
+      if (declList && Array.isArray(declList.declarations)) {
+        result.declarations = declList.declarations.map(
+          (d: unknown) =>
+            d && typeof d === 'object' && typeof (d as Record<string, unknown>).kind === 'number'
+              ? convertRawCompilerNode(d as Record<string, unknown>, depth)
+              : d,
+        )
+      }
+
+      continue
+    }
+
     if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
       synthesizeTemplateExpression(result, raw, depth)
 
@@ -821,6 +837,21 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
           const converted = convertCompilerCaseClauses(val, depth)
           if (converted !== undefined) {
             result[estreeName] = converted
+          }
+
+          continue
+        }
+
+        // VariableStatement: flatten declarationList.declarations to declarations array
+        if (kindName === 'VariableStatement' && key === 'declarationList') {
+          const declList = val as Record<string, unknown>
+          if (declList && Array.isArray(declList.declarations)) {
+            result.declarations = declList.declarations.map(
+              (d: unknown) =>
+                d && typeof d === 'object' && typeof (d as Record<string, unknown>).kind === 'number'
+                  ? convertRawCompilerNode(d as Record<string, unknown>, depth)
+                  : d,
+            )
           }
 
           continue
