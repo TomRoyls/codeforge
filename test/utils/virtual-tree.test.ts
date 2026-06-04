@@ -183,8 +183,20 @@ describe('VirtualTree', () => {
 
   it('build with single node returns valid tree', () => {
     const vt = new VirtualTree(3)
-    vt.lca = { binaryLifting: () => {} } as never
-    const { vtree } = vt.build([0])
+    vt.addEdge(0, 1)
+    vt.addEdge(1, 2)
+    const { vtree } = vt.build([0, 2])
     expect(vtree).toBeDefined()
+    expect(vtree instanceof Map).toBe(true)
+  })
+
+  it('lca returns correct ancestor', () => {
+    const vt = new VirtualTree(5)
+    vt.addEdge(0, 1)
+    vt.addEdge(0, 2)
+    vt.addEdge(1, 3)
+    vt.addEdge(1, 4)
+    const { lca } = vt.build([3, 4, 2])
+    expect(lca(3, 4)).toBe(1)
   })
 })
