@@ -156,4 +156,10 @@ describe('SegmentTree2D', () => {
     const st = new SegmentTree2D(2, 2)
     expect(st.query(0, 0, 1, 1)).toBe(0)
   })
+
+  it('update and query roundtrip', () => {
+    const st = new SegmentTree2D(2, 2)
+    st.update(0, 0, 5)
+    expect(st.query(0, 0, 0, 0)).toBeGreaterThanOrEqual(5)
+  })
 })

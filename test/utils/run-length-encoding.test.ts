@@ -127,4 +127,8 @@ describe('RunLengthEncoding', () => {
   it('encode single element', () => {
     expect(RunLengthEncoding.encode([42])).toEqual([{ value: 42, count: 1 }])
   })
+
+  it('encode empty array', () => {
+    expect(RunLengthEncoding.encode([])).toEqual([])
+  })
 })

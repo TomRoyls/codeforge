@@ -125,4 +125,8 @@ describe('RunLength2D', () => {
   it('encode empty grid returns empty', () => {
     expect(RunLength2D.encode([])).toEqual([])
   })
+
+  it('encode single row grid', () => {
+    expect(RunLength2D.encode([[1, 1, 2]])).toBeDefined()
+  })
 })

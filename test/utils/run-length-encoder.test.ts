@@ -151,4 +151,10 @@ describe('RunLengthEncoder', () => {
     const enc = new RunLengthEncoder<{ v: number }>()
     expect(enc.length).toBe(0)
   })
+
+  it('append increases length', () => {
+    const enc = new RunLengthEncoder<number>()
+    enc.append(1)
+    expect(enc.length).toBe(1)
+  })
 })

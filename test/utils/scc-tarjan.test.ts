@@ -189,4 +189,10 @@ describe('SCCTarjan', () => {
     const comps = scc.solve()
     expect(comps.length).toBe(1)
   })
+
+  it('two disconnected nodes are two SCCs', () => {
+    const scc = new SCCTarjan(2)
+    const comps = scc.solve()
+    expect(comps.length).toBe(2)
+  })
 })
