@@ -8,6 +8,46 @@ function isControlFlowStatement(node: unknown): boolean {
   return type === 'BreakStatement' || type === 'ContinueStatement' || type === 'ReturnStatement' || type === 'ThrowStatement'
 }
 
+function isFunctionNode(node: unknown): boolean {
+  const type = toASTNode(node)?.type
+  return type === 'FunctionExpression' || type === 'ArrowFunctionExpression' || type === 'FunctionDeclaration'
+}
+
+function checkUnsafeFlow(stmts: unknown[], context: RuleContext): void {
+  for (const stmt of stmts) {
+    checkStatement(stmt, context)
+  }
+}
+
+function checkStatement(node: unknown, context: RuleContext): void {
+  const n = toASTNode(node)
+  if (!n) return
+
+  if (isControlFlowStatement(node)) {
+    context.report({
+      loc: extractLocation(node),
+      message: "Unsafe use of control flow statement inside 'finally' block.",
+    })
+    return
+  }
+
+  if (isFunctionNode(node)) return
+
+  const body = n.body
+  if (Array.isArray(body)) {
+    checkUnsafeFlow(body, context)
+    return
+  }
+
+  if (n.consequent) {
+    checkStatement(n.consequent, context)
+  }
+
+  if (n.alternate) {
+    checkStatement(n.alternate, context)
+  }
+}
+
 export const noUnsafeFinallyRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
@@ -18,14 +58,7 @@ export const noUnsafeFinallyRule: RuleDefinition = {
         if (!finalizer || finalizer.type !== 'BlockStatement') return
         const {body} = finalizer
         if (!Array.isArray(body)) return
-        for (const stmt of body) {
-          if (isControlFlowStatement(stmt)) {
-            context.report({
-              loc: extractLocation(stmt),
-              message: "Unsafe use of control flow statement inside 'finally' block.",
-            })
-          }
-        }
+        checkUnsafeFlow(body, context)
       },
     }
   },
