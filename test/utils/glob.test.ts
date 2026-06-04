@@ -147,4 +147,8 @@ describe('matchGlob edge cases', () => {
   it('exact string matches itself', () => {
     expect(matchGlob('abc', 'abc')).toBe(true)
   })
+
+  it('star matches any sequence', () => {
+    expect(matchGlob('axyzb', 'a*b')).toBe(true)
+  })
 })

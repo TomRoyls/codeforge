@@ -105,4 +105,8 @@ describe('GnomeSort', () => {
   it('handles reverse sorted', () => {
     expect(GnomeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
   })
+
+  it('handles empty array', () => {
+    expect(GnomeSort.sort([])).toEqual([])
+  })
 })
