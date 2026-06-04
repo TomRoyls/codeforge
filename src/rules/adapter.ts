@@ -962,6 +962,31 @@ function synthesizeChainExpression(base: Record<string, unknown>): void {
   base.end = savedRange.end
 }
 
+function fillLocFromRange(obj: unknown, sourceFile: SourceFile): void {
+  if (!obj || typeof obj !== 'object') return
+  if (Array.isArray(obj)) {
+    for (const item of obj) fillLocFromRange(item, sourceFile)
+    return
+  }
+  const record = obj as Record<string, unknown>
+  if (Array.isArray(record.range) && record.range.length === 2 && !record.loc) {
+    const [start, end] = record.range as [number, number]
+    try {
+      const startPos = sourceFile.getLineAndColumnAtPos(start)
+      const endPos = sourceFile.getLineAndColumnAtPos(end)
+      record.loc = {
+        end: { column: endPos.column, line: endPos.line },
+        start: { column: startPos.column, line: startPos.line },
+      }
+    } catch { /* position out of range */ }
+  }
+  for (const val of Object.values(record)) {
+    if (val && typeof val === 'object') {
+      fillLocFromRange(val, sourceFile)
+    }
+  }
+}
+
 function nodeToGeneric(node: Node): Record<string, unknown> {
   const sourceFile = node.getSourceFile()
   const start = node.getStart()
@@ -993,13 +1018,12 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   // Enhancement properties from compiler node traversal
   const enhanced = convertCompilerNode(node, 0)
   if (enhanced) {
-    // Merge enhanced into base, but base properties win
     for (const [key, val] of Object.entries(enhanced)) {
       if (!(key in base)) {
-        // Convert operator tokens
         base[key] = key === 'operatorToken' || key === 'operator' ? convertOperatorToken(val) : val
       }
     }
+    fillLocFromRange(base, sourceFile)
   }
 
   // Detect parameter properties for TSParameterProperty synthesis
