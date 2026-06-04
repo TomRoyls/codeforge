@@ -206,4 +206,12 @@ describe('DoubleBuffer', () => {
     const items = db.swap()
     expect(items).toEqual([])
   })
+
+  it('swap returns previously written items', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    const items = db.swap()
+    expect(items).toEqual([1, 2])
+  })
 })

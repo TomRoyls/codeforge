@@ -166,4 +166,10 @@ describe('DynamicBitset', () => {
     const bs = new DynamicBitset()
     expect(bs.get(10)).toBe(false)
   })
+
+  it('set then get returns true', () => {
+    const bs = new DynamicBitset()
+    bs.set(10, true)
+    expect(bs.get(10)).toBe(true)
+  })
 })

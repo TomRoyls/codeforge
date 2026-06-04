@@ -183,4 +183,10 @@ describe('DynamicConvexHull', () => {
     ch.add(5, 5)
     expect(ch.getHull().length).toBe(0)
   })
+
+  it('single point returns empty hull', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(3, 3)
+    expect(ch.getHull().length).toBe(0)
+  })
 })
