@@ -200,4 +200,10 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath(edges, 2)
     expect(dist[0]![0]).toBe(0)
   })
+
+  it('self distance is zero for all nodes', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 2)
+    expect(dist[1]![1]).toBe(0)
+  })
 })

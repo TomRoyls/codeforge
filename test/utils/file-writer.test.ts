@@ -186,4 +186,13 @@ describe('writeToFileAtomic', () => {
     expect(fs.readFileSync(fp, 'utf8')).toBe('')
     fs.rmSync(dir, { recursive: true })
   })
+
+  it('writeToFile appends content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'out.txt')
+    writeToFile(fp, 'hello')
+    writeToFile(fp, ' world')
+    expect(fs.readFileSync(fp, 'utf8')).toBe(' world')
+    fs.rmSync(dir, { recursive: true })
+  })
 })

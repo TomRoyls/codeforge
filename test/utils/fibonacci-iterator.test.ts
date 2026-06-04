@@ -127,4 +127,8 @@ describe('FibonacciIterator', () => {
   it('nth 0 is 0', () => {
     expect(FibonacciIterator.nth(0)).toBe(0n)
   })
+
+  it('nth 1 is 1', () => {
+    expect(FibonacciIterator.nth(1)).toBe(1n)
+  })
 })
