@@ -155,4 +155,9 @@ describe('EdmondsBlossom', () => {
     eb.addEdge(0, 1)
     expect(eb.maxMatchingSize()).toBe(1)
   })
+
+  it('no edges has matching size 0', () => {
+    const eb = new EdmondsBlossom(3)
+    expect(eb.maxMatchingSize()).toBe(0)
+  })
 })

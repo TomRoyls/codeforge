@@ -153,4 +153,9 @@ describe('EdmondsKarp', () => {
     const edges = [{ from: 0, to: 1, capacity: 10 }]
     expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
   })
+
+  it('no path yields zero flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10 }]
+    expect(EdmondsKarp.maxFlow(edges, 1, 0, 2)).toBe(0)
+  })
 })
