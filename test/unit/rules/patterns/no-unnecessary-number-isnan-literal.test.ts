@@ -925,4 +925,34 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
       expect(reports[0].loc?.end.column).toBe(25)
     })
   })
+
+  describe('ESTree literal compatibility', () => {
+    test('reports Number.isNaN(42) with ESTree Literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports Number.isNaN("hello") with ESTree Literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'hello' }))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports Number.isNaN(null) with ESTree Literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: null }))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports Number.isNaN(true) with ESTree Literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: true }))
+      expect(reports.length).toBe(1)
+    })
+  })
 })

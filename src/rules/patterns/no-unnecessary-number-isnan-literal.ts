@@ -8,11 +8,18 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isLiteralNode(argNode: Record<string, unknown>): boolean {
-  if (argNode.type === 'StringLiteral') return true
-  if (argNode.type === 'NumericLiteral') return true
-  if (argNode.type === 'BooleanLiteral') return true
-  if (argNode.type === 'NullLiteral') return true
-  if (argNode.type === 'BigIntLiteral') return true
+  // Babel-style discrete literal types
+  if (
+    argNode.type === 'StringLiteral' ||
+    argNode.type === 'NumericLiteral' ||
+    argNode.type === 'BooleanLiteral' ||
+    argNode.type === 'NullLiteral' ||
+    argNode.type === 'BigIntLiteral'
+  ) {
+    return true
+  }
+  // ESTree encodes every primitive literal as { type: 'Literal', value: ... }
+  if (argNode.type === 'Literal') return true
   if (argNode.type === 'TemplateLiteral') {
     const expressions = argNode.expressions
     return Array.isArray(expressions) && expressions.length === 0
