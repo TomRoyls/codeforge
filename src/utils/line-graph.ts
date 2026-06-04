@@ -1,9 +1,7 @@
 export class LineGraph {
   private edges: [number, number][] = []
-  private n: number
 
-  constructor(n: number) {
-    this.n = n
+  constructor(_n: number) {
   }
 
   addEdge(u: number, v: number): number {

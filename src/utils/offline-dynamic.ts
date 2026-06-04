@@ -1,12 +1,9 @@
 export class OfflineDynamicConnectivity {
   private parent: number[]
   private rank: number[]
-  private n: number
   private events: [number, number, number, number, number][] = []
-  private history: [number, number, number][] = []
 
   constructor(n: number) {
-    this.n = n
     this.parent = Array.from({ length: n }, (_, i) => i)
     this.rank = new Array(n).fill(0)
   }
@@ -25,7 +22,7 @@ export class OfflineDynamicConnectivity {
     const activeEdges = new Map<string, number>()
 
     for (const ev of this.events) {
-      const [time, type, u, v, end] = ev
+      const [_time, type, u, v, end] = ev
       if (type === 0) {
         const key = u < v ? `${u},${v}` : `${v},${u}`
         activeEdges.set(key, end)
@@ -39,7 +36,7 @@ export class OfflineDynamicConnectivity {
 
   private find(x: number): number {
     while (this.parent[x] !== x) {
-      this.parent[x] = this.parent[this.parent[x]]!
+      this.parent[x] = this.parent[this.parent[x]!]!
       x = this.parent[x]!
     }
     return x

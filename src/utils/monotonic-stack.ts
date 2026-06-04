@@ -51,7 +51,7 @@ export class MonotonicStack<T> {
     const result = new Array(arr.length).fill(-1)
     const stack = new MonotonicStack<number>((a, b) => a > b)
     for (let i = 0; i < arr.length; i++) {
-      while (stack.size > 0 && arr[stack.peek()!] >= arr[i]!) {
+      while (stack.size > 0 && arr[stack.peek()!]! >= arr[i]!) {
         stack.pop()
       }
       if (stack.size > 0) result[i] = arr[stack.peek()!]!

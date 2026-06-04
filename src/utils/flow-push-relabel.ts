@@ -49,8 +49,8 @@ export class FlowPushRelabel {
     flow: number[][],
     height: number[],
     excess: number[],
-    source: number,
-    sink: number,
+    _source: number,
+    _sink: number,
   ): void {
     while (excess[u]! > 0) {
       let pushed = false
@@ -58,10 +58,10 @@ export class FlowPushRelabel {
         const residual = cap[u]![v]! - flow[u]![v]!
         if (residual > 0 && height[u]! === height[v]! + 1) {
           const d = Math.min(excess[u]!, residual)
-          flow[u]![v] += d
-          flow[v]![u] -= d
-          excess[u] -= d
-          excess[v] += d
+          flow[u]![v]! += d
+          flow[v]![u]! -= d
+          excess[u]! -= d
+          excess[v]! += d
           pushed = true
           if (excess[u]! <= 0) break
         }

@@ -1,16 +1,14 @@
 export class VPTrie {
   private n: number
   private points: number[][] = []
-  private built = false
-
+  
   constructor(n: number) {
     this.n = n
   }
 
   addPoint(point: number[]): void {
     this.points.push(point)
-    this.built = false
-  }
+      }
 
   nearest(query: number[]): number[] | null {
     if (this.points.length === 0) return null

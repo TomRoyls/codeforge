@@ -7,7 +7,7 @@ export class KruskalMST {
     const parent = Array.from({ length: nodeCount }, (_, i) => i)
     const rank = new Array<number>(nodeCount).fill(0)
     function find(x: number): number {
-      if (parent[x] !== x) parent[x] = find(parent[x])
+      if (parent[x] !== x) parent[x] = find(parent[x]!)
       return parent[x]
     }
     function union(x: number, y: number): boolean {

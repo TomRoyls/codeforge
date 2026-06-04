@@ -15,8 +15,8 @@ export class PersistentDSU {
       throw new Error(`Index out of bounds: ${x}`);
     }
     while (this.parent[x] !== x) {
-      this.parent[x] = this.parent[this.parent[x]];
-      x = this.parent[x];
+      this.parent[x] = this.parent[this.parent[x]!]!;
+      x = this.parent[x]!;
     }
     return x;
   }

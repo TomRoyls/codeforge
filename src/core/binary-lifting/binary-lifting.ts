@@ -86,7 +86,7 @@ export class BinaryLifting {
 
       let _qi = 0;
       while (_qi < queue.length) {
-        const node = queue[_qi++]
+        const node = queue[_qi++]!
         const p = this._up[0]![node]!
         this._depth[node] = p === -1 ? 0 : (this._depth[p]! + 1)
         for (let i = 0; i < n; i++) {

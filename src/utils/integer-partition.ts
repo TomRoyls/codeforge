@@ -32,7 +32,7 @@ export class IntegerPartition {
     dp[0] = 1
     for (let i = 1; i <= n; i++) {
       for (let j = i; j <= n; j++) {
-        dp[j] += dp[j - i]!
+        dp[j]! += dp[j - i]!
       }
     }
     return dp[n]!

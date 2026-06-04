@@ -29,7 +29,7 @@ export class UnionFindUndo {
   find(x: number): number {
     this.validateIndex(x)
     while (this.parent[x] !== x) {
-      x = this.parent[x]
+      x = this.parent[x]!
     }
     return x
   }
@@ -42,7 +42,7 @@ export class UnionFindUndo {
     if (rootA === rootB) {
       return false
     }
-    if (this.sz[rootA] < this.sz[rootB]) {
+    if (this.sz[rootA]! < this.sz[rootB]!) {
       const tmp = rootA
       rootA = rootB
       rootB = tmp
@@ -53,11 +53,11 @@ export class UnionFindUndo {
   private unionInternal(rootA: number, rootB: number): boolean {
     this.changes.push({
       changedRoot: rootA,
-      previousSize: this.sz[rootA],
+      previousSize: this.sz[rootA]!,
       otherRoot: rootB
     })
     this.parent[rootB] = rootA
-    this.sz[rootA] += this.sz[rootB]
+    this.sz[rootA]! += this.sz[rootB]!
     this._componentCount--
     return true
   }
@@ -97,7 +97,7 @@ export class UnionFindUndo {
   getSize(a: number): number {
     this.validateIndex(a)
     const root = this.find(a)
-    return this.sz[root]
+    return this.sz[root]!
   }
 
   get componentCount(): number {

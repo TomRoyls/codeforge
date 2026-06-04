@@ -1,7 +1,7 @@
 export class AhoCorasickMulti {
   private goto: Map<string, number>[] = []
   private fail: number[] = []
-  private output: Set<number>[][] = []
+  private output: number[][] = []
   private stateCount = 1
 
   constructor(patterns: string[]) {

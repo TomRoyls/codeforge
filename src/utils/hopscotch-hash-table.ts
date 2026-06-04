@@ -45,7 +45,7 @@ export class HopscotchHashTable<K, V> {
 
     for (let i = 0; i < this.segmentSize; i++) {
       const probeIdx = (idx + i) % this._entries.length
-      const entry = this._entries[probeIdx]
+      const entry = this._entries[probeIdx] ?? null
       if (entry === null) {
         this._entries[probeIdx] = { key, value, hopInfo: 0 }
         this._size++
@@ -157,7 +157,7 @@ export class HopscotchHashTable<K, V> {
             if (this._entries[sourceIdx] !== null) {
               const targetDist = (currentIdx - sourceIdx + this._entries.length) % this._entries.length
               if (targetDist < this.segmentSize) {
-                this._entries[currentIdx] = this._entries[sourceIdx]
+                this._entries[currentIdx] = this._entries[sourceIdx] ?? null
                 this._entries[sourceIdx] = null
                 currentIdx = sourceIdx
                 currentDist = (currentIdx - startIdx + this._entries.length) % this._entries.length

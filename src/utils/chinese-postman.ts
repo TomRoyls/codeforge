@@ -16,7 +16,7 @@ export class ChinesePostman {
     let totalEdgeWeight = 0
     const degree = new Array(this.n).fill(0)
     for (let u = 0; u < this.n; u++) {
-      for (const [v, w] of this.adj[u]!) {
+      for (const [_v, w] of this.adj[u]!) {
         totalEdgeWeight += w
         degree[u]!++
       }

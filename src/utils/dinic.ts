@@ -37,7 +37,7 @@ export class DinicMaxFlow {
     function dfs(u: number, flow: number): number {
       if (u === sink) return flow
       while (iter[u]! < adj[u]!.length) {
-        const v = adj[u]![iter[u]!]
+        const v = adj[u]![iter[u]!]!
         if (level[v] === level[u]! + 1 && capacities[u]![v]! > 0) {
           const pushed = dfs(v, Math.min(flow, capacities[u]![v]!))
           if (pushed > 0) {

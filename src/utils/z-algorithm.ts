@@ -8,10 +8,10 @@ export class ZAlgorithm {
     let r = 0
     for (let i = 1; i < n; i++) {
       if (i < r) z[i] = Math.min(r - i, z[i - l]!)
-      while (i + z[i] < n && s[z[i]] === s[i + z[i]]) z[i]++
-      if (i + z[i] > r) {
+      while (i + z[i]! < n && s[z[i]!] === s[i + z[i]!]) z[i]!++
+      if (i + z[i]! > r) {
         l = i
-        r = i + z[i]
+        r = i + z[i]!
       }
     }
     return z
@@ -41,7 +41,7 @@ export class ZAlgorithm {
     if (s.length <= 1) return 0
     const z = ZAlgorithm.zFunction(s)
     for (let i = 1; i < s.length; i++) {
-      if (i + z[i] === s.length) return z[i]!
+      if (i + z[i]! === s.length) return z[i]!
     }
     return 0
   }

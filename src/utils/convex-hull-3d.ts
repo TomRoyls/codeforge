@@ -71,19 +71,4 @@ export class ConvexHull3D {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
   }
 
-  private triangleArea(i: number, j: number, k: number): number {
-    const c = this.cross(
-      this.vec(this.points[i]!, this.points[j]!),
-      this.vec(this.points[i]!, this.points[k]!)
-    )
-    return Math.sqrt(this.dot(c, c)) / 2
-  }
-
-  private tetVolume(i: number, j: number, k: number, d: [number, number, number]): number {
-    const c = this.cross(
-      this.vec(this.points[i]!, this.points[j]!),
-      this.vec(this.points[i]!, this.points[k]!)
-    )
-    return Math.abs(this.dot(c, this.vec(this.points[i]!, d))) / 6
-  }
 }

@@ -82,8 +82,8 @@ function collectReverse<T>(from: TreeNode<T>, to: TreeNode<T>, result: T[]): voi
   reverse(from, to)
   let current: TreeNode<T> | null = to
   while (current !== from) {
-    result.push(current.value)
-    current = current.right
+    result.push(current!.value)
+    current = current!.right
   }
   result.push(from.value)
   reverse(to, from)
@@ -93,7 +93,7 @@ function reverse<T>(from: TreeNode<T>, to: TreeNode<T>): void {
   let prev: TreeNode<T> | null = null
   let current: TreeNode<T> | null = from
   while (current !== to) {
-    const next = current!.right
+    const next: TreeNode<T> | null = current!.right
     current!.right = prev
     prev = current
     current = next

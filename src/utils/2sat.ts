@@ -19,10 +19,10 @@ export class TwoSAT {
   addClause(a: number, negA: boolean, b: number, negB: boolean): void {
     const u = negA ? a + this.n : a
     const v = negB ? b + this.n : b
-    this.adj[this.neg(u)].push(v)
-    this.adj[this.neg(v)].push(u)
-    this.radj[v].push(this.neg(u))
-    this.radj[u].push(this.neg(v))
+    this.adj[this.neg(u)]!.push(v)
+    this.adj[this.neg(v)]!.push(u)
+    this.radj[v]!.push(this.neg(u))
+    this.radj[u]!.push(this.neg(v))
   }
 
   solve(): boolean[] | null {

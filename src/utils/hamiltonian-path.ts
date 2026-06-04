@@ -38,7 +38,7 @@ export class HamiltonianPath {
 
   existsCycle(): boolean {
     if (this.n <= 1) return false
-    if (this.n === 2) return this.adj[0]![1]
+    if (this.n === 2) return this.adj[0]![1]!
     for (let start = 0; start < this.n; start++) {
       const dp: boolean[][] = []
       for (let i = 0; i < this.n; i++) {

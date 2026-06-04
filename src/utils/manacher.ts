@@ -21,7 +21,7 @@ export class Manacher {
         && i - this.radii[i]! - 1 >= 0
         && t[i + this.radii[i]! + 1] === t[i - this.radii[i]! - 1]
       ) {
-        this.radii[i]++
+        this.radii[i]!++
       }
 
       if (i + this.radii[i]! > right) {

@@ -41,7 +41,7 @@ export class BimodalMap<K, V> {
 
   get size(): number {
     let count = 0
-    for (const key of this.keys()) count++
+    for (const _key of this.keys()) count++
     return count
   }
 

@@ -169,7 +169,6 @@ export class RoaringBitSet {
       const base = bucket << 16
       for (let i = 0; i < 4096; i++) {
         if (arr[i]!) {
-          const _bit = 15 - Math.clz32(arr[i]!) + 16 - 32
           return base + (i << 4) + this.lowestBit(arr[i]!)
         }
       }
@@ -205,7 +204,7 @@ export class RoaringBitSet {
     const bitIdx = offset & 0xF
     const mask = 1 << bitIdx
     if (arr[wordIdx]! & mask) return false
-    arr[wordIdx] |= mask
+    arr[wordIdx] = (arr[wordIdx] ?? 0) | mask
     return true
   }
 
@@ -214,7 +213,7 @@ export class RoaringBitSet {
     const bitIdx = offset & 0xF
     const mask = 1 << bitIdx
     if (!(arr[wordIdx]! & mask)) return false
-    arr[wordIdx] &= ~mask
+    arr[wordIdx] = (arr[wordIdx] ?? 0) & ~mask
     return true
   }
 

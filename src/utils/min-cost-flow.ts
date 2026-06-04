@@ -31,7 +31,6 @@ export class MinCostFlow {
       throw new Error(`Capacity must be positive, got ${capacity}`)
     }
 
-    const _edgeKey = `${from}-${to}-${this.edgeCount}`
     const forwardIndex = this.graph[from]!.length
     const reverseIndex = this.graph[to]!.length
 
@@ -94,7 +93,7 @@ export class MinCostFlow {
         const edgeKey = `${prev}-${edgeIndex}`
         const edgeIndexFlow = this.edgeToIndex.get(edgeKey)
         if (edgeIndexFlow !== undefined) {
-          this.edgeFlows[edgeIndexFlow] += flowToSend
+          this.edgeFlows[edgeIndexFlow]! += flowToSend
         }
 
         current = prev
@@ -195,6 +194,6 @@ export class MinCostFlow {
     if (edgeIndex < 0 || edgeIndex >= this.edgeFlows.length) {
       throw new Error(`Edge index ${edgeIndex} out of bounds`)
     }
-    return this.edgeFlows[edgeIndex]
+    return this.edgeFlows[edgeIndex]!
   }
 }

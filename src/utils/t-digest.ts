@@ -99,8 +99,6 @@ export class TDigest {
 
     for (let i = 0; i < this.centroids.length; i++) {
       const c = this.centroids[i]!
-      const halfWeight = c.weight / 2
-
       if (cumulativeWeight + c.weight >= q * totalWeight) {
         const delta = i === 0
           ? (this.centroids.length > 1 ? this.centroids[1]!.mean - c.mean : 1)

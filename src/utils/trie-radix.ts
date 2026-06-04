@@ -1,8 +1,7 @@
 export class TrieRadix {
   private children: Map<string, TrieRadix> = new Map()
   private isEnd: boolean = false
-  private _value?: string
-
+  
   insert(word: string, value?: string): void {
     let node: TrieRadix = this
     let remaining = word
@@ -37,7 +36,7 @@ export class TrieRadix {
       }
     }
     node.isEnd = true
-    if (value !== undefined) node._value = value
+    void value
   }
 
   search(word: string): boolean {

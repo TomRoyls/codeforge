@@ -23,10 +23,6 @@ export class PlanarCheck {
 
   private tryCheck(): boolean {
     if (this.n <= 2) return true
-    const visited = new Array(this.n).fill(false)
-    const parent = new Array(this.n).fill(-1)
-    const depth = new Array(this.n).fill(0)
-    const low = new Array(this.n).fill(0)
 
     const hasK33 = (): boolean => {
       for (let a = 0; a < this.n; a++) {

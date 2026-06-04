@@ -32,11 +32,11 @@ export class LinkCutTree {
     this.makeRoot(child);
 
     this.parent[child] = parent;
-    this.children[parent].add(child);
+    this.children[parent]!.add(child);
   }
 
   private makeRoot(node: number): void {
-    while (!this.isNull(this.parent[node])) {
+    while (!this.isNull(this.parent[node]!)) {
       const p = this.parent[node] as number;
       const gp = this.parent[p] as number;
 
@@ -80,7 +80,7 @@ export class LinkCutTree {
       throw new Error('Node index out of bounds');
     }
 
-    while (!this.isNull(this.parent[node])) {
+    while (!this.isNull(this.parent[node]!)) {
       node = this.parent[node] as number;
     }
 
@@ -190,7 +190,7 @@ export class LinkCutTree {
       throw new Error('Node index out of bounds');
     }
 
-    return this.value[node];
+    return this.value[node]!;
   }
 
   evert(node: number): void {

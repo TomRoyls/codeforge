@@ -27,7 +27,7 @@ export class BinaryTrie {
     let node: BinaryTrieNode | null = this.root
     for (let i = this.bits - 1; i >= 0; i--) {
       const bit = (value >>> i) & 1
-      node = node.children[bit]
+      node = node.children[bit] ?? null
       if (!node) return false
     }
     return node.count > 0
@@ -55,7 +55,7 @@ export class BinaryTrie {
         result |= (1 << i)
         node = node!.children[desired]
       } else {
-        node = node!.children[bit]
+        node = node!.children[bit] ?? null
       }
     }
     return result

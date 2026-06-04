@@ -20,14 +20,14 @@ export class DisjointSparseTable<T> {
         if (mid < this.n) {
           this.table[level]![mid]! = data[mid]!
           for (let i = mid + 1; i < Math.min(mid + halfBlock, this.n); i++) {
-            this.table[level]![i]! = this.combine(this.table[level]![i - 1]!, data[i]!)
+            this.table[level]![i] = this.combine(this.table[level]![i - 1]!, data[i]!)
           }
         }
         const leftEnd = Math.min(mid, this.n) - 1
         if (leftEnd >= blockStart) {
           this.table[level]![leftEnd]! = data[leftEnd]!
           for (let i = leftEnd - 1; i >= blockStart; i--) {
-            this.table[level]![i]! = this.combine(data[i]!, this.table[level]![i + 1]!)
+            this.table[level]![i] = this.combine(data[i]!, this.table[level]![i + 1]!)
           }
         }
       }

@@ -17,10 +17,10 @@ export class TwoSAT {
     const pa = this.pos(a, aNeg)
     const nb = this.neg(b, bNeg)
     const pb = this.pos(b, bNeg)
-    this.adj[na].push(pb)
-    this.adj[nb].push(pa)
-    this.radj[pb].push(na)
-    this.radj[pa].push(nb)
+    this.adj[na]!.push(pb)
+    this.adj[nb]!.push(pa)
+    this.radj[pb]!.push(na)
+    this.radj[pa]!.push(nb)
   }
 
   solve(): boolean[] | null {

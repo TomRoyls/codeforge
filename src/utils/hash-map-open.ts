@@ -21,23 +21,12 @@ export class HashMapOpen<K, V> {
     return Math.abs(hash)
   }
 
-  private probe(key: K): number {
-    let idx = this.hash(key) % this.capacity
-    let i = 0
-    while (this.table[idx] !== null && !this.table[idx]!.deleted && this.table[idx]!.key !== key) {
-      i++
-      idx = (idx + i) % this.capacity
-    }
-    return idx
-  }
-
   private resize(): void {
     const oldTable = this.table
     const oldCap = this.capacity
     const newCap = oldCap * 2
     this.capacity = newCap
     this.table = new Array<Entry<K, V> | null>(newCap).fill(null)
-    const oldSize = this._size
     this._size = 0
     for (const entry of oldTable) {
       if (entry !== null && !entry.deleted) {

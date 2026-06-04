@@ -65,7 +65,7 @@ export class PhantomReferenceQueue<T> {
     if (this._head >= this.queue.length) {
       return null
     }
-    const id = this.queue[this._head++]
+    const id = this.queue[this._head++]!
     const ref = this.refs.get(id)
     if (ref === undefined) {
       return null
@@ -125,7 +125,7 @@ export class PhantomReferenceQueue<T> {
   processQueue(): number {
     let processed = 0
     while (this.queue.length - this._head > 0) {
-      const queuedId = this.queue[this._head]
+      const queuedId = this.queue[this._head]!
       const ref = this.refs.get(queuedId)
       if (ref === undefined) {
         this._head++

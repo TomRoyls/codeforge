@@ -53,7 +53,7 @@ export class ZAlgorithmExtended {
     const z = ZAlgorithmExtended.zArray(s)
     const n = s.length
     for (let i = 1; i < n; i++) {
-      if (i + z[i] === n) return z[i]!
+      if (i + z[i]! === n) return z[i]!
     }
     return 0
   }

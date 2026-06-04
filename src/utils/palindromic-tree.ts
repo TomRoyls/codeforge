@@ -54,11 +54,9 @@ export class PalindromicTree {
 
   getLongestPalindrome(): string {
     let maxLen = 0
-    let idx = 1
     for (let i = 2; i < this.nodes.length; i++) {
       if (this.nodes[i]!.length > maxLen) {
         maxLen = this.nodes[i]!.length
-        idx = i
       }
     }
     return this.s.slice(this.s.length - maxLen).join('')

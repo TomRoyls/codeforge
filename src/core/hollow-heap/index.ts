@@ -169,7 +169,7 @@ export class HollowHeap<T> {
 
     let _qi = 0;
     while (_qi < toProcess.length) {
-      const node = toProcess[_qi++];
+      const node = toProcess[_qi++]!;
 
       if (node.isHollow) {
         for (const child of node.children) {

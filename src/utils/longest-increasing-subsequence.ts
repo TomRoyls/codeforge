@@ -78,7 +78,7 @@ export class LongestIncreasingSubsequence {
             lengths[i] = lengths[j]! + 1
             counts[i] = counts[j]!
           } else if (lengths[j]! + 1 === lengths[i]!) {
-            counts[i] += counts[j]!
+            counts[i]! += counts[j]!
           }
         }
       }

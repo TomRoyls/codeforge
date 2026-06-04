@@ -42,12 +42,12 @@ export class NetworkFlow {
           if (cap[ei]! > 0 && level[to[ei]!] === level[u]! + 1) {
             const f = dfs(to[ei]!, Math.min(pushed, cap[ei]!))
             if (f > 0) {
-              cap[ei] -= f
-              cap[ei ^ 1] += f
+              cap[ei]! -= f
+              cap[ei ^ 1]! += f
               return f
             }
           }
-          iter[u]++
+          iter[u]!++
         }
         return 0
       }

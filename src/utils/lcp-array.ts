@@ -15,7 +15,7 @@ export class LCPArray {
     return lcp
   }
 
-  static longestCommonPrefix(sa: number[], lcp: number[]): number {
+  static longestCommonPrefix(_sa: number[], lcp: number[]): number {
     if (lcp.length === 0) return 0
     return Math.max(...lcp)
   }

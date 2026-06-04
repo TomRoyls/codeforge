@@ -17,7 +17,7 @@ export class ZFunction {
         this.z[i] = Math.min(r - i, this.z[i - l]!)
       }
       while (i + this.z[i]! < n && s[this.z[i]!] === s[i + this.z[i]!]) {
-        this.z[i]++
+        this.z[i]!++
       }
       if (i + this.z[i]! > r) {
         l = i

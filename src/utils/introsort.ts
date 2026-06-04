@@ -53,7 +53,7 @@ export class Introsort {
       const key = arr[i]!
       let j = i - 1
       while (j >= lo && compare(arr[j]!, key) > 0) {
-        arr[j + 1] = arr[j]
+        arr[j + 1] = arr[j]!
         j--
       }
       arr[j + 1] = key

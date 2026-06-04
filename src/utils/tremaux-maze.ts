@@ -22,8 +22,8 @@ export class TremauxMaze {
       const [x, y] = pos
       const result: [number, number][] = []
       for (const [dx, dy] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) {
-        const nx = x + dx
-        const ny = y + dy
+        const nx = x + dx!
+        const ny = y + dy!
         if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height) {
           const key = this.passageKey(pos, [nx, ny])
           if (this.passages.has(key)) {

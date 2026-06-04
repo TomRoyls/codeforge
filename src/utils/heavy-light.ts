@@ -4,7 +4,6 @@ export class HeavyLightDecomposition {
   private size: number[]
   private heavy: number[]
   private head: number[]
-  private pos: number[]
   private adj: Map<number, number[]>
 
   constructor(adj: Map<number, number[]>, root: number = 0) {
@@ -15,7 +14,6 @@ export class HeavyLightDecomposition {
     this.size = new Array(n).fill(0)
     this.heavy = new Array(n).fill(-1)
     this.head = new Array(n).fill(root)
-    this.pos = new Array(n).fill(0)
     this.dfs(root)
     let curPos = 0
     this.decompose(root, root, curPos)
@@ -27,7 +25,7 @@ export class HeavyLightDecomposition {
     for (const v of (this.adj.get(u) ?? [])) {
       if (v === this.parent[u]) continue
       this.parent[v] = u
-      this.depth[v] = this.depth[u] + 1
+      this.depth[v] = this.depth[u]! + 1
       const subtreeSize = this.dfs(v)
       this.size[u] += subtreeSize
       if (subtreeSize > maxSubtree) {
@@ -54,10 +52,10 @@ export class HeavyLightDecomposition {
       if (this.depth[this.head[u]!]! > this.depth[this.head[v]!]!) u = this.parent[this.head[u]!]!
       else v = this.parent[this.head[v]!]!
     }
-    return this.depth[u] < this.depth[v] ? u : v
+    return this.depth[u]! < this.depth[v]! ? u : v
   }
 
   distance(u: number, v: number): number {
-    return this.depth[u] + this.depth[v] - 2 * this.depth[this.lca(u, v)]
+    return this.depth[u]! + this.depth[v]! - 2 * this.depth[this.lca(u, v)]!
   }
 }

@@ -130,7 +130,7 @@ export class GraphTree<T = unknown> {
     const queue: GraphTree<T>[] = [this]
     let _qi = 0;
     while (_qi < queue.length) {
-      const node = queue[_qi++]
+      const node = queue[_qi++]!
       result.push(node)
       for (const child of node._children) {
         queue.push(child)

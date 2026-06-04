@@ -36,7 +36,7 @@ export class UndoDisjointSet {
 
     if (this.rank[ra] === this.rank[rb]) {
       this.history.push({ type: 'rank', idx: ra, prev: this.rank[ra]! })
-      this.rank[ra]++
+      this.rank[ra]!++
     }
 
     this._components--

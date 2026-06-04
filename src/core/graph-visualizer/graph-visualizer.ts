@@ -176,7 +176,7 @@ export class GraphVisualizer {
     let _qi = 0
 
     while (_qi < stack.length) {
-      const item = stack[_qi++]
+      const item = stack[_qi++]!
       if (visited.has(item.id)) continue
       visited.add(item.id)
       order.push(item.id)

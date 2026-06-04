@@ -57,7 +57,7 @@ export class SubsetSum {
     dp[0] = 1
     for (const num of arr) {
       for (let j = target; j >= num; j--) {
-        dp[j] += dp[j - num]!
+        dp[j]! += dp[j - num]!
       }
     }
     return dp[target]!

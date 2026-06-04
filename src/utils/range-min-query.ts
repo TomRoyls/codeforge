@@ -5,9 +5,9 @@ export class RangeMinQuery {
   constructor(arr: number[]) {
     const n = arr.length
     this.log = new Array(n + 1).fill(0)
-    for (let i = 2; i <= n; i++) this.log[i] = this.log[i >> 1] + 1
+    for (let i = 2; i <= n; i++) this.log[i] = this.log[i >> 1]! + 1
 
-    const k = this.log[n] + 1
+    const k = this.log[n]! + 1
     this.table = new Array(k)
     this.table[0] = [...arr]
     for (let j = 1; j < k; j++) {

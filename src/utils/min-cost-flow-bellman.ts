@@ -63,8 +63,8 @@ export class MinCostFlow {
       v = sink
       while (v !== source) {
         const ei = parent[v]!
-        cap[ei] -= pushed
-        cap[ei ^ 1] += pushed
+        cap[ei]! -= pushed
+        cap[ei ^ 1]! += pushed
         v = to[ei ^ 1]!
       }
       totalFlow += pushed

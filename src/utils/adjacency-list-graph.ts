@@ -144,7 +144,7 @@ export class AdjacencyListGraph implements WeightedGraph {
     const inDegree = new Int32Array(n)
     for (let u = 0; u < n; u++) {
       for (const { to } of this.neighbors(u)) {
-        inDegree[to]++
+        inDegree[to]!++
       }
     }
 
@@ -159,7 +159,7 @@ export class AdjacencyListGraph implements WeightedGraph {
       const u = queue[qi++]!
       result.push(u)
       for (const { to } of this.neighbors(u)) {
-        inDegree[to]--
+        inDegree[to]!--
         if (inDegree[to] === 0) queue.push(to)
       }
     }

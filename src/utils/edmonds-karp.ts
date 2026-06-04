@@ -8,7 +8,7 @@ export class EdmondsKarp {
         adj[from]!.push(to)
         adj[to]!.push(from)
       }
-      cap[from]![to] += capacity
+      cap[from]![to]! += capacity
     }
     let totalFlow = 0
     while (true) {
@@ -35,8 +35,8 @@ export class EdmondsKarp {
       v = sink
       while (v !== source) {
         const u = parent[v]!
-        cap[u]![v] -= pathFlow
-        cap[v]![u] += pathFlow
+        cap[u]![v]! -= pathFlow
+        cap[v]![u]! += pathFlow
         v = u
       }
       totalFlow += pathFlow
@@ -53,7 +53,7 @@ export class EdmondsKarp {
         adj[from]!.push(to)
         adj[to]!.push(from)
       }
-      cap[from]![to] += capacity
+      cap[from]![to]! += capacity
     }
     EdmondsKarp.maxFlow(edges, source, sink, n)
     const visited = new Set<number>()

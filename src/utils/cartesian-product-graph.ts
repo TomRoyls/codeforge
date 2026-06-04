@@ -28,14 +28,14 @@ export class CartesianProductGraph {
   productEdgeCount(): number {
     let edges = 0
     for (let u1 = 0; u1 < this.n1; u1++) {
-      for (const v1 of this.adj1[u1]!) {
+      for (const _v1 of this.adj1[u1]!) {
         for (let u2 = 0; u2 < this.n2; u2++) {
           edges++
         }
       }
     }
     for (let u2 = 0; u2 < this.n2; u2++) {
-      for (const v2 of this.adj2[u2]!) {
+      for (const _v2 of this.adj2[u2]!) {
         for (let u1 = 0; u1 < this.n1; u1++) {
           edges++
         }

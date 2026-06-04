@@ -80,7 +80,7 @@ export class TarjanSCC {
     const dag: number[][] = Array.from({ length: sccs.length }, () => [])
     for (const edge of dagSet) {
       const [from, to] = edge.split(',').map(Number)
-      dag[from]!.push(to)
+      dag[from!]!.push(to!)
     }
     return { componentId, dag }
   }

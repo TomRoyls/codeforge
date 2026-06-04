@@ -41,7 +41,7 @@ export class StoerWagner {
   private minimumCutPhase(
     vertices: number[],
     weights: Map<number, number>[]
-  ): { cutWeight: number, last: number } {
+  ): { cutWeight: number, last: number, prev: number } {
     const inSet = new Set<number>()
     const order: number[] = []
     const start = vertices[0]!

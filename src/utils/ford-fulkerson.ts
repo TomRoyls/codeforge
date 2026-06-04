@@ -3,7 +3,7 @@ export class FordFulkerson {
     if (source === sink) return 0
     const cap: number[][] = Array.from({ length: n }, () => new Array(n).fill(0))
     for (const { from, to, capacity } of edges) {
-      cap[from]![to] += capacity
+      cap[from]![to]! += capacity
     }
     let totalFlow = 0
     while (true) {
@@ -30,8 +30,8 @@ export class FordFulkerson {
       v = sink
       while (v !== source) {
         const u = parent[v]!
-        cap[u]![v] -= minCap
-        cap[v]![u] += minCap
+        cap[u]![v]! -= minCap
+        cap[v]![u]! += minCap
         v = u
       }
       totalFlow += minCap

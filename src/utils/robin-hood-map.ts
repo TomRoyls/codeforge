@@ -186,7 +186,6 @@ export class RobinHopMap<K, V> {
   private resize(): void {
     const oldKeys = this.keys
     const oldValues = this.values
-    const oldHashes = this.hashes
     const oldOccupied = this.occupied
     const oldCapacity = this._capacity
 
