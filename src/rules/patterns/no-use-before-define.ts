@@ -12,12 +12,67 @@ import type {
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
+const BUILTIN_GLOBALS = new Set([
+  'Array', 'BigInt', 'Boolean', 'Date', 'Error', 'EvalError', 'Function',
+  'Infinity', 'JSON', 'Map', 'Math', 'NaN', 'Number', 'Object', 'Promise',
+  'Proxy', 'RangeError', 'ReferenceError', 'Reflect', 'RegExp', 'Set',
+  'String', 'Symbol', 'SyntaxError', 'TypeError', 'URIError', 'Uint8Array',
+  'WeakMap', 'WeakSet', 'console', 'decodeURI', 'decodeURIComponent',
+  'encodeURI', 'encodeURIComponent', 'escape', 'eval', 'globalThis',
+  'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'process', 'undefined',
+  'unescape',
+  // Node.js globals
+  'Buffer', 'global', 'module', 'require', 'exports', '__dirname', '__filename',
+  'setTimeout', 'setInterval', 'setImmediate', 'clearTimeout', 'clearInterval',
+  'clearImmediate', 'queueMicrotask', 'performance', 'AbortController',
+  'AbortSignal', 'URL', 'URLSearchParams', 'TextEncoder', 'TextDecoder',
+  'fetch', 'crypto', 'navigator', 'Event', 'EventTarget', 'CustomEvent',
+  'ReadableStream', 'WritableStream', 'TransformStream',
+  // TypeScript-specific
+  'Promise', 'ArrayBuffer', 'DataView', 'Float32Array', 'Float64Array',
+  'Int8Array', 'Int16Array', 'Int32Array', 'Uint8ClampedArray',
+  'Uint16Array', 'Uint32Array', 'BigInt64Array', 'BigUint64Array',
+])
+
 export const noUseBeforeDefineRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     const definedVars = new Set<string>()
     const usageReports: Array<{ name: string; node: unknown }> = []
 
     return {
+      ImportDeclaration(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ImportDeclaration') return
+        const specifiers = (n as { specifiers?: unknown[] }).specifiers
+        if (!Array.isArray(specifiers)) return
+        for (const spec of specifiers) {
+          const specNode = toASTNode(spec)
+          if (!specNode) continue
+          const local = (specNode as { local?: { name?: string } }).local
+          if (local && typeof local.name === 'string') {
+            definedVars.add(local.name)
+          }
+        }
+      },
+
+      FunctionDeclaration(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n || n.type !== 'FunctionDeclaration') return
+        const id = (n as { id?: { name?: string } }).id
+        if (id && typeof id.name === 'string') {
+          definedVars.add(id.name)
+        }
+      },
+
+      ClassDeclaration(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ClassDeclaration') return
+        const id = (n as { id?: { name?: string } }).id
+        if (id && typeof id.name === 'string') {
+          definedVars.add(id.name)
+        }
+      },
+
       VariableDeclarator(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'VariableDeclarator') return
@@ -38,6 +93,7 @@ export const noUseBeforeDefineRule: RuleDefinition = {
         const name = (n as { name?: unknown }).name
         if (typeof name !== 'string') return
 
+        if (BUILTIN_GLOBALS.has(name)) return
         if (!definedVars.has(name)) {
           usageReports.push({ name, node: n })
         }
@@ -45,7 +101,7 @@ export const noUseBeforeDefineRule: RuleDefinition = {
 
       'Program:exit'(): void {
         for (const usage of usageReports) {
-          if (!definedVars.has(usage.name)) {
+          if (!definedVars.has(usage.name) && !BUILTIN_GLOBALS.has(usage.name)) {
             context.report({
               loc: extractLocation(toASTNode(usage.node)),
               message: `'${usage.name}' was used before it was defined.`,
