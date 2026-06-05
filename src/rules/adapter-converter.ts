@@ -522,6 +522,19 @@ function applyRawPostFixups(
     result.prefix = false
   }
 
+  // Synthesize operator/prefix for TS unary expressions → ESTree UnaryExpression
+  // TS has no operatorToken; the operator is implicit in the node type
+  if (kindName === 'DeleteExpression') {
+    result.operator = 'delete'
+    result.prefix = true
+  } else if (kindName === 'TypeOfExpression') {
+    result.operator = 'typeof'
+    result.prefix = true
+  } else if (kindName === 'VoidExpression') {
+    result.operator = 'void'
+    result.prefix = true
+  }
+
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
     let flags: number | undefined
@@ -841,6 +854,19 @@ function applyPostConvertFixups(
   // PostfixUnaryExpression: always UpdateExpression with prefix:false
   if (kindName === 'PostfixUnaryExpression') {
     result.prefix = false
+  }
+
+  // Synthesize operator/prefix for TS unary expressions → ESTree UnaryExpression
+  // TS has no operatorToken; the operator is implicit in the node type
+  if (kindName === 'DeleteExpression') {
+    result.operator = 'delete'
+    result.prefix = true
+  } else if (kindName === 'TypeOfExpression') {
+    result.operator = 'typeof'
+    result.prefix = true
+  } else if (kindName === 'VoidExpression') {
+    result.operator = 'void'
+    result.prefix = true
   }
 
   if (result.type === 'VariableDeclaration') {
