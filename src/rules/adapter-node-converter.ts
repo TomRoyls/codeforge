@@ -532,6 +532,10 @@ export function nodeToGeneric(node: Node): Record<string, unknown> {
 
   applyChainExpressionSynthesis(base)
 
+  if (base.type === 'Program' && !base.sourceType) {
+    base.sourceType = 'module'
+  }
+
   return base
 }
 

@@ -2012,14 +2012,6 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
               defExitHandler(defWrapper)
             }
           }
-
-          // SourceFile exit → also dispatch Program:exit
-          if (Node.isSourceFile(node)) {
-            const programExitHandler = pluginVisitor['Program:exit']
-            if (programExitHandler) {
-              programExitHandler(genericNode)
-            }
-          }
         },
 
         visitNode(node, _context: VisitorContext) {
