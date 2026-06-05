@@ -4,14 +4,32 @@ import type { RuleContext } from '../../../../src/plugins/types.js'
 import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
 
 function createSwitchCase(consequent: unknown[], line = 1): unknown {
+  let caseLoc: { start: { line: number; column: number }; end: { line: number; column: number } } = {
+    start: { line, column: 0 },
+    end: { line, column: 30 },
+  }
+  if (consequent.length > 0) {
+    const last = consequent[consequent.length - 1] as {
+      loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
+    }
+    if (last?.loc) {
+      caseLoc = last.loc
+    }
+  }
   return {
     type: 'SwitchCase',
     test: { type: 'Literal', value: 1 },
     consequent,
-    loc: {
-      start: { line, column: 0 },
-      end: { line, column: 30 },
-    },
+    loc: caseLoc,
+  }
+}
+
+function createSwitchStatement(cases: unknown[]): unknown {
+  return {
+    type: 'SwitchStatement',
+    discriminant: { type: 'Identifier', name: 'foo' },
+    cases,
+    loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 50 } },
   }
 }
 
@@ -118,7 +136,7 @@ describe('no-fallthrough rule', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      expect(visitor).toHaveProperty('SwitchCase')
+      expect(visitor).toHaveProperty('SwitchStatement')
     })
   })
 
@@ -127,7 +145,9 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
 
       expect(reports.length).toBe(1)
       expect(reports[0].message.toLowerCase()).toContain('break')
@@ -137,7 +157,9 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createBreakStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createBreakStatement()])]),
+      )
 
       expect(reports.length).toBe(0)
     })
@@ -146,7 +168,9 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createReturnStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createReturnStatement()])]),
+      )
 
       expect(reports.length).toBe(0)
     })
@@ -155,7 +179,9 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createThrowStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createThrowStatement()])]),
+      )
 
       expect(reports.length).toBe(0)
     })
@@ -164,7 +190,9 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createContinueStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createContinueStatement()])]),
+      )
 
       expect(reports.length).toBe(0)
     })
@@ -173,7 +201,7 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createNonSwitchCase())
+      visitor.SwitchStatement(createNonSwitchCase())
 
       expect(reports.length).toBe(0)
     })
@@ -184,21 +212,21 @@ describe('no-fallthrough rule', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      expect(() => visitor.SwitchCase(null)).not.toThrow()
+      expect(() => visitor.SwitchStatement(null)).not.toThrow()
     })
 
     test('should handle undefined node gracefully', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      expect(() => visitor.SwitchCase(undefined)).not.toThrow()
+      expect(() => visitor.SwitchStatement(undefined)).not.toThrow()
     })
 
     test('should handle empty consequent', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([])]))
 
       expect(reports.length).toBe(0)
     })
@@ -207,13 +235,15 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      const node = {
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-      }
+      const node = createSwitchStatement([
+        {
+          type: 'SwitchCase',
+          test: { type: 'Literal', value: 1 },
+          loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+        },
+      ])
 
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
@@ -221,8 +251,11 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(
-        createSwitchCase([createExpressionStatement(), createExpressionStatement()]),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(), createExpressionStatement()]),
+          createSwitchCase([]),
+        ]),
       )
 
       expect(reports.length).toBe(1)
@@ -232,7 +265,12 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([createBreakStatement(), createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createBreakStatement(), createExpressionStatement()]),
+          createSwitchCase([]),
+        ]),
+      )
 
       expect(reports.length).toBe(1)
     })
@@ -318,13 +356,13 @@ describe('no-fallthrough rule', () => {
     test('visitor should have exactly SwitchCase method', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(typeof visitor.SwitchCase).toBe('function')
+      expect(typeof visitor.SwitchStatement).toBe('function')
     })
 
     test('SwitchCase should accept one argument', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(visitor.SwitchCase.length).toBeGreaterThanOrEqual(1)
+      expect(visitor.SwitchStatement.length).toBeGreaterThanOrEqual(1)
     })
 
     test('create should return a new visitor each call', () => {
@@ -337,7 +375,7 @@ describe('no-fallthrough rule', () => {
     test('SwitchCase method should not return a value for valid input', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      const result = visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      const result = visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createExpressionStatement()])]))
       expect(result).toBeUndefined()
     })
 
@@ -353,9 +391,9 @@ describe('no-fallthrough rule', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       expect(() => {
-        visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-        visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-        visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+        visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createExpressionStatement()])]))
+        visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createExpressionStatement()])]))
+        visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createExpressionStatement()])]))
       }).not.toThrow()
     })
   })
@@ -364,14 +402,14 @@ describe('no-fallthrough rule', () => {
     test('should not report for IfStatement node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createNonSwitchCase())
+      visitor.SwitchStatement(createNonSwitchCase())
       expect(reports.length).toBe(0)
     })
 
     test('should not report for ForStatement node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
+      visitor.SwitchStatement({
         type: 'ForStatement',
         init: null,
         test: null,
@@ -385,7 +423,7 @@ describe('no-fallthrough rule', () => {
     test('should not report for WhileStatement node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
+      visitor.SwitchStatement({
         type: 'WhileStatement',
         test: { type: 'Literal', value: true },
         body: { type: 'BlockStatement', body: [] },
@@ -397,7 +435,7 @@ describe('no-fallthrough rule', () => {
     test('should not report for FunctionDeclaration node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
+      visitor.SwitchStatement({
         type: 'FunctionDeclaration',
         id: { type: 'Identifier', name: 'foo' },
         params: [],
@@ -410,7 +448,7 @@ describe('no-fallthrough rule', () => {
     test('should not report for BlockStatement node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
+      visitor.SwitchStatement({
         type: 'BlockStatement',
         body: [],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
@@ -421,7 +459,7 @@ describe('no-fallthrough rule', () => {
     test('should not report for TryStatement node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
+      visitor.SwitchStatement({
         type: 'TryStatement',
         block: { type: 'BlockStatement', body: [] },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
@@ -432,49 +470,49 @@ describe('no-fallthrough rule', () => {
     test('should not report for empty object', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({})
+      visitor.SwitchStatement({})
       expect(reports.length).toBe(0)
     })
 
     test('should not report for object with wrong type string', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({ type: 'SwitchCasee' })
+      visitor.SwitchStatement({ type: 'SwitchCasee' })
       expect(reports.length).toBe(0)
     })
 
     test('should not report for object with lowercase type', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({ type: 'switchcase' })
+      visitor.SwitchStatement({ type: 'switchcase' })
       expect(reports.length).toBe(0)
     })
 
     test('should not report for numeric node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(42)
+      visitor.SwitchStatement(42)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for string node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase('SwitchCase')
+      visitor.SwitchStatement('SwitchCase')
       expect(reports.length).toBe(0)
     })
 
     test('should not report for boolean node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(true)
+      visitor.SwitchStatement(true)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for array node', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase([])
+      visitor.SwitchStatement([])
       expect(reports.length).toBe(0)
     })
   })
@@ -483,34 +521,38 @@ describe('no-fallthrough rule', () => {
     test('should not report when break is last statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createBreakStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createBreakStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when break follows expression', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createBreakStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createBreakStatement()])]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report with break at different line', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createBreakStatement(5, 10)]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createBreakStatement(5, 10)])]))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with labeled break', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'BreakStatement',
-            label: { type: 'Identifier', name: 'outer' },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 12 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'BreakStatement',
+              label: { type: 'Identifier', name: 'outer' },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 12 } },
+            },
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -519,18 +561,26 @@ describe('no-fallthrough rule', () => {
     test('should report when break is first of two statements', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createBreakStatement(), createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createBreakStatement(), createExpressionStatement()]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should report when break is in middle of three statements', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createBreakStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createBreakStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -541,34 +591,38 @@ describe('no-fallthrough rule', () => {
     test('should not report when return is last statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createReturnStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createReturnStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when return follows expression', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createReturnStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createReturnStatement()])]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report with return at different line and column', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createReturnStatement(10, 5)]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createReturnStatement(10, 5)])]))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with return that has an argument', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ReturnStatement',
-            argument: { type: 'Literal', value: 42 },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 12 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ReturnStatement',
+              argument: { type: 'Literal', value: 42 },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 12 } },
+            },
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -577,18 +631,26 @@ describe('no-fallthrough rule', () => {
     test('should report when return is not last statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createReturnStatement(), createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createReturnStatement(), createExpressionStatement()]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should report when return is in middle of three statements', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createReturnStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createReturnStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -599,38 +661,42 @@ describe('no-fallthrough rule', () => {
     test('should not report when throw is last statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createThrowStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createThrowStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when throw follows expression', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createThrowStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createThrowStatement()])]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report with throw at different line and column', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createThrowStatement(7, 3)]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createThrowStatement(7, 3)])]))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with throw that has complex argument', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ThrowStatement',
-            argument: {
-              type: 'NewExpression',
-              callee: { type: 'Identifier', name: 'TypeError' },
-              arguments: [{ type: 'Literal', value: 'bad' }],
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ThrowStatement',
+              argument: {
+                type: 'NewExpression',
+                callee: { type: 'Identifier', name: 'TypeError' },
+                arguments: [{ type: 'Literal', value: 'bad' }],
+              },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
             },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-          },
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -639,7 +705,12 @@ describe('no-fallthrough rule', () => {
     test('should report when throw is not last statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createThrowStatement(), createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createThrowStatement(), createExpressionStatement()]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
   })
@@ -648,34 +719,38 @@ describe('no-fallthrough rule', () => {
     test('should not report when continue is last statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createContinueStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createContinueStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should not report when continue follows expression', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createContinueStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createContinueStatement()])]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report with continue at different line and column', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createContinueStatement(3, 8)]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createContinueStatement(3, 8)])]))
       expect(reports.length).toBe(0)
     })
 
     test('should not report with labeled continue', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ContinueStatement',
-            label: { type: 'Identifier', name: 'loop' },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 14 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ContinueStatement',
+              label: { type: 'Identifier', name: 'loop' },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 14 } },
+            },
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -684,7 +759,12 @@ describe('no-fallthrough rule', () => {
     test('should report when continue is not last statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createContinueStatement(), createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createContinueStatement(), createExpressionStatement()]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
   })
@@ -693,21 +773,26 @@ describe('no-fallthrough rule', () => {
     test('should report with only ExpressionStatement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should report with VariableDeclaration as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'VariableDeclaration',
-            declarations: [],
-            kind: 'let',
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'VariableDeclaration',
+              declarations: [],
+              kind: 'let',
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -716,15 +801,18 @@ describe('no-fallthrough rule', () => {
     test('should report with FunctionDeclaration as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'FunctionDeclaration',
-            id: { type: 'Identifier', name: 'helper' },
-            params: [],
-            body: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'FunctionDeclaration',
+              id: { type: 'Identifier', name: 'helper' },
+              params: [],
+              body: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -733,14 +821,17 @@ describe('no-fallthrough rule', () => {
     test('should report with IfStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'IfStatement',
-            test: { type: 'Literal', value: true },
-            consequent: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'IfStatement',
+              test: { type: 'Literal', value: true },
+              consequent: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -749,16 +840,19 @@ describe('no-fallthrough rule', () => {
     test('should report with ForStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ForStatement',
-            init: null,
-            test: null,
-            update: null,
-            body: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ForStatement',
+              init: null,
+              test: null,
+              update: null,
+              body: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -767,14 +861,17 @@ describe('no-fallthrough rule', () => {
     test('should report with WhileStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'WhileStatement',
-            test: { type: 'Literal', value: true },
-            body: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'WhileStatement',
+              test: { type: 'Literal', value: true },
+              body: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -783,14 +880,17 @@ describe('no-fallthrough rule', () => {
     test('should report with SwitchStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'SwitchStatement',
-            discriminant: { type: 'Identifier', name: 'x' },
-            cases: [],
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'SwitchStatement',
+              discriminant: { type: 'Identifier', name: 'x' },
+              cases: [],
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -799,13 +899,16 @@ describe('no-fallthrough rule', () => {
     test('should report with BlockStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'BlockStatement',
-            body: [],
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'BlockStatement',
+              body: [],
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -814,13 +917,16 @@ describe('no-fallthrough rule', () => {
     test('should report with TryStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'TryStatement',
-            block: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'TryStatement',
+              block: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -829,12 +935,15 @@ describe('no-fallthrough rule', () => {
     test('should report with DebuggerStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'DebuggerStatement',
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 9 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'DebuggerStatement',
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 9 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -843,14 +952,17 @@ describe('no-fallthrough rule', () => {
     test('should report with WithStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'WithStatement',
-            object: { type: 'Identifier', name: 'obj' },
-            body: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'WithStatement',
+              object: { type: 'Identifier', name: 'obj' },
+              body: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -859,14 +971,17 @@ describe('no-fallthrough rule', () => {
     test('should report with DoWhileStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'DoWhileStatement',
-            test: { type: 'Literal', value: true },
-            body: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'DoWhileStatement',
+              test: { type: 'Literal', value: true },
+              body: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -875,15 +990,18 @@ describe('no-fallthrough rule', () => {
     test('should report with ForInStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ForInStatement',
-            left: { type: 'Identifier', name: 'x' },
-            right: { type: 'Identifier', name: 'obj' },
-            body: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ForInStatement',
+              left: { type: 'Identifier', name: 'x' },
+              right: { type: 'Identifier', name: 'obj' },
+              body: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -892,15 +1010,18 @@ describe('no-fallthrough rule', () => {
     test('should report with ForOfStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ForOfStatement',
-            left: { type: 'Identifier', name: 'x' },
-            right: { type: 'Identifier', name: 'arr' },
-            body: { type: 'BlockStatement', body: [] },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ForOfStatement',
+              left: { type: 'Identifier', name: 'x' },
+              right: { type: 'Identifier', name: 'arr' },
+              body: { type: 'BlockStatement', body: [] },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -909,14 +1030,17 @@ describe('no-fallthrough rule', () => {
     test('should report with LabeledStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'LabeledStatement',
-            label: { type: 'Identifier', name: 'label' },
-            body: { type: 'EmptyStatement' },
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'LabeledStatement',
+              label: { type: 'Identifier', name: 'label' },
+              body: { type: 'EmptyStatement' },
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -925,13 +1049,16 @@ describe('no-fallthrough rule', () => {
     test('should report with EmptyStatement as last', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          {
-            type: 'EmptyStatement',
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 1 } },
-          },
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            {
+              type: 'EmptyStatement',
+              loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 1 } },
+            },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -942,30 +1069,41 @@ describe('no-fallthrough rule', () => {
     test('should include "break" in message', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports[0].message).toContain('break')
     })
 
     test('should include "fallthrough" in message', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports[0].message.toLowerCase()).toContain('fallthrough')
     })
 
     test('should have exact expected message text', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports[0].message).toBe('Expected a break statement before fallthrough.')
     })
 
     test('should always report same message for different fallthrough cases', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-      visitor.SwitchCase(
-        createSwitchCase([createExpressionStatement(), createExpressionStatement()]),
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(), createExpressionStatement()]),
+          createSwitchCase([]),
+        ]),
       )
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -973,7 +1111,9 @@ describe('no-fallthrough rule', () => {
     test('message should be a string', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(typeof reports[0].message).toBe('string')
     })
   })
@@ -982,14 +1122,21 @@ describe('no-fallthrough rule', () => {
     test('should include loc in report', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports[0].loc).toBeDefined()
     })
 
     test('should report location of last statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(5, 10)]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(5, 10)]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -997,7 +1144,12 @@ describe('no-fallthrough rule', () => {
     test('should report correct end location', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(3, 5)]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(3, 5)]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports[0].loc?.end).toBeDefined()
       expect(reports[0].loc?.end.line).toBe(3)
       expect(reports[0].loc?.end.column).toBe(5 + 15)
@@ -1006,8 +1158,11 @@ describe('no-fallthrough rule', () => {
     test('should report location of last statement when multiple', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([createExpressionStatement(1, 0), createExpressionStatement(7, 12)]),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(1, 0), createExpressionStatement(7, 12)]),
+          createSwitchCase([]),
+        ]),
       )
       expect(reports[0].loc?.start.line).toBe(7)
       expect(reports[0].loc?.start.column).toBe(12)
@@ -1016,7 +1171,12 @@ describe('no-fallthrough rule', () => {
     test('should handle location at line 1 column 0', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(1, 0)]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(1, 0)]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
     })
@@ -1024,7 +1184,12 @@ describe('no-fallthrough rule', () => {
     test('should handle location at high line numbers', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(100, 50)]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(100, 50)]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports[0].loc?.start.line).toBe(100)
       expect(reports[0].loc?.start.column).toBe(50)
     })
@@ -1032,23 +1197,31 @@ describe('no-fallthrough rule', () => {
     test('should handle location at line 0', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(0, 0)]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(0, 0)]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports[0].loc?.start.line).toBe(0)
     })
 
     test('should handle node without loc gracefully', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ExpressionStatement',
-            expression: {
-              type: 'CallExpression',
-              callee: { type: 'Identifier', name: 'fn' },
-              arguments: [],
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ExpressionStatement',
+              expression: {
+                type: 'CallExpression',
+                callee: { type: 'Identifier', name: 'fn' },
+                arguments: [],
+              },
             },
-          },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1060,15 +1233,20 @@ describe('no-fallthrough rule', () => {
     test('should report once for single expression without terminator', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should report once for two expressions without terminator', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([createExpressionStatement(), createExpressionStatement()]),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(), createExpressionStatement()]),
+          createSwitchCase([]),
+        ]),
       )
       expect(reports.length).toBe(1)
     })
@@ -1076,11 +1254,14 @@ describe('no-fallthrough rule', () => {
     test('should report once for three expressions without terminator', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1089,13 +1270,16 @@ describe('no-fallthrough rule', () => {
     test('should report once for five expressions without terminator', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1104,39 +1288,49 @@ describe('no-fallthrough rule', () => {
     test('should not report for expression then break', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createBreakStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createBreakStatement()])]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report for expression then return', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createReturnStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createReturnStatement()])]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report for expression then throw', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createThrowStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createThrowStatement()])]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report for expression then continue', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createContinueStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createContinueStatement()])]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report for multiple expressions then break', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createBreakStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createBreakStatement(),
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -1145,11 +1339,14 @@ describe('no-fallthrough rule', () => {
     test('should report for break then expression then expression', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createBreakStatement(),
-          createExpressionStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createBreakStatement(),
+            createExpressionStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1160,77 +1357,89 @@ describe('no-fallthrough rule', () => {
     test('should not report for consequent with undefined last element', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([undefined]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([undefined]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should not report for consequent with null last element', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([null]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([null]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should handle consequent with only break statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createBreakStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createBreakStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should handle consequent with only return statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createReturnStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createReturnStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should handle consequent with only throw statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createThrowStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createThrowStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should handle consequent with only continue statement', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createContinueStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createContinueStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should handle consequent where last element has no type property', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([{ foo: 'bar' }]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([{ foo: 'bar' }]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should handle consequent where last element is a number', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([42]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([42]), createSwitchCase([])]))
       expect(reports.length).toBe(1)
     })
 
     test('should handle consequent where last element is a string', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase(['hello']))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase(['hello']), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should handle consequent where last element type is empty string', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([{ type: '' }]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([{ type: '' }]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should handle consequent where last element type is unknown', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([{ type: 'UnknownStatement' }]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([{ type: 'UnknownStatement' }]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
   })
@@ -1239,54 +1448,76 @@ describe('no-fallthrough rule', () => {
     test('should work with literal test value', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should work with string literal test value', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 'hello' },
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: { type: 'Literal', value: 'hello' },
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should work with identifier test value', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: { type: 'Identifier', name: 'x' },
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: { type: 'Identifier', name: 'x' },
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should work with null test value (default case)', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: null,
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: null,
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should work without test property', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
   })
@@ -1295,39 +1526,59 @@ describe('no-fallthrough rule', () => {
     test('should accumulate reports across multiple calls', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(3)
     })
 
     test('should accumulate only for fallthrough cases', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createBreakStatement()]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createBreakStatement()])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(2)
     })
 
     test('should not report for any call when all have terminators', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createBreakStatement()]))
-      visitor.SwitchCase(createSwitchCase([createReturnStatement()]))
-      visitor.SwitchCase(createSwitchCase([createThrowStatement()]))
-      visitor.SwitchCase(createSwitchCase([createContinueStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createBreakStatement()])]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createReturnStatement()])]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createThrowStatement()])]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createContinueStatement()])]))
       expect(reports.length).toBe(0)
     })
 
     test('should handle alternating valid and invalid cases', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createBreakStatement()]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-      visitor.SwitchCase(createSwitchCase([createReturnStatement()]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(), createThrowStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createBreakStatement()])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createReturnStatement()])]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(), createThrowStatement()])]),
+      )
       expect(reports.length).toBe(2)
     })
 
@@ -1335,7 +1586,9 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       for (let i = 0; i < 10; i++) {
-        visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+        visitor.SwitchStatement(
+          createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+        )
       }
       expect(reports.length).toBe(10)
     })
@@ -1344,7 +1597,9 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       for (let i = 0; i < 50; i++) {
-        visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+        visitor.SwitchStatement(
+          createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+        )
       }
       expect(reports.length).toBe(50)
     })
@@ -1367,7 +1622,9 @@ describe('no-fallthrough rule', () => {
         workspaceRoot: '/src',
       } as unknown as RuleContext
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reportCalled).toBe(true)
     })
 
@@ -1387,7 +1644,7 @@ describe('no-fallthrough rule', () => {
         workspaceRoot: '/src',
       } as unknown as RuleContext
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createBreakStatement()]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createBreakStatement()])]))
       expect(reportCount).toBe(0)
     })
 
@@ -1407,7 +1664,9 @@ describe('no-fallthrough rule', () => {
         workspaceRoot: '/src',
       } as unknown as RuleContext
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(reportedMessage).toBe('Expected a break statement before fallthrough.')
     })
 
@@ -1427,7 +1686,12 @@ describe('no-fallthrough rule', () => {
         workspaceRoot: '/src',
       } as unknown as RuleContext
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(5, 10)]))
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(5, 10)]),
+          createSwitchCase([]),
+        ]),
+      )
       expect(reportedLoc).toBeDefined()
       expect((reportedLoc as { start: { line: number } }).start.line).toBe(5)
     })
@@ -1445,7 +1709,9 @@ describe('no-fallthrough rule', () => {
         workspaceRoot: '/home/user/project',
       } as unknown as RuleContext
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
       expect(context.report).toHaveBeenCalledTimes(1)
     })
   })
@@ -1482,11 +1748,14 @@ describe('no-fallthrough rule', () => {
     test('should report when last is expression after break+return', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createBreakStatement(),
-          createReturnStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createBreakStatement(),
+            createReturnStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1495,12 +1764,14 @@ describe('no-fallthrough rule', () => {
     test('should not report when break is after expressions', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createBreakStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createBreakStatement(),
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -1509,11 +1780,13 @@ describe('no-fallthrough rule', () => {
     test('should not report when return is after expressions', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createReturnStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createReturnStatement(),
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -1522,11 +1795,13 @@ describe('no-fallthrough rule', () => {
     test('should not report when throw is after expressions', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createThrowStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createThrowStatement(),
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -1535,11 +1810,13 @@ describe('no-fallthrough rule', () => {
     test('should not report when continue is after expressions', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createExpressionStatement(),
-          createContinueStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createExpressionStatement(),
+            createContinueStatement(),
+          ]),
         ]),
       )
       expect(reports.length).toBe(0)
@@ -1548,11 +1825,14 @@ describe('no-fallthrough rule', () => {
     test('should report when last statement is expression after return in middle', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createReturnStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createReturnStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1561,11 +1841,14 @@ describe('no-fallthrough rule', () => {
     test('should report when last statement is expression after throw in middle', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createThrowStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createThrowStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1574,11 +1857,14 @@ describe('no-fallthrough rule', () => {
     test('should report when last statement is expression after continue in middle', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(),
-          createContinueStatement(),
-          createExpressionStatement(),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(),
+            createContinueStatement(),
+            createExpressionStatement(),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1589,7 +1875,9 @@ describe('no-fallthrough rule', () => {
     test('should report location from last statement in 1-element consequent', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(2, 4)]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(2, 4)]), createSwitchCase([])]),
+      )
       expect(reports[0].loc?.start.line).toBe(2)
       expect(reports[0].loc?.start.column).toBe(4)
     })
@@ -1597,8 +1885,11 @@ describe('no-fallthrough rule', () => {
     test('should report location from last statement in 2-element consequent', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([createExpressionStatement(1, 0), createExpressionStatement(8, 3)]),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([createExpressionStatement(1, 0), createExpressionStatement(8, 3)]),
+          createSwitchCase([]),
+        ]),
       )
       expect(reports[0].loc?.start.line).toBe(8)
       expect(reports[0].loc?.start.column).toBe(3)
@@ -1607,11 +1898,14 @@ describe('no-fallthrough rule', () => {
     test('should report location from last statement in 3-element consequent', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          createExpressionStatement(1, 0),
-          createExpressionStatement(2, 0),
-          createExpressionStatement(9, 15),
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            createExpressionStatement(1, 0),
+            createExpressionStatement(2, 0),
+            createExpressionStatement(9, 15),
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports[0].loc?.start.line).toBe(9)
@@ -1623,76 +1917,103 @@ describe('no-fallthrough rule', () => {
     test('should not report with default case and break', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: null,
-        consequent: [createExpressionStatement(), createBreakStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: null,
+            consequent: [createExpressionStatement(), createBreakStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+        ]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should not report with default case and return', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: null,
-        consequent: [createExpressionStatement(), createReturnStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: null,
+            consequent: [createExpressionStatement(), createReturnStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+        ]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should report with default case and no terminator', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: null,
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: null,
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should work with boolean test value', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: true },
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: { type: 'Literal', value: true },
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should work with object test value', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: { type: 'ObjectExpression', properties: [] },
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: { type: 'ObjectExpression', properties: [] },
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should work with member expression test value', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'obj' },
-          property: { type: 'Identifier', name: 'prop' },
-        },
-        consequent: [createExpressionStatement(), createBreakStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: {
+              type: 'MemberExpression',
+              object: { type: 'Identifier', name: 'obj' },
+              property: { type: 'Identifier', name: 'prop' },
+            },
+            consequent: [createExpressionStatement(), createBreakStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+          },
+        ]),
+      )
       expect(reports.length).toBe(0)
     })
   })
@@ -1701,46 +2022,52 @@ describe('no-fallthrough rule', () => {
     test('should handle consequent as undefined', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      const node = {
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        consequent: undefined,
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-      }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      const node = createSwitchStatement([
+        {
+          type: 'SwitchCase',
+          test: { type: 'Literal', value: 1 },
+          consequent: undefined,
+          loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+        },
+      ])
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle consequent as null', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      const node = {
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        consequent: null,
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-      }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      const node = createSwitchStatement([
+        {
+          type: 'SwitchCase',
+          test: { type: 'Literal', value: 1 },
+          consequent: null,
+          loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+        },
+      ])
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should handle consequent as empty array', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([]))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([])]))
       expect(reports.length).toBe(0)
     })
 
     test('should handle consequent as string (non-array)', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      const node = {
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        consequent: 'not-an-array',
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-      }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      const node = createSwitchStatement([
+        {
+          type: 'SwitchCase',
+          test: { type: 'Literal', value: 1 },
+          consequent: 'not-an-array',
+          loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+        },
+      ])
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
   })
 
@@ -1749,86 +2076,92 @@ describe('no-fallthrough rule', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       const node = { type: 42, consequent: [] }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
 
     test('should not throw when node type is boolean', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       const node = { type: true, consequent: [] }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
 
     test('should not throw when node type is object', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       const node = { type: {}, consequent: [] }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
 
     test('should not throw when node type is function', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       const node = { type: () => 'SwitchCase', consequent: [] }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
 
     test('should not throw when consequent contains only numbers', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      const node = {
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        consequent: [1, 2, 3],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-      }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      const node = createSwitchStatement([
+        {
+          type: 'SwitchCase',
+          test: { type: 'Literal', value: 1 },
+          consequent: [1, 2, 3],
+          loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+        },
+      ])
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
 
     test('should not throw when consequent contains mixed types', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      const node = {
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        consequent: [createExpressionStatement(), null, undefined, 'string', 42],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-      }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      const node = createSwitchStatement([
+        {
+          type: 'SwitchCase',
+          test: { type: 'Literal', value: 1 },
+          consequent: [createExpressionStatement(), null, undefined, 'string', 42],
+          loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+        },
+      ])
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
 
     test('should handle deep nesting of node properties', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      const node = {
-        type: 'SwitchCase',
-        test: {
-          type: 'BinaryExpression',
-          left: { type: 'Identifier', name: 'a' },
-          operator: '===',
-          right: { type: 'Identifier', name: 'b' },
-        },
-        consequent: [
-          {
-            type: 'ExpressionStatement',
-            expression: {
-              type: 'CallExpression',
-              callee: { type: 'Identifier', name: 'deepFn' },
-              arguments: [],
-            },
-            loc: { start: { line: 5, column: 2 }, end: { line: 5, column: 12 } },
+      const node = createSwitchStatement([
+        {
+          type: 'SwitchCase',
+          test: {
+            type: 'BinaryExpression',
+            left: { type: 'Identifier', name: 'a' },
+            operator: '===',
+            right: { type: 'Identifier', name: 'b' },
           },
-        ],
-        loc: { start: { line: 3, column: 0 }, end: { line: 6, column: 1 } },
-      }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+          consequent: [
+            {
+              type: 'ExpressionStatement',
+              expression: {
+                type: 'CallExpression',
+                callee: { type: 'Identifier', name: 'deepFn' },
+                arguments: [],
+              },
+              loc: { start: { line: 5, column: 2 }, end: { line: 5, column: 12 } },
+            },
+          ],
+          loc: { start: { line: 3, column: 0 }, end: { line: 6, column: 1 } },
+        },
+      ])
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
 
     test('should handle Symbol as node type', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       const node = { type: Symbol('SwitchCase'), consequent: [] }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
   })
 
@@ -1838,7 +2171,9 @@ describe('no-fallthrough rule', () => {
       const visitor = noFallthroughRule.create(context)
 
       for (let i = 0; i < 5; i++) {
-        visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+        visitor.SwitchStatement(
+          createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+        )
       }
       expect(reports.length).toBe(5)
     })
@@ -1847,9 +2182,15 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(1, 0)]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(2, 0)]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement(3, 0)]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(1, 0)]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(2, 0)]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement(3, 0)]), createSwitchCase([])]),
+      )
 
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[1].loc?.start.line).toBe(2)
@@ -1860,11 +2201,17 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
 
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-      visitor.SwitchCase(createSwitchCase([createBreakStatement()]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
-      visitor.SwitchCase(createSwitchCase([]))
-      visitor.SwitchCase(createSwitchCase([createExpressionStatement()]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([createBreakStatement()])]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase([])]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([createExpressionStatement()]), createSwitchCase([])]),
+      )
 
       expect(reports.length).toBe(3)
     })
@@ -1874,17 +2221,20 @@ describe('no-fallthrough rule', () => {
     test('should use extractLocation for report location', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ExpressionStatement',
-            expression: {
-              type: 'CallExpression',
-              callee: { type: 'Identifier', name: 'fn' },
-              arguments: [],
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ExpressionStatement',
+              expression: {
+                type: 'CallExpression',
+                callee: { type: 'Identifier', name: 'fn' },
+                arguments: [],
+              },
+              loc: { start: { line: 10, column: 4 }, end: { line: 10, column: 20 } },
             },
-            loc: { start: { line: 10, column: 4 }, end: { line: 10, column: 20 } },
-          },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports[0].loc?.start.line).toBe(10)
@@ -1896,17 +2246,20 @@ describe('no-fallthrough rule', () => {
     test('should handle multi-line location', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ExpressionStatement',
-            expression: {
-              type: 'CallExpression',
-              callee: { type: 'Identifier', name: 'fn' },
-              arguments: [],
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ExpressionStatement',
+              expression: {
+                type: 'CallExpression',
+                callee: { type: 'Identifier', name: 'fn' },
+                arguments: [],
+              },
+              loc: { start: { line: 5, column: 0 }, end: { line: 10, column: 3 } },
             },
-            loc: { start: { line: 5, column: 0 }, end: { line: 10, column: 3 } },
-          },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports[0].loc?.start.line).toBe(5)
@@ -1916,17 +2269,20 @@ describe('no-fallthrough rule', () => {
     test('should handle node with partial loc (start only)', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(
-        createSwitchCase([
-          {
-            type: 'ExpressionStatement',
-            expression: {
-              type: 'CallExpression',
-              callee: { type: 'Identifier', name: 'fn' },
-              arguments: [],
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          createSwitchCase([
+            {
+              type: 'ExpressionStatement',
+              expression: {
+                type: 'CallExpression',
+                callee: { type: 'Identifier', name: 'fn' },
+                arguments: [],
+              },
+              loc: { start: { line: 3, column: 2 } },
             },
-            loc: { start: { line: 3, column: 2 } },
-          },
+          ]),
+          createSwitchCase([]),
         ]),
       )
       expect(reports.length).toBe(1)
@@ -1938,28 +2294,38 @@ describe('no-fallthrough rule', () => {
     test('should not report for SwitchCase with extra whitespace in type', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: ' SwitchCase ',
-        consequent: [createExpressionStatement()],
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: ' SwitchCase ',
+            consequent: [createExpressionStatement()],
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(0)
     })
 
     test('should report for exactly SwitchCase type', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should not report when type property is missing', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
+      visitor.SwitchStatement({
         consequent: [createExpressionStatement()],
       })
       expect(reports.length).toBe(0)
@@ -1968,49 +2334,49 @@ describe('no-fallthrough rule', () => {
     test('should not crash for node that is a Date object', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(() => visitor.SwitchCase(new Date())).not.toThrow()
+      expect(() => visitor.SwitchStatement(new Date())).not.toThrow()
     })
 
     test('should not crash for node that is a RegExp object', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(() => visitor.SwitchCase(/test/)).not.toThrow()
+      expect(() => visitor.SwitchStatement(/test/)).not.toThrow()
     })
 
     test('should not crash for node that is a Map', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(() => visitor.SwitchCase(new Map())).not.toThrow()
+      expect(() => visitor.SwitchStatement(new Map())).not.toThrow()
     })
 
     test('should not crash for node that is a Set', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(() => visitor.SwitchCase(new Set())).not.toThrow()
+      expect(() => visitor.SwitchStatement(new Set())).not.toThrow()
     })
 
     test('should not crash for NaN', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(() => visitor.SwitchCase(NaN)).not.toThrow()
+      expect(() => visitor.SwitchStatement(NaN)).not.toThrow()
     })
 
     test('should not crash for Infinity', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(() => visitor.SwitchCase(Infinity)).not.toThrow()
+      expect(() => visitor.SwitchStatement(Infinity)).not.toThrow()
     })
 
     test('should not crash for negative number', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(() => visitor.SwitchCase(-1)).not.toThrow()
+      expect(() => visitor.SwitchStatement(-1)).not.toThrow()
     })
 
     test('should not crash for BigInt', () => {
       const { context } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      expect(() => visitor.SwitchCase(BigInt(42))).not.toThrow()
+      expect(() => visitor.SwitchStatement(BigInt(42))).not.toThrow()
     })
 
     test('should not crash when node has circular reference', () => {
@@ -2018,7 +2384,7 @@ describe('no-fallthrough rule', () => {
       const visitor = noFallthroughRule.create(context)
       const circular: Record<string, unknown> = { type: 'SwitchCase' }
       circular.self = circular
-      expect(() => visitor.SwitchCase(circular)).not.toThrow()
+      expect(() => visitor.SwitchStatement(circular)).not.toThrow()
     })
 
     test('should not crash when consequent has circular reference', () => {
@@ -2026,43 +2392,57 @@ describe('no-fallthrough rule', () => {
       const visitor = noFallthroughRule.create(context)
       const circularStmt: Record<string, unknown> = { type: 'ExpressionStatement' }
       circularStmt.self = circularStmt
-      const node = {
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        consequent: [circularStmt],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
-      }
-      expect(() => visitor.SwitchCase(node)).not.toThrow()
+      const node = createSwitchStatement([
+        {
+          type: 'SwitchCase',
+          test: { type: 'Literal', value: 1 },
+          consequent: [circularStmt],
+          loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+        },
+      ])
+      expect(() => visitor.SwitchStatement(node)).not.toThrow()
     })
 
     test('should not crash when loc has non-numeric line', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 'one', column: 0 }, end: { line: 'one', column: 5 } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: { type: 'Literal', value: 1 },
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 'one', column: 0 }, end: { line: 'one', column: 5 } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should not crash when loc has non-numeric column', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase({
-        type: 'SwitchCase',
-        test: { type: 'Literal', value: 1 },
-        consequent: [createExpressionStatement()],
-        loc: { start: { line: 1, column: 'zero' }, end: { line: 1, column: 'five' } },
-      })
+      visitor.SwitchStatement(
+        createSwitchStatement([
+          {
+            type: 'SwitchCase',
+            test: { type: 'Literal', value: 1 },
+            consequent: [createExpressionStatement()],
+            loc: { start: { line: 1, column: 'zero' }, end: { line: 1, column: 'five' } },
+          },
+          createSwitchCase([]),
+        ]),
+      )
       expect(reports.length).toBe(1)
     })
 
     test('should not crash when last consequent element is an array', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
-      visitor.SwitchCase(createSwitchCase([[createBreakStatement()]]))
+      visitor.SwitchStatement(
+        createSwitchStatement([createSwitchCase([[createBreakStatement()]]), createSwitchCase([])]),
+      )
       expect(reports.length).toBe(1)
     })
 
@@ -2072,7 +2452,7 @@ describe('no-fallthrough rule', () => {
       const sparse: unknown[] = []
       sparse[0] = createExpressionStatement()
       sparse[5] = createBreakStatement()
-      expect(() => visitor.SwitchCase(createSwitchCase(sparse))).not.toThrow()
+      expect(() => visitor.SwitchStatement(createSwitchStatement([createSwitchCase(sparse)]))).not.toThrow()
     })
 
     test('should handle consequent where only element is break at index 0 of sparse array', () => {
@@ -2080,7 +2460,7 @@ describe('no-fallthrough rule', () => {
       const visitor = noFallthroughRule.create(context)
       const sparse: unknown[] = []
       sparse[0] = createBreakStatement()
-      visitor.SwitchCase(createSwitchCase(sparse))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase(sparse)]))
       expect(reports.length).toBe(0)
     })
 
@@ -2088,7 +2468,7 @@ describe('no-fallthrough rule', () => {
       const { context, reports } = createMockRuleContext({ source: 'switch(x) { case 1: foo(); case 2: bar(); }' })
       const visitor = noFallthroughRule.create(context)
       const sparse: unknown[] = [createExpressionStatement(), undefined]
-      visitor.SwitchCase(createSwitchCase(sparse))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase(sparse), createSwitchCase([])]))
       expect(reports.length).toBe(1)
     })
 
@@ -2100,7 +2480,7 @@ describe('no-fallthrough rule', () => {
         stmts.push(createExpressionStatement())
       }
       stmts.push(createBreakStatement())
-      visitor.SwitchCase(createSwitchCase(stmts))
+      visitor.SwitchStatement(createSwitchStatement([createSwitchCase(stmts)]))
       expect(reports.length).toBe(0)
     })
   })
