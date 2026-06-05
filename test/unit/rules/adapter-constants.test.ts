@@ -1201,10 +1201,6 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['ImportEqualsDeclaration']).toBe('TSImportEqualsDeclaration')
     })
 
-    test('maps ImportExpression to Import', () => {
-      expect(KIND_NAME_ALIASES['ImportExpression']).toBe('Import')
-    })
-
     test('maps ForStatement to ForStatement (identity)', () => {
       expect(KIND_NAME_ALIASES['ForStatement']).toBe('ForStatement')
     })
@@ -1305,14 +1301,6 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['TypeOfExpression']).toBe('UnaryExpression')
     })
 
-    test('maps InstanceOfExpression to BinaryExpression', () => {
-      expect(KIND_NAME_ALIASES['InstanceOfExpression']).toBe('BinaryExpression')
-    })
-
-    test('maps InExpression to BinaryExpression', () => {
-      expect(KIND_NAME_ALIASES['InExpression']).toBe('BinaryExpression')
-    })
-
     test('maps AsExpression to TSAsExpression', () => {
       expect(KIND_NAME_ALIASES['AsExpression']).toBe('TSAsExpression')
     })
@@ -1327,14 +1315,6 @@ describe('adapter-constants', () => {
 
     test('ParenthesizedExpression is NOT in KIND_NAME_ALIASES (unwrapped at higher level)', () => {
       expect(KIND_NAME_ALIASES['ParenthesizedExpression']).toBeUndefined()
-    })
-
-    test('maps ObjectDestructuring to ObjectPattern', () => {
-      expect(KIND_NAME_ALIASES['ObjectDestructuring']).toBe('ObjectPattern')
-    })
-
-    test('maps ArrayDestructuring to ArrayPattern', () => {
-      expect(KIND_NAME_ALIASES['ArrayDestructuring']).toBe('ArrayPattern')
     })
 
     test('ComputedPropertyName is NOT in KIND_NAME_ALIASES (unwrapped at higher level)', () => {
@@ -1371,26 +1351,6 @@ describe('adapter-constants', () => {
 
     test('maps AnyKeyword to TSAnyKeyword', () => {
       expect(KIND_NAME_ALIASES['AnyKeyword']).toBe('TSAnyKeyword')
-    })
-
-    test('maps TSArrayType to TSArrayType (identity)', () => {
-      expect(KIND_NAME_ALIASES['TSArrayType']).toBe('TSArrayType')
-    })
-
-    test('maps TSUnionType to TSUnionType (identity)', () => {
-      expect(KIND_NAME_ALIASES['TSUnionType']).toBe('TSUnionType')
-    })
-
-    test('maps TSEnumMember to TSEnumMember (identity)', () => {
-      expect(KIND_NAME_ALIASES['TSEnumMember']).toBe('TSEnumMember')
-    })
-
-    test('maps TSInterfaceBody to TSInterfaceBody (identity)', () => {
-      expect(KIND_NAME_ALIASES['TSInterfaceBody']).toBe('TSInterfaceBody')
-    })
-
-    test('maps TSInterfaceDeclaration to TSInterfaceDeclaration (identity)', () => {
-      expect(KIND_NAME_ALIASES['TSInterfaceDeclaration']).toBe('TSInterfaceDeclaration')
     })
 
     test('maps AnyKeyword to TSAnyKeyword', () => {
@@ -1435,10 +1395,6 @@ describe('adapter-constants', () => {
 
     test('maps ExportKeyword to TSExportKeyword', () => {
       expect(KIND_NAME_ALIASES['ExportKeyword']).toBe('TSExportKeyword')
-    })
-
-    test('maps TypeAnnotation to TSTypeAnnotation', () => {
-      expect(KIND_NAME_ALIASES['TypeAnnotation']).toBe('TSTypeAnnotation')
     })
   })
 

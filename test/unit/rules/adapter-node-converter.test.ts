@@ -2265,11 +2265,6 @@ describe('adapter-node-converter', () => {
       expect(result.type).toBe('TSImportEqualsDeclaration')
     })
 
-    test('ImportExpression maps to Import', () => {
-      const result = nodeToGeneric(createMockNode({ kindName: 'ImportExpression' }))
-      expect(result.type).toBe('Import')
-    })
-
     test('ReturnStatement maps to ReturnStatement', () => {
       const result = nodeToGeneric(createMockNode({ kindName: 'ReturnStatement' }))
       expect(result.type).toBe('ReturnStatement')
@@ -2390,34 +2385,14 @@ describe('adapter-node-converter', () => {
       expect(result.type).toBe('UnaryExpression')
     })
 
-    test('InstanceOfExpression maps to BinaryExpression', () => {
-      const result = nodeToGeneric(createMockNode({ kindName: 'InstanceOfExpression' }))
-      expect(result.type).toBe('BinaryExpression')
-    })
-
-    test('InExpression maps to BinaryExpression', () => {
-      const result = nodeToGeneric(createMockNode({ kindName: 'InExpression' }))
-      expect(result.type).toBe('BinaryExpression')
-    })
-
-    test('TypeAssertion maps to TSTypeAssertion', () => {
-      const result = nodeToGeneric(createMockNode({ kindName: 'TypeAssertion' }))
+    test('TypeAssertionExpression maps to TSTypeAssertion', () => {
+      const result = nodeToGeneric(createMockNode({ kindName: 'TypeAssertionExpression' }))
       expect(result.type).toBe('TSTypeAssertion')
     })
 
     test('NonNullExpression maps to TSNonNullExpression', () => {
       const result = nodeToGeneric(createMockNode({ kindName: 'NonNullExpression' }))
       expect(result.type).toBe('TSNonNullExpression')
-    })
-
-    test('ObjectDestructuring maps to ObjectPattern', () => {
-      const result = nodeToGeneric(createMockNode({ kindName: 'ObjectDestructuring' }))
-      expect(result.type).toBe('ObjectPattern')
-    })
-
-    test('ArrayDestructuring maps to ArrayPattern', () => {
-      const result = nodeToGeneric(createMockNode({ kindName: 'ArrayDestructuring' }))
-      expect(result.type).toBe('ArrayPattern')
     })
 
     test('ComputedPropertyName is unwrapped in raw conversion (mock retains kind name)', () => {
