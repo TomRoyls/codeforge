@@ -1,3 +1,5 @@
+import type { FunctionComplexity, ComplexityCategory } from '../core/complexity.js'
+
 // ─── Interfaces ──────────────────────────────────────────
 
 export type RiskLevel = 'high' | 'low' | 'medium' | 'very-high'
@@ -331,8 +333,12 @@ export function buildComplexityResult(fileResults: FileComplexity[]): Complexity
  * @example
  * filterByThreshold(functions, 5)  // only complexity >= 5
  */
-export function filterByThreshold(functions: FunctionInfo[], threshold: number): FunctionInfo[] {
-  return functions.filter((fn) => fn.complexity >= threshold)
+export function filterByThreshold<T extends { cyclomatic?: number; complexity?: number }>(
+  functions: T[],
+  threshold: number,
+): T[] {
+  if (threshold <= 0) return functions
+  return functions.filter((fn) => (fn.cyclomatic ?? fn.complexity ?? 0) > threshold)
 }
 
 /**
@@ -347,4 +353,145 @@ export function filterByThreshold(functions: FunctionInfo[], threshold: number):
  */
 export function takeTop(functions: FunctionInfo[], n: number): FunctionInfo[] {
   return functions.slice(0, n)
+}
+
+// ─── Complexity Output Functions ───────────────────────
+
+export function buildIgnorePatterns(
+  defaults: string[],
+  userIgnore: string[] | undefined,
+): string[] {
+  if (!userIgnore || userIgnore.length === 0) return defaults
+  return [...defaults, ...userIgnore]
+}
+
+export function parseExtensions(input: string): string[] | null {
+  if (input.length === 0) return null
+  return input
+    .split(',')
+    .map((ext) => ext.trim())
+    .filter((ext) => ext.length > 0)
+}
+
+export function sortByField(
+  results: FunctionComplexity[],
+  field: string,
+): FunctionComplexity[] {
+  const sorted = [...results]
+  switch (field) {
+    case 'complexity':
+      sorted.sort((a, b) => b.cyclomatic - a.cyclomatic)
+      break
+    case 'file':
+      sorted.sort((a, b) => a.filePath.localeCompare(b.filePath))
+      break
+    case 'name':
+    default:
+      sorted.sort((a, b) => a.functionName.localeCompare(b.functionName))
+      break
+  }
+  return sorted
+}
+
+export function getCategoryColor(
+  _category: ComplexityCategory | string,
+): (text: string) => string {
+  return (text: string) => text
+}
+
+export function limitResults<T>(items: T[], limit: number): T[] {
+  if (limit <= 0) return []
+  return items.slice(0, limit)
+}
+
+export function buildJsonOutput(data: FunctionComplexity[]): string {
+  const summary = {
+    totalFunctions: data.length,
+    averageCyclomatic: data.length > 0
+      ? data.reduce((sum, f) => sum + f.cyclomatic, 0) / data.length
+      : 0,
+    averageCognitive: data.length > 0
+      ? data.reduce((sum, f) => sum + f.cognitive, 0) / data.length
+      : 0,
+    maxCyclomatic: data.length > 0 ? Math.max(...data.map((f) => f.cyclomatic)) : 0,
+    maxCognitive: data.length > 0 ? Math.max(...data.map((f) => f.cognitive)) : 0,
+    categoryBreakdown: {
+      low: data.filter((f) => f.category === 'low').length,
+      moderate: data.filter((f) => f.category === 'moderate').length,
+      high: data.filter((f) => f.category === 'high').length,
+      extreme: data.filter((f) => f.category === 'extreme').length,
+    },
+  }
+  return JSON.stringify({ functions: data, summary })
+}
+
+export function formatMarkdown(data: FunctionComplexity[]): string {
+  const lines: string[] = []
+  lines.push('# Complexity Analysis')
+  lines.push('')
+
+  if (data.length > 0) {
+    lines.push('| Function | File | Line | Cyclomatic | Cognitive | Category |')
+    lines.push('|---|---|---|---|---|---|')
+    for (const f of data) {
+      lines.push(
+        `| ${f.functionName} | ${f.filePath} | ${f.startLine} | ${f.cyclomatic} | ${f.cognitive} | ${f.category} |`,
+      )
+    }
+    lines.push('')
+  }
+
+  lines.push('## Summary')
+  lines.push(`Total functions: ${data.length}`)
+  if (data.length > 0) {
+    const avgCyc = data.reduce((s, f) => s + f.cyclomatic, 0) / data.length
+    lines.push(`Average cyclomatic: ${avgCyc.toFixed(1)}`)
+  }
+
+  lines.push('')
+  lines.push('## Category Breakdown')
+  lines.push(`Low: ${data.filter((f) => f.category === 'low').length}`)
+  lines.push(`Moderate: ${data.filter((f) => f.category === 'moderate').length}`)
+  lines.push(`High: ${data.filter((f) => f.category === 'high').length}`)
+  lines.push(`Extreme: ${data.filter((f) => f.category === 'extreme').length}`)
+
+  return lines.join('\n')
+}
+
+export function formatTable(data: FunctionComplexity[]): string {
+  if (data.length === 0) return 'No functions found.'
+
+  const lines: string[] = []
+  lines.push('Complexity Analysis')
+  lines.push('')
+
+  for (const f of data) {
+    const name = f.functionName.length > 28
+      ? f.functionName.slice(0, 28)
+      : f.functionName
+    lines.push(
+      `  ${name.padEnd(30)} ${f.filePath}:${f.startLine}  cyc=${f.cyclomatic}  cog=${f.cognitive}  [${f.category}]`,
+    )
+  }
+
+  lines.push('')
+  lines.push('Summary:')
+  lines.push(`  Total functions: ${data.length}`)
+
+  lines.push('')
+  lines.push('Category breakdown:')
+  lines.push(`  Low: ${data.filter((f) => f.category === 'low').length}`)
+  lines.push(`  Moderate: ${data.filter((f) => f.category === 'moderate').length}`)
+  lines.push(`  High: ${data.filter((f) => f.category === 'high').length}`)
+  lines.push(`  Extreme: ${data.filter((f) => f.category === 'extreme').length}`)
+
+  return lines.join('\n')
+}
+
+export function formatOutput(
+  data: FunctionComplexity[],
+  format: string,
+): string {
+  if (format === 'markdown') return formatMarkdown(data)
+  return formatTable(data)
 }
