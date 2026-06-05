@@ -472,6 +472,16 @@ function applyRawPostFixups(
     else result.kind = 'method'
   }
 
+  if (kindName === 'ShorthandPropertyAssignment' && result.type === 'Property') {
+    if (!result.shorthand) result.shorthand = true
+    if (!result.value && result.key) result.value = { ...result.key }
+    if (!result.computed) result.computed = false
+  }
+
+  if (kindName === 'PropertyAssignment' && result.type === 'Property') {
+    if (!result.computed) result.computed = false
+  }
+
   if (
     (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') &&
     !result.superClass
