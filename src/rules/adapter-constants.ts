@@ -164,6 +164,7 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   NumericLiteral: 'Literal',
   ObjectKeyword: 'TSObjectKeyword',
   ObjectLiteralExpression: 'ObjectExpression',
+  OutKeyword: 'TSOutKeyword',
   PostfixUnaryExpression: 'UpdateExpression',
   PrefixUnaryExpression: 'UnaryExpression',
   PrivateIdentifier: 'PrivateIdentifier',
