@@ -7,8 +7,8 @@ function createConstEnum(name: string, line = 1, column = 0): unknown {
   return {
     type: 'TSEnumDeclaration',
     id: { type: 'Identifier', name },
-    modifiers: [{ type: 'TSConstKeyword' }],
-    members: [],
+    const: true,
+    body: { type: 'TSEnumBody', members: [] },
     loc: {
       start: { line, column },
       end: { line, column: column + 30 },
@@ -20,7 +20,7 @@ function createRegularEnum(name: string, line = 1, column = 0): unknown {
   return {
     type: 'TSEnumDeclaration',
     id: { type: 'Identifier', name },
-    members: [],
+    body: { type: 'TSEnumBody', members: [] },
     loc: {
       start: { line, column },
       end: { line, column: column + 30 },
@@ -32,8 +32,8 @@ function createEnumWithOtherModifiers(name: string, line = 1, column = 0): unkno
   return {
     type: 'TSEnumDeclaration',
     id: { type: 'Identifier', name },
-    modifiers: [{ type: 'TSExportKeyword' }],
-    members: [],
+    export: true,
+    body: { type: 'TSEnumBody', members: [] },
     loc: {
       start: { line, column },
       end: { line, column: column + 30 },
@@ -45,8 +45,9 @@ function createConstExportEnum(name: string, line = 1, column = 0): unknown {
   return {
     type: 'TSEnumDeclaration',
     id: { type: 'Identifier', name },
-    modifiers: [{ type: 'TSExportKeyword' }, { type: 'TSConstKeyword' }],
-    members: [],
+    const: true,
+    export: true,
+    body: { type: 'TSEnumBody', members: [] },
     loc: {
       start: { line, column },
       end: { line, column: column + 30 },
@@ -166,7 +167,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSInterfaceDeclaration',
       id: { type: 'Identifier', name: 'Test' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -187,8 +188,8 @@ describe('no-const-enum', () => {
   test('handles enum without id', () => {
     const node = {
       type: 'TSEnumDeclaration',
-      modifiers: [{ type: 'TSConstKeyword' }],
-      members: [],
+      const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -200,8 +201,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: 'not-an-object',
-      modifiers: [{ type: 'TSConstKeyword' }],
-      members: [],
+      const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -228,8 +229,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Test' },
-      modifiers: [{ type: 'TSDeclareKeyword' }],
-      members: [],
+      declare: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -240,7 +241,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Status' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'Active' } },
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'Inactive' } },
@@ -278,8 +279,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Test' },
-      modifiers: [{ type: 'TSAbstractKeyword' }],
-      members: [],
+      abstract: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -290,8 +291,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Flags' },
-      modifiers: [{ type: 'TSDeclareKeyword' }, { type: 'TSConstKeyword' }],
-      members: [],
+      declare: true, const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
     }
     const reports = runRule(node)
@@ -302,7 +303,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Code' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'OK' }, initializer: { type: 'Literal', value: 200 } },
       ],
@@ -317,7 +318,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Label' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'Name' }, initializer: { type: 'Literal', value: 'hello' } },
       ],
@@ -335,7 +336,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'BigEnum' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members,
       loc: { start: { line: 1, column: 0 }, end: { line: 5, column: 1 } },
     }
@@ -347,7 +348,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Mixed' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'A' }, initializer: { type: 'Literal', value: 1 } },
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'Literal', value: 'two' } },
@@ -386,8 +387,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'ExpFirst' },
-      modifiers: [{ type: 'TSExportKeyword' }, { type: 'TSConstKeyword' }],
-      members: [],
+      const: true, export: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 3, column: 2 }, end: { line: 3, column: 32 } },
     }
     const reports = runRule(node)
@@ -398,8 +399,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'ConstFirst' },
-      modifiers: [{ type: 'TSConstKeyword' }, { type: 'TSExportKeyword' }],
-      members: [],
+      const: true, export: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
     }
     const reports = runRule(node)
@@ -410,8 +411,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'DeclExp' },
-      modifiers: [{ type: 'TSDeclareKeyword' }, { type: 'TSExportKeyword' }, { type: 'TSConstKeyword' }],
-      members: [],
+      declare: true, export: true, const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 40 } },
     }
     const reports = runRule(node)
@@ -422,8 +423,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Ambient' },
-      modifiers: [{ type: 'TSDeclareKeyword' }],
-      members: [],
+      declare: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 25 } },
     }
     const reports = runRule(node)
@@ -435,7 +436,7 @@ describe('no-const-enum', () => {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'DeclExport' },
       modifiers: [{ type: 'TSDeclareKeyword' }, { type: 'TSExportKeyword' }],
-      members: [],
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
     }
     const reports = runRule(node)
@@ -496,7 +497,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Computed' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'A' }, initializer: { type: 'BinaryExpression', operator: '+', left: { type: 'Literal', value: 1 }, right: { type: 'Literal', value: 2 } } },
       ],
@@ -565,8 +566,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'tsenumdeclaration',
       id: { type: 'Identifier', name: 'Wrong' },
-      modifiers: [{ type: 'TSConstKeyword' }],
-      members: [],
+      const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -578,7 +579,7 @@ describe('no-const-enum', () => {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Test' },
       modifiers: ['TSConstKeyword', 42, null],
-      members: [],
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -589,8 +590,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Extra' },
-      modifiers: [{ type: 'TSConstKeyword' }],
-      members: [],
+      const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
       range: [0, 20],
       extra: true,
@@ -604,7 +605,7 @@ describe('no-const-enum', () => {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Test' },
       modifiers: [null, null],
-      members: [],
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -615,8 +616,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'LastMod' },
-      modifiers: [{ type: 'TSExportKeyword' }, { type: 'TSDeclareKeyword' }, { type: 'TSConstKeyword' }],
-      members: [],
+      export: true, declare: true, const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
     }
     const reports = runRule(node)
@@ -627,8 +628,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'FirstMod' },
-      modifiers: [{ type: 'TSConstKeyword' }, { type: 'TSDeclareKeyword' }, { type: 'TSExportKeyword' }],
-      members: [],
+      const: true, declare: true, export: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
     }
     const reports = runRule(node)
@@ -639,8 +640,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'MidMod' },
-      modifiers: [{ type: 'TSExportKeyword' }, { type: 'TSConstKeyword' }, { type: 'TSDeclareKeyword' }],
-      members: [],
+      export: true, const: true, declare: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
     }
     const reports = runRule(node)
@@ -701,7 +702,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Multi' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'A' } },
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' } },
@@ -718,7 +719,7 @@ describe('no-const-enum', () => {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Test' },
       modifiers: [{ type: 'ConstKeyword' }],
-      members: [],
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -730,7 +731,7 @@ describe('no-const-enum', () => {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Test' },
       modifiers: [{ type: 'TSConst' }],
-      members: [],
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -741,7 +742,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSTypeAliasDeclaration',
       id: { type: 'Identifier', name: 'MyType' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -752,7 +753,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSModuleDeclaration',
       id: { type: 'Identifier', name: 'MyModule' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -763,8 +764,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier' },
-      modifiers: [{ type: 'TSConstKeyword' }],
-      members: [],
+      const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -776,8 +777,8 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: '123Enum' },
-      modifiers: [{ type: 'TSConstKeyword' }],
-      members: [],
+      const: true,
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -790,7 +791,7 @@ describe('no-const-enum', () => {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Test' },
       modifiers: [1, 2, 3],
-      members: [],
+      body: { type: 'TSEnumBody', members: [] },
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
     }
     const reports = runRule(node)
@@ -839,7 +840,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'AllInit' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'A' }, initializer: { type: 'Literal', value: 0 } },
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'Literal', value: 1 } },
@@ -855,7 +856,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'Neg' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'Identifier', name: 'Val' }, initializer: { type: 'UnaryExpression', operator: '-', argument: { type: 'Literal', value: 1 } } },
       ],
@@ -869,7 +870,7 @@ describe('no-const-enum', () => {
     const node = {
       type: 'TSEnumDeclaration',
       id: { type: 'Identifier', name: 'StrKeys' },
-      modifiers: [{ type: 'TSConstKeyword' }],
+      const: true,
       members: [
         { type: 'TSEnumMember', id: { type: 'StringLiteral', value: 'key-a' } },
         { type: 'TSEnumMember', id: { type: 'StringLiteral', value: 'key-b' } },

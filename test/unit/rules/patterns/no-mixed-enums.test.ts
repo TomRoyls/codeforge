@@ -46,19 +46,19 @@ function makeLoc(startLine: number, startCol: number, endLine: number, endCol: n
 
 function makeEnumDecl(members: Array<Record<string, unknown>>, line = 1, col = 0): unknown {
   return {
-    type: 'TsEnumDeclaration',
+    type: 'TSEnumDeclaration',
     id: { type: 'Identifier', name: 'MyEnum' },
-    members,
+    body: { type: 'TSEnumBody', members },
     loc: makeLoc(line, col, line, col + 20),
   }
 }
 
 function implicitMember(name: string): Record<string, unknown> {
-  return { type: 'TsEnumMember', id: { type: 'Identifier', name }, initializer: null }
+  return { type: 'TSEnumMember', id: { type: 'Identifier', name }, initializer: null }
 }
 
 function explicitMember(name: string, value: unknown = 1): Record<string, unknown> {
-  return { type: 'TsEnumMember', id: { type: 'Identifier', name }, initializer: { type: 'NumericLiteral', value } }
+  return { type: 'TSEnumMember', id: { type: 'Identifier', name }, initializer: { type: 'NumericLiteral', value } }
 }
 
 describe('no-mixed-enums rule', () => {
@@ -103,11 +103,11 @@ describe('no-mixed-enums rule', () => {
 
   // ===== STRUCTURE TESTS (2) =====
   describe('structure', () => {
-    test('create() returns visitor with TsEnumDeclaration', () => {
+    test('create() returns visitor with TSEnumDeclaration', () => {
       const { context } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      expect(visitor).toHaveProperty('TsEnumDeclaration')
-      expect(typeof visitor.TsEnumDeclaration).toBe('function')
+      expect(visitor).toHaveProperty('TSEnumDeclaration')
+      expect(typeof visitor.TSEnumDeclaration).toBe('function')
     })
 
     test('default export matches named export', () => {
@@ -122,56 +122,56 @@ describe('no-mixed-enums rule', () => {
     test('reports enum with one implicit and one explicit member', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports.length).toBe(1)
     })
 
     test('reports enum with two implicit and one explicit member', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B'), explicitMember('C')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B'), explicitMember('C')]))
       expect(reports.length).toBe(1)
     })
 
     test('reports enum with one implicit and two explicit members', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B'), explicitMember('C')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B'), explicitMember('C')]))
       expect(reports.length).toBe(1)
     })
 
     test('message contains "mixed"', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports[0].message.toLowerCase()).toContain('mixed')
     })
 
     test('message contains "implicit"', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports[0].message.toLowerCase()).toContain('implicit')
     })
 
     test('message contains "explicit"', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports[0].message.toLowerCase()).toContain('explicit')
     })
 
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports[0].node).toBeDefined()
     })
 
@@ -179,21 +179,21 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = makeEnumDecl([implicitMember('A'), explicitMember('B')])
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports[0].node).toBe(node)
     })
 
     test('reports when explicit comes before implicit', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([explicitMember('A'), implicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([explicitMember('A'), implicitMember('B')]))
       expect(reports.length).toBe(1)
     })
 
     test('reports with many mixed members', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'), explicitMember('B'), implicitMember('C'), explicitMember('D'),
       ]))
       expect(reports.length).toBe(1)
@@ -202,7 +202,7 @@ describe('no-mixed-enums rule', () => {
     test('reports with correct location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')], 5, 8))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')], 5, 8))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(8)
     })
@@ -210,15 +210,15 @@ describe('no-mixed-enums rule', () => {
     test('reports only once per mixed enum', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports.length).toBe(1)
     })
 
     test('accumulates reports across multiple mixed enums', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('X'), explicitMember('Y')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('X'), explicitMember('Y')]))
       expect(reports.length).toBe(2)
     })
 
@@ -226,10 +226,10 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = makeEnumDecl([
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'A' } },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'A' } },
         explicitMember('B'),
       ])
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(1)
     })
 
@@ -237,19 +237,19 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = makeEnumDecl([
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'A' } } as Record<string, unknown>,
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'A' } } as Record<string, unknown>,
         explicitMember('B'),
       ])
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(1)
     })
 
     test('reports with initializer as string literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'),
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'StringLiteral', value: 'hello' } },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'StringLiteral', value: 'hello' } },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -257,9 +257,9 @@ describe('no-mixed-enums rule', () => {
     test('reports with initializer as computed expression', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'),
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'BinaryExpression', operator: '+' } },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'BinaryExpression', operator: '+' } },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -267,7 +267,7 @@ describe('no-mixed-enums rule', () => {
     test('reports enum with explicit member initialized to zero', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'),
         explicitMember('B', 0),
       ]))
@@ -277,9 +277,9 @@ describe('no-mixed-enums rule', () => {
     test('reports enum with explicit member initialized to empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'),
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'StringLiteral', value: '' } },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'StringLiteral', value: '' } },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -290,21 +290,21 @@ describe('no-mixed-enums rule', () => {
     test('does not report null node', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      expect(() => visitor.TsEnumDeclaration(null)).not.toThrow()
+      expect(() => visitor.TSEnumDeclaration(null)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('does not report undefined node', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      expect(() => visitor.TsEnumDeclaration(undefined)).not.toThrow()
+      expect(() => visitor.TSEnumDeclaration(undefined)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('does not report empty object — wrong type', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      expect(() => visitor.TsEnumDeclaration({})).not.toThrow()
+      expect(() => visitor.TSEnumDeclaration({})).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
@@ -312,7 +312,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -320,66 +320,66 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'Literal', value: 42, loc: makeLoc(1, 0, 1, 2) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
-    test('does not report TsEnumDeclaration with single implicit member', () => {
+    test('does not report TSEnumDeclaration with single implicit member', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A')]))
       expect(reports.length).toBe(0)
     })
 
-    test('does not report TsEnumDeclaration with single explicit member', () => {
+    test('does not report TSEnumDeclaration with single explicit member', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([explicitMember('A')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([explicitMember('A')]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report enum with all implicit members', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B'), implicitMember('C')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B'), implicitMember('C')]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report enum with all explicit members', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([explicitMember('A'), explicitMember('B'), explicitMember('C')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([explicitMember('A'), explicitMember('B'), explicitMember('C')]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report enum with empty members array', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([]))
+      visitor.TSEnumDeclaration(makeEnumDecl([]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when members is not an array', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      const node = { type: 'TsEnumDeclaration', id: { type: 'Identifier', name: 'E' }, members: 'not-array', loc: makeLoc(1, 0, 1, 5) }
-      visitor.TsEnumDeclaration(node)
+      const node = { type: 'TSEnumDeclaration', id: { type: 'Identifier', name: 'E' }, members: 'not-array', loc: makeLoc(1, 0, 1, 5) }
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
     test('does not report when members is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      const node = { type: 'TsEnumDeclaration', id: { type: 'Identifier', name: 'E' }, members: null, loc: makeLoc(1, 0, 1, 5) }
-      visitor.TsEnumDeclaration(node)
+      const node = { type: 'TSEnumDeclaration', id: { type: 'Identifier', name: 'E' }, members: null, loc: makeLoc(1, 0, 1, 5) }
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
     test('does not report when members is undefined', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      const node = { type: 'TsEnumDeclaration', id: { type: 'Identifier', name: 'E' }, loc: makeLoc(1, 0, 1, 5) }
-      visitor.TsEnumDeclaration(node)
+      const node = { type: 'TSEnumDeclaration', id: { type: 'Identifier', name: 'E' }, loc: makeLoc(1, 0, 1, 5) }
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -387,7 +387,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -395,7 +395,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'CallExpression', callee: {}, arguments: [], loc: makeLoc(1, 0, 1, 5) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -403,7 +403,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'MemberExpression', object: {}, property: {}, loc: makeLoc(1, 0, 1, 8) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -411,7 +411,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'FunctionExpression', id: {}, params: [], body: {}, loc: makeLoc(1, 0, 1, 20) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -419,7 +419,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'ArrowFunctionExpression', params: [], body: {}, loc: makeLoc(1, 0, 1, 15) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -427,7 +427,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'VariableDeclaration', declarations: [], kind: 'const', loc: makeLoc(1, 0, 1, 10) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -435,7 +435,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'ExpressionStatement', expression: {}, loc: makeLoc(1, 0, 1, 1) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -443,7 +443,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'BlockStatement', body: [], loc: makeLoc(1, 0, 1, 2) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -451,7 +451,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -459,7 +459,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -467,7 +467,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'AssignmentExpression', operator: '=', left: {}, right: {}, loc: makeLoc(1, 0, 1, 10) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -475,7 +475,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -483,7 +483,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'ObjectExpression', properties: [], loc: makeLoc(1, 0, 1, 2) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -491,7 +491,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'ArrayExpression', elements: [], loc: makeLoc(1, 0, 1, 2) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -499,7 +499,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'ConditionalExpression', test: {}, consequent: {}, alternate: {}, loc: makeLoc(1, 0, 1, 15) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
@@ -507,52 +507,52 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'NewExpression', callee: {}, arguments: [], loc: makeLoc(1, 0, 1, 8) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
     test('does not report for non-object node (string primitive)', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      expect(() => visitor.TsEnumDeclaration('not a node')).not.toThrow()
+      expect(() => visitor.TSEnumDeclaration('not a node')).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('does not report for non-object node (number primitive)', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      expect(() => visitor.TsEnumDeclaration(42)).not.toThrow()
+      expect(() => visitor.TSEnumDeclaration(42)).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
-    test('does not report TsEnumDeclaration with no members property', () => {
+    test('does not report TSEnumDeclaration with no members property', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      const node = { type: 'TsEnumDeclaration', id: { type: 'Identifier', name: 'E' }, loc: makeLoc(1, 0, 1, 5) }
-      visitor.TsEnumDeclaration(node)
+      const node = { type: 'TSEnumDeclaration', id: { type: 'Identifier', name: 'E' }, loc: makeLoc(1, 0, 1, 5) }
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
 
     test('does not report when members contain non-object entries (null)', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([null as unknown as Record<string, unknown>, explicitMember('A')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([null as unknown as Record<string, unknown>, explicitMember('A')]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when members contain non-object entries (string)', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl(['bad' as unknown as Record<string, unknown>, explicitMember('A')]))
+      visitor.TSEnumDeclaration(makeEnumDecl(['bad' as unknown as Record<string, unknown>, explicitMember('A')]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when member initializer is false (not null/undefined)', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'A' }, initializer: false },
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: null },
+      visitor.TSEnumDeclaration(makeEnumDecl([
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'A' }, initializer: false },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: null },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -565,8 +565,8 @@ describe('no-mixed-enums rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noMixedEnumsRule.create(ctx1)
       const visitor2 = noMixedEnumsRule.create(ctx2)
-      visitor1.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
-      visitor2.TsEnumDeclaration(makeEnumDecl([implicitMember('X'), implicitMember('Y')]))
+      visitor1.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor2.TSEnumDeclaration(makeEnumDecl([implicitMember('X'), implicitMember('Y')]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -575,11 +575,11 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = {
-        type: 'TsEnumDeclaration',
+        type: 'TSEnumDeclaration',
         id: { type: 'Identifier', name: 'MyEnum' },
         members: [implicitMember('A'), explicitMember('B')],
       }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(1)
     })
 
@@ -587,11 +587,11 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = {
-        type: 'TsEnumDeclaration',
+        type: 'TSEnumDeclaration',
         id: { type: 'Identifier', name: 'MyEnum' },
         members: [implicitMember('A'), explicitMember('B')],
       }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
     })
@@ -600,12 +600,12 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = {
-        type: 'TsEnumDeclaration',
+        type: 'TSEnumDeclaration',
         id: { type: 'Identifier', name: 'MyEnum' },
         members: [implicitMember('A'), explicitMember('B')],
         loc: {},
       }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(1)
     })
 
@@ -613,12 +613,12 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = {
-        type: 'TsEnumDeclaration',
+        type: 'TSEnumDeclaration',
         id: { type: 'Identifier', name: 'MyEnum' },
         members: [implicitMember('A'), explicitMember('B')],
         loc: { start: { line: 3, column: 5 } },
       }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(1)
       expect(reports[0].loc?.start.line).toBe(3)
       expect(reports[0].loc?.start.column).toBe(5)
@@ -628,7 +628,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = {
-        type: 'TsEnumDeclaration',
+        type: 'TSEnumDeclaration',
         id: { type: 'Identifier', name: 'MyEnum' },
         members: [implicitMember('A'), explicitMember('B')],
         loc: makeLoc(1, 0, 1, 20),
@@ -636,17 +636,17 @@ describe('no-mixed-enums rule', () => {
         extra: true,
         parent: {},
       }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(1)
     })
 
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([explicitMember('A'), explicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('X'), explicitMember('Y')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([explicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('X'), explicitMember('Y')]))
       expect(reports.length).toBe(2)
     })
 
@@ -660,7 +660,7 @@ describe('no-mixed-enums rule', () => {
     test('location with specific line/column values', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')], 10, 4))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')], 10, 4))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
     })
@@ -668,21 +668,21 @@ describe('no-mixed-enums rule', () => {
     test('does not report enum with exactly 2 all-implicit members', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B')]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report enum with exactly 2 all-explicit members', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([explicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([explicitMember('A'), explicitMember('B')]))
       expect(reports.length).toBe(0)
     })
 
     test('enum with many members all implicit is not reported', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'), implicitMember('B'), implicitMember('C'),
         implicitMember('D'), implicitMember('E'),
       ]))
@@ -692,7 +692,7 @@ describe('no-mixed-enums rule', () => {
     test('enum with many members all explicit is not reported', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         explicitMember('A', 1), explicitMember('B', 2), explicitMember('C', 3),
         explicitMember('D', 4), explicitMember('E', 5),
       ]))
@@ -702,7 +702,7 @@ describe('no-mixed-enums rule', () => {
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -711,7 +711,7 @@ describe('no-mixed-enums rule', () => {
     test('message is exactly as defined in the rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports[0].message).toBe(
         'Enum has mixed implicit and explicit member values. Use either all explicit or all implicit values for consistency.',
       )
@@ -723,8 +723,8 @@ describe('no-mixed-enums rule', () => {
     test('reports two mixed enums with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('X'), explicitMember('Y')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('X'), explicitMember('Y')]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -732,8 +732,8 @@ describe('no-mixed-enums rule', () => {
     test('all reports follow same message pattern', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([explicitMember('P'), implicitMember('Q')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([explicitMember('P'), implicitMember('Q')]))
       for (const r of reports) {
         expect(r.message).toContain('mixed implicit and explicit')
       }
@@ -754,9 +754,9 @@ describe('no-mixed-enums rule', () => {
     test('multiple same mixed enums report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
       expect(reports.length).toBe(3)
     })
 
@@ -764,19 +764,19 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = {
-        type: 'TsEnumDeclaration',
+        type: 'TSEnumDeclaration',
         members: [implicitMember('A'), explicitMember('B')],
       }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(1)
     })
 
     test('reports enum with initializer as object (truthy)', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'),
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: {} },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: {} },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -784,7 +784,7 @@ describe('no-mixed-enums rule', () => {
     test('does not report when both members have initializer set to zero', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         explicitMember('A', 0),
         explicitMember('B', 0),
       ]))
@@ -794,7 +794,7 @@ describe('no-mixed-enums rule', () => {
     test('reports mixed enum with five members', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'), implicitMember('B'), implicitMember('C'),
         explicitMember('D'), explicitMember('E'),
       ]))
@@ -804,7 +804,7 @@ describe('no-mixed-enums rule', () => {
     test('reports when only one member is implicit among many explicit', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         explicitMember('A'), explicitMember('B'), explicitMember('C'), implicitMember('D'),
       ]))
       expect(reports.length).toBe(1)
@@ -813,7 +813,7 @@ describe('no-mixed-enums rule', () => {
     test('reports when only one member is explicit among many implicit', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'), implicitMember('B'), implicitMember('C'), explicitMember('D'),
       ]))
       expect(reports.length).toBe(1)
@@ -822,18 +822,18 @@ describe('no-mixed-enums rule', () => {
     test('visitor accumulates reports correctly with mixed valid and invalid', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
-      visitor.TsEnumDeclaration(makeEnumDecl([explicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), implicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([implicitMember('A'), explicitMember('B')]))
+      visitor.TSEnumDeclaration(makeEnumDecl([explicitMember('A'), explicitMember('B')]))
       expect(reports.length).toBe(1)
     })
 
     test('handles node with members containing only null initializer', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'A' }, initializer: null },
-        { type: 'TsEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: null },
+      visitor.TSEnumDeclaration(makeEnumDecl([
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'A' }, initializer: null },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: null },
       ]))
       expect(reports.length).toBe(0)
     })
@@ -841,7 +841,7 @@ describe('no-mixed-enums rule', () => {
     test('handles large mixed enum with alternating members', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
-      visitor.TsEnumDeclaration(makeEnumDecl([
+      visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'), explicitMember('B'), implicitMember('C'),
         explicitMember('D'), implicitMember('E'), explicitMember('F'),
       ]))
@@ -852,7 +852,7 @@ describe('no-mixed-enums rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noMixedEnumsRule.create(context)
       const node = { type: 'TsTypeAliasDeclaration', id: {}, typeAnnotation: {}, loc: makeLoc(1, 0, 1, 10) }
-      visitor.TsEnumDeclaration(node)
+      visitor.TSEnumDeclaration(node)
       expect(reports.length).toBe(0)
     })
   })
