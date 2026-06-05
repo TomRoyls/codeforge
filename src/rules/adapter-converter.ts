@@ -121,6 +121,16 @@ export function convertRawCompilerNode(
       continue
     }
 
+    if (key === 'awaitModifier' && val && typeof val === 'object') {
+      result.await = true
+      continue
+    }
+
+    if (key === 'asteriskToken' && val && typeof val === 'object') {
+      result.generator = true
+      continue
+    }
+
     if (SKIP_KEYS.has(key)) continue
 
     const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
@@ -959,6 +969,16 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
               if (access) { result.accessibility = access; continue }
             }
           }
+          continue
+        }
+
+        if (key === 'awaitModifier' && val && typeof val === 'object') {
+          result.await = true
+          continue
+        }
+
+        if (key === 'asteriskToken' && val && typeof val === 'object') {
+          result.generator = true
           continue
         }
 

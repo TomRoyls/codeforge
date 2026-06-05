@@ -303,7 +303,6 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
 export const MAX_DEPTH = 5
 
 export const SKIP_KEYS = new Set([
-  'asteriskToken',
   'colonToken',
   'emitNode',
   'end',

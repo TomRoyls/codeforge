@@ -650,6 +650,16 @@ function convertRawCompilerNode(
       continue
     }
 
+    if (key === 'awaitModifier' && val && typeof val === 'object') {
+      result.await = true
+      continue
+    }
+
+    if (key === 'asteriskToken' && val && typeof val === 'object') {
+      result.generator = true
+      continue
+    }
+
     if (SKIP_KEYS.has(key)) continue
 
     const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
@@ -1140,11 +1150,20 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
           continue
         }
 
+        if (key === 'awaitModifier' && val && typeof val === 'object') {
+          result.await = true
+          continue
+        }
+
+        if (key === 'asteriskToken' && val && typeof val === 'object') {
+          result.generator = true
+          continue
+        }
+
         if (SKIP_KEYS.has(key)) continue
 
         const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
 
-        // Special: caseBlock -> extract clauses array as ESTree cases
         if (key === 'caseBlock') {
           const converted = convertCompilerCaseClauses(val, depth)
           if (converted !== undefined) {
