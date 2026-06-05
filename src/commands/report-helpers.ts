@@ -3,6 +3,18 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 import { formatBytes } from '../utils/format-utils.js'
+import {
+  ConsoleReporter,
+  CSVReporter,
+  GitLabReporter,
+  HTMLReporter,
+  JSONReporter,
+  JUnitReporter,
+  MarkdownReporter,
+  SARIFReporter,
+  SonarQubeReporter,
+} from '../reporters/index.js'
+import type { Reporter, ReporterOptions } from '../reporters/types.js'
 
 // ─── Interfaces ──────────────────────────────────────────
 
@@ -617,3 +629,61 @@ export async function buildFullReport(
  * formatBytes(1048576)    // '1.00 MB'
  */
 export { formatBytes } from '../utils/format-utils.js'
+
+// ─── Reporter Factory ──────────────────────────────────
+
+export const CUSTOM_REPORTER_PREFIX = 'custom:'
+
+export function validateAnalysisResult(result: unknown): boolean {
+  if (result === null || typeof result !== 'object') return false
+  const r = result as Record<string, unknown>
+  return 'files' in r && 'summary' in r && 'timestamp' in r
+}
+
+export async function createReporter(
+  format: string,
+  options: ReporterOptions,
+): Promise<Reporter> {
+  if (format.startsWith(CUSTOM_REPORTER_PREFIX)) {
+    const modulePath = format.slice(CUSTOM_REPORTER_PREFIX.length)
+    if (!modulePath) {
+      throw new Error('Custom reporter module path is required')
+    }
+    const mod = await import(modulePath)
+    const ReporterClass = mod.default ?? mod
+    return new ReporterClass(options)
+  }
+
+  switch (format) {
+    case 'json':
+      return new JSONReporter(options)
+    case 'junit':
+      return new JUnitReporter(options)
+    case 'markdown':
+      return new MarkdownReporter(options)
+    case 'sarif':
+      return new SARIFReporter(options)
+    case 'html':
+      return new HTMLReporter(options)
+    case 'gitlab':
+      return new GitLabReporter(options)
+    case 'csv':
+      return new CSVReporter(options)
+    case 'sonarqube':
+      return new SonarQubeReporter(options)
+    default:
+      return new ConsoleReporter(options)
+  }
+}
+
+export function getPlatformOpenCommand(filePath: string, platform: string): string {
+  const quoted = `"${filePath}"`
+  switch (platform) {
+    case 'darwin':
+      return `open ${quoted}`
+    case 'win32':
+      return `start "" ${quoted}`
+    default:
+      return `xdg-open ${quoted}`
+  }
+}
