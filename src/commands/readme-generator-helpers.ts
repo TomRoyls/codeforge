@@ -111,11 +111,10 @@ export async function extractCommands(
       const nameMatch = content.match(/static\s+override\s+description\s*=\s*['"](.+?)['"]/)
       const desc = nameMatch?.[1] ?? ''
 
-      const baseName = file
+      const baseName = (file
         .replace(/\\/g, '/')
         .split('/')
-        .at(-1) ?? ''
-        .replace(/\.(ts|js)$/, '')
+        .at(-1) ?? '').replace(/\.(ts|js)$/, '')
 
       const usage = `codeforge ${baseName} [path]`
 
