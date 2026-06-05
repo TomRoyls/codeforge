@@ -212,12 +212,16 @@ function flattenSimpleParameter(base: Record<string, unknown>): void {
   const nameNode = base.name as Record<string, unknown> | undefined
   if (!nameNode || typeof nameNode !== 'object') return
 
+  const savedTypeAnnotation = base.typeAnnotation
   const saved = { end: base.end, loc: base.loc, range: base.range, start: base.start }
   for (const key of Object.keys(base)) {
     delete base[key]
   }
 
   Object.assign(base, nameNode)
+  if (savedTypeAnnotation !== undefined && savedTypeAnnotation !== null) {
+    base.typeAnnotation = savedTypeAnnotation
+  }
   if (nameNode.range === null || nameNode.range === undefined) {
     base.end = saved.end
     base.loc = saved.loc
