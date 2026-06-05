@@ -963,6 +963,20 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
 
   applyPostConvertFixups(result, kindName, compilerNode)
 
+  // ModuleDeclaration: detect namespace vs module keyword from source text
+  // TypeScript flags don't reliably indicate namespace keyword
+  if (kindName === 'ModuleDeclaration' && compilerNode) {
+    try {
+      const sf = node.getSourceFile()
+      const fullText = sf.getFullText()
+      const pos = skipTrivia(compilerNode.pos as number)
+      const keywordMatch = fullText.slice(pos, pos + 15).match(/^(namespace|module)\b/)
+      result.kind = keywordMatch?.[1] ?? 'module'
+    } catch {
+      result.kind = 'module'
+    }
+  }
+
   return result
 }
 
