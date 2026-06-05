@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import chalk from 'chalk'
-import { existsSync, lstatSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, lstatSync, readFileSync, readlinkSync, statSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 
 import {
@@ -36,6 +36,7 @@ vi.mock('node:fs', () => ({
   existsSync: vi.fn(),
   lstatSync: vi.fn(),
   readFileSync: vi.fn(),
+  readlinkSync: vi.fn(),
   statSync: vi.fn(),
 }))
 
@@ -454,8 +455,8 @@ describe('analyzeHook', () => {
     vi.mocked(existsSync).mockReturnValue(true)
     vi.mocked(lstatSync).mockReturnValue({
       isSymbolicLink: () => true,
-      target: '/usr/local/bin/my-hook',
     } as unknown as ReturnType<typeof lstatSync>)
+    vi.mocked(readlinkSync).mockReturnValue('/usr/local/bin/my-hook')
     vi.mocked(statSync).mockReturnValue({
       mode: 0o100755,
       size: 100,
