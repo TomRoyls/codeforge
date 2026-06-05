@@ -1495,8 +1495,8 @@ describe('adapter-constants', () => {
       expect(KIND_SPECIFIC_MAP['ExportSpecifier']['name']).toBe('exported')
     })
 
-    test('maps ExportSpecifier propertyName to imported', () => {
-      expect(KIND_SPECIFIC_MAP['ExportSpecifier']['propertyName']).toBe('imported')
+    test('maps ExportSpecifier propertyName to local', () => {
+      expect(KIND_SPECIFIC_MAP['ExportSpecifier']['propertyName']).toBe('local')
     })
 
     test('maps ParenthesizedExpression expression to expression', () => {

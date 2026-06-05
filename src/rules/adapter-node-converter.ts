@@ -385,15 +385,19 @@ function buildExportSpecifier(el: unknown): Record<string, unknown> | undefined 
     start: e.pos,
     type: 'ExportSpecifier',
   }
+  // TS: name = exported name, propertyName = local name (when aliased)
+  // ESTree: exported = what consumers see, local = name in this module
   if (e.name && typeof e.name === 'object') {
     const nameObj = e.name as Record<string, unknown>
     spec.exported = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
+    // Default: local equals exported when no alias
     spec.local = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
   }
 
   if (e.propertyName && typeof e.propertyName === 'object') {
+    // Aliased export: propertyName is the original local name
     const pn = e.propertyName as Record<string, unknown>
-    spec.exported = { name: pn.text, type: 'Identifier', value: pn.text }
+    spec.local = { name: pn.text, type: 'Identifier', value: pn.text }
   }
 
   spec.exportKind = typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'

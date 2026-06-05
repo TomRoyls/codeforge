@@ -152,13 +152,15 @@ function extractExportSpecifiers(node: Node): unknown[] {
         }
         if (e.name && typeof e.name === 'object') {
           const nameObj = e.name as Record<string, unknown>
-          spec.local = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
+          // TS: name = exported name, propertyName = local name (when aliased)
           spec.exported = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
+          spec.local = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
         }
 
         if (e.propertyName && typeof e.propertyName === 'object') {
+          // Aliased export: propertyName is the original local name
           const pn = e.propertyName as Record<string, unknown>
-          spec.exported = { name: pn.text, type: 'Identifier', value: pn.text }
+          spec.local = { name: pn.text, type: 'Identifier', value: pn.text }
         }
 
         spec.exportKind =

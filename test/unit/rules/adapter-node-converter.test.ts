@@ -634,8 +634,8 @@ describe('adapter-node-converter', () => {
           exportClause: {
             elements: [
               {
-                name: { text: 'localName', pos: 10, end: 19 },
-                propertyName: { text: 'publicName', pos: 10, end: 20 },
+                name: { text: 'exportedName', pos: 10, end: 22 },
+                propertyName: { text: 'originalName', pos: 10, end: 22 },
                 pos: 9,
                 end: 21,
               },
@@ -645,8 +645,8 @@ describe('adapter-node-converter', () => {
       })
       const specs = extractExportSpecifiers(node)
       const spec = specs[0] as Record<string, unknown>
-      expect(spec.local).toEqual({ type: 'Identifier', name: 'localName', value: 'localName' })
-      expect(spec.exported).toEqual({ type: 'Identifier', name: 'publicName', value: 'publicName' })
+      expect(spec.exported).toEqual({ type: 'Identifier', name: 'exportedName', value: 'exportedName' })
+      expect(spec.local).toEqual({ type: 'Identifier', name: 'originalName', value: 'originalName' })
     })
 
     test('skips null elements', () => {
