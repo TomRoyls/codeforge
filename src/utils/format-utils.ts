@@ -35,10 +35,7 @@ export function formatNumber(n: number): string {
   return n.toLocaleString('en-US')
 }
 
-export function formatBytes(bytes: number, decimals = 2): string {
-  if (bytes === 0) {
-    return '0 B'
-  }
+export function formatBytes(bytes: number, decimals = 1): string {
   const units = ['B', 'KB', 'MB', 'GB', 'TB']
   const divisor = 1024
   let size = bytes
