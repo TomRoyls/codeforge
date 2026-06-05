@@ -464,6 +464,41 @@ function applyRawPostFixups(
       }
     }
   }
+
+  if (result.type === 'MethodDefinition' && !result.kind) {
+    if (kindName === 'Constructor') result.kind = 'constructor'
+    else if (kindName === 'GetAccessor') result.kind = 'get'
+    else if (kindName === 'SetAccessor') result.kind = 'set'
+    else result.kind = 'method'
+  }
+
+  if (
+    (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') &&
+    !result.superClass
+  ) {
+    const heritageClauses = raw.heritageClauses as unknown[]
+    if (Array.isArray(heritageClauses)) {
+      for (const clause of heritageClauses) {
+        if (
+          clause &&
+          typeof clause === 'object' &&
+          (clause as Record<string, unknown>).token === 96
+        ) {
+          const types = (clause as Record<string, unknown>).types as unknown[]
+          if (Array.isArray(types) && types.length > 0) {
+            const firstType = types[0] as Record<string, unknown>
+            if (firstType && typeof firstType.expression === 'object') {
+              result.superClass = convertRawCompilerNode(
+                firstType.expression as Record<string, unknown>,
+                0,
+              )
+            }
+          }
+          break
+        }
+      }
+    }
+  }
 }
 
 function applyLiteralValue(result: Record<string, unknown>, kindName: string, node: Node): void {
@@ -650,6 +685,41 @@ function applyPostConvertFixups(
     delete result.questionDotToken
     if (result.type === 'MemberExpression') result.type = 'OptionalMemberExpression'
     if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
+  }
+
+  if (result.type === 'MethodDefinition' && !result.kind) {
+    if (kindName === 'Constructor') result.kind = 'constructor'
+    else if (kindName === 'GetAccessor') result.kind = 'get'
+    else if (kindName === 'SetAccessor') result.kind = 'set'
+    else result.kind = 'method'
+  }
+
+  if (
+    (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') &&
+    !result.superClass
+  ) {
+    const heritageClauses = compilerNode?.heritageClauses as unknown[]
+    if (Array.isArray(heritageClauses)) {
+      for (const clause of heritageClauses) {
+        if (
+          clause &&
+          typeof clause === 'object' &&
+          (clause as Record<string, unknown>).token === 96
+        ) {
+          const types = (clause as Record<string, unknown>).types as unknown[]
+          if (Array.isArray(types) && types.length > 0) {
+            const firstType = types[0] as Record<string, unknown>
+            if (firstType && typeof firstType.expression === 'object') {
+              result.superClass = convertRawCompilerNode(
+                firstType.expression as Record<string, unknown>,
+                0,
+              )
+            }
+          }
+          break
+        }
+      }
+    }
   }
 }
 
