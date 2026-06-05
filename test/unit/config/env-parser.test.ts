@@ -52,7 +52,7 @@ describe('env-parser', () => {
 
     it('parses multiple rules', () => {
       process.env.CODEFORGE_RULES_MAX_COMPLEXITY = 'error'
-      process.env.CODEFORGE_RULES_NO_CONSOLE_LOG = 'warning'
+      process.env.CODEFORGE_RULES_NO_CONSOLE = 'warning'
       const config = parseEnvVars()
       expect(config.rules).toEqual({
         'max-complexity': 'error',

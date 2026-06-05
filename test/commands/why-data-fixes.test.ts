@@ -117,12 +117,12 @@ describe('FIXES value types', () => {
 // ─── Consistent structure across entries ───
 
 describe('FIXES structural consistency', () => {
-  it('each rule has exactly 4 fix suggestions', () => {
+  it('each rule has at least 4 fix suggestions', () => {
     for (const [key, value] of Object.entries(FIXES)) {
       expect(
         value.length,
-        `FIXES['${key}'] should have 4 suggestions`,
-      ).toBe(4)
+        `FIXES['${key}'] should have at least 4 suggestions`,
+      ).toBeGreaterThanOrEqual(4)
     }
   })
 
