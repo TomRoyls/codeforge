@@ -9,6 +9,8 @@ function getParamIdentifierName(node: unknown): null | string {
   if (n.type === 'Identifier' && typeof n.name === 'string') return n.name
   // Adapter wraps params as Parameter nodes
   if (n.type === 'Parameter' && n.name) return getParamIdentifierName(n.name)
+  // RestElement: ...args → argument is the Identifier
+  if (n.type === 'RestElement' && n.argument) return getParamIdentifierName(n.argument)
   return null
 }
 
@@ -83,8 +85,11 @@ function isUselessConstructor(node: unknown): boolean {
     }
 
     // Check if super args match params exactly by name and position
+    // RestElement params are excluded — they can only match via the spread path above
     if (params.length === superArgs.length && params.length > 0) {
       const allMatch = params.every((param, i) => {
+        const pNode = toASTNode(param)
+        if (pNode?.type === 'RestElement') return false
         const paramName = getParamIdentifierName(param)
         const a = toASTNode(superArgs[i])
         return paramName !== null && a?.type === 'Identifier' && paramName === a.name

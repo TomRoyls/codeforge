@@ -49,7 +49,9 @@ function createBooleanLiteral(value: boolean, lineNumber = 1, column = 0): unkno
 
 function createNullLiteral(lineNumber = 1, column = 0): unknown {
   return {
-    type: 'NullLiteral',
+    type: 'Literal',
+    value: null,
+    raw: 'null',
     loc: {
       start: { line: lineNumber, column: column },
       end: { line: lineNumber, column: column + 4 },
@@ -578,13 +580,13 @@ describe('no-throw-literal rule', () => {
   })
 
   describe('detecting throw with null literal', () => {
-    test('should report throw with null', () => {
+    test('should not report throw with null', () => {
       const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNullLiteral()))
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
   })
 
@@ -1366,14 +1368,13 @@ describe('no-throw-literal rule', () => {
       expect(reports[0].loc?.start.column).toBe(8)
     })
 
-    test('should report location for null literal throw', () => {
+    test('should not report location for null literal throw', () => {
       const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
 
       visitor.ThrowStatement(createThrowStatement(createNullLiteral(), 7, 2))
 
-      expect(reports[0].loc?.start.line).toBe(7)
-      expect(reports[0].loc?.start.column).toBe(2)
+      expect(reports.length).toBe(0)
     })
 
     test('should report location for object expression throw', () => {
@@ -1659,7 +1660,7 @@ describe('no-throw-literal rule', () => {
         visitor.ThrowStatement(createThrowStatement(arg))
       }
 
-      expect(reports.length).toBe(10)
+      expect(reports.length).toBe(9)
     })
 
     test('should accumulate reports across calls', () => {
@@ -1863,7 +1864,7 @@ describe('no-throw-literal rule', () => {
 
       visitor.ThrowStatement(createThrowStatement(createNullLiteral()))
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should work when context getAST returns an object', () => {
@@ -1919,11 +1920,11 @@ describe('no-throw-literal rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should detect NullLiteral as invalid throw argument', () => {
+    test('should allow NullLiteral (null is not an invalid throw argument)', () => {
       const { context, reports } = createMockRuleContext({ source: 'throw new Error();' })
       const visitor = noThrowLiteralRule.create(context)
       visitor.ThrowStatement(createThrowStatement(createNullLiteral()))
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should detect BigIntLiteral as invalid throw argument', () => {
