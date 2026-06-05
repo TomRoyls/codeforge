@@ -1317,8 +1317,8 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['AsExpression']).toBe('TSAsExpression')
     })
 
-    test('maps TypeAssertion to TSTypeAssertion', () => {
-      expect(KIND_NAME_ALIASES['TypeAssertion']).toBe('TSTypeAssertion')
+    test('maps TypeAssertionExpression to TSTypeAssertion', () => {
+      expect(KIND_NAME_ALIASES['TypeAssertionExpression']).toBe('TSTypeAssertion')
     })
 
     test('maps NonNullExpression to TSNonNullExpression', () => {

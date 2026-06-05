@@ -227,7 +227,7 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   TSUnionType: 'TSUnionType',
   TypeAliasDeclaration: 'TSTypeAliasDeclaration',
   TypeAnnotation: 'TSTypeAnnotation',
-  TypeAssertion: 'TSTypeAssertion',
+  TypeAssertionExpression: 'TSTypeAssertion',
   TypeLiteral: 'TSTypeLiteral',
   TypeOfExpression: 'UnaryExpression',
   TypeReference: 'TSTypeReference',
@@ -265,7 +265,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   AsExpression: { expression: 'expression' },
   NonNullExpression: { expression: 'expression' },
   SatisfiesExpression: { expression: 'expression' },
-  TypeAssertion: { expression: 'expression' },
+  TypeAssertionExpression: { expression: 'expression' },
   ForInStatement: { expression: 'right', initializer: 'left', statement: 'body' },
   ForOfStatement: { expression: 'right', initializer: 'left', statement: 'body' },
   ForStatement: {
