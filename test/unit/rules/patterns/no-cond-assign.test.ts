@@ -228,11 +228,17 @@ describe('no-cond-assign rule', () => {
       expect(() => noCondAssignRule.create(context)).not.toThrow()
     })
 
-    test('should return visitor with exactly IfStatement and WhileStatement keys', () => {
+    test('should return visitor with conditional and loop keys', () => {
       const { context } = createMockRuleContext()
       const visitor = noCondAssignRule.create(context)
 
-      expect(Object.keys(visitor).sort()).toEqual(['IfStatement', 'WhileStatement'])
+      expect(Object.keys(visitor).sort()).toEqual([
+        'ConditionalExpression',
+        'DoWhileStatement',
+        'ForStatement',
+        'IfStatement',
+        'WhileStatement',
+      ])
     })
   })
 

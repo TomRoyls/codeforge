@@ -147,11 +147,11 @@ describe('no-control-regex rule', () => {
       expect(visitor1).not.toBe(visitor2)
     })
 
-    test('should return visitor with only Literal key', () => {
+    test('should return visitor with Literal and RegExpLiteral keys', () => {
       const { context } = createMockRuleContext()
       const visitor = noControlRegexRule.create(context)
 
-      expect(Object.keys(visitor)).toEqual(['Literal'])
+      expect(Object.keys(visitor)).toEqual(['Literal', 'RegExpLiteral'])
     })
 
     test('should accept context with different file paths', () => {

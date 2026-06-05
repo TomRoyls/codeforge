@@ -218,11 +218,11 @@ describe('no-constant-condition rule', () => {
       expect(typeof visitor.DoWhileStatement).toBe('function')
     })
 
-    test('should return exactly 4 visitor methods', () => {
+    test('should return exactly 5 visitor methods', () => {
       const { context } = createMockRuleContext({ source: 'if (true) {}', options: [{}] })
       const visitor = noConstantConditionRule.create(context)
 
-      expect(Object.keys(visitor)).toHaveLength(4)
+      expect(Object.keys(visitor)).toHaveLength(5)
     })
 
     test('should return new visitor on each create call', () => {
