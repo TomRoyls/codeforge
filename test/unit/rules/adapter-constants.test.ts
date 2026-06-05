@@ -986,8 +986,8 @@ describe('adapter-constants', () => {
       expect(SKIP_KEYS.has('id')).toBe(true)
     })
 
-    test('has exactly 13 keys', () => {
-      expect(SKIP_KEYS.size).toBe(13)
+    test('has exactly 20 keys', () => {
+      expect(SKIP_KEYS.size).toBe(20)
     })
 
     test('does not contain body', () => {
