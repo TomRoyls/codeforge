@@ -598,8 +598,8 @@ describe('SKIP_KEYS', () => {
     expect(SKIP_KEYS.has('body')).toBe(false)
   })
 
-  it('has 15 entries', () => {
-    expect(SKIP_KEYS.size).toBe(13)
+  it('has 63 entries', () => {
+    expect(SKIP_KEYS.size).toBe(63)
   })
 })
 
