@@ -73,11 +73,11 @@ describe('DoubleArrayTrie2', () => {
       expect(trie.isEmpty()).toBe(false)
     })
 
-    it('insert returns true for duplicate word (implementation behavior)', () => {
+    it('insert returns false for duplicate word', () => {
       const trie = new DoubleArrayTrie2()
       trie.insert('hello')
-      expect(trie.insert('hello')).toBe(true)
-      expect(trie.size).toBe(2)
+      expect(trie.insert('hello')).toBe(false)
+      expect(trie.size).toBe(1)
     })
   })
 
@@ -150,10 +150,10 @@ describe('DoubleArrayTrie2', () => {
       expect(trie.has('')).toBe(false)
     })
 
-    it('returns false for word inserted alongside longer word with shared prefix', () => {
+    it('returns true for word inserted alongside longer word with shared prefix', () => {
       const trie = new DoubleArrayTrie2()
       trie.insert('car')
-      expect(trie.has('car')).toBe(false)
+      expect(trie.has('car')).toBe(true)
     })
 
     it('returns true for word after second word with shared prefix is added', () => {
@@ -224,10 +224,10 @@ describe('DoubleArrayTrie2', () => {
       expect(trie.delete('')).toBe(false)
     })
 
-    it('delete of single non-empty word returns false (tail node)', () => {
+    it('delete of single non-empty word returns true', () => {
       const trie = new DoubleArrayTrie2()
       trie.insert('hello')
-      expect(trie.delete('hello')).toBe(false)
+      expect(trie.delete('hello')).toBe(true)
     })
 
     it('delete returns false for prefix not in trie', () => {
@@ -260,11 +260,11 @@ describe('DoubleArrayTrie2', () => {
       expect(trie.startsWith('z')).toEqual([])
     })
 
-    it('returns empty when prefix resolves to tail node', () => {
+    it('returns words when prefix matches inserted words', () => {
       const trie = new DoubleArrayTrie2()
       trie.insert('car')
       trie.insert('card')
-      expect(trie.startsWith('car')).toEqual([])
+      expect(trie.startsWith('car')).toEqual(['car', 'card'])
     })
 
     it('returns all words for empty prefix', () => {
@@ -276,10 +276,10 @@ describe('DoubleArrayTrie2', () => {
       expect(result).toContain('a')
     })
 
-    it('returns empty when prefix matches no branching paths', () => {
+    it('returns words matching prefix', () => {
       const trie = new DoubleArrayTrie2()
       trie.insert('car')
-      expect(trie.startsWith('c')).toEqual([])
+      expect(trie.startsWith('c')).toEqual(['car'])
     })
   })
 
@@ -364,11 +364,11 @@ describe('DoubleArrayTrie2', () => {
       expect(trie.size).toBe(1)
     })
 
-    it('duplicate insert increments size', () => {
+    it('duplicate insert does not increment size', () => {
       const trie = new DoubleArrayTrie2()
       trie.insert('hello')
       trie.insert('hello')
-      expect(trie.size).toBe(2)
+      expect(trie.size).toBe(1)
     })
 
     it('duplicate empty string insert does not increment size', () => {
