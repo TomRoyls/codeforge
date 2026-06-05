@@ -91,6 +91,14 @@ export function convertRawCompilerNode(
   const kindName: string = KIND_MAP[kind] ?? `Unknown(${kind})`
   const kindMap = KIND_SPECIFIC_MAP[kindName]
 
+  if (kindName === 'ParenthesizedExpression' && raw.expression && typeof raw.expression === 'object') {
+    return convertRawCompilerNode(raw.expression as Record<string, unknown>, depth)
+  }
+
+  if (kindName === 'ComputedPropertyName' && raw.expression && typeof raw.expression === 'object') {
+    return convertRawCompilerNode(raw.expression as Record<string, unknown>, depth)
+  }
+
   const result: Record<string, unknown> = {}
   if (typeof raw.pos === 'number' && typeof raw.end === 'number') {
     const startPos = skipTrivia(raw.pos as number)
@@ -1002,6 +1010,11 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
     kindName = node.getKindName()
   } catch {
     return null
+  }
+
+  if (kindName === 'ParenthesizedExpression') {
+    const inner = (node as unknown as { getExpression?: () => Node }).getExpression?.()
+    if (inner) return convertCompilerNode(inner, depth)
   }
 
   const kindMap = KIND_SPECIFIC_MAP[kindName]
