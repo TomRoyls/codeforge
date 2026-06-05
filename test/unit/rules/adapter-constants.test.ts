@@ -828,8 +828,8 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['ThisKeyword']).toBe('ThisExpression')
     })
 
-    test('maps StaticBlock to StaticBlock', () => {
-      expect(KIND_NAME_ALIASES['StaticBlock']).toBe('StaticBlock')
+    test('maps ClassStaticBlockDeclaration to StaticBlock', () => {
+      expect(KIND_NAME_ALIASES['ClassStaticBlockDeclaration']).toBe('StaticBlock')
     })
   })
 
