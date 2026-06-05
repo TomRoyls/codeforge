@@ -251,6 +251,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   ElementAccessExpression: { argumentExpression: 'property', expression: 'object' },
   EnumDeclaration: { members: 'members', name: 'id' },
   EnumMember: { name: 'id' },
+  ExpressionWithTypeArguments: { expression: 'expression' },
   ExportSpecifier: { name: 'exported', propertyName: 'local' },
   ExportAssignment: { expression: 'declaration' },
   ExpressionStatement: { expression: 'expression' },

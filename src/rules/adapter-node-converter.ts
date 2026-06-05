@@ -296,7 +296,12 @@ function applyMethodSynthesis(base: Record<string, unknown>): void {
 
 function applyChainExpressionSynthesis(base: Record<string, unknown>): void {
   if (base.optional !== true) return
-  if (base.type !== 'MemberExpression' && base.type !== 'CallExpression') return
+  if (
+    base.type !== 'MemberExpression' &&
+    base.type !== 'CallExpression' &&
+    base.type !== 'OptionalMemberExpression' &&
+    base.type !== 'OptionalCallExpression'
+  ) return
 
   const inner = { ...base }
   if (inner.type === 'MemberExpression') inner.type = 'OptionalMemberExpression'

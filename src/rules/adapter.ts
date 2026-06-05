@@ -1715,7 +1715,8 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   // Synthesize ChainExpression wrapper for optional chaining (?.)
   if (
     base.optional === true &&
-    (base.type === 'MemberExpression' || base.type === 'CallExpression')
+    (base.type === 'MemberExpression' || base.type === 'CallExpression' ||
+     base.type === 'OptionalMemberExpression' || base.type === 'OptionalCallExpression')
   ) {
     synthesizeChainExpression(base)
   }
