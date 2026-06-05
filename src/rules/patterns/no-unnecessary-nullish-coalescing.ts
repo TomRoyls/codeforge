@@ -14,6 +14,7 @@ function isNullValue(node: unknown): boolean {
   if (!n) return false
   if (n.type === 'NullLiteral') return true
   if (n.type === 'Literal' && (n as Record<string, unknown>).value === null) return true
+  if (n.type === 'Identifier' && (n as Record<string, unknown>).name === 'null') return true
   return false
 }
 
@@ -44,7 +45,7 @@ export const noUnnecessaryNullishCoalescingRule: RuleDefinition = {
           context.report({
             loc: extractLocation(n),
             message:
-              'Unnecessary nullish coalescing: the right-hand side of `??` is `null`, which is always swallowed. Use a meaningful fallback value or remove the `??`.',
+              'Unnecessary nullish coalescing with null or undefined: the right-hand side of `??` is always swallowed. Use a meaningful fallback value or remove the `??`.',
             node: n,
           })
           return
@@ -54,7 +55,7 @@ export const noUnnecessaryNullishCoalescingRule: RuleDefinition = {
           context.report({
             loc: extractLocation(n),
             message:
-              'Unnecessary nullish coalescing: the right-hand side of `??` is `undefined`, which is always swallowed. Use a meaningful fallback value or remove the `??`.',
+              'Unnecessary nullish coalescing with null or undefined: the right-hand side of `??` is always swallowed. Use a meaningful fallback value or remove the `??`.',
             node: n,
           })
         }

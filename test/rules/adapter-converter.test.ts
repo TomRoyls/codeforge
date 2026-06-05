@@ -413,7 +413,7 @@ describe('convertRawCompilerNode', () => {
     expect(result!.operator).toBe('===')
   })
 
-  it('PrefixUnaryExpression with numeric ++ operator keeps UnaryExpression type', () => {
+  it('PrefixUnaryExpression with numeric ++ operator becomes UpdateExpression', () => {
     setRangeSourceText('')
     const raw = {
       kind: SK.PrefixUnaryExpression,
@@ -421,10 +421,9 @@ describe('convertRawCompilerNode', () => {
       operand: { kind: SK.Identifier, escapedText: 'x' },
     }
     const result = convertRawCompilerNode(raw, 0)
-    // Numeric operator resolves to 'PlusPlusToken' (not in OPERATOR_TOKEN_MAP),
-    // so the ++/-- fixup does not trigger
-    expect(result!.type).toBe('UnaryExpression')
-    expect(result!.operator).toBe('PlusPlusToken')
+    expect(result!.type).toBe('UpdateExpression')
+    expect(result!.operator).toBe('++')
+    expect(result!.prefix).toBe(true)
   })
 
   it('PrefixUnaryExpression with string ++ becomes UpdateExpression with prefix=true', () => {

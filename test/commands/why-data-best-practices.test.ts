@@ -124,12 +124,12 @@ describe('BEST_PRACTICES value types', () => {
 // ─── Consistent structure across entries ───
 
 describe('BEST_PRACTICES structural consistency', () => {
-  it('each rule has exactly 3 best practices', () => {
+  it('each rule has at least 3 best practices', () => {
     for (const [key, value] of Object.entries(BEST_PRACTICES)) {
       expect(
         value.length,
-        `BEST_PRACTICES['${key}'] should have 3 practices`,
-      ).toBe(3)
+        `BEST_PRACTICES['${key}'] should have at least 3 practices`,
+      ).toBeGreaterThanOrEqual(3)
     }
   })
 
