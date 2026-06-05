@@ -303,11 +303,16 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
 export const MAX_DEPTH = 5
 
 export const SKIP_KEYS = new Set([
-  'end',
+  'asteriskToken',
+  'colonToken',
   'emitNode',
+  'end',
+  'endFlowNode',
+  'equalsGreaterThanToken',
   'exclamationToken',
   'flags',
   'flowNode',
+  'heritage',
   'id',
   'jlChildren',
   'jsDoc',
@@ -321,9 +326,31 @@ export const SKIP_KEYS = new Set([
   'original',
   'parent',
   'pos',
+  'questionDotToken',
+  'questionToken',
+  'rawText',
+  'returnFlowNode',
   'symbol',
+  'templateFlags',
   'transformFlags',
 ])
+
+export const MODIFIER_MAP: Record<string, string> = {
+  AbstractKeyword: 'abstract',
+  AsyncKeyword: 'async',
+  ConstKeyword: 'const',
+  DeclareKeyword: 'declare',
+  DefaultKeyword: 'default',
+  ExportKeyword: 'export',
+  ReadonlyKeyword: 'readonly',
+  StaticKeyword: 'static',
+}
+
+export const ACCESSIBILITY_MAP: Record<string, string> = {
+  PrivateKeyword: 'private',
+  ProtectedKeyword: 'protected',
+  PublicKeyword: 'public',
+}
 
 export const OPERATOR_TOKEN_MAP: Record<string, string> = {
   AmpersandAmpersandEqualsToken: '&&=',

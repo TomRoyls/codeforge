@@ -1,12 +1,14 @@
 import { Node } from 'ts-morph'
 
 import {
+  ACCESSIBILITY_MAP,
   ASSIGNMENT_OPERATORS,
   KIND_MAP,
   KIND_NAME_ALIASES,
   KIND_SPECIFIC_MAP,
   LOGICAL_OPERATORS,
   MAX_DEPTH,
+  MODIFIER_MAP,
   OPERATOR_TOKEN_MAP,
   PROPERTY_MAP,
   SKIP_KEYS,
@@ -103,6 +105,22 @@ export function convertRawCompilerNode(
 
   for (const [key, val] of Object.entries(raw)) {
     if (key.startsWith('_')) continue
+
+    if (key === 'modifiers' && Array.isArray(val)) {
+      for (const mod of val) {
+        if (mod && typeof mod === 'object') {
+          const modKind = (mod as Record<string, unknown>).kind as number | undefined
+          const modName = modKind !== undefined ? KIND_MAP[modKind] : undefined
+          if (!modName) continue
+          const boolProp = MODIFIER_MAP[modName]
+          if (boolProp) { result[boolProp] = true; continue }
+          const access = ACCESSIBILITY_MAP[modName]
+          if (access) { result.accessibility = access; continue }
+        }
+      }
+      continue
+    }
+
     if (SKIP_KEYS.has(key)) continue
 
     const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
@@ -928,6 +946,22 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
     if (compilerNode && typeof compilerNode === 'object') {
       for (const [key, val] of Object.entries(compilerNode)) {
         if (key.startsWith('_')) continue
+
+        if (key === 'modifiers' && Array.isArray(val)) {
+          for (const mod of val) {
+            if (mod && typeof mod === 'object') {
+              const modKind = (mod as Record<string, unknown>).kind as number | undefined
+              const modName = modKind !== undefined ? KIND_MAP[modKind] : undefined
+              if (!modName) continue
+              const boolProp = MODIFIER_MAP[modName]
+              if (boolProp) { result[boolProp] = true; continue }
+              const access = ACCESSIBILITY_MAP[modName]
+              if (access) { result.accessibility = access; continue }
+            }
+          }
+          continue
+        }
+
         if (SKIP_KEYS.has(key)) continue
 
         const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key

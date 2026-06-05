@@ -10,23 +10,16 @@ export const noConstEnumRule: RuleDefinition = {
         const n = toASTNode(node)
         if (!n || n.type !== 'TSEnumDeclaration') return
 
-        const {modifiers} = n
-        if (!Array.isArray(modifiers)) return
+        if (!n.const) return
 
-        const isConst = modifiers.some(
-          (mod: unknown) => toASTNode(mod)?.type === 'TSConstKeyword',
-        )
+        const name = typeof n.id === 'object' && n.id !== null
+          ? (toASTNode(n.id)?.name ?? 'enum')
+          : 'enum'
 
-        if (isConst) {
-          const name = typeof n.id === 'object' && n.id !== null
-            ? (toASTNode(n.id)?.name ?? 'enum')
-            : 'enum'
-
-          context.report({
-            loc: extractLocation(node),
-            message: `Unexpected const enum '${name}'. Const enums have cross-file compatibility issues with isolatedModules and may cause runtime errors when used across package boundaries.`,
-          })
-        }
+        context.report({
+          loc: extractLocation(node),
+          message: `Unexpected const enum '${name}'. Const enums have cross-file compatibility issues with isolatedModules and may cause runtime errors when used across package boundaries.`,
+        })
       },
     }
   },
