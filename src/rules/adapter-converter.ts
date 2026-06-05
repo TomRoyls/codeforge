@@ -552,6 +552,15 @@ function applyRawPostFixups(
   if (ta && typeof ta === 'object' && ta.type !== 'TSTypeAnnotation') {
     result.typeAnnotation = { type: 'TSTypeAnnotation', typeAnnotation: ta }
   }
+
+  // ESTree typescript-eslint: typeAnnotation lives on Identifier, not VariableDeclarator
+  if (result.type === 'VariableDeclarator' && result.typeAnnotation !== undefined) {
+    const id = result.id as Record<string, unknown> | undefined
+    if (id && id.typeAnnotation === undefined) {
+      id.typeAnnotation = result.typeAnnotation
+      delete result.typeAnnotation
+    }
+  }
 }
 
 function applyLiteralValue(result: Record<string, unknown>, kindName: string, node: Node): void {
@@ -802,6 +811,15 @@ function applyPostConvertFixups(
   const ta = result.typeAnnotation as Record<string, unknown> | undefined
   if (ta && typeof ta === 'object' && ta.type !== 'TSTypeAnnotation') {
     result.typeAnnotation = { type: 'TSTypeAnnotation', typeAnnotation: ta }
+  }
+
+  // ESTree typescript-eslint: typeAnnotation lives on Identifier, not VariableDeclarator
+  if (result.type === 'VariableDeclarator' && result.typeAnnotation !== undefined) {
+    const id = result.id as Record<string, unknown> | undefined
+    if (id && id.typeAnnotation === undefined) {
+      id.typeAnnotation = result.typeAnnotation
+      delete result.typeAnnotation
+    }
   }
 }
 
