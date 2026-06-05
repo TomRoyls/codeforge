@@ -376,11 +376,13 @@ export const SKIP_KEYS = new Set([
 
 export const MODIFIER_MAP: Record<string, string> = {
   AbstractKeyword: 'abstract',
+  AccessorKeyword: 'accessor',
   AsyncKeyword: 'async',
   ConstKeyword: 'const',
   DeclareKeyword: 'declare',
   DefaultKeyword: 'default',
   ExportKeyword: 'export',
+  OverrideKeyword: 'override',
   ReadonlyKeyword: 'readonly',
   StaticKeyword: 'static',
 }
