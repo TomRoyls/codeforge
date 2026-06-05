@@ -1,12 +1,12 @@
 export class SuffixArray {
   private readonly text: string;
   private readonly sa: number[];
-  private readonly lcp: number[];
+  private readonly lcpArr: number[];
 
   constructor(text: string) {
     this.text = text;
     this.sa = this.buildSuffixArray();
-    this.lcp = this.buildLCP();
+    this.lcpArr = this.buildLCP();
   }
 
   get length(): number {
@@ -15,6 +15,43 @@ export class SuffixArray {
 
   get indices(): ReadonlyArray<number> {
     return this.sa;
+  }
+
+  index(i: number): number {
+    if (i < 0 || i >= this.sa.length) {
+      throw new RangeError(`Index out of bounds: ${i}`);
+    }
+    return this.sa[i]!;
+  }
+
+  toArray(): number[] {
+    return [...this.sa];
+  }
+
+  lcp(i: number): number {
+    if (i < 0 || i >= this.lcpArr.length) {
+      throw new RangeError(`Index out of bounds: ${i}`);
+    }
+    return this.lcpArr[i]!;
+  }
+
+  longestRepeatedSubstring(): string {
+    if (this.sa.length === 0) return '';
+
+    let maxLen = 0;
+    let maxIdx = 0;
+
+    for (let i = 1; i < this.lcpArr.length; i++) {
+      if (this.lcpArr[i]! > maxLen) {
+        maxLen = this.lcpArr[i]!;
+        maxIdx = i;
+      }
+    }
+
+    if (maxLen === 0) return '';
+
+    const start = this.sa[maxIdx]!;
+    return this.text.slice(start, start + maxLen);
   }
 
   search(pattern: string): number[] {
@@ -57,11 +94,11 @@ export class SuffixArray {
       return 0;
     }
 
-    return this.lcp[k]!;
+    return this.lcpArr[k]!;
   }
 
   allLCP(): number[] {
-    return [...this.lcp];
+    return [...this.lcpArr];
   }
 
   private buildSuffixArray(): number[] {
