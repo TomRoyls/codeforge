@@ -484,6 +484,22 @@ function applyRawPostFixups(
     }
   }
 
+  if (kindName === 'GetAccessor') {
+    result.kind = 'get'
+  }
+
+  if (kindName === 'SetAccessor') {
+    result.kind = 'set'
+  }
+
+  if (kindName === 'MethodDeclaration') {
+    result.kind = 'method'
+  }
+
+  if (kindName === 'Constructor') {
+    result.kind = 'constructor'
+  }
+
   if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
     const heritageClauses = raw.heritageClauses as Record<string, unknown>[] | undefined
     if (Array.isArray(heritageClauses)) {
@@ -825,6 +841,22 @@ function applyPostConvertFixups(
     if (result.key && !result.value) {
       result.value = result.key
     }
+  }
+
+  if (kindName === 'GetAccessor') {
+    result.kind = 'get'
+  }
+
+  if (kindName === 'SetAccessor') {
+    result.kind = 'set'
+  }
+
+  if (kindName === 'MethodDeclaration') {
+    result.kind = 'method'
+  }
+
+  if (kindName === 'Constructor') {
+    result.kind = 'constructor'
   }
 
   if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {

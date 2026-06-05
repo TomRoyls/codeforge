@@ -169,6 +169,7 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   TryStatement: 'TryStatement',
   ArrayType: 'TSArrayType',
   ConstructorType: 'TSConstructorType',
+  Constructor: 'MethodDefinition',
   ExpressionWithTypeArguments: 'TSExpressionWithTypeArguments',
   FunctionType: 'TSFunctionType',
   HeritageClause: 'TSHeritageClause',
