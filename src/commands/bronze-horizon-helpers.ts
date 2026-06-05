@@ -50,6 +50,7 @@ export interface AgingMeasure {
   hasBattleTested: boolean
   hasNoUnproven: boolean
   hasTimeless: boolean
+  hasDeep: boolean
   adHocCount: number
   experimentalCount: number
 }
@@ -339,6 +340,7 @@ export function measureAging(content: string): AgingMeasure {
     hasBattleTested: (hasExtends || hasImplements) && hasDoc,
     hasNoUnproven: !hasEval && !hasDebugger,
     hasTimeless: hasDoc && hasInterface && (hasExtends || hasAbstract),
+    hasDeep: hasGenerics && (hasInterface || hasReturnType),
     adHocCount,
     experimentalCount,
   }

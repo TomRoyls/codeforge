@@ -35,9 +35,9 @@ export function formatNumber(n: number): string {
   return n.toLocaleString('en-US')
 }
 
-export function formatBytes(bytes: number, decimals = 1): string {
+export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) {
-    return decimals === 0 ? '0 B' : `0.${'0'.repeat(decimals)} B`
+    return '0 B'
   }
   const units = ['B', 'KB', 'MB', 'GB', 'TB']
   const divisor = 1024
