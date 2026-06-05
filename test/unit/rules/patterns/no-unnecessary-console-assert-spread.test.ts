@@ -898,7 +898,7 @@ describe('no-unnecessary-console-assert-spread rule', () => {
 
   test('handles spread of an immediately invoked function', () => {
     const node = makeConsoleAssertCall([
-      { type: 'SpreadElement', argument: { type: 'CallExpression', callee: { type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [{ type: 'ReturnStatement', argument: { type: 'ArrayExpression', elements: [] } }] } } }, arguments: [] } },
+      { type: 'SpreadElement', argument: { type: 'CallExpression', callee: { type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [{ type: 'ReturnStatement', argument: { type: 'ArrayExpression', elements: [] } }] } }, arguments: [] } },
     ]);
     const handlers = noUnnecessaryConsoleAssertSpreadRule.create({ report: (r: unknown) => {
       expect((r as { messageId: string }).messageId).toBe('unnecessary');
