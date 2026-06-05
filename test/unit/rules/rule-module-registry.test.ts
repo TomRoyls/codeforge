@@ -569,10 +569,10 @@ describe('rule-module-registry', () => {
       expect(typeof rule.create).toBe('function')
     })
 
-    test('no-console-log loader resolves correctly', async () => {
-      const result = await RULE_MODULES['no-console-log']()
-      expect(result).toHaveProperty('no-console-log')
-      const rule = result['no-console-log'] as RuleDefinition
+    test('no-console loader resolves correctly', async () => {
+      const result = await RULE_MODULES['no-console']()
+      expect(result).toHaveProperty('no-console')
+      const rule = result['no-console'] as RuleDefinition
       expect(rule.meta).toBeDefined()
       expect(typeof rule.create).toBe('function')
     })
@@ -665,7 +665,7 @@ describe('rule-module-registry', () => {
     })
 
     test('converts three-word rule ID correctly', () => {
-      expect(kebabToCamelCase('no-console-log')).toBe('noConsoleLog')
+      expect(kebabToCamelCase('no-restricted-jest-methods')).toBe('noRestrictedJestMethods')
     })
 
     test('converts eq-eq-eq correctly', () => {
@@ -1009,7 +1009,7 @@ describe('rule-module-registry', () => {
   describe('completeness verification', () => {
     test('RULE_MODULES has exact expected count', () => {
        const keys = Object.keys(RULE_MODULES)
-        expect(keys.length).toBe(2077)
+        expect(keys.length).toBe(2075)
       })
 
     test('every rule in RULE_CATEGORIES has a loader in RULE_MODULES', () => {
@@ -1097,7 +1097,6 @@ describe('rule-module-registry', () => {
         'prefer-const',
         'no-unused-vars',
         'require-await',
-        'no-console-log',
       ]
       const explicitSet = new Set(explicitlyDefined)
       for (const pattern of patternRules) {
@@ -1180,12 +1179,12 @@ describe('rule-module-registry', () => {
       expect(symbols).toHaveLength(0)
     })
 
-    test('registry has exactly 2077 own enumerable properties', () => {
+    test('registry has exactly 2075 own enumerable properties', () => {
       const descriptors = Object.getOwnPropertyDescriptors(RULE_MODULES)
       const enumerableKeys = Object.entries(descriptors)
         .filter(([, desc]) => desc.enumerable)
         .map(([key]) => key)
-      expect(enumerableKeys).toHaveLength(2077)
+      expect(enumerableKeys).toHaveLength(2075)
     })
 
     test('no key contains uppercase characters', () => {
@@ -1377,7 +1376,7 @@ describe('rule-module-registry', () => {
   describe('getRuleIds equivalence', () => {
     test('Object.keys returns all IDs as strings', () => {
       const keys = Object.keys(RULE_MODULES)
-      expect(keys).toHaveLength(2077)
+      expect(keys).toHaveLength(2075)
       for (const key of keys) {
         expect(typeof key).toBe('string')
       }
@@ -1623,7 +1622,7 @@ describe('rule-module-registry', () => {
   describe('registry immutability', () => {
     test('RULE_MODULES is frozen or behaves consistently', () => {
        const originalCount = Object.keys(RULE_MODULES).length
-        expect(originalCount).toBe(2077)
+        expect(originalCount).toBe(2075)
       })
 
     test('deleting a key does not affect the original count', () => {
@@ -1837,7 +1836,7 @@ describe('rule-module-registry', () => {
 
     test('keys can be looked up in a Map', () => {
       const map = new Map(Object.entries(RULE_MODULES))
-       expect(map.size).toBe(2077)
+       expect(map.size).toBe(2075)
       const someKey = Object.keys(RULE_MODULES)[0]
       expect(map.has(someKey)).toBe(true)
       expect(typeof map.get(someKey)).toBe('function')
@@ -1845,7 +1844,7 @@ describe('rule-module-registry', () => {
 
     test('keys can be stored in a Set', () => {
       const set = new Set(Object.keys(RULE_MODULES))
-       expect(set.size).toBe(2077)
+       expect(set.size).toBe(2075)
     })
   })
 

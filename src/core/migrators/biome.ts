@@ -48,7 +48,7 @@ const BIOME_TO_CODEFORGE_RULES: Record<string, string> = {
   'suspicious/noAsyncPromiseExecutor': 'no-async-promise-executor',
   'suspicious/noCompareNegZero': 'no-compare-neg-zero',
   'suspicious/noConfusingVoidType': 'no-confusing-void-expression',
-  'suspicious/noConsoleLog': 'no-console-log',
+  'suspicious/noConsoleLog': 'no-console',
   'suspicious/noConstEnum': 'no-const-enum',
   'suspicious/noDebugger': 'no-debugger',
   'suspicious/noDoubleEquals': 'eq-eq-eq',

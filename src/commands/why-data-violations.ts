@@ -98,8 +98,6 @@ export const COMMON_VIOLATIONS: Record<string, string[]> = {
     'console.log used for debugging - remove or use proper logger',
     'console.error for error handling - throw errors or use error handling',
     'console.warn for warnings - use structured logging',
-  ],
-  'no-console-log': [
     'console.log left in production code - remove debug statements',
     'console.log for error reporting - use proper error handling',
     'console.log for performance timing - use performance API',

@@ -32,7 +32,7 @@ describe('examplesMap: keys', () => {
       'no-var',
       'eq-eq-eq',
       'curly',
-      'no-console-log',
+      'no-console',
       'no-explicit-any',
       'no-unused-vars',
       'no-debugger',

@@ -24,7 +24,7 @@ describe('COMMON_VIOLATIONS', () => {
 describe('COMMON_VIOLATIONS known rules', () => {
   const knownRules = [
     'no-eval',
-    'no-console-log',
+    'no-console',
     'max-params',
     'no-circular-deps',
     'prefer-const',

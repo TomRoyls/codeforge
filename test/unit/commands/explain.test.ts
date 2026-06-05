@@ -50,7 +50,7 @@ function getSampleRuleIds(): string[] {
     'prefer-const',
     'no-unused-vars',
     'max-params',
-    'no-console-log',
+    'no-console',
     'no-duplicate-imports',
     'max-complexity',
     'no-await-in-loop',
@@ -88,7 +88,7 @@ function getSampleRuleIds(): string[] {
 
 // Rules with examples in the explain.ts command's internal examplesMap
 function getRulesWithExamples(): string[] {
-  return ['no-eval', 'prefer-const', 'no-console-log', 'no-duplicate-imports', 'no-unused-vars']
+  return ['no-eval', 'prefer-const', 'no-console', 'no-duplicate-imports', 'no-unused-vars']
 }
 
 // Rules known to NOT have examples in the command's internal map
@@ -287,9 +287,9 @@ describe('Explain Command', () => {
       expect(output).toContain('complexity')
     })
 
-    test('explains no-console-log rule', async () => {
-      const output = await runAndCapture('no-console-log')
-      expect(output).toContain('no-console-log')
+    test('explains no-console rule', async () => {
+      const output = await runAndCapture('no-console')
+      expect(output).toContain('no-console')
       expect(output).toContain('[patterns]')
     })
 
@@ -499,7 +499,7 @@ describe('Explain Command', () => {
     })
 
     test('displays related rules section when available', async () => {
-      const output = await runAndCapture('no-console-log')
+      const output = await runAndCapture('no-console')
       expect(output).toContain('Related Rules')
     })
 
@@ -684,8 +684,8 @@ describe('Explain Command', () => {
       expect(getRuleCategory('prefer-const')).toBe('patterns')
     })
 
-    test('returns correct category for no-console-log', () => {
-      expect(getRuleCategory('no-console-log')).toBe('patterns')
+    test('returns correct category for no-console', () => {
+      expect(getRuleCategory('no-console')).toBe('patterns')
     })
 
     test('returns correct category for no-await-in-loop', () => {
@@ -778,8 +778,8 @@ describe('Explain Command', () => {
       expect(output).toContain('let name')
     })
 
-    test('examples for no-console-log mention console.log', async () => {
-      const output = await runAndCapture('no-console-log')
+    test('examples for no-console mention console.log', async () => {
+      const output = await runAndCapture('no-console')
       expect(output).toContain('console.log')
     })
 
@@ -813,8 +813,8 @@ describe('Explain Command', () => {
       expect(output).toContain('const')
     })
 
-    test('no-console-log best practices mention logging library', async () => {
-      const output = await runAndCapture('no-console-log')
+    test('no-console best practices mention logging library', async () => {
+      const output = await runAndCapture('no-console')
       expect(output).toContain('logging')
     })
 
@@ -853,13 +853,13 @@ describe('Explain Command', () => {
   // ─── Related rules validation ───────────────────────────────────────────────
 
   describe('related rules validation', () => {
-    test('no-console-log has related rules', async () => {
-      const output = await runAndCapture('no-console-log')
+    test('no-console has related rules', async () => {
+      const output = await runAndCapture('no-console')
       expect(output).toContain('Related Rules')
     })
 
-    test('no-console-log related rules include no-debugger', async () => {
-      const output = await runAndCapture('no-console-log')
+    test('no-console related rules include no-debugger', async () => {
+      const output = await runAndCapture('no-console')
       expect(output).toContain('no-debugger')
     })
 

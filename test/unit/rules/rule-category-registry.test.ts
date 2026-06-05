@@ -203,8 +203,8 @@ describe('rule-category-registry', () => {
       }
     })
 
-   test('total entry count is exactly 2077', () => {
-      expect(Object.keys(RULE_CATEGORIES).length).toBe(2077)
+   test('total entry count is exactly 2075', () => {
+      expect(Object.keys(RULE_CATEGORIES).length).toBe(2075)
      })
 
     // --- Specific rule mappings ---
@@ -241,8 +241,8 @@ describe('rule-category-registry', () => {
       expect(RULE_CATEGORIES['no-shadow']).toBe('patterns')
     })
 
-    test('maps no-console-log to patterns', () => {
-      expect(RULE_CATEGORIES['no-console-log']).toBe('patterns')
+    test('maps no-console to patterns', () => {
+      expect(RULE_CATEGORIES['no-console']).toBe('patterns')
     })
 
     test('maps prefer-template to patterns', () => {
@@ -291,11 +291,11 @@ describe('rule-category-registry', () => {
 
     // --- Consistency ---
 
-    test('no-console and no-console-log both exist as separate entries', () => {
+    test('no-console and no-console both exist as separate entries', () => {
       expect(RULE_CATEGORIES['no-console']).toBe('patterns')
-      expect(RULE_CATEGORIES['no-console-log']).toBe('patterns')
+      expect(RULE_CATEGORIES['no-console']).toBe('patterns')
       expect('no-console' in RULE_CATEGORIES).toBe(true)
-      expect('no-console-log' in RULE_CATEGORIES).toBe(true)
+      expect('no-console' in RULE_CATEGORIES).toBe(true)
     })
 
     test('prefer-const and prefer-const-assertions both exist', () => {
@@ -316,7 +316,7 @@ describe('rule-category-registry', () => {
        expect(counts['security']).toBe(21)
          expect(counts['testing']).toBe(74)
          expect(counts['correctness']).toBe(16)
-          expect(counts['patterns']).toBe(1941)
+          expect(counts['patterns']).toBe(1939)
     })
   })
 
@@ -620,7 +620,7 @@ describe('rule-category-registry', () => {
 
     test('registry entries are enumerable with correct length', () => {
       const entries = Object.entries(RULE_CATEGORIES)
-        expect(entries.length).toBe(2077)
+        expect(entries.length).toBe(2075)
       expect(entries[0]!.length).toBe(2)
     })
 
@@ -893,7 +893,7 @@ describe('rule-category-registry', () => {
     test('Object.keys returns array of correct length', () => {
       const keys = Object.keys(RULE_CATEGORIES)
       expect(Array.isArray(keys)).toBe(true)
-        expect(keys.length).toBe(2077)
+        expect(keys.length).toBe(2075)
     })
 
     test('entries are ordered as defined in source', () => {

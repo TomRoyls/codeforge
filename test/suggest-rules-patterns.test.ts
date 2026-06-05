@@ -118,8 +118,8 @@ describe('analyzeFile', () => {
     const content = 'console.log("a"); console.log("b");'
 
     analyzeFile(content, map, PATTERN_DETECTORS, () => 'patterns')
-    expect(map.has('no-console-log')).toBe(true)
-    expect(map.get('no-console-log')!.estimatedViolations).toBe(2)
+    expect(map.has('no-console')).toBe(true)
+    expect(map.get('no-console')!.estimatedViolations).toBe(2)
   })
 
   it('detects any type usage', () => {
@@ -223,7 +223,7 @@ describe('PATTERN_DETECTORS', () => {
   it('contains console logs detector', () => {
     const consoleDetector = PATTERN_DETECTORS.find((d) => d.name === 'Console logs')
     expect(consoleDetector).toBeDefined()
-    expect(consoleDetector!.suggestedRules[0]!.ruleId).toBe('no-console-log')
+    expect(consoleDetector!.suggestedRules[0]!.ruleId).toBe('no-console')
   })
 
   it('contains eval usage detector', () => {

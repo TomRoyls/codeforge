@@ -29,7 +29,7 @@ export const PATTERN_DETECTORS: PatternDetector[] = [
         confidence: 'high',
         impact: 'medium',
         reason: 'Found console statements that should be replaced with proper logging',
-        ruleId: 'no-console-log',
+        ruleId: 'no-console',
       },
     ],
   },

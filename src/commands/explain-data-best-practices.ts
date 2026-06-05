@@ -95,7 +95,7 @@ export const bestPracticesMap: Record<string, string[]> = {
     'Structure modules in a layered architecture to prevent cycles',
     'Use event-based communication to decouple circularly dependent modules',
   ],
-  'no-console-log': [
+  'no-console': [
     'Use a proper logging library (e.g., winston, pino) for structured logging',
     'Configure log levels based on environment (development vs production)',
     'Remove or disable console statements before deploying to production',

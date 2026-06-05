@@ -12,7 +12,7 @@ import {
 
 const mockGetRuleCategory = (ruleId: string): string => {
   const categories: Record<string, string> = {
-    'no-console-log': 'patterns',
+    'no-console': 'patterns',
     'no-explicit-any': 'patterns',
     'prefer-const': 'patterns',
     'eq-eq-eq': 'patterns',
@@ -178,21 +178,21 @@ describe('suggest-rules-patterns: analyzeFile with specific detectors', () => {
     const map = new Map<string, RuleSuggestion>()
     analyzeFile('console.warn("warning!")', map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
   })
 
   test('detects console.error pattern', () => {
     const map = new Map<string, RuleSuggestion>()
     analyzeFile('console.error("error!")', map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
   })
 
   test('detects console.debug pattern', () => {
     const map = new Map<string, RuleSuggestion>()
     analyzeFile('console.debug("debug!")', map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
   })
 
   test('detects <any> cast syntax', () => {
@@ -247,7 +247,7 @@ describe('suggest-rules-patterns: analyzeFile with specific detectors', () => {
     const code = 'console.log("a"); console.warn("b"); console.error("c");'
     analyzeFile(code, map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.get('no-console-log')!.estimatedViolations).toBe(3)
+    expect(map.get('no-console')!.estimatedViolations).toBe(3)
   })
 
   test('detects multiple patterns from different detectors simultaneously', () => {
@@ -266,7 +266,7 @@ describe('suggest-rules-patterns: analyzeFile with specific detectors', () => {
       "const greeting: string = 'hello';\nconst num: number = 42;\nconsole.log(greeting);"
     analyzeFile(code, map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
     expect(map.has('no-explicit-any')).toBe(false)
     expect(map.has('prefer-const')).toBe(false)
     expect(map.has('no-eval')).toBe(false)
@@ -502,7 +502,7 @@ describe('suggest-rules-patterns: analyzeFile additional coverage', () => {
     const map = new Map<string, RuleSuggestion>()
     analyzeFile('console.log("hello")', map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
   })
 
   test('detects var declaration pattern', () => {
@@ -585,7 +585,7 @@ describe('suggest-rules-patterns: analyzeFile additional coverage', () => {
     analyzeFile('console.log("file1")', map, PATTERN_DETECTORS, mockGetRuleCategory)
     analyzeFile('console.log("file2")', map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.get('no-console-log')!.estimatedViolations).toBe(2)
+    expect(map.get('no-console')!.estimatedViolations).toBe(2)
   })
 
   test('content triggering all string-based detectors', () => {
@@ -597,7 +597,7 @@ describe('suggest-rules-patterns: analyzeFile additional coverage', () => {
     expect(map.has('no-explicit-any')).toBe(true)
     expect(map.has('no-eval')).toBe(true)
     expect(map.has('eq-eq-eq')).toBe(true)
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
     expect(map.has('no-unsafe-type-assertion')).toBe(true)
   })
 
@@ -1064,7 +1064,7 @@ describe('suggest-rules-patterns: analyzeFile accumulation across calls', () => 
     analyzeFile('console.log("b")', map, PATTERN_DETECTORS, mockGetRuleCategory)
     analyzeFile('console.log("c")', map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.get('no-console-log')!.estimatedViolations).toBe(3)
+    expect(map.get('no-console')!.estimatedViolations).toBe(3)
   })
 
   test('accumulates different detectors from separate files', () => {
@@ -1073,7 +1073,7 @@ describe('suggest-rules-patterns: analyzeFile accumulation across calls', () => 
     analyzeFile('console.log("hello")', map, PATTERN_DETECTORS, mockGetRuleCategory)
 
     expect(map.has('prefer-const')).toBe(true)
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
     expect(map.size).toBe(2)
   })
 
@@ -1082,7 +1082,7 @@ describe('suggest-rules-patterns: analyzeFile accumulation across calls', () => 
     analyzeFile('console.log("hello")', map, PATTERN_DETECTORS, mockGetRuleCategory)
     analyzeFile('const x: string = "hello";', map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.get('no-console-log')!.estimatedViolations).toBe(1)
+    expect(map.get('no-console')!.estimatedViolations).toBe(1)
     expect(map.size).toBe(1)
   })
 })
@@ -1103,7 +1103,7 @@ describe('suggest-rules-patterns: analyzeFile with combined patterns', () => {
     expect(map.has('no-explicit-any')).toBe(true)
     expect(map.has('eq-eq-eq')).toBe(true)
     expect(map.has('no-eval')).toBe(true)
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
     expect(map.has('no-duplicate-code')).toBe(true)
   })
 
@@ -1113,7 +1113,7 @@ describe('suggest-rules-patterns: analyzeFile with combined patterns', () => {
       'console.log("a"); console.log("b"); console.log("c"); console.log("d"); console.log("e");'
     analyzeFile(code, map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.get('no-console-log')!.estimatedViolations).toBe(5)
+    expect(map.get('no-console')!.estimatedViolations).toBe(5)
   })
 
   test('mixed console variants accumulate correctly', () => {
@@ -1121,7 +1121,7 @@ describe('suggest-rules-patterns: analyzeFile with combined patterns', () => {
     const code = 'console.log("a"); console.warn("b"); console.error("c"); console.debug("d");'
     analyzeFile(code, map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.get('no-console-log')!.estimatedViolations).toBe(4)
+    expect(map.get('no-console')!.estimatedViolations).toBe(4)
   })
 })
 
@@ -1502,7 +1502,7 @@ describe('suggest-rules-patterns: analyzeFile with realistic edge cases', () => 
     analyzeFile(code, map, PATTERN_DETECTORS, mockGetRuleCategory)
 
     expect(map.has('prefer-const')).toBe(true)
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
   })
 
   test('does not confuse substring in unrelated code', () => {
@@ -1517,7 +1517,7 @@ describe('suggest-rules-patterns: analyzeFile with realistic edge cases', () => 
     const code = 'function outer() { function inner() { console.log("deep"); } }'
     analyzeFile(code, map, PATTERN_DETECTORS, mockGetRuleCategory)
 
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
   })
 })
 

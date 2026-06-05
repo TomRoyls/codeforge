@@ -71,8 +71,8 @@ describe('bestPracticesMap detailed entry checks', () => {
     expect(entry.length).toBe(4)
   })
 
-  test('no-console-log entry has meaningful tips', () => {
-    const entry = bestPracticesMap['no-console-log']
+  test('no-console entry has meaningful tips', () => {
+    const entry = bestPracticesMap['no-console']
     expect(entry).toBeDefined()
     expect(entry.length).toBe(4)
   })
@@ -715,8 +715,8 @@ describe('Cross-data content consistency', () => {
     }
   })
 
-  test('no-console-log bad example contains console.log', () => {
-    const examples = examplesMap['no-console-log']
+  test('no-console bad example contains console.log', () => {
+    const examples = examplesMap['no-console']
     expect(examples).toBeDefined()
     for (const ex of examples) {
       expect(ex.bad).toContain('console.log')

@@ -1653,8 +1653,8 @@ describe('RuleRegistry - rule id handling', () => {
 
   test('handles hyphenated rule ids', () => {
     const rule = createMockRule()
-    registry.register('no-console-log', rule, 'complexity')
-    expect(registry.getRule('no-console-log')).toBeDefined()
+    registry.register('no-console', rule, 'complexity')
+    expect(registry.getRule('no-console')).toBeDefined()
   })
 
   test('handles underscore rule ids', () => {

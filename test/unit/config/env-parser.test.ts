@@ -56,7 +56,7 @@ describe('env-parser', () => {
       const config = parseEnvVars()
       expect(config.rules).toEqual({
         'max-complexity': 'error',
-        'no-console-log': 'warning',
+        'no-console': 'warning',
       })
     })
 

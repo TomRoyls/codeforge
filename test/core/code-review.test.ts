@@ -398,21 +398,21 @@ describe('ReviewEngine', () => {
     })
   })
 
-  describe('no-console-log rule', () => {
+  describe('no-console rule', () => {
     it('flags console.log in non-test files', () => {
       const change = makeChange({ type: 'add', content: 'console.log("hello")', lineNumber: 5 })
       const ctx = makeContext({ filePath: 'src/app.ts' })
-      const rule = BUILTIN_RULES.find((r) => r.id === 'no-console-log')!
+      const rule = BUILTIN_RULES.find((r) => r.id === 'no-console')!
       const result = rule.evaluate(change, ctx)
       expect(result).not.toBeNull()
-      expect(result!.ruleId).toBe('no-console-log')
+      expect(result!.ruleId).toBe('no-console')
       expect(result!.severity).toBe('minor')
     })
 
     it('does not flag console.log in test files', () => {
       const change = makeChange({ type: 'add', content: 'console.log("debug")', lineNumber: 1 })
       const ctx = makeContext({ filePath: 'src/app.test.ts' })
-      const rule = BUILTIN_RULES.find((r) => r.id === 'no-console-log')!
+      const rule = BUILTIN_RULES.find((r) => r.id === 'no-console')!
       const result = rule.evaluate(change, ctx)
       expect(result).toBeNull()
     })
@@ -420,7 +420,7 @@ describe('ReviewEngine', () => {
     it('ignores delete changes', () => {
       const change = makeChange({ type: 'delete', content: 'console.log("x")', lineNumber: 1 })
       const ctx = makeContext()
-      const rule = BUILTIN_RULES.find((r) => r.id === 'no-console-log')!
+      const rule = BUILTIN_RULES.find((r) => r.id === 'no-console')!
       expect(rule.evaluate(change, ctx)).toBeNull()
     })
   })
@@ -760,7 +760,7 @@ describe('ReviewFormatter', () => {
           severity: 'minor',
           category: 'best-practices',
           suggestion: 'Use a logger',
-          ruleId: 'no-console-log',
+          ruleId: 'no-console',
         },
         {
           filePath: 'src/util.ts',
@@ -895,7 +895,7 @@ describe('ReviewFormatter', () => {
         {
           filePath: 'src/app.ts', line: 1, side: 'RIGHT',
           message: 'Avoid console.log', severity: 'minor',
-          category: 'best-practices', ruleId: 'no-console-log',
+          category: 'best-practices', ruleId: 'no-console',
         },
       ]
       const output = formatter.formatDiffWithComments(diff, comments)

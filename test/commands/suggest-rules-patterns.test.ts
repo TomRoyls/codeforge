@@ -23,7 +23,7 @@ const makeSuggestedRule = (
 
 const getRuleCategory = (ruleId: string): string => {
   const map: Record<string, string> = {
-    'no-console-log': 'patterns',
+    'no-console': 'patterns',
     'no-explicit-any': 'type-safety',
     'prefer-const': 'patterns',
     'eq-eq-eq': 'correctness',
@@ -121,7 +121,7 @@ describe('PATTERN_DETECTORS', () => {
     )
     expect(consoleDetector).toBeDefined()
     expect(consoleDetector!.patterns).toContain('console.log')
-    expect(consoleDetector!.suggestedRules[0].ruleId).toBe('no-console-log')
+    expect(consoleDetector!.suggestedRules[0].ruleId).toBe('no-console')
   })
 
   it('includes an any type usage detector', () => {
@@ -243,12 +243,12 @@ describe('addSuggestion', () => {
 
   it('accumulates violations for the same ruleId', () => {
     const map = new Map<string, RuleSuggestion>()
-    const suggested = makeSuggestedRule({ ruleId: 'no-console-log' })
+    const suggested = makeSuggestedRule({ ruleId: 'no-console' })
 
-    addSuggestion(map, 'no-console-log', 3, suggested, getRuleCategory)
-    addSuggestion(map, 'no-console-log', 2, suggested, getRuleCategory)
+    addSuggestion(map, 'no-console', 3, suggested, getRuleCategory)
+    addSuggestion(map, 'no-console', 2, suggested, getRuleCategory)
 
-    const entry = map.get('no-console-log')
+    const entry = map.get('no-console')
     expect(entry).toBeDefined()
     expect(entry!.estimatedViolations).toBe(5)
     expect(map.size).toBe(1)
@@ -295,9 +295,9 @@ describe('addSuggestion', () => {
 
     addSuggestion(
       map,
-      'no-console-log',
+      'no-console',
       1,
-      makeSuggestedRule({ ruleId: 'no-console-log' }),
+      makeSuggestedRule({ ruleId: 'no-console' }),
       getRuleCategory,
     )
     addSuggestion(
@@ -309,7 +309,7 @@ describe('addSuggestion', () => {
     )
 
     expect(map.size).toBe(2)
-    expect(map.get('no-console-log')!.estimatedViolations).toBe(1)
+    expect(map.get('no-console')!.estimatedViolations).toBe(1)
     expect(map.get('no-eval')!.estimatedViolations).toBe(2)
   })
 
@@ -375,7 +375,7 @@ describe('analyzeFile', () => {
       getRuleCategory,
     )
 
-    const entry = map.get('no-console-log')
+    const entry = map.get('no-console')
     expect(entry).toBeDefined()
     expect(entry!.estimatedViolations).toBe(2)
     expect(entry!.category).toBe('patterns')
@@ -493,7 +493,7 @@ describe('analyzeFile', () => {
       getRuleCategory,
     )
 
-    expect(map.get('no-console-log')).toBeDefined()
+    expect(map.get('no-console')).toBeDefined()
     expect(map.get('no-eval')).toBeDefined()
     expect(map.get('prefer-const')).toBeDefined()
     expect(map.size).toBeGreaterThanOrEqual(3)

@@ -78,7 +78,7 @@ describe('calculateBreakdown', () => {
   })
 
   test('counts patterns violations with weight 1', () => {
-    const result = calculateBreakdown([makeViolation('no-console-log')])
+    const result = calculateBreakdown([makeViolation('no-console')])
     expect(result.patterns).toBe(1)
   })
 
@@ -105,7 +105,7 @@ describe('calculateBreakdown', () => {
     const result = calculateBreakdown([
       makeViolation('max-complexity'),
       makeViolation('no-circular-deps'),
-      makeViolation('no-console-log'),
+      makeViolation('no-console'),
       makeViolation('no-eval'),
     ])
     expect(result.complexity).toBe(3)
@@ -1031,9 +1031,9 @@ describe('calculateBreakdown — additional', () => {
       makeViolation('max-complexity'),
       makeViolation('no-eval'),
       makeViolation('no-circular-deps'),
-      makeViolation('no-console-log'),
-      makeViolation('no-console-log'),
-      makeViolation('no-console-log'),
+      makeViolation('no-console'),
+      makeViolation('no-console'),
+      makeViolation('no-console'),
       makeViolation('require-jsdoc'),
     ]
     const result = calculateBreakdown(violations)

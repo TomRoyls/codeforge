@@ -118,8 +118,6 @@ export const FIXES: Record<string, string[]> = {
     'Throw errors: Let callers handle error conditions',
     'Return result objects: Return success/failure instead of logging',
     'Use debugging tools: Use proper debug logging that can be disabled',
-  ],
-  'no-console-log': [
     'Remove the call: Delete the console.log statement entirely',
     'Replace with logger: Use a proper logging library with log levels',
     'Use debug flag: Wrap in if (DEBUG) or use a debug module',

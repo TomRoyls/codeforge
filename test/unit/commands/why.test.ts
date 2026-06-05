@@ -142,12 +142,12 @@ describe('Why Command', () => {
       expect(output).toContain('max-lines')
     })
 
-    test('shows rule info for no-console-log', async () => {
+    test('shows rule info for no-console', async () => {
       const command = new Why([], {} as any)
       const logSpy = vi.spyOn(command as any, 'log')
 
       vi.spyOn(command as any, 'parse').mockResolvedValue({
-        args: { ruleId: 'no-console-log' },
+        args: { ruleId: 'no-console' },
         flags: {},
       })
 
@@ -160,7 +160,7 @@ describe('Why Command', () => {
       expect(logSpy).toHaveBeenCalled()
       const calls = logSpy.mock.calls
       const output = calls.map((call: any[]) => call.join(' ')).join('\n')
-      expect(output).toContain('no-console-log')
+      expect(output).toContain('no-console')
     })
 
     test('shows violation analysis when --violation flag is set for parameters', async () => {
@@ -2051,10 +2051,10 @@ describe('Why Command', () => {
       expect(rule?.meta.name).toBe('max-lines')
     })
 
-    test('gets rule for no-console-log', () => {
-      const rule = getRule('no-console-log')
+    test('gets rule for no-console', () => {
+      const rule = getRule('no-console')
       expect(rule).toBeDefined()
-      expect(rule?.meta.name).toBe('no-console-log')
+      expect(rule?.meta.name).toBe('no-console')
     })
 
     test('gets rule for max-complexity', () => {
@@ -2201,8 +2201,8 @@ describe('Why Command', () => {
       expect(category).toBe('complexity')
     })
 
-    test('returns correct category for no-console-log', () => {
-      const category = getRuleCategory('no-console-log')
+    test('returns correct category for no-console', () => {
+      const category = getRuleCategory('no-console')
       expect(category).toBe('patterns')
     })
 

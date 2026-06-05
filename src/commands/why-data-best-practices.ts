@@ -98,8 +98,6 @@ export const BEST_PRACTICES: Record<string, string[]> = {
     'Production-ready logging: Use structured logging from the start',
     'Debugging tools: Use debug builds or flags instead of console',
     'Error handling: Let the caller decide how to handle errors',
-  ],
-  'no-console-log': [
     'Use proper logging: Replace console.log with a logging framework',
     'Remove debug code: Debug logs should not reach production',
     'Structured output: Log structured data, not arbitrary strings',

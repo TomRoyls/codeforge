@@ -32,7 +32,7 @@ vi.mock('../../src/rules/categories.js', () => ({
       'max-depth': 'complexity',
       'max-lines-per-function': 'complexity',
       'no-async-without-await': 'patterns',
-      'no-console-log': 'patterns',
+      'no-console': 'patterns',
       'no-duplicate-code': 'patterns',
       'no-eval': 'security',
       'no-explicit-any': 'patterns',
@@ -296,8 +296,8 @@ describe('analyzeFile', () => {
     instance.p.analyzeFile('console.log("hello"); console.warn("bad")', map)
 
     expect(map.size).toBeGreaterThanOrEqual(1)
-    expect(map.has('no-console-log')).toBe(true)
-    const entry = map.get('no-console-log') as Record<string, unknown>
+    expect(map.has('no-console')).toBe(true)
+    const entry = map.get('no-console') as Record<string, unknown>
     expect(entry.estimatedViolations).toBe(2)
   })
 
@@ -333,7 +333,7 @@ describe('analyzeFile', () => {
     // Clean code should have no var, no any, no eval, no console.log
     expect(map.has('no-eval')).toBe(false)
     expect(map.has('no-explicit-any')).toBe(false)
-    expect(map.has('no-console-log')).toBe(false)
+    expect(map.has('no-console')).toBe(false)
     expect(map.has('prefer-const')).toBe(false)
   })
 
@@ -352,7 +352,7 @@ describe('analyzeFile', () => {
     expect(map.has('prefer-const')).toBe(true)
     expect(map.has('no-explicit-any')).toBe(true)
     expect(map.has('no-eval')).toBe(true)
-    expect(map.has('no-console-log')).toBe(true)
+    expect(map.has('no-console')).toBe(true)
   })
 })
 

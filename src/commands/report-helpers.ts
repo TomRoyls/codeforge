@@ -409,7 +409,7 @@ interface SuggestionRule {
 }
 
 const SUGGESTION_RULES: SuggestionRule[] = [
-  { category: 'debugging', pattern: /console\.log/g, rule: 'no-console-log', severity: 'low' },
+  { category: 'debugging', pattern: /console\.log/g, rule: 'no-console', severity: 'low' },
   { category: 'type-safety', pattern: /:\s*any\b/g, rule: 'no-explicit-any', severity: 'medium' },
   { category: 'type-safety', pattern: /@ts-ignore/g, rule: 'no-ts-ignore', severity: 'medium' },
   { category: 'error-handling', pattern: /catch\s*\([^)]*\)\s*\{\s*\}/g, rule: 'no-empty-catch', severity: 'high' },

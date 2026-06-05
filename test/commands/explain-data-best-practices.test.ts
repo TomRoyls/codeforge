@@ -32,7 +32,7 @@ describe('bestPracticesMap: keys', () => {
       'eq-eq-eq',
       'curly',
       'max-params',
-      'no-console-log',
+      'no-console',
       'no-explicit-any',
       'no-unused-vars',
       'require-await',
@@ -196,8 +196,8 @@ describe('bestPracticesMap: specific rule content', () => {
     expect(mentions).toBe(true)
   })
 
-  it('no-console-log mentions logging library', () => {
-    const practices = bestPracticesMap['no-console-log']
+  it('no-console mentions logging library', () => {
+    const practices = bestPracticesMap['no-console']
     expect(practices).toBeDefined()
     const mentions = practices.some((p) => p.toLowerCase().includes('logging library'))
     expect(mentions).toBe(true)

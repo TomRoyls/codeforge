@@ -61,7 +61,7 @@ export const examplesMap: Record<string, RuleExample[]> = {
       good: '// shared.ts\nexport const shared = "value";\n\n// a.ts\nimport { shared } from "./shared";\nexport const a = shared;',
     },
   ],
-  'no-console-log': [
+  'no-console': [
     {
       bad: 'function calculate() {\n  console.log("Calculating...");\n  return 42;\n}',
       description: 'Using console.log in production code',

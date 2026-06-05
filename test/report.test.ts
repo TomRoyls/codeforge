@@ -441,7 +441,7 @@ describe('collectSuggestions', () => {
     ]
     const result = collectSuggestions(files)
     expect(result.topSuggestions.length).toBeGreaterThan(0)
-    expect(result.topSuggestions[0]!.rule).toBe('no-console-log')
+    expect(result.topSuggestions[0]!.rule).toBe('no-console')
     expect(result.topSuggestions[0]!.count).toBe(3)
   })
 

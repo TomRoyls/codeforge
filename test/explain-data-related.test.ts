@@ -53,10 +53,10 @@ describe('relatedRulesMap known entries', () => {
     expect(relatedRulesMap['prefer-const']).toContain('no-const-assign')
   })
 
-  it('contains no-console-log with expected related rules', () => {
-    expect(relatedRulesMap['no-console-log']).toBeDefined()
-    expect(relatedRulesMap['no-console-log']).toContain('no-debugger')
-    expect(relatedRulesMap['no-console-log']).toContain('no-alert')
+  it('contains no-console with expected related rules', () => {
+    expect(relatedRulesMap['no-console']).toBeDefined()
+    expect(relatedRulesMap['no-console']).toContain('no-debugger')
+    expect(relatedRulesMap['no-console']).toContain('no-alert')
   })
 
   it('contains no-explicit-any with expected related rules', () => {

@@ -29,7 +29,7 @@ function makeContext(overrides: Partial<DSLEvaluationContext> = {}): DSLEvaluati
 }
 
 const SAMPLE_YAML = `rules:
-  - id: no-console-log
+  - id: no-console
     name: No Console Log
     description: Disallow console.log statements
     severity: warning

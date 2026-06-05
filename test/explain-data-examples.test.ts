@@ -50,7 +50,7 @@ describe('examplesMap known rules', () => {
     'max-params',
     'no-eval',
     'prefer-const',
-    'no-console-log',
+    'no-console',
   ]
 
   it('contains entries for all known rules', () => {

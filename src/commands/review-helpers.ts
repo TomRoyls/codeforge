@@ -164,7 +164,7 @@ export function checkNoEmptyCatch(content: string, filePath: string): ReviewFind
   return findings
 }
 
-// ─── Rule: no-console-log ─────────────────────────────────────────────────────
+// ─── Rule: no-console ─────────────────────────────────────────────────────
 
 /**
  * Find console.log calls in non-test files.
@@ -183,7 +183,7 @@ export function checkNoConsoleLog(content: string, filePath: string): ReviewFind
     if (match) {
       findings.push({
         id: makeId(),
-        rule: 'no-console-log',
+        rule: 'no-console',
         file: filePath,
         line: i + 1,
         column: (match.index ?? 0) + 1,

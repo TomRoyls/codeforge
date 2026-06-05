@@ -812,8 +812,8 @@ describe('_base.ts', () => {
       })
 
       test('filters to specific rules when requested', async () => {
-        const registry = await command.testSetupRuleRegistry(['no-console-log', 'no-eval'])
-        const consoleLogRule = registry.getRule('no-console-log')
+        const registry = await command.testSetupRuleRegistry(['no-console', 'no-eval'])
+        const consoleLogRule = registry.getRule('no-console')
         const evalRule = registry.getRule('no-eval')
         expect(consoleLogRule?.enabled).toBe(true)
         expect(evalRule?.enabled).toBe(true)
@@ -838,17 +838,17 @@ describe('_base.ts', () => {
       })
 
       test('disables non-requested rules when specific rules given', async () => {
-        const registry = await command.testSetupRuleRegistry(['no-console-log'])
+        const registry = await command.testSetupRuleRegistry(['no-console'])
         const allRules = registry.getAllRules()
         const enabledCount = allRules.filter((r) => r.enabled).length
-        // Only no-console-log should be enabled from requested set
+        // Only no-console should be enabled from requested set
         // (other rules might share same ID)
         expect(enabledCount).toBeGreaterThanOrEqual(1)
       })
 
-      test('no-console-log rule is enabled when requested', async () => {
-        const registry = await command.testSetupRuleRegistry(['no-console-log'])
-        const rule = registry.getRule('no-console-log')
+      test('no-console rule is enabled when requested', async () => {
+        const registry = await command.testSetupRuleRegistry(['no-console'])
+        const rule = registry.getRule('no-console')
         expect(rule).toBeDefined()
         expect(rule?.enabled).toBe(true)
       })
@@ -870,9 +870,9 @@ describe('_base.ts', () => {
 
       test('mix of valid and unknown rules', async () => {
         const warnSpy = vi.spyOn(logger, 'warn')
-        const registry = await command.testSetupRuleRegistry(['no-console-log', 'totally-fake'])
+        const registry = await command.testSetupRuleRegistry(['no-console', 'totally-fake'])
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('totally-fake'))
-        const rule = registry.getRule('no-console-log')
+        const rule = registry.getRule('no-console')
         expect(rule?.enabled).toBe(true)
       })
 
@@ -902,13 +902,13 @@ describe('_base.ts', () => {
       })
 
       test('getAllRules returns loaded rules', async () => {
-        const registry = await command.testSetupRuleRegistry(['no-console-log'])
+        const registry = await command.testSetupRuleRegistry(['no-console'])
         const allRules = registry.getAllRules()
         expect(allRules.length).toBeGreaterThanOrEqual(1)
       }, 60000)
 
       test('enabling a disabled rule works', async () => {
-        const registry = await command.testSetupRuleRegistry(['no-console-log'])
+        const registry = await command.testSetupRuleRegistry(['no-console'])
         const someOtherRule = registry.getAllRules().find((r) => !r.enabled)
         if (someOtherRule) {
           const ruleId = registry.getAllRules().find((r) => !r.enabled)
@@ -937,12 +937,12 @@ describe('_base.ts', () => {
       })
 
       test('getEnabledRules returns correct count for single rule request', async () => {
-        const registry = await command.testSetupRuleRegistry(['no-console-log'])
+        const registry = await command.testSetupRuleRegistry(['no-console'])
         const enabled = registry.getEnabledRules()
         // At minimum, the requested rule should be enabled
         const hasConsoleLog = enabled.some((r) => {
           // Check by looking at enabled rules
-          return registry.getRule('no-console-log')?.enabled === true
+          return registry.getRule('no-console')?.enabled === true
         })
         expect(hasConsoleLog).toBe(true)
       })
@@ -1258,8 +1258,8 @@ describe('_base.ts', () => {
       })
 
       test('setupRuleRegistry with same args gives consistent enabled count', async () => {
-        const reg1 = await command.testSetupRuleRegistry(['no-console-log'])
-        const reg2 = await command.testSetupRuleRegistry(['no-console-log'])
+        const reg1 = await command.testSetupRuleRegistry(['no-console'])
+        const reg2 = await command.testSetupRuleRegistry(['no-console'])
         expect(reg1.getEnabledRules().length).toBe(reg2.getEnabledRules().length)
       })
 

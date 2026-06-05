@@ -21,7 +21,7 @@ describe('bestPracticesMap', () => {
 
   it('contains common rule keys', () => {
     const keys = Object.keys(bestPracticesMap)
-    const expected = ['no-eval', 'prefer-const', 'max-params', 'no-console-log', 'no-var']
+    const expected = ['no-eval', 'prefer-const', 'max-params', 'no-console', 'no-var']
     for (const rule of expected) {
       expect(keys).toContain(rule)
     }

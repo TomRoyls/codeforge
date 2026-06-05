@@ -107,11 +107,11 @@ describe('Biome migrator', () => {
       expect(result.rules['no-explicit-any']).toBe('error')
     })
 
-    test('should migrate suspicious/noConsoleLog to no-console-log', () => {
+    test('should migrate suspicious/noConsoleLog to no-console', () => {
       const result = migrateBiomeConfig({
         linter: { rules: { 'suspicious/noConsoleLog': 'error' } },
       })
-      expect(result.rules['no-console-log']).toBe('error')
+      expect(result.rules['no-console']).toBe('error')
     })
 
     test('should migrate complexity/noExcessiveCognitiveComplexity to max-complexity', () => {

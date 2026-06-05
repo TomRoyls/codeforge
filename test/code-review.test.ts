@@ -277,7 +277,7 @@ describe('ReviewEngine', () => {
         }],
       }]
       const result = engine.review(files)
-      const consoleLog = result.comments.find((c) => c.ruleId === 'no-console-log')
+      const consoleLog = result.comments.find((c) => c.ruleId === 'no-console')
       expect(consoleLog).toBeDefined()
     })
 

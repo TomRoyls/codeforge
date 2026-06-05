@@ -92,8 +92,7 @@ import {
      noCondAssignRule,
    noConfusingVoidExpressionRule,
    noConfusingArrowRule,
-   noConsoleLogRule,
-  noConstantConditionRule,
+   noConstantConditionRule,
   noConstAssignRule,
   noConstEnumRule,
    noConstructorReturnRule,
@@ -755,8 +754,7 @@ noUnnecessaryTypeConstraintRule,
        sortKeysRule,
        sortImportsRule,
         spacedCommentRule,
-        strictBoolExpressionsRule,
-       useIsnanRule,
+        useIsnanRule,
       validTypeofRule,
       yodaRule,
   noUnnecessaryFunctionCallSpreadRule,
@@ -975,7 +973,6 @@ const adaptedPreferNullishCoalescing = adaptPluginRule(
   preferNullishCoalescingRule,
   'prefer-nullish-coalescing',
 )
-const adaptedNoConsoleLog = adaptPluginRule(noConsoleLogRule, 'no-console-log')
 const adaptedNoThrowSync = adaptPluginRule(noThrowSyncRule, 'no-throw-sync')
 const adaptedNoTrailingSpaces = adaptPluginRule(noTrailingSpacesRule, 'no-trailing-spaces')
 const adaptedPreferReadonly = adaptPluginRule(preferReadonlyRule, 'prefer-readonly')
@@ -1833,7 +1830,6 @@ const adaptedRequireYield = adaptPluginRule(requireYieldRule, 'require-yield')
 const adaptedSortKeys = adaptPluginRule(sortKeysRule, 'sort-keys')
 const adaptedSortImports = adaptPluginRule(sortImportsRule, 'sort-imports')
 const adaptedSpacedComment = adaptPluginRule(spacedCommentRule, 'spaced-comment')
-const adaptedStrictBoolExpressions = adaptPluginRule(strictBoolExpressionsRule, 'strict-bool-expressions')
 const adaptedUseIsnan = adaptPluginRule(useIsnanRule, 'use-isnan')
 const adaptedValidTypeof = adaptPluginRule(validTypeofRule, 'valid-typeof')
 const adaptedYoda = adaptPluginRule(yodaRule, 'yoda')
@@ -3194,7 +3190,6 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-confusing-void-expression': adaptedNoConfusingVoidExpression,
   'no-confusing-arrow': adaptedNoConfusingArrow,
   'no-console': adaptedNoConsole,
-  'no-console-log': adaptedNoConsoleLog,
   'no-nested-template-literals': adaptedNoNestedTemplateLiterals,
   'no-const-assign': adaptedNoConstAssign,
   'no-const-enum': adaptedNoConstEnum,
@@ -5198,7 +5193,6 @@ export const allRules: Record<string, RuleDefinition> = {
   'sort-keys': adaptedSortKeys,
   'sort-imports': adaptedSortImports,
   'spaced-comment': adaptedSpacedComment,
-  'strict-bool-expressions': adaptedStrictBoolExpressions,
   'strict-boolean-expressions': strictBooleanExpressionsRule,
   'use-isnan': adaptedUseIsnan,
   'valid-expect': adaptedValidExpect,
@@ -5244,7 +5238,6 @@ export {
   noAsyncPromiseExecutorRule,
   noCompareNegZeroRule,
   noConfusingVoidExpressionRule,
-  noConsoleLogRule,
   noConstantConditionRule,
   noConstAssignRule,
   noDuplicateCodeRule,

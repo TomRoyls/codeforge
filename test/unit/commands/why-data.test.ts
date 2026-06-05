@@ -601,8 +601,8 @@ describe('COMMON_VIOLATIONS detailed content', () => {
     expect(text).toMatch(/loop|for/)
   })
 
-  test('no-console-log violation mentions debugging', () => {
-    const text = COMMON_VIOLATIONS['no-console-log'].join(' ').toLowerCase()
+  test('no-console violation mentions debugging', () => {
+    const text = COMMON_VIOLATIONS['no-console'].join(' ').toLowerCase()
     expect(text).toMatch(/console|debug/)
   })
 

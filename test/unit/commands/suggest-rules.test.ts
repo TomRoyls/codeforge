@@ -15,7 +15,7 @@ vi.mock('node:fs/promises', () => ({
 vi.mock('../../../src/rules/categories.js', () => ({
   getRuleCategory: vi.fn((ruleId: string) => {
     const categories: Record<string, string> = {
-      'no-console-log': 'patterns',
+      'no-console': 'patterns',
       'no-explicit-any': 'patterns',
       'prefer-const': 'patterns',
       'eq-eq-eq': 'patterns',
@@ -287,7 +287,7 @@ describe('SuggestRules Command', () => {
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
       const parsed = JSON.parse(output)
 
-      const consoleRule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const consoleRule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(consoleRule).toBeDefined()
       expect(consoleRule.estimatedViolations).toBeGreaterThan(0)
     })
@@ -528,7 +528,7 @@ describe('SuggestRules Command', () => {
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
       const parsed = JSON.parse(output)
 
-      const consoleRule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const consoleRule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(consoleRule.estimatedViolations).toBe(2)
     })
   })
@@ -536,50 +536,50 @@ describe('SuggestRules Command', () => {
   describe('Pattern detection - console', () => {
     test('detects console.warn', async () => {
       const result = await detectPattern('console.warn("msg")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule).toBeDefined()
     })
 
     test('detects console.error', async () => {
       const result = await detectPattern('console.error("err")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule).toBeDefined()
     })
 
     test('detects console.debug', async () => {
       const result = await detectPattern('console.debug("dbg")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule).toBeDefined()
     })
 
     test('counts multiple console calls', async () => {
       const result = await detectPattern('console.log("a"); console.log("b"); console.log("c")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule.estimatedViolations).toBe(3)
     })
 
     test('detects mixed console methods', async () => {
       const result = await detectPattern('console.log("a"); console.warn("b")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule).toBeDefined()
       expect(rule.estimatedViolations).toBeGreaterThanOrEqual(2)
     })
 
     test('no console detection for clean code', async () => {
       const result = await detectPattern('const x = 1;')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule).toBeUndefined()
     })
 
-    test('no-console-log has medium impact', async () => {
+    test('no-console has medium impact', async () => {
       const result = await detectPattern('console.log("a")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule.impact).toBe('medium')
     })
 
-    test('no-console-log has high confidence', async () => {
+    test('no-console has high confidence', async () => {
       const result = await detectPattern('console.log("a")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule.confidence).toBe('high')
     })
   })
@@ -877,7 +877,7 @@ describe('SuggestRules Command', () => {
 
     test('preserves correct reason for each detected rule', async () => {
       const result = await detectPattern('console.log("a"); eval("b")')
-      const consoleRule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const consoleRule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       const evalRule = result.find((r: { ruleId: string }) => r.ruleId === 'no-eval')
       expect(consoleRule.reason).toContain('console')
       expect(evalRule.reason).toContain('eval')
@@ -1328,14 +1328,14 @@ describe('SuggestRules Command', () => {
       const internals = getInternals()
       const map = new Map<string, RuleSuggestion>()
       internals.analyzeFile('console.log("a")', map)
-      expect(map.has('no-console-log')).toBe(true)
+      expect(map.has('no-console')).toBe(true)
     })
 
     test('detects multiple different patterns', () => {
       const internals = getInternals()
       const map = new Map<string, RuleSuggestion>()
       internals.analyzeFile('console.log("a"); var x = 1;', map)
-      expect(map.has('no-console-log')).toBe(true)
+      expect(map.has('no-console')).toBe(true)
       expect(map.has('prefer-const')).toBe(true)
     })
 
@@ -1343,7 +1343,7 @@ describe('SuggestRules Command', () => {
       const internals = getInternals()
       const map = new Map<string, RuleSuggestion>()
       internals.analyzeFile('console.log("a"); console.warn("b")', map)
-      expect(map.get('no-console-log')!.estimatedViolations).toBeGreaterThanOrEqual(2)
+      expect(map.get('no-console')!.estimatedViolations).toBeGreaterThanOrEqual(2)
     })
 
     test('handles empty string content', () => {
@@ -1371,7 +1371,7 @@ describe('SuggestRules Command', () => {
       const internals = getInternals()
       const map = new Map<string, RuleSuggestion>()
       internals.analyzeFile('console.log("a"); console.warn("b"); console.error("c")', map)
-      expect(map.has('no-console-log')).toBe(true)
+      expect(map.has('no-console')).toBe(true)
       expect(map.size).toBeLessThanOrEqual(3)
     })
   })
@@ -1392,7 +1392,7 @@ describe('SuggestRules Command', () => {
       })
       await cmd.run()
       const parsed = JSON.parse(mockConsoleLog.mock.calls.map((c) => c[0]).join('\n'))
-      const rule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule.estimatedViolations).toBe(2)
     })
 
@@ -1476,7 +1476,7 @@ describe('SuggestRules Command', () => {
       })
       await cmd.run()
       const parsed = JSON.parse(mockConsoleLog.mock.calls.map((c) => c[0]).join('\n'))
-      const rule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule.estimatedViolations).toBeGreaterThanOrEqual(3)
     })
 
@@ -1496,7 +1496,7 @@ describe('SuggestRules Command', () => {
       })
       await cmd.run()
       const parsed = JSON.parse(mockConsoleLog.mock.calls.map((c) => c[0]).join('\n'))
-      const rule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule.estimatedViolations).toBe(50)
     })
   })
@@ -1921,7 +1921,7 @@ describe('SuggestRules Command', () => {
       })
       await cmd.run()
       const parsed = JSON.parse(mockConsoleLog.mock.calls.map((c) => c[0]).join('\n'))
-      const rule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = parsed.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule.estimatedViolations).toBe(3)
     })
 
@@ -1937,7 +1937,7 @@ describe('SuggestRules Command', () => {
         impact: '',
       })
       await cmd.run()
-      expect(getRuleCategory).toHaveBeenCalledWith('no-console-log')
+      expect(getRuleCategory).toHaveBeenCalledWith('no-console')
       expect(getRuleCategory).toHaveBeenCalledWith('no-eval')
     })
 
@@ -2051,13 +2051,13 @@ describe('SuggestRules Command', () => {
 
     test('pattern at very start of content', async () => {
       const result = await detectPattern('console.log("a")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule).toBeDefined()
     })
 
     test('pattern at very end of content', async () => {
       const result = await detectPattern('some code; console.log("a")')
-      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console-log')
+      const rule = result.find((r: { ruleId: string }) => r.ruleId === 'no-console')
       expect(rule).toBeDefined()
     })
 

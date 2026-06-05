@@ -693,7 +693,6 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-confusing-void-expression',
     'no-confusing-arrow',
     'no-constant-condition',
-    'no-console-log',
     'no-const-assign',
     'no-const-enum',
     'no-duplicate-code',
@@ -1420,9 +1419,8 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'require-yield',
      'sort-keys',
      'sort-imports',
-     'spaced-comment',
-     'strict-bool-expressions',
-     'use-isnan',
+      'spaced-comment',
+      'use-isnan',
     'valid-typeof',
     'yoda',
     'no-unnecessary-typed-array-at-spread',
@@ -2678,7 +2676,6 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-confusing-void-expression': 'patterns',
   'no-confusing-arrow': 'patterns',
   'no-console': 'patterns',
-  'no-console-log': 'patterns',
   'no-const-assign': 'patterns',
   'no-const-enum': 'patterns',
   'no-constant-binary-expression': 'correctness',
@@ -4681,7 +4678,6 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'sort-keys': 'patterns',
    'sort-imports': 'patterns',
    'spaced-comment': 'patterns',
-   'strict-bool-expressions': 'patterns',
    'strict-boolean-expressions': 'patterns',
   'use-isnan': 'patterns',
   'valid-expect': 'testing',
@@ -4703,16 +4699,16 @@ export const ALL_RULE_IDS = Object.keys(RULE_MODULES)
  * const loader = new LazyRuleLoader()
  *
  * // Load a single rule
- * const rule = await loader.loadRule('no-console-log')
- *
- * // Load multiple rules
- * const rules = await loader.loadRules(['no-console-log', 'max-params'])
- *
- * // Load all rules in a category
- * const complexityRules = await loader.loadRulesByCategory('complexity')
- *
- * // Preload specific rules for better performance
- * await loader.preload(['no-console-log', 'max-params'])
+  * const rule = await loader.loadRule('no-console')
+  *
+  * // Load multiple rules
+  * const rules = await loader.loadRules(['no-console', 'max-params'])
+  *
+  * // Load all rules in a category
+  * const complexityRules = await loader.loadRulesByCategory('complexity')
+  *
+  * // Preload specific rules for better performance
+  * await loader.preload(['no-console', 'max-params'])
  * ```
  */
 export class LazyRuleLoader {

@@ -32,7 +32,7 @@ describe('relatedRulesMap: keys', () => {
       'eq-eq-eq',
       'curly',
       'max-params',
-      'no-console-log',
+      'no-console',
       'no-explicit-any',
       'no-unused-vars',
       'require-await',

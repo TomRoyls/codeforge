@@ -1133,11 +1133,11 @@ describe('Biome Migrator', () => {
       expect(result.rules['eq-eq-eq']).toBe('error')
     })
 
-    it('maps suspicious/noConsoleLog to no-console-log', () => {
+    it('maps suspicious/noConsoleLog to no-console', () => {
       const result = migrateBiomeConfig({
         linter: { rules: { suspicious: { noConsoleLog: 'error' } } },
       })
-      expect(result.rules['no-console-log']).toBe('error')
+      expect(result.rules['no-console']).toBe('error')
     })
 
     it('source is always biome', () => {

@@ -41,8 +41,8 @@ describe('getBestPractices', () => {
     expect(result[0]).toContain('const by default')
   })
 
-  test('returns practices for no-console-log', () => {
-    const result = getBestPractices('no-console-log')
+  test('returns practices for no-console', () => {
+    const result = getBestPractices('no-console')
     expect(result).toHaveLength(4)
     expect(result[0]).toContain('logging library')
   })
@@ -98,8 +98,8 @@ describe('getExamples', () => {
     expect(result!).toHaveLength(2)
   })
 
-  test('returns examples for no-console-log', () => {
-    const result = getExamples('no-console-log')
+  test('returns examples for no-console', () => {
+    const result = getExamples('no-console')
     expect(result).not.toBeNull()
     expect(result!).toHaveLength(1)
     expect(result![0].bad).toContain('console.log')
@@ -152,8 +152,8 @@ describe('getRelatedRules', () => {
     expect(result).toEqual(['no-var', 'no-const-assign'])
   })
 
-  test('returns mapped rules for no-console-log', () => {
-    const result = getRelatedRules('no-console-log', 'patterns')
+  test('returns mapped rules for no-console', () => {
+    const result = getRelatedRules('no-console', 'patterns')
     expect(result).toEqual(['no-debugger', 'no-alert'])
   })
 
@@ -819,7 +819,7 @@ describe('getRelatedRules - expanded coverage', () => {
     expect(result.length).toBeGreaterThanOrEqual(2)
     expect(result.length).toBeLessThanOrEqual(4)
     expect(result).not.toContain('no-debugger')
-    expect(result).toContain('no-console-log')
+    expect(result).toContain('no-console')
     for (const id of result) {
       expect(id).toMatch(/^[a-z][a-z0-9-]*$/)
     }
@@ -879,10 +879,10 @@ describe('getRelatedRules - expanded coverage', () => {
     }
   })
 
-  test('returns related rules for no-console-log', () => {
-    const result = getRelatedRules('no-console-log', 'patterns')
+  test('returns related rules for no-console', () => {
+    const result = getRelatedRules('no-console', 'patterns')
     expect(result.length).toBeGreaterThanOrEqual(2)
-    expect(result).not.toContain('no-console-log')
+    expect(result).not.toContain('no-console')
     for (const id of result) {
       expect(id).toMatch(/^[a-z][a-z0-9-]*$/)
     }
@@ -918,7 +918,7 @@ describe('cross-reference validation', () => {
       'no-barrel-imports',
       'no-circular-deps',
       'no-constant-condition',
-      'no-console-log',
+      'no-console',
       'no-debugger',
       'no-deprecated-api',
       'no-duplicate-imports',
@@ -982,7 +982,7 @@ describe('cross-reference validation', () => {
       'no-alert',
       'no-await-in-loop',
       'no-circular-deps',
-      'no-console-log',
+      'no-console',
       'no-constant-condition',
       'no-debugger',
       'no-duplicate-imports',

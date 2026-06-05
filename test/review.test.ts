@@ -107,7 +107,7 @@ describe('checkNoConsoleLog', () => {
   it('finds console.log in source files', () => {
     const findings = checkNoConsoleLog('console.log("debug")', 'app.ts')
     expect(findings.length).toBe(1)
-    expect(findings[0]!.rule).toBe('no-console-log')
+    expect(findings[0]!.rule).toBe('no-console')
     expect(findings[0]!.severity).toBe('warning')
   })
 

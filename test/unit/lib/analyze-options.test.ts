@@ -289,7 +289,7 @@ describe('analyze-options', () => {
         'max-warnings': -1,
         output: undefined,
         quiet: false,
-        rules: ['no-console-log', 'prefer-const'],
+        rules: ['no-console', 'prefer-const'],
         'severity-level': 'info' as const,
         fix: false,
         staged: false,
@@ -298,7 +298,7 @@ describe('analyze-options', () => {
 
       const result = parseAnalysisFlags(flags)
 
-      expect(result.rules).toEqual(['no-console-log', 'prefer-const'])
+      expect(result.rules).toEqual(['no-console', 'prefer-const'])
     })
 
     test('should parse output path', () => {
@@ -729,9 +729,9 @@ describe('analyze-options', () => {
     test('rules with real rule names', () => {
       const result = parseAnalysisFlags({
         ...createDefaultFlags(),
-        rules: ['no-console-log', 'prefer-const', 'max-params'],
+        rules: ['no-console', 'prefer-const', 'max-params'],
       })
-      expect(result.rules).toEqual(['no-console-log', 'prefer-const', 'max-params'])
+      expect(result.rules).toEqual(['no-console', 'prefer-const', 'max-params'])
     })
 
     test('severityLevel=error returns error', () => {

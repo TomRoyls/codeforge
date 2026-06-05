@@ -17,7 +17,7 @@ import { SEVERITY_LEVELS, DEFAULT_CONFIG } from './types.js'
 const MAX_FUNCTION_LINES = 50
 
 const noConsoleLogRule: ReviewRule = {
-  id: 'no-console-log',
+  id: 'no-console',
   name: 'No Console Log',
   category: 'best-practices',
   severity: 'minor',
@@ -33,7 +33,7 @@ const noConsoleLogRule: ReviewRule = {
         severity: 'minor',
         category: 'best-practices',
         suggestion: 'Use a proper logging library instead',
-        ruleId: 'no-console-log',
+        ruleId: 'no-console',
       }
     }
     return null

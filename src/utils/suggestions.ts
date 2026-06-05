@@ -18,7 +18,7 @@ export const RULE_SUGGESTIONS = {
   noCollectionSizeMischeck:
     'Remove comparisons of collection sizes (.length, .size) with negative numbers. Sizes are always non-negative.',
   noConfusingVoidExpression: 'Avoid void expressions in positions where a value is expected.',
-  noConsoleLog: 'Use a logging library like winston or pino for production code.',
+  noConsole: 'Use a logging library like winston or pino for production code.',
   noConstantBinaryExpression:
     'Simplify constant binary expressions that always evaluate to the same value.',
   noConstantCondition: 'Avoid constant conditions in if/while/for that are always true or false.',
