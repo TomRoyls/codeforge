@@ -1,6 +1,7 @@
 import { DESCRIBE_FUNCTIONS, HOOK_FUNCTIONS } from './constants.js'
 
 export interface ASTNode {
+  abstract?: boolean
   accessibility?: string
   alternate?: unknown
   argument?: ASTNode
@@ -14,12 +15,16 @@ export interface ASTNode {
   computed?: boolean
   consequent?: unknown
   constraint?: unknown
+  const?: boolean
+  declare?: boolean
   declaration?: unknown
   declarations?: unknown[]
   decorators?: unknown[]
+  default?: boolean
   elements?: unknown[]
   elementType?: unknown
   end?: unknown
+  export?: boolean
   exported?: unknown
   exportKind?: string
   expression?: ASTNode

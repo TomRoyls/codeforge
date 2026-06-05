@@ -1,5 +1,4 @@
 import { type ModifierableNode, Node, type SourceFile } from 'ts-morph'
-import { SyntaxKind } from 'ts-morph'
 
 import type { ASTVisitor, RuleViolation, VisitorContext } from '../ast/visitor.js'
 import type {
@@ -37,15 +36,6 @@ function getAccessibilityModifier(
   if (node.hasModifier('protected')) return 'protected'
   if (node.hasModifier('public')) return 'public'
   return undefined
-}
-
-// Build a clean kind-number-to-name map, filtering out range markers (First*, Last*)
-// that share enum values with actual node types
-const KIND_MAP: Record<number, string> = {}
-for (const [name, value] of Object.entries(SyntaxKind)) {
-  if (typeof value !== 'number') continue
-  if (name.startsWith('First') || name.startsWith('Last')) continue
-  KIND_MAP[value] = name
 }
 
 function getExportInfo(node: Node): { isDefault: boolean; isExported: boolean } {
