@@ -421,6 +421,49 @@ function applyRawPostFixups(
     if (result.type === 'MemberExpression') result.type = 'OptionalMemberExpression'
     if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
   }
+
+  if (result.type === 'Parameter') {
+    const savedTypeAnnotation = result.typeAnnotation
+    const hasRest = result.dotDotDotToken !== null && result.dotDotDotToken !== undefined
+    const hasInit = result.init !== null && result.init !== undefined
+    const nameNode = result.name as Record<string, unknown> | undefined
+
+    if (hasRest) {
+      result.type = 'RestElement'
+      result.argument = result.name
+      delete result.name
+      delete result.init
+      delete result.dotDotDotToken
+      delete result.questionToken
+      delete result.typeAnnotation
+      delete result.modifiers
+    } else if (hasInit) {
+      result.type = 'AssignmentPattern'
+      result.left = result.name
+      result.right = result.init
+      delete result.name
+      delete result.init
+      delete result.dotDotDotToken
+      delete result.questionToken
+      delete result.typeAnnotation
+      delete result.modifiers
+    } else if (nameNode && typeof nameNode === 'object') {
+      const savedRange = { end: result.end, loc: result.loc, range: result.range, start: result.start }
+      for (const key of Object.keys(result)) {
+        delete result[key]
+      }
+      Object.assign(result, nameNode)
+      if (savedTypeAnnotation !== undefined && savedTypeAnnotation !== null) {
+        result.typeAnnotation = savedTypeAnnotation
+      }
+      if (nameNode.range === null || nameNode.range === undefined) {
+        result.end = savedRange.end
+        result.loc = savedRange.loc
+        result.range = savedRange.range
+        result.start = savedRange.start
+      }
+    }
+  }
 }
 
 function applyLiteralValue(result: Record<string, unknown>, kindName: string, node: Node): void {
