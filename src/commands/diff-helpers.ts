@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process'
+import type { RuleViolation } from '../ast/visitor.js'
 
 // ─── Interfaces ──────────────────────────────────────────
 
@@ -390,5 +391,171 @@ export function buildDiffResult(cwd: string, options: DiffOptions = {}): DiffRes
     files,
     headCommit,
     summary,
+  }
+}
+
+// ─── Violation Diff Functions ──────────────────────────
+
+export interface ViolationDiffResult {
+  added: RuleViolation[]
+  removed: RuleViolation[]
+  improved: RuleViolation[]
+}
+
+export interface ViolationDiffSummary {
+  totalBase: number
+  totalHead: number
+  addedCount: number
+  removedCount: number
+  improvedCount: number
+  netChange: number
+}
+
+export interface ViolationDiffReport {
+  base: string
+  head: string
+  added: RuleViolation[]
+  removed: RuleViolation[]
+  improved: RuleViolation[]
+  summary: ViolationDiffSummary
+}
+
+export type DiffReport = ViolationDiffReport
+
+const MAX_DISPLAY_VIOLATIONS = 20
+
+export function createViolationKey(violation: RuleViolation): string {
+  return `${violation.filePath}:${violation.range.start.line}:${violation.ruleId}`
+}
+
+export function compareViolations(
+  base: RuleViolation[],
+  head: RuleViolation[],
+): ViolationDiffResult {
+  const baseKeys = new Set(base.map(createViolationKey))
+  const headKeys = new Set(head.map(createViolationKey))
+
+  const added = head.filter((v) => !baseKeys.has(createViolationKey(v)))
+  const removed = base.filter((v) => !headKeys.has(createViolationKey(v)))
+
+  return { added, improved: [], removed }
+}
+
+export function countByRule(violations: RuleViolation[]): Record<string, number> {
+  const counts: Record<string, number> = {}
+  for (const v of violations) {
+    counts[v.ruleId] = (counts[v.ruleId] ?? 0) + 1
+  }
+  return counts
+}
+
+export function countBySeverity(violations: RuleViolation[]): Record<string, number> {
+  const counts: Record<string, number> = {}
+  for (const v of violations) {
+    counts[v.severity] = (counts[v.severity] ?? 0) + 1
+  }
+  return counts
+}
+
+export function buildDiffReport(
+  baseRef: string,
+  headRef: string,
+  base: RuleViolation[],
+  head: RuleViolation[],
+): ViolationDiffReport {
+  const comparison = compareViolations(base, head)
+
+  return {
+    base: baseRef,
+    head: headRef,
+    added: comparison.added,
+    removed: comparison.removed,
+    improved: comparison.improved,
+    summary: {
+      totalBase: base.length,
+      totalHead: head.length,
+      addedCount: comparison.added.length,
+      removedCount: comparison.removed.length,
+      improvedCount: comparison.improved.length,
+      netChange: comparison.added.length - comparison.removed.length,
+    },
+  }
+}
+
+export function parseGitDiffOutput(output: string): string[] {
+  return output
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+}
+
+export function formatSummary(report: ViolationDiffReport): string {
+  const { summary } = report
+  const lines: string[] = []
+
+  lines.push(`Comparing ${report.base} → ${report.head}`)
+  lines.push(`Base violations: ${summary.totalBase}`)
+  lines.push(`Head violations: ${summary.totalHead}`)
+  lines.push(`Added: ${summary.addedCount}`)
+  lines.push(`Removed: ${summary.removedCount}`)
+  lines.push(`Net change: ${summary.netChange}`)
+
+  if (summary.netChange < 0) {
+    lines.push(`Code improved — ${summary.removedCount} violations removed`)
+  } else if (summary.netChange > 0) {
+    lines.push(`Code regressed — ${summary.addedCount} new violations`)
+  } else {
+    lines.push('No net change in violations')
+  }
+
+  return lines.join('\n')
+}
+
+export function displayAddedViolations(
+  violations: RuleViolation[],
+  logFn: (...args: unknown[]) => void,
+): void {
+  if (violations.length === 0) return
+
+  logFn('Added Violations:')
+  const shown = violations.slice(0, MAX_DISPLAY_VIOLATIONS)
+  for (const v of shown) {
+    logFn(`  ${v.filePath}:${v.range.start.line} — ${v.ruleId}`)
+  }
+  if (violations.length > MAX_DISPLAY_VIOLATIONS) {
+    logFn(`  ... and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
+  }
+}
+
+export function displayRemovedViolations(
+  violations: RuleViolation[],
+  logFn: (...args: unknown[]) => void,
+): void {
+  if (violations.length === 0) return
+
+  logFn('Removed Violations:')
+  const shown = violations.slice(0, MAX_DISPLAY_VIOLATIONS)
+  for (const v of shown) {
+    logFn(`  ${v.filePath}:${v.range.start.line} — ${v.ruleId}`)
+  }
+  if (violations.length > MAX_DISPLAY_VIOLATIONS) {
+    logFn(`  ... and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
+  }
+}
+
+export function displayDiffReport(
+  report: ViolationDiffReport,
+  verbose: boolean,
+  logFn: (...args: unknown[]) => void,
+): void {
+  logFn('Violation Diff Analysis')
+
+  logFn(`Comparing ${report.base} → ${report.head}`)
+
+  logFn(formatSummary(report))
+
+  if (verbose) {
+    displayAddedViolations(report.added, logFn)
+    displayRemovedViolations(report.removed, logFn)
   }
 }
