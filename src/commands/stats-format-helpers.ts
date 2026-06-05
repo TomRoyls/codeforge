@@ -164,3 +164,90 @@ function sortFileStats(files: FileStats[], sortBy: string): FileStats[] {
     }
   })
 }
+
+// ─── CSV / Table / Output ──────────────────────────────
+
+type StatsFile = { name: string; loc: number; complexity: number; size: number; type: string }
+type StatsSummary = {
+  files: number; loc: number; functions: number; classes: number; interfaces: number;
+  enums: number; methods: number; typeAliases: number; complexity: number;
+  blankLines: number; commentLines: number; averageComplexity: number; averageLoc: number
+}
+type StatsInput = {
+  files?: StatsFile[]
+  fileTypes?: Record<string, number>
+  summary?: StatsSummary
+}
+
+function getStatsFiles(stats: StatsInput): StatsFile[] {
+  return (stats as Record<string, unknown>).files as StatsFile[] ?? []
+}
+
+function getStatsSummary(stats: StatsInput): StatsSummary {
+  return ((stats as Record<string, unknown>).summary as StatsSummary) ?? {
+    files: 0, loc: 0, functions: 0, classes: 0, interfaces: 0,
+    enums: 0, methods: 0, typeAliases: 0, complexity: 0,
+    blankLines: 0, commentLines: 0, averageComplexity: 0, averageLoc: 0,
+  }
+}
+
+function getFileTypes(stats: StatsInput): Record<string, number> {
+  return ((stats as Record<string, unknown>).fileTypes as Record<string, number>) ?? {}
+}
+
+export function formatCsv(stats: StatsInput): string {
+  const files = getStatsFiles(stats)
+  const lines: string[] = []
+  lines.push('File,LOC,Complexity,Size (bytes),Type')
+  for (const f of files) {
+    lines.push(`${f.name},${f.loc},${f.complexity},${f.size},${f.type}`)
+  }
+  return lines.join('\n')
+}
+
+const formatNumber = (n: number): string => n.toLocaleString('en-US')
+
+export function formatTable(stats: StatsInput, top: number): string {
+  const files = getStatsFiles(stats)
+  const summary = getStatsSummary(stats)
+  const fileTypes = getFileTypes(stats)
+
+  const lines: string[] = []
+  lines.push('Codebase Statistics')
+  lines.push('')
+
+  lines.push(`Total files: ${formatNumber(summary.files)}`)
+  lines.push(`Lines of code: ${formatNumber(summary.loc)}`)
+  lines.push(`Total complexity: ${formatNumber(summary.complexity)}`)
+  lines.push('')
+
+  lines.push('Code Structures:')
+  lines.push(`  Classes: ${formatNumber(summary.classes)}`)
+  lines.push(`  Functions: ${formatNumber(summary.functions)}`)
+  lines.push(`  Interfaces: ${formatNumber(summary.interfaces)}`)
+  lines.push(`  Enums: ${formatNumber(summary.enums)}`)
+  lines.push(`  Type aliases: ${formatNumber(summary.typeAliases)}`)
+  lines.push('')
+
+  lines.push('File Types:')
+  for (const [ext, count] of Object.entries(fileTypes)) {
+    lines.push(`  ${ext}: ${formatNumber(count)}`)
+  }
+  lines.push('')
+
+  const topN = top > 0 ? files.slice(0, top) : files
+  lines.push(`Top ${top} Largest Files`)
+  for (const f of topN) {
+    lines.push(`  ${f.name}`)
+    lines.push(`    LOC: ${formatNumber(f.loc)}`)
+    lines.push(`    Complexity: ${f.complexity}`)
+    lines.push(`    Size: ${f.size} bytes`)
+  }
+
+  return lines.join('\n')
+}
+
+export function formatOutput(stats: StatsInput, format: string, top: number): string {
+  if (format === 'csv') return formatCsv(stats)
+  return formatTable(stats, top)
+}
