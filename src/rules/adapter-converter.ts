@@ -508,12 +508,12 @@ function applyRawPostFixups(
     result.operator = (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(result.operator)
   }
 
-  // PrefixUnaryExpression: ++/-- → UpdateExpression with prefix:true
+  // PrefixUnaryExpression: ++/-- → UpdateExpression; all prefix → prefix:true
   if (kindName === 'PrefixUnaryExpression') {
     const op = result.operator as string
+    result.prefix = true
     if (op === '++' || op === '--') {
       result.type = 'UpdateExpression'
-      result.prefix = true
     }
   }
 
@@ -842,12 +842,12 @@ function applyPostConvertFixups(
     result.operator = (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(result.operator)
   }
 
-  // PrefixUnaryExpression: ++/-- → UpdateExpression with prefix:true
+  // PrefixUnaryExpression: ++/-- → UpdateExpression; all prefix → prefix:true
   if (kindName === 'PrefixUnaryExpression') {
     const op = result.operator as string
+    result.prefix = true
     if (op === '++' || op === '--') {
       result.type = 'UpdateExpression'
-      result.prefix = true
     }
   }
 

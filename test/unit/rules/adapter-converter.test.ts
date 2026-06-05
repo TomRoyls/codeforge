@@ -1453,7 +1453,7 @@ describe('adapter-converter', () => {
       expect(result?.consequent).toBeDefined()
     })
 
-    test('PrefixUnaryExpression with non-plus-minus stays UnaryExpression', () => {
+    test('PrefixUnaryExpression with non-plus-minus stays UnaryExpression with prefix:true', () => {
       const node = {
         kind: SyntaxKind.PrefixUnaryExpression,
         pos: 0,
@@ -1463,7 +1463,7 @@ describe('adapter-converter', () => {
       }
       const result = convertRawCompilerNode(node, 0)
       expect(result?.type).toBe('UnaryExpression')
-      expect(result?.prefix).toBeUndefined()
+      expect(result?.prefix).toBe(true)
     })
   })
 
@@ -1769,7 +1769,7 @@ describe('adapter-converter', () => {
       expect(result?.prefix).toBe(true)
     })
 
-    test('PrefixUnaryExpression with non-plus-minus string stays UnaryExpression', () => {
+    test('PrefixUnaryExpression with non-plus-minus string stays UnaryExpression with prefix:true', () => {
       const node = createMockNode({
         kindName: 'PrefixUnaryExpression',
         compilerNode: {
@@ -1781,7 +1781,7 @@ describe('adapter-converter', () => {
       })
       const result = convertCompilerNode(node, 0)
       expect(result?.type).toBe('UnaryExpression')
-      expect(result?.prefix).toBeUndefined()
+      expect(result?.prefix).toBe(true)
     })
 
     test('VariableDeclarationList with var flags (0) in convertCompilerNode', () => {
