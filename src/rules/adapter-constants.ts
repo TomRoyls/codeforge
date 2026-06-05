@@ -184,6 +184,7 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   TaggedTemplateExpression: 'TaggedTemplateExpression',
   TemplateExpression: 'TemplateLiteral',
   TemplateLiteralType: 'TSTemplateLiteralType',
+  TemplateLiteralTypeSpan: 'TSTemplateLiteralTypeSpan',
   ThisKeyword: 'ThisExpression',
   ThisType: 'TSThisType',
   ThrowStatement: 'ThrowStatement',
