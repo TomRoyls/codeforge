@@ -175,5 +175,33 @@ describe('Function and Arrow type mappings', () => {
       expect(ta1).toBeDefined()
       expect((ta1!.typeAnnotation as Record<string, unknown>).type).toBe('TSStringKeyword')
     })
+
+    it('preserves getter return type', () => {
+      const ast = parse('class C { get foo(): number { return 1; } }') as Record<string, unknown>
+      const stmt = (ast.body as unknown[])[0] as Record<string, unknown>
+      const body = stmt.body as Record<string, unknown>
+      const methods = body.body as Record<string, unknown>[]
+      const getter = methods[0]
+      expect(getter.type).toBe('MethodDefinition')
+      expect(getter.kind).toBe('get')
+      const value = getter.value as Record<string, unknown>
+      const rt = value.returnType as Record<string, unknown> | undefined
+      expect(rt).toBeDefined()
+      expect(rt!.type).toBe('TSTypeAnnotation')
+      expect((rt!.typeAnnotation as Record<string, unknown>).type).toBe('TSNumberKeyword')
+    })
+
+    it('preserves property declaration typeAnnotation', () => {
+      const ast = parse('class C { x: number = 5; }') as Record<string, unknown>
+      const stmt = (ast.body as unknown[])[0] as Record<string, unknown>
+      const body = stmt.body as Record<string, unknown>
+      const methods = body.body as Record<string, unknown>[]
+      const prop = methods[0]
+      expect(prop.type).toBe('PropertyDefinition')
+      const ta = prop.typeAnnotation as Record<string, unknown> | undefined
+      expect(ta).toBeDefined()
+      expect(ta!.type).toBe('TSTypeAnnotation')
+      expect((ta!.typeAnnotation as Record<string, unknown>).type).toBe('TSNumberKeyword')
+    })
   })
 })
