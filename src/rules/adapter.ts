@@ -1053,6 +1053,13 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
     // Some compiler properties may not be accessible on all node types
   }
 
+  // Synthesize TemplateLiteral quasis/expressions from head/templateSpans
+  if (kindName === 'TemplateExpression' && compilerNode) {
+    synthesizeTemplateExpression(result, compilerNode, depth)
+  } else if (kindName === 'NoSubstitutionTemplateLiteral' && compilerNode) {
+    synthesizeNoSubstitutionTemplate(result, compilerNode)
+  }
+
   applyPostConvertFixups(result, kindName, compilerNode)
 
   // ModuleDeclaration: detect namespace vs module keyword from source text

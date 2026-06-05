@@ -871,6 +871,13 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
     // Some compiler properties may not be accessible on all node types
   }
 
+  // Synthesize TemplateLiteral quasis/expressions from head/templateSpans
+  if (kindName === 'TemplateExpression' && compilerNode) {
+    synthesizeTemplateExpression(result, compilerNode, depth)
+  } else if (kindName === 'NoSubstitutionTemplateLiteral' && compilerNode) {
+    synthesizeNoSubstitutionTemplate(result, compilerNode)
+  }
+
   applyPostConvertFixups(result, kindName, compilerNode)
 
   return result
