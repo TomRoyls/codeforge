@@ -550,6 +550,13 @@ function applyRawPostFixups(
     if (result.type === 'MemberExpression') result.type = 'OptionalMemberExpression'
     if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
   }
+
+  // Wrap returnType in TSTypeAnnotation if not already wrapped
+  // ESTree typescript-eslint: returnType = { type: 'TSTypeAnnotation', typeAnnotation: <type node> }
+  const rt = result.returnType as Record<string, unknown> | undefined
+  if (rt && typeof rt === 'object' && rt.type !== 'TSTypeAnnotation') {
+    result.returnType = { type: 'TSTypeAnnotation', typeAnnotation: rt }
+  }
 }
 
 function convertRawCompilerNode(
@@ -631,6 +638,22 @@ function convertRawCompilerNode(
               : m,
         ),
         type: 'ClassBody',
+      }
+
+      continue
+    }
+
+    // InterfaceDeclaration: wrap members in TSInterfaceBody node
+    // ESTree typescript-eslint: iface.body = { type: 'TSInterfaceBody', body: [...members] }
+    if (kindName === 'InterfaceDeclaration' && key === 'members' && Array.isArray(val)) {
+      result.body = {
+        body: val.map(
+          (m: unknown) =>
+            m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+              ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+              : m,
+        ),
+        type: 'TSInterfaceBody',
       }
 
       continue
@@ -913,6 +936,13 @@ function applyPostConvertFixups(
     if (result.type === 'MemberExpression') result.type = 'OptionalMemberExpression'
     if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
   }
+
+  // Wrap returnType in TSTypeAnnotation if not already wrapped
+  // ESTree typescript-eslint: returnType = { type: 'TSTypeAnnotation', typeAnnotation: <type node> }
+  const rt = result.returnType as Record<string, unknown> | undefined
+  if (rt && typeof rt === 'object' && rt.type !== 'TSTypeAnnotation') {
+    result.returnType = { type: 'TSTypeAnnotation', typeAnnotation: rt }
+  }
 }
 
 function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
@@ -995,6 +1025,22 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
                   : m,
             ),
             type: 'ClassBody',
+          }
+
+          continue
+        }
+
+        // InterfaceDeclaration: wrap members in TSInterfaceBody
+        // ESTree typescript-eslint: iface.body = { type: 'TSInterfaceBody', body: [...members] }
+        if (kindName === 'InterfaceDeclaration' && key === 'members' && Array.isArray(val)) {
+          result.body = {
+            body: val.map(
+              (m: unknown) =>
+                m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+                  ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+                  : m,
+            ),
+            type: 'TSInterfaceBody',
           }
 
           continue

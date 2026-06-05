@@ -148,6 +148,22 @@ export function convertRawCompilerNode(
       continue
     }
 
+    // Synthesize TSInterfaceBody wrapper for InterfaceDeclaration members.
+    // ESTree typescript-eslint wraps interface members in TSInterfaceBody { body: [...] }.
+    if (kindName === 'InterfaceDeclaration' && key === 'members' && Array.isArray(val)) {
+      result.body = {
+        body: val.map(
+          (m: unknown) =>
+            m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+              ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+              : m,
+        ),
+        type: 'TSInterfaceBody',
+      }
+
+      continue
+    }
+
     if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
       synthesizeTemplateExpression(result, raw, depth)
 
@@ -509,6 +525,13 @@ function applyRawPostFixups(
       }
     }
   }
+
+  // Wrap returnType in TSTypeAnnotation if not already wrapped
+  // ESTree typescript-eslint: returnType = { type: 'TSTypeAnnotation', typeAnnotation: <type node> }
+  const rt = result.returnType as Record<string, unknown> | undefined
+  if (rt && typeof rt === 'object' && rt.type !== 'TSTypeAnnotation') {
+    result.returnType = { type: 'TSTypeAnnotation', typeAnnotation: rt }
+  }
 }
 
 function applyLiteralValue(result: Record<string, unknown>, kindName: string, node: Node): void {
@@ -731,6 +754,13 @@ function applyPostConvertFixups(
       }
     }
   }
+
+  // Wrap returnType in TSTypeAnnotation if not already wrapped
+  // ESTree typescript-eslint: returnType = { type: 'TSTypeAnnotation', typeAnnotation: <type node> }
+  const rt = result.returnType as Record<string, unknown> | undefined
+  if (rt && typeof rt === 'object' && rt.type !== 'TSTypeAnnotation') {
+    result.returnType = { type: 'TSTypeAnnotation', typeAnnotation: rt }
+  }
 }
 
 export function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
@@ -813,6 +843,22 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
                   : m,
             ),
             type: 'ClassBody',
+          }
+
+          continue
+        }
+
+        // InterfaceDeclaration: wrap members in TSInterfaceBody
+        // ESTree typescript-eslint: iface.body = { type: 'TSInterfaceBody', body: [...members] }
+        if (kindName === 'InterfaceDeclaration' && key === 'members' && Array.isArray(val)) {
+          result.body = {
+            body: val.map(
+              (m: unknown) =>
+                m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+                  ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+                  : m,
+            ),
+            type: 'TSInterfaceBody',
           }
 
           continue
