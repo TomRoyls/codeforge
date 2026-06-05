@@ -3,12 +3,15 @@ export class WaveletTree {
   private readonly _length: number
   private readonly _alphabet: number[]
 
-  constructor(data: number[], alphabet?: number[]) {
+  constructor(data: number[] | string, alphabet?: number[]) {
+    const numericData = typeof data === 'string'
+      ? Array.from(data, (c) => c.charCodeAt(0))
+      : data
     this._alphabet = alphabet
       ? [...alphabet].sort((a, b) => a - b)
-      : [...new Set(data)].sort((a, b) => a - b)
-    this._length = data.length
-    this.nodes = this._alphabet.length > 0 ? this.build(data, this._alphabet) : null
+      : [...new Set(numericData)].sort((a, b) => a - b)
+    this._length = numericData.length
+    this.nodes = this._alphabet.length > 0 ? this.build(numericData, this._alphabet) : null
   }
 
   private build(data: number[], alphabet: number[]): WaveletNode | null {
@@ -45,10 +48,22 @@ export class WaveletTree {
     }
   }
 
-  access(index: number): number {
+  access(index: number): string {
     if (this.nodes === null) throw new RangeError('Index out of bounds')
     if (index < 0 || index >= this._length) throw new RangeError('Index out of bounds')
-    return this.accessNode(this.nodes, index)
+    return String.fromCharCode(this.accessNode(this.nodes, index))
+  }
+
+  get text(): string {
+    let result = ''
+    for (let i = 0; i < this._length; i++) {
+      result += this.access(i)
+    }
+    return result
+  }
+
+  get length(): number {
+    return this._length
   }
 
   private accessNode(node: WaveletNode, index: number): number {
@@ -65,10 +80,11 @@ export class WaveletTree {
     }
   }
 
-  rank(symbol: number, endIndex: number): number {
+  rank(symbol: number | string, endIndex: number): number {
+    const sym = typeof symbol === 'string' ? symbol.charCodeAt(0) : symbol
     if (this.nodes === null) return 0
-    if (endIndex <= 0 || endIndex > this._length) return 0
-    return this.rankNode(this.nodes, symbol, endIndex)
+    if (endIndex < 0 || endIndex >= this._length) return 0
+    return this.rankNode(this.nodes, sym, endIndex + 1)
   }
 
   private rankNode(node: WaveletNode, symbol: number, endIndex: number): number {
@@ -89,12 +105,13 @@ export class WaveletTree {
     }
   }
 
-  select(symbol: number, occurrence: number): number {
-    if (occurrence < 1) return -1
-    const total = this.rank(symbol, this._length)
-    if (occurrence > total) return -1
+  select(symbol: number | string, occurrence: number): number {
+    const sym = typeof symbol === 'string' ? symbol.charCodeAt(0) : symbol
+    if (occurrence < 0) return -1
+    const total = this.rank(sym, this._length - 1)
+    if (occurrence >= total) return -1
     if (this.nodes === null) return -1
-    return this.selectNode(this.nodes, symbol, occurrence)
+    return this.selectNode(this.nodes, sym, occurrence + 1)
   }
 
   private selectNode(node: WaveletNode, symbol: number, occurrence: number): number {
@@ -161,10 +178,6 @@ export class WaveletTree {
     if (node.right !== null && startOnes !== endOnes) {
       this.rangeCountAllNode(node.right, startOnes, endOnes, result)
     }
-  }
-
-  get length(): number {
-    return this._length
   }
 
   get alphabet(): number[] {
