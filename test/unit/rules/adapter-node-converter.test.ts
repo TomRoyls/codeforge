@@ -2265,6 +2265,11 @@ describe('adapter-node-converter', () => {
       expect(result.type).toBe('TSImportEqualsDeclaration')
     })
 
+    test('ImportKeyword maps to Import (dynamic import() callee)', () => {
+      const result = nodeToGeneric(createMockNode({ kindName: 'ImportKeyword' }))
+      expect(result.type).toBe('Import')
+    })
+
     test('ReturnStatement maps to ReturnStatement', () => {
       const result = nodeToGeneric(createMockNode({ kindName: 'ReturnStatement' }))
       expect(result.type).toBe('ReturnStatement')

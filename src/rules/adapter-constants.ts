@@ -134,6 +134,7 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   IfStatement: 'IfStatement',
   ImportDeclaration: 'ImportDeclaration',
   ImportEqualsDeclaration: 'TSImportEqualsDeclaration',
+  ImportKeyword: 'Import',
   ImportSpecifier: 'ImportSpecifier',
   InterfaceDeclaration: 'TSInterfaceDeclaration',
   JsxAttribute: 'JSXAttribute',

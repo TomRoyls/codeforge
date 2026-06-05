@@ -1201,6 +1201,10 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['ImportEqualsDeclaration']).toBe('TSImportEqualsDeclaration')
     })
 
+    test('maps ImportKeyword to Import (for dynamic import())', () => {
+      expect(KIND_NAME_ALIASES['ImportKeyword']).toBe('Import')
+    })
+
     test('maps ForStatement to ForStatement (identity)', () => {
       expect(KIND_NAME_ALIASES['ForStatement']).toBe('ForStatement')
     })
