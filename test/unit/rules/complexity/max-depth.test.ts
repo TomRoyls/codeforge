@@ -240,11 +240,11 @@ describe('nesting depth calculation', () => {
     expect(violations[0].message).toContain('nesting depth of 1')
   })
 
-  test('function with block increases depth', () => {
-    const blockNode = createMockNode({ kind: 236 })
+  test('function with if-statement increases depth', () => {
+    const ifNode = createMockIfStatement()
     const funcNode = createMockFunctionDeclaration({
-      functionName: 'funcWithBlock',
-      children: [blockNode],
+      functionName: 'funcWithIf',
+      children: [ifNode],
     })
     const sourceFile = createMockSourceFile()
     const context = createMockVisitorContext(sourceFile)
@@ -536,8 +536,8 @@ describe('edge cases', () => {
   })
 
   test('handles mixed nesting constructs', () => {
-    const innerBlock = createMockNode({ kind: 236 })
-    const forNode = createMockForStatement({ children: [innerBlock] })
+    const innerWhile = createMockWhileStatement()
+    const forNode = createMockForStatement({ children: [innerWhile] })
     const ifNode = createMockIfStatement({ children: [forNode] })
     const funcNode = createMockFunctionDeclaration({
       functionName: 'mixedNesting',
@@ -1280,12 +1280,12 @@ describe('try/catch nesting', () => {
   })
 })
 
-describe('block nesting', () => {
-  test('single block at depth 1', () => {
-    const blockNode = createMockNode({ kind: 236 })
+describe('if-statement nesting (was block nesting)', () => {
+  test('single if-statement at depth 1', () => {
+    const ifNode = createMockIfStatement()
     const funcNode = createMockFunctionDeclaration({
-      functionName: 'singleBlock',
-      children: [blockNode],
+      functionName: 'singleIf',
+      children: [ifNode],
     })
     const sourceFile = createMockSourceFile()
     const context = createMockVisitorContext(sourceFile)
@@ -1296,11 +1296,11 @@ describe('block nesting', () => {
     expect(violations[0].message).toContain('nesting depth of 1')
   })
 
-  test('nested blocks depth 2', () => {
-    const inner = createMockNode({ kind: 236 })
-    const outer = createMockNode({ kind: 236, children: [inner] })
+  test('nested if-statements depth 2', () => {
+    const inner = createMockIfStatement()
+    const outer = createMockIfStatement({ children: [inner] })
     const funcNode = createMockFunctionDeclaration({
-      functionName: 'nestedBlocks',
+      functionName: 'nestedIfs',
       children: [outer],
     })
     const sourceFile = createMockSourceFile()
@@ -1312,12 +1312,12 @@ describe('block nesting', () => {
     expect(violations[0].message).toContain('nesting depth of 2')
   })
 
-  test('three nested blocks', () => {
-    const a = createMockNode({ kind: 236 })
-    const b = createMockNode({ kind: 236, children: [a] })
-    const c = createMockNode({ kind: 236, children: [b] })
+  test('three nested if-statements', () => {
+    const a = createMockIfStatement()
+    const b = createMockIfStatement({ children: [a] })
+    const c = createMockIfStatement({ children: [b] })
     const funcNode = createMockFunctionDeclaration({
-      functionName: 'tripleBlocks',
+      functionName: 'tripleIfs',
       children: [c],
     })
     const sourceFile = createMockSourceFile()
@@ -1329,11 +1329,11 @@ describe('block nesting', () => {
     expect(violations[0].message).toContain('nesting depth of 3')
   })
 
-  test('sibling blocks do not accumulate', () => {
-    const b1 = createMockNode({ kind: 236 })
-    const b2 = createMockNode({ kind: 236 })
+  test('sibling if-statements do not accumulate', () => {
+    const b1 = createMockIfStatement()
+    const b2 = createMockIfStatement()
     const funcNode = createMockFunctionDeclaration({
-      functionName: 'siblingBlocks',
+      functionName: 'siblingIfs',
       children: [b1, b2],
     })
     const sourceFile = createMockSourceFile()
@@ -1492,22 +1492,21 @@ describe('mixed construct nesting', () => {
     expect(violations[0].message).toContain('nesting depth of 3')
   })
 
-  test('block + if + for + while deep chain', () => {
+  test('if + for + while deep chain', () => {
     const whileNode = createMockWhileStatement()
     const forNode = createMockForStatement({ children: [whileNode] })
-    const ifNode = createMockIfStatement({ children: [forNode] })
-    const blockNode = createMockNode({ kind: 236, children: [ifNode] })
+    const outerIfNode = createMockIfStatement({ children: [forNode] })
     const funcNode = createMockFunctionDeclaration({
-      functionName: 'blockIfForWhile',
-      children: [blockNode],
+      functionName: 'ifForWhile',
+      children: [outerIfNode],
     })
     const sourceFile = createMockSourceFile()
     const context = createMockVisitorContext(sourceFile)
-    const ruleInstance = maxDepthRule.create({ max: 3 })
+    const ruleInstance = maxDepthRule.create({ max: 2 })
     ruleInstance.visitor.visitFunction!(funcNode as unknown as FunctionLikeNode, context)
     const violations = ruleInstance.onComplete!()
     expect(violations).toHaveLength(1)
-    expect(violations[0].message).toContain('nesting depth of 4')
+    expect(violations[0].message).toContain('nesting depth of 3')
   })
 
   test('switch inside for-of inside if', () => {
@@ -2896,8 +2895,8 @@ describe('additional edge cases', () => {
   })
 
   test('five level mixed chain depth message', () => {
-    const block = createMockNode({ kind: 236 })
-    const catchNode = createMockCatchClause({ children: [block] })
+    const innerIf = createMockIfStatement()
+    const catchNode = createMockCatchClause({ children: [innerIf] })
     const whileNode = createMockWhileStatement({ children: [catchNode] })
     const forNode = createMockForStatement({ children: [whileNode] })
     const ifNode = createMockIfStatement({ children: [forNode] })
