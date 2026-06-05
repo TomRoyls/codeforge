@@ -51,9 +51,10 @@ export const preferLiteralEnumMemberRule: RuleDefinition = {
     return {
       TSEnumMember(node: unknown): void {
         const n = toASTNode(node)
-        if (!n?.initializer) return
+        const init = n?.init ?? n?.initializer
+        if (!init) return
 
-        if (isLiteralLike(n.initializer)) return
+        if (isLiteralLike(init)) return
 
         const memberName = getEnumMemberName(node)
         const location = extractLocation(node)
