@@ -77,4 +77,24 @@ describe('Misc adapter conversions', () => {
     const param = (fn.params as unknown[])[0] as Record<string, unknown>
     expect(param.type).toBe('RestElement')
   })
+
+  it('handles yield* delegate', () => {
+    const ast = parse('function* gen() { yield* [1, 2, 3]; }') as Record<string, unknown>
+    const fn = (ast.body as unknown[])[0] as Record<string, unknown>
+    const body = fn.body as Record<string, unknown>
+    const stmt = (body.body as unknown[])[0] as Record<string, unknown>
+    const expr = stmt.expression as Record<string, unknown>
+    expect(expr.type).toBe('YieldExpression')
+    expect(expr.delegate).toBe(true)
+  })
+
+  it('handles yield without delegate', () => {
+    const ast = parse('function* gen() { yield 1; }') as Record<string, unknown>
+    const fn = (ast.body as unknown[])[0] as Record<string, unknown>
+    const body = fn.body as Record<string, unknown>
+    const stmt = (body.body as unknown[])[0] as Record<string, unknown>
+    const expr = stmt.expression as Record<string, unknown>
+    expect(expr.type).toBe('YieldExpression')
+    expect(expr.delegate).toBeUndefined()
+  })
 })

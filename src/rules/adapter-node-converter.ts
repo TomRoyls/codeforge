@@ -30,7 +30,16 @@ function applyFunctionFlags(base: Record<string, unknown>, node: Node): void {
   if (Node.isFunctionDeclaration(node) || Node.isFunctionExpression(node)) {
     if (node.isAsync()) base.async = true
     if (node.isGenerator()) base.generator = true
-  } else if (Node.isArrowFunction(node) && node.isAsync()) base.async = true
+  } else if (Node.isArrowFunction(node) && node.isAsync()) {
+    base.async = true
+  } else if (Node.isYieldExpression(node)) {
+    // TS YieldExpression.asteriskToken → ESTree YieldExpression.delegate
+    try {
+      if (node.getAsteriskToken()) base.delegate = true
+    } catch {
+      /* ts-morph version guard */
+    }
+  }
 }
 
 function applyClassMemberFlags(base: Record<string, unknown>, node: Node): void {

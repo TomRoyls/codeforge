@@ -646,7 +646,11 @@ function convertRawCompilerNode(
     }
 
     if (key === 'asteriskToken' && val && typeof val === 'object') {
-      result.generator = true
+      if (kindName === 'YieldExpression') {
+        result.delegate = true
+      } else {
+        result.generator = true
+      }
       continue
     }
 

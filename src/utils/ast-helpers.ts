@@ -16,6 +16,7 @@ export interface ASTNode {
   consequent?: unknown
   constraint?: unknown
   const?: boolean
+  delegate?: boolean
   declare?: boolean
   declaration?: unknown
   declarations?: unknown[]
