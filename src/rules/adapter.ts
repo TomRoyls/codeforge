@@ -800,6 +800,22 @@ function convertRawCompilerNode(
       continue
     }
 
+    // EnumDeclaration: wrap members in TSEnumBody node
+    // ESTree typescript-eslint: enum.body = { type: 'TSEnumBody', members: [...members] }
+    if (kindName === 'EnumDeclaration' && key === 'members' && Array.isArray(val)) {
+      result.body = {
+        members: val.map(
+          (m: unknown) =>
+            m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+              ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+              : m,
+        ),
+        type: 'TSEnumBody',
+      }
+
+      continue
+    }
+
     if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
       synthesizeTemplateExpression(result, raw, depth)
 
@@ -1327,6 +1343,22 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
                   : m,
             ),
             type: 'TSInterfaceBody',
+          }
+
+          continue
+        }
+
+        // EnumDeclaration: wrap members in TSEnumBody
+        // ESTree typescript-eslint: enum.body = { type: 'TSEnumBody', members: [...members] }
+        if (kindName === 'EnumDeclaration' && key === 'members' && Array.isArray(val)) {
+          result.body = {
+            members: val.map(
+              (m: unknown) =>
+                m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+                  ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+                  : m,
+            ),
+            type: 'TSEnumBody',
           }
 
           continue

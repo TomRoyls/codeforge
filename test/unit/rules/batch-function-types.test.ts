@@ -134,7 +134,9 @@ describe('Function and Arrow type mappings', () => {
       expect(stmt.type).toBe('TSEnumDeclaration')
       const id = stmt.id as Record<string, unknown>
       expect(id.name).toBe('E')
-      const members = stmt.members as unknown[]
+      const body = stmt.body as Record<string, unknown>
+      expect(body.type).toBe('TSEnumBody')
+      const members = body.members as unknown[]
       expect(members).toHaveLength(2)
     })
   })
@@ -224,7 +226,9 @@ describe('Function and Arrow type mappings', () => {
       const ast = parse('enum E { A = 1, B = 2 }') as Record<string, unknown>
       const stmt = (ast.body as unknown[])[0] as Record<string, unknown>
       expect(stmt.type).toBe('TSEnumDeclaration')
-      const members = stmt.members as Record<string, unknown>[]
+      const body = stmt.body as Record<string, unknown>
+      expect(body.type).toBe('TSEnumBody')
+      const members = body.members as Record<string, unknown>[]
       expect(members).toHaveLength(2)
       const a = members[0]
       const init = a.init as Record<string, unknown> | undefined

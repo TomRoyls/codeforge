@@ -14,7 +14,8 @@ export const noMixedEnumsRule: RuleDefinition = {
         const n = toASTNode(node)
         if (!n || n.type !== 'TSEnumDeclaration') return
 
-        const members = (n as { members?: unknown[] }).members
+        const body = (n as { body?: { members?: unknown[] } }).body
+        const members = body?.members ?? (n as { members?: unknown[] }).members
         if (!members || !Array.isArray(members) || members.length < 2) return
 
         const hasImplicit = members.some((m) => {
