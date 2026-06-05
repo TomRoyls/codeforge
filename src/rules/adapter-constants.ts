@@ -214,6 +214,7 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   TypeParameter: 'TSTypeParameter',
   TypePredicate: 'TSTypePredicate',
   TypeQuery: 'TSTypeQuery',
+  UndefinedKeyword: 'TSUndefinedKeyword',
   UnionType: 'TSUnionType',
   EnumMember: 'TSEnumMember',
   TypeAliasDeclaration: 'TSTypeAliasDeclaration',
