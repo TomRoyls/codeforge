@@ -792,8 +792,8 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['ImportDeclaration']).toBe('ImportDeclaration')
     })
 
-    test('maps ExportDeclaration to ExportDeclaration', () => {
-      expect(KIND_NAME_ALIASES['ExportDeclaration']).toBe('ExportDeclaration')
+    test('maps ExportDeclaration to ExportNamedDeclaration', () => {
+      expect(KIND_NAME_ALIASES['ExportDeclaration']).toBe('ExportNamedDeclaration')
     })
 
     test('maps CatchClause to CatchClause', () => {
@@ -1672,8 +1672,8 @@ describe('adapter-constants', () => {
       }
     })
 
-    test('KIND_SPECIFIC_MAP has exactly 61 entries', () => {
-      expect(Object.keys(KIND_SPECIFIC_MAP).length).toBe(61)
+    test('KIND_SPECIFIC_MAP has exactly 62 entries', () => {
+      expect(Object.keys(KIND_SPECIFIC_MAP).length).toBe(62)
     })
 
     test('OPERATOR_TOKEN_MAP has exactly 53 entries', () => {

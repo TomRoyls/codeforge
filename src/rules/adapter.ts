@@ -590,6 +590,10 @@ function applyRawPostFixups(
     delete result.params
     delete result.returnType
   }
+
+  if (result.type === 'ExportNamedDeclaration' && result.specifiers === undefined && result.source !== undefined) {
+    result.type = 'ExportAllDeclaration'
+  }
 }
 
 function convertRawCompilerNode(
@@ -653,6 +657,55 @@ function convertRawCompilerNode(
         )
       }
 
+      continue
+    }
+
+    if (kindName === 'ImportDeclaration' && key === 'importClause') {
+      const clause = val as Record<string, unknown> | null
+      if (!clause) continue
+      const specs: unknown[] = []
+      if (clause.name && typeof clause.name === 'object') {
+        const nameNode = clause.name as Record<string, unknown>
+        specs.push({
+          local: convertRawCompilerNode(nameNode, depth) ?? nameNode,
+          type: 'ImportDefaultSpecifier',
+        })
+      }
+      if (clause.namedBindings && typeof clause.namedBindings === 'object') {
+        const bindings = clause.namedBindings as Record<string, unknown>
+        const bindingKind = bindings.kind as number | undefined
+        const bindingKindName = bindingKind !== undefined ? KIND_MAP[bindingKind] : undefined
+        if (bindingKindName === 'NamespaceImport' && bindings.name) {
+          const nsName = bindings.name as Record<string, unknown>
+          specs.push({
+            local: convertRawCompilerNode(nsName, depth) ?? nsName,
+            type: 'ImportNamespaceSpecifier',
+          })
+        } else if (Array.isArray(bindings.elements)) {
+          for (const el of bindings.elements) {
+            if (el && typeof el === 'object') {
+              const elNode = el as Record<string, unknown>
+              const converted = convertRawCompilerNode(elNode, depth)
+              specs.push(converted ?? elNode)
+            }
+          }
+        }
+      }
+      result.specifiers = specs
+      continue
+    }
+
+    if (kindName === 'ExportDeclaration' && key === 'exportClause') {
+      const clause = val as Record<string, unknown> | null
+      if (!clause) continue
+      if (Array.isArray(clause.elements)) {
+        result.specifiers = clause.elements.map(
+          (el: unknown) =>
+            el && typeof el === 'object' && typeof (el as Record<string, unknown>).kind === 'number'
+              ? convertRawCompilerNode(el as Record<string, unknown>, depth)
+              : el,
+        )
+      }
       continue
     }
 
@@ -1009,6 +1062,10 @@ function applyPostConvertFixups(
     delete result.params
     delete result.returnType
   }
+
+  if (result.type === 'ExportNamedDeclaration' && result.specifiers === undefined && result.source !== undefined) {
+    result.type = 'ExportAllDeclaration'
+  }
 }
 
 function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
@@ -1074,6 +1131,55 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
             )
           }
 
+          continue
+        }
+
+        if (kindName === 'ImportDeclaration' && key === 'importClause') {
+          const clause = val as Record<string, unknown> | null
+          if (!clause) continue
+          const specs: unknown[] = []
+          if (clause.name && typeof clause.name === 'object') {
+            const nameNode = clause.name as Record<string, unknown>
+            specs.push({
+              local: convertRawCompilerNode(nameNode, depth) ?? nameNode,
+              type: 'ImportDefaultSpecifier',
+            })
+          }
+          if (clause.namedBindings && typeof clause.namedBindings === 'object') {
+            const bindings = clause.namedBindings as Record<string, unknown>
+            const bindingKind = bindings.kind as number | undefined
+            const bindingKindName = bindingKind !== undefined ? KIND_MAP[bindingKind] : undefined
+            if (bindingKindName === 'NamespaceImport' && bindings.name) {
+              const nsName = bindings.name as Record<string, unknown>
+              specs.push({
+                local: convertRawCompilerNode(nsName, depth) ?? nsName,
+                type: 'ImportNamespaceSpecifier',
+              })
+            } else if (Array.isArray(bindings.elements)) {
+              for (const el of bindings.elements) {
+                if (el && typeof el === 'object') {
+                  const elNode = el as Record<string, unknown>
+                  const converted = convertRawCompilerNode(elNode, depth)
+                  specs.push(converted ?? elNode)
+                }
+              }
+            }
+          }
+          result.specifiers = specs
+          continue
+        }
+
+        if (kindName === 'ExportDeclaration' && key === 'exportClause') {
+          const clause = val as Record<string, unknown> | null
+          if (!clause) continue
+          if (Array.isArray(clause.elements)) {
+            result.specifiers = clause.elements.map(
+              (el: unknown) =>
+                el && typeof el === 'object' && typeof (el as Record<string, unknown>).kind === 'number'
+                  ? convertRawCompilerNode(el as Record<string, unknown>, depth)
+                  : el,
+            )
+          }
           continue
         }
 
