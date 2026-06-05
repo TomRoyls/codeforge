@@ -19,7 +19,7 @@ export const preferInlineHandlerRule: RuleDefinition<PreferInlineHandlerOptions>
         visitNode(node: Node, _context: VisitorContext) {
           if (Node.isStringLiteral(node)) {
             const text = node.getLiteralValue()
-            const handlerPattern = /\bon:(\w+)=\{?\s*\(\)\s*=>\s*(\w+)\(\)\s*\}?\s*"/g
+            const handlerPattern = /\bon:(\w+)=\{?\s*\(\)\s*=>\s*(\w+)\(\)\s*\}?\s*/g
             let match
             while ((match = handlerPattern.exec(text)) !== null) {
               const range = getNodeRange(node)
