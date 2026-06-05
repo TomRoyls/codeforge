@@ -468,7 +468,7 @@ describe('adapter-converter', () => {
       expect(result?.type).toBe('BinaryExpression')
     })
 
-    test('PrefixUnaryExpression with ++ stays UnaryExpression (operator not mapped)', () => {
+    test('PrefixUnaryExpression with ++ becomes UpdateExpression (operator mapped)', () => {
       const node = {
         kind: SyntaxKind.PrefixUnaryExpression,
         pos: 0,
@@ -477,7 +477,7 @@ describe('adapter-converter', () => {
         operand: { kind: SyntaxKind.Identifier, escapedText: 'x', pos: 2, end: 3 },
       }
       const result = convertRawCompilerNode(node, 0)
-      expect(result?.type).toBe('UnaryExpression')
+      expect(result?.type).toBe('UpdateExpression')
     })
 
     test('PrefixUnaryExpression with string ++ becomes UpdateExpression', () => {
@@ -2865,10 +2865,10 @@ describe('adapter-converter', () => {
       expect(result?.type).toBe('UnaryExpression')
     })
 
-    test('ParenthesizedExpression maps to SequenceExpression', () => {
+    test('ParenthesizedExpression is unwrapped to inner expression', () => {
       const node = { kind: SyntaxKind.ParenthesizedExpression, pos: 0, end: 10 }
       const result = convertRawCompilerNode(node, 0)
-      expect(result?.type).toBe('SequenceExpression')
+      expect(result?.type).toBe('ParenthesizedExpression')
     })
 
     test('SuperKeyword maps to Super', () => {
@@ -3222,12 +3222,20 @@ describe('adapter-converter', () => {
       expect(result?.alternate).toBeDefined()
     })
 
-    test('declarationList maps to declarations via PROPERTY_MAP', () => {
+    test('VariableStatement declarationList flattens to declarations (special case)', () => {
       const declList = {
         kind: SyntaxKind.VariableDeclarationList,
         pos: 0,
         end: 10,
         flags: 1,
+        declarations: [
+          {
+            kind: SyntaxKind.VariableDeclaration,
+            pos: 0,
+            end: 5,
+            name: { kind: SyntaxKind.Identifier, escapedText: 'x', pos: 0, end: 1 },
+          },
+        ],
       }
       const node = {
         kind: SyntaxKind.VariableStatement,
@@ -3669,13 +3677,13 @@ describe('adapter-converter', () => {
       expect(result?.type).toBe('UnaryExpression')
     })
 
-    test('ParenthesizedExpression maps to SequenceExpression in convertCompilerNode', () => {
+    test('ParenthesizedExpression is unwrapped in convertCompilerNode', () => {
       const node = createMockNode({
         kindName: 'ParenthesizedExpression',
         compilerNode: { pos: 0, end: 10 },
       })
       const result = convertCompilerNode(node, 0)
-      expect(result?.type).toBe('SequenceExpression')
+      expect(result?.type).toBe('ParenthesizedExpression')
     })
 
     test('AsExpression maps to TSAsExpression in convertCompilerNode', () => {

@@ -1325,8 +1325,8 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['NonNullExpression']).toBe('TSNonNullExpression')
     })
 
-    test('maps ParenthesizedExpression to SequenceExpression', () => {
-      expect(KIND_NAME_ALIASES['ParenthesizedExpression']).toBe('SequenceExpression')
+    test('ParenthesizedExpression is NOT in KIND_NAME_ALIASES (unwrapped at higher level)', () => {
+      expect(KIND_NAME_ALIASES['ParenthesizedExpression']).toBeUndefined()
     })
 
     test('maps ObjectDestructuring to ObjectPattern', () => {
@@ -1337,12 +1337,12 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['ArrayDestructuring']).toBe('ArrayPattern')
     })
 
-    test('maps ComputedPropertyName to Literal', () => {
-      expect(KIND_NAME_ALIASES['ComputedPropertyName']).toBe('Literal')
+    test('ComputedPropertyName is NOT in KIND_NAME_ALIASES (unwrapped at higher level)', () => {
+      expect(KIND_NAME_ALIASES['ComputedPropertyName']).toBeUndefined()
     })
 
-    test('maps DefaultKeyword to Literal', () => {
-      expect(KIND_NAME_ALIASES['DefaultKeyword']).toBe('Literal')
+    test('maps DefaultKeyword to TSDefaultKeyword', () => {
+      expect(KIND_NAME_ALIASES['DefaultKeyword']).toBe('TSDefaultKeyword')
     })
 
     test('maps BreakStatement to BreakStatement (identity)', () => {
@@ -1369,8 +1369,8 @@ describe('adapter-constants', () => {
       expect(KIND_NAME_ALIASES['FunctionExpression']).toBe('FunctionExpression')
     })
 
-    test('maps TSAnyKeyword to TSAnyKeyword (identity)', () => {
-      expect(KIND_NAME_ALIASES['TSAnyKeyword']).toBe('TSAnyKeyword')
+    test('maps AnyKeyword to TSAnyKeyword', () => {
+      expect(KIND_NAME_ALIASES['AnyKeyword']).toBe('TSAnyKeyword')
     })
 
     test('maps TSArrayType to TSArrayType (identity)', () => {
@@ -1672,12 +1672,12 @@ describe('adapter-constants', () => {
       }
     })
 
-    test('KIND_SPECIFIC_MAP has exactly 41 entries', () => {
-      expect(Object.keys(KIND_SPECIFIC_MAP).length).toBe(41)
+    test('KIND_SPECIFIC_MAP has exactly 58 entries', () => {
+      expect(Object.keys(KIND_SPECIFIC_MAP).length).toBe(58)
     })
 
-    test('OPERATOR_TOKEN_MAP has exactly 51 entries', () => {
-      expect(Object.keys(OPERATOR_TOKEN_MAP).length).toBe(51)
+    test('OPERATOR_TOKEN_MAP has exactly 53 entries', () => {
+      expect(Object.keys(OPERATOR_TOKEN_MAP).length).toBe(53)
     })
 
     test('all KIND_SPECIFIC_MAP inner values are strings', () => {
