@@ -283,6 +283,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   LabeledStatement: { statement: 'body' },
   MethodDeclaration: { name: 'key', type: 'returnType' },
   MethodSignature: { name: 'key', type: 'returnType' },
+  MetaProperty: { name: 'property' },
   ModuleDeclaration: { name: 'id' },
   NewExpression: { expression: 'callee' },
   ObjectLiteralExpression: { members: 'properties' },
@@ -314,14 +315,6 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
 export const MAX_DEPTH = 5
 
 export const SKIP_KEYS = new Set([
-  'colonToken',
-  'emitNode',
-  'end',
-  'endFlowNode',
-  'equalsGreaterThanToken',
-  'exclamationToken',
-  'flags',
-  'flowNode',
   'ambientModuleNames',
   'amdDependencies',
   'bindDiagnostics',
@@ -350,6 +343,7 @@ export const SKIP_KEYS = new Set([
   'jlChildren',
   'jsDoc',
   'jsDocParsingMode',
+  'jsonSourceFile',
   'kind',
   'languageVariant',
   'languageVersion',

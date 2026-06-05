@@ -986,8 +986,8 @@ describe('adapter-constants', () => {
       expect(SKIP_KEYS.has('id')).toBe(true)
     })
 
-    test('has exactly 60 keys', () => {
-      expect(SKIP_KEYS.size).toBe(60)
+    test('has exactly 61 keys', () => {
+      expect(SKIP_KEYS.size).toBe(61)
     })
 
     test('does not contain body', () => {
@@ -1672,8 +1672,8 @@ describe('adapter-constants', () => {
       }
     })
 
-    test('KIND_SPECIFIC_MAP has exactly 62 entries', () => {
-      expect(Object.keys(KIND_SPECIFIC_MAP).length).toBe(62)
+    test('KIND_SPECIFIC_MAP has exactly 63 entries', () => {
+      expect(Object.keys(KIND_SPECIFIC_MAP).length).toBe(63)
     })
 
     test('OPERATOR_TOKEN_MAP has exactly 53 entries', () => {

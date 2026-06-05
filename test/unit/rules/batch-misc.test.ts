@@ -97,4 +97,20 @@ describe('Misc adapter conversions', () => {
     expect(expr.type).toBe('YieldExpression')
     expect(expr.delegate).toBeUndefined()
   })
+
+  it('handles import.meta MetaProperty', () => {
+    const ast = parse('const url = import.meta.url') as Record<string, unknown>
+    const decl = (ast.body as unknown[])[0] as Record<string, unknown>
+    const vdecl = (decl.declarations as unknown[])[0] as Record<string, unknown>
+    const init = vdecl.init as Record<string, unknown>
+    expect(init.type).toBe('MemberExpression')
+    const obj = init.object as Record<string, unknown>
+    expect(obj.type).toBe('MetaProperty')
+    const meta = obj.meta as Record<string, unknown>
+    expect(meta.type).toBe('Identifier')
+    expect(meta.name).toBe('import')
+    const property = obj.property as Record<string, unknown>
+    expect(property.type).toBe('Identifier')
+    expect(property.name).toBe('meta')
+  })
 })

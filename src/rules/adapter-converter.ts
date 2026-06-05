@@ -140,6 +140,13 @@ export function convertRawCompilerNode(
       continue
     }
 
+    if (key === 'keywordToken' && typeof val === 'number') {
+      if (kindName === 'MetaProperty') {
+        result.meta = { type: 'Identifier', name: val === 102 ? 'import' : val === 105 ? 'new' : '' }
+      }
+      continue
+    }
+
     if (SKIP_KEYS.has(key)) continue
 
     const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key

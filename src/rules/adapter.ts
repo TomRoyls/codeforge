@@ -659,6 +659,13 @@ function convertRawCompilerNode(
       continue
     }
 
+    if (key === 'keywordToken' && typeof val === 'number') {
+      if (kindName === 'MetaProperty') {
+        result.meta = { type: 'Identifier', name: val === 117 ? 'import' : val === 129 ? 'new' : '' }
+      }
+      continue
+    }
+
     if (SKIP_KEYS.has(key)) continue
 
     const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
@@ -1167,12 +1174,23 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
         }
 
         if (key === 'asteriskToken' && val && typeof val === 'object') {
-          result.generator = true
+          if (kindName === 'YieldExpression') {
+            result.delegate = true
+          } else {
+            result.generator = true
+          }
           continue
         }
 
         if (key === 'questionDotToken' && val && typeof val === 'object') {
           result.optional = true
+          continue
+        }
+
+        if (key === 'keywordToken' && typeof val === 'number') {
+          if (kindName === 'MetaProperty') {
+            result.meta = { type: 'Identifier', name: val === 102 ? 'import' : val === 105 ? 'new' : '' }
+          }
           continue
         }
 
