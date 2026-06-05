@@ -57,7 +57,7 @@ function makeReturnWithNewPromise(parent: unknown, argLoc?: ReturnType<typeof ma
   return {
     type: 'ReturnStatement',
     argument: makePromiseNewExpr(argLoc),
-    _parent: parent,
+    parent: parent,
     loc: makeLoc(2, 2, 2, 31),
   }
 }
@@ -307,7 +307,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: null,
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 10),
       })
       expect(reports.length).toBe(0)
@@ -319,7 +319,7 @@ describe('no-misused-promise-return rule', () => {
       const parent = makeAsyncFunctionDecl()
       visitor.ReturnStatement({
         type: 'ReturnStatement',
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 10),
       })
       expect(reports.length).toBe(0)
@@ -332,7 +332,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: { type: 'Identifier', name: 'value' },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -345,7 +345,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: { type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -358,7 +358,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: { type: 'Literal', value: 42 },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -375,7 +375,7 @@ describe('no-misused-promise-return rule', () => {
           object: { type: 'Identifier', name: 'obj' },
           property: { type: 'Identifier', name: 'prop' },
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -393,7 +393,7 @@ describe('no-misused-promise-return rule', () => {
           left: { type: 'Identifier', name: 'a' },
           right: { type: 'Identifier', name: 'b' },
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -411,7 +411,7 @@ describe('no-misused-promise-return rule', () => {
           consequent: { type: 'Literal', value: 'a' },
           alternate: { type: 'Literal', value: 'b' },
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -424,7 +424,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: { type: 'ArrayExpression', elements: [] },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -437,7 +437,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: { type: 'ObjectExpression', properties: [] },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -457,7 +457,7 @@ describe('no-misused-promise-return rule', () => {
           callee: { type: 'Identifier', name: 'MyClass' },
           arguments: [],
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -474,7 +474,7 @@ describe('no-misused-promise-return rule', () => {
           callee: { type: 'Identifier', name: 'Error' },
           arguments: [],
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -491,7 +491,7 @@ describe('no-misused-promise-return rule', () => {
           callee: { type: 'Identifier', name: 'Map' },
           arguments: [],
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -508,7 +508,7 @@ describe('no-misused-promise-return rule', () => {
           callee: { type: 'Identifier', name: 'promise' },
           arguments: [],
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -529,7 +529,7 @@ describe('no-misused-promise-return rule', () => {
           },
           arguments: [],
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 30),
       })
       expect(reports.length).toBe(0)
@@ -542,7 +542,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: { type: 'NewExpression', arguments: [] },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -637,7 +637,7 @@ describe('no-misused-promise-return rule', () => {
 
   // ===== NEGATIVE CASES — NO PARENT (3) =====
   describe('negative cases — no parent', () => {
-    test('no _parent property NOT reported', () => {
+    test('no parent property NOT reported', () => {
       const { context, reports } = createMockContext()
       const visitor = noMisusedPromiseReturnRule.create(context)
       visitor.ReturnStatement({
@@ -648,25 +648,25 @@ describe('no-misused-promise-return rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('_parent is null NOT reported', () => {
+    test('parent is null NOT reported', () => {
       const { context, reports } = createMockContext()
       const visitor = noMisusedPromiseReturnRule.create(context)
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: makePromiseNewExpr(),
-        _parent: null,
+        parent: null,
         loc: makeLoc(2, 2, 2, 31),
       })
       expect(reports.length).toBe(0)
     })
 
-    test('_parent is undefined NOT reported', () => {
+    test('parent is undefined NOT reported', () => {
       const { context, reports } = createMockContext()
       const visitor = noMisusedPromiseReturnRule.create(context)
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: makePromiseNewExpr(),
-        _parent: undefined,
+        parent: undefined,
         loc: makeLoc(2, 2, 2, 31),
       })
       expect(reports.length).toBe(0)
@@ -801,7 +801,7 @@ describe('no-misused-promise-return rule', () => {
           callee: { type: 'Identifier', name: 'Promise' },
           arguments: [],
         },
-        _parent: parent,
+        parent: parent,
       })
       expect(reports.length).toBe(1)
     })
@@ -865,7 +865,7 @@ describe('no-misused-promise-return rule', () => {
           callee: { type: 'Identifier', name: 'Promise' },
           arguments: [],
         },
-        _parent: parent,
+        parent: parent,
       })
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
@@ -970,7 +970,7 @@ describe('no-misused-promise-return rule', () => {
           params: [],
           body: { type: 'Identifier', name: 'x' },
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -987,7 +987,7 @@ describe('no-misused-promise-return rule', () => {
           operator: '-',
           argument: { type: 'Identifier', name: 'x' },
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -1005,7 +1005,7 @@ describe('no-misused-promise-return rule', () => {
           left: { type: 'Identifier', name: 'a' },
           right: { type: 'Identifier', name: 'b' },
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -1018,7 +1018,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: { type: 'TemplateLiteral', quasis: [], expressions: [] },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -1036,7 +1036,7 @@ describe('no-misused-promise-return rule', () => {
           argument: { type: 'Identifier', name: 'x' },
           prefix: false,
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -1054,7 +1054,7 @@ describe('no-misused-promise-return rule', () => {
           arguments: [{ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }],
           loc: makeLoc(2, 11, 2, 35),
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 36),
       })
       expect(reports.length).toBe(1)
@@ -1139,7 +1139,7 @@ describe('no-misused-promise-return rule', () => {
           type: 'AwaitExpression',
           argument: { type: 'Identifier', name: 'x' },
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -1156,7 +1156,7 @@ describe('no-misused-promise-return rule', () => {
           callee: null,
           arguments: [],
         },
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 20),
       })
       expect(reports.length).toBe(0)
@@ -1169,7 +1169,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: 42,
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)
@@ -1182,7 +1182,7 @@ describe('no-misused-promise-return rule', () => {
       visitor.ReturnStatement({
         type: 'ReturnStatement',
         argument: 'not a node',
-        _parent: parent,
+        parent: parent,
         loc: makeLoc(2, 2, 2, 15),
       })
       expect(reports.length).toBe(0)

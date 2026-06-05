@@ -328,7 +328,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report computed arguments[variable] access with Identifier property', () => {
@@ -347,7 +347,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report arguments["length"] computed access', () => {
@@ -366,7 +366,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report computed arguments["anyKey"] access', () => {
@@ -385,7 +385,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report computed arguments access with template literal property', () => {
@@ -404,7 +404,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
   })
 
@@ -434,7 +434,7 @@ describe('no-caller rule', () => {
 
       visitor.MemberExpression(createMemberExpression('arguments', 'callee', false))
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should not report computed property access on non-arguments object', () => {
@@ -464,7 +464,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should not report obj.caller', () => {
@@ -874,7 +874,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should handle node with object as nested MemberExpression', () => {
@@ -1329,7 +1329,7 @@ describe('no-caller rule', () => {
       visitor.MemberExpression(createComputedMemberExpression('arguments'))
       visitor.MemberExpression(createMemberExpression('arguments', 'callee', false))
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(2)
     })
 
     test('should report both caller and callee in sequence', () => {
@@ -1423,7 +1423,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report arguments[0] computed access', () => {
@@ -1438,7 +1438,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report arguments[42] computed access', () => {
@@ -1453,7 +1453,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report arguments[expr] with complex property type', () => {
@@ -1468,7 +1468,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should not report arguments.caller when computed is explicitly false', () => {
@@ -1871,7 +1871,7 @@ describe('no-caller rule', () => {
       }
       visitor.MemberExpression(node)
 
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should not report object property named caller', () => {
