@@ -626,17 +626,23 @@ function convertRawCompilerNode(
     if (key.startsWith('_')) continue
 
     if (key === 'modifiers' && Array.isArray(val)) {
+      const decorators: unknown[] = []
       for (const mod of val) {
         if (mod && typeof mod === 'object') {
           const modKind = (mod as Record<string, unknown>).kind as number | undefined
           const modName = modKind !== undefined ? KIND_MAP[modKind] : undefined
           if (!modName) continue
+          if (modName === 'Decorator') {
+            decorators.push(convertRawCompilerNode(mod as Record<string, unknown>, depth + 1))
+            continue
+          }
           const boolProp = MODIFIER_MAP[modName]
           if (boolProp) { result[boolProp] = true; continue }
           const access = ACCESSIBILITY_MAP[modName]
           if (access) { result.accessibility = access; continue }
         }
       }
+      if (decorators.length > 0) result.decorators = decorators
       continue
     }
 
@@ -1154,17 +1160,23 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
         if (key.startsWith('_')) continue
 
         if (key === 'modifiers' && Array.isArray(val)) {
+          const decorators: unknown[] = []
           for (const mod of val) {
             if (mod && typeof mod === 'object') {
               const modKind = (mod as Record<string, unknown>).kind as number | undefined
               const modName = modKind !== undefined ? KIND_MAP[modKind] : undefined
               if (!modName) continue
+              if (modName === 'Decorator') {
+                decorators.push(convertRawCompilerNode(mod as Record<string, unknown>, depth + 1))
+                continue
+              }
               const boolProp = MODIFIER_MAP[modName]
               if (boolProp) { result[boolProp] = true; continue }
               const access = ACCESSIBILITY_MAP[modName]
               if (access) { result.accessibility = access; continue }
             }
           }
+          if (decorators.length > 0) result.decorators = decorators
           continue
         }
 

@@ -113,4 +113,15 @@ describe('Misc adapter conversions', () => {
     expect(property.type).toBe('Identifier')
     expect(property.name).toBe('meta')
   })
+
+  it('handles class decorator', () => {
+    const ast = parse('@dec class C {}') as Record<string, unknown>
+    const cls = (ast.body as unknown[])[0] as Record<string, unknown>
+    expect(cls.type).toBe('ClassDeclaration')
+    const decorators = cls.decorators as unknown[]
+    expect(decorators).toBeDefined()
+    expect(decorators.length).toBe(1)
+    const dec = decorators[0] as Record<string, unknown>
+    expect(dec.type).toBe('Decorator')
+  })
 })
