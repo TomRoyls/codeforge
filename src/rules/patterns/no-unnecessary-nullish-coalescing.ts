@@ -45,7 +45,7 @@ export const noUnnecessaryNullishCoalescingRule: RuleDefinition = {
           context.report({
             loc: extractLocation(n),
             message:
-              'Unnecessary nullish coalescing with null or undefined: the right-hand side of `??` is always swallowed. Use a meaningful fallback value or remove the `??`.',
+              'Unnecessary nullish coalescing with null or undefined: the right-hand side is `null` or `undefined`, always swallowed by `??`. Use a meaningful fallback value or remove the `??`.',
             node: n,
           })
           return
@@ -55,7 +55,7 @@ export const noUnnecessaryNullishCoalescingRule: RuleDefinition = {
           context.report({
             loc: extractLocation(n),
             message:
-              'Unnecessary nullish coalescing with null or undefined: the right-hand side of `??` is always swallowed. Use a meaningful fallback value or remove the `??`.',
+              'Unnecessary nullish coalescing with null or undefined: the right-hand side is `null` or `undefined`, always swallowed by `??`. Use a meaningful fallback value or remove the `??`.',
             node: n,
           })
         }
