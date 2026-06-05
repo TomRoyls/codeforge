@@ -494,8 +494,6 @@ describe('convertRawCompilerNode', () => {
   })
 
   it('handles PrefixUnaryExpression with ++ operator', () => {
-    // ts-morph SyntaxKind.PrefixUnaryExpression = 224, PlusPlusToken = 46
-    // KIND_NAME_ALIASES maps PrefixUnaryExpression → UnaryExpression
     const result = convertRawCompilerNode(
       {
         kind: 224,
@@ -505,9 +503,10 @@ describe('convertRawCompilerNode', () => {
       0,
     )
     expect(result).not.toBeNull()
-    expect(result!.type).toBe('UnaryExpression')
-    expect(result!.operator).toBe('PlusPlusToken')
+    expect(result!.type).toBe('UpdateExpression')
+    expect(result!.operator).toBe('++')
     expect(result!.argument).toBeDefined()
+    expect(result!.prefix).toBe(true)
   })
 
   it('handles PostfixUnaryExpression with prefix false', () => {

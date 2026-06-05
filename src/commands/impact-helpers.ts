@@ -102,7 +102,7 @@ export function extractImportsFrom(content: string, source: string): string[] {
   let match: RegExpExecArray | null
   while ((match = regex.exec(content)) !== null) {
     if (match[2] === source) {
-      const specifiers = match[1] ?? ''.split(',').map((s) => s.trim().split(/\s+as\s+/)[0]!.trim()).filter(Boolean)
+      const specifiers = (match[1] ?? '').split(',').map((s) => s.trim().split(/\s+as\s+/)[0]!.trim()).filter(Boolean)
       names.push(...specifiers)
     }
   }
@@ -145,7 +145,7 @@ export function extractExports(content: string): string[] {
 
   const namedRegex = /export\s+\{\s*([^}]+)\s*\}/g
   while ((match = namedRegex.exec(content)) !== null) {
-    const items = match[1] ?? ''.split(',').map((s) => s.trim().split(/\s+as\s+/)[0]!.trim()).filter(Boolean)
+    const items = (match[1] ?? '').split(',').map((s) => s.trim().split(/\s+as\s+/)[0]!.trim()).filter(Boolean)
     names.push(...items)
   }
 
