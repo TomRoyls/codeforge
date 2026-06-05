@@ -297,7 +297,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   VariableDeclaration: { name: 'id', type: 'typeAnnotation' },
   VoidExpression: { expression: 'argument' },
   WhileStatement: { expression: 'test', statement: 'body' },
-  WithStatement: { statement: 'body' },
+  WithStatement: { expression: 'object', statement: 'body' },
   YieldExpression: { expression: 'argument' },
 }
 
