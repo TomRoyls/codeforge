@@ -19,7 +19,7 @@ export const noLoneBlocksRule: RuleDefinition = {
         const n = toASTNode(node)
         if (!n || n.type !== 'BlockStatement') return
 
-        const parent = (n as { _parent?: unknown })._parent
+        const parent = (n as { parent?: unknown; _parent?: unknown }).parent ?? (n as { _parent?: unknown })._parent
         if (!parent || typeof parent !== 'object') return
 
         const parentNode = parent as Record<string, unknown>
