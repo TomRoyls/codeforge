@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest'
-import { noUnnecessaryWeaksetHasSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-weakset-has-spread.js'
+import { noUnnecessaryWeakSetHasSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-weakset-has-spread.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
 interface ReportDescriptor {
@@ -71,35 +71,35 @@ function makeSpreadArg(argument: unknown): unknown {
 describe('no-unnecessary-weakset-has-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
-      expect(noUnnecessaryWeaksetHasSpreadRule.meta.type).toBe('suggestion')
+      expect(noUnnecessaryWeakSetHasSpreadRule.meta.type).toBe('suggestion')
     })
 
     test('should have severity "warn"', () => {
-      expect(noUnnecessaryWeaksetHasSpreadRule.meta.severity).toBe('warn')
+      expect(noUnnecessaryWeakSetHasSpreadRule.meta.severity).toBe('warn')
     })
 
     test('should have category "patterns"', () => {
-      expect(noUnnecessaryWeaksetHasSpreadRule.meta.docs.category).toBe('patterns')
+      expect(noUnnecessaryWeakSetHasSpreadRule.meta.docs.category).toBe('patterns')
     })
 
     test('should not be recommended', () => {
-      expect(noUnnecessaryWeaksetHasSpreadRule.meta.docs.recommended).toBe(false)
+      expect(noUnnecessaryWeakSetHasSpreadRule.meta.docs.recommended).toBe(false)
     })
 
     test('should have empty schema', () => {
-      expect(noUnnecessaryWeaksetHasSpreadRule.meta.schema).toEqual([])
+      expect(noUnnecessaryWeakSetHasSpreadRule.meta.schema).toEqual([])
     })
 
     test('should have docs url', () => {
-      expect(noUnnecessaryWeaksetHasSpreadRule.meta.docs.url).toBeDefined()
+      expect(noUnnecessaryWeakSetHasSpreadRule.meta.docs.url).toBeDefined()
     })
 
     test('should have description', () => {
-      expect(noUnnecessaryWeaksetHasSpreadRule.meta.docs.description).toBeDefined()
+      expect(noUnnecessaryWeakSetHasSpreadRule.meta.docs.description).toBeDefined()
     })
 
     test('should have valid docs description type', () => {
-      expect(typeof noUnnecessaryWeaksetHasSpreadRule.meta.docs.description).toBe('string')
+      expect(typeof noUnnecessaryWeakSetHasSpreadRule.meta.docs.description).toBe('string')
     })
   })
 
@@ -107,14 +107,14 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([])
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
     test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
@@ -133,7 +133,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -150,7 +150,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -167,7 +167,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -184,7 +184,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -201,7 +201,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -218,7 +218,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -235,7 +235,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -252,7 +252,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -269,7 +269,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -286,7 +286,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -303,7 +303,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -320,7 +320,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -337,7 +337,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -354,7 +354,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -371,7 +371,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -388,7 +388,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -405,7 +405,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -422,7 +422,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -439,7 +439,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -456,7 +456,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -473,7 +473,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -490,7 +490,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -507,7 +507,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -524,7 +524,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -541,7 +541,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -558,7 +558,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -575,7 +575,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -592,7 +592,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -612,7 +612,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -629,7 +629,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -646,7 +646,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -663,7 +663,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -680,7 +680,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -697,7 +697,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -714,7 +714,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -731,7 +731,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -748,7 +748,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -765,7 +765,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -782,7 +782,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -799,7 +799,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -816,7 +816,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -833,7 +833,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -850,7 +850,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -867,7 +867,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -884,7 +884,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -901,7 +901,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -918,7 +918,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -935,7 +935,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -952,7 +952,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -969,7 +969,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -986,7 +986,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1003,7 +1003,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1020,7 +1020,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1037,7 +1037,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1054,7 +1054,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1071,7 +1071,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1088,7 +1088,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1105,7 +1105,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1122,7 +1122,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1139,7 +1139,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1156,7 +1156,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1173,7 +1173,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1190,7 +1190,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1207,7 +1207,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1224,7 +1224,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1241,7 +1241,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1258,7 +1258,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1275,7 +1275,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
@@ -1285,7 +1285,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...items) case 1', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1293,7 +1293,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...arr) case 2', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1301,7 +1301,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...args) case 3', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1309,7 +1309,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...list) case 4', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1317,7 +1317,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...data) case 5', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1325,7 +1325,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...values) case 6', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1333,7 +1333,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...nums) case 7', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1341,7 +1341,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...rest) case 8', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1349,7 +1349,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...options) case 9', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1357,7 +1357,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...params) case 10', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1365,7 +1365,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...collection) case 11', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1373,7 +1373,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...elements) case 12', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1381,7 +1381,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...entries) case 13', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1389,7 +1389,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...objs) case 14', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1397,7 +1397,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...source) case 15', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1405,7 +1405,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...input) case 16', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1413,7 +1413,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...payload) case 17', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1421,7 +1421,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...buffer) case 18', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1429,7 +1429,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...chunk) case 19', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1437,7 +1437,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...segment) case 20', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1445,7 +1445,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...portion) case 21', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1453,7 +1453,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...range) case 22', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1461,7 +1461,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...tuple) case 23', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1469,7 +1469,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...seq) case 24', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1477,7 +1477,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...iter) case 25', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1485,7 +1485,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...result) case 26', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1493,7 +1493,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...output) case 27', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1501,7 +1501,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...response) case 28', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1509,7 +1509,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...records) case 29', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1517,7 +1517,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...rows) case 30', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1525,7 +1525,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...cols) case 31', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1533,7 +1533,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...cells) case 32', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1541,7 +1541,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...fields) case 33', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1549,7 +1549,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...props) case 34', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1557,7 +1557,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...attrs) case 35', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1565,7 +1565,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...keys) case 36', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1573,7 +1573,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...vals) case 37', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1581,7 +1581,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...pairs) case 38', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1589,7 +1589,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...nodes) case 39', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1597,7 +1597,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report weakSet.has(...items2) case 40', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1608,7 +1608,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 2', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(2)
@@ -1620,7 +1620,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(3)
@@ -1632,7 +1632,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(5)
@@ -1644,7 +1644,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
@@ -1656,7 +1656,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 15', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(15)
@@ -1668,7 +1668,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 20', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(20)
@@ -1680,7 +1680,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 25', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(25)
@@ -1692,7 +1692,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 30', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(30)
@@ -1704,7 +1704,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 40', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(40)
@@ -1716,7 +1716,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 50', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(50)
@@ -1728,7 +1728,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 60', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(60)
@@ -1740,7 +1740,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 70', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(70)
@@ -1752,7 +1752,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 80', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(80)
@@ -1764,7 +1764,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 90', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(90)
@@ -1776,7 +1776,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 100', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(100)
@@ -1788,7 +1788,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 150', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(150)
@@ -1800,7 +1800,7 @@ describe('no-unnecessary-weakset-has-spread rule', () => {
     test('should report with correct location line 200', () => {
       const { context, reports } = createMockContext()
       const node = makeweakSetHasCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
-      noUnnecessaryWeaksetHasSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryWeakSetHasSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(200)
