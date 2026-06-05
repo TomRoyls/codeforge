@@ -12,7 +12,8 @@ import {
   parseLogStats,
   parseShortlog,
 } from '../src/commands/gitstats-helpers.js'
-import { formatBarChart, formatGitStatsJson, formatGitStatsTable, formatNumber } from '../src/commands/gitstats-format-helpers.js'
+import { formatBarChart, formatGitStatsJson, formatGitStatsTable } from '../src/commands/gitstats-format-helpers.js'
+import { formatNumber } from '../src/utils/format-utils.js'
 
 // ─── parseShortlog ───────────────────────────────────────
 
