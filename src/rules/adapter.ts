@@ -557,6 +557,11 @@ function applyRawPostFixups(
   if (rt && typeof rt === 'object' && rt.type !== 'TSTypeAnnotation') {
     result.returnType = { type: 'TSTypeAnnotation', typeAnnotation: rt }
   }
+
+  const ta = result.typeAnnotation as Record<string, unknown> | undefined
+  if (ta && typeof ta === 'object' && ta.type !== 'TSTypeAnnotation') {
+    result.typeAnnotation = { type: 'TSTypeAnnotation', typeAnnotation: ta }
+  }
 }
 
 function convertRawCompilerNode(
@@ -943,6 +948,11 @@ function applyPostConvertFixups(
   if (rt && typeof rt === 'object' && rt.type !== 'TSTypeAnnotation') {
     result.returnType = { type: 'TSTypeAnnotation', typeAnnotation: rt }
   }
+
+  const ta = result.typeAnnotation as Record<string, unknown> | undefined
+  if (ta && typeof ta === 'object' && ta.type !== 'TSTypeAnnotation') {
+    result.typeAnnotation = { type: 'TSTypeAnnotation', typeAnnotation: ta }
+  }
 }
 
 function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
@@ -1164,6 +1174,7 @@ function applyNodeModifiers(base: Record<string, unknown>, node: Node, kindName:
 }
 
 function transformParameterNode(base: Record<string, unknown>): void {
+  const savedTypeAnnotation = base.typeAnnotation
   const hasRest = base.dotDotDotToken !== null
   const hasInit = base.init !== null
   if (hasRest) {
@@ -1173,7 +1184,6 @@ function transformParameterNode(base: Record<string, unknown>): void {
     delete base.init
     delete base.dotDotDotToken
     delete base.questionToken
-    delete base.typeAnnotation
     delete base.modifiers
   } else if (hasInit) {
     base.type = 'AssignmentPattern'
@@ -1183,7 +1193,6 @@ function transformParameterNode(base: Record<string, unknown>): void {
     delete base.init
     delete base.dotDotDotToken
     delete base.questionToken
-    delete base.typeAnnotation
     delete base.modifiers
   } else {
     // Simple parameter — flatten to the name node (Identifier / ObjectPattern / ArrayPattern)
@@ -1195,6 +1204,9 @@ function transformParameterNode(base: Record<string, unknown>): void {
       }
 
       Object.assign(base, nameNode)
+      if (savedTypeAnnotation !== undefined && savedTypeAnnotation !== null) {
+        base.typeAnnotation = savedTypeAnnotation
+      }
       if (nameNode.range === null) {
         base.range = saved.range
         base.loc = saved.loc

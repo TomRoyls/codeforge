@@ -451,7 +451,6 @@ function applyRawPostFixups(
       delete result.init
       delete result.dotDotDotToken
       delete result.questionToken
-      delete result.typeAnnotation
       delete result.modifiers
     } else if (hasInit) {
       result.type = 'AssignmentPattern'
@@ -461,7 +460,6 @@ function applyRawPostFixups(
       delete result.init
       delete result.dotDotDotToken
       delete result.questionToken
-      delete result.typeAnnotation
       delete result.modifiers
     } else if (nameNode && typeof nameNode === 'object') {
       const savedRange = { end: result.end, loc: result.loc, range: result.range, start: result.start }
@@ -531,6 +529,11 @@ function applyRawPostFixups(
   const rt = result.returnType as Record<string, unknown> | undefined
   if (rt && typeof rt === 'object' && rt.type !== 'TSTypeAnnotation') {
     result.returnType = { type: 'TSTypeAnnotation', typeAnnotation: rt }
+  }
+
+  const ta = result.typeAnnotation as Record<string, unknown> | undefined
+  if (ta && typeof ta === 'object' && ta.type !== 'TSTypeAnnotation') {
+    result.typeAnnotation = { type: 'TSTypeAnnotation', typeAnnotation: ta }
   }
 }
 
@@ -760,6 +763,11 @@ function applyPostConvertFixups(
   const rt = result.returnType as Record<string, unknown> | undefined
   if (rt && typeof rt === 'object' && rt.type !== 'TSTypeAnnotation') {
     result.returnType = { type: 'TSTypeAnnotation', typeAnnotation: rt }
+  }
+
+  const ta = result.typeAnnotation as Record<string, unknown> | undefined
+  if (ta && typeof ta === 'object' && ta.type !== 'TSTypeAnnotation') {
+    result.typeAnnotation = { type: 'TSTypeAnnotation', typeAnnotation: ta }
   }
 }
 
