@@ -124,4 +124,15 @@ describe('Misc adapter conversions', () => {
     const dec = decorators[0] as Record<string, unknown>
     expect(dec.type).toBe('Decorator')
   })
+
+  it('handles method decorator', () => {
+    const ast = parse('class C { @dec m() {} }') as Record<string, unknown>
+    const cls = (ast.body as unknown[])[0] as Record<string, unknown>
+    const body = cls.body as Record<string, unknown>
+    const method = (body.body as unknown[])[0] as Record<string, unknown>
+    expect(method.type).toBe('MethodDefinition')
+    const decorators = method.decorators as unknown[]
+    expect(decorators).toBeDefined()
+    expect(decorators.length).toBe(1)
+  })
 })
