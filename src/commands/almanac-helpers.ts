@@ -87,7 +87,7 @@ export function parseAlmanacLog(raw: string): LogEntry[] {
 
     entries.push({
       hash: parts[0]!.trim(),
-      date: parts[1] ?? ''.trim(),
+      date: (parts[1] ?? '').trim(),
       message: parts[2]!.trim(),
       insertions: parseInt(parts[3]!.trim(), 10) || 0,
       deletions: parseInt(parts[4]!.trim(), 10) || 0,

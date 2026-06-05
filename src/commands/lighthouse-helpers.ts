@@ -409,7 +409,7 @@ export function runCorrectnessAudits(files: string[], contents: string[]): Audit
     for (const match of importMatches) {
       const named = match[1]
       const def = match[2]
-      const imports = named ? named.split(',').map((s) => s.trim().split(/\s+as\s+/).at(-1) ?? ''.trim()) : def ? [def] : []
+      const imports = named ? named.split(',').map((s) => (s.trim().split(/\s+as\s+/).at(-1) ?? '').trim()) : def ? [def] : []
       for (const imp of imports) {
         if (imp && !new RegExp(`\\b${imp}\\b`, 'g').test(content.replace(match[0], ''))) {
           if (!unusedImportFiles.includes(file)) unusedImportFiles.push(file)

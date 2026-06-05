@@ -132,7 +132,7 @@ export function extractSources(content: string, filePath: string): ValueSource[]
 
     const paramMatch = line.match(/function\s+\w+\s*\(([^)]*)\)/)
     if (paramMatch) {
-      const params = paramMatch[1] ?? ''.split(',').map((p) => p.trim()).filter((p) => p && !p.startsWith('//'))
+      const params = (paramMatch[1] ?? '').split(',').map((p) => p.trim()).filter((p) => p && !p.startsWith('//'))
       for (const param of params) {
         const cleanName = param.split(':')[0]!.split('=')[0]!.trim().replace(/[{}[\]]/g, '')
         if (cleanName && /^[$a-zA-Z_]/.test(cleanName)) {
@@ -146,7 +146,7 @@ export function extractSources(content: string, filePath: string): ValueSource[]
 
     const arrowParamMatch = line.match(/(?:const|let)\s+\w+\s*=\s*(?:async\s*)?\(([^)]*)\)\s*=>/)
     if (arrowParamMatch) {
-      const params = arrowParamMatch[1] ?? ''.split(',').map((p) => p.trim()).filter((p) => p)
+      const params = (arrowParamMatch[1] ?? '').split(',').map((p) => p.trim()).filter((p) => p)
       for (const param of params) {
         const cleanName = param.split(':')[0]!.split('=')[0]!.trim().replace(/[{}[\]]/g, '')
         if (cleanName && /^[$a-zA-Z_]/.test(cleanName)) {
@@ -281,7 +281,7 @@ export function extractSinks(content: string, filePath: string): ValueSink[] {
 
     const returnMatch = line.match(/\breturn\s+(.+)/)
     if (returnMatch) {
-      const val = returnMatch[1] ?? ''.trim().replace(/[;}\s]+$/, '')
+      const val = (returnMatch[1] ?? '').trim().replace(/[;}\s]+$/, '')
       sinks.push({
         name: `return:${val}`, file: filePath, line: i + 1,
         type: 'return', sources: [val.split('.')[0]!.split('(')[0]!.trim()],

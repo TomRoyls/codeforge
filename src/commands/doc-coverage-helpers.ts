@@ -176,7 +176,7 @@ export function extractExportedItems(content: string, filePath: string): ExportI
     // export { name1, name2 }
     const namedExportMatch = line.match(/^export\s*\{([^}]+)\}/)
     if (namedExportMatch) {
-      const names = namedExportMatch[1] ?? ''.split(',').map((n) => n.trim().split(/\s+as\s+/).at(-1) ?? ''.trim())
+      const names = (namedExportMatch[1] ?? '').split(',').map((n) => (n.trim().split(/\s+as\s+/).at(-1) ?? '').trim())
       for (const name of names) {
         if (name.length > 0) {
           items.push({

@@ -125,7 +125,7 @@ export function extractImportNames(content: string): string[] {
   let m: RegExpExecArray | null
   const pat = /import\s+\{([^}]+)\}\s+from/g
   while ((m = pat.exec(content)) !== null) {
-    for (const item of m[1] ?? ''.split(',')) {
+    for (const item of (m[1] ?? '').split(',')) {
       const trimmed = item.trim().split(/\s+as\s+/)[0]!.trim()
       if (trimmed) names.push(trimmed)
     }

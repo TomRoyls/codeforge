@@ -96,7 +96,7 @@ export interface ScaffoldOptions {
  * detectProjectType(['package.json', 'tsconfig.json']) // 'node'
  */
 export function detectProjectType(filePaths: string[]): string {
-  const names = new Set(filePaths.map((p) => p.split('/').at(-1) ?? ''.toLowerCase()))
+  const names = new Set(filePaths.map((p) => (p.split('/').at(-1) ?? '').toLowerCase()))
   if (names.has('package.json')) return 'node'
   if (names.has('cargo.toml')) return 'rust'
   if (names.has('go.mod')) return 'go'

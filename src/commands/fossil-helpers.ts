@@ -314,7 +314,7 @@ export function excavateUnusedImports(content: string, filePath: string): Fossil
     const importMatch = line.match(/^import\s+(?:type\s+)?\{([^}]+)\}\s+from\s+['"][^'"]+['"]/)
     if (!importMatch) continue
 
-    const imports = importMatch[1] ?? ''.split(',').map((s) => s.trim().split(/\s+as\s+/).at(-1) ?? ''.trim())
+    const imports = (importMatch[1] ?? '').split(',').map((s) => (s.trim().split(/\s+as\s+/).at(-1) ?? '').trim())
 
     for (const name of imports) {
       const regex = new RegExp(`\\b${name}\\b`)

@@ -165,7 +165,7 @@ export function countTodoMarkers(content: string): { type: string; line: number 
     const line = lines[i]!
     const localPat = new RegExp(pat.source, 'gi')
     while ((m = localPat.exec(line)) !== null) {
-      markers.push({ type: m[1] ?? ''.toUpperCase(), line: i + 1 })
+      markers.push({ type: (m[1] ?? '').toUpperCase(), line: i + 1 })
     }
   }
   return markers

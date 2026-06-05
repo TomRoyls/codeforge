@@ -94,7 +94,7 @@ export function parseGitLogOutput(output: string): ChangedFile[] {
     if (headerParts.length < 4) continue
 
     const commit = headerParts[0]!.trim()
-    const author = headerParts[1] ?? ''.trim()
+    const author = (headerParts[1] ?? '').trim()
     const timestamp = headerParts[2]!.trim()
     const summary = headerParts.slice(3).join('|').trim()
 

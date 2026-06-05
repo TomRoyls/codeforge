@@ -324,7 +324,7 @@ export function findImports(content: string, query: string, filePath: string): L
 
     const namedMatch = line.match(/import\s+(?:type\s+)?\{([^}]+)\}/)
     if (namedMatch) {
-      const names = namedMatch[1] ?? ''.split(',').map((n) => n.trim().split(/\s+as\s+/).at(-1) ?? ''.trim())
+      const names = (namedMatch[1] ?? '').split(',').map((n) => (n.trim().split(/\s+as\s+/).at(-1) ?? '').trim())
       for (const name of names) {
         if (pattern.test(name)) {
           results.push({
@@ -431,7 +431,7 @@ export function findExports(content: string, query: string, filePath: string): L
     if (line.match(/^export\s+\{/)) {
       const namedExport = line.match(/\{([^}]+)\}/)
       if (namedExport) {
-        const names = namedExport[1] ?? ''.split(',').map((n) => n.trim().split(/\s+as\s+/)[0]!.trim())
+        const names = (namedExport[1] ?? '').split(',').map((n) => n.trim().split(/\s+as\s+/)[0]!.trim())
         for (const name of names) {
           if (pattern.test(name)) {
             results.push({

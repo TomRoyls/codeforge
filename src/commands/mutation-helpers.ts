@@ -291,7 +291,7 @@ export function findReturnStatements(content: string, filePath: string): Mutable
     const line = lines[i]!
     const match = line.match(/\breturn\s+([^;{}\n]+)/)
     if (match) {
-      const value = match[1] ?? ''.trim()
+      const value = (match[1] ?? '').trim()
       if (value === 'null' || value === 'undefined' || value === 'void') continue
       mutations.push({
         file: filePath, line: i + 1, code: `return ${value}`,
@@ -320,7 +320,7 @@ export function findConditionals(content: string, filePath: string): MutablePoin
     const line = lines[i]!
     const ifMatch = line.match(/\bif\s*\(([^)]+)\)/)
     if (ifMatch) {
-      const condition = ifMatch[1] ?? ''.trim()
+      const condition = (ifMatch[1] ?? '').trim()
       if (condition.startsWith('!')) continue
       mutations.push({
         file: filePath, line: i + 1, code: condition,

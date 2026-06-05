@@ -140,7 +140,7 @@ export function detectUnusedImports(content: string, filePath: string): DustItem
 
     const names = namedMatch[1]?.split(',').map((n) => {
       const trimmed = n.trim()
-      return trimmed.includes(' as ') ? trimmed.split(' as ').at(-1) ?? ''.trim() : trimmed
+      return trimmed.includes(' as ') ? (trimmed.split(' as ').at(-1) ?? '').trim() : trimmed
     }) ?? []
 
     for (const name of names) {

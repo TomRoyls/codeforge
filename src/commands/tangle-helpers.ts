@@ -210,7 +210,7 @@ export function computeFunctionDiversity(content: string): number {
   const verbPattern = /\b(get|set|add|remove|create|delete|update|find|search|parse|format|validate|check|handle|process|transform|convert|render|display|send|receive|fetch|post|put|patch|load|save|read|write|open|close|start|stop|init|reset|clear|flush|commit|rollback|push|pop|shift|unshift|sort|filter|map|reduce|merge|split|join|build|compile|execute|run)\w*/gi
   let match: RegExpExecArray | null
   while ((match = verbPattern.exec(content)) !== null) {
-    verbs.add(match[1] ?? ''.toLowerCase())
+    verbs.add((match[1] ?? '').toLowerCase())
   }
   return verbs.size
 }

@@ -239,7 +239,7 @@ function parseExports(content: string): ExportInfo[] {
     // export { A, B }
     const exportBlockMatch = /^export\s+\{([^}]+)\}/.exec(line)
     if (exportBlockMatch) {
-      const items = exportBlockMatch[1] ?? ''.split(',').map((s) => {
+      const items = (exportBlockMatch[1] ?? '').split(',').map((s) => {
         const trimmed = s.trim()
         // Handle "X as Y" - take original name
         const parts = trimmed.split(/\s+as\s+/)

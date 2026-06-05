@@ -52,7 +52,7 @@ export function scanFileForTodos(
     const line = lines[i]
     const match = regex.exec(line ?? '')
     if (match) {
-      const matchedType = match[1] ?? ''.toUpperCase()
+      const matchedType = (match[1] ?? '').toUpperCase()
       const matchedAuthor = match[2] ?? undefined
       const matchedText = match[3]?.trim() ?? ''
 

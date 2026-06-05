@@ -198,7 +198,7 @@ export function extractReturnTypes(content: string, filePath: string): ElementFr
     const line = lines[i]!
     const matches = line.matchAll(/\)\s*:\s*([A-Za-z][a-zA-Z0-9_$]*(?:<[^>]+>)?)/g)
     for (const match of matches) {
-      const typeName = match[1] ?? ''.split('<')[0]!
+      const typeName = (match[1] ?? '').split('<')[0]!
       const entry = map.get(typeName) ?? { count: 0, locs: [] }
       entry.count++
       entry.locs.push({ file: filePath, line: i + 1, context: line.trim() })

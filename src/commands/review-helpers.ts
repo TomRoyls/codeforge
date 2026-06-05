@@ -575,7 +575,7 @@ export function checkNoHardcodedStrings(content: string, filePath: string): Revi
     const line = lines[i]!
     const strings = line.matchAll(/['"`]([^'"`]{20,})['"`]/g)
     for (const match of strings) {
-      if (match[1] ?? ''.match(/^[\w./\\:-]+$/)) continue
+      if ((match[1] ?? '').match(/^[\w./\\:-]+$/)) continue
       findings.push({
         id: makeId(),
         rule: 'no-hardcoded-strings',
