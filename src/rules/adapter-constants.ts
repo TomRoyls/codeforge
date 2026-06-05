@@ -325,7 +325,6 @@ export const SKIP_KEYS = new Set([
   'original',
   'parent',
   'pos',
-  'questionDotToken',
   'questionToken',
   'rawText',
   'returnFlowNode',

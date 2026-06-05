@@ -660,6 +660,11 @@ function convertRawCompilerNode(
       continue
     }
 
+    if (key === 'questionDotToken' && val && typeof val === 'object') {
+      result.optional = true
+      continue
+    }
+
     if (SKIP_KEYS.has(key)) continue
 
     const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
@@ -671,6 +676,18 @@ function convertRawCompilerNode(
       }
 
       continue
+    }
+
+    if (val && typeof val === 'object') {
+      const v = val as Record<string, unknown>
+      if (typeof v.kind === 'number' && KIND_MAP[v.kind as number] === 'ComputedPropertyName') {
+        const expr = v.expression as Record<string, unknown> | undefined
+        if (expr) {
+          result[estreeName] = convertRawCompilerNode(expr, depth)
+          result.computed = true
+        }
+        continue
+      }
     }
 
     // VariableStatement: flatten declarationList.declarations to declarations array
@@ -1160,6 +1177,11 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
           continue
         }
 
+        if (key === 'questionDotToken' && val && typeof val === 'object') {
+          result.optional = true
+          continue
+        }
+
         if (SKIP_KEYS.has(key)) continue
 
         const estreeName = kindMap?.[key] ?? PROPERTY_MAP[key] ?? key
@@ -1171,6 +1193,18 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
           }
 
           continue
+        }
+
+        if (val && typeof val === 'object') {
+          const v = val as Record<string, unknown>
+          if (typeof v.kind === 'number' && KIND_MAP[v.kind as number] === 'ComputedPropertyName') {
+            const expr = v.expression as Record<string, unknown> | undefined
+            if (expr) {
+              result[estreeName] = convertRawCompilerNode(expr, depth)
+              result.computed = true
+            }
+            continue
+          }
         }
 
         // VariableStatement: flatten declarationList.declarations to declarations array
