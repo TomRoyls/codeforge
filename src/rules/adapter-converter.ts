@@ -116,6 +116,38 @@ export function convertRawCompilerNode(
       continue
     }
 
+    if (kindName === 'VariableStatement' && key === 'declarationList') {
+      const declList = val as Record<string, unknown>
+      if (declList && Array.isArray(declList.declarations)) {
+        result.declarations = declList.declarations.map(
+          (d: unknown) =>
+            d && typeof d === 'object' && typeof (d as Record<string, unknown>).kind === 'number'
+              ? convertRawCompilerNode(d as Record<string, unknown>, depth)
+              : d,
+        )
+      }
+
+      continue
+    }
+
+    if (
+      (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') &&
+      key === 'members' &&
+      Array.isArray(val)
+    ) {
+      result.body = {
+        body: val.map(
+          (m: unknown) =>
+            m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+              ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+              : m,
+        ),
+        type: 'ClassBody',
+      }
+
+      continue
+    }
+
     if (kindName === 'TemplateExpression' && (key === 'head' || key === 'templateSpans')) {
       synthesizeTemplateExpression(result, raw, depth)
 
@@ -626,6 +658,38 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
           const converted = convertCaseClauses(val, depth)
           if (converted !== undefined) {
             result[estreeName] = converted
+          }
+
+          continue
+        }
+
+        if (kindName === 'VariableStatement' && key === 'declarationList') {
+          const declList = val as Record<string, unknown>
+          if (declList && Array.isArray(declList.declarations)) {
+            result.declarations = declList.declarations.map(
+              (d: unknown) =>
+                d && typeof d === 'object' && typeof (d as Record<string, unknown>).kind === 'number'
+                  ? convertRawCompilerNode(d as Record<string, unknown>, depth)
+                  : d,
+            )
+          }
+
+          continue
+        }
+
+        if (
+          (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') &&
+          key === 'members' &&
+          Array.isArray(val)
+        ) {
+          result.body = {
+            body: val.map(
+              (m: unknown) =>
+                m && typeof m === 'object' && typeof (m as Record<string, unknown>).kind === 'number'
+                  ? convertRawCompilerNode(m as Record<string, unknown>, depth)
+                  : m,
+            ),
+            type: 'ClassBody',
           }
 
           continue
