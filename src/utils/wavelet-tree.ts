@@ -48,16 +48,16 @@ export class WaveletTree {
     }
   }
 
-  access(index: number): string {
+  access(index: number): number {
     if (this.nodes === null) throw new RangeError('Index out of bounds')
     if (index < 0 || index >= this._length) throw new RangeError('Index out of bounds')
-    return String.fromCharCode(this.accessNode(this.nodes, index))
+    return this.accessNode(this.nodes, index)
   }
 
   get text(): string {
     let result = ''
     for (let i = 0; i < this._length; i++) {
-      result += this.access(i)
+      result += String.fromCharCode(this.access(i))
     }
     return result
   }
@@ -82,9 +82,8 @@ export class WaveletTree {
 
   rank(symbol: number | string, endIndex: number): number {
     const sym = typeof symbol === 'string' ? symbol.charCodeAt(0) : symbol
-    if (this.nodes === null) return 0
-    if (endIndex < 0 || endIndex >= this._length) return 0
-    return this.rankNode(this.nodes, sym, endIndex + 1)
+    if (this.nodes === null || sym === undefined) return 0
+    return this.rankNode(this.nodes, sym, endIndex)
   }
 
   private rankNode(node: WaveletNode, symbol: number, endIndex: number): number {
@@ -107,11 +106,11 @@ export class WaveletTree {
 
   select(symbol: number | string, occurrence: number): number {
     const sym = typeof symbol === 'string' ? symbol.charCodeAt(0) : symbol
-    if (occurrence < 0) return -1
-    const total = this.rank(sym, this._length - 1)
-    if (occurrence >= total) return -1
+    if (occurrence < 1) return -1
+    const total = this.rank(sym, this._length)
+    if (occurrence > total) return -1
     if (this.nodes === null) return -1
-    return this.selectNode(this.nodes, sym, occurrence + 1)
+    return this.selectNode(this.nodes, sym, occurrence)
   }
 
   private selectNode(node: WaveletNode, symbol: number, occurrence: number): number {

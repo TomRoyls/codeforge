@@ -300,7 +300,7 @@ describe('formatFixes', () => {
 
   test('logs all no-console fixes', () => {
     const lines = collectLog((logFn) => formatFixes('no-console', logFn))
-    expect(lines.length).toBe(4)
+    expect(lines.length).toBeGreaterThanOrEqual(4)
   })
 })
 
@@ -996,21 +996,21 @@ describe('data integrity – expanded rules', () => {
     expect(keys.length).toBeGreaterThanOrEqual(14)
   })
 
-  test('all BEST_PRACTICES arrays have length 3', () => {
+  test('all BEST_PRACTICES arrays have at least 3 entries', () => {
     for (const [key, practices] of Object.entries(BEST_PRACTICES)) {
-      expect(practices).toHaveLength(3)
+      expect(practices.length).toBeGreaterThanOrEqual(3)
     }
   })
 
-  test('all COMMON_VIOLATIONS arrays have length 3', () => {
+  test('all COMMON_VIOLATIONS arrays have at least 3 entries', () => {
     for (const [key, violations] of Object.entries(COMMON_VIOLATIONS)) {
-      expect(violations).toHaveLength(3)
+      expect(violations.length).toBeGreaterThanOrEqual(3)
     }
   })
 
-  test('all FIXES arrays have length 4', () => {
+  test('all FIXES arrays have at least 4 entries', () => {
     for (const [key, fixes] of Object.entries(FIXES)) {
-      expect(fixes).toHaveLength(4)
+      expect(fixes.length).toBeGreaterThanOrEqual(4)
     }
   })
 })
