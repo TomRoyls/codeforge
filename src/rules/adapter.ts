@@ -500,22 +500,6 @@ function applyRawPostFixups(
     result.kind = 'constructor'
   }
 
-  // MethodDefinition: synthesize .value FunctionExpression with params/body
-  if (result.type === 'MethodDefinition' && !result.value) {
-    result.value = {
-      async: result.async === true,
-      body: result.body ?? { body: [], type: 'BlockStatement' },
-      generator: result.generator === true,
-      id: null,
-      loc: result.loc,
-      params: result.params ?? [],
-      range: result.range,
-      type: 'FunctionExpression',
-    }
-    delete result.body
-    delete result.params
-  }
-
   if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
     const heritageClauses = raw.heritageClauses as Record<string, unknown>[] | undefined
     if (Array.isArray(heritageClauses)) {
@@ -586,6 +570,25 @@ function applyRawPostFixups(
       id.typeAnnotation = result.typeAnnotation
       delete result.typeAnnotation
     }
+  }
+
+  // MethodDefinition: synthesize .value FunctionExpression with params/body
+  if (result.type === 'MethodDefinition' && !result.value) {
+    const value: Record<string, unknown> = {
+      async: result.async === true,
+      body: result.body ?? { body: [], type: 'BlockStatement' },
+      generator: result.generator === true,
+      id: null,
+      loc: result.loc,
+      params: result.params ?? [],
+      range: result.range,
+      type: 'FunctionExpression',
+    }
+    if (result.returnType !== undefined) value.returnType = result.returnType
+    result.value = value
+    delete result.body
+    delete result.params
+    delete result.returnType
   }
 }
 
@@ -919,22 +922,6 @@ function applyPostConvertFixups(
     result.kind = 'constructor'
   }
 
-  // MethodDefinition: synthesize .value FunctionExpression with params/body
-  if (result.type === 'MethodDefinition' && !result.value) {
-    result.value = {
-      async: result.async === true,
-      body: result.body ?? { body: [], type: 'BlockStatement' },
-      generator: result.generator === true,
-      id: null,
-      loc: result.loc,
-      params: result.params ?? [],
-      range: result.range,
-      type: 'FunctionExpression',
-    }
-    delete result.body
-    delete result.params
-  }
-
   if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
     const heritageClauses = compilerNode?.heritageClauses as Record<string, unknown>[] | undefined
     if (Array.isArray(heritageClauses)) {
@@ -1002,6 +989,25 @@ function applyPostConvertFixups(
       id.typeAnnotation = result.typeAnnotation
       delete result.typeAnnotation
     }
+  }
+
+  // MethodDefinition: synthesize .value FunctionExpression with params/body
+  if (result.type === 'MethodDefinition' && !result.value) {
+    const value: Record<string, unknown> = {
+      async: result.async === true,
+      body: result.body ?? { body: [], type: 'BlockStatement' },
+      generator: result.generator === true,
+      id: null,
+      loc: result.loc,
+      params: result.params ?? [],
+      range: result.range,
+      type: 'FunctionExpression',
+    }
+    if (result.returnType !== undefined) value.returnType = result.returnType
+    result.value = value
+    delete result.body
+    delete result.params
+    delete result.returnType
   }
 }
 

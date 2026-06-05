@@ -268,7 +268,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   InterfaceDeclaration: { name: 'id' },
   ImportSpecifier: { name: 'local', propertyName: 'imported' },
   LabeledStatement: { statement: 'body' },
-  MethodDeclaration: { name: 'key' },
+  MethodDeclaration: { name: 'key', type: 'returnType' },
   MethodSignature: { name: 'key', type: 'returnType' },
   ModuleDeclaration: { name: 'id' },
   NewExpression: { expression: 'callee' },

@@ -258,10 +258,14 @@ function applyMethodSynthesis(base: Record<string, unknown>): void {
     if (value.parent === undefined) value.parent = base
     if (value.loc === undefined && base.loc !== undefined) value.loc = base.loc
     if (value.range === undefined && base.range !== undefined) value.range = base.range
+    if (value.returnType === undefined && base.returnType !== undefined) {
+      value.returnType = base.returnType
+      delete base.returnType
+    }
     return
   }
 
-  base.value = {
+  const value: Record<string, unknown> = {
     async: base.async === true,
     body: base.body ?? { body: [], type: 'BlockStatement' },
     generator: base.generator === true,
@@ -272,6 +276,11 @@ function applyMethodSynthesis(base: Record<string, unknown>): void {
     range: base.range,
     type: 'FunctionExpression',
   }
+  if (base.returnType !== undefined) {
+    value.returnType = base.returnType
+    delete base.returnType
+  }
+  base.value = value
   delete base.body
   delete base.params
 }

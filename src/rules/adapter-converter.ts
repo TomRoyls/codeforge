@@ -486,23 +486,6 @@ function applyRawPostFixups(
     else result.kind = 'method'
   }
 
-  // MethodDefinition: synthesize .value FunctionExpression with params/body
-  // ESTree: methodDefinition.value = { type: 'FunctionExpression', params, body, ... }
-  if (result.type === 'MethodDefinition' && !result.value) {
-    result.value = {
-      async: result.async === true,
-      body: result.body ?? { body: [], type: 'BlockStatement' },
-      generator: result.generator === true,
-      id: null,
-      loc: result.loc,
-      params: result.params ?? [],
-      range: result.range,
-      type: 'FunctionExpression',
-    }
-    delete result.body
-    delete result.params
-  }
-
   if (kindName === 'ShorthandPropertyAssignment' && result.type === 'Property') {
     if (!result.shorthand) result.shorthand = true
     if (!result.value && result.key) result.value = { ...result.key }
@@ -560,6 +543,26 @@ function applyRawPostFixups(
       id.typeAnnotation = result.typeAnnotation
       delete result.typeAnnotation
     }
+  }
+
+  // MethodDefinition: synthesize .value FunctionExpression with params/body
+  // ESTree: methodDefinition.value = { type: 'FunctionExpression', params, body, ... }
+  if (result.type === 'MethodDefinition' && !result.value) {
+    const value: Record<string, unknown> = {
+      async: result.async === true,
+      body: result.body ?? { body: [], type: 'BlockStatement' },
+      generator: result.generator === true,
+      id: null,
+      loc: result.loc,
+      params: result.params ?? [],
+      range: result.range,
+      type: 'FunctionExpression',
+    }
+    if (result.returnType !== undefined) value.returnType = result.returnType
+    result.value = value
+    delete result.body
+    delete result.params
+    delete result.returnType
   }
 }
 
@@ -756,23 +759,6 @@ function applyPostConvertFixups(
     else result.kind = 'method'
   }
 
-  // MethodDefinition: synthesize .value FunctionExpression with params/body
-  // ESTree: methodDefinition.value = { type: 'FunctionExpression', params, body, ... }
-  if (result.type === 'MethodDefinition' && !result.value) {
-    result.value = {
-      async: result.async === true,
-      body: result.body ?? { body: [], type: 'BlockStatement' },
-      generator: result.generator === true,
-      id: null,
-      loc: result.loc,
-      params: result.params ?? [],
-      range: result.range,
-      type: 'FunctionExpression',
-    }
-    delete result.body
-    delete result.params
-  }
-
   if (
     (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') &&
     !result.superClass
@@ -820,6 +806,26 @@ function applyPostConvertFixups(
       id.typeAnnotation = result.typeAnnotation
       delete result.typeAnnotation
     }
+  }
+
+  // MethodDefinition: synthesize .value FunctionExpression with params/body
+  // ESTree: methodDefinition.value = { type: 'FunctionExpression', params, body, ... }
+  if (result.type === 'MethodDefinition' && !result.value) {
+    const value: Record<string, unknown> = {
+      async: result.async === true,
+      body: result.body ?? { body: [], type: 'BlockStatement' },
+      generator: result.generator === true,
+      id: null,
+      loc: result.loc,
+      params: result.params ?? [],
+      range: result.range,
+      type: 'FunctionExpression',
+    }
+    if (result.returnType !== undefined) value.returnType = result.returnType
+    result.value = value
+    delete result.body
+    delete result.params
+    delete result.returnType
   }
 }
 
