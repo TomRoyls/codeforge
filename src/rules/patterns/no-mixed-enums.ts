@@ -10,9 +10,9 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 export const noMixedEnumsRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
-      TsEnumDeclaration(node: unknown): void {
+      TSEnumDeclaration(node: unknown): void {
         const n = toASTNode(node)
-        if (!n || n.type !== 'TsEnumDeclaration') return
+        if (!n || n.type !== 'TSEnumDeclaration') return
 
         const members = (n as { members?: unknown[] }).members
         if (!members || !Array.isArray(members) || members.length < 2) return
@@ -20,15 +20,15 @@ export const noMixedEnumsRule: RuleDefinition = {
         const hasImplicit = members.some((m) => {
           if (!m || typeof m !== 'object') return false
           const member = m as Record<string, unknown>
-          const initializer = member.initializer
-          return initializer === null || initializer === undefined
+          const init = member.init ?? member.initializer
+          return init === null || init === undefined
         })
 
         const hasExplicit = members.some((m) => {
           if (!m || typeof m !== 'object') return false
           const member = m as Record<string, unknown>
-          const initializer = member.initializer
-          return initializer !== null && initializer !== undefined
+          const init = member.init ?? member.initializer
+          return init !== null && init !== undefined
         })
 
         if (hasImplicit && hasExplicit) {
