@@ -253,6 +253,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   ExportAssignment: { expression: 'declaration' },
   ExpressionStatement: { expression: 'expression' },
   AsExpression: { expression: 'expression' },
+  JsxExpression: { expression: 'expression' },
   NonNullExpression: { expression: 'expression' },
   SatisfiesExpression: { expression: 'expression' },
   TypeAssertionExpression: { expression: 'expression' },
