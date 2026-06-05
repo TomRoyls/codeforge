@@ -546,6 +546,16 @@ function applyRawPostFixups(
     if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
   }
 
+  if (raw.exclamationToken !== undefined && raw.exclamationToken !== null) {
+    result.definite = true
+    delete result.exclamationToken
+  }
+
+  if (raw.questionToken !== undefined && raw.questionToken !== null) {
+    result.optional = true
+    delete result.questionToken
+  }
+
   // Wrap returnType in TSTypeAnnotation if not already wrapped
   // ESTree typescript-eslint: returnType = { type: 'TSTypeAnnotation', typeAnnotation: <type node> }
   const rt = result.returnType as Record<string, unknown> | undefined
@@ -663,6 +673,16 @@ function convertRawCompilerNode(
     }
 
     if (key === 'questionDotToken' && val && typeof val === 'object') {
+      result.optional = true
+      continue
+    }
+
+    if (key === 'exclamationToken' && val && typeof val === 'object') {
+      result.definite = true
+      continue
+    }
+
+    if (key === 'questionToken' && val && typeof val === 'object') {
       result.optional = true
       continue
     }
@@ -1094,6 +1114,16 @@ function applyPostConvertFixups(
     if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
   }
 
+  if (compilerNode?.exclamationToken !== undefined && compilerNode?.exclamationToken !== null) {
+    result.definite = true
+    delete result.exclamationToken
+  }
+
+  if (compilerNode?.questionToken !== undefined && compilerNode?.questionToken !== null) {
+    result.optional = true
+    delete result.questionToken
+  }
+
   // Wrap returnType in TSTypeAnnotation if not already wrapped
   // ESTree typescript-eslint: returnType = { type: 'TSTypeAnnotation', typeAnnotation: <type node> }
   const rt = result.returnType as Record<string, unknown> | undefined
@@ -1213,6 +1243,16 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
         }
 
         if (key === 'questionDotToken' && val && typeof val === 'object') {
+          result.optional = true
+          continue
+        }
+
+        if (key === 'exclamationToken' && val && typeof val === 'object') {
+          result.definite = true
+          continue
+        }
+
+        if (key === 'questionToken' && val && typeof val === 'object') {
           result.optional = true
           continue
         }

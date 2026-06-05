@@ -154,6 +154,16 @@ export function convertRawCompilerNode(
       continue
     }
 
+    if (key === 'exclamationToken' && val && typeof val === 'object') {
+      result.definite = true
+      continue
+    }
+
+    if (key === 'questionToken' && val && typeof val === 'object') {
+      result.optional = true
+      continue
+    }
+
     if (key === 'keywordToken' && typeof val === 'number') {
       if (kindName === 'MetaProperty') {
         result.meta = { type: 'Identifier', name: val === 102 ? 'import' : val === 105 ? 'new' : '' }
@@ -1072,6 +1082,16 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
         }
 
         if (key === 'questionDotToken' && val && typeof val === 'object') {
+          result.optional = true
+          continue
+        }
+
+        if (key === 'exclamationToken' && val && typeof val === 'object') {
+          result.definite = true
+          continue
+        }
+
+        if (key === 'questionToken' && val && typeof val === 'object') {
           result.optional = true
           continue
         }

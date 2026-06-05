@@ -87,6 +87,10 @@ function applyClassMemberFlags(base: Record<string, unknown>, node: Node): void 
 interface OptionalChainSource {
   hasQuestionDotToken?: () => boolean
   questionDotToken?: unknown
+  questionToken?: unknown
+  exclamationToken?: unknown
+  hasQuestionToken?: () => boolean
+  hasExclamationToken?: () => boolean
 }
 
 function applyOptionalChaining(base: Record<string, unknown>, node: Node): void {
@@ -525,6 +529,20 @@ export function nodeToGeneric(node: Node): Record<string, unknown> {
     }
 
     applyOptionalChaining(base, node)
+
+    const ns = node as unknown as OptionalChainSource
+    if (typeof ns.hasQuestionToken === 'function') {
+      if (ns.hasQuestionToken()) base.optional = true
+    } else if (ns.questionToken) {
+      base.optional = true
+    }
+
+    if (typeof ns.hasExclamationToken === 'function') {
+      if (ns.hasExclamationToken()) base.definite = true
+    } else if (ns.exclamationToken) {
+      base.definite = true
+    }
+
     applyTypeOnlyFlags(base, node)
   }
 
