@@ -93,6 +93,7 @@ export const noUseBeforeDefineRule: RuleDefinition = {
         if (sub.length > 0) return sub
       }
       // ObjectPattern (ESTree): { properties: [{ key: { name }, value: { name } }] }
+      // Adapter output: properties are BindingElement-shaped: [{ name: { name: 'x' } }]
       const props = (pn as { properties?: unknown[] }).properties
       if (Array.isArray(props)) {
         for (const prop of props) {
@@ -104,6 +105,10 @@ export const noUseBeforeDefineRule: RuleDefinition = {
           if (key && typeof key.name === 'string' && !names.includes(key.name)) names.push(key.name)
           const restArg = (propNode as { argument?: { name?: string } }).argument
           if (restArg && typeof restArg.name === 'string') names.push(restArg.name)
+          // Adapter BindingElement: { name: { type: 'Identifier', name: 'x' } }
+          const propName = (propNode as { name?: { name?: string } | string }).name
+          if (typeof propName === 'string' && !names.includes(propName)) names.push(propName)
+          else if (propName && typeof propName === 'object' && typeof propName.name === 'string' && !names.includes(propName.name)) names.push(propName.name)
         }
       }
       // ObjectBindingPattern (ts-morph): { elements: [{ name: { name: 'x' } }] }
