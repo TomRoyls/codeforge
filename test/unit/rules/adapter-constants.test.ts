@@ -1672,8 +1672,8 @@ describe('adapter-constants', () => {
       }
     })
 
-    test('KIND_SPECIFIC_MAP has exactly 58 entries', () => {
-      expect(Object.keys(KIND_SPECIFIC_MAP).length).toBe(58)
+    test('KIND_SPECIFIC_MAP has exactly 59 entries', () => {
+      expect(Object.keys(KIND_SPECIFIC_MAP).length).toBe(59)
     })
 
     test('OPERATOR_TOKEN_MAP has exactly 53 entries', () => {

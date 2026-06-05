@@ -235,6 +235,7 @@ export const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
   ClassDeclaration: { name: 'id' },
   ClassExpression: { name: 'id' },
   ConditionalExpression: { condition: 'test', whenFalse: 'alternate', whenTrue: 'consequent' },
+  ObjectBindingPattern: { elements: 'properties' },
   DefaultClause: { statements: 'consequent' },
   DeleteExpression: { expression: 'argument' },
   DoStatement: { expression: 'test', statement: 'body' },
