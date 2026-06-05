@@ -52,7 +52,7 @@ function makeVoidUndefinedNode(
     type: 'UnaryExpression',
     operator: 'void',
     prefix: true,
-    argument: { type: 'Literal', value: undefined, raw: 'undefined' },
+    argument: { type: 'Identifier', name: 'undefined' },
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
   }
 }
@@ -166,7 +166,7 @@ describe('no-unnecessary-void rule', () => {
         type: 'UnaryExpression',
         operator: 'void',
         prefix: true,
-        argument: { type: 'Literal', value: undefined, raw: 'undefined', extra: true },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(1)
@@ -178,7 +178,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(1)
@@ -213,7 +213,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined, raw: 'undefined' },
+    argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(1)
@@ -226,7 +226,7 @@ describe('no-unnecessary-void rule', () => {
         type: 'UnaryExpression',
         operator: 'void',
         prefix: false,
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(1)
@@ -269,7 +269,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined, regex: { pattern: '', flags: '' } },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(1)
@@ -281,7 +281,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined, bigint: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(1)
@@ -337,7 +337,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined, loc: {} },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(1)
@@ -551,7 +551,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: '!',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 2),
       })
       expect(reports.length).toBe(0)
@@ -756,7 +756,7 @@ describe('no-unnecessary-void rule', () => {
       const node = {
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
       }
       visitor.UnaryExpression(node)
       expect(reports.length).toBe(1)
@@ -768,7 +768,7 @@ describe('no-unnecessary-void rule', () => {
       const node = {
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
       }
       visitor.UnaryExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -795,7 +795,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: '!',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 2),
       })
       expect(reports.length).toBe(2)
@@ -829,7 +829,7 @@ describe('no-unnecessary-void rule', () => {
       const node = {
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
         range: [0, 15],
         extra: true,
@@ -845,7 +845,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -857,7 +857,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -887,7 +887,7 @@ describe('no-unnecessary-void rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'Literal', value: undefined },
+        argument: { type: 'Identifier', name: 'undefined' },
         loc: makeLoc(1, 0, 1, 15),
         _parent: {},
       })

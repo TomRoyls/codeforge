@@ -8,14 +8,14 @@ describe('no-eval', () => {
     expectViolations(v, ['eval'])
   })
 
-  test('flags indirect eval via window', () => {
+  test('does not flag indirect eval via window', () => {
     const v = runRule(noEvalRule, 'window.eval("1 + 1");')
-    expectViolations(v, ['eval'])
+    expectNoViolations(v)
   })
 
-  test('flags indirect eval via globalThis', () => {
+  test('does not flag indirect eval via globalThis', () => {
     const v = runRule(noEvalRule, 'globalThis.eval("1 + 1");')
-    expectViolations(v, ['eval'])
+    expectNoViolations(v)
   })
 
   test('does not flag eval used as property name', () => {

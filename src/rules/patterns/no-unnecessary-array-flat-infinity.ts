@@ -14,8 +14,9 @@ export const noUnnecessaryArrayFlatInfinityRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'flat') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral') return
-        if (arg.value !== Infinity) return
+        // ESTree: `Infinity` is an Identifier node, not a NumericLiteral
+        if (!arg || arg.type !== 'Identifier') return
+        if (arg.name !== 'Infinity') return
         context.report({
           loc: extractLocation(n),
           message: `arr.flat(Infinity) is the same as arr.flat() with no depth. Use arr.flat() without an argument.`,

@@ -23,9 +23,10 @@ function isNumericLiteral(node: unknown, value: number): boolean {
   return toASTNode(node)?.value === value
 }
 
-function isUndefinedLiteral(node: unknown): boolean {
-  if (!isLiteral(node)) return false
-  return toASTNode(node)?.value === undefined && toASTNode(node)?.raw === 'undefined'
+// ESTree: `undefined` is an Identifier node, not a Literal
+function isUndefinedIdentifier(node: unknown): boolean {
+  const n = toASTNode(node)
+  return n?.type === 'Identifier' && n.name === 'undefined'
 }
 
 function hasUnnecessarySliceArgs(args: unknown[]): { isUnnecessary: boolean; reason: string } {
@@ -42,7 +43,7 @@ function hasUnnecessarySliceArgs(args: unknown[]): { isUnnecessary: boolean; rea
     }
 
     // .slice(undefined) is unnecessary
-    if (isUndefinedLiteral(arg)) {
+    if (isUndefinedIdentifier(arg)) {
       return { isUnnecessary: true, reason: 'undefined argument' }
     }
   }

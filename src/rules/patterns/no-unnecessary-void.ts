@@ -21,7 +21,8 @@ export const noUnnecessaryVoidRule: RuleDefinition = {
         if (!argument || typeof argument !== 'object') return
 
         const arg = argument as Record<string, unknown>
-        if (arg.type === 'Literal' && arg.value === undefined) {
+        // ESTree: `undefined` is an Identifier node, not a Literal
+        if (arg.type === 'Identifier' && arg.name === 'undefined') {
           context.report({
             loc: extractLocation(n),
             message: 'Unnecessary void undefined. Use undefined directly.',
