@@ -269,6 +269,8 @@ function applyChainExpressionSynthesis(base: Record<string, unknown>): void {
   if (base.type !== 'MemberExpression' && base.type !== 'CallExpression') return
 
   const inner = { ...base }
+  if (inner.type === 'MemberExpression') inner.type = 'OptionalMemberExpression'
+  if (inner.type === 'CallExpression') inner.type = 'OptionalCallExpression'
   const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
   for (const key of Object.keys(base)) {
     delete base[key]
@@ -499,6 +501,14 @@ export function nodeToGeneric(node: Node): Record<string, unknown> {
 
   applyParameterTransform(base, node)
   applyMethodSynthesis(base)
+
+  if (base.type === 'CallExpression' && !base.optional) {
+    const callee = base.callee as Record<string, unknown> | undefined
+    if (callee?.type === 'OptionalMemberExpression' || callee?.optional === true) {
+      base.optional = true
+    }
+  }
+
   applyChainExpressionSynthesis(base)
 
   return base

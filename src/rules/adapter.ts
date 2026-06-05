@@ -543,6 +543,13 @@ function applyRawPostFixups(
       }
     }
   }
+
+  if (raw.questionDotToken !== undefined && raw.questionDotToken !== null) {
+    result.optional = true
+    delete result.questionDotToken
+    if (result.type === 'MemberExpression') result.type = 'OptionalMemberExpression'
+    if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
+  }
 }
 
 function convertRawCompilerNode(
@@ -899,6 +906,13 @@ function applyPostConvertFixups(
       }
     }
   }
+
+  if (compilerNode?.questionDotToken !== undefined && compilerNode?.questionDotToken !== null) {
+    result.optional = true
+    delete result.questionDotToken
+    if (result.type === 'MemberExpression') result.type = 'OptionalMemberExpression'
+    if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
+  }
 }
 
 function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
@@ -1186,6 +1200,8 @@ function synthesizeMethodValue(base: Record<string, unknown>): void {
 
 function synthesizeChainExpression(base: Record<string, unknown>): void {
   const inner = { ...base }
+  if (inner.type === 'MemberExpression') inner.type = 'OptionalMemberExpression'
+  if (inner.type === 'CallExpression') inner.type = 'OptionalCallExpression'
   const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
   for (const key of Object.keys(base)) {
     delete base[key]

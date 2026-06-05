@@ -382,6 +382,13 @@ function applyRawPostFixups(
       }
     }
   }
+
+  if (raw.questionDotToken !== undefined && raw.questionDotToken !== null) {
+    result.optional = true
+    delete result.questionDotToken
+    if (result.type === 'MemberExpression') result.type = 'OptionalMemberExpression'
+    if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
+  }
 }
 
 function applyLiteralValue(result: Record<string, unknown>, kindName: string, node: Node): void {
@@ -561,6 +568,13 @@ function applyPostConvertFixups(
         }
       }
     }
+  }
+
+  if (compilerNode?.questionDotToken !== undefined && compilerNode?.questionDotToken !== null) {
+    result.optional = true
+    delete result.questionDotToken
+    if (result.type === 'MemberExpression') result.type = 'OptionalMemberExpression'
+    if (result.type === 'CallExpression') result.type = 'OptionalCallExpression'
   }
 }
 

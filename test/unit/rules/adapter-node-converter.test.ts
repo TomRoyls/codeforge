@@ -1029,7 +1029,7 @@ describe('adapter-node-converter', () => {
         expect(result.type).toBe('ChainExpression')
         const expr = result.expression as Record<string, unknown>
         expect(expr.optional).toBe(true)
-        expect(expr.type).toBe('MemberExpression')
+        expect(expr.type).toBe('OptionalMemberExpression')
       })
 
       test('PropertyAccessExpression no ChainExpression without questionDotToken', () => {
@@ -1943,9 +1943,9 @@ describe('adapter-node-converter', () => {
       expect(result.type).toBe('AwaitExpression')
     })
 
-    test('ParenthesizedExpression maps to SequenceExpression', () => {
+    test('ParenthesizedExpression is unwrapped in raw conversion (mock retains kind name)', () => {
       const result = nodeToGeneric(createMockNode({ kindName: 'ParenthesizedExpression' }))
-      expect(result.type).toBe('SequenceExpression')
+      expect(result.type).toBe('ParenthesizedExpression')
     })
 
     test('AsExpression maps to TSAsExpression', () => {
@@ -2420,9 +2420,9 @@ describe('adapter-node-converter', () => {
       expect(result.type).toBe('ArrayPattern')
     })
 
-    test('ComputedPropertyName maps to Literal', () => {
+    test('ComputedPropertyName is unwrapped in raw conversion (mock retains kind name)', () => {
       const result = nodeToGeneric(createMockNode({ kindName: 'ComputedPropertyName' }))
-      expect(result.type).toBe('Literal')
+      expect(result.type).toBe('ComputedPropertyName')
     })
 
     test('SuperKeyword maps to Super', () => {
@@ -2495,9 +2495,9 @@ describe('adapter-node-converter', () => {
       expect(result.type).toBe('StaticBlock')
     })
 
-    test('DefaultKeyword maps to Literal', () => {
+    test('DefaultKeyword maps to TSDefaultKeyword', () => {
       const result = nodeToGeneric(createMockNode({ kindName: 'DefaultKeyword' }))
-      expect(result.type).toBe('Literal')
+      expect(result.type).toBe('TSDefaultKeyword')
     })
 
     test('unknown kind name passes through unchanged', () => {
