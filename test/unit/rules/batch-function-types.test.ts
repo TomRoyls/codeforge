@@ -203,5 +203,34 @@ describe('Function and Arrow type mappings', () => {
       expect(ta!.type).toBe('TSTypeAnnotation')
       expect((ta!.typeAnnotation as Record<string, unknown>).type).toBe('TSNumberKeyword')
     })
+
+    it('preserves property signature typeAnnotation in interface', () => {
+      const ast = parse('interface Foo { bar: string; baz: number; }') as Record<string, unknown>
+      const stmt = (ast.body as unknown[])[0] as Record<string, unknown>
+      expect(stmt.type).toBe('TSInterfaceDeclaration')
+      const body = stmt.body as Record<string, unknown>
+      expect(body.type).toBe('TSInterfaceBody')
+      const members = body.body as Record<string, unknown>[]
+      expect(members).toHaveLength(2)
+      const bar = members[0]
+      expect(bar.type).toBe('TSPropertySignature')
+      const ta = bar.typeAnnotation as Record<string, unknown> | undefined
+      expect(ta).toBeDefined()
+      expect(ta!.type).toBe('TSTypeAnnotation')
+      expect((ta!.typeAnnotation as Record<string, unknown>).type).toBe('TSStringKeyword')
+    })
+
+    it('preserves enum member initializer', () => {
+      const ast = parse('enum E { A = 1, B = 2 }') as Record<string, unknown>
+      const stmt = (ast.body as unknown[])[0] as Record<string, unknown>
+      expect(stmt.type).toBe('TSEnumDeclaration')
+      const members = stmt.members as Record<string, unknown>[]
+      expect(members).toHaveLength(2)
+      const a = members[0]
+      const init = a.init as Record<string, unknown> | undefined
+      expect(init).toBeDefined()
+      expect(init!.type).toBe('Literal')
+      expect(init!.value).toBe(1)
+    })
   })
 })
