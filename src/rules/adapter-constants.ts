@@ -111,6 +111,8 @@ export const KIND_NAME_ALIASES: Record<string, string> = {
   DoStatement: 'DoWhileStatement',
   ElementAccessExpression: 'MemberExpression',
   EnumDeclaration: 'TSEnumDeclaration',
+  ArrayBindingPattern: 'ArrayPattern',
+  ObjectBindingPattern: 'ObjectPattern',
   ExportDeclaration: 'ExportDeclaration',
   ExportKeyword: 'TSExportKeyword',
   ExportSpecifier: 'ExportSpecifier',
