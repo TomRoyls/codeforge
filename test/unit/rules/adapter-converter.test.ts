@@ -2919,6 +2919,36 @@ describe('adapter-converter', () => {
       expect(result?.type).toBe('YieldExpression')
     })
 
+    test('YieldExpression asteriskToken maps to delegate', () => {
+      const node = {
+        kind: SyntaxKind.YieldExpression,
+        pos: 0,
+        end: 15,
+        asteriskToken: { kind: SyntaxKind.AsteriskToken, pos: 6, end: 7 },
+        expression: { kind: SyntaxKind.Identifier, pos: 8, end: 15, escapedText: 'iter' },
+      }
+      const result = convertRawCompilerNode(node, 0)
+      expect(result?.type).toBe('YieldExpression')
+      expect(result?.delegate).toBe(true)
+      expect(result?.generator).toBeUndefined()
+    })
+
+    test('FunctionDeclaration asteriskToken maps to generator', () => {
+      const node = {
+        kind: SyntaxKind.FunctionDeclaration,
+        pos: 0,
+        end: 20,
+        name: { kind: SyntaxKind.Identifier, pos: 9, end: 12, escapedText: 'gen' },
+        asteriskToken: { kind: SyntaxKind.AsteriskToken, pos: 8, end: 9 },
+        parameters: [],
+        body: { kind: SyntaxKind.Block, pos: 14, end: 20, statements: [] },
+      }
+      const result = convertRawCompilerNode(node, 0)
+      expect(result?.type).toBe('FunctionDeclaration')
+      expect(result?.generator).toBe(true)
+      expect(result?.delegate).toBeUndefined()
+    })
+
     test('AsExpression maps to TSAsExpression', () => {
       const node = { kind: SyntaxKind.AsExpression, pos: 0, end: 10 }
       const result = convertRawCompilerNode(node, 0)
