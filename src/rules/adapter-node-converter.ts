@@ -251,7 +251,15 @@ function wrapInParamProperty(base: Record<string, unknown>, propInfo: ParamPropI
 }
 
 function applyMethodSynthesis(base: Record<string, unknown>): void {
-  if (base.method !== true || base.type !== 'MethodDefinition' || base.value !== undefined) return
+  if (base.method !== true || base.type !== 'MethodDefinition') return
+
+  if (base.value !== undefined) {
+    const value = base.value as Record<string, unknown>
+    if (value.parent === undefined) value.parent = base
+    if (value.loc === undefined && base.loc !== undefined) value.loc = base.loc
+    if (value.range === undefined && base.range !== undefined) value.range = base.range
+    return
+  }
 
   base.value = {
     async: base.async === true,

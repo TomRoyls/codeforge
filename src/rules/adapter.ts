@@ -500,6 +500,22 @@ function applyRawPostFixups(
     result.kind = 'constructor'
   }
 
+  // MethodDefinition: synthesize .value FunctionExpression with params/body
+  if (result.type === 'MethodDefinition' && !result.value) {
+    result.value = {
+      async: result.async === true,
+      body: result.body ?? { body: [], type: 'BlockStatement' },
+      generator: result.generator === true,
+      id: null,
+      loc: result.loc,
+      params: result.params ?? [],
+      range: result.range,
+      type: 'FunctionExpression',
+    }
+    delete result.body
+    delete result.params
+  }
+
   if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
     const heritageClauses = raw.heritageClauses as Record<string, unknown>[] | undefined
     if (Array.isArray(heritageClauses)) {
@@ -892,6 +908,22 @@ function applyPostConvertFixups(
 
   if (kindName === 'Constructor') {
     result.kind = 'constructor'
+  }
+
+  // MethodDefinition: synthesize .value FunctionExpression with params/body
+  if (result.type === 'MethodDefinition' && !result.value) {
+    result.value = {
+      async: result.async === true,
+      body: result.body ?? { body: [], type: 'BlockStatement' },
+      generator: result.generator === true,
+      id: null,
+      loc: result.loc,
+      params: result.params ?? [],
+      range: result.range,
+      type: 'FunctionExpression',
+    }
+    delete result.body
+    delete result.params
   }
 
   if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
