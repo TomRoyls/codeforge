@@ -1,115 +1,123 @@
-import { Command, Flags } from '@oclif/core'
-import chalk from 'chalk'
+import { Args, Command, Flags } from '@oclif/core'
 import { writeFile } from 'node:fs/promises'
-import ora from 'ora'
 
+import { Parser } from '../core/parser.js'
 import {
-  buildDependenciesResult,
-  categorizeVersionType,
-  type DependenciesResult,
+  detectCircularDependencies,
+  extractImports as extractImportsHelper,
+  findOrphanFiles as findOrphanFilesHelper,
 } from './dependencies-helpers.js'
 import {
-  formatDependenciesCsv,
-  formatDependenciesJson,
-  formatDependenciesTable,
-} from './dependencies-format-helpers.js'
+  deduplicateCycles,
+  detectCyclesFromNode as detectCyclesFromNodeHelper,
+  finishNodeVisit as finishNodeVisitHelper,
+  normalizeCycle as normalizeCycleHelper,
+  processDependency as processDependencyHelper,
+  recordCycle as recordCycleHelper,
+} from './dependencies-cycle-helpers.js'
+import {
+  displayCircularDependencies as displayCircularDependenciesHelper,
+  displayDependencyTree as displayDependencyTreeHelper,
+  displayDotFormat as displayDotFormatHelper,
+  displayExternalModules as displayExternalModulesHelper,
+  displayFullReport as displayFullReportHelper,
+  formatOutput as formatOutputHelper,
+  graphToDotFormat as graphToDotFormatHelper,
+} from './dependencies-display-helpers.js'
 
 /**
- * Analyze npm package.json dependencies for outdated, unused, missing,
- * version ranges, dependency tree depth, and health metrics.
+ * Analyze and visualize module dependencies.
  *
  * @example
  * codeforge dependencies
  * codeforge dependencies --format json
- * codeforge dependencies --type deps --depth 2
- * codeforge dependencies --verbose
+ * codeforge dependencies --circular
+ * codeforge dependencies --tree
  */
 export default class Dependencies extends Command {
-  static override description =
-    'Analyze npm package.json dependencies'
+  static override description = 'Analyze and visualize module dependencies'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze dependencies in current project',
+      description: 'Analyze dependencies in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --format json',
-      description: 'Output dependency analysis as JSON',
+      description: 'Output dependencies as JSON',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --type deps',
-      description: 'Analyze only production dependencies',
+      command: '<%= config.bin %> <%= command.id %> --circular',
+      description: 'Show only circular dependencies',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --depth 5 --verbose',
-      description: 'Show detailed dependency tree up to depth 5',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format csv --output deps.csv',
-      description: 'Export dependency analysis to CSV',
+      command: '<%= config.bin %> <%= command.id %> --tree',
+      description: 'Display dependency tree',
     },
   ]
 
   static override flags = {
-    'check-updates': Flags.boolean({
+    circular: Flags.boolean({
+      char: 'c',
       default: false,
-      description: 'Show version constraint analysis (simplified, no registry calls)',
+      description: 'Only detect and show circular dependencies',
     }),
-    depth: Flags.integer({
-      default: 3,
-      description: 'Max dependency tree depth to show',
+    external: Flags.boolean({
+      char: 'e',
+      default: false,
+      description: 'Show external module dependencies',
     }),
     format: Flags.string({
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['csv', 'json', 'table'],
+      options: ['dot', 'json', 'table'],
+    }),
+    ignore: Flags.string({
+      char: 'i',
+      multiple: true,
+      description: 'Patterns to ignore',
     }),
     output: Flags.string({
       char: 'o',
       description: 'Output file path',
     }),
-    type: Flags.string({
-      default: 'all',
-      description: 'Which dependency types to analyze',
-      options: ['all', 'deps', 'devDeps'],
-    }),
-    verbose: Flags.boolean({
-      char: 'v',
+    tree: Flags.boolean({
+      char: 't',
       default: false,
-      description: 'Show detailed output including dependency tree',
+      description: 'Display dependency tree',
+    }),
+  }
+
+  static override args = {
+    path: Args.string({
+      default: '.',
+      description: 'Path to analyze',
+      required: false,
     }),
   }
 
   async run(): Promise<void> {
     const { flags } = await this.parse(Dependencies)
+    const { args } = await this.parse(Dependencies)
 
-    const format = flags.format as 'csv' | 'json' | 'table'
-    const verbose = flags.verbose
-    const depth = flags.depth
+    const targetPath = (args as { path?: string }).path ?? '.'
+    const { discoverFiles } = await import('../core/file-discovery.js')
 
-    const spinner = ora('Analyzing npm dependencies...').start()
-
-    const result = buildDependenciesResult(process.cwd(), {
-      maxDepth: depth,
-      typeFilter: flags.type,
+    const files = await discoverFiles({
+      extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      ignore: flags.ignore,
+      path: targetPath,
     })
 
-    spinner.succeed(
-      `Analyzed ${result.dependencies.length} dependencies (health: ${result.summary.healthScore}/100)`,
-    )
-
-    if (flags['check-updates']) {
-      this.displayConstraintWarnings(result)
+    const spinner = {
+      start: () => undefined,
+      stop: () => undefined,
+      text: '',
     }
+    const report = await this.analyzeDependencies(files, spinner)
 
-    const outputData =
-      format === 'json'
-        ? formatDependenciesJson(result)
-        : format === 'csv'
-          ? formatDependenciesCsv(result)
-          : formatDependenciesTable(result, verbose, depth)
+    const outputData = this.formatOutput(report, flags)
 
     if (flags.output) {
       try {
@@ -125,31 +133,208 @@ export default class Dependencies extends Command {
     }
   }
 
-  private displayConstraintWarnings(result: DependenciesResult): void {
-    const exactCount = result.dependencies.filter(
-      (d) => categorizeVersionType(d.parsedRange) === 'exact',
-    ).length
-    const anyCount = result.dependencies.filter(
-      (d) => categorizeVersionType(d.parsedRange) === 'any',
-    ).length
-    if (exactCount > 0) {
-      this.log(chalk.yellow(`  ⚠ ${exactCount} exact version(s) pinned — consider using ranges`))
+  // ─── Instance methods (delegating to helpers) ─────────
+
+  extractImports(sourceCode: string, filePath: string): unknown[] {
+    return extractImportsHelper(sourceCode, filePath)
+  }
+
+  detectCircularDependencies(graph: unknown): unknown[] {
+    return detectCircularDependencies(graph as Parameters<typeof detectCircularDependencies>[0])
+  }
+
+  findOrphanFiles(graph: unknown): string[] {
+    return findOrphanFilesHelper(graph as Parameters<typeof findOrphanFilesHelper>[0])
+  }
+
+  normalizeCycle(cycle: readonly string[]): string[] {
+    return normalizeCycleHelper(cycle)
+  }
+
+  deduplicateCycles<T extends { cycle: readonly string[] }>(cycles: T[]): T[] {
+    const seen = new Set<string>()
+    const unique: T[] = []
+    for (const c of cycles) {
+      const normalized = normalizeCycleHelper(c.cycle)
+      const key = normalized.join('->')
+      if (!seen.has(key)) {
+        seen.add(key)
+        unique.push(c)
+      }
     }
-    if (anyCount > 0) {
-      this.log(chalk.red(`  ⚠ ${anyCount} wildcard version(s) — pin to specific ranges`))
+    return unique
+  }
+
+  graphToDotFormat(graph: unknown): { edges: [string, string][]; nodes: string[] } {
+    return graphToDotFormatHelper(graph as Parameters<typeof graphToDotFormatHelper>[0])
+  }
+
+  formatOutput(
+    report: Parameters<typeof formatOutputHelper>[0],
+    flags: Parameters<typeof formatOutputHelper>[1],
+  ): string {
+    return formatOutputHelper(report, flags)
+  }
+
+  processDependency(
+    dependency: string,
+    node: Parameters<typeof processDependencyHelper>[1],
+    context: Parameters<typeof processDependencyHelper>[2],
+  ): void {
+    processDependencyHelper(dependency, node, context)
+  }
+
+  recordCycle(
+    dependency: string,
+    node: Parameters<typeof recordCycleHelper>[1],
+    context: Parameters<typeof recordCycleHelper>[2],
+  ): void {
+    recordCycleHelper(dependency, node, context)
+  }
+
+  finishNodeVisit(
+    currentPath: string,
+    path: string[],
+    recursionStack: Set<string>,
+  ): void {
+    finishNodeVisitHelper(currentPath, path, recursionStack)
+  }
+
+  detectCyclesFromNode(
+    currentPath: string,
+    context: Parameters<typeof detectCyclesFromNodeHelper>[1],
+  ): void {
+    detectCyclesFromNodeHelper(currentPath, context)
+  }
+
+  displayCircularDependencies(
+    report: Parameters<typeof displayCircularDependenciesHelper>[0],
+    format: string,
+  ): void {
+    displayCircularDependenciesHelper(report, format, (msg: string) => this.log(msg))
+  }
+
+  displayExternalModules(
+    report: Parameters<typeof displayExternalModulesHelper>[0],
+    format: string,
+  ): void {
+    displayExternalModulesHelper(report, format, (msg: string) => this.log(msg))
+  }
+
+  displayDotFormat(report: Parameters<typeof displayDotFormatHelper>[0]): void {
+    displayDotFormatHelper(report, (msg: string) => this.log(msg))
+  }
+
+  displayFullReport(
+    report: Parameters<typeof displayFullReportHelper>[0],
+    format: string,
+  ): void {
+    displayFullReportHelper(report, format, (msg: string) => this.log(msg))
+  }
+
+  displayDependencyTree(report: Parameters<typeof displayDependencyTreeHelper>[0]): void {
+    displayDependencyTreeHelper(report, (msg: string) => this.log(msg))
+  }
+
+  async analyzeDependencies(
+    files: Array<{ absolutePath: string; path: string }>,
+    spinner: { start: () => unknown; stop: () => unknown; text?: string },
+  ): Promise<{
+    circularDependencies: unknown[]
+    externalModules: string[]
+    filesAnalyzed: number
+    graph: { edges: [string, string][]; nodes: string[] }
+    internalModules: string[]
+    orphanFiles: string[]
+  }> {
+    const result = {
+      circularDependencies: [] as unknown[],
+      externalModules: [] as string[],
+      filesAnalyzed: 0,
+      graph: { edges: [] as [string, string][], nodes: [] as string[] },
+      internalModules: [] as string[],
+      orphanFiles: [] as string[],
     }
+
+    if (!files || files.length === 0) {
+      return result
+    }
+
+    spinner?.start?.()
+
+    type DependencyNode = {
+      filePath: string
+      importDetails: Map<string, unknown>
+      imports: Set<string>
+    }
+    type DependencyGraph = { nodes: Map<string, DependencyNode> }
+    const graph: DependencyGraph = { nodes: new Map() }
+    const externalSet = new Set<string>()
+    const internalSet = new Set<string>()
+
+    const parser = new Parser({})
+    await parser.initialize()
+
+    try {
+      for (const file of files) {
+        try {
+          const parseResult = await parser.parseFile(file.absolutePath)
+          const sourceCode = parseResult.sourceFile.getText()
+          const imports = this.extractImports(sourceCode, file.path) as Array<{
+            modulePath: string
+            sourceFile: string
+            location: { column: number; line: number; end?: number }
+          }>
+
+          const importSet = new Set<string>()
+          const importDetails = new Map<string, unknown>()
+          for (const imp of imports) {
+            importSet.add(imp.modulePath)
+            importDetails.set(imp.modulePath, imp)
+            if (imp.modulePath.startsWith('.')) {
+              internalSet.add(imp.modulePath)
+            } else {
+              externalSet.add(imp.modulePath)
+            }
+          }
+
+          graph.nodes.set(file.path, {
+            filePath: file.path,
+            importDetails,
+            imports: importSet,
+          })
+          result.filesAnalyzed++
+        } catch {
+          // skip on parse error
+        }
+      }
+    } finally {
+      parser.dispose()
+      spinner?.stop?.()
+    }
+
+    result.externalModules = [...externalSet].sort()
+    result.internalModules = [...internalSet].sort()
+    result.circularDependencies = this.detectCircularDependencies(graph)
+    result.graph = this.graphToDotFormat(graph)
+    result.orphanFiles = this.findOrphanFiles(graph)
+
+    return result
   }
 }
 
+// ─── Backward-compatibility re-exports ──────────────────
+// Keep these to avoid breaking consumers of the previous NPM-focused API.
+
 export {
+  buildDependencyTree,
   buildDependenciesResult,
+  calculateHealthScore,
+  calculateMaxDepth,
   categorizeVersionType,
   extractDependencies,
   parsePackageJson,
   parseVersionRange,
-  calculateHealthScore,
-  calculateMaxDepth,
-  buildDependencyTree,
 } from './dependencies-helpers.js'
 export type {
   DependenciesResult,

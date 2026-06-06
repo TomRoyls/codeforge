@@ -338,7 +338,7 @@ export function filterByThreshold<T extends { cyclomatic?: number; complexity?: 
   threshold: number,
 ): T[] {
   if (threshold <= 0) return functions
-  return functions.filter((fn) => (fn.cyclomatic ?? fn.complexity ?? 0) >= threshold)
+  return functions.filter((fn) => (fn.cyclomatic ?? fn.complexity ?? 0) > threshold)
 }
 
 /**
@@ -377,10 +377,14 @@ export function filterFilesByExtension<T extends { path: string }>(
   files: T[],
   extensions: string[] | null,
 ): T[] {
-  if (!extensions || extensions.length === 0) return files
+  if (!extensions) return files
+  if (extensions.length === 0) return []
+  const lowerExts = extensions.map((e) => e.toLowerCase())
   return files.filter((f) => {
-    const ext = f.path.match(/\.[^.]+$/)?.[0] ?? ''
-    return extensions.includes(ext)
+    const basename = f.path.split('/').pop() ?? f.path
+    if (basename.startsWith('.') && !basename.slice(1).includes('.')) return false
+    const ext = basename.match(/\.[^.]+$/)?.[0]?.toLowerCase() ?? ''
+    return lowerExts.includes(ext)
   })
 }
 
@@ -411,12 +415,22 @@ export function getCategoryColor(
 }
 
 export function limitResults<T>(items: T[], limit: number): T[] {
-  if (limit <= 0) return []
+  if (limit === 0) return []
   return items.slice(0, limit)
 }
 
-export function buildJsonOutput(data: FunctionComplexity[]): string {
-  const summary = {
+export function buildJsonOutput(
+  data: FunctionComplexity[],
+  summaryOverride?: {
+    totalFunctions: number
+    averageCyclomatic: number
+    averageCognitive: number
+    maxCyclomatic: number
+    maxCognitive: number
+    categoryBreakdown: { low: number; moderate: number; high: number; extreme: number }
+  },
+): string {
+  const summary = summaryOverride ?? {
     totalFunctions: data.length,
     averageCyclomatic: data.length > 0
       ? data.reduce((sum, f) => sum + f.cyclomatic, 0) / data.length
@@ -433,7 +447,7 @@ export function buildJsonOutput(data: FunctionComplexity[]): string {
       extreme: data.filter((f) => f.category === 'extreme').length,
     },
   }
-  return JSON.stringify({ functions: data, summary })
+  return JSON.stringify({ functions: data, summary }, null, 2)
 }
 
 export function formatMarkdown(data: FunctionComplexity[]): string {
@@ -452,25 +466,26 @@ export function formatMarkdown(data: FunctionComplexity[]): string {
     lines.push('')
   }
 
-  lines.push('## Summary')
-  lines.push(`Total functions: ${data.length}`)
-  if (data.length > 0) {
-    const avgCyc = data.reduce((s, f) => s + f.cyclomatic, 0) / data.length
-    const avgCog = data.reduce((s, f) => s + f.cognitive, 0) / data.length
-    const maxCyc = Math.max(...data.map((f) => f.cyclomatic))
-    const maxCog = Math.max(...data.map((f) => f.cognitive))
-    lines.push(`**Average cyclomatic complexity**: ${avgCyc.toFixed(1)}`)
-    lines.push(`**Average cognitive complexity**: ${avgCog.toFixed(1)}`)
-    lines.push(`**Maximum cyclomatic complexity**: ${maxCyc}`)
-    lines.push(`**Maximum cognitive complexity**: ${maxCog}`)
-  }
+  const totalFunctions = data.length
+  const avgCyc = data.length > 0 ? data.reduce((s, f) => s + f.cyclomatic, 0) / data.length : 0
+  const avgCog = data.length > 0 ? data.reduce((s, f) => s + f.cognitive, 0) / data.length : 0
+  const maxCyc = data.length > 0 ? Math.max(...data.map((f) => f.cyclomatic)) : 0
+  const maxCog = data.length > 0 ? Math.max(...data.map((f) => f.cognitive)) : 0
 
+  lines.push('## Summary')
+  lines.push(`**Total functions**: ${totalFunctions}`)
+  lines.push(`**Average cyclomatic complexity**: ${avgCyc.toFixed(1)}`)
+  lines.push(`**Average cognitive complexity**: ${avgCog.toFixed(1)}`)
+  lines.push(`**Maximum cyclomatic complexity**: ${maxCyc}`)
+  lines.push(`**Maximum cognitive complexity**: ${maxCog}`)
   lines.push('')
+
   lines.push('## Category Breakdown')
-  lines.push(`Low: ${data.filter((f) => f.category === 'low').length}`)
-  lines.push(`Moderate: ${data.filter((f) => f.category === 'moderate').length}`)
-  lines.push(`High: ${data.filter((f) => f.category === 'high').length}`)
-  lines.push(`Extreme: ${data.filter((f) => f.category === 'extreme').length}`)
+  lines.push(`**Low**: ${data.filter((f) => f.category === 'low').length}`)
+  lines.push(`**Moderate**: ${data.filter((f) => f.category === 'moderate').length}`)
+  lines.push(`**High**: ${data.filter((f) => f.category === 'high').length}`)
+  lines.push(`**Extreme**: ${data.filter((f) => f.category === 'extreme').length}`)
+  lines.push('')
 
   return lines.join('\n')
 }
@@ -478,10 +493,12 @@ export function formatMarkdown(data: FunctionComplexity[]): string {
 export function formatTable(data: FunctionComplexity[]): string {
   if (data.length === 0) return 'No functions found with complexity above threshold.'
 
+  const sep = '─'.repeat(80)
   const lines: string[] = []
   lines.push('Complexity Analysis')
   lines.push('')
   lines.push('  Function                         File:Line             Cyclomatic  Cognitive  Category')
+  lines.push(sep)
 
   for (const f of data) {
     const name = f.functionName.length > 28
@@ -493,6 +510,7 @@ export function formatTable(data: FunctionComplexity[]): string {
     )
   }
 
+  lines.push(sep)
   lines.push('')
   lines.push('Summary:')
   lines.push(`  Total functions: ${data.length}`)
