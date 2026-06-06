@@ -47,7 +47,7 @@ export default class Diff extends Command {
     }),
   }
 
-  static override description = 'Analyze git diffs with risk assessment and statistics'
+  static override description = 'Compare violations between git branches or commits'
 
   static override examples = [
     {

@@ -28,7 +28,9 @@ export class FenwickTree2D {
   }
 
   query(row: number, col: number): number {
-    if (row < 0 || col < 0 || row >= this.rows || col >= this.cols) {
+    // Negative indices yield empty prefix sum (used by rangeQuery inclusion-exclusion)
+    if (row < 0 || col < 0) return 0;
+    if (row >= this.rows || col >= this.cols) {
       throw new Error('Index out of bounds')
     }
     let sum = 0;

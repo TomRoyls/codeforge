@@ -38,3 +38,4 @@ export const noUnnecessaryDateUTCSpreadRule: RuleDefinition = {
   },
 }
 export default noUnnecessaryDateUTCSpreadRule
+export { noUnnecessaryDateUTCSpreadRule as noUnnecessaryDateUtcSpreadRule }
