@@ -63,8 +63,8 @@ function makeCallNode(
   }
 }
 
-function numLit(value: number): { type: 'NumericLiteral'; value: number } {
-  return { type: 'NumericLiteral', value }
+function numLit(value: number): { type: 'Literal'; value: number } {
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====

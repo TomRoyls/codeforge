@@ -674,7 +674,7 @@ describe('no-unnecessary-optional-chain rule', () => {
     test('does not report when node type is not MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryOptionalChainRule.create(context)
-      visitor.MemberExpression({ type: 'StringLiteral', value: 'test', loc: makeLoc(1, 0, 1, 6) })
+      visitor.MemberExpression({ type: 'Literal', value: 'test', loc: makeLoc(1, 0, 1, 6) })
       expect(reports.length).toBe(0)
     })
 

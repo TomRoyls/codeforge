@@ -135,14 +135,14 @@ describe('no-new-symbol rule', () => {
     test('reports for new Symbol("description")', () => {
       const { context, reports } = createMockContext()
       const visitor = noNewSymbolRule.create(context)
-      visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 20, [{ type: 'StringLiteral', value: 'description' }]))
+      visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 20, [{ type: 'Literal', value: 'description' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new Symbol(42)', () => {
       const { context, reports } = createMockContext()
       const visitor = noNewSymbolRule.create(context)
-      visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 14, [{ type: 'NumericLiteral', value: 42 }]))
+      visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 14, [{ type: 'Literal', value: 42 }]))
       expect(reports.length).toBe(1)
     })
 
@@ -222,8 +222,8 @@ describe('no-new-symbol rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noNewSymbolRule.create(context)
       visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 25, [
-        { type: 'StringLiteral', value: 'a' },
-        { type: 'StringLiteral', value: 'b' },
+        { type: 'Literal', value: 'a' },
+        { type: 'Literal', value: 'b' },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -317,7 +317,7 @@ describe('no-new-symbol rule', () => {
     test('reports for Symbol with empty string argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noNewSymbolRule.create(context)
-      visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 16, [{ type: 'StringLiteral', value: '' }]))
+      visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 16, [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
@@ -372,7 +372,7 @@ describe('no-new-symbol rule', () => {
     test('reports for Symbol with string literal argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noNewSymbolRule.create(context)
-      visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 22, [{ type: 'StringLiteral', value: 'mySymbol' }]))
+      visitor.NewExpression(makeNewExpressionNode('Symbol', 1, 0, 1, 22, [{ type: 'Literal', value: 'mySymbol' }]))
       expect(reports.length).toBe(1)
     })
 

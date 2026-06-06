@@ -499,7 +499,7 @@ describe('no-this-alias rule', () => {
     test('does not report for node type StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noThisAliasRule.create(context)
-      visitor.VariableDeclarator({ type: 'StringLiteral', value: 'test', loc: makeLoc(1, 0, 1, 6) })
+      visitor.VariableDeclarator({ type: 'Literal', value: 'test', loc: makeLoc(1, 0, 1, 6) })
       expect(reports.length).toBe(0)
     })
 

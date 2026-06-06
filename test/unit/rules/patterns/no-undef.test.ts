@@ -1064,7 +1064,7 @@ describe('no-undef rule', () => {
 
       const node = {
         type: 'ClassDeclaration',
-        id: { type: 'StringLiteral', value: 'notAnIdentifier' },
+        id: { type: 'Literal', value: 'notAnIdentifier' },
         body: { type: 'ClassBody', body: [] },
       }
 
@@ -1077,7 +1077,7 @@ describe('no-undef rule', () => {
 
       const node = {
         type: 'ImportSpecifier',
-        local: { type: 'StringLiteral', value: 'notAnIdentifier' },
+        local: { type: 'Literal', value: 'notAnIdentifier' },
         imported: { type: 'Identifier', name: 'original' },
       }
 

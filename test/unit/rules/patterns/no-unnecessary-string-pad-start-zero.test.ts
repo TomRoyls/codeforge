@@ -45,7 +45,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
 function makeCallNode(
   object: unknown,
   methodName: string,
-  args: unknown[] = [{ type: 'NumericLiteral', value: 0 }],
+  args: unknown[] = [{ type: 'Literal', value: 0 }],
   locStartLine = 1,
   locStartCol = 0,
   locEndLine = 1,
@@ -227,7 +227,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 0 }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 0 }], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -334,35 +334,35 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
     test('does not report for padStart(5) — non-zero positive', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for padStart(1) — non-zero positive small', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for padStart(-1) — negative value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: -1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: -1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for padStart(0.5) — non-integer value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 0.5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 0.5 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for padStart(100) — large positive value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 100 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 100 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -383,7 +383,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
     test('does not report for padStart(0, "x") — two arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 0 }, { type: 'Literal', value: 'x' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 'x' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -509,21 +509,21 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -537,7 +537,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'padStart' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -561,7 +561,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           property: { type: 'Identifier', name: 'padStart' },
           computed: true,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -590,7 +590,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -606,7 +606,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -657,7 +657,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
       const visitor1 = noUnnecessaryStringPadStartZero.create(ctx1)
       const visitor2 = noUnnecessaryStringPadStartZero.create(ctx2)
       visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart'))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 5 }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -666,7 +666,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart'))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 5 }]))
       visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'padStart'))
       expect(reports.length).toBe(2)
     })
@@ -681,7 +681,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'padStart' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -697,7 +697,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'padStart' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -707,7 +707,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 5 }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart'))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd'))
       visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'padStart'))
@@ -738,7 +738,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'padStart' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -758,7 +758,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'padStart' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -774,7 +774,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'padStart' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -808,7 +808,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'padStart' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -818,7 +818,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 0 }], 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 0 }], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -836,7 +836,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           property: { type: 'Identifier', name: 'padStart' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(1)
@@ -853,7 +853,7 @@ describe('no-unnecessary-string-pad-start-zero rule', () => {
           property: { type: 'Literal', value: 'padStart' },
           computed: true,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)

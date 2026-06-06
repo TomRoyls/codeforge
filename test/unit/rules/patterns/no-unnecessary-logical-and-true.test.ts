@@ -156,14 +156,14 @@ describe('no-unnecessary-logical-and-true rule', () => {
     test('reports for 42 && true (NumericLiteral left)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryLogicalAndTrueRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr({ type: 'NumericLiteral', value: 42 }, '&&', makeBoolLiteral(true)))
+      visitor.BinaryExpression(makeBinaryExpr({ type: 'Literal', value: 42 }, '&&', makeBoolLiteral(true)))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "hello" && true (StringLiteral left)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryLogicalAndTrueRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr({ type: 'StringLiteral', value: 'hello' }, '&&', makeBoolLiteral(true)))
+      visitor.BinaryExpression(makeBinaryExpr({ type: 'Literal', value: 'hello' }, '&&', makeBoolLiteral(true)))
       expect(reports.length).toBe(1)
     })
 
@@ -193,7 +193,7 @@ describe('no-unnecessary-logical-and-true rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryLogicalAndTrueRule.create(context)
       visitor.BinaryExpression(makeBinaryExpr(
-        { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'NumericLiteral', value: 0 }, computed: true },
+        { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 }, computed: true },
         '&&',
         makeBoolLiteral(true),
       ))
@@ -665,14 +665,14 @@ describe('no-unnecessary-logical-and-true rule', () => {
     test('does not report for x && 0 (NumericLiteral right)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryLogicalAndTrueRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr({ type: 'Identifier', name: 'x' }, '&&', { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr({ type: 'Identifier', name: 'x' }, '&&', { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x && "" (StringLiteral right)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryLogicalAndTrueRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr({ type: 'Identifier', name: 'x' }, '&&', { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr({ type: 'Identifier', name: 'x' }, '&&', { type: 'Literal', value: '' }))
       expect(reports.length).toBe(0)
     })
   })

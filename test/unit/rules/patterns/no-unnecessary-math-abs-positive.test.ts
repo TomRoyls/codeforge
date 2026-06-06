@@ -480,7 +480,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
         makeCallNode(
           { type: 'Identifier', name: 'Math' },
           'abs',
-          [{ type: 'NumericLiteral', value: 5 }, { type: 'NumericLiteral', value: 1 }],
+          [{ type: 'Literal', value: 5 }, { type: 'Literal', value: 1 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -494,9 +494,9 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           { type: 'Identifier', name: 'Math' },
           'abs',
           [
-            { type: 'NumericLiteral', value: 5 },
-            { type: 'NumericLiteral', value: 1 },
-            { type: 'NumericLiteral', value: 2 },
+            { type: 'Literal', value: 5 },
+            { type: 'Literal', value: 1 },
+            { type: 'Literal', value: 2 },
           ],
         ),
       )
@@ -507,7 +507,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Math' }, 'ceil', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Math' }, 'ceil', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -516,7 +516,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Math' }, 'floor', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Math' }, 'floor', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -525,7 +525,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Math' }, 'round', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Math' }, 'round', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -534,7 +534,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Math' }, 'max', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Math' }, 'max', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -543,7 +543,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Math' }, 'min', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Math' }, 'min', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -552,7 +552,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Math' }, 'sqrt', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Math' }, 'sqrt', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -561,7 +561,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Math' }, 'pow', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Math' }, 'pow', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -570,7 +570,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'SomeObject' }, 'abs', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'SomeObject' }, 'abs', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -579,7 +579,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'console' }, 'log', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'console' }, 'log', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -651,7 +651,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Number' }, 'abs', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Number' }, 'abs', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -666,7 +666,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Literal', value: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -676,7 +676,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
       visitor.CallExpression(
-        makeCallNode({ type: 'Identifier', name: 'Math' }, 'ABS', [{ type: 'NumericLiteral', value: 5 }]),
+        makeCallNode({ type: 'Identifier', name: 'Math' }, 'ABS', [{ type: 'Literal', value: 5 }]),
       )
       expect(reports.length).toBe(0)
     })
@@ -704,7 +704,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           type: 'MemberExpression',
           property: { type: 'Identifier', name: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -744,7 +744,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -760,7 +760,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -801,7 +801,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -821,7 +821,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -837,7 +837,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -871,7 +871,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })

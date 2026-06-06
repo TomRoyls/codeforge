@@ -119,14 +119,14 @@ describe('no-unnecessary-await-expression rule', () => {
     test('reports await with NumericLiteral argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports await with StringLiteral argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'StringLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports.length).toBe(1)
     })
 
@@ -200,7 +200,7 @@ describe('no-unnecessary-await-expression rule', () => {
     test('reports await with NumericLiteral zero value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports.length).toBe(1)
     })
 
@@ -334,7 +334,7 @@ describe('no-unnecessary-await-expression rule', () => {
     test('literal report message is exactly as defined', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports[0].message).toBe(
         'Unnecessary await of a non-Promise literal value. Remove the await keyword.',
       )
@@ -343,28 +343,28 @@ describe('no-unnecessary-await-expression rule', () => {
     test('literal report message mentions "await"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'StringLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports[0].message).toMatch(/await/)
     })
 
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches input node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      const node = makeAwaitNode({ type: 'NumericLiteral' })
+      const node = makeAwaitNode({ type: 'Literal' })
       visitor.AwaitExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -372,7 +372,7 @@ describe('no-unnecessary-await-expression rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }, 5, 10, 5, 30))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }, 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -380,15 +380,15 @@ describe('no-unnecessary-await-expression rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
-      visitor.AwaitExpression(makeAwaitNode({ type: 'StringLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports.length).toBe(2)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -397,15 +397,15 @@ describe('no-unnecessary-await-expression rule', () => {
     test('all literal reports have same message', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
-      visitor.AwaitExpression(makeAwaitNode({ type: 'StringLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      const node = makeAwaitNode({ type: 'NumericLiteral' })
+      const node = makeAwaitNode({ type: 'Literal' })
       visitor.AwaitExpression(node)
       visitor.AwaitExpression(node)
       visitor.AwaitExpression(node)
@@ -669,7 +669,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryAwaitExpressionRule.create(ctx1)
       const visitor2 = noUnnecessaryAwaitExpressionRule.create(ctx2)
-      visitor1.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor1.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       visitor2.AwaitExpression(makeAwaitNode({ type: 'Identifier', name: 'somePromise' }))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -678,9 +678,9 @@ describe('no-unnecessary-await-expression rule', () => {
     test('visitor accumulates mixed reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       visitor.AwaitExpression(makeAwaitNode({ type: 'Identifier', name: 'somePromise' }))
-      visitor.AwaitExpression(makeAwaitNode({ type: 'StringLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports.length).toBe(2)
     })
 
@@ -689,7 +689,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       visitor.AwaitExpression({
         type: 'AwaitExpression',
-        argument: { type: 'NumericLiteral' },
+        argument: { type: 'Literal' },
       })
       expect(reports.length).toBe(1)
     })
@@ -699,7 +699,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       visitor.AwaitExpression({
         type: 'AwaitExpression',
-        argument: { type: 'NumericLiteral' },
+        argument: { type: 'Literal' },
       })
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
@@ -709,8 +709,8 @@ describe('no-unnecessary-await-expression rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       visitor.AwaitExpression(makeAwaitNode({ type: 'Identifier', name: 'somePromise' }))
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
-      visitor.AwaitExpression(makeAwaitNode({ type: 'StringLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       visitor.AwaitExpression(makeAwaitNode({ type: 'Identifier', name: 'anotherPromise' }))
       visitor.AwaitExpression(makeAwaitNode({ type: 'ArrayExpression', elements: [] }))
       expect(reports.length).toBe(3)
@@ -734,7 +734,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       visitor.AwaitExpression({
         type: 'AwaitExpression',
-        argument: { type: 'NumericLiteral' },
+        argument: { type: 'Literal' },
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -748,7 +748,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       visitor.AwaitExpression({
         type: 'AwaitExpression',
-        argument: { type: 'NumericLiteral' },
+        argument: { type: 'Literal' },
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -759,7 +759,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       visitor.AwaitExpression({
         type: 'AwaitExpression',
-        argument: { type: 'NumericLiteral' },
+        argument: { type: 'Literal' },
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -778,7 +778,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       visitor.AwaitExpression({
         type: 'AwaitExpression',
-        argument: { type: 'NumericLiteral' },
+        argument: { type: 'Literal' },
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -788,7 +788,7 @@ describe('no-unnecessary-await-expression rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }, 10, 4, 10, 25))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }, 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -809,7 +809,7 @@ describe('no-unnecessary-await-expression rule', () => {
     test('reports literal then does not report identifier', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       visitor.AwaitExpression(makeAwaitNode({ type: 'Identifier', name: 'maybePromise' }))
       expect(reports.length).toBe(1)
     })
@@ -819,7 +819,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       visitor.AwaitExpression({
         type: 'AwaitExpression',
-        argument: { type: 'StringLiteral' },
+        argument: { type: 'Literal' },
         loc: makeLoc(2, 5, 2, 15),
         range: [10, 20],
       })
@@ -830,7 +830,7 @@ describe('no-unnecessary-await-expression rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
       for (let i = 0; i < 10; i++) {
-        visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+        visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       }
       expect(reports.length).toBe(10)
     })
@@ -847,9 +847,9 @@ describe('no-unnecessary-await-expression rule', () => {
     test('consecutive invalid then valid then invalid cases', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAwaitExpressionRule.create(context)
-      visitor.AwaitExpression(makeAwaitNode({ type: 'NumericLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       visitor.AwaitExpression(makeAwaitNode({ type: 'Identifier', name: 'x' }))
-      visitor.AwaitExpression(makeAwaitNode({ type: 'StringLiteral' }))
+      visitor.AwaitExpression(makeAwaitNode({ type: 'Literal' }))
       expect(reports.length).toBe(2)
     })
 

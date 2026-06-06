@@ -19,14 +19,14 @@ function createBooleanLiteral(value: boolean): unknown {
 
 function createNumericLiteral(value: number): unknown {
   return {
-    type: 'NumericLiteral',
+    type: 'Literal',
     value,
   }
 }
 
 function createStringLiteral(value: string): unknown {
   return {
-    type: 'StringLiteral',
+    type: 'Literal',
     value,
   }
 }

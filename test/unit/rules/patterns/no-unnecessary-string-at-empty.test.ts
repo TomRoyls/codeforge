@@ -51,7 +51,7 @@ function makeAtCallNodeEmptyString(object: unknown, locStartLine = 1, locStartCo
       object,
       property: { type: 'Identifier', name: 'at' },
     },
-    arguments: [{ type: 'StringLiteral', value: '' }],
+    arguments: [{ type: 'Literal', value: '' }],
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
   }
 }
@@ -147,7 +147,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
     test('reports for arr[0].at("") with computed MemberExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtEmptyRule.create(context)
-      visitor.CallExpression(makeAtCallNodeEmptyString({ type: 'MemberExpression', computed: true, object: { type: 'Identifier', name: 'arr' }, property: { type: 'NumericLiteral', value: 0 } }))
+      visitor.CallExpression(makeAtCallNodeEmptyString({ type: 'MemberExpression', computed: true, object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 } }))
       expect(reports.length).toBe(1)
     })
 
@@ -304,7 +304,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -321,7 +321,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -342,7 +342,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -359,7 +359,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -376,7 +376,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: { start: { line: 7, column: 3 } },
       })
       expect(reports.length).toBe(1)
@@ -395,7 +395,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -424,7 +424,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       })
       expect(reports.length).toBe(0)
     })
@@ -440,7 +440,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'UnaryExpression', operator: '-', argument: { type: 'NumericLiteral', value: 1 } }],
+        arguments: [{ type: 'UnaryExpression', operator: '-', argument: { type: 'Literal', value: 1 } }],
       })
       expect(reports.length).toBe(0)
     })
@@ -456,7 +456,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
       })
       expect(reports.length).toBe(0)
     })
@@ -488,7 +488,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }, { type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: '' }, { type: 'Literal', value: 0 }],
       })
       expect(reports.length).toBe(0)
     })
@@ -504,7 +504,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'a' }],
+        arguments: [{ type: 'Literal', value: 'a' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -520,7 +520,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'hello' }],
+        arguments: [{ type: 'Literal', value: 'hello' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -536,7 +536,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'charAt' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       })
       expect(reports.length).toBe(0)
     })
@@ -552,7 +552,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -568,7 +568,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'slice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       })
       expect(reports.length).toBe(0)
     })
@@ -582,9 +582,9 @@ describe('no-unnecessary-string-at-empty rule', () => {
           type: 'MemberExpression',
           computed: true,
           object: { type: 'Identifier', name: 'str' },
-          property: { type: 'StringLiteral', value: 'at' },
+          property: { type: 'Literal', value: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -595,7 +595,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'at' },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -609,9 +609,9 @@ describe('no-unnecessary-string-at-empty rule', () => {
           type: 'MemberExpression',
           computed: false,
           object: { type: 'Identifier', name: 'str' },
-          property: { type: 'StringLiteral', value: 'at' },
+          property: { type: 'Literal', value: 'at' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -668,14 +668,14 @@ describe('no-unnecessary-string-at-empty rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -738,7 +738,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }],
       })
       expect(reports.length).toBe(0)
     })
@@ -754,7 +754,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'includes' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -769,7 +769,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           computed: false,
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -785,7 +785,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -883,7 +883,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'AT' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -899,7 +899,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'At' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       expect(reports.length).toBe(0)
     })
@@ -938,7 +938,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       })
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -956,7 +956,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       })
       visitor.CallExpression(makeAtCallNodeEmptyString({ type: 'Identifier', name: 'b' }))
       expect(reports.length).toBe(2)
@@ -974,7 +974,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'at' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       })
       visitor.CallExpression({
         type: 'CallExpression',
@@ -984,7 +984,7 @@ describe('no-unnecessary-string-at-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'charAt' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       })
       visitor.CallExpression(makeAtCallNodeEmptyString({ type: 'Identifier', name: 'str' }))
       expect(reports.length).toBe(2)

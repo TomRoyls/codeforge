@@ -66,7 +66,7 @@ function makeCallNode(
 }
 
 function strLit(value: string): { type: string; value: string } {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -154,7 +154,7 @@ describe('no-unnecessary-string-replace-all-empty rule', () => {
     test('reports when second argument is numeric literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringReplaceAllEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'replaceAll', [strLit(''), { type: 'NumericLiteral', value: 42 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'replaceAll', [strLit(''), { type: 'Literal', value: 42 }]))
       expect(reports.length).toBe(1)
     })
 
@@ -434,7 +434,7 @@ describe('no-unnecessary-string-replace-all-empty rule', () => {
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
-          property: { type: 'StringLiteral', value: 'replaceAll' },
+          property: { type: 'Literal', value: 'replaceAll' },
           computed: true,
         },
         arguments: [strLit(''), strLit('x')],
@@ -446,7 +446,7 @@ describe('no-unnecessary-string-replace-all-empty rule', () => {
     test('does not report when first arg is NumericLiteral instead of StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringReplaceAllEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replaceAll', [{ type: 'NumericLiteral', value: 0 }, strLit('x')]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replaceAll', [{ type: 'Literal', value: 0 }, strLit('x')]))
       expect(reports.length).toBe(0)
     })
 

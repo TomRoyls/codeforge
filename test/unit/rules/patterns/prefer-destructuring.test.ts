@@ -55,7 +55,7 @@ function makeVarDeclarator(
 ): unknown {
   const property =
     propType === 'StringLiteral'
-      ? { type: 'StringLiteral', value: propValue ?? propName }
+      ? { type: 'Literal', value: propValue ?? propName }
       : propValue !== undefined
         ? { type: propType, value: propValue }
         : { type: propType, name: propName }
@@ -425,7 +425,7 @@ describe('prefer-destructuring rule', () => {
         init: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'obj' },
-          property: { type: 'StringLiteral', value: 'key' },
+          property: { type: 'Literal', value: 'key' },
           computed: false,
         },
         loc: makeLoc(1, 0, 1, 15),

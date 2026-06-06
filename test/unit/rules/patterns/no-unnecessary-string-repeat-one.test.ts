@@ -127,49 +127,49 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('reports for str.repeat(1) — identifier object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for string literal "hello".repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for template literal `.repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for member expression obj.prop.repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for call expression result getStr().repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports[0].message).toMatch(/repeat/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports[0].message).toBe(
         'str.repeat(1) returns the same string. This call is unnecessary.',
       )
@@ -178,21 +178,21 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -200,7 +200,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -208,23 +208,23 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'repeat', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -233,77 +233,77 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('reports for concatenated string result (a + b).repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for empty string literal "".repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for long string literal.repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'a very long string with many characters' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'a very long string with many characters' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for chained call str.trim().repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'str' }, property: { type: 'Identifier', name: 'trim' } }, arguments: [] }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'str' }, property: { type: 'Identifier', name: 'trim' } }, arguments: [] }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for parenthesized expression.repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'result' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'result' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for computed property access result obj[key].repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'key' }, computed: true }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'key' }, computed: true }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for conditional expression (x ? a : b).repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for array access arr[0].repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'NumericLiteral', value: 0 }, computed: true }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 }, computed: true }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for tagged template literal result.repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof expression result.repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: 'typeof', prefix: true, argument: { type: 'Identifier', name: 'x' } }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: 'typeof', prefix: true, argument: { type: 'Identifier', name: 'x' } }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for this.repeat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
   })
@@ -314,21 +314,21 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('does not report for str.repeat(0) — zero arg', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.repeat(2) — value 2', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.repeat(3) — value 3', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 3 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 3 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -349,21 +349,21 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('does not report for str.repeat(1, 2) — two args', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.padStart(1) — different method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.padEnd(1) — different method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -377,49 +377,49 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('does not report for str.slice(1) — different method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.substring(1) — different method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.charAt(1) — different method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.repeat(-1) — negative value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: -1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: -1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.repeat(0.5) — float value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 0.5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 0.5 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.repeat(100) — large value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 100 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 100 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when arg is StringLiteral "1"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'StringLiteral', value: '1' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: '1' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -475,21 +475,21 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'NumericLiteral', value: 1 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 1 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'NumericLiteral', value: 1 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 1 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'repeat' }, arguments: [{ type: 'NumericLiteral', value: 1 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'repeat' }, arguments: [{ type: 'Literal', value: 1 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -503,7 +503,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'repeat' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -518,7 +518,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -534,7 +534,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -543,7 +543,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('does not report when property name is "Repeat" (capitalized)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'Repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'Repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -558,7 +558,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Identifier', name: 'repeat' },
           computed: true,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -574,14 +574,14 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('does not report for str.repeat with three arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }, { type: 'NumericLiteral', value: 3 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when arg is a BinaryExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'BinaryExpression', operator: '+', left: { type: 'NumericLiteral', value: 0 }, right: { type: 'NumericLiteral', value: 1 } }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'BinaryExpression', operator: '+', left: { type: 'Literal', value: 0 }, right: { type: 'Literal', value: 1 } }]))
       expect(reports.length).toBe(0)
     })
 
@@ -646,8 +646,8 @@ describe('no-unnecessary-string-repeat-one rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryStringRepeatOneRule.create(ctx1)
       const visitor2 = noUnnecessaryStringRepeatOneRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 2 }]))
+      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 2 }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -655,9 +655,9 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 2 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -672,7 +672,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Identifier', name: 'repeat' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -689,7 +689,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Identifier', name: 'repeat' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -699,11 +699,11 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 2 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -731,7 +731,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Identifier', name: 'repeat' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -752,7 +752,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Identifier', name: 'repeat' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -769,7 +769,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Identifier', name: 'repeat' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -780,7 +780,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }])
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -804,7 +804,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Identifier', name: 'repeat' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -814,7 +814,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }], 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -832,7 +832,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Identifier', name: 'repeat' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(1)
@@ -849,7 +849,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
           property: { type: 'Literal', value: 'repeat' },
           computed: true,
         },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -858,8 +858,8 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'repeat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'repeat', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'repeat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -888,7 +888,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('does not report when arg is UnaryExpression +1', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'UnaryExpression', operator: '+', prefix: true, argument: { type: 'NumericLiteral', value: 1 } }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'UnaryExpression', operator: '+', prefix: true, argument: { type: 'Literal', value: 1 } }]))
       expect(reports.length).toBe(0)
     })
   })

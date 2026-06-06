@@ -874,7 +874,7 @@ describe('diff() complex scenarios', () => {
           value: 'const',
           children: [
             { type: 'Identifier', value: 'x' },
-            { type: 'NumericLiteral', value: '10' },
+            { type: 'Literal', value: '10' },
           ],
         },
         {
@@ -895,7 +895,7 @@ describe('diff() complex scenarios', () => {
           value: 'const',
           children: [
             { type: 'Identifier', value: 'x' },
-            { type: 'NumericLiteral', value: '20' }, // changed
+            { type: 'Literal', value: '20' }, // changed
           ],
         },
         {

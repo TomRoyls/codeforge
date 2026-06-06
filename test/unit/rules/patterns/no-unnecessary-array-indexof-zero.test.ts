@@ -130,70 +130,70 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('reports for arr.indexOf(0) with Identifier object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for [].indexOf(0) with empty ArrayExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for [1, 2, 3].indexOf(0) with populated ArrayExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }, { type: 'NumericLiteral', value: 3 }]), 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }]), 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0, 1) with fromIndex argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0, 0) with zero fromIndex', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0, n) with Identifier fromIndex', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'Identifier', name: 'n' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'Identifier', name: 'n' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for getArr().indexOf(0) with CallExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getArr' }, arguments: [] }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getArr' }, arguments: [] }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for obj.arr.indexOf(0) with MemberExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'arr' } }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'arr' } }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions indexOf', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toMatch(/indexOf/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toBe(
         'Unnecessary .indexOf(0). Consider using .includes(0) for a boolean check instead of comparing the index.',
       )
@@ -202,21 +202,21 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }])
+      const node = makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -224,7 +224,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -232,23 +232,23 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr2' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr2' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('reports for string variable str.indexOf(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
@@ -257,58 +257,58 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
       const nested = { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'nested' } }
       const deep = { type: 'MemberExpression', object: nested, property: { type: 'Identifier', name: 'arr' } }
-      visitor.CallExpression(makeCallNode(deep, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(deep, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0) with various Identifier names', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'list' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'items' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'data' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'list' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'items' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'data' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(3)
     })
 
     test('reports for arr.indexOf(0) with extra properties on argument node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0, raw: '0', leadingComments: [] }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0, raw: '0', leadingComments: [] }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fn().indexOf(0) with function call result', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for str.indexOf(0) with StringLiteral object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for obj.indexOf(0) with ObjectExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0) with ArrowFunctionExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -317,21 +317,21 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('reports for arr.indexOf(0) with three arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 1 }, { type: 'Identifier', name: 'extra' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }, { type: 'Identifier', name: 'extra' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for [null, undefined].indexOf(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([null, { type: 'Identifier', name: 'undefined' }]), 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([null, { type: 'Identifier', name: 'undefined' }]), 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for [true, false].indexOf(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'BooleanLiteral', value: true }, { type: 'BooleanLiteral', value: false }]), 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'BooleanLiteral', value: true }, { type: 'BooleanLiteral', value: false }]), 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
@@ -346,7 +346,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           property: { type: 'Identifier', name: 'indexOf' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(1)
@@ -355,42 +355,42 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('reports for [...other].indexOf(0) with SpreadElement in array', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'other' } }]), 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'other' } }]), 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0, getStart()) with CallExpression fromIndex', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'CallExpression', callee: { type: 'Identifier', name: 'getStart' }, arguments: [] }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'CallExpression', callee: { type: 'Identifier', name: 'getStart' }, arguments: [] }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0, obj.start) with MemberExpression fromIndex', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'start' } }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'start' } }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0, 5) with numeric fromIndex', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0) with TemplateLiteral as fromIndex', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'TemplateLiteral', quasis: [], expressions: [] }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'TemplateLiteral', quasis: [], expressions: [] }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.indexOf(0) with ArrowFunction as fromIndex', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }, { type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }, { type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }]))
       expect(reports.length).toBe(1)
     })
   })
@@ -401,7 +401,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('does not report for arr.indexOf(1) — not zero', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -415,28 +415,28 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('does not report for arr.includes(0) — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'includes', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'includes', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.lastIndexOf(0) — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'lastIndexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'lastIndexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.findIndex(x => x === 0) — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'findIndex', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'findIndex', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.indexOf("0") — string not number', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -450,14 +450,14 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('does not report for arr.indexOf(42) — different number', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 42 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 42 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.indexOf(0.5) — non-zero value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0.5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0.5 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -541,21 +541,21 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -569,7 +569,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Literal', value: 'indexOf' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -578,14 +578,14 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('does not report when property name is "indexof" (lowercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexof', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexof', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when property name is "INDEXOF" (uppercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'INDEXOF', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'INDEXOF', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -633,7 +633,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -649,7 +649,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: null,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -678,8 +678,8 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryArrayIndexofZeroRule.create(ctx1)
       const visitor2 = noUnnecessaryArrayIndexofZeroRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 1 }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -687,9 +687,9 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('visitor accumulates reports correctly with mixed calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -703,7 +703,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -719,7 +719,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -729,11 +729,11 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'includes', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'lastIndexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'includes', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'lastIndexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -760,7 +760,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -780,7 +780,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -796,7 +796,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -807,7 +807,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }])
+      const node = makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }])
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -830,7 +830,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -840,7 +840,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexofZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }], 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [{ type: 'Literal', value: 0 }], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -858,7 +858,7 @@ describe('no-unnecessary-array-indexof-zero rule', () => {
           property: { type: 'Literal', value: 'indexOf' },
           computed: true,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)

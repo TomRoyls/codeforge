@@ -63,7 +63,7 @@ function makeBoolLiteral(value: boolean, line = 1, column = 0): unknown {
 
 function makeStringLiteral(value: string, line = 1, column = 0): unknown {
   return {
-    type: 'StringLiteral',
+    type: 'Literal',
     value,
     loc: makeLoc(line, column, line, column + value.length + 2),
   }
@@ -71,7 +71,7 @@ function makeStringLiteral(value: string, line = 1, column = 0): unknown {
 
 function makeNumericLiteral(value: number, line = 1, column = 0): unknown {
   return {
-    type: 'NumericLiteral',
+    type: 'Literal',
     value,
     loc: makeLoc(line, column, line, column + String(value).length),
   }
@@ -763,14 +763,14 @@ describe('no-misleading-assertion rule', () => {
     test('StringLiteral without value property does not report', () => {
       const { context, reports } = createMockContext()
       const visitor = noMisleadingAssertionRule.create(context)
-      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'StringLiteral', loc: makeLoc(1, 0, 1, 2) }]))
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', loc: makeLoc(1, 0, 1, 2) }]))
       expect(reports.length).toBe(0)
     })
 
     test('NumericLiteral without value property does not report', () => {
       const { context, reports } = createMockContext()
       const visitor = noMisleadingAssertionRule.create(context)
-      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'NumericLiteral', loc: makeLoc(1, 0, 1, 1) }]))
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', loc: makeLoc(1, 0, 1, 1) }]))
       expect(reports.length).toBe(0)
     })
 
@@ -815,21 +815,21 @@ describe('no-misleading-assertion rule', () => {
     test('handles node with NaN as NumericLiteral value', () => {
       const { context, reports } = createMockContext()
       const visitor = noMisleadingAssertionRule.create(context)
-      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'NumericLiteral', value: NaN }]))
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', value: NaN }]))
       expect(reports.length).toBe(0)
     })
 
     test('handles node with Infinity as NumericLiteral value', () => {
       const { context, reports } = createMockContext()
       const visitor = noMisleadingAssertionRule.create(context)
-      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'NumericLiteral', value: Infinity }]))
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', value: Infinity }]))
       expect(reports.length).toBe(0)
     })
 
     test('StringLiteral with undefined value does not report', () => {
       const { context, reports } = createMockContext()
       const visitor = noMisleadingAssertionRule.create(context)
-      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'StringLiteral', value: undefined }]))
+      visitor.CallExpression(makeCallExpr('assertTrue', [{ type: 'Literal', value: undefined }]))
       expect(reports.length).toBe(0)
     })
 

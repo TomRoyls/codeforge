@@ -126,119 +126,119 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('reports for "hello".startsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "hello".endsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for str.startsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for str.endsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "".startsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "".endsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for template literal .startsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for template literal .endsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for member expression .startsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'str' } }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'str' } }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for member expression .endsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'str' } }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'str' } }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports with second argument — str.startsWith("", 0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }, { type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports with second argument — str.endsWith("", 5)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }, { type: 'Literal', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports with position argument as identifier — str.startsWith("", pos)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }, { type: 'Identifier', name: 'pos' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }, { type: 'Identifier', name: 'pos' }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions unnecessary check', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/Unnecessary/)
     })
 
     test('report message for startsWith mentions .startsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/\.startsWith\(""\)/)
     })
 
     test('report message for endsWith mentions .endsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/\.endsWith\(""\)/)
     })
 
     test('report message is exactly as defined for startsWith', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toBe(
         'Unnecessary .startsWith("") check. Every string starts and ends with an empty string.',
       )
@@ -247,7 +247,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('report message is exactly as defined for endsWith', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toBe(
         'Unnecessary .endsWith("") check. Every string starts and ends with an empty string.',
       )
@@ -256,21 +256,21 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -278,7 +278,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -286,23 +286,23 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('accumulates reports across multiple startsWith calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
     test('accumulates reports across startsWith and endsWith calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -311,35 +311,35 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('reports for call expression object .startsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for call expression object .endsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Literal object .startsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Literal object .endsWith("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'world' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'world' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports with three arguments — str.startsWith("", 0, true)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }, { type: 'Literal', value: 0 }, { type: 'Literal', value: true }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 0 }, { type: 'Literal', value: true }]))
       expect(reports.length).toBe(1)
     })
   })
@@ -350,14 +350,14 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('does not report for str.startsWith("h")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: 'h' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: 'h' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.endsWith("o")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: 'o' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: 'o' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -378,28 +378,28 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('does not report for str.includes("") — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.indexOf("") — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.match("") — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.search("") — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'search', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'search', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -476,21 +476,21 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -504,7 +504,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'startsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -519,7 +519,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -535,7 +535,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -607,7 +607,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('does not report when property name is "startswith" (lowercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startswith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startswith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -680,8 +680,8 @@ describe('no-unnecessary-string-starts-empty rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryStringStartsEmptyRule.create(ctx1)
       const visitor2 = noUnnecessaryStringStartsEmptyRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: 'h' }]))
+      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: 'h' }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -689,9 +689,9 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: 'h' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: 'h' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
@@ -705,7 +705,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'startsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -721,7 +721,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'startsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -731,11 +731,11 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: 'h' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: 'o' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: 'h' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: 'o' }]))
       expect(reports.length).toBe(2)
     })
 
@@ -762,7 +762,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'startsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -782,7 +782,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'startsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -798,7 +798,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'startsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -809,7 +809,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }])
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -832,7 +832,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'startsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -842,7 +842,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringStartsEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }], 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -860,7 +860,7 @@ describe('no-unnecessary-string-starts-empty rule', () => {
           property: { type: 'Identifier', name: 'startsWith' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(1)

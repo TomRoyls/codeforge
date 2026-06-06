@@ -500,7 +500,7 @@ describe('no-unnecessary-array-find-last-index-literal rule', () => {
     test('does not report for () => 1 — NumericLiteral body', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFindLastIndexLiteralRule.create(context)
-      const arrow = { type: 'ArrowFunctionExpression', params: [], body: { type: 'NumericLiteral', value: 1 } }
+      const arrow = { type: 'ArrowFunctionExpression', params: [], body: { type: 'Literal', value: 1 } }
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'findLastIndex', [arrow]))
       expect(reports.length).toBe(0)
     })
@@ -508,7 +508,7 @@ describe('no-unnecessary-array-find-last-index-literal rule', () => {
     test('does not report for () => "true" — StringLiteral body', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFindLastIndexLiteralRule.create(context)
-      const arrow = { type: 'ArrowFunctionExpression', params: [], body: { type: 'StringLiteral', value: 'true' } }
+      const arrow = { type: 'ArrowFunctionExpression', params: [], body: { type: 'Literal', value: 'true' } }
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'findLastIndex', [arrow]))
       expect(reports.length).toBe(0)
     })

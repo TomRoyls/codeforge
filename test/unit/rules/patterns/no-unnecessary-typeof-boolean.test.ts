@@ -74,7 +74,7 @@ function makeBooleanLiteral(value: boolean): unknown {
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeIdentifier(name: string): unknown {
@@ -515,7 +515,7 @@ describe('no-unnecessary-typeof-boolean rule', () => {
     test('does not report for typeof 42 === "boolean" (NumericLiteral argument)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofBooleanRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('===', makeTypeof({ type: 'NumericLiteral', value: 42 }), makeStringLiteral('boolean')))
+      visitor.BinaryExpression(makeBinaryExpr('===', makeTypeof({ type: 'Literal', value: 42 }), makeStringLiteral('boolean')))
       expect(reports.length).toBe(0)
     })
 

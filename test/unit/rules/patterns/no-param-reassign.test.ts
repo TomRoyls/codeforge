@@ -2877,7 +2877,7 @@ describe('no-param-reassign rule', () => {
           {
             type: 'MemberExpression',
             object: createIdentifier('arr'),
-            property: { type: 'NumericLiteral', value: 0 },
+            property: { type: 'Literal', value: 0 },
             computed: true,
           },
           { type: 'Literal', value: 42 },

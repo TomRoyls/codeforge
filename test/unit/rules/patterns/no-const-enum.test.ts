@@ -872,8 +872,8 @@ describe('no-const-enum', () => {
       id: { type: 'Identifier', name: 'StrKeys' },
       const: true,
       members: [
-        { type: 'TSEnumMember', id: { type: 'StringLiteral', value: 'key-a' } },
-        { type: 'TSEnumMember', id: { type: 'StringLiteral', value: 'key-b' } },
+        { type: 'TSEnumMember', id: { type: 'Literal', value: 'key-a' } },
+        { type: 'TSEnumMember', id: { type: 'Literal', value: 'key-b' } },
       ],
       loc: { start: { line: 1, column: 0 }, end: { line: 3, column: 1 } },
     }

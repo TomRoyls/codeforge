@@ -50,7 +50,7 @@ function makeStringLiteralNode(
   locEndCol = 5,
 ): unknown {
   return {
-    type: 'StringLiteral',
+    type: 'Literal',
     value,
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
     _parent: null,
@@ -459,35 +459,35 @@ describe('no-multi-str rule', () => {
     test('does not report when value property is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: null, loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: null, loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is a number', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 42, loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: 42, loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is boolean true', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: true, loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: true, loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is an array', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: ['a', 'b'], loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: ['a', 'b'], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -539,7 +539,7 @@ describe('no-multi-str rule', () => {
     test('node without loc still reports', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      const node = { type: 'StringLiteral', value: 'a\\\nb', _parent: null }
+      const node = { type: 'Literal', value: 'a\\\nb', _parent: null }
       visitor.Literal(node)
       expect(reports.length).toBe(1)
     })
@@ -547,7 +547,7 @@ describe('no-multi-str rule', () => {
     test('node without loc reports with default location', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      const node = { type: 'StringLiteral', value: 'a\\\nb', _parent: null }
+      const node = { type: 'Literal', value: 'a\\\nb', _parent: null }
       visitor.Literal(node)
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
@@ -605,14 +605,14 @@ describe('no-multi-str rule', () => {
     test('handles node with empty loc object', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 'a\\\nb', loc: {}, _parent: null })
+      visitor.Literal({ type: 'Literal', value: 'a\\\nb', loc: {}, _parent: null })
       expect(reports.length).toBe(1)
     })
 
     test('handles node with partial loc (missing end)', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 'a\\\nb', loc: { start: { line: 3, column: 5 } }, _parent: null })
+      visitor.Literal({ type: 'Literal', value: 'a\\\nb', loc: { start: { line: 3, column: 5 } }, _parent: null })
       expect(reports.length).toBe(1)
       expect(reports[0].loc?.start.line).toBe(3)
       expect(reports[0].loc?.start.column).toBe(5)
@@ -637,7 +637,7 @@ describe('no-multi-str rule', () => {
     test('handles node with _parent property set to object', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 'a\\\nb', loc: makeLoc(1, 0, 1, 5), _parent: { type: 'VariableDeclarator' } })
+      visitor.Literal({ type: 'Literal', value: 'a\\\nb', loc: makeLoc(1, 0, 1, 5), _parent: { type: 'VariableDeclarator' } })
       expect(reports.length).toBe(1)
     })
 
@@ -653,21 +653,21 @@ describe('no-multi-str rule', () => {
     test('node with raw property alongside value still reports', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 'a\\\nb', raw: '"a\\\nb"', loc: makeLoc(1, 0, 1, 5), _parent: null })
+      visitor.Literal({ type: 'Literal', value: 'a\\\nb', raw: '"a\\\nb"', loc: makeLoc(1, 0, 1, 5), _parent: null })
       expect(reports.length).toBe(1)
     })
 
     test('does not report when only raw contains backslash-newline but value does not', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 'ab', raw: '"a\\\nb"', loc: makeLoc(1, 0, 1, 5), _parent: null })
+      visitor.Literal({ type: 'Literal', value: 'ab', raw: '"a\\\nb"', loc: makeLoc(1, 0, 1, 5), _parent: null })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is set to boolean false', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: false, loc: makeLoc(1, 0, 1, 5), _parent: null })
+      visitor.Literal({ type: 'Literal', value: false, loc: makeLoc(1, 0, 1, 5), _parent: null })
       expect(reports.length).toBe(0)
     })
 
@@ -684,7 +684,7 @@ describe('no-multi-str rule', () => {
     test('does not report when value is an object', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: { toString: () => 'a' }, loc: makeLoc(1, 0, 1, 5), _parent: null })
+      visitor.Literal({ type: 'Literal', value: { toString: () => 'a' }, loc: makeLoc(1, 0, 1, 5), _parent: null })
       expect(reports.length).toBe(0)
     })
 
@@ -726,21 +726,21 @@ describe('no-multi-str rule', () => {
     test('does not crash with Symbol as value', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      expect(() => visitor.Literal({ type: 'StringLiteral', value: Symbol('test'), loc: makeLoc(1, 0, 1, 5), _parent: null })).not.toThrow()
+      expect(() => visitor.Literal({ type: 'Literal', value: Symbol('test'), loc: makeLoc(1, 0, 1, 5), _parent: null })).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('does not crash with function as value', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      expect(() => visitor.Literal({ type: 'StringLiteral', value: () => 'test', loc: makeLoc(1, 0, 1, 5), _parent: null })).not.toThrow()
+      expect(() => visitor.Literal({ type: 'Literal', value: () => 'test', loc: makeLoc(1, 0, 1, 5), _parent: null })).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('handles undefined value gracefully', () => {
       const { context, reports } = createMockContext()
       const visitor = noMultiStrRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: undefined, loc: makeLoc(1, 0, 1, 5), _parent: null })
+      visitor.Literal({ type: 'Literal', value: undefined, loc: makeLoc(1, 0, 1, 5), _parent: null })
       expect(reports.length).toBe(0)
     })
 

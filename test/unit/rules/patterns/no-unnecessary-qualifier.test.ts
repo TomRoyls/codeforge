@@ -3034,7 +3034,7 @@ describe('no-unnecessary-qualifier rule', () => {
       const node = {
         type: 'MemberExpression',
         object: { type: 'Identifier', name: 'A' },
-        property: { type: 'NumericLiteral', value: 0 },
+        property: { type: 'Literal', value: 0 },
         computed: false,
         optional: false,
       }

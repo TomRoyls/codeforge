@@ -124,84 +124,84 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('reports for Math.floor(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 1 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 1 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(5)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(-1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: -1 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: -1 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(-3)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: -3 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: -3 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(100)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 100 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 100 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(42)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 42 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(999999)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 999999 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 999999 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(0x10) — hex integer value 16', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 0x10 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 0x10 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(1e3) — scientific notation value 1000', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 1e3 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 1e3 }))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions Math.floor', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
       expect(reports[0].message).toMatch(/Math\.floor/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
       expect(reports[0].message).toBe(
         'Unnecessary Math.floor() on an integer literal. Math.floor(n) where n is an integer returns n.',
       )
@@ -210,21 +210,21 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      const node = makeMathFloorNode({ type: 'NumericLiteral', value: 5 })
+      const node = makeMathFloorNode({ type: 'Literal', value: 5 })
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -232,7 +232,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }, 5, 10, 5, 30))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }, 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -240,65 +240,65 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 10 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 10 }))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 10 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 10 }))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('reports for Math.floor(2) — small positive integer', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 2 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 2 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(-100) — large negative integer', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: -100 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: -100 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(2147483647) — max 32-bit integer', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 2147483647 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 2147483647 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(1.0) — float representation of integer', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 1.0 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 1.0 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(0.0) — float representation of zero', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 0.0 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 0.0 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Math.floor(-0) — negative zero is still integer', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: -0 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: -0 }))
       expect(reports.length).toBe(1)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -311,28 +311,28 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('does not report for Math.floor(3.14) — float literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 3.14 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for Math.floor(0.5) — float literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 0.5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 0.5 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for Math.floor(-1.5) — negative float', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: -1.5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: -1.5 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for Math.floor(2.718) — float literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 2.718 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 2.718 }))
       expect(reports.length).toBe(0)
     })
 
@@ -353,7 +353,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'ceil' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -369,7 +369,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'round' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -385,7 +385,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'abs' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -401,7 +401,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'max' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -417,7 +417,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'min' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -449,7 +449,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'foo' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -465,7 +465,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Obj' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -477,7 +477,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'floor' },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -509,7 +509,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }, { type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 5 }, { type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 18),
       })
       expect(reports.length).toBe(0)
@@ -525,7 +525,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }, { type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }],
+        arguments: [{ type: 'Literal', value: 5 }, { type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }],
         loc: makeLoc(1, 0, 1, 22),
       })
       expect(reports.length).toBe(0)
@@ -611,7 +611,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Literal', value: 'test' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -627,7 +627,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -643,7 +643,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Literal', value: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -659,7 +659,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'Floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -723,7 +723,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           type: 'MemberExpression',
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -739,7 +739,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: null,
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -754,7 +754,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'Math' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -770,7 +770,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: null,
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -810,7 +810,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('does not report when NumericLiteral value is NaN', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: NaN }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: NaN }))
       expect(reports.length).toBe(0)
     })
 
@@ -824,8 +824,8 @@ describe('no-unnecessary-math-floor-integer rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryMathFloorIntegerRule.create(ctx1)
       const visitor2 = noUnnecessaryMathFloorIntegerRule.create(ctx2)
-      visitor1.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
-      visitor2.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 3.14 }))
+      visitor1.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
+      visitor2.CallExpression(makeMathFloorNode({ type: 'Literal', value: 3.14 }))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -833,9 +833,9 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('visitor accumulates reports correctly — mixed valid/invalid', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 3.14 }))
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 10 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 3.14 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 10 }))
       expect(reports.length).toBe(2)
     })
 
@@ -849,7 +849,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -865,7 +865,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -875,11 +875,11 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('mixed valid/invalid count correctly — multiple patterns', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 3.14 }))
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 3.14 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
       visitor.CallExpression(makeMathFloorNode({ type: 'Identifier', name: 'x' }))
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 0 }))
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 2.5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 0 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 2.5 }))
       expect(reports.length).toBe(2)
     })
 
@@ -906,7 +906,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 16),
         range: [0, 16],
         extra: true,
@@ -926,7 +926,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -942,7 +942,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -953,7 +953,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      const node = makeMathFloorNode({ type: 'NumericLiteral', value: 5 })
+      const node = makeMathFloorNode({ type: 'Literal', value: 5 })
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -976,7 +976,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'floor' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 16),
         _parent: {},
       })
@@ -986,7 +986,7 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }, 10, 4, 10, 25))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }, 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -996,8 +996,8 @@ describe('no-unnecessary-math-floor-integer rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathFloorIntegerRule.create(context)
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 5 }))
-      visitor.CallExpression(makeMathFloorNode({ type: 'NumericLiteral', value: 10 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 5 }))
+      visitor.CallExpression(makeMathFloorNode({ type: 'Literal', value: 10 }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

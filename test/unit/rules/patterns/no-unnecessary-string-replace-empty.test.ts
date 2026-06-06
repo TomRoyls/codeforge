@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeStrLit(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -452,7 +452,7 @@ describe('no-unnecessary-string-replace-empty rule', () => {
     test('does not report when 2nd arg is NumericLiteral (not StringLiteral)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringReplaceEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replace', [makeStrLit('a'), { type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replace', [makeStrLit('a'), { type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 

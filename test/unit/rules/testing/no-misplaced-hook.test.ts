@@ -43,7 +43,7 @@ function createDescribeCallNode(describeName: string, line = 1, column = 0): unk
     type: 'CallExpression',
     callee: { type: 'Identifier', name: describeName },
     arguments: [
-      { type: 'StringLiteral', value: 'test suite' },
+      { type: 'Literal', value: 'test suite' },
       { type: 'ArrowFunctionExpression', body: { type: 'BlockStatement', body: [] } },
     ],
     loc: { start: { line, column }, end: { line, column: column + 30 } },
@@ -59,7 +59,7 @@ function createMemberDescribeCallNode(describeName: string, method: string, line
       property: { type: 'Identifier', name: method },
     },
     arguments: [
-      { type: 'StringLiteral', value: 'test suite' },
+      { type: 'Literal', value: 'test suite' },
       { type: 'ArrowFunctionExpression', body: { type: 'BlockStatement', body: [] } },
     ],
     loc: { start: { line, column }, end: { line, column: column + 40 } },

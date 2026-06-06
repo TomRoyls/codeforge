@@ -81,11 +81,11 @@ function makeCallExpr(calleeName: string, args: unknown[] = []): unknown {
 }
 
 function makeNumberLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====

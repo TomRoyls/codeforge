@@ -70,7 +70,7 @@ function makeTypeof(arg: unknown): unknown {
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeLiteral(value: unknown): unknown {

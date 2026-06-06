@@ -157,14 +157,14 @@ describe('no-unnecessary-string-constructor rule', () => {
     test('reports String with StringLiteral type node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorRule.create(context)
-      visitor.CallExpression(makeStringCallNode({ type: 'StringLiteral', value: 'test' }))
+      visitor.CallExpression(makeStringCallNode({ type: 'Literal', value: 'test' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports String with StringLiteral type and empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorRule.create(context)
-      visitor.CallExpression(makeStringCallNode({ type: 'StringLiteral', value: '' }))
+      visitor.CallExpression(makeStringCallNode({ type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
@@ -315,21 +315,21 @@ describe('no-unnecessary-string-constructor rule', () => {
     test('reports String(StringLiteral) with non-ASCII string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorRule.create(context)
-      visitor.CallExpression(makeStringCallNode({ type: 'StringLiteral', value: '日本語' }))
+      visitor.CallExpression(makeStringCallNode({ type: 'Literal', value: '日本語' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports String(StringLiteral) with emoji string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorRule.create(context)
-      visitor.CallExpression(makeStringCallNode({ type: 'StringLiteral', value: '🚀🔥' }))
+      visitor.CallExpression(makeStringCallNode({ type: 'Literal', value: '🚀🔥' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports String(StringLiteral) with single character', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorRule.create(context)
-      visitor.CallExpression(makeStringCallNode({ type: 'StringLiteral', value: 'x' }))
+      visitor.CallExpression(makeStringCallNode({ type: 'Literal', value: 'x' }))
       expect(reports.length).toBe(1)
     })
   })

@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function numLit(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -138,14 +138,14 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
     test('reports for single-character string .repeat(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'x' }, 'repeat', [numLit(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'x' }, 'repeat', [numLit(0)]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for empty string .repeat(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '' }, 'repeat', [numLit(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'repeat', [numLit(0)]))
       expect(reports.length).toBe(1)
     })
 
@@ -208,7 +208,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'StringLiteral', value: 'a' }, alternate: { type: 'StringLiteral', value: 'b' } },
+        { type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 'a' }, alternate: { type: 'Literal', value: 'b' } },
         'repeat',
         [numLit(0)],
       ))
@@ -265,7 +265,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [numLit(0)]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'repeat', [numLit(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'repeat', [numLit(0)]))
       expect(reports.length).toBe(2)
     })
 
@@ -273,7 +273,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [numLit(0)]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'repeat', [numLit(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'repeat', [numLit(0)]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
@@ -292,7 +292,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'StringLiteral', value: 'fallback' } },
+        { type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'Literal', value: 'fallback' } },
         'repeat',
         [numLit(0)],
       ))
@@ -303,7 +303,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'ParenthesizedExpression', expression: { type: 'StringLiteral', value: 'x' } },
+        { type: 'ParenthesizedExpression', expression: { type: 'Literal', value: 'x' } },
         'repeat',
         [numLit(0)],
       ))
@@ -369,7 +369,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'StringLiteral', value: 'b' }] },
+        { type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'Literal', value: 'b' }] },
         'repeat',
         [numLit(0)],
       ))
@@ -441,7 +441,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'StringLiteral', value: 'a very long string that goes on and on' },
+        { type: 'Literal', value: 'a very long string that goes on and on' },
         'repeat',
         [numLit(0)],
       ))
@@ -463,7 +463,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'YieldExpression', argument: { type: 'StringLiteral', value: 'yielded' } },
+        { type: 'YieldExpression', argument: { type: 'Literal', value: 'yielded' } },
         'repeat',
         [numLit(0)],
       ))
@@ -474,7 +474,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'AssignmentExpression', operator: '=', left: { type: 'Identifier', name: 'x' }, right: { type: 'StringLiteral', value: 'hello' } },
+        { type: 'AssignmentExpression', operator: '=', left: { type: 'Identifier', name: 'x' }, right: { type: 'Literal', value: 'hello' } },
         'repeat',
         [numLit(0)],
       ))
@@ -766,7 +766,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
     test('does not report when argument is StringLiteral "0"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
   })
@@ -790,7 +790,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [numLit(0)]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [numLit(1)]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'x' }, 'repeat', [numLit(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'x' }, 'repeat', [numLit(0)]))
       expect(reports.length).toBe(2)
     })
 
@@ -833,7 +833,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [numLit(1)]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [numLit(0)]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'padStart', [numLit(0)]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'x' }, 'repeat', [numLit(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'x' }, 'repeat', [numLit(0)]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [numLit(3)]))
       expect(reports.length).toBe(2)
     })
@@ -952,7 +952,7 @@ describe('no-unnecessary-string-repeat-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'repeat', [numLit(0)]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'repeat', [numLit(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'repeat', [numLit(0)]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

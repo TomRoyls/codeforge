@@ -65,11 +65,11 @@ function makeIdentifier(name: string): unknown {
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeNumericLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeBooleanLiteral(value: boolean): unknown {

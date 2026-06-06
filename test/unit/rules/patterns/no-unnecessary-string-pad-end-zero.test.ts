@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeNumericLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -361,7 +361,7 @@ describe('no-unnecessary-string-pad-end-zero rule', () => {
     test('does not report for str.padEnd(0, "x") — two args', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadEndZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [makeNumericLiteral(0), { type: 'StringLiteral', value: 'x' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [makeNumericLiteral(0), { type: 'Literal', value: 'x' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -600,7 +600,7 @@ describe('no-unnecessary-string-pad-end-zero rule', () => {
     test('does not report when arg is StringLiteral with value "0"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadEndZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -635,14 +635,14 @@ describe('no-unnecessary-string-pad-end-zero rule', () => {
     test('does not report for three arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadEndZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [makeNumericLiteral(0), { type: 'StringLiteral', value: 'x' }, { type: 'Identifier', name: 'y' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [makeNumericLiteral(0), { type: 'Literal', value: 'x' }, { type: 'Identifier', name: 'y' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for four arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadEndZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [makeNumericLiteral(0), { type: 'StringLiteral', value: 'a' }, { type: 'StringLiteral', value: 'b' }, { type: 'Identifier', name: 'c' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [makeNumericLiteral(0), { type: 'Literal', value: 'a' }, { type: 'Literal', value: 'b' }, { type: 'Identifier', name: 'c' }]))
       expect(reports.length).toBe(0)
     })
 

@@ -69,7 +69,7 @@ function createTestCall(funcName: string, callback: unknown, line = 1, column = 
   return {
     type: 'CallExpression',
     callee: { type: 'Identifier', name: funcName },
-    arguments: [{ type: 'StringLiteral', value: 'test name' }, callback],
+    arguments: [{ type: 'Literal', value: 'test name' }, callback],
     loc: { start: { line, column }, end: { line, column: column + 40 } },
   }
 }
@@ -893,7 +893,7 @@ describe('no-misused-async', () => {
     visitor.CallExpression({
       type: 'CallExpression',
       callee: { type: 'Identifier', name: 'test' },
-      arguments: [{ type: 'StringLiteral', value: 'test name' }, { type: 'Literal', value: 42 }],
+      arguments: [{ type: 'Literal', value: 'test name' }, { type: 'Literal', value: 42 }],
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
     })
     expect(reports).toHaveLength(0)
@@ -909,7 +909,7 @@ describe('no-misused-async', () => {
         object: { type: 'Identifier', name: 'test' },
         property: { type: 'Identifier', name: 'only' },
       },
-      arguments: [{ type: 'StringLiteral', value: 'test name' }, createAsyncCallbackWithoutAwait()],
+      arguments: [{ type: 'Literal', value: 'test name' }, createAsyncCallbackWithoutAwait()],
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 50 } },
     })
     expect(reports).toHaveLength(1)
@@ -921,7 +921,7 @@ describe('no-misused-async', () => {
     visitor.CallExpression({
       type: 'CallExpression',
       callee: { type: 'Identifier', name: 'test' },
-      arguments: [{ type: 'StringLiteral', value: 'test name' }, null],
+      arguments: [{ type: 'Literal', value: 'test name' }, null],
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
     })
     expect(reports).toHaveLength(0)
@@ -1135,7 +1135,7 @@ describe('no-misused-async', () => {
         object: { type: 'Identifier', name: 'test' },
         property: { type: 'Identifier', name: 'skip' },
       },
-      arguments: [{ type: 'StringLiteral', value: 'test name' }, createAsyncCallbackWithoutAwait()],
+      arguments: [{ type: 'Literal', value: 'test name' }, createAsyncCallbackWithoutAwait()],
       loc: { start: { line: 7, column: 4 }, end: { line: 7, column: 50 } },
     })
     expect(reports).toHaveLength(1)
@@ -1148,7 +1148,7 @@ describe('no-misused-async', () => {
     visitor.CallExpression({
       type: 'CallExpression',
       callee: { type: 'Identifier', name: 'test' },
-      arguments: [{ type: 'StringLiteral', value: 'test name' }, createAsyncCallbackWithoutAwait()],
+      arguments: [{ type: 'Literal', value: 'test name' }, createAsyncCallbackWithoutAwait()],
     })
     expect(reports).toHaveLength(1)
     expect(reports[0].loc?.start.line).toBe(1)

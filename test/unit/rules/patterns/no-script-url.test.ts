@@ -491,42 +491,42 @@ describe('no-script-url rule', () => {
     test('does not report when value is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: null, loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: null, loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is a number', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 42, loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: 42, loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is a boolean', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: true, loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: true, loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is an object', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: {}, loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: {}, loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value is an array', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: ['javascript:void(0)'], loc: makeLoc(1, 0, 1, 5) })
+      visitor.Literal({ type: 'Literal', value: ['javascript:void(0)'], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -634,7 +634,7 @@ describe('no-script-url rule', () => {
     test('node without loc still reports', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      const node = { type: 'StringLiteral', value: 'javascript:void(0)' }
+      const node = { type: 'Literal', value: 'javascript:void(0)' }
       visitor.Literal(node)
       expect(reports.length).toBe(1)
     })
@@ -642,7 +642,7 @@ describe('no-script-url rule', () => {
     test('node without loc reports with default location', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      const node = { type: 'StringLiteral', value: 'javascript:void(0)' }
+      const node = { type: 'Literal', value: 'javascript:void(0)' }
       visitor.Literal(node)
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
@@ -685,7 +685,7 @@ describe('no-script-url rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
       const node = {
-        type: 'StringLiteral',
+        type: 'Literal',
         value: 'javascript:void(0)',
         loc: makeLoc(1, 0, 1, 20),
         range: [0, 20],
@@ -699,14 +699,14 @@ describe('no-script-url rule', () => {
     test('handles node with empty loc object', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 'javascript:void(0)', loc: {} })
+      visitor.Literal({ type: 'Literal', value: 'javascript:void(0)', loc: {} })
       expect(reports.length).toBe(1)
     })
 
     test('handles node with partial loc (missing end)', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 'javascript:void(0)', loc: { start: { line: 3, column: 5 } } })
+      visitor.Literal({ type: 'Literal', value: 'javascript:void(0)', loc: { start: { line: 3, column: 5 } } })
       expect(reports.length).toBe(1)
       expect(reports[0].loc?.start.line).toBe(3)
       expect(reports[0].loc?.start.column).toBe(5)
@@ -735,7 +735,7 @@ describe('no-script-url rule', () => {
     test('handles node with _parent property', () => {
       const { context, reports } = createMockContext()
       const visitor = noScriptUrlRule.create(context)
-      visitor.Literal({ type: 'StringLiteral', value: 'javascript:void(0)', loc: makeLoc(1, 0, 1, 20), _parent: {} })
+      visitor.Literal({ type: 'Literal', value: 'javascript:void(0)', loc: makeLoc(1, 0, 1, 20), _parent: {} })
       expect(reports.length).toBe(1)
     })
 

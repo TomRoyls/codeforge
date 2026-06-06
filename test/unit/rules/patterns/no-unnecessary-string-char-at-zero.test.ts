@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeNumericLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -145,7 +145,7 @@ describe('no-unnecessary-string-char-at-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtZeroRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'NumericLiteral', value: 0 } },
+        { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 } },
         'charAt', [makeNumericLiteral(0)],
       ))
       expect(reports.length).toBe(1)
@@ -434,7 +434,7 @@ describe('no-unnecessary-string-char-at-zero rule', () => {
       visitor.CallExpression({
         type: 'MemberExpression',
         object: { type: 'Literal', value: 'hello' },
-        property: { type: 'NumericLiteral', value: 0 },
+        property: { type: 'Literal', value: 0 },
         computed: true,
         loc: makeLoc(1, 0, 1, 10),
       })
@@ -479,7 +479,7 @@ describe('no-unnecessary-string-char-at-zero rule', () => {
     test('does not report when argument is string literal instead of numeric', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'charAt', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'charAt', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 

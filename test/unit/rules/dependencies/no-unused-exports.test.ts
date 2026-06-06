@@ -173,7 +173,7 @@ function createASTWithRequireImport(source: string): unknown {
       {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: source }],
+        arguments: [{ type: 'Literal', value: source }],
       },
     ],
   }
@@ -185,7 +185,7 @@ function createASTWithDynamicImport(source: string): unknown {
       {
         type: 'CallExpression',
         callee: { type: 'Import' },
-        arguments: [{ type: 'StringLiteral', value: source }],
+        arguments: [{ type: 'Literal', value: source }],
       },
     ],
   }
@@ -2510,7 +2510,7 @@ describe('no-unused-exports rule', () => {
           {
             type: 'CallExpression',
             callee: { type: 'Identifier', name: 'myFunction' },
-            arguments: [{ type: 'StringLiteral', value: './module' }],
+            arguments: [{ type: 'Literal', value: './module' }],
           },
         ],
       }
@@ -3542,7 +3542,7 @@ describe('no-unused-exports rule', () => {
           {
             type: 'CallExpression',
             callee: { type: 'Import' },
-            arguments: [{ type: 'StringLiteral', value: './dynamic-target' }],
+            arguments: [{ type: 'Literal', value: './dynamic-target' }],
           },
         ],
       }
@@ -3611,7 +3611,7 @@ describe('no-unused-exports rule', () => {
           {
             type: 'CallExpression',
             callee: { type: 'Identifier', name: 'require' },
-            arguments: [{ type: 'StringLiteral', value: './mod2' }],
+            arguments: [{ type: 'Literal', value: './mod2' }],
           },
           {
             type: 'TSImportEqualsDeclaration',
@@ -3745,7 +3745,7 @@ describe('no-unused-exports rule', () => {
               object: { type: 'Identifier', name: 'obj' },
               property: { type: 'Identifier', name: 'method' },
             },
-            arguments: [{ type: 'StringLiteral', value: './module' }],
+            arguments: [{ type: 'Literal', value: './module' }],
           },
         ],
       }

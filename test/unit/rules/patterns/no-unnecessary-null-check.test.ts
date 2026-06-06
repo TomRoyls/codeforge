@@ -278,7 +278,7 @@ describe('no-unnecessary-null-check rule', () => {
       outerOp: '!==',
       outerRight: { type: 'NullLiteral', loc: makeLoc(1, 10, 1, 14) },
       innerOp: '!==',
-      innerRight: { type: 'UnaryExpression', operator: 'void', argument: { type: 'NumericLiteral', value: 0 }, loc: makeLoc(2, 10, 2, 16) },
+      innerRight: { type: 'UnaryExpression', operator: 'void', argument: { type: 'Literal', value: 0 }, loc: makeLoc(2, 10, 2, 16) },
     })
     visitor.BinaryExpression(node)
     expect(reports.length).toBe(1)
@@ -330,7 +330,7 @@ describe('no-unnecessary-null-check rule', () => {
     const visitor = noUnnecessaryNullCheckRule.create(context)
     const node = buildRedundantNode({
       outerOp: '!==',
-      outerRight: { type: 'UnaryExpression', operator: 'void', argument: { type: 'NumericLiteral', value: 0 }, loc: makeLoc(1, 10, 1, 16) },
+      outerRight: { type: 'UnaryExpression', operator: 'void', argument: { type: 'Literal', value: 0 }, loc: makeLoc(1, 10, 1, 16) },
       innerOp: '!==',
       innerRight: { type: 'NullLiteral', loc: makeLoc(2, 10, 2, 14) },
     })
@@ -343,7 +343,7 @@ describe('no-unnecessary-null-check rule', () => {
     const visitor = noUnnecessaryNullCheckRule.create(context)
     const node = buildRedundantNode({
       outerOp: '!==',
-      outerRight: { type: 'UnaryExpression', operator: 'void', argument: { type: 'NumericLiteral', value: 0 }, loc: makeLoc(1, 10, 1, 16) },
+      outerRight: { type: 'UnaryExpression', operator: 'void', argument: { type: 'Literal', value: 0 }, loc: makeLoc(1, 10, 1, 16) },
       innerOp: '!==',
       innerRight: { type: 'Identifier', name: 'undefined', loc: makeLoc(2, 10, 2, 19) },
     })
@@ -513,7 +513,7 @@ describe('no-unnecessary-null-check rule', () => {
     const visitor = noUnnecessaryNullCheckRule.create(context)
     const node = buildRedundantNode({
       outerOp: '!==',
-      outerRight: { type: 'NumericLiteral', value: 0, loc: makeLoc(1, 10, 1, 11) },
+      outerRight: { type: 'Literal', value: 0, loc: makeLoc(1, 10, 1, 11) },
       innerOp: '!==',
       innerRight: { type: 'NullLiteral', loc: makeLoc(2, 10, 2, 14) },
     })
@@ -541,7 +541,7 @@ describe('no-unnecessary-null-check rule', () => {
       outerOp: '!==',
       outerRight: { type: 'NullLiteral', loc: makeLoc(1, 10, 1, 14) },
       innerOp: '!==',
-      innerRight: { type: 'NumericLiteral', value: 0, loc: makeLoc(2, 10, 2, 11) },
+      innerRight: { type: 'Literal', value: 0, loc: makeLoc(2, 10, 2, 11) },
     })
     visitor.BinaryExpression(node)
     expect(reports.length).toBe(0)

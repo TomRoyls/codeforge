@@ -98,7 +98,7 @@ function createConciseArrowTest(funcName: string, expectChain: unknown, line = 1
     type: 'CallExpression',
     callee: { type: 'Identifier', name: funcName },
     arguments: [
-      { type: 'StringLiteral', value: 'test name' },
+      { type: 'Literal', value: 'test name' },
       {
         type: 'ArrowFunctionExpression',
         params: [],
@@ -114,7 +114,7 @@ function createBlockArrowTest(funcName: string, bodyItems: unknown[], line = 1, 
     type: 'CallExpression',
     callee: { type: 'Identifier', name: funcName },
     arguments: [
-      { type: 'StringLiteral', value: 'test name' },
+      { type: 'Literal', value: 'test name' },
       {
         type: 'ArrowFunctionExpression',
         params: [],
@@ -154,7 +154,7 @@ function createFunctionExprTest(funcName: string, line = 1, column = 0): unknown
     type: 'CallExpression',
     callee: { type: 'Identifier', name: funcName },
     arguments: [
-      { type: 'StringLiteral', value: 'test name' },
+      { type: 'Literal', value: 'test name' },
       {
         type: 'FunctionExpression',
         params: [],
@@ -435,7 +435,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'FunctionExpression',
             params: [],
@@ -455,7 +455,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'it' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'FunctionExpression',
             params: [],
@@ -481,7 +481,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'FunctionExpression',
             id: { type: 'Identifier', name: 'myTestFn' },
@@ -502,7 +502,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'it' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'FunctionExpression',
             id: { type: 'Identifier', name: 'myItFn' },
@@ -523,7 +523,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'FunctionExpression',
             async: true,
@@ -544,7 +544,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'it' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'FunctionExpression',
             params: [{ type: 'Identifier', name: 'done' }],
@@ -834,7 +834,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           'string callback',
         ],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 40 } },
@@ -850,7 +850,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           null,
         ],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 40 } },
@@ -866,7 +866,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'ArrowFunctionExpression',
             params: [],
@@ -886,7 +886,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'ArrowFunctionExpression',
             params: [],
@@ -905,7 +905,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'ArrowFunctionExpression',
             params: [],
@@ -1022,7 +1022,7 @@ describe('no-implicit-return-in-test rule', () => {
           property: { type: 'Identifier', name: 'only' },
         },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'ArrowFunctionExpression',
             params: [],
@@ -1046,7 +1046,7 @@ describe('no-implicit-return-in-test rule', () => {
           property: { type: 'Identifier', name: 'only' },
         },
         arguments: [
-          { type: 'StringLiteral', value: 'suite name' },
+          { type: 'Literal', value: 'suite name' },
           {
             type: 'ArrowFunctionExpression',
             params: [],
@@ -1066,7 +1066,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           { type: 'Literal', value: 5000 },
           {
             type: 'ArrowFunctionExpression',
@@ -1087,7 +1087,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           { type: 'Literal', value: 5000 },
           {
             type: 'FunctionExpression',
@@ -1125,7 +1125,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'ArrowFunctionExpression',
             params: [],
@@ -1153,7 +1153,7 @@ describe('no-implicit-return-in-test rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'test' },
         arguments: [
-          { type: 'StringLiteral', value: 'test name' },
+          { type: 'Literal', value: 'test name' },
           {
             type: 'ArrowFunctionExpression',
             params: [],

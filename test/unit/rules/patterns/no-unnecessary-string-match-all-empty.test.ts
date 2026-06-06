@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -137,7 +137,7 @@ describe('no-unnecessary-string-match-all-empty rule', () => {
     test('reports for literal string \'hello\'.matchAll(\'\')', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchAllEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'matchAll', [makeStringLiteral('')]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'matchAll', [makeStringLiteral('')]))
       expect(reports.length).toBe(1)
     })
 
@@ -227,7 +227,7 @@ describe('no-unnecessary-string-match-all-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchAllEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'matchAll', [makeStringLiteral('')]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'matchAll', [makeStringLiteral('')]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'matchAll', [makeStringLiteral('')]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
@@ -285,14 +285,14 @@ describe('no-unnecessary-string-match-all-empty rule', () => {
     test('reports for conditional expression result .matchAll(\'\')', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchAllEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'StringLiteral', value: 'a' }, alternate: { type: 'StringLiteral', value: 'b' } }, 'matchAll', [makeStringLiteral('')]))
+      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 'a' }, alternate: { type: 'Literal', value: 'b' } }, 'matchAll', [makeStringLiteral('')]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for assignment expression result .matchAll(\'\')', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchAllEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'AssignmentExpression', operator: '=', left: { type: 'Identifier', name: 'x' }, right: { type: 'StringLiteral', value: 'test' } }, 'matchAll', [makeStringLiteral('')]))
+      visitor.CallExpression(makeCallNode({ type: 'AssignmentExpression', operator: '=', left: { type: 'Identifier', name: 'x' }, right: { type: 'Literal', value: 'test' } }, 'matchAll', [makeStringLiteral('')]))
       expect(reports.length).toBe(1)
     })
 
@@ -477,7 +477,7 @@ describe('no-unnecessary-string-match-all-empty rule', () => {
     test('does not report for str.matchAll(numericLiteral)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchAllEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'matchAll', [{ type: 'NumericLiteral', value: 42 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'matchAll', [{ type: 'Literal', value: 42 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -688,7 +688,7 @@ describe('no-unnecessary-string-match-all-empty rule', () => {
     test('does not report for str.matchAll(42) — non-string argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchAllEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'matchAll', [{ type: 'NumericLiteral', value: 42 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'matchAll', [{ type: 'Literal', value: 42 }]))
       expect(reports.length).toBe(0)
     })
 

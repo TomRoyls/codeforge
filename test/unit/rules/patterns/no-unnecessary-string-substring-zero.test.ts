@@ -126,133 +126,133 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('reports for str.substring(0) with Identifier callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "hello".substring(0) with Literal callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for template literal .substring(0) with TemplateLiteral callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for obj.prop.substring(0) with MemberExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fn().substring(0) with CallExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for (a + b).substring(0) with BinaryExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for (a ? b : c).substring(0) with ConditionalExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'a' }, consequent: { type: 'Identifier', name: 'b' }, alternate: { type: 'Identifier', name: 'c' } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'a' }, consequent: { type: 'Identifier', name: 'b' }, alternate: { type: 'Identifier', name: 'c' } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for (a || b).substring(0) with LogicalExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String(x).substring(0) with NewExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'String' }, arguments: [{ type: 'Identifier', name: 'x' }] }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'String' }, arguments: [{ type: 'Identifier', name: 'x' }] }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for this.substring(0) with ThisExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for (await x).substring(0) with AwaitExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'AwaitExpression', argument: { type: 'Identifier', name: 'x' } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'AwaitExpression', argument: { type: 'Identifier', name: 'x' } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for (-x).substring(0) with UnaryExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'Identifier', name: 'x' } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'Identifier', name: 'x' } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for (a, b).substring(0) with SequenceExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'Identifier', name: 'b' }] }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'Identifier', name: 'b' }] }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ArrayExpression callee object .substring(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ObjectExpression callee object .substring(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for TaggedTemplateExpression callee object .substring(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ArrowFunctionExpression callee object .substring(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions substring', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toMatch(/substring/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toBe(
         'str.substring(0) returns the whole string. Use slice() or omit the argument if possible.',
       )
@@ -261,21 +261,21 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -283,7 +283,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -291,23 +291,23 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'substring', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'substring', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -316,28 +316,28 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('reports for FunctionExpression callee object .substring(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [] } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [] } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ParenthesizedExpression callee object .substring(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ParenthesizedExpression', expression: { type: 'Identifier', name: 'x' } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ParenthesizedExpression', expression: { type: 'Identifier', name: 'x' } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for TypeCastExpression callee object .substring(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TypeCastExpression', expression: { type: 'Identifier', name: 'x' }, typeAnnotation: { type: 'TypeAnnotation' } }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'TypeCastExpression', expression: { type: 'Identifier', name: 'x' }, typeAnnotation: { type: 'TypeAnnotation' } }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports with custom loc values (line 5, col 10)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }], 5, 10, 5, 30))
       expect(reports.length).toBe(1)
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
@@ -350,14 +350,14 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('does not report for str.substring(1) — non-zero value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.substring(0, 5) — two arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -371,49 +371,49 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('does not report for str.slice(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.substr(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substr', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substr', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.indexOf(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.includes(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.startsWith(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.endsWith(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.lastIndexOf(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -469,21 +469,21 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -497,7 +497,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'substring' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -506,21 +506,21 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('does not report when property name is "SUBSTRING" (uppercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'SUBSTRING', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'SUBSTRING', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when property name is "Substring" (mixed case)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'Substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'Substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when property name is "subtring" (typo)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'subtring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'subtring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -541,28 +541,28 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('does not report when arg is NumericLiteral with value 1', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when arg is NumericLiteral with value -1', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: -1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: -1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when arg is NumericLiteral with value 0.5', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0.5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0.5 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when arg is NumericLiteral with value 100', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 100 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 100 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -624,7 +624,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -640,7 +640,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -657,7 +657,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           property: { type: 'Identifier', name: 'substring' },
           computed: true,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -673,8 +673,8 @@ describe('no-unnecessary-string-substring-zero rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryStringSubstringZeroRule.create(ctx1)
       const visitor2 = noUnnecessaryStringSubstringZeroRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 1 }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -682,9 +682,9 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('visitor accumulates reports correctly with mixed valid/invalid', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -698,7 +698,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'substring' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -714,7 +714,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'substring' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -724,11 +724,11 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -755,7 +755,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'substring' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -775,7 +775,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'substring' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -791,7 +791,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'substring' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -802,7 +802,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }])
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -825,7 +825,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'substring' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -835,7 +835,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'NumericLiteral', value: 0 }], 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -845,8 +845,8 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'substring', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'substring', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'substring', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

@@ -543,7 +543,7 @@ describe('ASTMatcher', () => {
           {
             type: 'Return',
             captureName: 'returnStmt',
-            children: [{ type: 'NumericLiteral', captureName: 'nums' }],
+            children: [{ type: 'Literal', captureName: 'nums' }],
           },
         ],
       }

@@ -1354,7 +1354,7 @@ describe('ScopeAnalyzer', () => {
         body: [
           {
             type: 'ImportDeclaration',
-            source: { type: 'StringLiteral', value: 'fs' },
+            source: { type: 'Literal', value: 'fs' },
             specifiers: [
               { type: 'ImportDefaultSpecifier', local: { name: 'fs', loc: { start: loc(1, 9), end: loc(1, 11) } } },
             ],
@@ -1773,7 +1773,7 @@ describe('ScopeAnalyzer', () => {
         body: [
           {
             type: 'ImportDeclaration',
-            source: { type: 'StringLiteral', value: 'path' },
+            source: { type: 'Literal', value: 'path' },
             specifiers: [
               { type: 'ImportDefaultSpecifier', local: { name: 'path', loc: { start: loc(1, 9), end: loc(1, 13) } } },
               { type: 'ImportSpecifier', local: { name: 'join', loc: { start: loc(1, 16), end: loc(1, 20) } } },

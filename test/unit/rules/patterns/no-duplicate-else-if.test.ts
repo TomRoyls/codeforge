@@ -924,14 +924,14 @@ describe('no-duplicate-else-if rule', () => {
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(
-        { type: 'NumericLiteral', value: 42 },
+        { type: 'Literal', value: 42 },
         createEmptyBlock(),
         null,
         3,
         5,
       )
       const mainIf = createIfStatement(
-        { type: 'NumericLiteral', value: 42 },
+        { type: 'Literal', value: 42 },
         createEmptyBlock(),
         duplicateIf,
         1,
@@ -950,14 +950,14 @@ describe('no-duplicate-else-if rule', () => {
       const visitor = noDuplicateElseIfRule.create(context)
 
       const duplicateIf = createIfStatement(
-        { type: 'StringLiteral', value: 'test' },
+        { type: 'Literal', value: 'test' },
         createEmptyBlock(),
         null,
         3,
         5,
       )
       const mainIf = createIfStatement(
-        { type: 'StringLiteral', value: 'test' },
+        { type: 'Literal', value: 'test' },
         createEmptyBlock(),
         duplicateIf,
         1,

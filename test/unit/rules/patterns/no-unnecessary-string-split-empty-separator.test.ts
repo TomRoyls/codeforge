@@ -64,11 +64,11 @@ function makeCallNode(
 }
 
 function emptyStrArg(): unknown {
-  return { type: 'StringLiteral', value: '' }
+  return { type: 'Literal', value: '' }
 }
 
 function strArg(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -141,14 +141,14 @@ describe('no-unnecessary-string-split-empty-separator rule', () => {
     test('reports for "hello".split("") with StringLiteral receiver', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitEmptySeparatorRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'split', [emptyStrArg()]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'split', [emptyStrArg()]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "".split("") with empty string literal receiver', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitEmptySeparatorRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '' }, 'split', [emptyStrArg()]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'split', [emptyStrArg()]))
       expect(reports.length).toBe(1)
     })
 
@@ -176,14 +176,14 @@ describe('no-unnecessary-string-split-empty-separator rule', () => {
     test('reports for str.split("", 2) with numeric limit', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitEmptySeparatorRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [emptyStrArg(), { type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [emptyStrArg(), { type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for str.split("", 0) with zero limit', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitEmptySeparatorRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [emptyStrArg(), { type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [emptyStrArg(), { type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
@@ -204,7 +204,7 @@ describe('no-unnecessary-string-split-empty-separator rule', () => {
     test('reports for str.split("", 2, "extra") with three arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitEmptySeparatorRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [emptyStrArg(), { type: 'NumericLiteral', value: 2 }, strArg('extra')]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [emptyStrArg(), { type: 'Literal', value: 2 }, strArg('extra')]))
       expect(reports.length).toBe(1)
     })
 
@@ -371,7 +371,7 @@ describe('no-unnecessary-string-split-empty-separator rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitEmptySeparatorRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'split', [emptyStrArg()]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'split', [emptyStrArg()]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'split', [emptyStrArg()]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
@@ -626,7 +626,7 @@ describe('no-unnecessary-string-split-empty-separator rule', () => {
     test('does not report when first arg is a number Literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitEmptySeparatorRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -850,7 +850,7 @@ describe('no-unnecessary-string-split-empty-separator rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitEmptySeparatorRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'split', [emptyStrArg()]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'split', [emptyStrArg()]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'split', [emptyStrArg()]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

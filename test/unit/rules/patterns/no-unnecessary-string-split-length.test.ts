@@ -58,7 +58,7 @@ function makeSplitCall(
       property: { type: 'Identifier', name: 'split' },
       computed: false,
     },
-    arguments: [{ type: 'StringLiteral', value: argValue }],
+    arguments: [{ type: 'Literal', value: argValue }],
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
   }
 }
@@ -153,7 +153,7 @@ describe('no-unnecessary-string-split-length rule', () => {
     test('reports for "hello".split("").length — StringLiteral callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitLengthRule.create(context)
-      visitor.MemberExpression(makeMemberExprLength(makeSplitCall({ type: 'StringLiteral', value: 'hello' })))
+      visitor.MemberExpression(makeMemberExprLength(makeSplitCall({ type: 'Literal', value: 'hello' })))
       expect(reports.length).toBe(1)
     })
 
@@ -216,7 +216,7 @@ describe('no-unnecessary-string-split-length rule', () => {
       visitor.MemberExpression(makeMemberExprLength(makeSplitCall({
         type: 'MemberExpression',
         object: makeIdentifier('arr'),
-        property: { type: 'NumericLiteral', value: 0 },
+        property: { type: 'Literal', value: 0 },
         computed: true,
       })))
       expect(reports.length).toBe(1)
@@ -353,7 +353,7 @@ describe('no-unnecessary-string-split-length rule', () => {
         type: 'AssignmentExpression',
         operator: '=',
         left: makeIdentifier('x'),
-        right: { type: 'StringLiteral', value: 'abc' },
+        right: { type: 'Literal', value: 'abc' },
       })))
       expect(reports.length).toBe(1)
     })
@@ -479,7 +479,7 @@ describe('no-unnecessary-string-split-length rule', () => {
       visitor.MemberExpression({
         type: 'MemberExpression',
         object: makeSplitCall(makeIdentifier('str')),
-        property: { type: 'StringLiteral', value: 'length' },
+        property: { type: 'Literal', value: 'length' },
         computed: false,
         loc: makeLoc(1, 0, 1, 20),
       })
@@ -506,7 +506,7 @@ describe('no-unnecessary-string-split-length rule', () => {
       visitor.MemberExpression(makeMemberExprLength({
         type: 'CallExpression',
         callee: makeIdentifier('split'),
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)
@@ -523,7 +523,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: { type: 'Identifier', name: 'split' },
           computed: true,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)
@@ -540,7 +540,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: { type: 'Identifier', name: 'slice' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)
@@ -557,7 +557,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: { type: 'Identifier', name: 'join' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)
@@ -574,7 +574,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: { type: 'Identifier', name: 'Split' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)
@@ -608,7 +608,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: { type: 'Identifier', name: 'split' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }, { type: 'NumericLiteral', value: 2 }],
+        arguments: [{ type: 'Literal', value: '' }, { type: 'Literal', value: 2 }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)
@@ -625,7 +625,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: { type: 'Identifier', name: 'split' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }, { type: 'NumericLiteral', value: 2 }, { type: 'BooleanLiteral', value: true }],
+        arguments: [{ type: 'Literal', value: '' }, { type: 'Literal', value: 2 }, { type: 'BooleanLiteral', value: true }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)
@@ -782,7 +782,7 @@ describe('no-unnecessary-string-split-length rule', () => {
       const visitor = noUnnecessaryStringSplitLengthRule.create(context)
       visitor.MemberExpression(makeMemberExprLength({
         type: 'CallExpression',
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       }))
       expect(reports.length).toBe(0)
@@ -794,7 +794,7 @@ describe('no-unnecessary-string-split-length rule', () => {
       visitor.MemberExpression(makeMemberExprLength({
         type: 'CallExpression',
         callee: null,
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       }))
       expect(reports.length).toBe(0)
@@ -810,7 +810,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           object: makeIdentifier('str'),
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       }))
       expect(reports.length).toBe(0)
@@ -827,7 +827,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: null,
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       }))
       expect(reports.length).toBe(0)
@@ -841,10 +841,10 @@ describe('no-unnecessary-string-split-length rule', () => {
         callee: {
           type: 'MemberExpression',
           object: makeIdentifier('str'),
-          property: { type: 'StringLiteral', value: 'split' },
+          property: { type: 'Literal', value: 'split' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       }))
       expect(reports.length).toBe(0)
@@ -919,7 +919,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: { type: 'Identifier', name: 'split' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)

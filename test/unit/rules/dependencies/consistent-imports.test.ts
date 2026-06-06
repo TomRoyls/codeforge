@@ -74,7 +74,7 @@ function createRequireNode(source: string): unknown {
   return {
     type: 'CallExpression',
     callee: { type: 'Identifier', name: 'require' },
-    arguments: [{ type: 'StringLiteral', value: source }],
+    arguments: [{ type: 'Literal', value: source }],
     loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
   }
 }
@@ -1671,7 +1671,7 @@ describe('consistent-imports rule', () => {
           object: { name: 'obj' },
           property: { name: 'require' },
         },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       }
       visitor.CallExpression(node)
@@ -2086,7 +2086,7 @@ describe('consistent-imports rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
       visitor.CallExpression(node)
       expect(report).toHaveBeenCalledWith(
@@ -2106,7 +2106,7 @@ describe('consistent-imports rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: undefined }],
+        arguments: [{ type: 'Literal', value: undefined }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       }
       visitor.CallExpression(node)
@@ -2123,7 +2123,7 @@ describe('consistent-imports rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: null }],
+        arguments: [{ type: 'Literal', value: null }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       }
       visitor.CallExpression(node)
@@ -2351,7 +2351,7 @@ describe('consistent-imports rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
         loc: { start: { line: 10, column: 5 }, end: { line: 10, column: 40 } },
       }
       visitor.CallExpression(node)

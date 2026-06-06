@@ -65,7 +65,7 @@ function makeCallNode(
 }
 
 function makeEmptyStringArg(): unknown {
-  return { type: 'StringLiteral', value: '' }
+  return { type: 'Literal', value: '' }
 }
 
 // ===== META TESTS (8) =====
@@ -309,7 +309,7 @@ describe('no-unnecessary-string-match-empty rule', () => {
     test('reports for str.match("") with double-quoted empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
@@ -344,7 +344,7 @@ describe('no-unnecessary-string-match-empty rule', () => {
     test('does not report for str.match(\'hello\') — non-empty pattern', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: 'hello' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: 'hello' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -379,7 +379,7 @@ describe('no-unnecessary-string-match-empty rule', () => {
     test('does not report for str.match(\'\', \'flags\') — two arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [makeEmptyStringArg(), { type: 'StringLiteral', value: 'g' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [makeEmptyStringArg(), { type: 'Literal', value: 'g' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -393,7 +393,7 @@ describe('no-unnecessary-string-match-empty rule', () => {
     test('does not report for str.replace(\'\', \'x\') — different method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replace', [makeEmptyStringArg(), { type: 'StringLiteral', value: 'x' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replace', [makeEmptyStringArg(), { type: 'Literal', value: 'x' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -623,14 +623,14 @@ describe('no-unnecessary-string-match-empty rule', () => {
     test('does not report when argument is a single space string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: ' ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: ' ' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when argument value is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: null }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: null }]))
       expect(reports.length).toBe(0)
     })
 
@@ -668,7 +668,7 @@ describe('no-unnecessary-string-match-empty rule', () => {
       const visitor1 = noUnnecessaryStringMatchEmptyRule.create(ctx1)
       const visitor2 = noUnnecessaryStringMatchEmptyRule.create(ctx2)
       visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [makeEmptyStringArg()]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: 'hello' }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: 'hello' }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -677,7 +677,7 @@ describe('no-unnecessary-string-match-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [makeEmptyStringArg()]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: 'hello' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: 'hello' }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [makeEmptyStringArg()]))
       expect(reports.length).toBe(2)
     })
@@ -720,7 +720,7 @@ describe('no-unnecessary-string-match-empty rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: 'abc' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: 'abc' }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [makeEmptyStringArg()]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'search', [makeEmptyStringArg()]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [makeEmptyStringArg()]))

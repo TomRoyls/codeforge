@@ -126,28 +126,28 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('reports for JSON.stringify("hello") — double-quoted string literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'hello' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for JSON.stringify("world") — different string literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'world' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'world' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for JSON.stringify("x") — single character string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'x' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'x' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for JSON.stringify("") — empty string literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: '' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
@@ -175,21 +175,21 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('reports for StringLiteral with unicode string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'héllo wörld' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'héllo wörld' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for StringLiteral with emoji string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: '🎉party🎉' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: '🎉party🎉' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for StringLiteral with whitespace string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: '   ' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: '   ' }))
       expect(reports.length).toBe(1)
     })
 
@@ -204,7 +204,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
       visitor.CallExpression(makeJsonStringifyCall(
-        { type: 'StringLiteral', value: 'data' },
+        { type: 'Literal', value: 'data' },
         [{ type: 'Identifier', name: 'replacer' }],
       ))
       expect(reports.length).toBe(1)
@@ -223,21 +223,21 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('report message mentions unnecessary JSON.stringify', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'test' }))
       expect(reports[0].message).toMatch(/JSON\.stringify/)
     })
 
     test('report message mentions string literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'test' }))
       expect(reports[0].message).toMatch(/string literal/i)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'test' }))
       expect(reports[0].message).toBe(
         'Unnecessary JSON.stringify on a string literal. Stringify a string always wraps it in quotes. Use the string directly.',
       )
@@ -246,21 +246,21 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'test' }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'test' }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      const node = makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' })
+      const node = makeJsonStringifyCall({ type: 'Literal', value: 'test' })
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -268,7 +268,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' }, [], 5, 10, 5, 40))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'test' }, [], 5, 10, 5, 40))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -276,7 +276,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'a' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'a' }))
       visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'b' }))
       expect(reports.length).toBe(2)
     })
@@ -284,7 +284,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'a' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'a' }))
       visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'b' }))
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -292,14 +292,14 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('reports for StringLiteral with tab character string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: '\t' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: '\t' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for StringLiteral with path string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: '/api/v1/users' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: '/api/v1/users' }))
       expect(reports.length).toBe(1)
     })
 
@@ -313,14 +313,14 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('reports for StringLiteral with special chars string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: '<script>alert("xss")</script>' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: '<script>alert("xss")</script>' }))
       expect(reports.length).toBe(1)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'test' }))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -329,7 +329,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('reports for StringLiteral with numeric-looking string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: '42' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: '42' }))
       expect(reports.length).toBe(1)
     })
 
@@ -350,14 +350,14 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('reports for StringLiteral with "undefined" string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'undefined' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'undefined' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for StringLiteral with multiline template content', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'line1\r\nline2\r\nline3' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'line1\r\nline2\r\nline3' }))
       expect(reports.length).toBe(1)
     })
 
@@ -447,7 +447,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'JSON' },
           property: { type: 'Identifier', name: 'parse' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'str' }],
+        arguments: [{ type: 'Literal', value: 'str' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -463,7 +463,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'someObj' },
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 25),
       })
       expect(reports.length).toBe(0)
@@ -498,7 +498,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'Math' },
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'str' }],
+        arguments: [{ type: 'Literal', value: 'str' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -556,21 +556,21 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'StringLiteral', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'StringLiteral', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'stringify' }, arguments: [{ type: 'StringLiteral', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'stringify' }, arguments: [{ type: 'Literal', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -584,7 +584,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'CallExpression', callee: { type: 'Identifier', name: 'getJSON' }, arguments: [] },
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -600,7 +600,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'json2' },
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -616,7 +616,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'JSON' },
           property: { type: 'Literal', value: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -632,7 +632,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'JSON' },
           property: { type: 'Identifier', name: 'parse' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -743,7 +743,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           type: 'MemberExpression',
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -759,7 +759,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: null,
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -774,7 +774,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'JSON' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -790,7 +790,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'JSON' },
           property: null,
         },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -805,7 +805,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryJsonStringifyLiteralRule.create(ctx1)
       const visitor2 = noUnnecessaryJsonStringifyLiteralRule.create(ctx2)
-      visitor1.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'a' }))
+      visitor1.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'a' }))
       visitor2.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 42 }))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -814,7 +814,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'a' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'a' }))
       visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 42 }))
       visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'b' }))
       expect(reports.length).toBe(2)
@@ -830,7 +830,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'JSON' },
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -846,7 +846,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'JSON' },
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -857,7 +857,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
       visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 42 }))
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'str' }))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'str' }))
       visitor.CallExpression(makeJsonStringifyCall({ type: 'Identifier', name: 'obj' }))
       visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'another' }))
       visitor.CallExpression(makeJsonStringifyCall({ type: 'ObjectExpression', properties: [] }))
@@ -887,7 +887,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
           object: { type: 'Identifier', name: 'JSON' },
           property: { type: 'Identifier', name: 'stringify' },
         },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
         loc: makeLoc(1, 0, 1, 30),
         range: [0, 30],
         extra: true,
@@ -900,7 +900,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      const node = makeJsonStringifyCall({ type: 'StringLiteral', value: 'dup' })
+      const node = makeJsonStringifyCall({ type: 'Literal', value: 'dup' })
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -910,7 +910,7 @@ describe('no-unnecessary-json-stringify-literal rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryJsonStringifyLiteralRule.create(context)
-      visitor.CallExpression(makeJsonStringifyCall({ type: 'StringLiteral', value: 'test' }, [], 10, 4, 10, 35))
+      visitor.CallExpression(makeJsonStringifyCall({ type: 'Literal', value: 'test' }, [], 10, 4, 10, 35))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)

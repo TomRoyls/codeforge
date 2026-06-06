@@ -449,7 +449,7 @@ describe('no-unnecessary-readonly rule', () => {
       const node = {
         type: 'TSPropertySignature',
         readonly: true,
-        key: { type: 'StringLiteral', value: 'computed' },
+        key: { type: 'Literal', value: 'computed' },
         typeAnnotation: {
           type: 'TSTypeAnnotation',
           typeAnnotation: { type: 'TSNeverKeyword' },

@@ -68,7 +68,7 @@ function makeArrayExpr(elements: unknown[]): unknown {
 }
 
 function emptyStrArg(): unknown {
-  return { type: 'StringLiteral', value: '' }
+  return { type: 'Literal', value: '' }
 }
 
 // ===== META TESTS (8) =====
@@ -150,7 +150,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
       visitor.CallExpression(
         makeCallNode(
-          makeArrayExpr([{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }, { type: 'NumericLiteral', value: 3 }]),
+          makeArrayExpr([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }]),
           'join',
           [emptyStrArg()],
         ),
@@ -297,8 +297,8 @@ describe('no-unnecessary-array-join-empty rule', () => {
             {
               type: 'ConditionalExpression',
               test: { type: 'Identifier', name: 'x' },
-              consequent: { type: 'NumericLiteral', value: 1 },
-              alternate: { type: 'NumericLiteral', value: 2 },
+              consequent: { type: 'Literal', value: 1 },
+              alternate: { type: 'Literal', value: 2 },
             },
           ]),
           'join',
@@ -363,7 +363,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
       visitor.CallExpression(
         makeCallNode(
-          makeArrayExpr([makeArrayExpr([{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }])]),
+          makeArrayExpr([makeArrayExpr([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])]),
           'join',
           [emptyStrArg()],
         ),
@@ -403,7 +403,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
     test('reports for StringLiteral object .join("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'join', [emptyStrArg()]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'join', [emptyStrArg()]))
       expect(reports.length).toBe(1)
     })
   })
@@ -421,14 +421,14 @@ describe('no-unnecessary-array-join-empty rule', () => {
     test('does not report for arr.join(", ") — non-empty string separator', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'StringLiteral', value: ', ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: ', ' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.join("-") — non-empty string separator', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'StringLiteral', value: '-' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: '-' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -456,7 +456,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
     test('does not report for arr.join(0) — number arg', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -665,14 +665,14 @@ describe('no-unnecessary-array-join-empty rule', () => {
     test('does not report when arg value is "hello" (non-empty string)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'StringLiteral', value: 'hello' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: 'hello' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when arg is NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'NumericLiteral', value: 42 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: 42 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -725,7 +725,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
     test('does not report when arg value is whitespace string " "', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'StringLiteral', value: ' ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: ' ' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -746,7 +746,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
       const visitor1 = noUnnecessaryArrayJoinEmpty.create(ctx1)
       const visitor2 = noUnnecessaryArrayJoinEmpty.create(ctx2)
       visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [emptyStrArg()]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'StringLiteral', value: ', ' }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: ', ' }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -755,7 +755,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [emptyStrArg()]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'StringLiteral', value: ', ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: ', ' }]))
       visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'join', [emptyStrArg()]))
       expect(reports.length).toBe(2)
     })
@@ -796,7 +796,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayJoinEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'StringLiteral', value: ', ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [{ type: 'Literal', value: ', ' }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'join', [emptyStrArg()]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'split', [emptyStrArg()]))
       visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'join', [emptyStrArg()]))
@@ -922,7 +922,7 @@ describe('no-unnecessary-array-join-empty rule', () => {
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'StringLiteral', value: 'join' },
+          property: { type: 'Literal', value: 'join' },
           computed: true,
         },
         arguments: [emptyStrArg()],

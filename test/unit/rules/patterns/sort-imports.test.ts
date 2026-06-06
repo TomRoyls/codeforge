@@ -51,7 +51,7 @@ function makeImportNode(
 ): unknown {
   return {
     type: 'ImportDeclaration',
-    source: { type: 'StringLiteral', value: sourceValue },
+    source: { type: 'Literal', value: sourceValue },
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
   }
 }
@@ -678,7 +678,7 @@ describe('sort-imports rule', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
       visitor.ImportDeclaration({ type: 'ImportDeclaration', loc: makeLoc(1, 0, 1, 20) })
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'a' }, loc: makeLoc(2, 0, 2, 20) })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'a' }, loc: makeLoc(2, 0, 2, 20) })
       visitor['Program:exit']()
       expect(reports.length).toBe(0)
     })
@@ -686,8 +686,8 @@ describe('sort-imports rule', () => {
     test('does not report when source value is null', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: null }, loc: makeLoc(1, 0, 1, 20) })
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'a' }, loc: makeLoc(2, 0, 2, 20) })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: null }, loc: makeLoc(1, 0, 1, 20) })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'a' }, loc: makeLoc(2, 0, 2, 20) })
       visitor['Program:exit']()
       expect(reports.length).toBe(0)
     })
@@ -695,8 +695,8 @@ describe('sort-imports rule', () => {
     test('does not report when source value is a number', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 123 }, loc: makeLoc(1, 0, 1, 20) })
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'a' }, loc: makeLoc(2, 0, 2, 20) })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 123 }, loc: makeLoc(1, 0, 1, 20) })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'a' }, loc: makeLoc(2, 0, 2, 20) })
       visitor['Program:exit']()
       expect(reports.length).toBe(0)
     })
@@ -705,7 +705,7 @@ describe('sort-imports rule', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
       visitor.ImportDeclaration({ type: 'ImportDeclaration', source: undefined, loc: makeLoc(1, 0, 1, 20) })
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'a' }, loc: makeLoc(2, 0, 2, 20) })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'a' }, loc: makeLoc(2, 0, 2, 20) })
       visitor['Program:exit']()
       expect(reports.length).toBe(0)
     })
@@ -743,7 +743,7 @@ describe('sort-imports rule', () => {
     test('does not report for import with empty source followed by valid import', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: '' }, loc: makeLoc(1, 0, 1, 20) })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: '' }, loc: makeLoc(1, 0, 1, 20) })
       visitor.ImportDeclaration(makeImportNode('a'))
       visitor['Program:exit']()
       expect(reports.length).toBe(0)
@@ -784,8 +784,8 @@ describe('sort-imports rule', () => {
     test('node without loc still collects and compares', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'z' } })
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'a' } })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'z' } })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'a' } })
       visitor['Program:exit']()
       expect(reports.length).toBe(1)
     })
@@ -793,8 +793,8 @@ describe('sort-imports rule', () => {
     test('node without loc reports with default location', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'z' } })
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'a' } })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'z' } })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'a' } })
       visitor['Program:exit']()
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
@@ -805,7 +805,7 @@ describe('sort-imports rule', () => {
       const visitor = sortImportsRule.create(context)
       visitor.ImportDeclaration({
         type: 'ImportDeclaration',
-        source: { type: 'StringLiteral', value: 'z' },
+        source: { type: 'Literal', value: 'z' },
         loc: makeLoc(1, 0, 1, 20),
         specifiers: [],
         importKind: 'value',
@@ -818,7 +818,7 @@ describe('sort-imports rule', () => {
     test('handles node with empty loc object', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'z' }, loc: {} })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'z' }, loc: {} })
       visitor.ImportDeclaration(makeImportNode('a'))
       visitor['Program:exit']()
       expect(reports.length).toBe(1)
@@ -827,7 +827,7 @@ describe('sort-imports rule', () => {
     test('handles node with partial loc (missing end)', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'z' }, loc: { start: { line: 3, column: 5 } } })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'z' }, loc: { start: { line: 3, column: 5 } } })
       visitor.ImportDeclaration(makeImportNode('a'))
       visitor['Program:exit']()
       expect(reports.length).toBe(1)
@@ -855,7 +855,7 @@ describe('sort-imports rule', () => {
     test('handles node with _parent property', () => {
       const { context, reports } = createMockContext()
       const visitor = sortImportsRule.create(context)
-      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'StringLiteral', value: 'z' }, loc: makeLoc(1, 0, 1, 20), _parent: {} })
+      visitor.ImportDeclaration({ type: 'ImportDeclaration', source: { type: 'Literal', value: 'z' }, loc: makeLoc(1, 0, 1, 20), _parent: {} })
       visitor.ImportDeclaration(makeImportNode('a'))
       visitor['Program:exit']()
       expect(reports.length).toBe(1)

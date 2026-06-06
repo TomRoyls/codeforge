@@ -65,7 +65,7 @@ function makeCallNode(
 }
 
 function makeEmptyStringLiteral(): unknown {
-  return { type: 'StringLiteral', value: '' }
+  return { type: 'Literal', value: '' }
 }
 
 // ===== META TESTS (8) =====
@@ -320,7 +320,7 @@ describe('no-unnecessary-string-trim-start-empty rule', () => {
     test('reports when object has additional StringLiteral properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringTrimStartEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '', raw: "''" }, 'trimStart'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '', raw: "''" }, 'trimStart'))
       expect(reports.length).toBe(1)
     })
 
@@ -428,14 +428,14 @@ describe('no-unnecessary-string-trim-start-empty rule', () => {
     test('does not report for non-empty string trimStart', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringTrimStartEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'trimStart'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'trimStart'))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for non-empty string trimLeft', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringTrimStartEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'trimLeft'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'trimLeft'))
       expect(reports.length).toBe(0)
     })
 
@@ -731,14 +731,14 @@ describe('no-unnecessary-string-trim-start-empty rule', () => {
     test('does not report for whitespace-only string trimStart', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringTrimStartEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: ' ' }, 'trimStart'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: ' ' }, 'trimStart'))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for space character string trimStart', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringTrimStartEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '  ' }, 'trimStart'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '  ' }, 'trimStart'))
       expect(reports.length).toBe(0)
     })
   })
@@ -806,7 +806,7 @@ describe('no-unnecessary-string-trim-start-empty rule', () => {
       const visitor = noUnnecessaryStringTrimStartEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'trimStart'))
       visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'trimStart'))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'trimStart'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'trimStart'))
       visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'trimLeft'))
       visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'trimEnd'))
       expect(reports.length).toBe(2)

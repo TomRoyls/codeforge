@@ -1844,7 +1844,7 @@ describe('no-thenable rule', () => {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          property: { type: 'StringLiteral', value: 'then' },
+          property: { type: 'Literal', value: 'then' },
         },
       }
       visitor.CallExpression(node)
@@ -1860,7 +1860,7 @@ describe('no-thenable rule', () => {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          property: { type: 'NumericLiteral', value: 0 },
+          property: { type: 'Literal', value: 0 },
         },
       }
       visitor.CallExpression(node)

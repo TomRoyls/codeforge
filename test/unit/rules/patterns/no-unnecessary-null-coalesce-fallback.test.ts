@@ -119,14 +119,14 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('reports for x ?? "" (empty string fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for x ?? 0 (zero fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
@@ -175,28 +175,28 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('reports for complex left-hand side ?? ""', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'MemberExpression', object: makeIdentifier('obj'), property: makeIdentifier('prop') }, { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'MemberExpression', object: makeIdentifier('obj'), property: makeIdentifier('prop') }, { type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for call expression left-hand side ?? 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'CallExpression', callee: makeIdentifier('fn'), arguments: [] }, { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'CallExpression', callee: makeIdentifier('fn'), arguments: [] }, { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions unnecessary nullish coalescing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
       expect(reports[0].message).toMatch(/nullish coalescing/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
       expect(reports[0].message).toBe(
         'Unnecessary nullish coalescing fallback. Using a falsy value like empty string, 0, false, or null defeats the purpose of ?? (which only coalesces null/undefined).',
       )
@@ -205,21 +205,21 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input BinaryExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      const node = makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' })
+      const node = makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' })
       visitor.BinaryExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -227,7 +227,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }, 5, 10, 5, 30))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }, 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -235,23 +235,23 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'Literal', value: 0 }))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -268,7 +268,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('reports for numeric literal 0 as fallback', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'Literal', value: 42 }, { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'Literal', value: 42 }, { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
@@ -310,14 +310,14 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('reports for template literal ?? ""', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'TemplateLiteral', quasis: [], expressions: [] }, { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'TemplateLiteral', quasis: [], expressions: [] }, { type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for unary expression ?? 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'UnaryExpression', operator: '!', prefix: true, argument: makeIdentifier('x') }, { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', { type: 'UnaryExpression', operator: '!', prefix: true, argument: makeIdentifier('x') }, { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
@@ -342,14 +342,14 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('does not report for x ?? "default" (meaningful string fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: 'default' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: 'default' }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x ?? 42 (meaningful number fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: 42 }))
       expect(reports.length).toBe(0)
     })
 
@@ -370,7 +370,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('does not report for x || "default" (different operator)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('||', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('||', makeIdentifier('x'), { type: 'Literal', value: '' }))
       expect(reports.length).toBe(0)
     })
 
@@ -384,42 +384,42 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('does not report for x + y (different operator)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('+', makeIdentifier('x'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('+', makeIdentifier('x'), { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x ?? -1 (negative number fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'NumericLiteral', value: -1 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: -1 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x ?? 1 (non-zero number fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'NumericLiteral', value: 1 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: 1 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x ?? 0.5 (non-zero decimal fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'NumericLiteral', value: 0.5 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: 0.5 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x ?? " " (space string fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: ' ' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: ' ' }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x ?? "0" (string zero fallback)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '0' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '0' }))
       expect(reports.length).toBe(0)
     })
 
@@ -594,14 +594,14 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('does not report for BinaryExpression with * operator', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('*', makeIdentifier('x'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('*', makeIdentifier('x'), { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for BinaryExpression with - operator', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('-', makeIdentifier('x'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('-', makeIdentifier('x'), { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(0)
     })
 
@@ -621,8 +621,8 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryNullCoalesceFallbackRule.create(ctx1)
       const visitor2 = noUnnecessaryNullCoalesceFallbackRule.create(ctx2)
-      visitor1.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
-      visitor2.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: 'default' }))
+      visitor1.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
+      visitor2.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: 'default' }))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -630,9 +630,9 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('visitor accumulates reports correctly with mixed valid/invalid', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'StringLiteral', value: 'default' }))
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('z'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'Literal', value: 'default' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('z'), { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(2)
     })
 
@@ -643,7 +643,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
         type: 'BinaryExpression',
         operator: '??',
         left: makeIdentifier('x'),
-        right: { type: 'StringLiteral', value: '' },
+        right: { type: 'Literal', value: '' },
       }
       visitor.BinaryExpression(node)
       expect(reports.length).toBe(1)
@@ -656,7 +656,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
         type: 'BinaryExpression',
         operator: '??',
         left: makeIdentifier('x'),
-        right: { type: 'StringLiteral', value: '' },
+        right: { type: 'Literal', value: '' },
       }
       visitor.BinaryExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -666,11 +666,11 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: 'default' }))
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'NumericLiteral', value: 0 }))
-      visitor.BinaryExpression(makeBinaryExpr('||', makeIdentifier('z'), { type: 'StringLiteral', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: 'default' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'Literal', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('||', makeIdentifier('z'), { type: 'Literal', value: '' }))
       visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('a'), { type: 'BooleanLiteral', value: false }))
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('b'), { type: 'StringLiteral', value: 'value' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('b'), { type: 'Literal', value: 'value' }))
       expect(reports.length).toBe(2)
     })
 
@@ -694,7 +694,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
         type: 'BinaryExpression',
         operator: '??',
         left: makeIdentifier('x'),
-        right: { type: 'StringLiteral', value: '' },
+        right: { type: 'Literal', value: '' },
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -711,7 +711,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
         type: 'BinaryExpression',
         operator: '??',
         left: makeIdentifier('x'),
-        right: { type: 'NumericLiteral', value: 0 },
+        right: { type: 'Literal', value: 0 },
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -735,7 +735,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      const node = makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' })
+      const node = makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' })
       visitor.BinaryExpression(node)
       visitor.BinaryExpression(node)
       visitor.BinaryExpression(node)
@@ -765,7 +765,7 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }, 10, 4, 10, 25))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }, 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -775,8 +775,8 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'StringLiteral', value: '' }))
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('x'), { type: 'Literal', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('y'), { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -784,8 +784,8 @@ describe('no-unnecessary-null-coalesce-fallback rule', () => {
     test('reports all four falsy literal fallback types individually', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullCoalesceFallbackRule.create(context)
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('a'), { type: 'StringLiteral', value: '' }))
-      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('b'), { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('a'), { type: 'Literal', value: '' }))
+      visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('b'), { type: 'Literal', value: 0 }))
       visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('c'), { type: 'BooleanLiteral', value: false }))
       visitor.BinaryExpression(makeBinaryExpr('??', makeIdentifier('d'), { type: 'NullLiteral' }))
       expect(reports.length).toBe(4)

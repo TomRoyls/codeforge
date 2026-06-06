@@ -65,7 +65,7 @@ function makeCallNode(
 }
 
 function makeStrLit(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -138,7 +138,7 @@ describe('no-unnecessary-string-ends-with-empty rule', () => {
     test('reports for "hello".endsWith("") — StringLiteral object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringEndsWithEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'endsWith', [makeStrLit('')]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'endsWith', [makeStrLit('')]))
       expect(reports.length).toBe(1)
     })
 
@@ -221,7 +221,7 @@ describe('no-unnecessary-string-ends-with-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringEndsWithEmpty.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [makeStrLit('')]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'endsWith', [makeStrLit('')]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'endsWith', [makeStrLit('')]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
@@ -371,7 +371,7 @@ describe('no-unnecessary-string-ends-with-empty rule', () => {
     test('does not report for str.endsWith("", 5) — two arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringEndsWithEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [makeStrLit(''), { type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [makeStrLit(''), { type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -413,7 +413,7 @@ describe('no-unnecessary-string-ends-with-empty rule', () => {
     test('does not report for str.endsWith with NumericLiteral argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringEndsWithEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -660,7 +660,7 @@ describe('no-unnecessary-string-ends-with-empty rule', () => {
     test('does not report when arguments array has three elements', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringEndsWithEmpty.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [makeStrLit(''), { type: 'NumericLiteral', value: 5 }, { type: 'NumericLiteral', value: 10 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [makeStrLit(''), { type: 'Literal', value: 5 }, { type: 'Literal', value: 10 }]))
       expect(reports.length).toBe(0)
     })
   })
@@ -886,7 +886,7 @@ describe('no-unnecessary-string-ends-with-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringEndsWithEmpty.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [makeStrLit('')]))
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'endsWith', [makeStrLit('')]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'endsWith', [makeStrLit('')]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

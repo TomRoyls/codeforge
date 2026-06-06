@@ -128,70 +128,70 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('reports for str.toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "hello".toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for obj.prop.toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for getStr().toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr[0].toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', computed: true, object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 } }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', computed: true, object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 } }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for template literal .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for binary expression .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions toLowerCase', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/toLowerCase/)
     })
 
     test('report message mentions empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/empty string/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toBe(
         `str.toLowerCase('') passes an unnecessary empty string. toLowerCase() takes no arguments.`,
       )
@@ -200,21 +200,21 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -222,7 +222,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }], false, 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }], false, 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -230,23 +230,23 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's2' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's2' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's2' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's2' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -255,21 +255,21 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('reports for ConditionalExpression object .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 'a' }, alternate: { type: 'Literal', value: 'b' } }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 'a' }, alternate: { type: 'Literal', value: 'b' } }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for FunctionExpression object .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [] } }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [] } }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ArrowFunctionExpression object .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
@@ -277,63 +277,63 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
       const innerCall = { type: 'CallExpression', callee: { type: 'Identifier', name: 'foo' }, arguments: [] }
-      visitor.CallExpression(makeCallNode(innerCall, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode(innerCall, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for this.toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new Obj().toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Obj' }, arguments: [] }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Obj' }, arguments: [] }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for parenthesized expression .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ParenthesizedExpression', expression: { type: 'Identifier', name: 'x' } }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ParenthesizedExpression', expression: { type: 'Identifier', name: 'x' } }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ArrayExpression object .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ObjectExpression object .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for UnaryExpression object .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: '!', prefix: true, argument: { type: 'Identifier', name: 'x' } }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: '!', prefix: true, argument: { type: 'Identifier', name: 'x' } }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for empty string literal object .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for numerical literal object .toLowerCase("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
@@ -353,63 +353,63 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('does not report for str.toLowerCase("a") with non-empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: 'a' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: 'a' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.toLowerCase("hello world") with longer string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: 'hello world' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: 'hello world' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.toLowerCase(" ") with whitespace string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: ' ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: ' ' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.toUpperCase("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toUpperCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toUpperCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.trim("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'trim', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'trim', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.indexOf("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.includes("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.toLowerCase("", "extra") — 2 arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }, { type: 'Literal', value: 'extra' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 'extra' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.toLowerCase("", "", "") — 3 arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }, { type: 'StringLiteral', value: '' }, { type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }, { type: 'Literal', value: '' }, { type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -424,7 +424,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'toLowerCase' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 25),
       })
       expect(reports.length).toBe(0)
@@ -436,7 +436,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'toLowerCase' },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -445,14 +445,14 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -467,7 +467,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'toLowerCase' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -484,7 +484,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'MemberExpression', object: { type: 'Identifier', name: 'a' }, property: { type: 'Identifier', name: 'b' } },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -493,14 +493,14 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('does not report when property name is "TOLOWERCASE" (case-sensitive)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'TOLOWERCASE', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'TOLOWERCASE', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when property name is "tolowercase" (all lowercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'tolowercase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'tolowercase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -612,7 +612,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           computed: false,
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -629,7 +629,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -658,7 +658,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryStringToLowerCaseEmptyRule.create(ctx1)
       const visitor2 = noUnnecessaryStringToLowerCaseEmptyRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase'))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -667,9 +667,9 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('visitor accumulates reports correctly with mixed calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase'))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
@@ -684,7 +684,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'toLowerCase' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -701,7 +701,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'toLowerCase' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -712,10 +712,10 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase')) // no args — negative
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }])) // positive
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toUpperCase', [{ type: 'StringLiteral', value: '' }])) // wrong method — negative
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }])) // positive
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: 'a' }])) // non-empty — negative
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }])) // positive
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toUpperCase', [{ type: 'Literal', value: '' }])) // wrong method — negative
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }])) // positive
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: 'a' }])) // non-empty — negative
       expect(reports.length).toBe(2)
     })
 
@@ -743,7 +743,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'toLowerCase' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -764,7 +764,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'toLowerCase' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -781,7 +781,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'toLowerCase' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -792,7 +792,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }])
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -816,7 +816,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'toLowerCase' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -826,7 +826,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }], false, 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }], false, 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -844,7 +844,7 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
           property: { type: 'Identifier', name: 'toLowerCase' },
           computed: true,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -853,8 +853,8 @@ describe('no-unnecessary-string-to-lower-case-empty rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's2' }, 'toLowerCase', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's2' }, 'toLowerCase', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

@@ -126,56 +126,56 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('reports for str.indexOf("") with Identifier callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "hello".indexOf("") with Literal callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for obj.prop.indexOf("") with MemberExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for getStr().indexOf("") with CallExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr[0].indexOf("") with computed MemberExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 }, computed: true }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 }, computed: true }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for template literal .indexOf("") with TemplateLiteral callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions indexOf', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/indexOf/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toBe(
         "str.indexOf('') always returns 0. This is likely unintentional.",
       )
@@ -184,21 +184,21 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -206,7 +206,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -214,23 +214,23 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'indexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'indexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -239,21 +239,21 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('reports for (a + b).indexOf("") with BinaryExpression callee object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for tag`template`.indexOf("") with TaggedTemplateExpression callee', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for empty string literal "" callee .indexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
@@ -261,84 +261,84 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
       const deep = { type: 'MemberExpression', object: { type: 'MemberExpression', object: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'a' } }, property: { type: 'Identifier', name: 'b' } }, property: { type: 'Identifier', name: 'c' } }
-      visitor.CallExpression(makeCallNode(deep, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode(deep, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ConditionalExpression callee (x ? a : b).indexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ArrayExpression callee [""].indexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ObjectExpression callee', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for ThisExpression callee this.indexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for SequenceExpression callee (a, b).indexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'Identifier', name: 'b' }] }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'Identifier', name: 'b' }] }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports when argument is StringLiteral with empty string and whitespace-like object name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'text' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'text' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports when argument value is exactly empty string (not whitespace)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toContain("''")
     })
 
     test('reports with correct report message mentioning always returns 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/always returns 0/)
     })
 
     test('reports with correct report message mentioning unintentional', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/unintentional/)
     })
 
     test('reports for ArrowFunctionExpression callee', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, arguments: [] }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, arguments: [] }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for String.raw`template`.indexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'String' }, property: { type: 'Identifier', name: 'raw' } }, arguments: [] }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'String' }, property: { type: 'Identifier', name: 'raw' } }, arguments: [] }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
   })
@@ -349,21 +349,21 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('does not report for str.indexOf("x") — non-empty string argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: 'x' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: 'x' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.indexOf("hello") — longer non-empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: 'hello' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: 'hello' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.indexOf(" ") — whitespace string argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: ' ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: ' ' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -377,49 +377,49 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('does not report for str.indexOf("", 0) — two arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }, { type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.indexOf("", fromIndex) — two arguments with identifier', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }, { type: 'Identifier', name: 'fromIndex' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }, { type: 'Identifier', name: 'fromIndex' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.includes("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.lastIndexOf("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.match("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.startsWith("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.endsWith("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -433,7 +433,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('does not report for str.indexOf(0) with NumericLiteral argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -462,7 +462,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           property: { type: 'Literal', value: 'indexOf' },
           computed: true,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -479,7 +479,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           property: { type: 'Identifier', name: 'method' },
           computed: true,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -495,7 +495,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -504,14 +504,14 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('does not report when property name is "indexof" (lowercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexof', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexof', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when property name is "INDEXOF" (uppercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'INDEXOF', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'INDEXOF', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -567,21 +567,21 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -594,7 +594,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -610,7 +610,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -626,21 +626,21 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('does not report for str.indexOf("\t") — tab character string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '\t' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '\t' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.indexOf("\n") — newline string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '\n' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '\n' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for three arguments str.indexOf("", 0, true)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }, { type: 'NumericLiteral', value: 0 }, { type: 'Literal', value: true }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 0 }, { type: 'Literal', value: true }]))
       expect(reports.length).toBe(0)
     })
 
@@ -660,8 +660,8 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryStringIndexOfEmptyRule.create(ctx1)
       const visitor2 = noUnnecessaryStringIndexOfEmptyRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: 'x' }]))
+      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: 'x' }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -669,9 +669,9 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: 'x' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: 'x' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
@@ -685,7 +685,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -701,7 +701,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -711,10 +711,10 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: 'x' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: 'x' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
@@ -742,7 +742,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -762,7 +762,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -778,7 +778,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -789,7 +789,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }])
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -812,7 +812,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -822,7 +822,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }], 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -840,7 +840,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           property: { type: 'Identifier', name: 'indexOf' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(1)
@@ -857,7 +857,7 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
           property: { type: 'Literal', value: 'indexOf' },
           computed: true,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -866,8 +866,8 @@ describe('no-unnecessary-string-index-of-empty rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIndexOfEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'indexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

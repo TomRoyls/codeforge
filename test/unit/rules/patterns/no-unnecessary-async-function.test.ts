@@ -144,7 +144,7 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'x' }, init: { type: 'NumericLiteral', value: 42 } }] },
+        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'x' }, init: { type: 'Literal', value: 42 } }] },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -162,7 +162,7 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'VariableDeclaration', kind: 'let', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'NumericLiteral', value: 1 } }] },
+        { type: 'VariableDeclaration', kind: 'let', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'Literal', value: 1 } }] },
         { type: 'ExpressionStatement', expression: { type: 'CallExpression', callee: { type: 'Identifier', name: 'log' }, arguments: [] } },
         { type: 'ReturnStatement', argument: { type: 'Identifier', name: 'a' } },
       ]))
@@ -173,7 +173,7 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'ReturnStatement', argument: { type: 'StringLiteral', value: 'hello' } },
+        { type: 'ReturnStatement', argument: { type: 'Literal', value: 'hello' } },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -255,8 +255,8 @@ describe('no-unnecessary-async-function rule', () => {
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
         { type: 'VariableDeclaration', kind: 'const', declarations: [
-          { type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'NumericLiteral', value: 1 } },
-          { type: 'VariableDeclarator', id: { type: 'Identifier', name: 'b' }, init: { type: 'NumericLiteral', value: 2 } },
+          { type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'Literal', value: 1 } },
+          { type: 'VariableDeclarator', id: { type: 'Identifier', name: 'b' }, init: { type: 'Literal', value: 2 } },
         ] },
       ]))
       expect(reports.length).toBe(1)
@@ -266,7 +266,7 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'ExpressionStatement', expression: { type: 'AssignmentExpression', operator: '=', left: { type: 'Identifier', name: 'x' }, right: { type: 'NumericLiteral', value: 1 } } },
+        { type: 'ExpressionStatement', expression: { type: 'AssignmentExpression', operator: '=', left: { type: 'Identifier', name: 'x' }, right: { type: 'Literal', value: 1 } } },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -275,8 +275,8 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'x' }, init: { type: 'StringLiteral', value: 'a' } }] },
-        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'y' }, init: { type: 'StringLiteral', value: 'b' } }] },
+        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'x' }, init: { type: 'Literal', value: 'a' } }] },
+        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'y' }, init: { type: 'Literal', value: 'b' } }] },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -321,7 +321,7 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'ThrowStatement', argument: { type: 'NewExpression', callee: { type: 'Identifier', name: 'Error' }, arguments: [{ type: 'StringLiteral', value: 'fail' }] } },
+        { type: 'ThrowStatement', argument: { type: 'NewExpression', callee: { type: 'Identifier', name: 'Error' }, arguments: [{ type: 'Literal', value: 'fail' }] } },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -485,8 +485,8 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'NumericLiteral', value: 1 } }] },
-        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'b' }, init: { type: 'NumericLiteral', value: 2 } }] },
+        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'Literal', value: 1 } }] },
+        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'b' }, init: { type: 'Literal', value: 2 } }] },
         { type: 'ReturnStatement', argument: { type: 'Identifier', name: 'a' } },
       ]))
       expect(reports.length).toBe(1)
@@ -652,7 +652,7 @@ describe('no-unnecessary-async-function rule', () => {
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
         { type: 'VariableDeclaration', kind: 'const', declarations: [
-          { type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'NumericLiteral', value: 1 } },
+          { type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'Literal', value: 1 } },
           { type: 'VariableDeclarator', id: { type: 'Identifier', name: 'b' }, init: { type: 'AwaitExpression', argument: { type: 'Identifier', name: 'p' } } },
         ] },
       ]))
@@ -663,7 +663,7 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'x' }, init: { type: 'NumericLiteral', value: 1 } }] },
+        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'x' }, init: { type: 'Literal', value: 1 } }] },
         { type: 'ExpressionStatement', expression: { type: 'AwaitExpression', argument: { type: 'Identifier', name: 'y' } } },
       ]))
       expect(reports.length).toBe(0)
@@ -673,7 +673,7 @@ describe('no-unnecessary-async-function rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryAsyncFunctionRule.create(context)
       visitor.FunctionDeclaration(makeAsyncFunctionNode([
-        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'NumericLiteral', value: 1 } }] },
+        { type: 'VariableDeclaration', kind: 'const', declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'a' }, init: { type: 'Literal', value: 1 } }] },
         { type: 'ExpressionStatement', expression: { type: 'CallExpression', callee: { type: 'Identifier', name: 'log' }, arguments: [] } },
         { type: 'ReturnStatement', argument: { type: 'AwaitExpression', argument: { type: 'Identifier', name: 'result' } } },
       ]))

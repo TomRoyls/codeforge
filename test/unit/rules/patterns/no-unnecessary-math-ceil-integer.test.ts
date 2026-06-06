@@ -64,7 +64,7 @@ function makeMathCeilCall(
 }
 
 function makeNumLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -595,7 +595,7 @@ describe('no-unnecessary-math-ceil-integer rule', () => {
     test('does not report for Math.ceil("5") — string literal argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathCeilInteger.create(context)
-      visitor.CallExpression(makeMathCeilCall({ type: 'StringLiteral', value: '5' }))
+      visitor.CallExpression(makeMathCeilCall({ type: 'Literal', value: '5' }))
       expect(reports.length).toBe(0)
     })
 

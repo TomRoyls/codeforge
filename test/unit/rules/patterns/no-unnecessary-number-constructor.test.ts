@@ -120,49 +120,49 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('reports for Number(42) — integer literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number(3.14) — float literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 3.14 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number(0) — zero', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 0 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number(-1) — negative number', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: -1 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: -1 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number(1e5) — scientific notation', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 1e5 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 1e5 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number(Infinity) — via NumericLiteral with Infinity value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: Infinity }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: Infinity }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number(NaN) — via NumericLiteral with NaN value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: NaN }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: NaN }))
       expect(reports.length).toBe(1)
     })
 
@@ -190,28 +190,28 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('reports for NumericLiteral with very large number', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 999999999 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 999999999 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for NumericLiteral with very small decimal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 0.000001 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 0.000001 }))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions unnecessary Number call', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }))
       expect(reports[0].message).toMatch(/Number/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }))
       expect(reports[0].message).toBe(
         'Unnecessary Number() call on a numeric literal. The value is already a number.',
       )
@@ -220,21 +220,21 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      const node = makeNumberCall({ type: 'NumericLiteral', value: 42 })
+      const node = makeNumberCall({ type: 'Literal', value: 42 })
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -242,7 +242,7 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }, 5, 10, 5, 30))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }, 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -250,15 +250,15 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 1 }))
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 2 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 1 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 2 }))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 1 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 1 }))
       visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 2 }))
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -266,7 +266,7 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -275,14 +275,14 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('reports for NumericLiteral with value 1', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 1 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 1 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for NumericLiteral with value -0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: -0 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: -0 }))
       expect(reports.length).toBe(1)
     })
 
@@ -323,7 +323,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }, { type: 'NumericLiteral', value: 16 }],
+        arguments: [{ type: 'Literal', value: 42 }, { type: 'Literal', value: 16 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -335,7 +335,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }, { type: 'NumericLiteral', value: 16 }, { type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 42 }, { type: 'Literal', value: 16 }, { type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 25),
       })
       expect(reports.length).toBe(0)
@@ -347,7 +347,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -359,7 +359,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Boolean' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -413,7 +413,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -425,7 +425,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'Number' } },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -476,14 +476,14 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'NumericLiteral', value: 42 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 42 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'NumericLiteral', value: 42 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 42 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -493,7 +493,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Math' }, property: { type: 'Identifier', name: 'Number' } },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -505,7 +505,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -636,14 +636,14 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('does not report for Number(1 + 2) — BinaryExpression argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'BinaryExpression', operator: '+', left: { type: 'NumericLiteral', value: 1 }, right: { type: 'NumericLiteral', value: 2 } }))
+      visitor.CallExpression(makeNumberCall({ type: 'BinaryExpression', operator: '+', left: { type: 'Literal', value: 1 }, right: { type: 'Literal', value: 2 } }))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for Number(x ? 1 : 2) — ConditionalExpression argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'NumericLiteral', value: 1 }, alternate: { type: 'NumericLiteral', value: 2 } }))
+      visitor.CallExpression(makeNumberCall({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } }))
       expect(reports.length).toBe(0)
     })
 
@@ -694,7 +694,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryNumberConstructorRule.create(ctx1)
       const visitor2 = noUnnecessaryNumberConstructorRule.create(ctx2)
-      visitor1.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }))
+      visitor1.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }))
       visitor2.CallExpression(makeNumberCall({ type: 'Literal', value: '42' }))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -703,9 +703,9 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 1 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 1 }))
       visitor.CallExpression(makeNumberCall({ type: 'Literal', value: '42' }))
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 3 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 3 }))
       expect(reports.length).toBe(2)
     })
 
@@ -715,7 +715,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -724,10 +724,10 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 1 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 1 }))
       visitor.CallExpression(makeNumberCall({ type: 'Literal', value: '42' }))
       visitor.CallExpression(makeNumberCall({ type: 'Identifier', name: 'x' }))
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 2 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 2 }))
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Number' },
@@ -756,7 +756,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -772,7 +772,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -784,7 +784,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -795,7 +795,7 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      const node = makeNumberCall({ type: 'NumericLiteral', value: 42 })
+      const node = makeNumberCall({ type: 'Literal', value: 42 })
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -814,7 +814,7 @@ describe('no-unnecessary-number-constructor rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -824,7 +824,7 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 42 }, 10, 4, 10, 25))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 42 }, 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -834,7 +834,7 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral', value: 1 }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 1 }))
       visitor.CallExpression(makeNumberCall({ type: 'Literal', value: 2 }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
@@ -843,7 +843,7 @@ describe('no-unnecessary-number-constructor rule', () => {
     test('handles NumericLiteral arg without value property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberConstructorRule.create(context)
-      visitor.CallExpression(makeNumberCall({ type: 'NumericLiteral' }))
+      visitor.CallExpression(makeNumberCall({ type: 'Literal' }))
       expect(reports.length).toBe(1)
     })
   })

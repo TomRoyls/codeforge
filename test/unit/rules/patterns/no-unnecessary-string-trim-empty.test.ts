@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeStrLit(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====

@@ -128,7 +128,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -138,7 +138,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'text' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -148,7 +148,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'myVar' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -158,7 +158,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -168,7 +168,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -178,7 +178,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports[0].message).toMatch(/lastIndexOf/)
     })
@@ -188,7 +188,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports[0].message).toBe(
         `str.lastIndexOf('') always returns str.length. This is likely unintentional.`,
@@ -200,7 +200,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports[0].loc).toBeDefined()
     })
@@ -210,7 +210,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports[0].node).toBeDefined()
     })
@@ -220,7 +220,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       const node = makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       )
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
@@ -231,7 +231,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
         5, 10, 5, 30,
       ))
       expect(reports[0].loc?.start.line).toBe(5)
@@ -243,11 +243,11 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'text' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(2)
     })
@@ -257,11 +257,11 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'text' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -270,8 +270,8 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
-        { type: 'StringLiteral', value: 'hello' },
-        [{ type: 'StringLiteral', value: '' }],
+        { type: 'Literal', value: 'hello' },
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -281,7 +281,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'TemplateLiteral', quasis: [], expressions: [] },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -291,7 +291,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -309,7 +309,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           },
           property: { type: 'Identifier', name: 'c' },
         },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -319,7 +319,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
@@ -337,7 +337,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(1)
@@ -353,7 +353,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(1)
@@ -364,7 +364,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 's' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
       expect(reports[0].message).toContain("lastIndexOf('')")
@@ -375,7 +375,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: '(str)' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -385,7 +385,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -395,7 +395,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'ArrayExpression', elements: [] },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -405,7 +405,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'ObjectExpression', properties: [] },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -415,7 +415,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'ThisExpression' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -425,7 +425,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports[0].message).toMatch(/str\.length/)
     })
@@ -435,7 +435,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports[0].message).toMatch(/unintentional/)
     })
@@ -445,7 +445,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -455,7 +455,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
         10, 4, 10, 25,
       ))
       expect(reports[0].loc?.end.line).toBe(10)
@@ -471,7 +471,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: 'a' }],
+        [{ type: 'Literal', value: 'a' }],
       ))
       expect(reports.length).toBe(0)
     })
@@ -481,7 +481,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: 'hello' }],
+        [{ type: 'Literal', value: 'hello' }],
       ))
       expect(reports.length).toBe(0)
     })
@@ -491,7 +491,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: ' ' }],
+        [{ type: 'Literal', value: ' ' }],
       ))
       expect(reports.length).toBe(0)
     })
@@ -507,7 +507,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'indexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -524,7 +524,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'includes' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -541,7 +541,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'search' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -558,7 +558,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'startsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -575,7 +575,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'endsWith' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -586,7 +586,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }, { type: 'NumericLiteral', value: 5 }],
+        [{ type: 'Literal', value: '' }, { type: 'Literal', value: 5 }],
       ))
       expect(reports.length).toBe(0)
     })
@@ -606,7 +606,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }, { type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 5 }],
+        [{ type: 'Literal', value: '' }, { type: 'Literal', value: 0 }, { type: 'Literal', value: 5 }],
       ))
       expect(reports.length).toBe(0)
     })
@@ -622,7 +622,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -639,7 +639,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -651,7 +651,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'lastIndexOf' },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -709,14 +709,14 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -725,7 +725,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'NumericLiteral', value: 0 }],
+        [{ type: 'Literal', value: 0 }],
       ))
       expect(reports.length).toBe(0)
     })
@@ -783,7 +783,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -799,7 +799,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -851,7 +851,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastindexof' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -918,11 +918,11 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor2 = noUnnecessaryStringLastIndexOfEmptyRule.create(ctx2)
       visitor1.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       visitor2.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: 'a' }],
+        [{ type: 'Literal', value: 'a' }],
       ))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -933,15 +933,15 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: 'a' }],
+        [{ type: 'Literal', value: 'a' }],
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'text' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(2)
     })
@@ -957,7 +957,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -974,7 +974,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -986,11 +986,11 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: 'a' }],
+        [{ type: 'Literal', value: 'a' }],
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
@@ -998,7 +998,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'text' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
@@ -1031,7 +1031,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -1052,7 +1052,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -1069,7 +1069,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -1082,7 +1082,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       const node = makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       )
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -1107,7 +1107,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -1119,7 +1119,7 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
         10, 4, 10, 25,
       ))
       expect(reports[0].loc?.start.line).toBe(10)
@@ -1133,11 +1133,11 @@ describe('no-unnecessary-string-last-index-of-empty rule', () => {
       const visitor = noUnnecessaryStringLastIndexOfEmptyRule.create(context)
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'str' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       visitor.CallExpression(makeLastIndexOfCall(
         { type: 'Identifier', name: 'text' },
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)

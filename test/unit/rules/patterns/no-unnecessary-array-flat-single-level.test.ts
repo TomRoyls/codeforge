@@ -63,8 +63,8 @@ function makeCallNode(
   }
 }
 
-function numLit(value: number): { type: 'NumericLiteral'; value: number } {
-  return { type: 'NumericLiteral', value }
+function numLit(value: number): { type: 'Literal'; value: number } {
+  return { type: 'Literal', value }
 }
 
 function makeArrayExpr(elements: unknown[]): unknown {
@@ -148,14 +148,14 @@ describe('no-unnecessary-array-flat-single-level rule', () => {
     test('reports for [1, [2]].flat(1) with nested array', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatSingleLevel.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'NumericLiteral', value: 1 }, makeArrayExpr([{ type: 'NumericLiteral', value: 2 }])]), 'flat', [numLit(1)]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'Literal', value: 1 }, makeArrayExpr([{ type: 'Literal', value: 2 }])]), 'flat', [numLit(1)]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for [1].flat(1) with single-element array', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatSingleLevel.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'NumericLiteral', value: 1 }]), 'flat', [numLit(1)]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'Literal', value: 1 }]), 'flat', [numLit(1)]))
       expect(reports.length).toBe(1)
     })
 
@@ -421,7 +421,7 @@ describe('no-unnecessary-array-flat-single-level rule', () => {
     test('does not report for arr.flat("1") — string literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatSingleLevel.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'flat', [{ type: 'StringLiteral', value: '1' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'flat', [{ type: 'Literal', value: '1' }]))
       expect(reports.length).toBe(0)
     })
 

@@ -65,7 +65,7 @@ function makeCallNode(
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeIdentifier(name: string): unknown {
@@ -378,7 +378,7 @@ describe('no-unnecessary-array-index-of-literal rule', () => {
     test('does not report for indexOf with numeric literal arg arr.indexOf(5)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexOfLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [{ type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -413,14 +413,14 @@ describe('no-unnecessary-array-index-of-literal rule', () => {
     test('does not report for indexOf with 2 args arr.indexOf("a", 1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexOfLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [makeStringLiteral('a'), { type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [makeStringLiteral('a'), { type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for indexOf with 3 args', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayIndexOfLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [makeStringLiteral('a'), { type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [makeStringLiteral('a'), { type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -709,7 +709,7 @@ describe('no-unnecessary-array-index-of-literal rule', () => {
       visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [makeStringLiteral('')]))
       visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [makeIdentifier('x')]))
       visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [makeStringLiteral('b')]))
-      visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode(makeIdentifier('arr'), 'indexOf', [{ type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(2)
     })
 

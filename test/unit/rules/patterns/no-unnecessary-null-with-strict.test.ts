@@ -369,7 +369,7 @@ describe('no-unnecessary-null-with-strict rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNullWithStrictRule.create(context)
       visitor.TSUnionType(makeUnionNode([
-        { type: 'TSLiteralType', literal: { type: 'StringLiteral', value: 'foo' } },
+        { type: 'TSLiteralType', literal: { type: 'Literal', value: 'foo' } },
         { type: 'TSNullKeyword' },
         { type: 'TSUndefinedKeyword' },
       ]))

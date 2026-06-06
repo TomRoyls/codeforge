@@ -234,7 +234,7 @@ describe('no-misleading-array-method rule', () => {
       visitor.CallExpression(makeForEachBareReturn({
         callee: {
           type: 'MemberExpression',
-          property: { type: 'StringLiteral', value: 'forEach' },
+          property: { type: 'Literal', value: 'forEach' },
         },
       }))
       expect(reports.length).toBe(1)
@@ -530,7 +530,7 @@ describe('no-misleading-array-method rule', () => {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          property: { type: 'StringLiteral', value: 'map' },
+          property: { type: 'Literal', value: 'map' },
         },
         arguments: [{
           type: 'ArrowFunctionExpression',
@@ -988,7 +988,7 @@ describe('no-misleading-array-method rule', () => {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          property: { type: 'StringLiteral', value: '' },
+          property: { type: 'Literal', value: '' },
         },
         arguments: [{
           type: 'ArrowFunctionExpression',

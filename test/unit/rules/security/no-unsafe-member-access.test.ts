@@ -2011,7 +2011,7 @@ describe('no-unsafe-member-access rule - additional edge cases', () => {
         expression: { type: 'Identifier', name: 'x' },
         typeAnnotation: { type: 'TSAnyKeyword' },
       },
-      property: { type: 'NumericLiteral', value: 0 },
+      property: { type: 'Literal', value: 0 },
       computed: true,
       optional: false,
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },

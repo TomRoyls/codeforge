@@ -44,7 +44,7 @@ function makeLoc(startLine: number, startCol: number, endLine: number, endCol: n
 
 function makeStringLiteral(value: string, line = 1, column = 0) {
   return {
-    type: 'StringLiteral',
+    type: 'Literal',
     value,
     loc: makeLoc(line, column, line, column + value.length + 2),
   }
@@ -348,7 +348,7 @@ describe('no-regex-concat rule', () => {
     test('reports new RegExp(stringLiteral + numericLiteral)', () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexConcatRule.create(context)
-      const numericLiteral = { type: 'NumericLiteral', value: 42, loc: makeLoc(1, 0, 1, 2) }
+      const numericLiteral = { type: 'Literal', value: 42, loc: makeLoc(1, 0, 1, 2) }
       const node = makeNewExpr(
         makeIdentifier('RegExp'),
         [makeBinaryExpr(makeStringLiteral('\\d{'), '+', numericLiteral)],
@@ -1000,7 +1000,7 @@ describe('no-regex-concat rule', () => {
     test('does not report BinaryExpression with left as NumericLiteral and right as StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noRegexConcatRule.create(context)
-      const numericLeft = { type: 'NumericLiteral', value: 42, loc: makeLoc(1, 0, 1, 2) }
+      const numericLeft = { type: 'Literal', value: 42, loc: makeLoc(1, 0, 1, 2) }
       const node = makeNewExpr(
         makeIdentifier('RegExp'),
         [makeBinaryExpr(numericLeft, '+', makeStringLiteral('b'))],

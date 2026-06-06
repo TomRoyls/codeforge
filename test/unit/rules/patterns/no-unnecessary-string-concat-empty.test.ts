@@ -64,11 +64,11 @@ function makeCallNode(
 }
 
 function makeEmptyStringLiteral(): unknown {
-  return { type: 'StringLiteral', value: '' }
+  return { type: 'Literal', value: '' }
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -141,7 +141,7 @@ describe('no-unnecessary-string-concat-empty rule', () => {
     test('reports for single quotes empty concat', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConcatEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '' }, 'concat', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'concat', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
@@ -226,7 +226,7 @@ describe('no-unnecessary-string-concat-empty rule', () => {
     test('reports when arg is StringLiteral with empty string value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConcatEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: '' }, 'concat', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'concat', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
@@ -360,7 +360,7 @@ describe('no-unnecessary-string-concat-empty rule', () => {
     test('does not report for \'\'.slice(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConcatEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'slice', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'slice', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -602,7 +602,7 @@ describe('no-unnecessary-string-concat-empty rule', () => {
     test('does not report when arg is a NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConcatEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'concat', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'concat', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -904,7 +904,7 @@ describe('no-unnecessary-string-concat-empty rule', () => {
     test('does not report when receiver is NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConcatEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 0 }, 'concat', [makeEmptyStringLiteral()]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 0 }, 'concat', [makeEmptyStringLiteral()]))
       expect(reports.length).toBe(0)
     })
 

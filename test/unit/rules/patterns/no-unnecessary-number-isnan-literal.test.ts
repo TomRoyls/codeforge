@@ -124,49 +124,49 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('reports for Number.isNaN(42) — NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN(0) — zero NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 0 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN(-1) — negative NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: -1 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: -1 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN(3.14) — float NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 3.14 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN("hello") — StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: 'hello' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN("") — empty StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: '' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN("42") — numeric string StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: '42' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: '42' }))
       expect(reports.length).toBe(1)
     })
 
@@ -222,14 +222,14 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('report message mentions Number.isNaN', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
       expect(reports[0].message).toMatch(/Number\.isNaN/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
       expect(reports[0].message).toBe(
         'Unnecessary Number.isNaN() call on a literal value. Number.isNaN() always returns false for literal values.',
       )
@@ -238,21 +238,21 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      const node = makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 })
+      const node = makeNumberIsNaNCall({ type: 'Literal', value: 42 })
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -260,7 +260,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }, 5, 10, 5, 30))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }, 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -268,15 +268,15 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: 'hello' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
       visitor.CallExpression(makeNumberIsNaNCall({ type: 'BooleanLiteral', value: true }))
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -284,21 +284,21 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('reports for Number.isNaN(Infinity) — NumericLiteral Infinity', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: Infinity }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: Infinity }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN("NaN") — StringLiteral "NaN"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: 'NaN' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'NaN' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN(999999) — large NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 999999 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 999999 }))
       expect(reports.length).toBe(1)
     })
 
@@ -328,14 +328,14 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('reports for Number.isNaN(1e10) — scientific notation NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 1e10 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 1e10 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for Number.isNaN(0.001) — small decimal NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 0.001 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 0.001 }))
       expect(reports.length).toBe(1)
     })
 
@@ -349,14 +349,14 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('reports for Number.isNaN("multiline\nstring") — StringLiteral with newline', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: 'multiline\nstring' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'multiline\nstring' }))
       expect(reports.length).toBe(1)
     })
 
     test('report loc end values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }, 3, 0, 3, 18))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }, 3, 0, 3, 18))
       expect(reports[0].loc?.end.line).toBe(3)
       expect(reports[0].loc?.end.column).toBe(18)
     })
@@ -364,8 +364,8 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('accumulates three reports correctly for all literal types', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 1 }))
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: 'x' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 1 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'x' }))
       visitor.CallExpression(makeNumberIsNaNCall({ type: 'BooleanLiteral', value: false }))
       expect(reports.length).toBe(3)
     })
@@ -415,7 +415,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }, { type: 'Identifier', name: 'extra' }],
+        arguments: [{ type: 'Literal', value: 42 }, { type: 'Identifier', name: 'extra' }],
         loc: makeLoc(1, 0, 1, 30),
       })
       expect(reports.length).toBe(0)
@@ -427,7 +427,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'isNaN' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 15),
       })
       expect(reports.length).toBe(0)
@@ -464,7 +464,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'MyObj' },
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -480,7 +480,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isFinite' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -496,7 +496,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'parseInt' },
         },
-        arguments: [{ type: 'StringLiteral', value: '42' }],
+        arguments: [{ type: 'Literal', value: '42' }],
         loc: makeLoc(1, 0, 1, 25),
       })
       expect(reports.length).toBe(0)
@@ -519,7 +519,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('does not report for Number.isNaN([1,2]) — ArrayExpression argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'ArrayExpression', elements: [{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }] }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'ArrayExpression', elements: [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }] }))
       expect(reports.length).toBe(0)
     })
 
@@ -547,7 +547,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isisNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 25),
       })
       expect(reports.length).toBe(0)
@@ -598,21 +598,21 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'NumericLiteral', value: 42 }], loc: makeLoc(1, 0, 1, 20) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 42 }], loc: makeLoc(1, 0, 1, 20) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'NumericLiteral', value: 42 }], loc: makeLoc(1, 0, 1, 20) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 42 }], loc: makeLoc(1, 0, 1, 20) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'isNaN' }, arguments: [{ type: 'NumericLiteral', value: 42 }], loc: makeLoc(1, 0, 1, 20) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'isNaN' }, arguments: [{ type: 'Literal', value: 42 }], loc: makeLoc(1, 0, 1, 20) })
       expect(reports.length).toBe(0)
     })
 
@@ -625,7 +625,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           type: 'MemberExpression',
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -641,7 +641,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: null,
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -656,7 +656,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'Number' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -672,7 +672,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: null,
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -688,7 +688,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Literal', value: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -711,7 +711,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('does not report for Number.isNaN(void 0) — UnaryExpression void', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'UnaryExpression', operator: 'void', prefix: true, argument: { type: 'NumericLiteral', value: 0 } }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'UnaryExpression', operator: 'void', prefix: true, argument: { type: 'Literal', value: 0 } }))
       expect(reports.length).toBe(0)
     })
 
@@ -725,7 +725,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isnan' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -734,7 +734,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('does not report when argument is a ConditionalExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'NumericLiteral', value: 1 }, alternate: { type: 'NumericLiteral', value: 2 } }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } }))
       expect(reports.length).toBe(0)
     })
   })
@@ -747,7 +747,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryNumberIsnanLiteralRule.create(ctx1)
       const visitor2 = noUnnecessaryNumberIsnanLiteralRule.create(ctx2)
-      visitor1.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
+      visitor1.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
       visitor2.CallExpression(makeNumberIsNaNCall({ type: 'Identifier', name: 'x' }))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -756,9 +756,9 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('visitor accumulates reports correctly with mixed calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
       visitor.CallExpression(makeNumberIsNaNCall({ type: 'Identifier', name: 'x' }))
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: 'hello' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(2)
     })
 
@@ -772,7 +772,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -788,7 +788,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -799,8 +799,8 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
       visitor.CallExpression(makeNumberIsNaNCall({ type: 'Identifier', name: 'x' }))
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: 'a' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'a' }))
       visitor.CallExpression(makeNumberIsNaNCall({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }))
       visitor.CallExpression(makeNumberIsNaNCall({ type: 'BooleanLiteral', value: true }))
       expect(reports.length).toBe(3)
@@ -829,7 +829,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
         range: [0, 20],
         extra: true,
@@ -849,7 +849,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -865,7 +865,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -876,7 +876,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      const node = makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 })
+      const node = makeNumberIsNaNCall({ type: 'Literal', value: 42 })
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -899,7 +899,7 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
           object: { type: 'Identifier', name: 'Number' },
           property: { type: 'Identifier', name: 'isNaN' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
         _parent: {},
       })
@@ -909,8 +909,8 @@ describe('no-unnecessary-number-isnan-literal rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberIsnanLiteralRule.create(context)
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'NumericLiteral', value: 42 }))
-      visitor.CallExpression(makeNumberIsNaNCall({ type: 'StringLiteral', value: 'hello' }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 42 }))
+      visitor.CallExpression(makeNumberIsNaNCall({ type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

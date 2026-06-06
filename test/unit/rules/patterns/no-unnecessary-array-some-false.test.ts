@@ -561,7 +561,7 @@ describe('no-unnecessary-array-some-false rule', () => {
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'some', [{
         type: 'ArrowFunctionExpression',
         params: [{ type: 'Identifier', name: 'x' }],
-        body: { type: 'NumericLiteral', value: 0 },
+        body: { type: 'Literal', value: 0 },
       }]))
       expect(reports.length).toBe(0)
     })
@@ -583,7 +583,7 @@ describe('no-unnecessary-array-some-false rule', () => {
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'some', [{
         type: 'ArrowFunctionExpression',
         params: [{ type: 'Identifier', name: 'x' }],
-        body: { type: 'StringLiteral', value: 'false' },
+        body: { type: 'Literal', value: 'false' },
       }]))
       expect(reports.length).toBe(0)
     })

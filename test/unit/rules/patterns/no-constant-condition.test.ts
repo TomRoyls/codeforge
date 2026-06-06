@@ -71,7 +71,7 @@ function createLiteral(value: unknown): unknown {
 
 function createNumericLiteral(value: number): unknown {
   return {
-    type: 'NumericLiteral',
+    type: 'Literal',
     value,
   }
 }
@@ -2432,7 +2432,7 @@ describe('no-constant-condition rule', () => {
 
     test('createNumericLiteral creates correct type', () => {
       const node = createNumericLiteral(3.14)
-      expect(node).toEqual({ type: 'NumericLiteral', value: 3.14 })
+      expect(node).toEqual({ type: 'Literal', value: 3.14 })
     })
 
     test('createIdentifier creates correct type', () => {

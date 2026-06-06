@@ -43,7 +43,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeCallNode(

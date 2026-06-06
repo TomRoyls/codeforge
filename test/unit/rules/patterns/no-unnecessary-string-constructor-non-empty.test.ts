@@ -114,70 +114,70 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('reports for new String("hello")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'hello' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String("world")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'world' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'world' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String("a")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'a' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'a' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String(" ") — space character', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: ' ' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: ' ' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String("multi word string")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'multi word string' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'multi word string' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String("") — empty string literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with unicode content', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '\u0041' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '\u0041' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with special characters', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '!@#$%^&*()' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '!@#$%^&*()' }))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions String object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'test' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'test' }))
       expect(reports[0].message).toMatch(/String/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'x' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'x' }))
       expect(reports[0].message).toBe(
         `new String('...') creates a String object, not a primitive. Use the literal directly.`,
       )
@@ -186,21 +186,21 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'abc' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'abc' }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'abc' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'abc' }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input NewExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      const node = makeNewStringNode({ type: 'StringLiteral', value: 'abc' })
+      const node = makeNewStringNode({ type: 'Literal', value: 'abc' })
       visitor.NewExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -208,7 +208,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'x' }, 5, 10, 5, 30))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'x' }, 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -216,93 +216,93 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'a' }))
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'b' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'a' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'b' }))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'a' }))
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'b' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'a' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'b' }))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('reports for new String with emoji content', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '🎉' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '🎉' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with escaped characters', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'line1\nline2' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'line1\nline2' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with newline', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '\n' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '\n' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with tab', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '\t' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '\t' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with very long string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'a'.repeat(1000) }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'a'.repeat(1000) }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with numbers in string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '12345' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '12345' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with quotes inside', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: "it's" }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: "it's" }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with backslash', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'C:\\path\\to\\file' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'C:\\path\\to\\file' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with HTML content', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '<div>hello</div>' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '<div>hello</div>' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new String with path-like string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: '/usr/local/bin' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: '/usr/local/bin' }))
       expect(reports.length).toBe(1)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'abc' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'abc' }))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -311,7 +311,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'x' }, 10, 4, 10, 25))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'x' }, 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -328,7 +328,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'StringLiteral', value: 'hello' }],
+        arguments: [{ type: 'Literal', value: 'hello' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -352,7 +352,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'StringLiteral', value: 'a' }, { type: 'StringLiteral', value: 'b' }],
+        arguments: [{ type: 'Literal', value: 'a' }, { type: 'Literal', value: 'b' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -364,7 +364,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'StringLiteral', value: '5' }],
+        arguments: [{ type: 'Literal', value: '5' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -376,7 +376,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Boolean' },
-        arguments: [{ type: 'StringLiteral', value: 'true' }],
+        arguments: [{ type: 'Literal', value: 'true' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -388,7 +388,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Object' },
-        arguments: [{ type: 'StringLiteral', value: 'str' }],
+        arguments: [{ type: 'Literal', value: 'str' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -400,7 +400,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Array' },
-        arguments: [{ type: 'StringLiteral', value: 'str' }],
+        arguments: [{ type: 'Literal', value: 'str' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -412,7 +412,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Foo' },
-        arguments: [{ type: 'StringLiteral', value: 'str' }],
+        arguments: [{ type: 'Literal', value: 'str' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -448,7 +448,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -556,14 +556,14 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression({ type: 'NewExpression', arguments: [{ type: 'StringLiteral', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.NewExpression({ type: 'NewExpression', arguments: [{ type: 'Literal', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression({ type: 'NewExpression', callee: null, arguments: [{ type: 'StringLiteral', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.NewExpression({ type: 'NewExpression', callee: null, arguments: [{ type: 'Literal', value: 'x' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -573,7 +573,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'ns' }, property: { type: 'Identifier', name: 'String' } },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 5),
       })
       expect(reports.length).toBe(0)
@@ -585,7 +585,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'String' } },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -597,7 +597,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'string' },
-        arguments: [{ type: 'StringLiteral', value: 'x' }],
+        arguments: [{ type: 'Literal', value: 'x' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -632,7 +632,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -737,11 +737,11 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryStringConstructorNonEmptyRule.create(ctx1)
       const visitor2 = noUnnecessaryStringConstructorNonEmptyRule.create(ctx2)
-      visitor1.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'hello' }))
+      visitor1.NewExpression(makeNewStringNode({ type: 'Literal', value: 'hello' }))
       visitor2.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'StringLiteral', value: '5' }],
+        arguments: [{ type: 'Literal', value: '5' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(rep1.length).toBe(1)
@@ -751,14 +751,14 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'a' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'a' }))
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'NumericLiteral', value: 5 }],
+        arguments: [{ type: 'Literal', value: 5 }],
         loc: makeLoc(1, 0, 1, 20),
       })
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'b' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'b' }))
       expect(reports.length).toBe(2)
     })
 
@@ -768,7 +768,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       const node = {
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
       }
       visitor.NewExpression(node)
       expect(reports.length).toBe(1)
@@ -780,7 +780,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       const node = {
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
       }
       visitor.NewExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -793,21 +793,21 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'Number' },
-        arguments: [{ type: 'StringLiteral', value: '5' }],
+        arguments: [{ type: 'Literal', value: '5' }],
         loc: makeLoc(1, 0, 1, 20),
       })
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'hello' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'hello' }))
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
         arguments: [],
         loc: makeLoc(1, 0, 1, 20),
       })
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'world' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'world' }))
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'NumericLiteral', value: 42 }],
+        arguments: [{ type: 'Literal', value: 42 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(2)
@@ -832,7 +832,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       const node = {
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -848,7 +848,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -860,7 +860,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -871,7 +871,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      const node = makeNewStringNode({ type: 'StringLiteral', value: 'test' })
+      const node = makeNewStringNode({ type: 'Literal', value: 'test' })
       visitor.NewExpression(node)
       visitor.NewExpression(node)
       visitor.NewExpression(node)
@@ -890,7 +890,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'Identifier', name: 'String' },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -900,7 +900,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'x' }, 10, 4, 10, 25))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'x' }, 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -913,7 +913,7 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
       visitor.NewExpression({
         type: 'NewExpression',
         callee: { type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [] } },
-        arguments: [{ type: 'StringLiteral', value: 'test' }],
+        arguments: [{ type: 'Literal', value: 'test' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -934,8 +934,8 @@ describe('no-unnecessary-string-constructor-non-empty rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringConstructorNonEmptyRule.create(context)
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'a' }))
-      visitor.NewExpression(makeNewStringNode({ type: 'StringLiteral', value: 'b' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'a' }))
+      visitor.NewExpression(makeNewStringNode({ type: 'Literal', value: 'b' }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

@@ -64,7 +64,7 @@ function createRequireNode(source: string): unknown {
   return {
     type: 'CallExpression',
     callee: { type: 'Identifier', name: 'require' },
-    arguments: [{ type: 'StringLiteral', value: source }],
+    arguments: [{ type: 'Literal', value: source }],
     loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
   }
 }
@@ -1385,7 +1385,7 @@ describe('no-barrel-imports rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'mod' } },
-        arguments: [{ type: 'StringLiteral', value: './utils/index.ts' }],
+        arguments: [{ type: 'Literal', value: './utils/index.ts' }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       }
       visitor.CallExpression(node)
@@ -2163,7 +2163,7 @@ describe('no-barrel-imports rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './utils/index.ts' }],
+        arguments: [{ type: 'Literal', value: './utils/index.ts' }],
       }
       expect(() => visitor.CallExpression(node)).not.toThrow()
     })
@@ -2202,7 +2202,7 @@ describe('no-barrel-imports rule', () => {
       const node = {
         type: 'CallExpression',
         callee: null,
-        arguments: [{ type: 'StringLiteral', value: './utils/index.ts' }],
+        arguments: [{ type: 'Literal', value: './utils/index.ts' }],
       }
       expect(() => visitor.CallExpression(node)).not.toThrow()
     })
@@ -2214,7 +2214,7 @@ describe('no-barrel-imports rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'FunctionExpression' },
-        arguments: [{ type: 'StringLiteral', value: './utils/index.ts' }],
+        arguments: [{ type: 'Literal', value: './utils/index.ts' }],
       }
       visitor.CallExpression(node)
       expect(report).not.toHaveBeenCalled()

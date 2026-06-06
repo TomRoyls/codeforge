@@ -126,49 +126,49 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('reports for str.lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for anotherVar.lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'anotherVar' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'anotherVar' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for member expression obj.prop.lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for call result getStr().lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getStr' }, arguments: [] }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for array element access arr[0].lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 }, computed: true }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 }, computed: true }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions lastIndexOf', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toMatch(/lastIndexOf/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toBe(
         `str.lastIndexOf('') always returns str.length. This is likely not the intended behavior.`,
       )
@@ -177,21 +177,21 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -199,7 +199,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -207,65 +207,65 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str2' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str2' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str2' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str2' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('reports for this.lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for template literal result tag`str`.lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for parenthesized expression (str).lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for conditional result (cond ? a : b).lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'cond' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'cond' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for binary result (a + b).lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for logical result (a || b).lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -277,7 +277,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
       visitor.CallExpression(makeCallNode(
         { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Identifier', name: 'join' } }, arguments: [] },
         'lastIndexOf',
-        [{ type: 'StringLiteral', value: '' }],
+        [{ type: 'Literal', value: '' }],
       ))
       expect(reports.length).toBe(1)
     })
@@ -285,49 +285,49 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('reports for string literal object "hello".lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new expression result new Str().lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Str' }, arguments: [] }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Str' }, arguments: [] }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for assignment result x = str.lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof result typeof x lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: 'typeof', prefix: true, argument: { type: 'Identifier', name: 'x' } }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: 'typeof', prefix: true, argument: { type: 'Identifier', name: 'x' } }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for seq expression (a, b).lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'Identifier', name: 'b' }] }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'Identifier', name: 'b' }] }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for await result (await str).lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'AwaitExpression', argument: { type: 'Identifier', name: 'str' } }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'AwaitExpression', argument: { type: 'Identifier', name: 'str' } }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for yield result (yield str).lastIndexOf("")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'YieldExpression', argument: { type: 'Identifier', name: 'str' } }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'YieldExpression', argument: { type: 'Identifier', name: 'str' } }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(1)
     })
   })
@@ -338,14 +338,14 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('does not report for str.lastIndexOf("a") — non-empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: 'a' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: 'a' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.lastIndexOf("hello") — non-empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: 'hello' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: 'hello' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -366,70 +366,70 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('does not report for str.lastIndexOf("", 5) — two arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }, { type: 'Literal', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.lastIndexOf("", pos) — two arguments with variable', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }, { type: 'Identifier', name: 'pos' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }, { type: 'Identifier', name: 'pos' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.indexOf("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.includes("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.search("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'search', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'search', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.startsWith("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'startsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.endsWith("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.match("") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.replace("", "x") — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replace', [{ type: 'StringLiteral', value: '' }, { type: 'StringLiteral', value: 'x' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replace', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 'x' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.lastIndexOf("x", "y", "z") — three arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }, { type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -485,21 +485,21 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'StringLiteral', value: '' }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'Literal', value: '' }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -513,7 +513,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Literal', value: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -522,7 +522,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('does not report when property name is "lastindexof" (lowercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastindexof', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastindexof', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -535,7 +535,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -551,7 +551,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: null,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -633,28 +633,28 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('does not report when first arg is NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.lastIndexOf(" ") — space string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: ' ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: ' ' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.lastIndexOf("\\n") — newline string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '\n' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '\n' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.lastIndexOf("\\t") — tab string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '\t' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '\t' }]))
       expect(reports.length).toBe(0)
     })
   })
@@ -667,8 +667,8 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryStringLastIndexOfZeroRule.create(ctx1)
       const visitor2 = noUnnecessaryStringLastIndexOfZeroRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: 'a' }]))
+      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: 'a' }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -676,9 +676,9 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: 'a' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: 'a' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
     })
 
@@ -692,7 +692,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -708,7 +708,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -718,11 +718,11 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: 'a' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }, { type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: 'a' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }, { type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -749,7 +749,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -769,7 +769,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -785,7 +785,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -796,7 +796,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }])
+      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }])
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -819,7 +819,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           object: { type: 'Identifier', name: 'str' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -829,7 +829,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }], 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -847,7 +847,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           property: { type: 'Identifier', name: 'lastIndexOf' },
           computed: false,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(1)
@@ -864,7 +864,7 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
           property: { type: 'Literal', value: 'lastIndexOf' },
           computed: true,
         },
-        arguments: [{ type: 'StringLiteral', value: '' }],
+        arguments: [{ type: 'Literal', value: '' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -873,8 +873,8 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str2' }, 'lastIndexOf', [{ type: 'StringLiteral', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str2' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
     })

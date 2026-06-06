@@ -51,7 +51,7 @@ function makeStringNode(
   locEndCol = 5,
 ): unknown {
   return {
-    type: 'StringLiteral',
+    type: 'Literal',
     value,
     raw,
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
@@ -504,35 +504,35 @@ describe('no-unnecessary-escape rule', () => {
     test('does not report for StringLiteral without value property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', raw: '\\a', loc: makeLoc(1, 0, 1, 4) })
+      visitor.StringLiteral({ type: 'Literal', raw: '\\a', loc: makeLoc(1, 0, 1, 4) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report for StringLiteral without raw property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: 'a', loc: makeLoc(1, 0, 1, 4) })
+      visitor.StringLiteral({ type: 'Literal', value: 'a', loc: makeLoc(1, 0, 1, 4) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report for StringLiteral with empty value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: '', raw: '', loc: makeLoc(1, 0, 1, 2) })
+      visitor.StringLiteral({ type: 'Literal', value: '', raw: '', loc: makeLoc(1, 0, 1, 2) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report for StringLiteral with non-string value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: 123, raw: '\\a', loc: makeLoc(1, 0, 1, 4) })
+      visitor.StringLiteral({ type: 'Literal', value: 123, raw: '\\a', loc: makeLoc(1, 0, 1, 4) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report for StringLiteral with non-string raw', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: 'a', raw: 123, loc: makeLoc(1, 0, 1, 4) })
+      visitor.StringLiteral({ type: 'Literal', value: 'a', raw: 123, loc: makeLoc(1, 0, 1, 4) })
       expect(reports.length).toBe(0)
     })
 
@@ -605,7 +605,7 @@ describe('no-unnecessary-escape rule', () => {
     test('node without loc still reports', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      const node = { type: 'StringLiteral', value: 'a', raw: '\\a' }
+      const node = { type: 'Literal', value: 'a', raw: '\\a' }
       visitor.StringLiteral(node)
       expect(reports.length).toBe(1)
     })
@@ -613,7 +613,7 @@ describe('no-unnecessary-escape rule', () => {
     test('node without loc reports with default location', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      const node = { type: 'StringLiteral', value: 'a', raw: '\\a' }
+      const node = { type: 'Literal', value: 'a', raw: '\\a' }
       visitor.StringLiteral(node)
       expect(reports[0].loc?.start.line).toBe(1)
       expect(reports[0].loc?.start.column).toBe(0)
@@ -656,7 +656,7 @@ describe('no-unnecessary-escape rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
       const node = {
-        type: 'StringLiteral',
+        type: 'Literal',
         value: 'a',
         raw: '\\a',
         loc: makeLoc(1, 0, 1, 5),
@@ -670,14 +670,14 @@ describe('no-unnecessary-escape rule', () => {
     test('handles node with empty loc object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: 'a', raw: '\\a', loc: {} })
+      visitor.StringLiteral({ type: 'Literal', value: 'a', raw: '\\a', loc: {} })
       expect(reports.length).toBe(1)
     })
 
     test('handles node with partial loc (missing end)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: 'a', raw: '\\a', loc: { start: { line: 3, column: 5 } } })
+      visitor.StringLiteral({ type: 'Literal', value: 'a', raw: '\\a', loc: { start: { line: 3, column: 5 } } })
       expect(reports.length).toBe(1)
       expect(reports[0].loc?.start.line).toBe(3)
       expect(reports[0].loc?.start.column).toBe(5)
@@ -702,7 +702,7 @@ describe('no-unnecessary-escape rule', () => {
     test('handles node with _parent property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: 'a', raw: '\\a', loc: makeLoc(1, 0, 1, 5), _parent: {} })
+      visitor.StringLiteral({ type: 'Literal', value: 'a', raw: '\\a', loc: makeLoc(1, 0, 1, 5), _parent: {} })
       expect(reports.length).toBe(1)
     })
 
@@ -729,21 +729,21 @@ describe('no-unnecessary-escape rule', () => {
     test('does not report when value is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: null, raw: '\\a', loc: makeLoc(1, 0, 1, 4) })
+      visitor.StringLiteral({ type: 'Literal', value: null, raw: '\\a', loc: makeLoc(1, 0, 1, 4) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when raw is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', value: 'a', raw: null, loc: makeLoc(1, 0, 1, 4) })
+      visitor.StringLiteral({ type: 'Literal', value: 'a', raw: null, loc: makeLoc(1, 0, 1, 4) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when value property is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryEscapeRule.create(context)
-      visitor.StringLiteral({ type: 'StringLiteral', loc: makeLoc(1, 0, 1, 5) })
+      visitor.StringLiteral({ type: 'Literal', loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 

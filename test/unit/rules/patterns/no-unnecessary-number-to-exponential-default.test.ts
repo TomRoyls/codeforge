@@ -65,7 +65,7 @@ function makeCallNode(
 }
 
 function makeNumExpr(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -138,7 +138,7 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
     test('reports for literal number (42).toExponential()', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 42 }, 'toExponential'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toExponential'))
       expect(reports.length).toBe(1)
     })
 
@@ -244,7 +244,7 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
     test('reports for negative number literal (-1).toExponential()', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'NumericLiteral', value: 1 } }, 'toExponential'))
+      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'Literal', value: 1 } }, 'toExponential'))
       expect(reports.length).toBe(1)
     })
 
@@ -265,21 +265,21 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
     test('reports for zero value (0).toExponential()', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 0 }, 'toExponential'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 0 }, 'toExponential'))
       expect(reports.length).toBe(1)
     })
 
     test('reports for very large number (1e20).toExponential()', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 1e20 }, 'toExponential'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 1e20 }, 'toExponential'))
       expect(reports.length).toBe(1)
     })
 
     test('reports for float (3.14).toExponential()', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 3.14 }, 'toExponential'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 3.14 }, 'toExponential'))
       expect(reports.length).toBe(1)
     })
 
@@ -300,7 +300,7 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
     test('reports for array element access arr[0].toExponential()', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'NumericLiteral', value: 0 }, computed: true }, 'toExponential'))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 }, computed: true }, 'toExponential'))
       expect(reports.length).toBe(1)
     })
 
@@ -354,21 +354,21 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
     test('does not report for num.toExponential(2) — with numeric argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for num.toExponential(0) — zero argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for num.toExponential(10) — max fraction digits', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'NumericLiteral', value: 10 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'Literal', value: 10 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -382,7 +382,7 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
     test('does not report for num.toExponential(2, extra) — more than 1 argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'NumericLiteral', value: 2 }, { type: 'Identifier', name: 'extra' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'Literal', value: 2 }, { type: 'Identifier', name: 'extra' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -607,7 +607,7 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
     test('does not report for num.toExponential(3) — explicit fraction digits', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'NumericLiteral', value: 3 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'Literal', value: 3 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -659,7 +659,7 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
     test('does not report for num.toExponential(n + 1) — with BinaryExpression argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'n' }, right: { type: 'NumericLiteral', value: 1 } }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'n' }, right: { type: 'Literal', value: 1 } }]))
       expect(reports.length).toBe(0)
     })
   })
@@ -673,7 +673,7 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
       const visitor1 = noUnnecessaryNumberToExponentialDefaultRule.create(ctx1)
       const visitor2 = noUnnecessaryNumberToExponentialDefaultRule.create(ctx2)
       visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential'))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'NumericLiteral', value: 2 }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'Literal', value: 2 }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -682,7 +682,7 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'toExponential'))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'toExponential', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'toExponential', [{ type: 'Literal', value: 5 }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'c' }, 'toExponential'))
       expect(reports.length).toBe(2)
     })
@@ -726,10 +726,10 @@ describe('no-unnecessary-number-to-exponential-default rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToExponentialDefaultRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential'))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'Literal', value: 2 }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toFixed'))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential'))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toExponential', [{ type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(2)
     })
 

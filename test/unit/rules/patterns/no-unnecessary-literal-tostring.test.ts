@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeStringLiteral(value: string): unknown {
-  return { type: 'StringLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeTemplateLiteral(quasis: unknown[], expressions: unknown[]): unknown {
@@ -349,7 +349,7 @@ describe('no-unnecessary-literal-tostring rule', () => {
     test('does not report for number literal (42).toString()', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryLiteralTostringRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 42 }, 'toString'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toString'))
       expect(reports.length).toBe(0)
     })
 
@@ -550,7 +550,7 @@ describe('no-unnecessary-literal-tostring rule', () => {
     test('does not report when object type is NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryLiteralTostringRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 42 }, 'toString'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toString'))
       expect(reports.length).toBe(0)
     })
 
@@ -738,7 +738,7 @@ describe('no-unnecessary-literal-tostring rule', () => {
       visitor.CallExpression(makeCallNode(makeStringLiteral('a'), 'toString')) // report
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toString')) // no report
       visitor.CallExpression(makeCallNode(makeTemplateLiteral([{ type: 'TemplateElement', value: { raw: 'b', cooked: 'b' } }], []), 'toString')) // report
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 42 }, 'toString')) // no report
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toString')) // no report
       visitor.CallExpression(makeCallNode(makeStringLiteral('c'), 'toString')) // report
       expect(reports.length).toBe(3)
     })

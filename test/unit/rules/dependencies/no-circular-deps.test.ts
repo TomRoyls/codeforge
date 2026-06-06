@@ -56,7 +56,7 @@ function createASTWithRequires(requires: Array<{ source: string; line?: number }
           init: {
             type: 'CallExpression',
             callee: { type: 'Identifier', name: 'require' },
-            arguments: [{ type: 'StringLiteral', value: req.source }],
+            arguments: [{ type: 'Literal', value: req.source }],
           },
         },
       ],
@@ -90,7 +90,7 @@ function createASTWithDynamicImports(imports: Array<{ source: string; line?: num
       expression: {
         type: 'CallExpression',
         callee: { type: 'Import' },
-        arguments: [{ type: 'StringLiteral', value: imp.source }],
+        arguments: [{ type: 'Literal', value: imp.source }],
       },
       loc: {
         start: { line: imp.line ?? index + 1, column: 0 },
@@ -225,7 +225,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       }
 
@@ -366,7 +366,7 @@ describe('no-circular-deps rule', () => {
             expression: {
               type: 'CallExpression',
               callee: { type: 'Identifier', name: 'require' },
-              arguments: [{ type: 'StringLiteral', value: './module' }],
+              arguments: [{ type: 'Literal', value: './module' }],
             },
             loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
           },
@@ -562,7 +562,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       }
 
@@ -653,7 +653,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1326,7 +1326,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1343,7 +1343,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'import' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       visitor.CallExpression(node)
@@ -1366,7 +1366,7 @@ describe('no-circular-deps rule', () => {
           object: { name: 'mod' },
           property: { name: 'require' },
         },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       visitor.CallExpression(node)
@@ -1394,7 +1394,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: 42 as unknown as string }],
+        arguments: [{ type: 'Literal', value: 42 as unknown as string }],
       }
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1407,7 +1407,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: undefined,
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1420,7 +1420,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: null,
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1433,7 +1433,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: { path: './module' } as unknown as string }],
+        arguments: [{ type: 'Literal', value: { path: './module' } as unknown as string }],
       }
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -1450,7 +1450,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './single-module' }],
+        arguments: [{ type: 'Literal', value: './single-module' }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       }
 
@@ -1467,8 +1467,8 @@ describe('no-circular-deps rule', () => {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
         arguments: [
-          { type: 'StringLiteral', value: './module' },
-          { type: 'StringLiteral', value: './extra' },
+          { type: 'Literal', value: './module' },
+          { type: 'Literal', value: './extra' },
         ],
       }
 
@@ -1491,7 +1491,7 @@ describe('no-circular-deps rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       })
 
@@ -1602,7 +1602,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Import' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       visitor.CallExpression(node)
@@ -1637,7 +1637,7 @@ describe('no-circular-deps rule', () => {
             expression: {
               type: 'CallExpression',
               callee: { type: 'Identifier', name: 'fn' },
-              arguments: [{ type: 'StringLiteral', value: './module' }],
+              arguments: [{ type: 'Literal', value: './module' }],
             },
             loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
           },
@@ -2298,7 +2298,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'FunctionExpression' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       visitor.CallExpression(node)
@@ -2317,7 +2317,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'myFunction' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       visitor.CallExpression(node)
@@ -2351,7 +2351,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier' },
-        arguments: [{ type: 'StringLiteral', value: './module' }],
+        arguments: [{ type: 'Literal', value: './module' }],
       }
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -2374,7 +2374,7 @@ describe('no-circular-deps rule', () => {
                 init: {
                   type: 'CallExpression',
                   callee: { type: 'Identifier', name: 'require' },
-                  arguments: [{ type: 'StringLiteral', value: './b' }],
+                  arguments: [{ type: 'Literal', value: './b' }],
                 },
               },
             ],
@@ -2405,7 +2405,7 @@ describe('no-circular-deps rule', () => {
             expression: {
               type: 'CallExpression',
               callee: { type: 'Import' },
-              arguments: [{ type: 'StringLiteral', value: './b' }],
+              arguments: [{ type: 'Literal', value: './b' }],
             },
             loc: { start: { line: 2, column: 0 }, end: { line: 2, column: 30 } },
           },
@@ -2436,7 +2436,7 @@ describe('no-circular-deps rule', () => {
                 init: {
                   type: 'CallExpression',
                   callee: { type: 'Identifier', name: 'require' },
-                  arguments: [{ type: 'StringLiteral', value: './b' }],
+                  arguments: [{ type: 'Literal', value: './b' }],
                 },
               },
             ],
@@ -2447,7 +2447,7 @@ describe('no-circular-deps rule', () => {
             expression: {
               type: 'CallExpression',
               callee: { type: 'Import' },
-              arguments: [{ type: 'StringLiteral', value: './c' }],
+              arguments: [{ type: 'Literal', value: './c' }],
             },
             loc: { start: { line: 3, column: 0 }, end: { line: 3, column: 30 } },
           },
@@ -2503,7 +2503,7 @@ describe('no-circular-deps rule', () => {
                 init: {
                   type: 'CallExpression',
                   callee: { type: 'Identifier', name: 'require' },
-                  arguments: [{ type: 'StringLiteral', value: './b' }],
+                  arguments: [{ type: 'Literal', value: './b' }],
                 },
               },
             ],
@@ -2514,7 +2514,7 @@ describe('no-circular-deps rule', () => {
             expression: {
               type: 'CallExpression',
               callee: { type: 'Import' },
-              arguments: [{ type: 'StringLiteral', value: './c' }],
+              arguments: [{ type: 'Literal', value: './c' }],
             },
             loc: { start: { line: 3, column: 0 }, end: { line: 3, column: 30 } },
           },
@@ -2914,7 +2914,7 @@ describe('no-circular-deps rule', () => {
         visitor.CallExpression({
           type: 'CallExpression',
           callee: { type: 'Identifier', name: 'require' },
-          arguments: [{ type: 'StringLiteral', value: './module' }],
+          arguments: [{ type: 'Literal', value: './module' }],
         }),
       ).not.toThrow()
     })
@@ -2977,7 +2977,7 @@ describe('no-circular-deps rule', () => {
             expression: {
               type: 'CallExpression',
               callee: { type: 'Identifier', name: 'require' },
-              arguments: [{ type: 'StringLiteral', value: './module' }],
+              arguments: [{ type: 'Literal', value: './module' }],
             },
             loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
           },
@@ -3004,7 +3004,7 @@ describe('no-circular-deps rule', () => {
             expression: {
               type: 'CallExpression',
               callee: { type: 'Identifier', name: 'require' },
-              arguments: [{ type: 'StringLiteral', value: filePath }],
+              arguments: [{ type: 'Literal', value: filePath }],
             },
             loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
           },
@@ -3059,7 +3059,7 @@ describe('no-circular-deps rule', () => {
             expression: {
               type: 'CallExpression',
               callee: { type: 'Identifier', name: 'someFn' },
-              arguments: [{ type: 'StringLiteral', value: './module' }],
+              arguments: [{ type: 'Literal', value: './module' }],
             },
             loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
           },
@@ -3191,7 +3191,7 @@ describe('no-circular-deps rule', () => {
                 init: {
                   type: 'CallExpression',
                   callee: { type: 'Identifier', name: 'require' },
-                  arguments: [{ type: 'StringLiteral', value: './b' }],
+                  arguments: [{ type: 'Literal', value: './b' }],
                 },
               },
             ],
@@ -3223,7 +3223,7 @@ describe('no-circular-deps rule', () => {
         const node = {
           type: 'CallExpression',
           callee: { type: 'Identifier', name: 'require' },
-          arguments: [{ type: 'StringLiteral', value: `./module${i}` }],
+          arguments: [{ type: 'Literal', value: `./module${i}` }],
           loc: { start: { line: i + 1, column: 0 }, end: { line: i + 1, column: 30 } },
         }
         expect(() => visitor.CallExpression(node)).not.toThrow()
@@ -3252,7 +3252,7 @@ describe('no-circular-deps rule', () => {
       const node = {
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: longPath }],
+        arguments: [{ type: 'Literal', value: longPath }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 600 } },
       }
 
@@ -3404,7 +3404,7 @@ describe('no-circular-deps rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './c' }],
+        arguments: [{ type: 'Literal', value: './c' }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       })
 
@@ -3461,7 +3461,7 @@ describe('no-circular-deps rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './b' }],
+        arguments: [{ type: 'Literal', value: './b' }],
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       })
 
@@ -3484,7 +3484,7 @@ describe('no-circular-deps rule', () => {
         visitor.CallExpression({
           type: 'CallExpression',
           callee: { type: 'Identifier', name: 'require' },
-          arguments: [{ type: 'StringLiteral', value: `./module${i}` }],
+          arguments: [{ type: 'Literal', value: `./module${i}` }],
           loc: { start: { line: i + 1, column: 0 }, end: { line: i + 1, column: 30 } },
         })
       }
@@ -3530,7 +3530,7 @@ describe('no-circular-deps rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'require' },
-        arguments: [{ type: 'StringLiteral', value: './b' }],
+        arguments: [{ type: 'Literal', value: './b' }],
         loc: { start: { line: 2, column: 0 }, end: { line: 2, column: 30 } },
       })
 

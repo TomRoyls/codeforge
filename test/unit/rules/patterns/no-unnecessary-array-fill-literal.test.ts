@@ -130,70 +130,70 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('reports for [].fill(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.fill(0) — Identifier object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for new Array(5).fill(0) — NewExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Array' }, arguments: [{ type: 'NumericLiteral', value: 5 }] }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Array' }, arguments: [{ type: 'Literal', value: 5 }] }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.fill(0, 2) — with start index', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for arr.fill(0, 1, 3) — with start and end', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 3 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }, { type: 'Literal', value: 3 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for getArr().fill(0) — CallExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getArr' }, arguments: [] }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getArr' }, arguments: [] }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for obj.arr.fill(0) — MemberExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'arr' } }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'arr' } }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for result.fill(0) on ObjectExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions .fill(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toMatch(/fill/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toBe(
         'Unnecessary .fill(0) on an array. New arrays are already filled with undefined. If you need zeros, consider Array.from() with a mapping function.',
       )
@@ -202,21 +202,21 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input CallExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      const node = makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }])
+      const node = makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -224,7 +224,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }], 5, 10, 5, 30))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -232,23 +232,23 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('reports for fill(0) on array with elements', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }]), 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
@@ -256,10 +256,10 @@ describe('no-unnecessary-array-fill-literal rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [
-        { type: 'NumericLiteral', value: 0 },
-        { type: 'NumericLiteral', value: 1 },
-        { type: 'NumericLiteral', value: 2 },
-        { type: 'NumericLiteral', value: 3 },
+        { type: 'Literal', value: 0 },
+        { type: 'Literal', value: 1 },
+        { type: 'Literal', value: 2 },
+        { type: 'Literal', value: 3 },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -267,7 +267,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -276,70 +276,70 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('reports for fill(0) on ConditionalExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) on ArrowFunctionExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) on string literal object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) with -0 as value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: -0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: -0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) on ParenthesizedExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ParenthesizedExpression', expression: makeArrayExpr([]) }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'ParenthesizedExpression', expression: makeArrayExpr([]) }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) with numeric second argument as Identifier', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }, { type: 'Identifier', name: 'start' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }, { type: 'Identifier', name: 'start' }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) on AwaitExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'AwaitExpression', argument: { type: 'Identifier', name: 'promise' } }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'AwaitExpression', argument: { type: 'Identifier', name: 'promise' } }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) on YieldExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'YieldExpression', argument: { type: 'Identifier', name: 'generator' } }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'YieldExpression', argument: { type: 'Identifier', name: 'generator' } }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) on empty ArrayExpression with no elements', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for fill(0) with custom loc values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }], 42, 7, 42, 28))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }], 42, 7, 42, 28))
       expect(reports.length).toBe(1)
       expect(reports[0].loc?.start.line).toBe(42)
       expect(reports[0].loc?.start.column).toBe(7)
@@ -348,8 +348,8 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('reports for chained .fill(0) on method result', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      const innerCall = makeCallNode({ type: 'Identifier', name: 'arr' }, 'slice', [{ type: 'NumericLiteral', value: 1 }])
-      visitor.CallExpression(makeCallNode(innerCall, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      const innerCall = makeCallNode({ type: 'Identifier', name: 'arr' }, 'slice', [{ type: 'Literal', value: 1 }])
+      visitor.CallExpression(makeCallNode(innerCall, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
   })
@@ -360,21 +360,21 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('does not report for fill(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for fill(-1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: -1 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: -1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for fill("hello")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'StringLiteral', value: 'hello' }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 'hello' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -402,28 +402,28 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('does not report for fill(0.5)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0.5 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0.5 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for fill(42)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 42 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 42 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for fill("0") — string "0" not numeric', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for [].map(x => 0) — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'map', [{ type: 'ArrowFunctionExpression', params: [{ type: 'Identifier', name: 'x' }], body: { type: 'NumericLiteral', value: 0 } }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'map', [{ type: 'ArrowFunctionExpression', params: [{ type: 'Identifier', name: 'x' }], body: { type: 'Literal', value: 0 } }]))
       expect(reports.length).toBe(0)
     })
 
@@ -437,7 +437,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('does not report for [].push(0) — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'push', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'push', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -451,7 +451,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('does not report for [].copyWithin(0) — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'copyWithin', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'copyWithin', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -507,21 +507,21 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fill' }, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fill' }, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -535,7 +535,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
           object: makeArrayExpr([]),
           property: { type: 'Literal', value: 'fill' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -544,21 +544,21 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('does not report when property name is "Fill" (uppercase F)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'Fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'Fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when property name is "filling"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'filling', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'filling', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when property name is "filled"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'filled', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'filled', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -628,7 +628,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('does not report when first arg is UnaryExpression (-0 as expression)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'NumericLiteral', value: 0 } }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'Literal', value: 0 } }]))
       expect(reports.length).toBe(0)
     })
 
@@ -650,7 +650,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('does not report when property name is "fill" but with lowercase f typo in different casing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fIll', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fIll', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
   })
@@ -663,8 +663,8 @@ describe('no-unnecessary-array-fill-literal rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryArrayFillLiteralRule.create(ctx1)
       const visitor2 = noUnnecessaryArrayFillLiteralRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor2.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor1.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
+      visitor2.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 1 }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -672,9 +672,9 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -688,7 +688,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
           object: makeArrayExpr([]),
           property: { type: 'Identifier', name: 'fill' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -704,7 +704,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
           object: makeArrayExpr([]),
           property: { type: 'Identifier', name: 'fill' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -714,11 +714,11 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }]))
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 1 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'fill', [{ type: 'Literal', value: 0 }]))
       visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', []))
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'map', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'map', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -745,7 +745,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
           object: makeArrayExpr([]),
           property: { type: 'Identifier', name: 'fill' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -765,7 +765,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
           object: makeArrayExpr([]),
           property: { type: 'Identifier', name: 'fill' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -781,7 +781,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
           object: makeArrayExpr([]),
           property: { type: 'Identifier', name: 'fill' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -792,7 +792,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      const node = makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }])
+      const node = makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }])
       visitor.CallExpression(node)
       visitor.CallExpression(node)
       visitor.CallExpression(node)
@@ -815,7 +815,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
           object: makeArrayExpr([]),
           property: { type: 'Identifier', name: 'fill' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -825,7 +825,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFillLiteralRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'NumericLiteral', value: 0 }], 10, 4, 10, 25))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([]), 'fill', [{ type: 'Literal', value: 0 }], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -843,7 +843,7 @@ describe('no-unnecessary-array-fill-literal rule', () => {
           property: { type: 'Identifier', name: 'fill' },
           computed: false,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(1)

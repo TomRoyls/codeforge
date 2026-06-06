@@ -694,7 +694,7 @@ describe('no-meaningless-void rule', () => {
     test('does not report for UnaryExpression node with wrong type string', () => {
       const { context, reports } = createMockContext()
       const visitor = noMeaninglessVoidRule.create(context)
-      visitor.UnaryExpression({ type: 'StringLiteral', value: 'test', loc: makeLoc(1, 0, 1, 6) })
+      visitor.UnaryExpression({ type: 'Literal', value: 'test', loc: makeLoc(1, 0, 1, 6) })
       expect(reports.length).toBe(0)
     })
 

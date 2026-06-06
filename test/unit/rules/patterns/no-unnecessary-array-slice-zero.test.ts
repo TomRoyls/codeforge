@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeNumericLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 function makeArrayExpr(elements: unknown[]): unknown {
@@ -148,21 +148,21 @@ describe('no-unnecessary-array-slice-zero rule', () => {
     test('reports for single-element array [1].slice(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySliceZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'NumericLiteral', value: 1 }]), 'slice', [makeNumericLiteral(0)]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'Literal', value: 1 }]), 'slice', [makeNumericLiteral(0)]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for multi-element array [1, 2, 3].slice(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySliceZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }, { type: 'NumericLiteral', value: 3 }]), 'slice', [makeNumericLiteral(0)]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }]), 'slice', [makeNumericLiteral(0)]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for string literal "hello".slice(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySliceZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'slice', [makeNumericLiteral(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'slice', [makeNumericLiteral(0)]))
       expect(reports.length).toBe(1)
     })
 
@@ -273,7 +273,7 @@ describe('no-unnecessary-array-slice-zero rule', () => {
     test('reports for array with nested array element .slice(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySliceZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([makeArrayExpr([{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }])]), 'slice', [makeNumericLiteral(0)]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([makeArrayExpr([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])]), 'slice', [makeNumericLiteral(0)]))
       expect(reports.length).toBe(1)
     })
 
@@ -294,7 +294,7 @@ describe('no-unnecessary-array-slice-zero rule', () => {
     test('reports for array with ConditionalExpression element .slice(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySliceZeroRule.create(context)
-      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'NumericLiteral', value: 1 }, alternate: { type: 'NumericLiteral', value: 2 } }]), 'slice', [makeNumericLiteral(0)]))
+      visitor.CallExpression(makeCallNode(makeArrayExpr([{ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } }]), 'slice', [makeNumericLiteral(0)]))
       expect(reports.length).toBe(1)
     })
 
@@ -384,7 +384,7 @@ describe('no-unnecessary-array-slice-zero rule', () => {
     test('does not report for .slice("0") — StringLiteral argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySliceZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'slice', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'slice', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 

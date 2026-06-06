@@ -130,7 +130,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -142,7 +142,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 1 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -154,7 +154,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 0 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 0 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -166,7 +166,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Identifier', name: 'length' } }],
+          [{ type: 'Literal', value: 0 }, { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Identifier', name: 'length' } }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -179,8 +179,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 3 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 3 },
             { type: 'Literal', value: 'a' },
           ],
         ),
@@ -195,8 +195,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 2 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 2 },
             { type: 'Literal', value: 'a' },
             { type: 'Literal', value: 'b' },
           ],
@@ -212,8 +212,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 1 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 1 },
             { type: 'Identifier', name: 'x' },
           ],
         ),
@@ -227,7 +227,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'list' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 5 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 5 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -239,7 +239,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'data' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'Identifier', name: 'n' }],
+          [{ type: 'Literal', value: 0 }, { type: 'Identifier', name: 'n' }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -251,7 +251,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports[0].message).toMatch(/splice/)
@@ -264,7 +264,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports[0].message).toBe(
@@ -278,7 +278,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports[0].loc).toBeDefined()
@@ -290,7 +290,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports[0].node).toBeDefined()
@@ -301,7 +301,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       const visitor = noUnnecessaryArraySpliceZeroRule.create(context)
       const node = makeSpliceCallNode(
         { type: 'Identifier', name: 'arr' },
-        [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
       )
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
@@ -313,7 +313,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
           false,
           5, 10, 5, 30,
         ),
@@ -328,13 +328,13 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 1 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }],
         ),
       )
       expect(reports.length).toBe(2)
@@ -346,13 +346,13 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 5 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 5 }],
         ),
       )
       expect(reports[0].message).toBe(reports[1].message)
@@ -365,8 +365,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 2 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 2 },
             { type: 'ObjectExpression', properties: [] },
           ],
         ),
@@ -381,8 +381,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 1 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 1 },
             { type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] },
           ],
         ),
@@ -397,8 +397,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 3 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 3 },
             { type: 'ArrayExpression', elements: [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }] },
           ],
         ),
@@ -412,7 +412,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports[0]).toHaveProperty('message')
@@ -426,7 +426,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 1 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -438,7 +438,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 100 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 100 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -451,8 +451,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 0 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 0 },
             { type: 'Literal', value: 'item' },
           ],
         ),
@@ -467,7 +467,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
+            { type: 'Literal', value: 0 },
             { type: 'SpreadElement', argument: { type: 'Identifier', name: 'args' } },
           ],
         ),
@@ -482,8 +482,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 2 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 2 },
             { type: 'Literal', value: null },
           ],
         ),
@@ -498,8 +498,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 1 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 1 },
             { type: 'Literal', value: true },
           ],
         ),
@@ -514,8 +514,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 3 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 3 },
             { type: 'Identifier', name: 'x' },
             { type: 'Identifier', name: 'y' },
             { type: 'Identifier', name: 'z' },
@@ -531,7 +531,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'items' } },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 2 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 2 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -543,7 +543,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'CallExpression', callee: { type: 'Identifier', name: 'getArr' }, arguments: [] },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -555,7 +555,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'ArrayExpression', elements: [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }] },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 2 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 2 }],
         ),
       )
       expect(reports.length).toBe(1)
@@ -568,8 +568,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 1 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 1 },
             { type: 'Literal', value: /test/ },
           ],
         ),
@@ -584,8 +584,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 1 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 1 },
             { type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } },
           ],
         ),
@@ -600,8 +600,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 1 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 1 },
             { type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } },
           ],
         ),
@@ -616,8 +616,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 1 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 1 },
             { type: 'TemplateLiteral', quasis: [], expressions: [] },
           ],
         ),
@@ -632,8 +632,8 @@ describe('no-unnecessary-array-splice-zero rule', () => {
         makeSpliceCallNode(
           { type: 'Identifier', name: 'items' },
           [
-            { type: 'NumericLiteral', value: 0 },
-            { type: 'NumericLiteral', value: 2 },
+            { type: 'Literal', value: 0 },
+            { type: 'Literal', value: 2 },
             { type: 'SpreadElement', argument: { type: 'Identifier', name: 'newItems' } },
           ],
         ),
@@ -651,7 +651,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }],
+          [{ type: 'Literal', value: 0 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -663,7 +663,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -675,7 +675,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 5 }, { type: 'NumericLiteral', value: 2 }],
+          [{ type: 'Literal', value: 5 }, { type: 'Literal', value: 2 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -687,7 +687,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: -1 }, { type: 'NumericLiteral', value: 2 }],
+          [{ type: 'Literal', value: -1 }, { type: 'Literal', value: 2 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -704,7 +704,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'slice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -721,7 +721,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'push' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -767,7 +767,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
           true, // computed
         ),
       )
@@ -826,21 +826,21 @@ describe('no-unnecessary-array-splice-zero rule', () => {
     test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySpliceZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySpliceZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'NumericLiteral', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'Literal', value: 0 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
     test('does not report when callee is not a MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySpliceZeroRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'splice' }, arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }], loc: makeLoc(1, 0, 1, 5) })
+      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'splice' }, arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -855,7 +855,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Literal', value: 'splice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -871,7 +871,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           computed: false,
           object: { type: 'Identifier', name: 'arr' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -888,7 +888,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: null,
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -900,7 +900,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'Identifier', name: 'zero' }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Identifier', name: 'zero' }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -912,7 +912,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'Literal', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -924,7 +924,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -999,7 +999,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'Identifier', name: 'start' }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Identifier', name: 'start' }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -1011,7 +1011,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [null, { type: 'NumericLiteral', value: 3 }],
+          [null, { type: 'Literal', value: 3 }],
         ),
       )
       expect(reports.length).toBe(0)
@@ -1040,7 +1040,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'Splice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -1057,7 +1057,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'SPLICE' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -1075,13 +1075,13 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor1.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       visitor2.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 3 }],
         ),
       )
       expect(rep1.length).toBe(1)
@@ -1095,21 +1095,21 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       // negative — only 1 arg
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }],
+          [{ type: 'Literal', value: 0 }],
         ),
       )
       // positive
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 1 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }],
         ),
       )
       expect(reports.length).toBe(2)
@@ -1126,7 +1126,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'splice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -1143,7 +1143,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'splice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
       }
       visitor.CallExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -1157,21 +1157,21 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 3 }],
         ),
       )
       // splice(0, 3) — positive
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
       // splice(0) — negative (only 1 arg)
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }],
+          [{ type: 'Literal', value: 0 }],
         ),
       )
       // slice(0, 3) — negative (wrong method)
@@ -1183,14 +1183,14 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'slice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       // splice(0, 5) — positive
       visitor.CallExpression(
         makeSpliceCallNode(
           { type: 'Identifier', name: 'arr' },
-          [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 5 }],
+          [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 5 }],
         ),
       )
       expect(reports.length).toBe(2)
@@ -1220,7 +1220,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'splice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -1241,7 +1241,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'splice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -1258,7 +1258,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'splice' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        arguments: [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -1271,7 +1271,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       const visitor = noUnnecessaryArraySpliceZeroRule.create(context)
       const node = makeSpliceCallNode(
         { type: 'Identifier', name: 'arr' },
-        [{ type: 'NumericLiteral', value: 0 }, { type: 'NumericLiteral', value: 3 }],
+        [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
       )
       visitor.CallExpression(node)
       visitor.CallExpression(node)

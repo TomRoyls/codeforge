@@ -761,7 +761,7 @@ describe('prefer-includes rule', () => {
       visitor.BinaryExpression(
         createBinaryExpression(
           createIndexOfCall('arr'),
-          { type: 'NumericLiteral', value: 0 },
+          { type: 'Literal', value: 0 },
           '>=',
         ),
       )
@@ -3606,7 +3606,7 @@ describe('prefer-includes rule', () => {
       visitor.BinaryExpression({
         type: 'BinaryExpression',
         left: createIndexOfCall('arr'),
-        right: { type: 'NumericLiteral', value: 0 },
+        right: { type: 'Literal', value: 0 },
         operator: '>=',
       })
       expect(reports.length).toBe(0)

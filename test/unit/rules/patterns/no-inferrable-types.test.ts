@@ -36,7 +36,7 @@ function createVariableDeclaratorNoAnnotation(line = 1, column = 0): unknown {
       name: 'x',
     },
     init: {
-      type: 'StringLiteral',
+      type: 'Literal',
     },
     loc: {
       start: { line, column },
@@ -486,7 +486,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'NumericLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -654,7 +654,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
       visitor.VariableDeclarator(node)
@@ -669,7 +669,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: null,
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -685,7 +685,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: undefined,
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -701,7 +701,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSUnknownKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -717,7 +717,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSAnyKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -733,7 +733,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSVoidKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -749,7 +749,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSNeverKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -765,7 +765,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSObjectKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -781,7 +781,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSSymbolKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -797,7 +797,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSNullKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -813,7 +813,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSUndefinedKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -829,7 +829,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: '' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -845,7 +845,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: {},
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -929,7 +929,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral', value: null },
+        init: { type: 'Literal', value: null },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -946,7 +946,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'NumericLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSNumberKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -963,7 +963,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -1145,7 +1145,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'FunctionDeclaration',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -1161,7 +1161,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: '',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -1176,7 +1176,7 @@ describe('no-inferrable-types rule', () => {
 
       const node = {
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -1297,7 +1297,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: {}, end: {} },
       }
@@ -1315,7 +1315,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: null, end: null },
       }
@@ -1332,7 +1332,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: '5', column: '3' }, end: { line: '5', column: '20' } },
       }
@@ -1643,7 +1643,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'name' },
-        init: { type: 'StringLiteral', value: 'world' },
+        init: { type: 'Literal', value: 'world' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 6 }, end: { line: 1, column: 30 } },
       }
@@ -1659,7 +1659,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'price' },
-        init: { type: 'NumericLiteral', value: 9.99 },
+        init: { type: 'Literal', value: 9.99 },
         typeAnnotation: { type: 'TSNumberKeyword' },
         loc: { start: { line: 1, column: 6 }, end: { line: 1, column: 30 } },
       }
@@ -1785,7 +1785,7 @@ describe('no-inferrable-types rule', () => {
 
       const node = {
         type: 'VariableDeclarator',
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -1802,7 +1802,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: null,
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -1818,7 +1818,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'ObjectPattern' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -2100,7 +2100,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -2117,7 +2117,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'NumericLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 'TSNumberKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -2134,7 +2134,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral', value: 'test' },
+        init: { type: 'Literal', value: 'test' },
         typeAnnotation: { type: 'TSStringKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -2151,7 +2151,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'NumericLiteral', value: 42 },
+        init: { type: 'Literal', value: 42 },
         typeAnnotation: { type: 'TSNumberKeyword' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -2456,7 +2456,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral' },
+        init: { type: 'Literal' },
         typeAnnotation: { type: 42 },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
       }
@@ -2472,7 +2472,7 @@ describe('no-inferrable-types rule', () => {
       const node = {
         type: 'VariableDeclarator',
         id: { type: 'Identifier', name: 'x' },
-        init: { type: 'StringLiteral', extra: true },
+        init: { type: 'Literal', extra: true },
         typeAnnotation: { type: 'TSStringKeyword', extra: false },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
         range: [0, 15],

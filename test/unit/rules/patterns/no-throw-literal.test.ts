@@ -16,7 +16,7 @@ function createThrowStatement(argument: unknown, lineNumber = 1, column = 0): un
 
 function createStringLiteral(value: string, lineNumber = 1, column = 0): unknown {
   return {
-    type: 'StringLiteral',
+    type: 'Literal',
     value: value,
     loc: {
       start: { line: lineNumber, column: column },
@@ -27,7 +27,7 @@ function createStringLiteral(value: string, lineNumber = 1, column = 0): unknown
 
 function createNumericLiteral(value: number, lineNumber = 1, column = 0): unknown {
   return {
-    type: 'NumericLiteral',
+    type: 'Literal',
     value: value,
     loc: {
       start: { line: lineNumber, column: column },
@@ -610,7 +610,7 @@ describe('no-throw-literal rule', () => {
           {
             type: 'Property',
             key: { type: 'Identifier', name: 'message' },
-            value: { type: 'StringLiteral', value: 'error' },
+            value: { type: 'Literal', value: 'error' },
           },
         ],
         loc: {
@@ -640,7 +640,7 @@ describe('no-throw-literal rule', () => {
 
       const arr = {
         type: 'ArrayExpression',
-        elements: [{ type: 'StringLiteral', value: 'error' }],
+        elements: [{ type: 'Literal', value: 'error' }],
         loc: {
           start: { line: 1, column: 0 },
           end: { line: 1, column: 10 },

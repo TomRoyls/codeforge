@@ -645,7 +645,7 @@ describe('no-useless-computed-key rule', () => {
       const node = {
         type: 'Property',
         computed: true,
-        key: { type: 'NumericLiteral', value: 42, loc: makeLoc(1, 0, 1, 2) },
+        key: { type: 'Literal', value: 42, loc: makeLoc(1, 0, 1, 2) },
         value: { type: 'Literal', value: 1 },
         _parent: null,
         loc: makeLoc(1, 0, 1, 10),

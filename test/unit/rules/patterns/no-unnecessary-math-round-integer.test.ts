@@ -64,7 +64,7 @@ function makeMathCallNode(
 }
 
 function makeNumericLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -625,7 +625,7 @@ describe('no-unnecessary-math-round-integer rule', () => {
     test('does not report when argument type is StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathRoundInteger.create(context)
-      visitor.CallExpression(makeMathCallNode('round', [{ type: 'StringLiteral', value: '5' }]))
+      visitor.CallExpression(makeMathCallNode('round', [{ type: 'Literal', value: '5' }]))
       expect(reports.length).toBe(0)
     })
 

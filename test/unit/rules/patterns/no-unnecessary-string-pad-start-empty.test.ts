@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeNumericLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -377,7 +377,7 @@ describe('no-unnecessary-string-pad-start-empty rule', () => {
     test('does not report for str.padStart(0, "x") — two arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [makeNumericLiteral(0), { type: 'StringLiteral', value: 'x' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [makeNumericLiteral(0), { type: 'Literal', value: 'x' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -576,7 +576,7 @@ describe('no-unnecessary-string-pad-start-empty rule', () => {
     test('does not report when argument is StringLiteral("0") instead of NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -656,7 +656,7 @@ describe('no-unnecessary-string-pad-start-empty rule', () => {
     test('does not report for three arguments str.padStart(0, "x", "y")', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadStartEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [makeNumericLiteral(0), { type: 'StringLiteral', value: 'x' }, { type: 'StringLiteral', value: 'y' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padStart', [makeNumericLiteral(0), { type: 'Literal', value: 'x' }, { type: 'Literal', value: 'y' }]))
       expect(reports.length).toBe(0)
     })
   })

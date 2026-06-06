@@ -47,7 +47,7 @@ function makeLoc(startLine: number, startCol: number, endLine: number, endCol: n
 function makeImportDecl(sourceValue: string, line = 1, column = 0): unknown {
   const sourceLength = sourceValue.length
   const source = {
-    type: 'StringLiteral',
+    type: 'Literal',
     value: sourceValue,
     loc: makeLoc(line, column, line, column + sourceLength),
   }
@@ -62,7 +62,7 @@ function makeImportDecl(sourceValue: string, line = 1, column = 0): unknown {
 function makeRequireCall(sourceValue: string, line = 1, column = 0): unknown {
   const sourceLength = sourceValue.length
   const arg = {
-    type: 'StringLiteral',
+    type: 'Literal',
     value: sourceValue,
     loc: makeLoc(line, column, line, column + sourceLength),
   }
@@ -515,7 +515,7 @@ describe('no-restricted-imports rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'fn' } },
-        arguments: [{ type: 'StringLiteral', value: 'eval' }],
+        arguments: [{ type: 'Literal', value: 'eval' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -527,7 +527,7 @@ describe('no-restricted-imports rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'Identifier', name: 'import' },
-        arguments: [{ type: 'StringLiteral', value: 'eval' }],
+        arguments: [{ type: 'Literal', value: 'eval' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -710,7 +710,7 @@ describe('no-restricted-imports rule', () => {
       const visitor = noRestrictedImportsRule.create(context)
       visitor.ImportDeclaration({
         type: 'ImportDeclaration',
-        source: { type: 'StringLiteral', value: 42 },
+        source: { type: 'Literal', value: 42 },
         loc: makeLoc(1, 0, 1, 5),
       })
       expect(reports.length).toBe(0)
@@ -721,7 +721,7 @@ describe('no-restricted-imports rule', () => {
       const visitor = noRestrictedImportsRule.create(context)
       visitor.CallExpression({
         type: 'CallExpression',
-        arguments: [{ type: 'StringLiteral', value: 'eval' }],
+        arguments: [{ type: 'Literal', value: 'eval' }],
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)

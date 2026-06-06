@@ -1305,7 +1305,7 @@ describe('no-useless-switch rule', () => {
         cases: [
           {
             type: 'SwitchCase',
-            test: { type: 'NumericLiteral', value: 42 },
+            test: { type: 'Literal', value: 42 },
             consequent: [{ type: 'BreakStatement' }],
           },
         ],

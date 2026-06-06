@@ -450,7 +450,7 @@ describe('no-unnecessary-boolean-comparison rule', () => {
     test('does not report x === 1 (number literal, not boolean)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryBooleanComparisonRule.create(context)
-      const numLiteral = { type: 'NumericLiteral', value: 1, loc: makeLoc(1, 0, 1, 1) }
+      const numLiteral = { type: 'Literal', value: 1, loc: makeLoc(1, 0, 1, 1) }
       visitor.BinaryExpression(makeBinaryExpr('===', makeIdentifier('x'), numLiteral))
       expect(reports.length).toBe(0)
     })
@@ -458,7 +458,7 @@ describe('no-unnecessary-boolean-comparison rule', () => {
     test('does not report x === "true" (string literal)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryBooleanComparisonRule.create(context)
-      const strLiteral = { type: 'StringLiteral', value: 'true', loc: makeLoc(1, 0, 1, 6) }
+      const strLiteral = { type: 'Literal', value: 'true', loc: makeLoc(1, 0, 1, 6) }
       visitor.BinaryExpression(makeBinaryExpr('===', makeIdentifier('x'), strLiteral))
       expect(reports.length).toBe(0)
     })

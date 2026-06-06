@@ -587,7 +587,7 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
     test('does not report for x.toFixed("0") — StringLiteral argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 

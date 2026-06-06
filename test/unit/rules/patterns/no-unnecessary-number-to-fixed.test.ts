@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function makeNumericLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -297,7 +297,7 @@ describe('no-unnecessary-number-to-fixed rule', () => {
     test('reports for NaN literal .toFixed() — NumericLiteral with NaN value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberToFixedRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: NaN }, 'toFixed'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: NaN }, 'toFixed'))
       expect(reports.length).toBe(1)
     })
 

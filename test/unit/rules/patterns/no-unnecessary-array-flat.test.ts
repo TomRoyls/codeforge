@@ -133,7 +133,7 @@ describe('no-unnecessary-array-flat rule', () => {
     test('reports for arr.flat(0) with NumericLiteral argument type', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'flat', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'flat', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 

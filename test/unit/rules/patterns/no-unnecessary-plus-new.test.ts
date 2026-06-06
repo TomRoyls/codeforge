@@ -59,7 +59,7 @@ function makeUnaryPlusNode(
 }
 
 function makeNumericLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== META TESTS (8) =====
@@ -174,7 +174,7 @@ describe('no-unnecessary-plus-new rule', () => {
     test('reports for +NaN as numeric literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryPlusNewRule.create(context)
-      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'NumericLiteral', value: NaN }))
+      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'Literal', value: NaN }))
       expect(reports.length).toBe(1)
     })
 
@@ -243,7 +243,7 @@ describe('no-unnecessary-plus-new rule', () => {
     test('reports for +Infinity as numeric literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryPlusNewRule.create(context)
-      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'NumericLiteral', value: Infinity }))
+      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'Literal', value: Infinity }))
       expect(reports.length).toBe(1)
     })
 
@@ -280,7 +280,7 @@ describe('no-unnecessary-plus-new rule', () => {
     test('reports when NumericLiteral has extra properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryPlusNewRule.create(context)
-      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'NumericLiteral', value: 7, raw: '7', extra: true }))
+      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'Literal', value: 7, raw: '7', extra: true }))
       expect(reports.length).toBe(1)
     })
 
@@ -442,7 +442,7 @@ describe('no-unnecessary-plus-new rule', () => {
     test('does not report for + on StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryPlusNewRule.create(context)
-      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'StringLiteral', value: '42' }))
+      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'Literal', value: '42' }))
       expect(reports.length).toBe(0)
     })
 
@@ -799,7 +799,7 @@ describe('no-unnecessary-plus-new rule', () => {
         loc: makeLoc(1, 0, 1, 3),
       })
       visitor.UnaryExpression(makeUnaryPlusNode(makeNumericLiteral(2)))
-      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'StringLiteral', value: 'hello' }))
+      visitor.UnaryExpression(makeUnaryPlusNode({ type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(2)
     })
 

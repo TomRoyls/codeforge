@@ -1544,7 +1544,7 @@ describe('no-confusing-void-expression rule', () => {
       const visitor = noConfusingVoidExpressionRule.create(context)
 
       const node = {
-        type: 'StringLiteral',
+        type: 'Literal',
         value: 'hello',
       }
 

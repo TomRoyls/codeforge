@@ -59,7 +59,7 @@ function makeTypeofNumberBinary(
       argument,
     },
     right: {
-      type: 'StringLiteral',
+      type: 'Literal',
       value: 'number',
     },
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
@@ -78,7 +78,7 @@ function makeReversedTypeofNumberBinary(
     type: 'BinaryExpression',
     operator,
     left: {
-      type: 'StringLiteral',
+      type: 'Literal',
       value: 'number',
     },
     right: {
@@ -154,42 +154,42 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('reports for typeof 42 === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof 0 === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof 3.14 === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 3.14 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof -1 === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: -1 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: -1 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof 1e5 === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 1e5 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 1e5 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof 0.5 === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 0.5 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 0.5 }))
       expect(reports.length).toBe(1)
     })
 
@@ -217,14 +217,14 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('reports for typeof 42 !== "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('!==', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('!==', { type: 'Literal', value: 42 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof 3.14 !== "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('!==', { type: 'NumericLiteral', value: 3.14 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('!==', { type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(1)
     })
 
@@ -238,14 +238,14 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('reports for "number" === typeof 42 (reversed order)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeReversedTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeReversedTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for "number" !== typeof 3.14 (reversed, !==)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeReversedTypeofNumberBinary('!==', { type: 'NumericLiteral', value: 3.14 }))
+      visitor.BinaryExpression(makeReversedTypeofNumberBinary('!==', { type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(1)
     })
 
@@ -259,28 +259,28 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('reports for "number" !== typeof 0 (reversed, !==)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeReversedTypeofNumberBinary('!==', { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeReversedTypeofNumberBinary('!==', { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
     test('report message mentions unnecessary typeof check', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       expect(reports[0].message).toMatch(/typeof/)
     })
 
     test('report message mentions number literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       expect(reports[0].message).toMatch(/number/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       expect(reports[0].message).toBe(
         'Unnecessary typeof check on a numeric literal. typeof of a number literal is always "number".',
       )
@@ -289,21 +289,21 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input BinaryExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      const node = makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 })
+      const node = makeTypeofNumberBinary('===', { type: 'Literal', value: 42 })
       visitor.BinaryExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -311,7 +311,7 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }, 5, 10, 5, 30))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }, 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -319,15 +319,15 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 3.14 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       visitor.BinaryExpression(makeTypeofNumberBinary('!==', { type: 'BigIntLiteral', value: 42n }))
       expect(reports[0].message).toBe(reports[1].message)
     })
@@ -335,35 +335,35 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('reports for typeof NaN === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: NaN }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: NaN }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof Infinity === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: Infinity }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: Infinity }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof -0 === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: -0 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: -0 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof 1e-7 === "number"', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 1e-7 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 1e-7 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for typeof 100 === "number" with specific loc', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 100 }, 10, 4, 10, 25))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 100 }, 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -373,7 +373,7 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -403,7 +403,7 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('reports for typeof 1 === "number" (minimal numeric literal)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 1 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 1 }))
       expect(reports.length).toBe(1)
     })
   })
@@ -434,10 +434,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'string',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -454,10 +454,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -474,10 +474,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -494,10 +494,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -514,10 +514,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -534,10 +534,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -557,7 +557,7 @@ describe('no-unnecessary-typeof-number rule', () => {
           argument: { type: 'Identifier', name: 'x' },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'string',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -568,7 +568,7 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('does not report for typeof "hello" === "number" (string literal)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'StringLiteral', value: 'hello' }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(0)
     })
 
@@ -670,7 +670,7 @@ describe('no-unnecessary-typeof-number rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: { type: 'Identifier', name: 'x' },
-        right: { type: 'StringLiteral', value: 'number' },
+        right: { type: 'Literal', value: 'number' },
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -687,7 +687,7 @@ describe('no-unnecessary-typeof-number rule', () => {
           operator: 'typeof',
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -707,7 +707,7 @@ describe('no-unnecessary-typeof-number rule', () => {
           argument: null,
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -724,7 +724,7 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: { type: 'Identifier', name: 'number' },
         loc: makeLoc(1, 0, 1, 20),
@@ -785,7 +785,7 @@ describe('no-unnecessary-typeof-number rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: null,
-        right: { type: 'StringLiteral', value: 'number' },
+        right: { type: 'Literal', value: 'number' },
         loc: makeLoc(1, 0, 1, 10),
       })
       expect(reports.length).toBe(0)
@@ -797,7 +797,7 @@ describe('no-unnecessary-typeof-number rule', () => {
       visitor.BinaryExpression({
         type: 'BinaryExpression',
         operator: '===',
-        left: { type: 'UnaryExpression', operator: 'typeof', argument: { type: 'NumericLiteral', value: 42 } },
+        left: { type: 'UnaryExpression', operator: 'typeof', argument: { type: 'Literal', value: 42 } },
         right: null,
         loc: makeLoc(1, 0, 1, 10),
       })
@@ -813,10 +813,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'undefined',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -833,10 +833,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'boolean',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -853,10 +853,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'void',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 20),
@@ -875,7 +875,7 @@ describe('no-unnecessary-typeof-number rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryTypeofNumberRule.create(ctx1)
       const visitor2 = noUnnecessaryTypeofNumberRule.create(ctx2)
-      visitor1.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor1.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       visitor2.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Identifier', name: 'x' }))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -884,9 +884,9 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Identifier', name: 'x' }))
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 3.14 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(2)
     })
 
@@ -899,10 +899,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
       }
@@ -913,7 +913,7 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Identifier', name: 'x' }))
       visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'BigIntLiteral', value: 42n }))
       visitor.BinaryExpression({
@@ -922,12 +922,12 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
-        right: { type: 'StringLiteral', value: 'number' },
+        right: { type: 'Literal', value: 'number' },
         loc: makeLoc(1, 0, 1, 10),
       })
-      visitor.BinaryExpression(makeTypeofNumberBinary('!==', { type: 'NumericLiteral', value: 0 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('!==', { type: 'Literal', value: 0 }))
       expect(reports.length).toBe(3)
     })
 
@@ -953,10 +953,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 10),
@@ -977,10 +977,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: {},
@@ -997,10 +997,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: { start: { line: 3, column: 5 } },
@@ -1013,7 +1013,7 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      const node = makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 })
+      const node = makeTypeofNumberBinary('===', { type: 'Literal', value: 42 })
       visitor.BinaryExpression(node)
       visitor.BinaryExpression(node)
       visitor.BinaryExpression(node)
@@ -1023,7 +1023,7 @@ describe('no-unnecessary-typeof-number rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryTypeofNumberRule.create(context)
-      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'NumericLiteral', value: 42 }))
+      visitor.BinaryExpression(makeTypeofNumberBinary('===', { type: 'Literal', value: 42 }))
       visitor.BinaryExpression(makeReversedTypeofNumberBinary('!==', { type: 'BigIntLiteral', value: 42n }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
@@ -1038,10 +1038,10 @@ describe('no-unnecessary-typeof-number rule', () => {
         left: {
           type: 'UnaryExpression',
           operator: 'typeof',
-          argument: { type: 'NumericLiteral', value: 42 },
+          argument: { type: 'Literal', value: 42 },
         },
         right: {
-          type: 'StringLiteral',
+          type: 'Literal',
           value: 'number',
         },
         loc: makeLoc(1, 0, 1, 10),

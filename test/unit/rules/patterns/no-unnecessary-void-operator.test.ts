@@ -120,63 +120,63 @@ describe('no-unnecessary-void-operator rule', () => {
     test('reports void 0 — NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void 42 — NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 42 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 42 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void 3.14 — NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 3.14 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 3.14 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void -1 — NumericLiteral with negative value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: -1 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: -1 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void 1e6 — NumericLiteral with large value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 1e6 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 1e6 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void 0.5 — NumericLiteral with float', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0.5 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0.5 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void "hello" — StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: 'hello' }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 'hello' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void "" — StringLiteral empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: '' }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void "world" — StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: 'world' }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 'world' }))
       expect(reports.length).toBe(1)
     })
 
@@ -253,14 +253,14 @@ describe('no-unnecessary-void-operator rule', () => {
     test('report message mentions unnecessary void', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       expect(reports[0].message).toMatch(/void/)
     })
 
     test('report message is exactly as defined in rule source', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       expect(reports[0].message).toBe(
         'Unnecessary void operator on a literal. `void literal` always returns undefined regardless.',
       )
@@ -269,21 +269,21 @@ describe('no-unnecessary-void-operator rule', () => {
     test('report has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report node matches the input UnaryExpression node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      const node = makeVoidNode({ type: 'NumericLiteral', value: 0 })
+      const node = makeVoidNode({ type: 'Literal', value: 0 })
       visitor.UnaryExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -291,7 +291,7 @@ describe('no-unnecessary-void-operator rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }, 5, 10, 5, 20))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }, 5, 10, 5, 20))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -299,23 +299,23 @@ describe('no-unnecessary-void-operator rule', () => {
     test('accumulates reports across multiple calls', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: 'x' }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 'x' }))
       expect(reports.length).toBe(2)
     })
 
     test('all reports have the same message format', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: 'x' }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 'x' }))
       expect(reports[0].message).toBe(reports[1].message)
     })
 
     test('report descriptor has all expected properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       expect(reports[0]).toHaveProperty('message')
       expect(reports[0]).toHaveProperty('loc')
       expect(reports[0]).toHaveProperty('node')
@@ -324,14 +324,14 @@ describe('no-unnecessary-void-operator rule', () => {
     test('reports void with multi-char string — StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: 'abcdef' }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 'abcdef' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports void with long string — StringLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: 'a'.repeat(100) }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 'a'.repeat(100) }))
       expect(reports.length).toBe(1)
     })
   })
@@ -617,7 +617,7 @@ describe('no-unnecessary-void-operator rule', () => {
     test('does not report for node without operator', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression({ type: 'UnaryExpression', argument: { type: 'NumericLiteral', value: 0 }, loc: makeLoc(1, 0, 1, 10) })
+      visitor.UnaryExpression({ type: 'UnaryExpression', argument: { type: 'Literal', value: 0 }, loc: makeLoc(1, 0, 1, 10) })
       expect(reports.length).toBe(0)
     })
 
@@ -658,7 +658,7 @@ describe('no-unnecessary-void-operator rule', () => {
       const { context: ctx2, reports: rep2 } = createMockContext()
       const visitor1 = noUnnecessaryVoidOperatorRule.create(ctx1)
       const visitor2 = noUnnecessaryVoidOperatorRule.create(ctx2)
-      visitor1.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor1.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       visitor2.UnaryExpression(makeVoidNode({ type: 'Identifier', name: 'x' }))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
@@ -667,9 +667,9 @@ describe('no-unnecessary-void-operator rule', () => {
     test('visitor accumulates reports correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       visitor.UnaryExpression(makeVoidNode({ type: 'Identifier', name: 'x' }))
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: 'y' }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 'y' }))
       expect(reports.length).toBe(2)
     })
 
@@ -679,7 +679,7 @@ describe('no-unnecessary-void-operator rule', () => {
       const node = {
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'NumericLiteral', value: 0 },
+        argument: { type: 'Literal', value: 0 },
       }
       visitor.UnaryExpression(node)
       expect(reports.length).toBe(1)
@@ -691,7 +691,7 @@ describe('no-unnecessary-void-operator rule', () => {
       const node = {
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'NumericLiteral', value: 0 },
+        argument: { type: 'Literal', value: 0 },
       }
       visitor.UnaryExpression(node)
       expect(reports[0].loc?.start.line).toBe(1)
@@ -702,9 +702,9 @@ describe('no-unnecessary-void-operator rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
       visitor.UnaryExpression(makeVoidNode({ type: 'Identifier', name: 'x' }))
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       visitor.UnaryExpression(makeVoidNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'foo' }, arguments: [] }))
-      visitor.UnaryExpression(makeVoidNode({ type: 'StringLiteral', value: 'a' }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 'a' }))
       visitor.UnaryExpression(makeVoidNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'key' } }))
       expect(reports.length).toBe(2)
     })
@@ -728,7 +728,7 @@ describe('no-unnecessary-void-operator rule', () => {
       const node = {
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'NumericLiteral', value: 0 },
+        argument: { type: 'Literal', value: 0 },
         loc: makeLoc(1, 0, 1, 10),
         range: [0, 10],
         extra: true,
@@ -744,7 +744,7 @@ describe('no-unnecessary-void-operator rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'NumericLiteral', value: 0 },
+        argument: { type: 'Literal', value: 0 },
         loc: {},
       })
       expect(reports.length).toBe(1)
@@ -756,7 +756,7 @@ describe('no-unnecessary-void-operator rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'NumericLiteral', value: 0 },
+        argument: { type: 'Literal', value: 0 },
         loc: { start: { line: 3, column: 5 } },
       })
       expect(reports.length).toBe(1)
@@ -767,7 +767,7 @@ describe('no-unnecessary-void-operator rule', () => {
     test('multiple same violations report separately', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      const node = makeVoidNode({ type: 'NumericLiteral', value: 0 })
+      const node = makeVoidNode({ type: 'Literal', value: 0 })
       visitor.UnaryExpression(node)
       visitor.UnaryExpression(node)
       visitor.UnaryExpression(node)
@@ -786,7 +786,7 @@ describe('no-unnecessary-void-operator rule', () => {
       visitor.UnaryExpression({
         type: 'UnaryExpression',
         operator: 'void',
-        argument: { type: 'NumericLiteral', value: 0 },
+        argument: { type: 'Literal', value: 0 },
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
@@ -796,7 +796,7 @@ describe('no-unnecessary-void-operator rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }, 10, 4, 10, 15))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }, 10, 4, 10, 15))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
@@ -806,7 +806,7 @@ describe('no-unnecessary-void-operator rule', () => {
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryVoidOperatorRule.create(context)
-      visitor.UnaryExpression(makeVoidNode({ type: 'NumericLiteral', value: 0 }))
+      visitor.UnaryExpression(makeVoidNode({ type: 'Literal', value: 0 }))
       visitor.UnaryExpression(makeVoidNode({ type: 'NullLiteral' }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)

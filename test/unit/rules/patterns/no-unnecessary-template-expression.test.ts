@@ -1013,7 +1013,7 @@ describe('no-unnecessary-template-expression rule', () => {
       const visitor = noUnnecessaryTemplateExpressionRule.create(context)
 
       const node = {
-        type: 'StringLiteral',
+        type: 'Literal',
         quasis: [{ type: 'TemplateElement', value: { raw: 'test' }, tail: true }],
         expressions: [],
       }

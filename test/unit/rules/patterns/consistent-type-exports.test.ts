@@ -2291,7 +2291,7 @@ describe('consistent-type-exports rule', () => {
           typeAnnotation: {
             type: 'TSUnionType',
             types: [
-              { type: 'TSLiteralType', literal: { type: 'NumericLiteral' } },
+              { type: 'TSLiteralType', literal: { type: 'Literal' } },
               { type: 'TSStringKeyword' },
             ],
           },

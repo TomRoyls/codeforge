@@ -795,7 +795,7 @@ describe('no-unnecessary-array-every-true rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'MemberExpression', computed: false, object: { type: 'Identifier', name: 'arr' }, property: { type: 'Identifier', name: 'every' } },
-        arguments: [{ type: 'NumericLiteral', value: 1 }],
+        arguments: [{ type: 'Literal', value: 1 }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)
@@ -807,7 +807,7 @@ describe('no-unnecessary-array-every-true rule', () => {
       visitor.CallExpression({
         type: 'CallExpression',
         callee: { type: 'MemberExpression', computed: false, object: { type: 'Identifier', name: 'arr' }, property: { type: 'Identifier', name: 'every' } },
-        arguments: [{ type: 'StringLiteral', value: 'true' }],
+        arguments: [{ type: 'Literal', value: 'true' }],
         loc: makeLoc(1, 0, 1, 20),
       })
       expect(reports.length).toBe(0)

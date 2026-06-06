@@ -64,7 +64,7 @@ function makeCallNode(
 }
 
 function emptyStrArg(): unknown {
-  return { type: 'StringLiteral', value: '' }
+  return { type: 'Literal', value: '' }
 }
 
 // ===== META TESTS (8) =====
@@ -137,7 +137,7 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
     test('reports for "hello".charAt("") with StringLiteral receiver', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'hello' }, 'charAt', [emptyStrArg()]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'charAt', [emptyStrArg()]))
       expect(reports.length).toBe(1)
     })
 
@@ -282,7 +282,7 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'ArrayExpression', elements: [{ type: 'StringLiteral', value: 'a' }, { type: 'StringLiteral', value: 'b' }] },
+        { type: 'ArrayExpression', elements: [{ type: 'Literal', value: 'a' }, { type: 'Literal', value: 'b' }] },
         'charAt', [emptyStrArg()],
       ))
       expect(reports.length).toBe(1)
@@ -322,7 +322,7 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
       visitor.CallExpression(makeCallNode(
-        { type: 'NumericLiteral', value: 42 },
+        { type: 'Literal', value: 42 },
         'charAt', [emptyStrArg()],
       ))
       expect(reports.length).toBe(1)
@@ -365,14 +365,14 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
     test('does not report for str.charAt(0) — numeric index', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.charAt(1) — numeric index', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -386,21 +386,21 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
     test('does not report for str.charAt("a") — non-empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'StringLiteral', value: 'a' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'Literal', value: 'a' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.charAt("abc") — longer non-empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'StringLiteral', value: 'abc' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'Literal', value: 'abc' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for str.charAt(" ") — whitespace string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'StringLiteral', value: ' ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'Literal', value: ' ' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -573,7 +573,7 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
     test('does not report for two args charAt("", 0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [emptyStrArg(), { type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [emptyStrArg(), { type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -689,7 +689,7 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
       const visitor1 = noUnnecessaryStringCharAtEmptyRule.create(ctx1)
       const visitor2 = noUnnecessaryStringCharAtEmptyRule.create(ctx2)
       visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [emptyStrArg()]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [{ type: 'Literal', value: 0 }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -698,7 +698,7 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [emptyStrArg()]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [{ type: 'Literal', value: 0 }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [emptyStrArg()]))
       expect(reports.length).toBe(2)
     })
@@ -777,7 +777,7 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
     test('mixed valid/invalid count correctly', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [{ type: 'Literal', value: 0 }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [emptyStrArg()]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'indexOf', [emptyStrArg()]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'charAt', [emptyStrArg()]))
@@ -915,7 +915,7 @@ describe('no-unnecessary-string-char-at-empty rule', () => {
     test('handles StringLiteral with whitespace value (not empty)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringCharAtEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'StringLiteral', value: '  ' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'charAt', [{ type: 'Literal', value: '  ' }]))
       expect(reports.length).toBe(0)
     })
 

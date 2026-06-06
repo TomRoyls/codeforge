@@ -147,14 +147,14 @@ describe('no-unnecessary-expression-statement rule', () => {
     test('reports for StringLiteral type as statement', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryExpressionStatementRule.create(context)
-      visitor.ExpressionStatement(makeExprStmt({ type: 'StringLiteral', value: 'text' }))
+      visitor.ExpressionStatement(makeExprStmt({ type: 'Literal', value: 'text' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for StringLiteral type with empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryExpressionStatementRule.create(context)
-      visitor.ExpressionStatement(makeExprStmt({ type: 'StringLiteral', value: '' }))
+      visitor.ExpressionStatement(makeExprStmt({ type: 'Literal', value: '' }))
       expect(reports.length).toBe(1)
     })
 
@@ -196,14 +196,14 @@ describe('no-unnecessary-expression-statement rule', () => {
     test('reports for NumericLiteral type as statement', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryExpressionStatementRule.create(context)
-      visitor.ExpressionStatement(makeExprStmt({ type: 'NumericLiteral', value: 100 }))
+      visitor.ExpressionStatement(makeExprStmt({ type: 'Literal', value: 100 }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for NumericLiteral type with value 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryExpressionStatementRule.create(context)
-      visitor.ExpressionStatement(makeExprStmt({ type: 'NumericLiteral', value: 0 }))
+      visitor.ExpressionStatement(makeExprStmt({ type: 'Literal', value: 0 }))
       expect(reports.length).toBe(1)
     })
 
@@ -318,14 +318,14 @@ describe('no-unnecessary-expression-statement rule', () => {
     test('reports for StringLiteral without value property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryExpressionStatementRule.create(context)
-      visitor.ExpressionStatement(makeExprStmt({ type: 'StringLiteral' }))
+      visitor.ExpressionStatement(makeExprStmt({ type: 'Literal' }))
       expect(reports.length).toBe(1)
     })
 
     test('reports for NumericLiteral without value property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryExpressionStatementRule.create(context)
-      visitor.ExpressionStatement(makeExprStmt({ type: 'NumericLiteral' }))
+      visitor.ExpressionStatement(makeExprStmt({ type: 'Literal' }))
       expect(reports.length).toBe(1)
     })
 
@@ -730,7 +730,7 @@ describe('no-unnecessary-expression-statement rule', () => {
     test('StringLiteral and Literal string both report string message', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryExpressionStatementRule.create(context)
-      visitor.ExpressionStatement(makeExprStmt({ type: 'StringLiteral', value: 'a' }))
+      visitor.ExpressionStatement(makeExprStmt({ type: 'Literal', value: 'a' }))
       visitor.ExpressionStatement(makeExprStmt({ type: 'Literal', value: 'b' }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
@@ -739,7 +739,7 @@ describe('no-unnecessary-expression-statement rule', () => {
     test('NumericLiteral and Literal number both report numeric message', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryExpressionStatementRule.create(context)
-      visitor.ExpressionStatement(makeExprStmt({ type: 'NumericLiteral', value: 1 }))
+      visitor.ExpressionStatement(makeExprStmt({ type: 'Literal', value: 1 }))
       visitor.ExpressionStatement(makeExprStmt({ type: 'Literal', value: 2 }))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)

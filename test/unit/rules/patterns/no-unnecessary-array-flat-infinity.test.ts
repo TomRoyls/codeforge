@@ -396,7 +396,7 @@ describe('no-unnecessary-array-flat-infinity rule', () => {
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
       visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Identifier', name: 'Infinity' }]))
       visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat'))
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: 1 }]))
       visitor.CallExpression(makeFlatCallNode(makeId('obj'), 'flat', [{ type: 'Identifier', name: 'Infinity' }]))
       visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'map', [{ type: 'Identifier', name: 'Infinity' }]))
       expect(reports.length).toBe(2)
@@ -433,49 +433,49 @@ describe('no-unnecessary-array-flat-infinity rule', () => {
     test('does not report for arr.flat(1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.flat(2)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.flat(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.flat(-1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: -1 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: -1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.flat(3)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: 3 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: 3 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.flat(100)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: 100 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: 100 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for arr.flat(NaN)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: NaN }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: NaN }]))
       expect(reports.length).toBe(0)
     })
 
@@ -675,7 +675,7 @@ describe('no-unnecessary-array-flat-infinity rule', () => {
     test('does not report with three arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Identifier', name: 'Infinity' }, { type: 'NumericLiteral', value: 1 }, { type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Identifier', name: 'Infinity' }, { type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -811,7 +811,7 @@ describe('no-unnecessary-array-flat-infinity rule', () => {
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
       visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Identifier', name: 'Infinity' }]))
       visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat'))
-      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: 1 }]))
       visitor.CallExpression(makeFlatCallNode(makeId('obj'), 'flat', [{ type: 'Identifier', name: 'Infinity' }]))
       visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'map', [{ type: 'Identifier', name: 'Infinity' }]))
       expect(reports.length).toBe(2)

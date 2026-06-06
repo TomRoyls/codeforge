@@ -1433,7 +1433,7 @@ describe('no-caller rule', () => {
       const node = {
         type: 'MemberExpression',
         object: { type: 'Identifier', name: 'arguments' },
-        property: { type: 'NumericLiteral', value: 0 },
+        property: { type: 'Literal', value: 0 },
         computed: true,
       }
       visitor.MemberExpression(node)
@@ -1448,7 +1448,7 @@ describe('no-caller rule', () => {
       const node = {
         type: 'MemberExpression',
         object: { type: 'Identifier', name: 'arguments' },
-        property: { type: 'NumericLiteral', value: 42 },
+        property: { type: 'Literal', value: 42 },
         computed: true,
       }
       visitor.MemberExpression(node)

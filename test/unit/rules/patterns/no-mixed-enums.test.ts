@@ -58,7 +58,7 @@ function implicitMember(name: string): Record<string, unknown> {
 }
 
 function explicitMember(name: string, value: unknown = 1): Record<string, unknown> {
-  return { type: 'TSEnumMember', id: { type: 'Identifier', name }, initializer: { type: 'NumericLiteral', value } }
+  return { type: 'TSEnumMember', id: { type: 'Identifier', name }, initializer: { type: 'Literal', value } }
 }
 
 describe('no-mixed-enums rule', () => {
@@ -249,7 +249,7 @@ describe('no-mixed-enums rule', () => {
       const visitor = noMixedEnumsRule.create(context)
       visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'),
-        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'StringLiteral', value: 'hello' } },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'Literal', value: 'hello' } },
       ]))
       expect(reports.length).toBe(1)
     })
@@ -279,7 +279,7 @@ describe('no-mixed-enums rule', () => {
       const visitor = noMixedEnumsRule.create(context)
       visitor.TSEnumDeclaration(makeEnumDecl([
         implicitMember('A'),
-        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'StringLiteral', value: '' } },
+        { type: 'TSEnumMember', id: { type: 'Identifier', name: 'B' }, initializer: { type: 'Literal', value: '' } },
       ]))
       expect(reports.length).toBe(1)
     })

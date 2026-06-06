@@ -65,7 +65,7 @@ function makeCallNode(
 }
 
 function makeNumLiteral(value: number): unknown {
-  return { type: 'NumericLiteral', value }
+  return { type: 'Literal', value }
 }
 
 // ===== TEST COUNT: 95 =====
@@ -175,7 +175,7 @@ describe('no-unnecessary-string-at-zero rule', () => {
     test('reports for arr[0].at(0) with computed MemberExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'NumericLiteral', value: 0 }, computed: true }, 'at', [makeNumLiteral(0)]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Literal', value: 0 }, computed: true }, 'at', [makeNumLiteral(0)]))
       expect(reports.length).toBe(1)
     })
 
@@ -365,14 +365,14 @@ describe('no-unnecessary-string-at-zero rule', () => {
     test('does not report for str.at(-1) — negative index', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'NumericLiteral', value: -1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'Literal', value: -1 }]))
       expect(reports.length).toBe(0)
     })
 
     test('reports for str.at(-0) — negative zero equals positive zero with ===', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'NumericLiteral', value: -0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'Literal', value: -0 }]))
       expect(reports.length).toBe(1)
     })
 
@@ -386,7 +386,7 @@ describe('no-unnecessary-string-at-zero rule', () => {
     test('does not report for str.at(-5) — arbitrary negative index', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'NumericLiteral', value: -5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'Literal', value: -5 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -467,7 +467,7 @@ describe('no-unnecessary-string-at-zero rule', () => {
     test('does not report when argument is StringLiteral instead of NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'StringLiteral', value: '0' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -653,7 +653,7 @@ describe('no-unnecessary-string-at-zero rule', () => {
     test('does not report when NumericLiteral value is 0.5', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'NumericLiteral', value: 0.5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'at', [{ type: 'Literal', value: 0.5 }]))
       expect(reports.length).toBe(0)
     })
 

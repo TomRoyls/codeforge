@@ -152,7 +152,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -164,7 +164,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
       const arg = makeArrowFindIndex('x', {
         type: 'BinaryExpression',
         operator: '===',
-        left: { type: 'NumericLiteral', value: 5 },
+        left: { type: 'Literal', value: 5 },
         right: makeId('x'),
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
@@ -178,7 +178,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'StringLiteral', value: 'hello' },
+        right: { type: 'Literal', value: 'hello' },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -190,7 +190,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
       const arg = makeArrowFindIndex('x', {
         type: 'BinaryExpression',
         operator: '===',
-        left: { type: 'StringLiteral', value: 'hello' },
+        left: { type: 'Literal', value: 'hello' },
         right: makeId('x'),
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
@@ -204,7 +204,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '==',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 42 },
+        right: { type: 'Literal', value: 42 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -216,7 +216,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
       const arg = makeArrowFindIndex('x', {
         type: 'BinaryExpression',
         operator: '==',
-        left: { type: 'NumericLiteral', value: 0 },
+        left: { type: 'Literal', value: 0 },
         right: makeId('x'),
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
@@ -230,7 +230,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('item'),
-        right: { type: 'StringLiteral', value: 'test' },
+        right: { type: 'Literal', value: 'test' },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -242,7 +242,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
       const arg = makeArrowFindIndex('el', {
         type: 'BinaryExpression',
         operator: '===',
-        left: { type: 'StringLiteral', value: 'world' },
+        left: { type: 'Literal', value: 'world' },
         right: makeId('el'),
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
@@ -260,7 +260,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
             type: 'BinaryExpression',
             operator: '===',
             left: makeId('x'),
-            right: { type: 'NumericLiteral', value: 5 },
+            right: { type: 'Literal', value: 5 },
           },
         }],
       })
@@ -278,7 +278,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
           argument: {
             type: 'BinaryExpression',
             operator: '===',
-            left: { type: 'NumericLiteral', value: 5 },
+            left: { type: 'Literal', value: 5 },
             right: makeId('x'),
           },
         }],
@@ -298,7 +298,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
             type: 'BinaryExpression',
             operator: '===',
             left: makeId('x'),
-            right: { type: 'StringLiteral', value: 'hi' },
+            right: { type: 'Literal', value: 'hi' },
           },
         }],
       })
@@ -317,7 +317,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
             type: 'BinaryExpression',
             operator: '==',
             left: makeId('x'),
-            right: { type: 'NumericLiteral', value: 10 },
+            right: { type: 'Literal', value: 10 },
           },
         }],
       })
@@ -336,7 +336,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
             type: 'BinaryExpression',
             operator: '===',
             left: makeId('x'),
-            right: { type: 'NumericLiteral', value: 5 },
+            right: { type: 'Literal', value: 5 },
           },
         }],
       })
@@ -355,7 +355,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
           type: 'BinaryExpression',
           operator: '===',
           left: makeId('x'),
-          right: { type: 'NumericLiteral', value: 3 },
+          right: { type: 'Literal', value: 3 },
         },
       }
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
@@ -369,7 +369,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports[0].message).toMatch(/findIndex/)
@@ -382,7 +382,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports[0].message).toMatch(/indexOf/)
@@ -395,7 +395,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports[0].message).toBe(
@@ -410,7 +410,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports[0].loc).toBeDefined()
@@ -423,7 +423,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports[0].node).toBeDefined()
@@ -436,7 +436,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const node = makeCallNode(makeId('arr'), 'findIndex', [arg])
       visitor.CallExpression(node)
@@ -450,7 +450,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg], 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
@@ -464,13 +464,13 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const arg2 = makeArrowFindIndex('y', {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('y'),
-        right: { type: 'StringLiteral', value: 'hello' },
+        right: { type: 'Literal', value: 'hello' },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg1]))
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg2]))
@@ -484,12 +484,12 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const arg2 = makeArrowFindIndex('y', {
         type: 'BinaryExpression',
         operator: '==',
-        left: { type: 'StringLiteral', value: 'test' },
+        left: { type: 'Literal', value: 'test' },
         right: makeId('y'),
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg1]))
@@ -504,7 +504,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 0 },
+        right: { type: 'Literal', value: 0 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -517,7 +517,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'StringLiteral', value: '' },
+        right: { type: 'Literal', value: '' },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -530,7 +530,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: -1 },
+        right: { type: 'Literal', value: -1 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -543,7 +543,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '==',
         left: makeId('e'),
-        right: { type: 'StringLiteral', value: 'long string here' },
+        right: { type: 'Literal', value: 'long string here' },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -556,7 +556,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports[0]).toHaveProperty('message')
@@ -571,7 +571,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 3.14 },
+        right: { type: 'Literal', value: 3.14 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -584,7 +584,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('v'),
-        right: { type: 'StringLiteral', value: 'a' },
+        right: { type: 'Literal', value: 'a' },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(1)
@@ -614,7 +614,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '>',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(0)
@@ -627,7 +627,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '!==',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(0)
@@ -640,7 +640,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '!=',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(0)
@@ -649,7 +649,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
     test('does not report for arr.indexOf(5) — different method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFindIndexLiteral.create(context)
-      visitor.CallExpression(makeCallNode(makeId('arr'), 'indexOf', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode(makeId('arr'), 'indexOf', [{ type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -663,7 +663,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
           type: 'BinaryExpression',
           operator: '===',
           left: makeId('x'),
-          right: { type: 'NumericLiteral', value: 5 },
+          right: { type: 'Literal', value: 5 },
         },
       }
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
@@ -680,7 +680,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
           type: 'BinaryExpression',
           operator: '===',
           left: makeId('x'),
-          right: { type: 'NumericLiteral', value: 5 },
+          right: { type: 'Literal', value: 5 },
         },
       }
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
@@ -738,7 +738,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
               type: 'BinaryExpression',
               operator: '===',
               left: makeId('x'),
-              right: { type: 'NumericLiteral', value: 5 },
+              right: { type: 'Literal', value: 5 },
             },
           },
           {
@@ -775,7 +775,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('y'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(0)
@@ -791,7 +791,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
           type: 'BinaryExpression',
           operator: '===',
           left: makeId('x'),
-          right: { type: 'NumericLiteral', value: 5 },
+          right: { type: 'Literal', value: 5 },
         },
       }
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
@@ -801,7 +801,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
     test('does not report when argument is not a function (string)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFindIndexLiteral.create(context)
-      visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [{ type: 'StringLiteral', value: 'x' }]))
+      visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [{ type: 'Literal', value: 'x' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -826,7 +826,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg, makeId('y')]))
       expect(reports.length).toBe(0)
@@ -839,7 +839,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'map', [arg]))
       expect(reports.length).toBe(0)
@@ -852,7 +852,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'filter', [arg]))
       expect(reports.length).toBe(0)
@@ -865,7 +865,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'find', [arg]))
       expect(reports.length).toBe(0)
@@ -927,7 +927,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression({
         type: 'CallExpression',
@@ -967,7 +967,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '+',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 1 },
+        right: { type: 'Literal', value: 1 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(0)
@@ -984,7 +984,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
             type: 'BinaryExpression',
             operator: '===',
             left: makeId('x'),
-            right: { type: 'NumericLiteral', value: 5 },
+            right: { type: 'Literal', value: 5 },
           },
         }],
       })
@@ -1033,7 +1033,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         right: {
           type: 'MemberExpression',
           object: makeId('arr2'),
-          property: { type: 'NumericLiteral', value: 0 },
+          property: { type: 'Literal', value: 0 },
           computed: true,
         },
       })
@@ -1048,7 +1048,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '>=',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(0)
@@ -1061,7 +1061,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '<',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(0)
@@ -1074,7 +1074,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '<=',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg]))
       expect(reports.length).toBe(0)
@@ -1087,7 +1087,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findindex', [arg]))
       expect(reports.length).toBe(0)
@@ -1106,13 +1106,13 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const arg2 = makeArrowFindIndex('x', {
         type: 'BinaryExpression',
         operator: '>',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor1.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg1]))
       visitor2.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg2]))
@@ -1127,13 +1127,13 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '>',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const invalidArg = makeArrowFindIndex('x', {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [invalidArg]))
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [validArg]))
@@ -1148,7 +1148,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const node = {
         type: 'CallExpression',
@@ -1171,7 +1171,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const node = {
         type: 'CallExpression',
@@ -1195,13 +1195,13 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const validArg = makeArrowFindIndex('x', {
         type: 'BinaryExpression',
         operator: '>',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [validArg]))
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [invalidArg]))
@@ -1231,7 +1231,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const node = {
         type: 'CallExpression',
@@ -1258,7 +1258,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression({
         type: 'CallExpression',
@@ -1281,7 +1281,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression({
         type: 'CallExpression',
@@ -1306,7 +1306,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const node = makeCallNode(makeId('arr'), 'findIndex', [arg])
       visitor.CallExpression(node)
@@ -1328,7 +1328,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression({
         type: 'CallExpression',
@@ -1352,7 +1352,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg], 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
@@ -1368,13 +1368,13 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('x'),
-        right: { type: 'NumericLiteral', value: 5 },
+        right: { type: 'Literal', value: 5 },
       })
       const arg2 = makeArrowFindIndex('y', {
         type: 'BinaryExpression',
         operator: '===',
         left: makeId('y'),
-        right: { type: 'StringLiteral', value: 'hello' },
+        right: { type: 'Literal', value: 'hello' },
       })
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg1]))
       visitor.CallExpression(makeCallNode(makeId('arr'), 'findIndex', [arg2]))
@@ -1392,7 +1392,7 @@ describe('no-unnecessary-array-find-index-literal rule', () => {
           argument: {
             type: 'BinaryExpression',
             operator: '==',
-            left: { type: 'StringLiteral', value: 'test' },
+            left: { type: 'Literal', value: 'test' },
             right: makeId('x'),
           },
         }],

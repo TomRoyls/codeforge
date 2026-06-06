@@ -47,7 +47,7 @@ function createHookWithDesc(hookName: string, desc: string, line = 1, column = 0
     type: 'CallExpression',
     callee: { type: 'Identifier', name: hookName },
     arguments: [
-      { type: 'StringLiteral', value: desc },
+      { type: 'Literal', value: desc },
       { type: 'ArrowFunctionExpression', body: { type: 'BlockStatement', body: [{ type: 'ExpressionStatement' }] }, params: [] },
     ],
     loc: { start: { line, column }, end: { line, column: column + 50 } },
@@ -119,7 +119,7 @@ function createFunctionExprWithDesc(hookName: string, desc: string, line = 1, co
     type: 'CallExpression',
     callee: { type: 'Identifier', name: hookName },
     arguments: [
-      { type: 'StringLiteral', value: desc },
+      { type: 'Literal', value: desc },
       { type: 'FunctionExpression', body: { type: 'BlockStatement', body: [{ type: 'ExpressionStatement' }] }, params: [] },
     ],
     loc: { start: { line, column }, end: { line, column: column + 50 } },
