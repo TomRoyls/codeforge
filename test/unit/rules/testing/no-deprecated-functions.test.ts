@@ -369,7 +369,7 @@ describe('no-deprecated-functions rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report jest.fn()', () => {
+    test('should not report vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = noDeprecatedFunctionsRule.create(context)
 

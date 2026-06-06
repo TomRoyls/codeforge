@@ -103,7 +103,7 @@ describe('math', () => {
   })
 
   it('validates input', () => {
-    const mock = jest.fn()
+    const mock = vi.fn()
     mock('test')
     expect(mock).toHaveBeenCalled()
   })

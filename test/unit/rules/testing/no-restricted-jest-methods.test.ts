@@ -100,7 +100,7 @@ describe('no-restricted-jest-methods', () => {
     expect(reports[0].message).toContain('mock')
   })
 
-  test('reports jest.fn() when restricted', () => {
+  test('reports vi.fn() when restricted', () => {
     const { context, reports } = createMockContext({
       restrictedMethods: ['fn'],
     })
@@ -360,7 +360,7 @@ describe('no-restricted-jest-methods', () => {
     expect(reports.length).toBe(0)
   })
 
-  test('does not report jest.fn() when not restricted', () => {
+  test('does not report vi.fn() when not restricted', () => {
     const { context, reports } = createMockContext({
       restrictedMethods: ['mock'],
     })
@@ -1035,7 +1035,7 @@ describe('no-restricted-jest-methods', () => {
   })
 
   // === Additional message format tests ===
-  test('message contains fn for jest.fn()', () => {
+  test('message contains fn for vi.fn()', () => {
     const { context, reports } = createMockContext({
       restrictedMethods: ['fn'],
     })

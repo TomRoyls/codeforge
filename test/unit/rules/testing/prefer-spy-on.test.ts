@@ -10,7 +10,7 @@ interface ReportDescriptor {
 function createMockContext(
   options: Record<string, unknown> = {},
   filePath = '/src/file.test.ts',
-  source = 'obj.method = jest.fn();',
+  source = 'obj.method = vi.fn();',
 ): { context: RuleContext; reports: ReportDescriptor[] } {
   const reports: ReportDescriptor[] = []
 
@@ -340,8 +340,8 @@ describe('prefer-spy-on rule', () => {
     })
   })
 
-  describe('detecting obj.method = jest.fn() violations', () => {
-    test('should report obj.method = jest.fn()', () => {
+  describe('detecting obj.method = vi.fn() violations', () => {
+    test('should report obj.method = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -350,7 +350,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report obj.handleClick = jest.fn()', () => {
+    test('should report obj.handleClick = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -359,7 +359,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report service.fetch = jest.fn()', () => {
+    test('should report service.fetch = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -368,7 +368,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report api.getUser = jest.fn()', () => {
+    test('should report api.getUser = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -377,7 +377,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report obj.prop = jest.fn()', () => {
+    test('should report obj.prop = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -386,7 +386,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report correct location for obj.method = jest.fn()', () => {
+    test('should report correct location for obj.method = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -423,7 +423,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report nested member expression obj.nested.method = jest.fn()', () => {
+    test('should report nested member expression obj.nested.method = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -433,8 +433,8 @@ describe('prefer-spy-on rule', () => {
     })
   })
 
-  describe('detecting this.method = jest.fn() violations', () => {
-    test('should report this.method = jest.fn()', () => {
+  describe('detecting this.method = vi.fn() violations', () => {
+    test('should report this.method = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -443,7 +443,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report this.handleClick = jest.fn()', () => {
+    test('should report this.handleClick = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -452,7 +452,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report this.onSubmit = jest.fn()', () => {
+    test('should report this.onSubmit = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -461,7 +461,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report correct location for this.method = jest.fn()', () => {
+    test('should report correct location for this.method = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -483,8 +483,8 @@ describe('prefer-spy-on rule', () => {
     })
   })
 
-  describe('const mock = jest.fn() — no reports', () => {
-    test('should not report const mock = jest.fn()', () => {
+  describe('const mock = vi.fn() — no reports', () => {
+    test('should not report const mock = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -493,7 +493,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report let callback = jest.fn()', () => {
+    test('should not report let callback = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -502,7 +502,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report variable = jest.fn()', () => {
+    test('should not report variable = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -588,7 +588,7 @@ describe('prefer-spy-on rule', () => {
   })
 
   describe('compound assignment operators — no reports', () => {
-    test('should not report obj.method += jest.fn()', () => {
+    test('should not report obj.method += vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -649,7 +649,7 @@ describe('prefer-spy-on rule', () => {
   })
 
   describe('multiple violations', () => {
-    test('should report multiple obj.method = jest.fn() calls', () => {
+    test('should report multiple obj.method = vi.fn() calls', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -958,7 +958,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should handle right side with multiple arguments to jest.fn()', () => {
+    test('should handle right side with multiple arguments to vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1094,7 +1094,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should report window.fetch = jest.fn() — window is still a member expression', () => {
+    test('should report window.fetch = vi.fn() — window is still a member expression', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1143,7 +1143,7 @@ describe('prefer-spy-on rule', () => {
   })
 
   describe('deeply nested member expressions on left', () => {
-    test('should report obj.a.b.c = jest.fn() with 4-level nesting', () => {
+    test('should report obj.a.b.c = vi.fn() with 4-level nesting', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1178,7 +1178,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report MyClass.prototype.method = jest.fn()', () => {
+    test('should report MyClass.prototype.method = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1209,7 +1209,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report computed member obj["method"] = jest.fn()', () => {
+    test('should report computed member obj["method"] = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1237,7 +1237,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report console.log = jest.fn()', () => {
+    test('should report console.log = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1246,7 +1246,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report document.getElementById = jest.fn()', () => {
+    test('should report document.getElementById = vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1257,7 +1257,7 @@ describe('prefer-spy-on rule', () => {
   })
 
   describe('jest.fn with various arguments', () => {
-    test('should report obj.method = jest.fn() with async function implementation', () => {
+    test('should report obj.method = vi.fn() with async function implementation', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1286,7 +1286,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should not report obj.method = jest.fn().mockReturnValue(true) — chained call', () => {
+    test('should not report obj.method = vi.fn().mockReturnValue(true) — chained call', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1323,7 +1323,7 @@ describe('prefer-spy-on rule', () => {
   })
 
   describe('other compound operators — no reports', () => {
-    test('should not report obj.method -= jest.fn()', () => {
+    test('should not report obj.method -= vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1350,7 +1350,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report obj.method *= jest.fn()', () => {
+    test('should not report obj.method *= vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1377,7 +1377,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report obj.method /= jest.fn()', () => {
+    test('should not report obj.method /= vi.fn()', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1495,7 +1495,7 @@ describe('prefer-spy-on rule', () => {
   })
 
   describe('additional coverage', () => {
-    test('should report obj.method = jest.fn() with no arguments', () => {
+    test('should report obj.method = vi.fn() with no arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
       visitor.AssignmentExpression({
@@ -1637,7 +1637,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should report obj[dynamicKey] = jest.fn() — computed member on left with variable', () => {
+    test('should report obj[dynamicKey] = vi.fn() — computed member on left with variable', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 
@@ -1665,7 +1665,7 @@ describe('prefer-spy-on rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should not report obj.method = jest.fn() with empty string operator', () => {
+    test('should not report obj.method = vi.fn() with empty string operator', () => {
       const { context, reports } = createMockContext()
       const visitor = preferSpyOnRule.create(context)
 

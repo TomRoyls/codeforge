@@ -891,7 +891,7 @@ describe('TestGenerator', () => {
         tests: [],
         imports: ['fetch'],
         fixtures: [],
-        mocks: ['const mockService = { valueOf: jest.fn() }'],
+        mocks: ['const mockService = { valueOf: vi.fn() }'],
       }
       const source = generator.renderTestSuite(suite, defaultConfig)
       expect(source).toContain('mockService')

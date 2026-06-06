@@ -1542,7 +1542,7 @@ describe('prefer-each rule', () => {
       expect(reports).toHaveLength(1)
     })
 
-    test('should not report forEach with jest.fn() calls', () => {
+    test('should not report forEach with vi.fn() calls', () => {
       const { context, reports } = createMockContext()
       const visitor = preferEachRule.create(context)
       visitor.CallExpression({

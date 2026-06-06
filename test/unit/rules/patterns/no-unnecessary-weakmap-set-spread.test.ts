@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { noUnnecessaryWeakMapSetSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-weakmap-set-spread.js';
 
 function makeWeakMapSetCall(args: string): string {
@@ -53,7 +54,7 @@ test('no-unnecessary-weakmap-set-spread rule: meta docs description is a non-emp
 });
 
 test('no-unnecessary-weakmap-set-spread rule: create handler receives context and returns visitor', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(typeof handler.CallExpression).toBe('function');
 });
@@ -63,7 +64,7 @@ test('no-unnecessary-weakmap-set-spread rule: create handler receives context an
 //
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -77,7 +78,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...items)', ()
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...data)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -87,7 +88,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...data)', () 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...arr) with single spread', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -97,7 +98,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...arr) with s
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...pair)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -107,7 +108,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...pair)', () 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...entry)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -117,7 +118,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...entry)', ()
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...tuple)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -127,7 +128,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...tuple)', ()
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...values)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -137,7 +138,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...values)', (
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...args) with member expression spread argument', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -147,7 +148,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...args) with 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...ref) with call expression spread', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -157,7 +158,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...ref) with c
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports when spread argument is an array expression', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -172,7 +173,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports makeWeakMapSetCall helper 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...result) spread identifier', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -182,7 +183,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...result) spr
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...payload)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -192,7 +193,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...payload)', 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...chunk)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -202,7 +203,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...chunk)', ()
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...slice) with spread of member expression', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -212,7 +213,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...slice) with
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...kv) with short name', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -222,7 +223,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...kv) with sh
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...record)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -232,7 +233,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...record)', (
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...mappings)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -242,7 +243,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...mappings)',
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...pairs)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -252,7 +253,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...pairs)', ()
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...input)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -262,7 +263,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...input)', ()
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...source)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -272,7 +273,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...source)', (
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...buffer)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -282,7 +283,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...buffer)', (
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...row)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -292,7 +293,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...row)', () =
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...element)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -302,7 +303,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...element)', 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...fields)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -312,7 +313,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...fields)', (
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...parts)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -322,7 +323,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...parts)', ()
 });
 
 test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...segment)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -332,7 +333,7 @@ test('no-unnecessary-weakmap-set-spread rule: reports weakMap.set(...segment)', 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: report includes correct node reference', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   const spreadNode = { type: 'SpreadElement', argument: { type: 'Identifier', name: 'items' } } as never;
   handler.CallExpression({
@@ -351,7 +352,7 @@ test('no-unnecessary-weakmap-set-spread rule: report includes correct node refer
 //
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(key, value) with two direct args', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -364,7 +365,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(key, v
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(key) with single non-spread arg', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -374,7 +375,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(key) w
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report map.set(...items) with different object name', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'map' }, property: { type: 'Identifier', name: 'set' } },
@@ -384,7 +385,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report map.set(...items) 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.get(...items) with different method', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'get' } },
@@ -394,7 +395,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.get(...ite
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.delete(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'delete' } },
@@ -404,7 +405,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.delete(...
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.has(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'has' } },
@@ -414,7 +415,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.has(...ite
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report plain function call set(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'Identifier', name: 'set' },
@@ -424,7 +425,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report plain function cal
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set() with no args', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -434,7 +435,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set() with
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(key, value, extra) with three args', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -448,7 +449,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(key, v
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report obj.set(...items) with different object', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'set' } },
@@ -458,7 +459,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report obj.set(...items) 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(literal, value)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -471,7 +472,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(litera
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(obj, val) with two identifiers', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -484,7 +485,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(obj, v
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report set.call(weakMap, ...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'set' }, property: { type: 'Identifier', name: 'call' } },
@@ -497,7 +498,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report set.call(weakMap, 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(...items, extra) with spread plus extra arg', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -510,7 +511,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(...ite
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(extra, ...items) with arg before spread', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -523,7 +524,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(extra,
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report otherWeakMap.set(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'otherWeakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -533,7 +534,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report otherWeakMap.set(.
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report myWeakMap.set(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'myWeakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -543,7 +544,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report myWeakMap.set(...i
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(null, value)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -556,7 +557,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(null, 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(42, value)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -569,7 +570,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(42, va
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(true, val)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -582,7 +583,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(true, 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report set.apply(weakMap, items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'set' }, property: { type: 'Identifier', name: 'apply' } },
@@ -595,7 +596,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report set.apply(weakMap,
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report WeakMap.set(...items) capitalized', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'WeakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -605,7 +606,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report WeakMap.set(...ite
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakmap.set(...items) lowercase', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakmap' }, property: { type: 'Identifier', name: 'set' } },
@@ -615,7 +616,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakmap.set(...ite
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weak_map.set(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weak_map' }, property: { type: 'Identifier', name: 'set' } },
@@ -625,7 +626,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weak_map.set(...it
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(fn())', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -635,7 +636,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(fn())'
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(obj.key, val)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -648,7 +649,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(obj.ke
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(...a, ...b) with two spreads', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -661,7 +662,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(...a, 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report wMap.set(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'wMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -671,7 +672,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report wMap.set(...items)
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.prototype.set(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: {
@@ -685,7 +686,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.prototype.
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report new WeakMap().set(...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: {
@@ -699,7 +700,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report new WeakMap().set(
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(arr[0], arr[1])', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -712,7 +713,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(arr[0]
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set({}, value)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -725,7 +726,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set({}, va
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set([], value)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -738,7 +739,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set([], va
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report foo(weakMap.set, ...items)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'Identifier', name: 'foo' },
@@ -751,7 +752,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report foo(weakMap.set, .
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report arr.forEach(weakMap.set)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Identifier', name: 'forEach' } },
@@ -761,7 +762,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report arr.forEach(weakMa
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(some.thing)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -771,7 +772,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(some.t
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(this.key, value)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -784,7 +785,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(this.k
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(undefined, value)', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -797,7 +798,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(undefi
 });
 
 test('no-unnecessary-weakmap-set-spread rule: does not report weakMap.set(a, b, ...rest) with spread as third arg', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   handler.CallExpression({
     callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Identifier', name: 'set' } },
@@ -820,7 +821,7 @@ test('no-unnecessary-weakmap-set-spread rule: does not report makeWeakMapSetCall
 //
 
 test('no-unnecessary-weakmap-set-spread rule: handles null callee gracefully', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({ callee: null, arguments: [] } as never);
@@ -828,7 +829,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles null callee gracefully', (
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles undefined arguments gracefully', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -839,7 +840,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles undefined arguments gracef
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles null arguments gracefully', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -850,7 +851,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles null arguments gracefully'
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles missing object on callee', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -861,7 +862,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles missing object on callee',
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles missing property on callee', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -872,7 +873,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles missing property on callee
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles callee without type', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -883,7 +884,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles callee without type', () =
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles object without name on callee', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -894,7 +895,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles object without name on cal
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles property without name on callee', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -905,7 +906,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles property without name on c
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles empty arguments array', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -917,7 +918,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles empty arguments array', ()
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles spread element without argument', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -928,7 +929,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles spread element without arg
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles ThisExpression as callee object', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -940,7 +941,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles ThisExpression as callee o
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles Super callee object', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -951,7 +952,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles Super callee object', () =
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles call with many arguments', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -969,7 +970,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles call with many arguments',
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles SpreadElement argument with nested spread', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -986,7 +987,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles SpreadElement argument wit
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles numeric property name on callee', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -997,7 +998,7 @@ test('no-unnecessary-weakmap-set-spread rule: handles numeric property name on c
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles call expression as callee object', () => {
-  const context = { report: jest.fn() } as never;
+  const context = { report: vi.fn() } as never;
   const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
   expect(() => {
     handler.CallExpression({
@@ -1012,8 +1013,8 @@ test('no-unnecessary-weakmap-set-spread rule: handles call expression as callee 
 });
 
 test('no-unnecessary-weakmap-set-spread rule: handles repeated calls to create', () => {
-  const context1 = { report: jest.fn() } as never;
-  const context2 = { report: jest.fn() } as never;
+  const context1 = { report: vi.fn() } as never;
+  const context2 = { report: vi.fn() } as never;
   const handler1 = noUnnecessaryWeakMapSetSpreadRule.create(context1);
   const handler2 = noUnnecessaryWeakMapSetSpreadRule.create(context2);
   handler1.CallExpression({

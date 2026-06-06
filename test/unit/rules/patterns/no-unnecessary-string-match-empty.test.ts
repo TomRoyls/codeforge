@@ -613,10 +613,10 @@ describe('no-unnecessary-string-match-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when argument is Literal instead of StringLiteral', () => {
+    test('does not report when argument is Literal with non-string value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringMatchEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: '' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [{ type: 'Literal', value: 123 }]))
       expect(reports.length).toBe(0)
     })
 
