@@ -754,11 +754,11 @@ describe('no-unnecessary-math-sign-zero rule', () => {
   // ===== ARGUMENT TYPE VARIATIONS (5) =====
 
   describe('argument type variations', () => {
-    test('does not report when argument type is Literal instead of NumericLiteral', () => {
+    test('reports when argument type is Literal with numeric value 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'Literal', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when argument type is StringLiteral', () => {

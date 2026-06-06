@@ -849,11 +849,11 @@ describe('no-unnecessary-string-slice-zero rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('does not report when argument is Literal with value 0 instead of NumericLiteral', () => {
+    test('reports when argument is Literal with value 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSliceZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [{ type: 'Literal', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
   })
 })

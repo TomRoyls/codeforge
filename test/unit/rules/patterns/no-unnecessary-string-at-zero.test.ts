@@ -577,21 +577,21 @@ describe('no-unnecessary-string-at-zero rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when callee is missing — throws on undefined callee', () => {
+    test('does not report when callee is missing — handles undefined callee gracefully', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
-      expect(() => visitor.CallExpression({ type: 'CallExpression', arguments: [makeNumLiteral(0)], loc: makeLoc(1, 0, 1, 5) })).toThrow()
+      expect(() => visitor.CallExpression({ type: 'CallExpression', arguments: [makeNumLiteral(0)], loc: makeLoc(1, 0, 1, 5) })).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when callee is null — throws on null callee', () => {
+    test('does not report when callee is null — handles null callee gracefully', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
-      expect(() => visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeNumLiteral(0)], loc: makeLoc(1, 0, 1, 5) })).toThrow()
+      expect(() => visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeNumLiteral(0)], loc: makeLoc(1, 0, 1, 5) })).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when callee property is missing — throws on undefined property', () => {
+    test('does not report when callee property is missing — handles undefined property gracefully', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
       expect(() => visitor.CallExpression({
@@ -599,11 +599,11 @@ describe('no-unnecessary-string-at-zero rule', () => {
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'str' } },
         arguments: [makeNumLiteral(0)],
         loc: makeLoc(1, 0, 1, 10),
-      })).toThrow()
+      })).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when callee property is null — throws on null property', () => {
+    test('does not report when callee property is null — handles null property gracefully', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringAtZero.create(context)
       expect(() => visitor.CallExpression({
@@ -611,7 +611,7 @@ describe('no-unnecessary-string-at-zero rule', () => {
         callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'str' }, property: null },
         arguments: [makeNumLiteral(0)],
         loc: makeLoc(1, 0, 1, 10),
-      })).toThrow()
+      })).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
