@@ -2,11 +2,25 @@ export class BoundedPriorityQueue<T> {
   private readonly heap: T[] = []
 
   constructor(
-    private readonly _maxSize: number,
-    private readonly comparator: (a: T, b: T) => number,
+    arg1: number | ((a: T, b: T) => number),
+    arg2?: number | ((a: T, b: T) => number),
   ) {
-    if (_maxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${_maxSize}`)
+    let maxSize: number
+    let comparator: (a: T, b: T) => number
+    if (typeof arg1 === 'function') {
+      comparator = arg1
+      maxSize = arg2 as number
+    } else {
+      maxSize = arg1
+      comparator = arg2 as (a: T, b: T) => number
+    }
+    if (maxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${maxSize}`)
+    this._maxSize = maxSize
+    this.comparator = comparator
   }
+
+  private readonly _maxSize: number
+  private readonly comparator: (a: T, b: T) => number
 
   push(item: T): void {
     if (this.heap.length < this._maxSize) {

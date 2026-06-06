@@ -1,6 +1,28 @@
+interface Edge {
+  from: number
+  to: number
+  capacity: number
+  cost: number
+}
+
 export class MinCostFlow {
+  private n: number
+  private edges: Edge[] = []
+
+  constructor(n: number) {
+    this.n = n
+  }
+
+  addEdge(u: number, v: number, capacity: number, cost: number): void {
+    this.edges.push({ from: u, to: v, capacity, cost })
+  }
+
+  solve(source: number, sink: number): { maxFlow: number; minCost: number } {
+    return MinCostFlow.minCostMaxFlow(this.edges, source, sink, this.n)
+  }
+
   static minCostMaxFlow(
-    edges: { from: number; to: number; capacity: number; cost: number }[],
+    edges: Edge[],
     source: number,
     sink: number,
     n: number,
