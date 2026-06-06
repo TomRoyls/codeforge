@@ -605,10 +605,10 @@ describe('no-unnecessary-array-flat-single-level rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for arr.flat with Literal arg type instead of NumericLiteral', () => {
+    test('does not report for arr.flat with Literal arg of non-numeric value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatSingleLevel.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'flat', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'flat', [{ type: 'Literal', value: 'depth' }]))
       expect(reports.length).toBe(0)
     })
 
