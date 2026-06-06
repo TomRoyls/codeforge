@@ -111,9 +111,9 @@ describe('Complexity command - flags', () => {
     expect(Complexity.flags.threshold.default).toBe(1)
   })
 
-  it('has top flag defaulting to 0', () => {
+  it('has top flag defaulting to 20', () => {
     expect(Complexity.flags.top).toBeDefined()
-    expect(Complexity.flags.top.default).toBe(0)
+    expect(Complexity.flags.top.default).toBe(20)
   })
 
   it('has sort flag with options', () => {

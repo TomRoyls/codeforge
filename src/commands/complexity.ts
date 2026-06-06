@@ -40,7 +40,7 @@ export default class Complexity extends Command {
   }
 
   static override description =
-    'Analyze and report cyclomatic and cognitive complexity metrics for TypeScript files'
+    'Analyze and report cyclomatic complexity metrics for TypeScript files'
 
   static override examples = [
     {
@@ -67,14 +67,14 @@ export default class Complexity extends Command {
 
   static override flags = {
     ext: Flags.string({
-      default: '',
+      default: '.ts,.tsx,.js,.jsx',
       description: 'Comma-separated file extensions to analyze (e.g., ".ts,.tsx")',
     }),
     format: Flags.string({
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['json', 'markdown', 'table'],
+      options: ['csv', 'json', 'markdown', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -85,7 +85,7 @@ export default class Complexity extends Command {
       char: 'o',
       description: 'Output file path',
     }),
-    'sort-by': Flags.string({
+    sort: Flags.string({
       char: 's',
       default: 'complexity',
       description: 'Sort results by',
@@ -93,13 +93,18 @@ export default class Complexity extends Command {
     }),
     threshold: Flags.integer({
       char: 't',
-      default: 0,
-      description: 'Minimum complexity threshold (only show functions with cyclomatic > threshold)',
+      default: 1,
+      description: 'Minimum complexity threshold (only show functions at or above threshold)',
     }),
     top: Flags.integer({
       char: 'n',
       default: 20,
       description: 'Show top N most complex functions',
+    }),
+    verbose: Flags.boolean({
+      char: 'v',
+      default: false,
+      description: 'Show detailed output',
     }),
   }
 
@@ -148,7 +153,7 @@ export default class Complexity extends Command {
     }
 
     const filtered = filterByThreshold(allFunctions, flags.threshold)
-    const sorted = sortByField(filtered, flags['sort-by'])
+    const sorted = sortByField(filtered, flags.sort)
     const limited = limitResults(sorted, flags.top)
 
     spinner.succeed(`Analyzed ${filteredFiles.length} files`)

@@ -338,7 +338,7 @@ export function filterByThreshold<T extends { cyclomatic?: number; complexity?: 
   threshold: number,
 ): T[] {
   if (threshold <= 0) return functions
-  return functions.filter((fn) => (fn.cyclomatic ?? fn.complexity ?? 0) > threshold)
+  return functions.filter((fn) => (fn.cyclomatic ?? fn.complexity ?? 0) >= threshold)
 }
 
 /**

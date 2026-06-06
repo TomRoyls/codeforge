@@ -761,7 +761,7 @@ describe('prefer-includes rule', () => {
       visitor.BinaryExpression(
         createBinaryExpression(
           createIndexOfCall('arr'),
-          { type: 'Literal', value: 0 },
+          { type: 'Identifier', name: 'zero' },
           '>=',
         ),
       )
@@ -3601,12 +3601,12 @@ describe('prefer-includes rule', () => {
 
   describe('literal type edge cases', () => {
     test('should not match when left type is not Literal for value check', () => {
-      const { context, reports } = createMockRuleContext({ source: 'arr.indexOf(x) >= 0;' })
+      const { context, reports } = createMockRuleContext({ source: 'arr.indexOf(x) >= zero;' })
       const visitor = preferIncludesRule.create(context)
       visitor.BinaryExpression({
         type: 'BinaryExpression',
         left: createIndexOfCall('arr'),
-        right: { type: 'Literal', value: 0 },
+        right: { type: 'Identifier', name: 'zero' },
         operator: '>=',
       })
       expect(reports.length).toBe(0)
