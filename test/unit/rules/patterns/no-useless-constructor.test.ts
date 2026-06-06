@@ -2595,11 +2595,11 @@ describe('no-useless-constructor', () => {
     expect(reports.length).toBe(1)
   })
 
-  test('report descriptor has no node property in stored reports', () => {
+  test('report descriptor includes node property for location extraction', () => {
     const { context, reports } = createMockRuleContext({ source: 'const x = 1;' })
     const visitor = noUselessConstructorRule.create(context)
     visitor.MethodDefinition(createEmptyConstructor())
-    expect(reports[0]).not.toHaveProperty('node')
+    expect(reports[0]).toHaveProperty('node')
   })
 
   test('report descriptor has fix property as undefined when rule does not provide fix', () => {
