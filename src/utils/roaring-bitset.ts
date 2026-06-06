@@ -35,6 +35,9 @@ export class RoaringBitSet {
     }
   }
 
+  /** Alias for add() to match BitSet-like interface */
+  set = this.add.bind(this)
+
   addRange(start: number, end: number): void {
     for (let i = start; i <= end; i++) {
       this.add(i)
