@@ -14,30 +14,34 @@ const UNESCAPEABLE = new Set([
 
 export const noUnnecessaryEscapeRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
-    return {
-      Literal(node: unknown): void {
-        const n = toASTNode(node)
-        if (!n || n.type !== 'Literal') return
+    const checkNode = (node: unknown): void => {
+      const n = toASTNode(node)
+      if (!n) return
+      // Handle both Literal (ESTree) and StringLiteral (SWC) node types
+      if (n.type !== 'Literal' && n.type !== 'StringLiteral') return
 
-        const value = (n as { value?: string }).value
-        if (!value || typeof value !== 'string') return
+      const value = (n as { value?: string }).value
+      if (!value || typeof value !== 'string') return
 
-        const raw = (n as { raw?: string }).raw
-        if (!raw || typeof raw !== 'string') return
+      const raw = (n as { raw?: string }).raw
+      if (!raw || typeof raw !== 'string') return
 
-        const escaped = raw.matchAll(/\\(.)/g)
-        for (const match of escaped) {
-          const char = match[1]
-          if (char && !UNESCAPEABLE.has(char)) {
-            context.report({
-              loc: extractLocation(n),
-              message: `Unnecessary escape character: \\${char}. This character does not need to be escaped.`,
-              node: n,
-            })
-            return
-          }
+      const escaped = raw.matchAll(/\\(.)/g)
+      for (const match of escaped) {
+        const char = match[1]
+        if (char && !UNESCAPEABLE.has(char)) {
+          context.report({
+            loc: extractLocation(n),
+            message: `Unnecessary escape character: \\${char}. This character does not need to be escaped.`,
+            node: n,
+          })
+          return
         }
-      },
+      }
+    }
+    return {
+      Literal: checkNode,
+      StringLiteral: checkNode,
     }
   },
 
