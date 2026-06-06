@@ -403,11 +403,11 @@ describe('no-unnecessary-string-ends-with-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for str.endsWith with Literal type argument (not StringLiteral)', () => {
+    test('reports for str.endsWith with Literal type empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringEndsWithEmpty.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'endsWith', [{ type: 'Literal', value: '' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report for str.endsWith with NumericLiteral argument', () => {

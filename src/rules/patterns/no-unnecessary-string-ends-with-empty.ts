@@ -13,8 +13,10 @@ export const noUnnecessaryStringEndsWithEmpty: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'endsWith') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral') return
-        if (arg.value !== '') return
+        const argNode = toASTNode(arg)
+        if (!argNode || argNode.type !== 'Literal') return
+        if (typeof argNode.value !== 'string') return
+        if (argNode.value !== '') return
         context.report({
           loc: extractLocation(n),
           message: `String.prototype.endsWith('') always returns true. Remove the call.`,
