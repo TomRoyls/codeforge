@@ -11,7 +11,53 @@ const mockWriteFile = vi.fn().mockResolvedValue(undefined)
 
 const mockAnalyzeFileComplexity = vi.fn()
 const mockBuildComplexityResult = vi.fn()
+const mockBuildIgnorePatterns = vi.fn(
+  (defaults: string[], custom?: string[]) => [...defaults, ...(custom ?? [])],
+)
 const mockFilterByThreshold = vi.fn()
+const mockFilterFilesByExtension = vi.fn(
+  <T extends { path: string }>(files: T[], exts: string[] | null): T[] => {
+    if (!exts || exts.length === 0) return files
+    const lowerExts = exts.map((e) => e.toLowerCase())
+    return files.filter((f) => {
+      const basename = f.path.split('/').pop() ?? f.path
+      if (basename.startsWith('.') && !basename.slice(1).includes('.')) return false
+      const ext = basename.match(/\.[^.]+$/)?.[0]?.toLowerCase() ?? ''
+      return lowerExts.includes(ext)
+    })
+  },
+)
+const mockLimitResults = vi.fn(<T>(items: T[], _limit: number): T[] => items)
+const mockBuildJsonOutput = vi.fn((): string => '{}')
+const mockFormatOutput = vi.fn((): string => 'formatted output')
+const mockParseExtensions = vi.fn(
+  (input: string): string[] =>
+    input
+      .split(',')
+      .map((e) => e.trim())
+      .filter((e) => e.length > 0),
+)
+const mockSortByField = vi.fn(
+  <T extends { name?: string; filePath: string; complexity?: number }>(
+    items: T[],
+    field: string,
+  ): T[] => {
+    const sorted = [...items]
+    switch (field) {
+      case 'complexity':
+        sorted.sort((a, b) => (b.complexity ?? 0) - (a.complexity ?? 0))
+        break
+      case 'file':
+        sorted.sort((a, b) => a.filePath.localeCompare(b.filePath))
+        break
+      case 'name':
+      default:
+        sorted.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
+        break
+    }
+    return sorted
+  },
+)
 const mockTakeTop = vi.fn()
 
 const mockFormatComplexityJson = vi.fn().mockReturnValue('{}')
@@ -44,7 +90,14 @@ vi.mock('../../src/core/file-discovery.js', () => ({
 vi.mock('../../src/commands/complexity-helpers.js', () => ({
   analyzeFileComplexity: (...args: unknown[]) => mockAnalyzeFileComplexity(...args),
   buildComplexityResult: (...args: unknown[]) => mockBuildComplexityResult(...args),
+  buildIgnorePatterns: (...args: unknown[]) => mockBuildIgnorePatterns(...args),
+  buildJsonOutput: (...args: unknown[]) => mockBuildJsonOutput(...args),
   filterByThreshold: (...args: unknown[]) => mockFilterByThreshold(...args),
+  filterFilesByExtension: (...args: unknown[]) => mockFilterFilesByExtension(...args),
+  formatOutput: (...args: unknown[]) => mockFormatOutput(...args),
+  limitResults: (...args: unknown[]) => mockLimitResults(...args),
+  parseExtensions: (...args: unknown[]) => mockParseExtensions(...args),
+  sortByField: (...args: unknown[]) => mockSortByField(...args),
   takeTop: (...args: unknown[]) => mockTakeTop(...args),
 }))
 
@@ -202,6 +255,54 @@ function resetMocks(): void {
   mockBuildComplexityResult.mockReturnValue(makeComplexityResult({ functions: [] }))
   mockFilterByThreshold.mockImplementation((items: unknown[]) => items)
   mockTakeTop.mockImplementation((items: unknown[]) => items)
+
+  mockBuildIgnorePatterns.mockImplementation(
+    (defaults: string[], custom?: string[]) => [...defaults, ...(custom ?? [])],
+  )
+  mockParseExtensions.mockImplementation(
+    (input: string): string[] =>
+      input
+        .split(',')
+        .map((e) => e.trim())
+        .filter((e) => e.length > 0),
+  )
+  mockFilterFilesByExtension.mockImplementation(
+    <T extends { path: string }>(files: T[], exts: string[] | null): T[] => {
+      if (!exts || exts.length === 0) return files
+      const lowerExts = exts.map((e) => e.toLowerCase())
+      return files.filter((f) => {
+        const basename = f.path.split('/').pop() ?? f.path
+        if (basename.startsWith('.') && !basename.slice(1).includes('.')) return false
+        const ext = basename.match(/\.[^.]+$/)?.[0]?.toLowerCase() ?? ''
+        return lowerExts.includes(ext)
+      })
+    },
+  )
+  mockSortByField.mockImplementation(
+    <T extends { name?: string; filePath: string; complexity?: number }>(
+      items: T[],
+      field: string,
+    ): T[] => {
+      const sorted = [...items]
+      switch (field) {
+        case 'complexity':
+          sorted.sort((a, b) => (b.complexity ?? 0) - (a.complexity ?? 0))
+          break
+        case 'file':
+          sorted.sort((a, b) => a.filePath.localeCompare(b.filePath))
+          break
+        case 'name':
+        default:
+          sorted.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
+          break
+      }
+      return sorted
+    },
+  )
+  mockLimitResults.mockImplementation(<T>(items: T[], _limit: number): T[] => items)
+  mockBuildJsonOutput.mockReturnValue('{}')
+  mockFormatOutput.mockReturnValue('formatted output')
+
   mockFormatComplexityJson.mockReturnValue('{}')
   mockFormatComplexityCsv.mockReturnValue('')
   mockFormatComplexityTable.mockReturnValue('')

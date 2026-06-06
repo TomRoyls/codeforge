@@ -132,6 +132,41 @@ export class FibonacciHeap<K = number, V = K> {
     this._size = 0
   }
 
+  toString(): string {
+    return JSON.stringify(this.toArray())
+  }
+
+  toJSON(): K[] {
+    return this.toArray()
+  }
+
+  clone(): FibonacciHeap<K, V> {
+    const copy = new FibonacciHeap<K, V>(this.comparator)
+    if (this._min === null) return copy
+    const visited = new Set<FibonacciHeapNode<K, V>>()
+    const stack: FibonacciHeapNode<K, V>[] = [this._min]
+    while (stack.length > 0) {
+      const node = stack.pop()!
+      if (visited.has(node)) continue
+      visited.add(node)
+      copy.insert(node.key, node.value)
+      stack.push(node.right)
+      if (node.child !== null) stack.push(node.child)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof FibonacciHeap)) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false
+    }
+    return true
+  }
+
   merge(other: FibonacciHeap<K, V>): void {
     if (other._min === null) return
     if (this._min === null) {

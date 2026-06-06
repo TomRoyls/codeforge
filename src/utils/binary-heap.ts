@@ -53,6 +53,32 @@ export class BinaryHeap<T> {
     return [...this.heap]
   }
 
+  toString(): string {
+    return JSON.stringify(this.heap)
+  }
+
+  toJSON(): T[] {
+    return [...this.heap]
+  }
+
+  clone(): BinaryHeap<T> {
+    const copy = new BinaryHeap<T>({
+      type: this.isMin ? 'min' : 'max',
+      comparator: this.compare,
+    })
+    copy.heap.push(...this.heap)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BinaryHeap)) return false
+    if (this.heap.length !== other.heap.length) return false
+    for (let i = 0; i < this.heap.length; i++) {
+      if (this.heap[i] !== other.heap[i]) return false
+    }
+    return true
+  }
+
   static fromArray<T>(items: T[], options?: BinaryHeapOptions<T>): BinaryHeap<T> {
     const bh = new BinaryHeap<T>(options)
     bh.heap.push(...items)

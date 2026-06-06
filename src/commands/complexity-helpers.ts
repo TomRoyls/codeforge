@@ -388,21 +388,37 @@ export function filterFilesByExtension<T extends { path: string }>(
   })
 }
 
-export function sortByField(
-  results: FunctionComplexity[],
+export function sortByField<
+  T extends {
+    complexity?: number
+    cyclomatic?: number
+    filePath: string
+    functionName?: string
+    name?: string
+  },
+>(
+  results: T[],
   field: string,
-): FunctionComplexity[] {
+): T[] {
   const sorted = [...results]
   switch (field) {
     case 'complexity':
-      sorted.sort((a, b) => b.cyclomatic - a.cyclomatic)
+      sorted.sort(
+        (a, b) =>
+          (b.cyclomatic ?? b.complexity ?? 0) -
+          (a.cyclomatic ?? a.complexity ?? 0),
+      )
       break
     case 'file':
       sorted.sort((a, b) => a.filePath.localeCompare(b.filePath))
       break
     case 'name':
     default:
-      sorted.sort((a, b) => a.functionName.localeCompare(b.functionName))
+      sorted.sort((a, b) =>
+        (a.functionName ?? a.name ?? '').localeCompare(
+          b.functionName ?? b.name ?? '',
+        ),
+      )
       break
   }
   return sorted

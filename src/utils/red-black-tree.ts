@@ -236,4 +236,49 @@ export class RedBlackTree<K, V> {
   getRoot(): RBNode<K, V> | null {
     return this.root
   }
+
+  toString(): string {
+    const entries = this.inOrder()
+    return '[' + entries.map((e) => `${String(e.key)}=${String(e.value)}`).join(', ') + ']'
+  }
+
+  toJSON(): unknown {
+    const result: Record<string, V> = {}
+    for (const e of this.inOrder()) {
+      result[String(e.key)] = e.value
+    }
+    return result
+  }
+
+  private cloneNode(node: RBNode<K, V> | null): RBNode<K, V> | null {
+    if (node === null) return null
+    return {
+      key: node.key,
+      value: node.value,
+      color: node.color,
+      left: this.cloneNode(node.left),
+      right: this.cloneNode(node.right),
+    }
+  }
+
+  clone(): this {
+    const tree = new RedBlackTree<K, V>(this.compare)
+    tree.root = this.cloneNode(this.root)
+    tree._size = this._size
+    return tree as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof RedBlackTree)) return false
+    const a = this.inOrder()
+    const b = other.inOrder()
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      const ae = a[i]!
+      const be = b[i]!
+      if (ae.key !== be.key) return false
+      if (ae.value !== be.value) return false
+    }
+    return true
+  }
 }

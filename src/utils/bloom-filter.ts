@@ -82,4 +82,34 @@ export class BloomFilter {
     const n = this._size
     return Math.pow(1 - Math.exp(-(k * n) / m), k)
   }
+
+  toString(): string {
+    return `BloomFilter(size=${this.bitCount}, hashFunctions=${this.hashCount})`
+  }
+
+  toJSON(): { size: number; hashFunctions: number; bitSet: number[] } {
+    return {
+      size: this.bitCount,
+      hashFunctions: this.hashCount,
+      bitSet: Array.from(this.bits),
+    }
+  }
+
+  clone(): this {
+    const c = new BloomFilter({ expectedItems: 1, falsePositiveRate: 0.5 })
+    c.bits = new Uint8Array(this.bits)
+    c.hashCount = this.hashCount
+    c._size = this._size
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BloomFilter)) return false
+    if (this.bitCount !== other.bitCount) return false
+    if (this.hashCount !== other.hashCount) return false
+    for (let i = 0; i < this.bits.length; i++) {
+      if (this.bits[i] !== other.bits[i]) return false
+    }
+    return true
+  }
 }

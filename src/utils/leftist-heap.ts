@@ -106,6 +106,53 @@ export class LeftistHeap<T> {
     return result
   }
 
+  toString(): string {
+    const values: T[] = []
+    const walk = (node: LeftistNode<T> | null): void => {
+      if (node === null) return
+      values.push(node.value)
+      walk(node.left)
+      walk(node.right)
+    }
+    walk(this.root)
+    return JSON.stringify(values)
+  }
+
+  toJSON(): T[] {
+    const values: T[] = []
+    const walk = (node: LeftistNode<T> | null): void => {
+      if (node === null) return
+      values.push(node.value)
+      walk(node.left)
+      walk(node.right)
+    }
+    walk(this.root)
+    return values
+  }
+
+  clone(): LeftistHeap<T> {
+    const copy = new LeftistHeap<T>({ comparator: this.compare })
+    const walk = (node: LeftistNode<T> | null): void => {
+      if (node === null) return
+      copy.insert(node.value)
+      walk(node.left)
+      walk(node.right)
+    }
+    walk(this.root)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LeftistHeap)) return false
+    if (this._size !== other._size) return false
+    const a = this.clone()
+    const b = other.clone()
+    while (!a.isEmpty()) {
+      if (a.extractMin() !== b.extractMin()) return false
+    }
+    return true
+  }
+
   static fromArray<U>(items: U[], options?: LeftistHeapOptions<U>): LeftistHeap<U> {
     const heap = new LeftistHeap<U>(options)
     for (const item of items) {

@@ -61,6 +61,24 @@ export class FenwickTree {
     this.tree.fill(0)
   }
 
+  toString(): string {
+    return JSON.stringify(Array.from(this.tree))
+  }
+
+  toJSON(): number[] {
+    return Array.from(this.tree)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof FenwickTree)) return false
+    if (this._size !== other._size) return false
+    if (this.tree.length !== other.tree.length) return false
+    for (let i = 0; i < this.tree.length; i++) {
+      if (this.tree[i] !== other.tree[i]) return false
+    }
+    return true
+  }
+
   clone(): FenwickTree {
     const copy = new FenwickTree(this._size)
     copy.tree = new Int32Array(this.tree)

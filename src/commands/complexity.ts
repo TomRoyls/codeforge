@@ -7,20 +7,20 @@ import ora from 'ora'
 import { discoverFiles } from '../core/file-discovery.js'
 import {
   analyzeFileComplexity,
-  calculateComplexitySummary,
-  type FunctionComplexity,
-} from '../core/complexity.js'
-import { Parser } from '../core/parser.js'
-import {
+  buildComplexityResult,
   buildIgnorePatterns,
-  buildJsonOutput,
   filterByThreshold,
   filterFilesByExtension,
-  formatOutput,
-  limitResults,
   parseExtensions,
   sortByField,
+  takeTop,
 } from './complexity-helpers.js'
+import type { ComplexityResult, FileComplexity, FunctionInfo } from './complexity-helpers.js'
+import {
+  formatComplexityCsv,
+  formatComplexityJson,
+  formatComplexityTable,
+} from './complexity-format-helpers.js'
 
 const DEFAULT_EXTENSIONS = ['.ts', '.tsx']
 const DEFAULT_IGNORE = [
@@ -34,7 +34,7 @@ export default class Complexity extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze',
+      description: 'Path to analyze for complexity',
       required: false,
     }),
   }
@@ -74,7 +74,7 @@ export default class Complexity extends Command {
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['csv', 'json', 'markdown', 'table'],
+      options: ['csv', 'json', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -98,8 +98,8 @@ export default class Complexity extends Command {
     }),
     top: Flags.integer({
       char: 'n',
-      default: 20,
-      description: 'Show top N most complex functions',
+      default: 0,
+      description: 'Show top N most complex functions (0 = no limit)',
     }),
     verbose: Flags.boolean({
       char: 'v',
@@ -120,10 +120,8 @@ export default class Complexity extends Command {
     const spinner = ora('Discovering files...').start()
 
     const ignore = buildIgnorePatterns(DEFAULT_IGNORE, flags.ignore)
-    const extensions = parseExtensions(flags.ext)
-    const patterns = (
-      extensions && extensions.length > 0 ? extensions : DEFAULT_EXTENSIONS
-    ).map((ext) => `**/*${ext}`)
+    const extensions = parseExtensions(flags.ext) ?? DEFAULT_EXTENSIONS
+    const patterns = extensions.map((ext) => `**/*${ext}`)
 
     const discoveredFiles = await discoverFiles({
       cwd: targetPath,
@@ -135,41 +133,55 @@ export default class Complexity extends Command {
 
     spinner.text = 'Analyzing files...'
 
-    const allFunctions: FunctionComplexity[] = []
-    const parser = new Parser()
-    try {
-      await parser.initialize()
-      for (const file of filteredFiles) {
-        try {
-          const parsed = await parser.parseFile(file.absolutePath)
-          const sourceFile = parsed.sourceFile
-          const funcs = analyzeFileComplexity(sourceFile)
-          allFunctions.push(...funcs)
-        } catch {
-        }
+    const fileResults: FileComplexity[] = []
+    for (const file of filteredFiles) {
+      try {
+        const content = await fs.readFile(file.absolutePath, 'utf8')
+        const result = analyzeFileComplexity(content, file.path)
+        fileResults.push(result)
+      } catch {
+        fileResults.push({
+          filePath: file.path,
+          relativePath: file.path,
+          functions: [],
+          totalComplexity: 0,
+          averageComplexity: 0,
+          maxComplexity: 0,
+        })
       }
-    } finally {
-      parser.dispose()
     }
 
-    const filtered = filterByThreshold(allFunctions, flags.threshold)
-    const sorted = sortByField(filtered, flags.sort)
-    const limited = limitResults(sorted, flags.top)
+    const result = buildComplexityResult(fileResults)
+
+    const filtered = filterByThreshold<FunctionInfo>(result.functions, flags.threshold)
+    const sorted = sortByField<FunctionInfo>(filtered, flags.sort)
+    const limited: FunctionInfo[] =
+      flags.top > 0 ? takeTop(sorted, flags.top) : sorted
+
+    const finalResult: ComplexityResult = { ...result, functions: limited }
 
     spinner.succeed(`Analyzed ${filteredFiles.length} files`)
 
-    const summary = calculateComplexitySummary(limited)
+    if (flags.verbose) {
+      this.log(`Threshold: >= ${flags.threshold}`)
+      this.log(`Sort by: ${flags.sort}`)
+      if (flags.top > 0) {
+        this.log(`Showing top: ${flags.top}`)
+      }
+    }
 
-    const outputData =
-      flags.format === 'json'
-        ? buildJsonOutput(limited, summary)
-        : flags.format === 'markdown'
-          ? formatOutput(limited, 'markdown')
-          : formatOutput(limited, 'table')
+    let output: string
+    if (flags.format === 'json') {
+      output = formatComplexityJson(finalResult)
+    } else if (flags.format === 'csv') {
+      output = formatComplexityCsv(finalResult)
+    } else {
+      output = formatComplexityTable(finalResult)
+    }
 
     if (flags.output) {
       try {
-        await fs.writeFile(flags.output, outputData, 'utf8')
+        await fs.writeFile(flags.output, output, 'utf8')
         this.log(`Results written to ${flags.output}`)
       } catch (error) {
         this.error(
@@ -177,7 +189,7 @@ export default class Complexity extends Command {
         )
       }
     } else {
-      this.log(outputData)
+      this.log(output)
     }
   }
 }

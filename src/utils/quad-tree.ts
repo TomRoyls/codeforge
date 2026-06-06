@@ -347,4 +347,53 @@ export class QuadTree {
       b.y + b.height <= a.y
     );
   }
+
+  toString(): string {
+    const points = this.toArray();
+    return '[' + points.map((p) => `(${p.x}, ${p.y})`).join(', ') + ']';
+  }
+
+  toJSON(): unknown {
+    return this.toArray().map((p) => [p.x, p.y]);
+  }
+
+  private cloneNode(node: QuadTreeNode): QuadTreeNode {
+    const newNode = new QuadTreeNode({ ...node.bounds }, node.depth);
+    newNode.points = node.points.map((p) => ({ ...p }));
+    if (node.northwest !== null) newNode.northwest = this.cloneNode(node.northwest);
+    if (node.northeast !== null) newNode.northeast = this.cloneNode(node.northeast);
+    if (node.southwest !== null) newNode.southwest = this.cloneNode(node.southwest);
+    if (node.southeast !== null) newNode.southeast = this.cloneNode(node.southeast);
+    return newNode;
+  }
+
+  clone(): this {
+    const tree = new QuadTree({ ...this.root.bounds }, this.capacity, this.maxDepth);
+    tree.root = this.cloneNode(this.root);
+    tree._size = this._size;
+    tree._depth = this._depth;
+    return tree as this;
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof QuadTree)) return false;
+    const a = this.toArray();
+    const b = other.toArray();
+    if (a.length !== b.length) return false;
+    const used = new Set<number>();
+    for (const pa of a) {
+      let found = false;
+      for (let i = 0; i < b.length; i++) {
+        if (used.has(i)) continue;
+        const candidate = b[i]!;
+        if (candidate.x === pa.x && candidate.y === pa.y && candidate.data === pa.data) {
+          used.add(i);
+          found = true;
+          break;
+        }
+      }
+      if (!found) return false;
+    }
+    return true;
+  }
 }

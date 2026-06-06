@@ -197,4 +197,34 @@ export class Trie<V> {
       this._collectValues(child, results)
     }
   }
+
+  toString(): string {
+    return `[${this.keys().join(', ')}]`
+  }
+
+  toJSON(): string[] {
+    return this.keys()
+  }
+
+  clone(): this {
+    const c = new Trie<V>()
+    for (const [key, value] of this.entries()) {
+      c.insert(key, value)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof Trie)) return false
+    const theseEntries = this.entries()
+    const thoseEntries = other.entries()
+    if (theseEntries.length !== thoseEntries.length) return false
+    const otherMap = new Map<string, V>()
+    for (const [k, v] of thoseEntries) otherMap.set(k, v)
+    for (const [k, v] of theseEntries) {
+      const ov = otherMap.get(k)
+      if (ov !== v) return false
+    }
+    return true
+  }
 }

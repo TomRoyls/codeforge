@@ -73,6 +73,29 @@ export class MinMaxHeap<T> {
     return [...this.heap]
   }
 
+  toString(): string {
+    return JSON.stringify(this.heap)
+  }
+
+  toJSON(): T[] {
+    return [...this.heap]
+  }
+
+  clone(): MinMaxHeap<T> {
+    const copy = new MinMaxHeap<T>({ comparator: this.compare })
+    copy.heap.push(...this.heap)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof MinMaxHeap)) return false
+    if (this.heap.length !== other.heap.length) return false
+    for (let i = 0; i < this.heap.length; i++) {
+      if (this.heap[i] !== other.heap[i]) return false
+    }
+    return true
+  }
+
   replaceMin(value: T): T | undefined {
     if (this.heap.length === 0) return undefined
     const old = this.heap[0]!

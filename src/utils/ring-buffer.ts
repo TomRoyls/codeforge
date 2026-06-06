@@ -123,4 +123,33 @@ export class RingBuffer<T> {
     }
     return rb
   }
+
+  toString(): string {
+    return `[${this.toArray()
+      .map((v) => String(v))
+      .join(', ')}]`
+  }
+
+  toJSON(): T[] {
+    return this.toArray()
+  }
+
+  clone(): this {
+    const c = new RingBuffer<T>({ capacity: this._capacity, allowOverwrite: this.allowOverwrite })
+    for (let i = 0; i < this._size; i++) {
+      c.push(this.buffer[(this.head + i) % this._capacity]!)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof RingBuffer)) return false
+    if (this._size !== other._size) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i], b[i])) return false
+    }
+    return true
+  }
 }

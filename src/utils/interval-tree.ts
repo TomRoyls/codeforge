@@ -184,4 +184,51 @@ export class IntervalTree<V> {
     callback(node.interval, node.value)
     this.forEachNode(node.right, callback)
   }
+
+  toString(): string {
+    const intervals: Interval[] = []
+    this.forEach((interval) => intervals.push(interval))
+    return '[' + intervals.map((i) => `(${i.start}, ${i.end})`).join(', ') + ']'
+  }
+
+  toJSON(): unknown {
+    const result: Array<[number, number]> = []
+    this.forEach((interval) => result.push([interval.start, interval.end]))
+    return result
+  }
+
+  private cloneNode(node: IntervalNode<V> | null): IntervalNode<V> | null {
+    if (node === null) return null
+    return {
+      interval: { start: node.interval.start, end: node.interval.end },
+      value: node.value,
+      max: node.max,
+      left: this.cloneNode(node.left),
+      right: this.cloneNode(node.right),
+    }
+  }
+
+  clone(): this {
+    const tree = new IntervalTree<V>()
+    tree.root = this.cloneNode(this.root)
+    tree._size = this._size
+    return tree as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof IntervalTree)) return false
+    const a: Array<{ interval: Interval; value: V }> = []
+    const b: Array<{ interval: Interval; value: V }> = []
+    this.forEach((interval, value) => a.push({ interval, value }))
+    other.forEach((interval, value) => b.push({ interval, value }))
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      const ae = a[i]!
+      const be = b[i]!
+      if (ae.interval.start !== be.interval.start) return false
+      if (ae.interval.end !== be.interval.end) return false
+      if (ae.value !== be.value) return false
+    }
+    return true
+  }
 }

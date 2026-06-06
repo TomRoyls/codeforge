@@ -274,6 +274,49 @@ export class RadixTree<V> {
     this.root = new RadixNode<V>('')
     this._size = 0
   }
+
+  toString(): string {
+    return '[' + this.keys().map((k) => JSON.stringify(k)).join(', ') + ']'
+  }
+
+  toJSON(): unknown {
+    const result: Record<string, V> = {}
+    for (const [key, value] of this.entries()) {
+      result[key] = value
+    }
+    return result
+  }
+
+  private cloneNode(node: RadixNode<V>): RadixNode<V> {
+    const newNode = new RadixNode<V>(node.fragment)
+    newNode.isTerminal = node.isTerminal
+    newNode.value = node.value
+    for (const [k, child] of node.children) {
+      newNode.children.set(k, this.cloneNode(child))
+    }
+    return newNode
+  }
+
+  clone(): this {
+    const tree = new RadixTree<V>()
+    tree.root = this.cloneNode(this.root)
+    tree._size = this._size
+    return tree as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof RadixTree)) return false
+    const a = this.entries()
+    const b = other.entries()
+    if (a.length !== b.length) return false
+    const bMap = new Map<string, V>(b)
+    if (bMap.size !== a.length) return false
+    for (const [k, v] of a) {
+      if (!bMap.has(k)) return false
+      if (bMap.get(k) !== v) return false
+    }
+    return true
+  }
 }
 
 function commonPrefixLength(a: string, b: string): number {

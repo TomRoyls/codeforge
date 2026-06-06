@@ -152,6 +152,41 @@ export class LinkedList<T> {
     }
   }
 
+  toString(): string {
+    const parts: string[] = []
+    let current = this.head
+    while (current !== null) {
+      parts.push(String(current.value))
+      current = current.next
+    }
+    return `[${parts.join(' -> ')}]`
+  }
+
+  toJSON(): T[] {
+    return this.toArray()
+  }
+
+  clone(): this {
+    const c = new LinkedList<T>()
+    let current = this.head
+    while (current !== null) {
+      c.append(current.value)
+      current = current.next
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LinkedList)) return false
+    if (this._size !== other._size) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i], b[i])) return false
+    }
+    return true
+  }
+
   private getNode(index: number): Node<T> | null {
     if (index < 0 || index >= this._size) return null
     if (index < this._size / 2) {

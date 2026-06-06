@@ -133,4 +133,38 @@ export class BiKeyMap<K1, K2, V> {
       },
     }
   }
+
+  toString(): string {
+    const parts: string[] = []
+    for (const [k1, k2, v] of this) {
+      parts.push(`(${String(k1)}, ${String(k2)}) -> ${String(v)}`)
+    }
+    return `[${parts.join(', ')}]`
+  }
+
+  toJSON(): Array<[[K1, K2], V]> {
+    const result: Array<[[K1, K2], V]> = []
+    for (const [k1, k2, v] of this) {
+      result.push([[k1, k2], v])
+    }
+    return result
+  }
+
+  clone(): this {
+    const c = new BiKeyMap<K1, K2, V>()
+    for (const [k1, k2, v] of this) {
+      c.set(k1, k2, v)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BiKeyMap)) return false
+    if (this.size !== other.size) return false
+    for (const [k1, k2, v] of this) {
+      const ov = other.get(k1, k2)
+      if (!Object.is(ov, v)) return false
+    }
+    return true
+  }
 }

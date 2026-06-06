@@ -97,4 +97,33 @@ export class Deque<T> {
     this.tail = this._size
     this._capacity = newCapacity
   }
+
+  toString(): string {
+    return `[${this.toArray()
+      .map((v) => String(v))
+      .join(', ')}]`
+  }
+
+  toJSON(): T[] {
+    return this.toArray()
+  }
+
+  clone(): this {
+    const c = new Deque<T>(Math.max(INITIAL_CAPACITY, this._capacity))
+    for (let i = 0; i < this._size; i++) {
+      c.pushBack(this.buffer[(this.head + i) % this._capacity]!)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof Deque)) return false
+    if (this._size !== other._size) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i], b[i])) return false
+    }
+    return true
+  }
 }

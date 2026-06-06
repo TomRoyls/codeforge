@@ -101,6 +101,28 @@ export class SuffixArray {
     return [...this.lcpArr];
   }
 
+  toString(): string {
+    return JSON.stringify(this.sa);
+  }
+
+  toJSON(): number[] {
+    return [...this.sa];
+  }
+
+  clone(): SuffixArray {
+    return new SuffixArray(this.text);
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof SuffixArray)) return false;
+    if (this.text !== other.text) return false;
+    if (this.sa.length !== other.sa.length) return false;
+    for (let i = 0; i < this.sa.length; i++) {
+      if (this.sa[i] !== other.sa[i]) return false;
+    }
+    return true;
+  }
+
   private buildSuffixArray(): number[] {
     const n = this.text.length;
     if (n === 0) {

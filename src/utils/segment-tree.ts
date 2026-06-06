@@ -47,6 +47,25 @@ export class SegmentTree {
     this.tree.fill(this.identity)
   }
 
+  toString(): string {
+    return JSON.stringify([...this.tree])
+  }
+
+  toJSON(): number[] {
+    return [...this.tree]
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof SegmentTree)) return false
+    if (this._size !== other._size) return false
+    if (this.identity !== other.identity) return false
+    if (this.tree.length !== other.tree.length) return false
+    for (let i = 0; i < this.tree.length; i++) {
+      if (this.tree[i] !== other.tree[i]) return false
+    }
+    return true
+  }
+
   clone(): SegmentTree {
     const copy = new SegmentTree(this._size, this.operation, this.identity)
     copy.tree = [...this.tree]

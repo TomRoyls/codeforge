@@ -124,4 +124,72 @@ export class DisjointSet<T> {
       maxSetSize: maxSize,
     }
   }
+
+  toString(): string {
+    const pairs: string[] = []
+    for (const [key] of this.nodes) {
+      pairs.push(`${String(key)}:${String(this.find(key))}`)
+    }
+    return `{${pairs.join(', ')}}`
+  }
+
+  toJSON(): Array<[T, T]> {
+    const result: Array<[T, T]> = []
+    for (const [key] of this.nodes) {
+      result.push([key, this.find(key)])
+    }
+    return result
+  }
+
+  clone(): this {
+    const c = new DisjointSet<T>()
+    for (const [key, node] of this.nodes) {
+      c.nodes.set(key, { parent: node.parent, rank: node.rank, size: node.size })
+    }
+    c._setCount = this._setCount
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DisjointSet)) return false
+    if (this.nodes.size !== other.nodes.size) return false
+
+    const thisPid = new Map<T, number>()
+    let next = 0
+    for (const key of this.nodes.keys()) {
+      const root = this.find(key)
+      if (!thisPid.has(root)) {
+        thisPid.set(root, next++)
+      }
+      thisPid.set(key, thisPid.get(root)!)
+    }
+
+    const otherPid = new Map<T, number>()
+    next = 0
+    for (const key of other.nodes.keys()) {
+      const root = other.find(key)
+      if (!otherPid.has(root)) {
+        otherPid.set(root, next++)
+      }
+      otherPid.set(key, otherPid.get(root)!)
+    }
+
+    const thisDistinct = new Set(thisPid.values()).size
+    const otherDistinct = new Set(otherPid.values()).size
+    if (thisDistinct !== otherDistinct) return false
+
+    const forward = new Map<number, number>()
+    const backward = new Map<number, number>()
+    for (const [key, tp] of thisPid) {
+      const op = otherPid.get(key)
+      if (op === undefined) return false
+      const f = forward.get(tp)
+      if (f === undefined) forward.set(tp, op)
+      else if (f !== op) return false
+      const b = backward.get(op)
+      if (b === undefined) backward.set(op, tp)
+      else if (b !== tp) return false
+    }
+    return true
+  }
 }
