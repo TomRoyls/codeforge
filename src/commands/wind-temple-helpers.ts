@@ -203,6 +203,7 @@ export interface WindTempleResult {
   stats: {
     totalFiles: number
     totalComplexes: number
+    totalClusters: number
     avgWindFlow: number
     avgTempleHarmony: number
     avgEnergyAlignment: number
@@ -884,7 +885,7 @@ export function buildWindTempleResult(
   const architectGrade = classifyArchitectGrade(overallHarmony)
 
   const stats: WindTempleResult['stats'] = {
-    totalFiles: files.length, totalComplexes: complexes.length,
+    totalFiles: files.length, totalComplexes: complexes.length, totalClusters: complexes.length,
     avgWindFlow, avgTempleHarmony, avgEnergyAlignment, avgStructuralGrace,
     avgOpennessQuality, avgSpiritualClarity,
     mountainShrineCount: conditionCounts.mountain, gardenTempleCount: conditionCounts.garden,

@@ -213,35 +213,37 @@ export function formatTable(stats: StatsInput, top: number): string {
   const fileTypes = getFileTypes(stats)
 
   const lines: string[] = []
-  lines.push('Codebase Statistics')
+
+  lines.push(chalk.bold('\n📊 Codebase Statistics\n'))
+
+  lines.push(chalk.dim('Summary:'))
+  lines.push(`  Total files: ${summary.files}`)
+  lines.push(`  Lines of code: ${formatNumber(summary.loc)}`)
+  lines.push(`  Total complexity: ${formatNumber(summary.complexity)}`)
+  lines.push(`  Blank lines: ${formatNumber(summary.blankLines)}`)
+  lines.push(`  Comment lines: ${formatNumber(summary.commentLines)}`)
   lines.push('')
 
-  lines.push(`Total files: ${formatNumber(summary.files)}`)
-  lines.push(`Lines of code: ${formatNumber(summary.loc)}`)
-  lines.push(`Total complexity: ${formatNumber(summary.complexity)}`)
+  lines.push(chalk.dim('Code structures:'))
+  lines.push(`  Classes: ${summary.classes}`)
+  lines.push(`  Functions: ${summary.functions}`)
+  lines.push(`  Methods: ${summary.methods}`)
+  lines.push(`  Interfaces: ${summary.interfaces}`)
+  lines.push(`  Type aliases: ${summary.typeAliases}`)
+  lines.push(`  Enums: ${summary.enums}`)
   lines.push('')
 
-  lines.push('Code Structures:')
-  lines.push(`  Classes: ${formatNumber(summary.classes)}`)
-  lines.push(`  Functions: ${formatNumber(summary.functions)}`)
-  lines.push(`  Interfaces: ${formatNumber(summary.interfaces)}`)
-  lines.push(`  Enums: ${formatNumber(summary.enums)}`)
-  lines.push(`  Type aliases: ${formatNumber(summary.typeAliases)}`)
-  lines.push('')
-
-  lines.push('File Types:')
+  lines.push(chalk.dim('File Types:'))
   for (const [ext, count] of Object.entries(fileTypes)) {
-    lines.push(`  ${ext}: ${formatNumber(count)}`)
+    lines.push(`  ${ext}: ${count}`)
   }
   lines.push('')
 
-  const topN = top > 0 ? files.slice(0, top) : files
-  lines.push(`Top ${top} Largest Files`)
+  lines.push(chalk.dim(`Top ${top} Largest Files:`))
+  const topN = files.slice(0, top)
   for (const f of topN) {
     lines.push(`  ${f.name}`)
-    lines.push(`    LOC: ${formatNumber(f.loc)}`)
-    lines.push(`    Complexity: ${f.complexity}`)
-    lines.push(`    Size: ${f.size} bytes`)
+    lines.push(`    LOC: ${f.loc}, Complexity: ${f.complexity}, Size: ${f.size} bytes`)
   }
 
   return lines.join('\n')
