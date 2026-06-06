@@ -1,10 +1,23 @@
 export class CRT {
-  static solve(remainders: number[], moduli: number[]): { remainder: number; modulus: number } | null {
-    if (remainders.length !== moduli.length || remainders.length === 0) return null
-    let r = remainders[0]!
-    let m = moduli[0]!
-    for (let i = 1; i < remainders.length; i++) {
-      const result = CRT.mergeTwo(r, m, remainders[i]!, moduli[i]!)
+  static solve(
+    remainders: number[] | [number, number][],
+    moduli?: number[],
+  ): { remainder: number; modulus: number } | null {
+    let rs: number[]
+    let ms: number[]
+    if (moduli === undefined) {
+      const pairs = remainders as [number, number][]
+      rs = pairs.map((p) => p[0])
+      ms = pairs.map((p) => p[1])
+    } else {
+      rs = remainders as number[]
+      ms = moduli
+    }
+    if (rs.length !== ms.length || rs.length === 0) return null
+    let r = rs[0]!
+    let m = ms[0]!
+    for (let i = 1; i < rs.length; i++) {
+      const result = CRT.mergeTwo(r, m, rs[i]!, ms[i]!)
       if (result === null) return null
       r = result.remainder
       m = result.modulus

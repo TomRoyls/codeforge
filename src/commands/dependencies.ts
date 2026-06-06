@@ -35,7 +35,7 @@ import {
  * codeforge dependencies --tree
  */
 export default class Dependencies extends Command {
-  static override description = 'Analyze and visualize module dependencies'
+  static override description = 'Analyze npm package.json dependencies'
 
   static override examples = [
     {
@@ -57,10 +57,19 @@ export default class Dependencies extends Command {
   ]
 
   static override flags = {
+    'check-updates': Flags.boolean({
+      default: false,
+      description: 'Check for outdated dependencies',
+    }),
     circular: Flags.boolean({
       char: 'c',
       default: false,
       description: 'Only detect and show circular dependencies',
+    }),
+    depth: Flags.integer({
+      char: 'd',
+      default: 3,
+      description: 'Maximum dependency tree depth',
     }),
     external: Flags.boolean({
       char: 'e',
@@ -71,7 +80,7 @@ export default class Dependencies extends Command {
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['dot', 'json', 'table'],
+      options: ['csv', 'dot', 'json', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -86,6 +95,16 @@ export default class Dependencies extends Command {
       char: 't',
       default: false,
       description: 'Display dependency tree',
+    }),
+    type: Flags.string({
+      default: 'all',
+      description: 'Type of dependencies to show',
+      options: ['all', 'deps', 'devDeps'],
+    }),
+    verbose: Flags.boolean({
+      char: 'v',
+      default: false,
+      description: 'Show detailed output',
     }),
   }
 

@@ -64,7 +64,6 @@ export const preserveCaughtErrorRule: RuleDefinition = {
       category: 'patterns',
       description: 'Require using caught error variables.',
       recommended: true,
-      url: 'https://codeforge.dev/docs/rules/preserve-caught-error',
     },
     fixable: undefined,
     schema: [],
