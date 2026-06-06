@@ -18,6 +18,21 @@ import {
 export default class SapphirePavilion extends Command {
   static override description = 'Analyze code gem-clarity, pillar-strength, roof-protection, hall-elegance, and foundation-depth'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %>',
+      description: 'Analyze current directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src',
+      description: 'Analyze specific directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json',
+      description: 'Output as JSON',
+    },
+  ]
+
   static override flags = {
     format: Flags.string({
       char: 'f',

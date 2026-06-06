@@ -18,6 +18,21 @@ import {
 export default class SilverCathedral extends Command {
   static override description = 'Analyze code lunar-purity, vault-architecture, bell-clarity, silver-strength, and candle-wisdom'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %>',
+      description: 'Analyze current directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src',
+      description: 'Analyze specific directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json',
+      description: 'Output as JSON',
+    },
+  ]
+
   static override flags = {
     format: Flags.string({
       char: 'f',

@@ -13,6 +13,21 @@ import { formatPotteryTable, formatPotteryJson } from './pottery-format-helpers.
 export default class Pottery extends Command {
   static override description = 'Analyze code quality through pottery craftsmanship metaphors'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %>',
+      description: 'Analyze current directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src',
+      description: 'Analyze specific directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --json',
+      description: 'Output as JSON',
+    },
+  ]
+
   static override flags = {
     json: Flags.boolean({ char: 'j', default: false, description: 'Output as JSON' }),
     verbose: Flags.boolean({ char: 'v', default: false, description: 'Show all pieces' }),
