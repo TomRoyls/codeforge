@@ -13,6 +13,25 @@ import { formatAqueductTable, formatAqueductJson } from './aqueduct-format-helpe
 export default class Aqueduct extends Command {
   static override description = 'Analyze data flow through the codebase as an aqueduct system'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %>',
+      description: 'Analyze data flow in the current directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> src/',
+      description: 'Analyze data flow in the src directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --json',
+      description: 'Output analysis results as JSON',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show detailed output for all files',
+    },
+  ]
+
   static override flags = {
     json: Flags.boolean({ char: 'j', default: false, description: 'Output as JSON' }),
     verbose: Flags.boolean({ char: 'v', default: false, description: 'Show all files' }),

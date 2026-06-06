@@ -18,6 +18,25 @@ import {
 export default class CrystalMountain extends Command {
   static override description = 'Analyze code crystalline-structure, peak-clarity, facet-precision, frost-resilience, and summit-wisdom'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src',
+      description: 'Analyze the src directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src --format json',
+      description: 'Output analysis results as JSON',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src --ignore "**/test/**"',
+      description: 'Ignore test directory during analysis',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src --ext .ts,.tsx',
+      description: 'Analyze only TypeScript files',
+    },
+  ]
+
   static override flags = {
     format: Flags.string({
       char: 'f',

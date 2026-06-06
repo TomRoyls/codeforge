@@ -17,6 +17,21 @@ import {
 export default class GoldenCompass extends Command {
   static override description = 'Analyze code moral-clarity, bearing-truth, navigation-wisdom, cardinal-virtue, and needle-conviction'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src',
+      description: 'Analyze the src directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src --json',
+      description: 'Output analysis results as JSON',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src --glob "**/*.{ts,tsx}"',
+      description: 'Analyze files matching a custom glob pattern',
+    },
+  ]
+
   static override flags = {
     json: Flags.boolean({ char: 'j', description: 'Output as JSON', default: false }),
     glob: Flags.string({ char: 'g', description: 'Glob pattern for files', default: '**/*.ts' }),

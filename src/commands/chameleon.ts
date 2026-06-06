@@ -13,6 +13,25 @@ import { formatChameleonTable, formatChameleonJson } from './chameleon-format-he
 export default class Chameleon extends Command {
   static override description = 'Analyze codebase adaptability and flexibility'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %>',
+      description: 'Analyze adaptability of the current directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> src/',
+      description: 'Analyze adaptability of the src directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --json',
+      description: 'Output analysis results as JSON',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show all rigid points in detail',
+    },
+  ]
+
   static override flags = {
     json: Flags.boolean({ char: 'j', default: false, description: 'Output as JSON' }),
     verbose: Flags.boolean({ char: 'v', default: false, description: 'Show all rigid points' }),

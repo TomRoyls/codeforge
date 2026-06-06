@@ -13,6 +13,25 @@ import { formatCoralTable, formatCoralJson } from './coral-format-helpers.js'
 export default class Coral extends Command {
   static override description = 'Analyze codebase growth like a coral reef ecosystem'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %>',
+      description: 'Analyze reef growth in the current directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> src/',
+      description: 'Analyze reef growth in the src directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --json',
+      description: 'Output analysis results as JSON',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show all polyps and colonies in detail',
+    },
+  ]
+
   static override flags = {
     json: Flags.boolean({ char: 'j', default: false, description: 'Output as JSON' }),
     verbose: Flags.boolean({ char: 'v', default: false, description: 'Show all polyps and colonies' }),

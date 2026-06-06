@@ -18,6 +18,25 @@ import {
 export default class CopperDawn extends Command {
   static override description = 'Analyze code patina-wisdom, dawn-clarity, conductivity-quality, warmth-resilience, and forge-strength'
 
+  static override examples = [
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src',
+      description: 'Analyze the src directory',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src --format json',
+      description: 'Output analysis results as JSON',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src --ignore "**/test/**"',
+      description: 'Ignore test directory during analysis',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> ./src --ext .ts,.tsx',
+      description: 'Analyze only TypeScript files',
+    },
+  ]
+
   static override flags = {
     format: Flags.string({
       char: 'f',
