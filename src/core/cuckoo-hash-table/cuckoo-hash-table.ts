@@ -40,14 +40,19 @@ export class CuckooHashTable<K, V> {
         this.stats.insertions++
         return
       }
+      // tryPlace failed — collect all entries, resize, and reinsert
       const displaced = result
       const allEntries = this.entries()
       allEntries.push({ key: displaced.key, value: displaced.value })
-      this.rebuildTables(this._capacity * 2)
+      const sizeBefore = allEntries.length
+      this.rebuildTables(Math.max(this._capacity * 2, sizeBefore))
       for (const e of allEntries) {
         this.placeEntry(e.key, e.value)
       }
-      return
+      // If all entries were placed successfully, we're done.
+      // The new entry was part of allEntries, so _size already reflects it.
+      if (this._size === sizeBefore) return
+      // Some entries were lost during placement — loop and retry
     }
   }
 

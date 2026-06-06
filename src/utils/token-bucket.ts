@@ -45,7 +45,7 @@ export class TokenBucket {
       this.totalGranted += count
       return true
     }
-    throw new Error('Insufficient tokens')
+    return false
   }
 
   tryConsume(count: number = 1): boolean {

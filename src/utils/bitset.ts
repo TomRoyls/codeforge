@@ -2,7 +2,7 @@ export class Bitset {
   private readonly words: Uint32Array
   readonly length: number
 
-  constructor(length: number) {
+  constructor(length: number = 64) {
     if (length < 0) throw new RangeError('length must be >= 0')
     this.length = length
     this.words = new Uint32Array(Math.ceil(length / 32))

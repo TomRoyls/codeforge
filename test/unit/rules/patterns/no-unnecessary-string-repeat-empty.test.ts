@@ -545,7 +545,7 @@ describe('no-unnecessary-string-repeat-empty rule', () => {
     test('does not report for empty string with Literal argument (wrong type)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'repeat', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode(makeEmptyStringLiteral(), 'repeat', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -869,7 +869,7 @@ describe('no-unnecessary-string-repeat-empty rule', () => {
     test('does not report when object is Literal type (not StringLiteral)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatEmptyRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'repeat', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 0 }, 'repeat', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
