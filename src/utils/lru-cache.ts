@@ -18,8 +18,11 @@ export class LRUCache<K, V> {
   private _misses: number = 0
   private _evictions: number = 0
 
-  constructor(maxSize: number) {
-    if (maxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${maxSize}`)
+  constructor(maxSizeOrOptions: number | LRUCacheOptions) {
+    const maxSize = typeof maxSizeOrOptions === 'number'
+      ? maxSizeOrOptions
+      : maxSizeOrOptions.maxSize
+    if (maxSize < 0) throw new RangeError(`maxSize must be >= 0, got ${maxSize}`)
     this._maxSize = maxSize
   }
 
@@ -35,10 +38,24 @@ export class LRUCache<K, V> {
     return value
   }
 
+  getOrDefault(key: K, defaultValue: V): V {
+    if (!this.cache.has(key)) {
+      this._misses++
+      return defaultValue
+    }
+    return this.get(key)!
+  }
+
   set(key: K, value: V): void {
     if (this.cache.has(key)) {
       this.cache.delete(key)
-    } else if (this.cache.size >= this._maxSize) {
+    } else if (this.cache.size >= this._maxSize && this._maxSize > 0) {
+      const firstKey = this.cache.keys().next()
+      if (!firstKey.done) {
+        this.cache.delete(firstKey.value)
+        this._evictions++
+      }
+    } else if (this.cache.size > this._maxSize) {
       const firstKey = this.cache.keys().next()
       if (!firstKey.done) {
         this.cache.delete(firstKey.value)
@@ -79,16 +96,16 @@ export class LRUCache<K, V> {
     this._evictions = 0
   }
 
-  keys(): K[] {
-    return [...this.cache.keys()]
+  keys(): IterableIterator<K> {
+    return this.cache.keys()
   }
 
-  values(): V[] {
-    return [...this.cache.values()]
+  values(): IterableIterator<V> {
+    return this.cache.values()
   }
 
-  entries(): [K, V][] {
-    return [...this.cache.entries()]
+  entries(): IterableIterator<[K, V]> {
+    return this.cache.entries()
   }
 
   forEach(callback: (value: V, key: K) => void): void {
@@ -108,7 +125,7 @@ export class LRUCache<K, V> {
   }
 
   resize(newMaxSize: number): void {
-    if (newMaxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${newMaxSize}`)
+    if (newMaxSize < 0) throw new RangeError(`maxSize must be >= 0, got ${newMaxSize}`)
     while (this.cache.size > newMaxSize) {
       const firstKey = this.cache.keys().next()
       if (!firstKey.done) {

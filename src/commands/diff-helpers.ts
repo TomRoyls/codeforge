@@ -529,10 +529,10 @@ export function displayAddedViolations(
   logFn('Added Violations:')
   const shown = violations.slice(0, MAX_DISPLAY_VIOLATIONS)
   for (const v of shown) {
-    logFn(`  ${v.filePath}:${v.range.start.line} [${v.ruleId}]`)
+    logFn(`  + ${v.filePath}:${v.range.start.line} [${v.ruleId}]`)
   }
   if (violations.length > MAX_DISPLAY_VIOLATIONS) {
-    logFn(`  and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
+    logFn(`  ... and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
   }
   logFn('')
 }
@@ -546,10 +546,10 @@ export function displayRemovedViolations(
   logFn('Removed Violations:')
   const shown = violations.slice(0, MAX_DISPLAY_VIOLATIONS)
   for (const v of shown) {
-    logFn(`  ${v.filePath}:${v.range.start.line} [${v.ruleId}]`)
+    logFn(`  - ${v.filePath}:${v.range.start.line} [${v.ruleId}]`)
   }
   if (violations.length > MAX_DISPLAY_VIOLATIONS) {
-    logFn(`  and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
+    logFn(`  ... and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
   }
   logFn('')
 }
