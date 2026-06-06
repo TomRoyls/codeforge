@@ -19,7 +19,7 @@ export const noUnnecessaryDateToUTCStringSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'date.toUTCString(...items) with a single spread is unusual. Consider calling date.toUTCString() directly.',
+          messageId: 'unnecessarySpread',
           node: n,
         })
       },

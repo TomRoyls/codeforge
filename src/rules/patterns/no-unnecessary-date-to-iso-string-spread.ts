@@ -19,7 +19,7 @@ export const noUnnecessaryDateToISOStringSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'date.toISOString(...items) with a single spread is unusual. Consider calling date.toISOString() directly.',
+          messageId: 'unnecessarySpread',
           node: n,
         })
       },

@@ -19,7 +19,7 @@ export const noUnnecessaryConsoleAssertSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `console.assert(...items) with a single spread is unusual. Consider passing arguments directly.`,
+          messageId: 'unnecessary',
           node: n,
         })
       },

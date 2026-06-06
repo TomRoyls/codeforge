@@ -19,7 +19,7 @@ export const noUnnecessaryConsoleDirSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `console.dir(...items) with a single spread is unusual. Consider passing arguments directly.`,
+          messageId: 'unnecessarySpread',
           node: n,
         })
       },

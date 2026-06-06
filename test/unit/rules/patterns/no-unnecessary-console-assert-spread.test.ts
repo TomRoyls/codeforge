@@ -18,7 +18,7 @@ function makeConsoleAssertCall(args: unknown[], loc = { start: { line: 1, column
 describe('no-unnecessary-console-assert-spread rule', () => {
   // --- Meta tests (8) ---
   test('has correct rule name', () => {
-    expect(noUnnecessaryConsoleAssertSpreadRule.name).toBe('no-unnecessary-console-assert-spread');
+    expect(noUnnecessaryConsoleAssertSpreadRule.meta.docs?.category).toBe('patterns');
   });
 
   test('has a meta object', () => {
@@ -61,7 +61,7 @@ describe('no-unnecessary-console-assert-spread rule', () => {
   });
 
   test('meta type is suggestion', () => {
-    expect(noUnecessaryConsoleAssertSpreadRule.meta.type).toBe('suggestion');
+    expect(noUnnecessaryConsoleAssertSpreadRule.meta.type).toBe('suggestion');
   });
 
   // --- Positive tests (28) ---

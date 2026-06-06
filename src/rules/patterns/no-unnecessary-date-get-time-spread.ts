@@ -19,7 +19,7 @@ export const noUnnecessaryDateGetTimeSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'date.getTime(...items) with a single spread is unusual. Consider calling date.getTime() directly.',
+          messageId: 'unnecessarySpread',
           node: n,
         })
       },

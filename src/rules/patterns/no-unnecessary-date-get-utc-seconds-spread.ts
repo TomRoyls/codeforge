@@ -19,7 +19,7 @@ export const noUnnecessaryDateGetUTCSecondsSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'date.getUTCSeconds(...items) with a single spread is unusual. Consider calling date.getUTCSeconds() directly.',
+          messageId: 'unnecessarySpread',
           node: n,
         })
       },

@@ -500,11 +500,22 @@ export interface MockContextOptions {
 }
 
 export function createMockRuleContext(overrides: MockContextOptions = {}): {
+  context: import('../../src/plugins/types.js').RuleContext
+  reports: ReportDescriptor[]
+} {
   const { source = 'const x = 1;', options = [], filePath = '/src/file.ts' } = overrides
-  const reportMock = vi.fn()
+  const reports: ReportDescriptor[] = []
 
   const context = {
-    report: reportMock,
+    report: (descriptor: ReportDescriptor) => {
+      reports.push({
+        message: descriptor.message,
+        loc: descriptor.loc,
+        fix: descriptor.fix,
+        severity: descriptor.severity,
+        ruleId: descriptor.ruleId,
+      })
+    },
     getFilePath: () => filePath,
     getAST: () => null,
     getSource: () => source,
@@ -520,7 +531,7 @@ export function createMockRuleContext(overrides: MockContextOptions = {}): {
     workspaceRoot: '/src',
   } as unknown as import('../../src/plugins/types.js').RuleContext
 
-  return { context, reports: [] as ReportDescriptor[] }
+  return { context, reports }
 }
 
 export function createSimpleIdentifier(name: string, line = 1, column = 0): unknown {
