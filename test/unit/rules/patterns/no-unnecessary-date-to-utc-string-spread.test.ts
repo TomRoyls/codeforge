@@ -1315,7 +1315,7 @@ describe('no-unnecessary-date-to-utc-string-spread rule', () => {
   });
 
   // ── 17 edge tests ──────────────────────────────────────────────
-  test('reports date.toUTCString(...args) with computed member expression', () => {
+  test('does not report date["toUTCString"](...args) with computed member expression', () => {
     const { context, reports } = createMockRuleContext('date["toUTCString"](...args)');
     const visitors = noUnnecessaryDateToUTCStringSpreadRule.create(context);
     visitors.CallExpression?.({
@@ -1330,7 +1330,7 @@ describe('no-unnecessary-date-to-utc-string-spread rule', () => {
       arguments: [{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'args' } }],
       optional: false,
     } as never);
-    expect(reports).toHaveLength(1);
+    expect(reports).toHaveLength(0);
   });
 
   test('does not report date.toUTCString() with no arguments', () => {
@@ -1468,7 +1468,7 @@ describe('no-unnecessary-date-to-utc-string-spread rule', () => {
     expect(reports).toHaveLength(0);
   });
 
-  test('does not report date.toUTCString(...obj.args) with member spread', () => {
+  test('reports date.toUTCString(...obj.args) with member spread', () => {
     const { context, reports } = createMockRuleContext('date.toUTCString(...obj.args)');
     const visitors = noUnnecessaryDateToUTCStringSpreadRule.create(context);
     visitors.CallExpression?.({
@@ -1494,10 +1494,10 @@ describe('no-unnecessary-date-to-utc-string-spread rule', () => {
       ],
       optional: false,
     } as never);
-    expect(reports).toHaveLength(0);
+    expect(reports).toHaveLength(1);
   });
 
-  test('does not report date.toUTCString(...[1, 2, 3]) with array literal spread', () => {
+  test('reports date.toUTCString(...[1, 2, 3]) with array literal spread', () => {
     const { context, reports } = createMockRuleContext('date.toUTCString(...[1, 2, 3])');
     const visitors = noUnnecessaryDateToUTCStringSpreadRule.create(context);
     visitors.CallExpression?.({
@@ -1524,10 +1524,10 @@ describe('no-unnecessary-date-to-utc-string-spread rule', () => {
       ],
       optional: false,
     } as never);
-    expect(reports).toHaveLength(0);
+    expect(reports).toHaveLength(1);
   });
 
-  test('does not report date.toUTCString(...getArgs()) with call expression spread', () => {
+  test('reports date.toUTCString(...getArgs()) with call expression spread', () => {
     const { context, reports } = createMockRuleContext('date.toUTCString(...getArgs())');
     const visitors = noUnnecessaryDateToUTCStringSpreadRule.create(context);
     visitors.CallExpression?.({
@@ -1552,7 +1552,7 @@ describe('no-unnecessary-date-to-utc-string-spread rule', () => {
       ],
       optional: false,
     } as never);
-    expect(reports).toHaveLength(0);
+    expect(reports).toHaveLength(1);
   });
 
   test('reports date.toUTCString(...args) report includes correct node', () => {

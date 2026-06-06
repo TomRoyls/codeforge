@@ -139,7 +139,7 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
     expect(context.report).toHaveBeenCalledWith(
       expect.objectContaining({
         node,
-        message: expect.stringContaining('date.toISOString'),
+        messageId: 'unnecessarySpread',
       })
     );
   });
@@ -312,7 +312,7 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
     expect(context.report).toHaveBeenCalledWith(
       expect.objectContaining({
         node,
-        message: expect.stringContaining('date.toISOString'),
+        messageId: 'unnecessarySpread',
       })
     );
   });

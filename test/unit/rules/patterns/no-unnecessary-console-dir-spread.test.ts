@@ -1,5 +1,5 @@
 import { noUnnecessaryConsoleDirSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-console-dir-spread.js';
-import { RuleTester } from '@typescript-eslint/rule-tester';
+import { RuleTester } from 'eslint';
 import { describe, test, expect } from 'vitest';
 
 function makeConsoleDirCall(args: unknown[], loc = { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } }) {

@@ -510,10 +510,14 @@ export function createMockRuleContext(overrides: MockContextOptions = {}): {
     report: (descriptor: ReportDescriptor) => {
       reports.push({
         message: descriptor.message,
+        messageId: descriptor.messageId,
         loc: descriptor.loc,
         fix: descriptor.fix,
         severity: descriptor.severity,
         ruleId: descriptor.ruleId,
+        node: descriptor.node,
+        data: descriptor.data,
+        suggest: descriptor.suggest,
       })
     },
     getFilePath: () => filePath,
