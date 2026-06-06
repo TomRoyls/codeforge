@@ -23,7 +23,7 @@ export function sortSuggestions(suggestions: RuleSuggestion[]): RuleSuggestion[]
     const confidenceDiff = confidenceOrder[b.confidence] - confidenceOrder[a.confidence]
     if (confidenceDiff !== 0) return confidenceDiff
 
-    return b.estimatedViolations - a.estimatedViolations
+    return 0
   })
 }
 
