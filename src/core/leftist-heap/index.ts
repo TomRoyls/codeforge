@@ -195,8 +195,9 @@ export class LeftistHeap<T> {
   }
 
    static fromArray<U>(elements: U[], options?: { comparator?: Comparator<U> }): LeftistHeap<U> {
-     return new LeftistHeap<U>({ elements, comparator: options?.comparator })
-  }
+     const comparator = typeof options === 'function' ? options : options?.comparator
+     return new LeftistHeap<U>({ elements, comparator })
+   }
 
   static merge<U>(a: LeftistHeap<U>, b: LeftistHeap<U>): LeftistHeap<U> {
     return a.merge(b)
