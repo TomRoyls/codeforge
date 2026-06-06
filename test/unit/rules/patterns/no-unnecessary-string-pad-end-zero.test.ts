@@ -590,11 +590,11 @@ describe('no-unnecessary-string-pad-end-zero rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when arg is Literal type (not NumericLiteral) with value 0', () => {
+    test('reports when arg is Literal type with numeric value 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadEndZero.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [{ type: 'Literal', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when arg is StringLiteral with value "0"', () => {

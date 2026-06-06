@@ -44,7 +44,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
 
 function makeMathAbsCall(
   argValue: unknown,
-  argType = 'NumericLiteral',
+  argType = 'Literal',
   locStartLine = 1,
   locStartCol = 0,
   locEndLine = 1,
@@ -352,7 +352,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
     test('report loc values are preserved from node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
-      visitor.CallExpression(makeMathAbsCall(5, 'NumericLiteral', 5, 10, 5, 30))
+      visitor.CallExpression(makeMathAbsCall(5, 'Literal', 5, 10, 5, 30))
       expect(reports[0].loc?.start.line).toBe(5)
       expect(reports[0].loc?.start.column).toBe(10)
     })
@@ -881,7 +881,7 @@ describe('no-unnecessary-math-abs-positive rule', () => {
     test('report loc reflects specific node location values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAbsPositiveRule.create(context)
-      visitor.CallExpression(makeMathAbsCall(5, 'NumericLiteral', 10, 4, 10, 25))
+      visitor.CallExpression(makeMathAbsCall(5, 'Literal', 10, 4, 10, 25))
       expect(reports[0].loc?.start.line).toBe(10)
       expect(reports[0].loc?.start.column).toBe(4)
       expect(reports[0].loc?.end.line).toBe(10)
