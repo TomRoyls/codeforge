@@ -531,7 +531,7 @@ describe('ASTMatcher', () => {
 
     it('captures nested capture names', () => {
       const matcher = new ASTMatcher()
-      const inner = makeNode('NumericLiteral', { value: '42' })
+      const inner = makeNode('Literal', { value: '42' })
       const root = makeNode('Root', {
         children: [
           makeNode('Return', { children: [inner] }),
