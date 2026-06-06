@@ -24,6 +24,7 @@ export const noFuncAssignRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow reassigning function declarations.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-func-assign.ts',
     },
     fixable: undefined,
     schema: [],

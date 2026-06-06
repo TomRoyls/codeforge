@@ -27,6 +27,7 @@ export const noOctalRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow octal literals.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-octal.ts',
     },
     fixable: undefined,
     schema: [],

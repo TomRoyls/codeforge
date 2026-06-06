@@ -41,6 +41,7 @@ export const noFallthroughRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow fallthrough in switch statements.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-fallthrough.ts',
     },
     fixable: undefined,
     schema: [],

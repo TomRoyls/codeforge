@@ -80,6 +80,7 @@ export const maxNestedCallbacksRule: RuleDefinition<MaxNestedCallbacksOptions> =
   meta: {
     category: 'complexity',
     description: 'Enforce a maximum nesting depth for callback functions',
+    docs: { url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/complexity/max-nested-callbacks.ts' },
     fixable: 'code',
     name: 'max-nested-callbacks',
     recommended: true,

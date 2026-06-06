@@ -146,8 +146,8 @@ describe('no-dupe-keys rule', () => {
       expect(noDupeKeysRule.meta.replacedBy).toBeUndefined()
     })
 
-    test('should not have docs url', () => {
-      expect(noDupeKeysRule.meta.docs?.url).toBeUndefined()
+    test('should have docs url', () => {
+      expect(noDupeKeysRule.meta.docs?.url).toBeDefined()
     })
 
     test('should not require type checking', () => {

@@ -38,6 +38,7 @@ export const noSetterReturnRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow returning values from setters.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-setter-return.ts',
     },
     fixable: undefined,
     schema: [],

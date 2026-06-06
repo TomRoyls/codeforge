@@ -50,6 +50,7 @@ export const noControlRegexRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow control characters in regular expressions.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-control-regex.ts',
     },
     fixable: undefined,
     schema: [],

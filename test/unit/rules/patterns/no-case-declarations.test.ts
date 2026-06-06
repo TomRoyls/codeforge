@@ -337,8 +337,8 @@ describe('no-case-declarations rule', () => {
       expect(noCaseDeclarationsRule.meta.requiresTypeChecking).toBeUndefined()
     })
 
-    test('meta docs should not have url by default', () => {
-      expect(noCaseDeclarationsRule.meta.docs?.url).toBeUndefined()
+    test('meta docs should have url', () => {
+      expect(noCaseDeclarationsRule.meta.docs?.url).toBeDefined()
     })
   })
 

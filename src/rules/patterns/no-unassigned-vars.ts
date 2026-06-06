@@ -28,6 +28,7 @@ export const noUnassignedVarsRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow variables that are read but never assigned.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-unassigned-vars.ts',
     },
     fixable: undefined,
     schema: [],

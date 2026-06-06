@@ -32,6 +32,7 @@ export const noPrototypeBuiltinsRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow calling some Object.prototype methods directly on objects.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-prototype-builtins.ts',
     },
     fixable: undefined,
     schema: [],

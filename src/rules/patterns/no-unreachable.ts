@@ -39,6 +39,7 @@ export const noUnreachableRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow unreachable code.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-unreachable.ts',
     },
     fixable: undefined,
     schema: [],

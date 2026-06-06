@@ -272,8 +272,8 @@ describe('no-empty-static-block rule', () => {
       expect(noEmptyStaticBlockRule.meta.docs?.description.endsWith('.')).toBe(true)
     })
 
-    test('meta.docs should not have a url property', () => {
-      expect(noEmptyStaticBlockRule.meta.docs?.url).toBeUndefined()
+    test('meta.docs should have a url property', () => {
+      expect(noEmptyStaticBlockRule.meta.docs?.url).toBeDefined()
     })
   })
 

@@ -32,6 +32,7 @@ export const noSparseArraysRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow sparse arrays.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-sparse-arrays.ts',
     },
     fixable: undefined,
     schema: [],

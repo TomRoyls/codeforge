@@ -45,6 +45,7 @@ export const noEmptyPatternRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow empty destructuring patterns.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-empty-pattern.ts',
     },
     fixable: undefined,
     schema: [],

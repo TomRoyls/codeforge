@@ -35,6 +35,7 @@ export const noSelfAssignRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow assignments where both sides are exactly the same.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-self-assign.ts',
     },
     fixable: undefined,
     schema: [],

@@ -2639,8 +2639,8 @@ describe('no-unsafe-finally rule', () => {
   })
 
   describe('docs url', () => {
-    test('should not have docs url by default', () => {
-      expect(noUnsafeFinallyRule.meta.docs?.url).toBeUndefined()
+    test('should have docs url defined', () => {
+      expect(noUnsafeFinallyRule.meta.docs?.url).toBeDefined()
     })
   })
 

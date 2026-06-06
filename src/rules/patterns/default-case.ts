@@ -33,6 +33,7 @@ export const defaultCaseRule: RuleDefinition = {
       category: 'patterns',
       description: 'Require default case in switch statements.',
       recommended: false,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/default-case.ts',
     },
     fixable: undefined,
     schema: [],

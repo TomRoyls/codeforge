@@ -115,8 +115,8 @@ describe('no-control-regex rule', () => {
       expect(noControlRegexRule.meta.replacedBy).toBeUndefined()
     })
 
-    test('should not have docs url', () => {
-      expect(noControlRegexRule.meta.docs?.url).toBeUndefined()
+    test('should have docs url', () => {
+      expect(noControlRegexRule.meta.docs?.url).toBeDefined()
     })
 
     test('should not require type checking', () => {

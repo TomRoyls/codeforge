@@ -39,6 +39,7 @@ export const noDuplicateCaseRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow duplicate case labels in switch statements.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-duplicate-case.ts',
     },
     fixable: undefined,
     schema: [],

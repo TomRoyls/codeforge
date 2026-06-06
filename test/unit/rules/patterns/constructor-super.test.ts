@@ -256,8 +256,8 @@ describe('constructor-super rule', () => {
       expect(constructorSuperRule.meta.requiresTypeChecking).toBeFalsy()
     })
 
-    test('meta.docs.url should be undefined', () => {
-      expect(constructorSuperRule.meta.docs?.url).toBeUndefined()
+    test('meta.docs.url should be defined', () => {
+      expect(constructorSuperRule.meta.docs?.url).toBeDefined()
     })
 
     test('meta.docs.replacedBy should be undefined', () => {

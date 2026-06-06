@@ -58,6 +58,7 @@ export const maxParamsRule: RuleDefinition<MaxParamsOptions> = {
   meta: {
     category: 'complexity',
     description: 'Enforce a maximum number of parameters in function definitions',
+    docs: { url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/complexity/max-params.ts' },
     fixable: 'code',
     name: 'max-params',
     recommended: true,

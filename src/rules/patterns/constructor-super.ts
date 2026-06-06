@@ -49,6 +49,7 @@ export const constructorSuperRule: RuleDefinition = {
       category: 'patterns',
       description: 'Require super() calls in constructors of derived classes.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/constructor-super.ts',
     },
     fixable: undefined,
     schema: [],

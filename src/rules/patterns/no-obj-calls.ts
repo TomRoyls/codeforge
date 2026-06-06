@@ -25,6 +25,7 @@ export const noObjCallsRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow calling global object properties as functions.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-obj-calls.ts',
     },
     fixable: undefined,
     schema: [],

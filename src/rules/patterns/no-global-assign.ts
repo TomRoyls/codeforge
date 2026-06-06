@@ -33,6 +33,7 @@ export const noGlobalAssignRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow assignment to native objects or read-only global variables.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-global-assign.ts',
     },
     fixable: undefined,
     schema: [],

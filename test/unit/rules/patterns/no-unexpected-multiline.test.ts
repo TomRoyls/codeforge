@@ -161,8 +161,8 @@ describe('no-unexpected-multiline rule', () => {
       expect(noUnexpectedMultilineRule.meta.schema).toEqual([])
     })
 
-    test('should not have docs url', () => {
-      expect(noUnexpectedMultilineRule.meta.docs?.url).toBeUndefined()
+    test('should have docs url', () => {
+      expect(noUnexpectedMultilineRule.meta.docs?.url).toBeDefined()
     })
 
     test('should have meta as a plain object', () => {

@@ -381,8 +381,8 @@ describe('getter-return rule', () => {
       expect(getterReturnRule.meta.docs?.category).toBe('patterns')
     })
 
-    test('should not have docs.url', () => {
-      expect(getterReturnRule.meta.docs?.url).toBeUndefined()
+    test('should have docs.url', () => {
+      expect(getterReturnRule.meta.docs?.url).toBeDefined()
     })
 
     test('should have meta as plain object', () => {

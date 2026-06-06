@@ -30,6 +30,7 @@ export const noNewNativeNonconstructorRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow new operators with global non-constructor functions.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-new-native-nonconstructor.ts',
     },
     fixable: undefined,
     schema: [],

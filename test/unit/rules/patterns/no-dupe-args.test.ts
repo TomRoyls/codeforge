@@ -250,8 +250,8 @@ describe('no-dupe-args rule', () => {
       expect(noDupeArgsRule.meta.replacedBy).toBeUndefined()
     })
 
-    test('should not have docs.url', () => {
-      expect(noDupeArgsRule.meta.docs?.url).toBeUndefined()
+    test('should have docs.url', () => {
+      expect(noDupeArgsRule.meta.docs?.url).toBeDefined()
     })
 
     test('should not require type checking', () => {

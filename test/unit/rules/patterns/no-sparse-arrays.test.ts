@@ -683,8 +683,8 @@ describe('no-sparse-arrays rule', () => {
       expect(noSparseArraysRule.meta.requiresTypeChecking).toBeUndefined()
     })
 
-    test('should not have docs url', () => {
-      expect(noSparseArraysRule.meta.docs?.url).toBeUndefined()
+    test('should have docs url', () => {
+      expect(noSparseArraysRule.meta.docs?.url).toBeDefined()
     })
   })
 

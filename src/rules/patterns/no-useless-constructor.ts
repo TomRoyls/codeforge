@@ -120,6 +120,7 @@ export const noUselessConstructorRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow useless constructors that are empty or only pass through to super().',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-useless-constructor.ts',
     },
     fixable: undefined,
     schema: [],

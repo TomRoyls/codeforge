@@ -30,6 +30,7 @@ export const noEmptyStaticBlockRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow empty static blocks.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-empty-static-block.ts',
     },
     fixable: undefined,
     schema: [],

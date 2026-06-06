@@ -123,8 +123,8 @@ describe('no-with rule', () => {
       expect(noWithRule.meta.requiresTypeChecking).toBeUndefined()
     })
 
-    test('should not have docs url', () => {
-      expect(noWithRule.meta.docs?.url).toBeUndefined()
+    test('should have docs url', () => {
+      expect(noWithRule.meta.docs?.url).toBeDefined()
     })
 
     test('should have meta object defined', () => {

@@ -48,6 +48,7 @@ export const preferObjectSpreadRule: RuleDefinition<PreferObjectSpreadOptions> =
   meta: {
     category: 'style',
     description: 'Prefer object spread over Object.assign()',
+    docs: { url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/prefer-object-spread.ts' },
     fixable: 'code',
     name: 'prefer-object-spread',
     recommended: false,

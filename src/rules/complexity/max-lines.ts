@@ -162,6 +162,7 @@ export const maxLinesRule: RuleDefinition<MaxLinesOptions> = {
   meta: {
     category: 'complexity',
     description: 'Enforce a maximum number of lines per file',
+    docs: { url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/complexity/max-lines.ts' },
     fixable: 'code',
     name: 'max-lines',
     recommended: false,
@@ -207,6 +208,7 @@ export const maxLinesPerFunctionRule: RuleDefinition<MaxLinesPerFunctionOptions>
   meta: {
     category: 'complexity',
     description: 'Enforce a maximum number of lines per function',
+    docs: { url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/complexity/max-lines.ts' },
     fixable: 'code',
     name: 'max-lines-per-function',
     recommended: true,

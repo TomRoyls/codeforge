@@ -66,6 +66,7 @@ export const noUnsafeMemberAccessRule: RuleDefinition = {
       category: 'security',
       description: 'Disallow unsafe member access on values that are explicitly cast as any.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/security/no-unsafe-member-access.ts',
     },
     fixable: undefined,
     schema: [],

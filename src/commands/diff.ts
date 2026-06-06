@@ -47,7 +47,7 @@ export default class Diff extends Command {
     }),
   }
 
-  static override description = 'Compare violations between git branches or commits'
+  static override description = 'Analyze git diffs with risk assessment and statistics'
 
   static override examples = [
     {
@@ -69,13 +69,32 @@ export default class Diff extends Command {
   ]
 
   static override flags = {
+    commit: Flags.string({
+      description: 'Specific commit to compare',
+    }),
+    format: Flags.string({
+      default: 'table',
+      description: 'Output format',
+      options: ['json', 'table'],
+    }),
     json: Flags.boolean({
       default: false,
       description: 'Output as JSON',
     }),
+    output: Flags.string({
+      description: 'Output file path',
+    }),
     path: Flags.string({
       default: '.',
       description: 'Path to analyze',
+    }),
+    staged: Flags.boolean({
+      default: false,
+      description: 'Compare staged changes only',
+    }),
+    stat: Flags.boolean({
+      default: false,
+      description: 'Show diff statistics',
     }),
     verbose: Flags.boolean({
       char: 'v',

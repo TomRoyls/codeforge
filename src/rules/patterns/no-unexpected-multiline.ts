@@ -23,6 +23,7 @@ export const noUnexpectedMultilineRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow confusing multiline expressions.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-unexpected-multiline.ts',
     },
     fixable: undefined,
     schema: [],

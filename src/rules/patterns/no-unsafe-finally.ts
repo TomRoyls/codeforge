@@ -67,6 +67,7 @@ export const noUnsafeFinallyRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow control flow statements in finally blocks.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-unsafe-finally.ts',
     },
     fixable: undefined,
     schema: [],

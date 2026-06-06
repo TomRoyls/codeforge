@@ -28,6 +28,7 @@ export const noUnsafeNegationRule: RuleDefinition = {
       category: 'correctness',
       description: 'Disallow negating the left operand of relational operators.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-unsafe-negation.ts',
     },
     fixable: undefined,
     schema: [],

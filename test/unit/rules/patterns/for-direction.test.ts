@@ -1622,8 +1622,8 @@ describe('for-direction rule', () => {
   })
 
   describe('meta docs url', () => {
-    test('should not have docs.url defined', () => {
-      expect(forDirectionRule.meta.docs?.url).toBeUndefined()
+    test('should have docs.url defined', () => {
+      expect(forDirectionRule.meta.docs?.url).toBeDefined()
     })
 
     test('should not have docs.category as undefined', () => {

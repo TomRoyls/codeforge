@@ -531,6 +531,7 @@ export const noImplicitSideEffectsRule: RuleDefinition<NoImplicitSideEffectsOpti
       category: 'patterns',
       description: 'Detect functions that cause implicit side effects by modifying external state without returning values or being clearly marked as impure',
       recommended: false,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-implicit-side-effects.ts',
       severity: 'warning',
     },
     name: 'no-implicit-side-effects',

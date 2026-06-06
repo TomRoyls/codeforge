@@ -77,6 +77,7 @@ export const maxDepthRule: RuleDefinition<MaxDepthOptions> = {
   meta: {
     category: 'complexity',
     description: 'Enforce a maximum nesting depth for code blocks',
+    docs: { url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/complexity/max-depth.ts' },
     fixable: 'code',
     name: 'max-depth',
     recommended: true,

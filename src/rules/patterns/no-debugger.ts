@@ -21,6 +21,7 @@ export const noDebuggerRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow the use of debugger statements.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-debugger.ts',
     },
     fixable: undefined,
     schema: [],

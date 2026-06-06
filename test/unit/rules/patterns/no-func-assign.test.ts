@@ -372,8 +372,8 @@ describe('no-func-assign rule', () => {
       expect(Object.keys(noFuncAssignRule)).toContain('create')
     })
 
-    test('meta docs should not have url', () => {
-      expect(noFuncAssignRule.meta.docs?.url).toBeUndefined()
+    test('meta docs should have url', () => {
+      expect(noFuncAssignRule.meta.docs?.url).toBeDefined()
     })
 
     test('description should start with uppercase', () => {

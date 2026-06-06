@@ -58,6 +58,7 @@ export const noLabelVarRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow labels that share a name with a variable.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-label-var.ts',
     },
     fixable: undefined,
     schema: [],

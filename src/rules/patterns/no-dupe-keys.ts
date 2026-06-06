@@ -44,6 +44,7 @@ export const noDupeKeysRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow duplicate keys in object literals.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-dupe-keys.ts',
     },
     fixable: undefined,
     schema: [],

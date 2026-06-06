@@ -66,6 +66,7 @@ export const noInvalidRegexpRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow invalid regular expression strings in RegExp constructors.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-invalid-regexp.ts',
     },
     fixable: undefined,
     schema: [],

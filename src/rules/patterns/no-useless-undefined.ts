@@ -40,6 +40,7 @@ export const noUselessUndefinedRule: RuleDefinition = {
       description:
         'Disallow useless undefined initializations and return values. Undefined is the default for uninitialized variables and void returns.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-useless-undefined.ts',
     },
     fixable: undefined,
     schema: [],

@@ -63,6 +63,7 @@ export const noImportAssignRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow assignment to import bindings.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-import-assign.ts',
     },
     fixable: undefined,
     schema: [],

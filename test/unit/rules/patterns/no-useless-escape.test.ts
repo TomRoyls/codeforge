@@ -180,8 +180,8 @@ describe('no-useless-escape rule', () => {
       expect(noUselessEscapeRule.meta.requiresTypeChecking).toBeUndefined()
     })
 
-    test('should not have url in docs', () => {
-      expect(noUselessEscapeRule.meta.docs?.url).toBeUndefined()
+    test('should have url in docs', () => {
+      expect(noUselessEscapeRule.meta.docs?.url).toBeDefined()
     })
 
     test('should have a create function', () => {

@@ -35,6 +35,7 @@ export const noEmptyCharacterClassRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow empty character classes in regular expressions.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-empty-character-class.ts',
     },
     fixable: undefined,
     schema: [],

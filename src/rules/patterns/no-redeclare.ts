@@ -51,6 +51,7 @@ export const noRedeclareRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow redeclaring variables.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-redeclare.ts',
     },
     fixable: undefined,
     schema: [],

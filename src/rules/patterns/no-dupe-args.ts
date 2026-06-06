@@ -44,6 +44,7 @@ export const noDupeArgsRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow duplicate arguments in function definitions.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-dupe-args.ts',
     },
     fixable: undefined,
     schema: [],

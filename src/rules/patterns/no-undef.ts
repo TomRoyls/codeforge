@@ -50,6 +50,7 @@ export const noUndefRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow undeclared variables.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-undef.ts',
     },
     fixable: undefined,
     schema: [],

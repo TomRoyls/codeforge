@@ -61,6 +61,7 @@ export const noDupeClassMembersRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow duplicate class members.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-dupe-class-members.ts',
     },
     fixable: undefined,
     schema: [],

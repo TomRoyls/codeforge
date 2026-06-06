@@ -61,6 +61,7 @@ export const noThisBeforeSuperRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow this/super before super() calling.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-this-before-super.ts',
     },
     fixable: undefined,
     schema: [],

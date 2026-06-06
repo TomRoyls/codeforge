@@ -24,6 +24,7 @@ export const noClassAssignRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow reassigning class declarations.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-class-assign.ts',
     },
     fixable: undefined,
     schema: [],

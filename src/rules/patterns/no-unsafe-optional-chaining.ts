@@ -23,6 +23,7 @@ export const noUnsafeOptionalChainingRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow use of optional chaining where undefined is not allowed.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-unsafe-optional-chaining.ts',
     },
     fixable: undefined,
     schema: [],

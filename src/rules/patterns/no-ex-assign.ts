@@ -36,6 +36,7 @@ export const noExAssignRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow reassigning exceptions in catch clauses.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-ex-assign.ts',
     },
     fixable: undefined,
     schema: [],

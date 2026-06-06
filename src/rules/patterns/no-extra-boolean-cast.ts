@@ -53,6 +53,7 @@ export const noExtraBooleanCastRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow unnecessary boolean casts.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-extra-boolean-cast.ts',
     },
     fixable: undefined,
     schema: [],

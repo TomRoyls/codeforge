@@ -54,6 +54,7 @@ export const noAlertRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow the use of alert, confirm, and prompt browser dialogs.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-alert.ts',
     },
     fixable: undefined,
     schema: [],

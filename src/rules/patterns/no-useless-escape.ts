@@ -82,6 +82,7 @@ export const noUselessEscapeRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow unnecessary escape characters.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-useless-escape.ts',
     },
     fixable: undefined,
     schema: [],

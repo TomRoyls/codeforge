@@ -43,6 +43,7 @@ export const noUselessAssignmentRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow redundant assignments.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-useless-assignment.ts',
     },
     fixable: undefined,
     schema: [],

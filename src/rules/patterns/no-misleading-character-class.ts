@@ -61,6 +61,7 @@ export const noMisleadingCharacterClassRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow characters made with multiple code points in character class syntax.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-misleading-character-class.ts',
     },
     fixable: undefined,
     schema: [],

@@ -48,6 +48,7 @@ export const noIrregularWhitespaceRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow irregular whitespace characters.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-irregular-whitespace.ts',
     },
     fixable: undefined,
     schema: [],

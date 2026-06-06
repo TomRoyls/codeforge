@@ -20,6 +20,7 @@ export const noWithRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow with statements.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-with.ts',
     },
     fixable: undefined,
     schema: [],

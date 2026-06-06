@@ -58,6 +58,7 @@ export const forDirectionRule: RuleDefinition = {
       category: 'patterns',
       description: 'Enforce for loop update clause to move the counter in the right direction.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/for-direction.ts',
     },
     fixable: undefined,
     schema: [],

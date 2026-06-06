@@ -39,6 +39,7 @@ export const noCaseDeclarationsRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow lexical declarations in switch case clauses without blocks.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-case-declarations.ts',
     },
     fixable: undefined,
     schema: [],

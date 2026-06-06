@@ -87,6 +87,7 @@ export const maxComplexityRule: RuleDefinition<MaxComplexityOptions> = {
   meta: {
     category: 'complexity',
     description: 'Enforce a maximum cyclomatic complexity threshold for functions',
+    docs: { url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/complexity/max-complexity.ts' },
     fixable: 'code',
     name: 'max-complexity',
     recommended: true,

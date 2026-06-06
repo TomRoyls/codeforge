@@ -98,8 +98,8 @@ describe('no-self-assign rule', () => {
       expect(typeof noSelfAssignRule.meta.docs?.recommended).toBe('boolean')
     })
 
-    test('should not have docs.url', () => {
-      expect(noSelfAssignRule.meta.docs?.url).toBeUndefined()
+    test('should have docs.url', () => {
+      expect(noSelfAssignRule.meta.docs?.url).toBeDefined()
     })
 
     test('should not be deprecated', () => {

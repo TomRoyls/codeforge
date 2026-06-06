@@ -30,6 +30,7 @@ export const noUselessCatchRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow useless catch clauses.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-useless-catch.ts',
     },
     fixable: undefined,
     schema: [],

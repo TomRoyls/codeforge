@@ -23,6 +23,7 @@ export const noDeleteVarRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow deleting variables.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-delete-var.ts',
     },
     fixable: undefined,
     schema: [],

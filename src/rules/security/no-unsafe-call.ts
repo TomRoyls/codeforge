@@ -67,6 +67,7 @@ export const noUnsafeCallRule: RuleDefinition = {
       category: 'security',
       description: 'Disallow unsafe calls on values that are explicitly cast as any.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/security/no-unsafe-call.ts',
     },
     fixable: undefined,
     schema: [],

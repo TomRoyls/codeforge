@@ -58,6 +58,7 @@ export const getterReturnRule: RuleDefinition = {
       category: 'patterns',
       description: 'Enforce return statements in getters.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/getter-return.ts',
     },
     fixable: undefined,
     schema: [],

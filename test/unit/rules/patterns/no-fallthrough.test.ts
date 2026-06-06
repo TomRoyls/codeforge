@@ -327,8 +327,8 @@ describe('no-fallthrough rule', () => {
       expect(noFallthroughRule.meta.deprecated).toBeFalsy()
     })
 
-    test('meta.docs.url should be undefined or falsy', () => {
-      expect(noFallthroughRule.meta.docs?.url).toBeFalsy()
+    test('meta.docs.url should be defined', () => {
+      expect(noFallthroughRule.meta.docs?.url).toBeDefined()
     })
 
     test('meta should be frozen/readonly - type field', () => {

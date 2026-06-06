@@ -51,6 +51,7 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow expressions where the operation does not affect the value.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-constant-binary-expression.ts',
     },
     fixable: undefined,
     schema: [],

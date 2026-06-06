@@ -114,8 +114,8 @@ describe('meta', () => {
     expect(noIrregularWhitespaceRule.meta.docs?.recommended).toBe(true)
   })
 
-  test('should not have a docs url', () => {
-    expect(noIrregularWhitespaceRule.meta.docs?.url).toBeUndefined()
+  test('should have a docs url', () => {
+    expect(noIrregularWhitespaceRule.meta.docs?.url).toBeDefined()
   })
 
   test('should export a create function', () => {

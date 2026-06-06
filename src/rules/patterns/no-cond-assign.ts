@@ -47,6 +47,7 @@ export const noCondAssignRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow assignment operators in conditional expressions.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-cond-assign.ts',
     },
     fixable: undefined,
     schema: [],

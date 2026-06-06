@@ -335,8 +335,8 @@ describe('no-duplicate-case rule', () => {
       expect(noDuplicateCaseRule.meta.severity).not.toBe('warn')
     })
 
-    test('meta.docs should not have url property', () => {
-      expect(noDuplicateCaseRule.meta.docs?.url).toBeUndefined()
+    test('meta.docs should have url property', () => {
+      expect(noDuplicateCaseRule.meta.docs?.url).toBeDefined()
     })
   })
 

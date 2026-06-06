@@ -141,8 +141,8 @@ describe('no-unsafe-optional-chaining rule', () => {
       expect(typeof noUnsafeOptionalChainingRule.meta.docs?.category).toBe('string')
     })
 
-    test('docs should not have url', () => {
-      expect(noUnsafeOptionalChainingRule.meta.docs?.url).toBeUndefined()
+    test('docs should have url', () => {
+      expect(noUnsafeOptionalChainingRule.meta.docs?.url).toBeDefined()
     })
   })
 

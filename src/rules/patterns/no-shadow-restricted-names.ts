@@ -41,6 +41,7 @@ export const noShadowRestrictedNamesRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow identifiers from shadowing restricted names.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-shadow-restricted-names.ts',
     },
     fixable: undefined,
     schema: [],

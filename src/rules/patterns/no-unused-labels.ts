@@ -60,6 +60,7 @@ export const noUnusedLabelsRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow unused labels.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-unused-labels.ts',
     },
     fixable: undefined,
     schema: [],

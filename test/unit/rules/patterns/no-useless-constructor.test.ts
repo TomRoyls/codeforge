@@ -311,8 +311,8 @@ describe('no-useless-constructor', () => {
     expect((noUselessConstructorRule.meta.docs?.description ?? '').length).toBeGreaterThan(0)
   })
 
-  test('meta docs url is undefined', () => {
-    expect(noUselessConstructorRule.meta.docs?.url).toBeUndefined()
+  test('meta docs url is defined', () => {
+    expect(noUselessConstructorRule.meta.docs?.url).toBeDefined()
   })
 
   // ── Export: default export ─────────────────────────────────────────────

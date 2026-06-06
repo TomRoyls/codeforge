@@ -117,8 +117,8 @@ describe('no-duplicate-strings-in-array rule', () => {
       expect(noDuplicateStringsInArrayRule.meta.replacedBy).toBeUndefined()
     })
 
-    test('should not have docs url', () => {
-      expect(noDuplicateStringsInArrayRule.meta.docs?.url).toBeUndefined()
+    test('should have docs url', () => {
+      expect(noDuplicateStringsInArrayRule.meta.docs?.url).toBeDefined()
     })
 
     test('should not require type checking', () => {

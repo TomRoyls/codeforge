@@ -27,6 +27,7 @@ export const noNonoctalDecimalEscapeRule: RuleDefinition = {
       category: 'patterns',
       description: String.raw`Disallow \8 and \9 escape sequences in string literals.`,
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-nonoctal-decimal-escape.ts',
     },
     fixable: undefined,
     schema: [],

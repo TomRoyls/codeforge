@@ -1,6 +1,13 @@
 const DEFAULT_MAX_LEVEL = 32
 const P = 0.5
 
+function defaultComparator<K>(a: K, b: K): number {
+  const na = Number(a)
+  const nb = Number(b)
+  if (!Number.isNaN(na) && !Number.isNaN(nb)) return na - nb
+  return a < b ? -1 : a > b ? 1 : 0
+}
+
 class SkipNode<K, V> {
   key: K
   value: V
@@ -26,7 +33,7 @@ export class SkipList<K, V> {
   private compare: (a: K, b: K) => number
 
   constructor(options?: SkipListOptions<K>) {
-    this.compare = options?.comparator ?? ((a: K, b: K) => (a < b ? -1 : a > b ? 1 : 0))
+    this.compare = options?.comparator ?? defaultComparator
     this._maxLevel = options?.maxHeight ?? DEFAULT_MAX_LEVEL
     this.head = new SkipNode<K, V>(null as K, null as V, this._maxLevel)
   }

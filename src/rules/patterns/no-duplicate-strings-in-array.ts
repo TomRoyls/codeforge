@@ -57,6 +57,7 @@ export const noDuplicateStringsInArrayRule: RuleDefinition = {
       category: 'patterns',
       description: 'Disallow duplicate string literals in array expressions.',
       recommended: true,
+      url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-duplicate-strings-in-array.ts',
     },
     fixable: undefined,
     schema: [],

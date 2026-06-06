@@ -259,6 +259,7 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
   meta: {
     category: 'style',
     description: 'Disallow useless comparisons that are always true or false',
+    docs: { url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-useless-comparison.ts' },
     fixable: undefined,
     name: 'no-useless-comparison',
     recommended: true,

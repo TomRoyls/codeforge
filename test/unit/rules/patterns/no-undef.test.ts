@@ -188,8 +188,8 @@ describe('no-undef rule', () => {
       expect(noUndefRule.meta.requiresTypeChecking).toBeUndefined()
     })
 
-    test('docs url should be undefined', () => {
-      expect(noUndefRule.meta.docs?.url).toBeUndefined()
+    test('docs url should be defined', () => {
+      expect(noUndefRule.meta.docs?.url).toBeDefined()
     })
 
     test('schema should be an empty array', () => {
