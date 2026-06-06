@@ -56,8 +56,11 @@ export function createRuleContext(
   const collector = createReportCollector()
 
   const report = (descriptor: ReportDescriptor): void => {
-    if (!descriptor.message || typeof descriptor.message !== 'string') {
-      throw new TypeError('Report descriptor must have a valid message string')
+    if (
+      (!descriptor.message || typeof descriptor.message !== 'string') &&
+      !descriptor.messageId
+    ) {
+      throw new TypeError('Report descriptor must have a valid message string or messageId')
     }
 
     collector.reports.push(descriptor)

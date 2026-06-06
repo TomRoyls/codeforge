@@ -32,6 +32,9 @@ export const noUnnecessaryDateGetTimeSpreadRule: RuleDefinition = {
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-date-get-time-spread.ts',
     },
+    messages: {
+      unnecessarySpread: 'date.getTime(...items) with a single spread is unusual. Consider calling date.getTime() directly.',
+    },
     schema: [],
     severity: 'warn',
     type: 'suggestion',

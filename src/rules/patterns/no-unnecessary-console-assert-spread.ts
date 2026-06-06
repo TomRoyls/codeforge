@@ -32,6 +32,9 @@ export const noUnnecessaryConsoleAssertSpreadRule: RuleDefinition = {
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-console-assert-spread.ts',
     },
+    messages: {
+      unnecessary: 'console.assert(...items) with a single spread is unusual. Consider passing arguments directly.',
+    },
     schema: [],
     severity: 'warn',
     type: 'suggestion',

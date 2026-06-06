@@ -19,7 +19,7 @@ export const noUnnecessaryDateGetSecondsSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'date.getSeconds(...items) with a single spread is unusual. Consider calling date.getSeconds() directly.',
+          messageId: 'unnecessarySpread',
           node: n,
         })
       },
@@ -31,6 +31,9 @@ export const noUnnecessaryDateGetSecondsSpreadRule: RuleDefinition = {
       description: 'Warn about date.getSeconds(...items) with spread which is unusual since it takes no arguments.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-date-get-seconds-spread.ts',
+    },
+    messages: {
+      unnecessarySpread: 'date.getSeconds(...items) with a single spread is unusual. Consider calling date.getSeconds() directly.',
     },
     schema: [],
     severity: 'warn',

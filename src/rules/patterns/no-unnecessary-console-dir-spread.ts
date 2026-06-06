@@ -32,6 +32,9 @@ export const noUnnecessaryConsoleDirSpreadRule: RuleDefinition = {
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-console-dir-spread.ts',
     },
+    messages: {
+      unnecessarySpread: 'console.dir(...items) with a single spread is unusual. Consider passing arguments directly.',
+    },
     schema: [],
     severity: 'warn',
     type: 'suggestion',

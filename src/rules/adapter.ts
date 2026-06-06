@@ -1898,7 +1898,10 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
 
           violations.push({
             filePath: sourceFile?.getFilePath() ?? '',
-            message: descriptor.message,
+            message: descriptor.message
+              ?? (descriptor.messageId
+                ? (pluginRule.meta.messages?.[descriptor.messageId] ?? descriptor.messageId)
+                : ''),
             range: {
               end: { column: loc.end.column, line: loc.end.line },
               start: { column: loc.start.column, line: loc.start.line },

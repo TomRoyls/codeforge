@@ -32,6 +32,9 @@ export const noUnnecessaryDateToUTCStringSpreadRule: RuleDefinition = {
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-date-to-utc-string-spread.ts',
     },
+    messages: {
+      unnecessarySpread: 'date.toUTCString(...items) with a single spread is unusual. Consider calling date.toUTCString() directly.',
+    },
     schema: [],
     severity: 'warn',
     type: 'suggestion',

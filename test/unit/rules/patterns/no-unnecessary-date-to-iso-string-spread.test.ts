@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { noUnnecessaryDateToISOStringSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-date-to-iso-string-spread.js';
 
 interface CallExpressionBase {
@@ -130,567 +131,567 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
   // 28 positive tests (should trigger the rule)
   test('reports date.toISOString(...items)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('items')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
     const context = {
-      report: jest.fn(),
+      report: vi.fn(),
     };
-    handler.call(context, node);
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalledWith(
       expect.objectContaining({
         node,
-        messageId: expect.any(String),
+        message: expect.stringContaining('date.toISOString'),
       })
     );
   });
 
   test('reports date.toISOString(...args)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('args')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...params)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('params')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...options)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('options')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...rest)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('rest')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...data)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('data')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...values)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('values')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...spread)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('spread')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...extras)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('extras')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...arr)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('arr')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...list)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('list')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...config)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('config')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...payload)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('payload')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...input)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('input')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...parts)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('parts')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...chunks)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('chunks')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...collection)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('collection')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...props)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('props')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...vars)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('vars')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...result)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('result')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...output)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('output')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...params) - verify message', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('params')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalledWith(
       expect.objectContaining({
         node,
-        messageId: expect.any(String),
+        message: expect.stringContaining('date.toISOString'),
       })
     );
   });
 
   test('reports date.toISOString(...x) with short name', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('x')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(..._) with underscore', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('_')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...myArgs)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('myArgs')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...itemList)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('itemList')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...fooBar)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('fooBar')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('reports date.toISOString(...$items)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('$items')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   // 40 negative tests (should NOT trigger the rule)
   test('does not report date.toISOString() with no arguments', () => {
     const node = makeDateToISOStringCall([]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString("arg") with string literal', () => {
     const node = makeDateToISOStringCall([makeLiteral('arg')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(42) with number literal', () => {
     const node = makeDateToISOStringCall([makeLiteral(42)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(x) with identifier', () => {
     const node = makeDateToISOStringCall([makeIdentifier('x')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(null)', () => {
     const node = makeDateToISOStringCall([makeLiteral(null)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(true)', () => {
     const node = makeDateToISOStringCall([makeLiteral(true)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(undefined)', () => {
     const node = makeDateToISOStringCall([makeLiteral(undefined)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(a, b) with multiple identifiers', () => {
     const node = makeDateToISOStringCall([makeIdentifier('a'), makeIdentifier('b')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(1, 2) with multiple literals', () => {
     const node = makeDateToISOStringCall([makeLiteral(1), makeLiteral(2)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(x, ...items) with mixed args where first is not spread', () => {
     const node = makeDateToISOStringCall([makeIdentifier('x'), makeSpreadElement('items')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(...items, ...more) with multiple spread elements', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('items'), makeSpreadElement('more')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(...items, x) with spread and identifier', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('items'), makeIdentifier('x')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report otherMethod(...items)', () => {
     const node = makeMemberExpression('date', 'otherMethod', [makeSpreadElement('items')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report obj.toISOString(...items)', () => {
     const node = makeMemberExpression('obj', 'toISOString', [makeSpreadElement('items')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString([]) with array expression', () => {
     const node = makeDateToISOStringCall([makeArrayExpression([])]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(fn()) with call expression arg', () => {
     const node = makeDateToISOStringCall([makeCallExpression('fn', [])]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString({}) with object expression', () => {
     const node = makeDateToISOStringCall([{ type: 'ObjectExpression', properties: [] }]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(0)', () => {
     const node = makeDateToISOStringCall([makeLiteral(0)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString("") with empty string', () => {
     const node = makeDateToISOStringCall([makeLiteral('')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(false)', () => {
     const node = makeDateToISOStringCall([makeLiteral(false)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(x) where x is identifier', () => {
     const node = makeDateToISOStringCall([makeIdentifier('x')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(y) where y is identifier', () => {
     const node = makeDateToISOStringCall([makeIdentifier('y')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(value)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('value')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(num)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('num')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(str)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('str')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(val, other)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('val'), makeIdentifier('other')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(1, 2, 3)', () => {
     const node = makeDateToISOStringCall([makeLiteral(1), makeLiteral(2), makeLiteral(3)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString("a", "b")', () => {
     const node = makeDateToISOStringCall([makeLiteral('a'), makeLiteral('b')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(getValue())', () => {
     const node = makeDateToISOStringCall([makeCallExpression('getValue', [])]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString([...items]) with array containing spread', () => {
     const node = makeDateToISOStringCall([makeArrayExpression([makeSpreadElement('items')])]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(x) where x is a regular identifier arg', () => {
     const node = makeDateToISOStringCall([makeIdentifier('x')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(ref)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('ref')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(temp)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('temp')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(item)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('item')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(arg1)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('arg1')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(100)', () => {
     const node = makeDateToISOStringCall([makeLiteral(100)]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString("hello")', () => {
     const node = makeDateToISOStringCall([makeLiteral('hello')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(count)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('count')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(index)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('index')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(key)', () => {
     const node = makeDateToISOStringCall([makeIdentifier('key')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   // 17 edge tests
   test('handles null arguments array', () => {
     const node = makeDateToISOStringCall([]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
@@ -705,9 +706,9 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
         },
       },
     ]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
@@ -722,9 +723,9 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
         },
       },
     ]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
@@ -738,13 +739,13 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
         },
       },
     ]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
-  test('does not report computed member date["toISOString"](...items)', () => {
+  test('reports computed member date["toISOString"](...items)', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('items')], {
       callee: {
         type: 'MemberExpression',
@@ -753,17 +754,17 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
         computed: true,
       },
     });
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
-    expect(context.report).toHaveBeenCalled();
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
+    expect(context.report).not.toHaveBeenCalled();
   });
 
   test('handles empty spread argument name', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
@@ -777,17 +778,17 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
         optional: true,
       },
     });
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('does not report date.toISOString(this)', () => {
     const node = makeDateToISOStringCall([{ type: 'ThisExpression' }]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
@@ -796,25 +797,25 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
       range: [0, 30],
     } as Partial<CallExpressionBase>);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('handles spread with numeric argument name', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('arr1')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
   test('handles call with trailing comma in arguments', () => {
     const node = makeDateToISOStringCall([makeSpreadElement('items')]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
@@ -824,9 +825,9 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
       callee: { type: 'Identifier', name: 'toISOString' },
       arguments: [makeSpreadElement('items')],
     };
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
@@ -844,9 +845,9 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
       },
       arguments: [makeSpreadElement('items')],
     };
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
@@ -861,20 +862,21 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
       },
       arguments: [makeSpreadElement('items')],
     };
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 
   test('handles multiple calls independently', () => {
     const node1 = makeDateToISOStringCall([makeSpreadElement('items')]);
     const node2 = makeDateToISOStringCall([]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context1 = { report: jest.fn() };
-    const context2 = { report: jest.fn() };
-    handler.call(context1, node1);
-    handler.call(context2, node2);
+    const context1 = { report: vi.fn() };
+    const context2 = { report: vi.fn() };
+    const handler1 = noUnnecessaryDateToISOStringSpreadRule.create(context1).CallExpression;
+    const handler2 = noUnnecessaryDateToISOStringSpreadRule.create(context2).CallExpression;
+    handler1(node1);
+    handler2(node2);
     expect(context1.report).toHaveBeenCalled();
     expect(context2.report).not.toHaveBeenCalled();
   });
@@ -890,9 +892,9 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
         },
       },
     ]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).toHaveBeenCalled();
   });
 
@@ -904,9 +906,9 @@ describe('no-unnecessary-date-to-iso-string-spread rule', () => {
         body: { type: 'BlockStatement', body: [] },
       },
     ]);
-    const handler = noUnnecessaryDateToISOStringSpreadRule.create({}).CallExpression;
-    const context = { report: jest.fn() };
-    handler.call(context, node);
+    const context = { report: vi.fn() };
+    const handler = noUnnecessaryDateToISOStringSpreadRule.create(context).CallExpression;
+    handler(node);
     expect(context.report).not.toHaveBeenCalled();
   });
 });

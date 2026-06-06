@@ -6,7 +6,9 @@ function makeDateNowCall(spreadContent: string): string {
 }
 
 function lintCode(code: string): Linter.LintMessage[] {
-  const linter = new Linter();
+  const linter = new Linter({
+    configType: 'eslintrc'
+  });
   linter.defineRule('no-unnecessary-date-now-spread', rule);
   return linter.verify(code, {
     parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
@@ -18,7 +20,9 @@ function lintCodeWithSeverity(
   code: string,
   severity: 'off' | 'warn' | 'error',
 ): Linter.LintMessage[] {
-  const linter = new Linter();
+  const linter = new Linter({
+    configType: 'eslintrc'
+  });
   linter.defineRule('no-unnecessary-date-now-spread', rule);
   return linter.verify(code, {
     parserOptions: { ecmaVersion: 2020, sourceType: 'module' },

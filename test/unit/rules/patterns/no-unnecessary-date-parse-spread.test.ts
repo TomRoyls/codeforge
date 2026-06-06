@@ -12,15 +12,15 @@ function makeDateParseCall(spreadArg: string): string {
 }
 
 function lintCode(code: string): Array<{ messageId: string | undefined; message: string }> {
-  const linter = new Linter();
+  const linter = new Linter({
+    configType: 'eslintrc'
+  });
   linter.defineRule(RULE_NAME, noUnnecessaryDateParseSpreadRule);
   const results = linter.verify(code, {
-    rules: { [RULE_NAME]: 'error' },
     parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
-  });
-  return results.flatMap((r) =>
-    r.messages.map((m) => ({ messageId: m.messageId, message: m.message })),
-  );
+    rules: { [RULE_NAME]: 'error' },
+  }) as Array<{ messageId: string | undefined; message: string }>;
+  return results.map((m) => ({ messageId: m.messageId, message: m.message }));
 }
 
 describe('no-unnecessary-date-parse-spread rule', () => {

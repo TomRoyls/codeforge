@@ -40,6 +40,7 @@ export interface RuleMeta {
   description: string
   docs?: RuleDocs
   fixable?: 'code' | 'whitespace'
+  messages?: Record<string, string>
   name: string
   recommended: boolean
   replacedBy?: string

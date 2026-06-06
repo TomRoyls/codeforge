@@ -10,7 +10,10 @@ export const noUnnecessaryDateNowSpreadRule: RuleDefinition = {
         if (!n || n.type !== 'CallExpression') return
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
-        if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee) return
+        // Reject optional chaining (ChainExpression)
+        if (callee.type === 'ChainExpression') return
+        if (callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.object || callee.object.type !== 'Identifier') return
         if (callee.object.name !== 'Date') return
         if (!callee.property || callee.property.type !== 'Identifier') return
@@ -19,7 +22,7 @@ export const noUnnecessaryDateNowSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'Date.now(...items) with a single spread is unusual. Consider calling Date.now() directly.',
+          messageId: 'unnecessarySpread',
           node: n,
         })
       },
@@ -31,6 +34,9 @@ export const noUnnecessaryDateNowSpreadRule: RuleDefinition = {
       description: 'Warn about Date.now(...items) with spread which is unusual since Date.now takes no arguments.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-date-now-spread.ts',
+    },
+    messages: {
+      unnecessarySpread: 'Date.now(...items) with a single spread is unusual. Consider calling Date.now() directly.',
     },
     schema: [],
     severity: 'warn',

@@ -32,6 +32,9 @@ export const noUnnecessaryDateGetUTCSecondsSpreadRule: RuleDefinition = {
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-date-get-utc-seconds-spread.ts',
     },
+    messages: {
+      unnecessarySpread: 'date.getUTCSeconds(...items) with a single spread is unusual. Consider calling date.getUTCSeconds() directly.',
+    },
     schema: [],
     severity: 'warn',
     type: 'suggestion',

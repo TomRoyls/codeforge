@@ -32,6 +32,9 @@ export const noUnnecessaryDateToISOStringSpreadRule: RuleDefinition = {
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-date-to-iso-string-spread.ts',
     },
+    messages: {
+      unnecessarySpread: 'date.toISOString(...items) with a single spread is unusual. Consider calling date.toISOString() directly.',
+    },
     schema: [],
     severity: 'warn',
     type: 'suggestion',

@@ -25,6 +25,7 @@ export interface RuleMeta {
     readonly url?: string
   }
   readonly fixable?: 'code' | 'whitespace'
+  readonly messages?: Record<string, string>
   readonly replacedBy?: readonly string[]
   readonly requiresTypeChecking?: boolean
   readonly schema?: RuleSchema
@@ -60,7 +61,8 @@ export interface ReportDescriptor {
   readonly data?: Record<string, unknown>
   readonly fix?: FixDescriptor
   readonly loc?: SourceLocation
-  readonly message: string
+  readonly message?: string
+  readonly messageId?: string
   readonly node?: unknown
   readonly suggest?: readonly SuggestionDescriptor[]
 }

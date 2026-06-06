@@ -32,6 +32,9 @@ export const noUnnecessarySymbolForSpreadRule: RuleDefinition = {
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-symbol-for-spread.ts',
     },
+    messages: {
+      unnecessarySymbolForSpread: 'Symbol.for(...items) with a single spread is unusual. Consider passing the key string directly.',
+    },
     schema: [],
     severity: 'warn',
     type: 'suggestion',
