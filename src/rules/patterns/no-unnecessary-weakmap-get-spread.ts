@@ -38,3 +38,4 @@ export const noUnnecessaryWeakMapGetSpreadRule: RuleDefinition = {
   },
 }
 export default noUnnecessaryWeakMapGetSpreadRule
+export { noUnnecessaryWeakMapGetSpreadRule as noUnnecessaryWeakmapGetSpreadRule }

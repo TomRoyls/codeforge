@@ -426,7 +426,7 @@ describe('no-unnecessary-string-repeat-one rule', () => {
     test('does not report when arg is Literal (not NumericLiteral)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringRepeatOneRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [{ type: 'Literal', value: '1' }]))
       expect(reports.length).toBe(0)
     })
 
