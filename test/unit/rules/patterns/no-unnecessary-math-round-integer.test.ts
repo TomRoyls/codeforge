@@ -615,11 +615,11 @@ describe('no-unnecessary-math-round-integer rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when argument type is Literal (not NumericLiteral)', () => {
+    test('reports when argument type is Literal integer', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathRoundInteger.create(context)
       visitor.CallExpression(makeMathCallNode('round', [{ type: 'Literal', value: 5 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when argument type is StringLiteral', () => {
