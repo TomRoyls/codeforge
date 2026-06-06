@@ -1,72 +1,96 @@
-export class RabinKarp {
-  private readonly base: number
-  private readonly mod: number
+export interface RabinKarpOptions {
+  caseSensitive?: boolean
+}
 
-  constructor(base: number = 256, mod: number = 1_000_000_007) {
-    this.base = base
-    this.mod = mod
+const BASE = 256
+const MOD = 1_000_000_007
+
+export class RabinKarp {
+  private readonly pattern: string
+  private readonly caseSensitive: boolean
+
+  constructor(pattern: string, options: RabinKarpOptions = {}) {
+    this.pattern = pattern
+    this.caseSensitive = options.caseSensitive ?? true
   }
 
-  search(text: string, pattern: string): number[] {
-    if (pattern.length === 0 || pattern.length > text.length) return []
+  search(text: string): number[] {
+    const pattern = this.caseSensitive ? this.pattern : this.pattern.toLowerCase()
+    const haystack = this.caseSensitive ? text : text.toLowerCase()
+
+    if (pattern.length === 0 || pattern.length > haystack.length) return []
+
     const results: number[] = []
     const m = pattern.length
-    const n = text.length
+    const n = haystack.length
 
-    const highOrderBase = this.powMod(this.base, m - 1)
+    const highOrderBase = powMod(BASE, m - 1)
     let patternHash = 0
     let textHash = 0
 
     for (let i = 0; i < m; i++) {
-      patternHash = (patternHash * this.base + pattern.charCodeAt(i)) % this.mod
-      textHash = (textHash * this.base + text.charCodeAt(i)) % this.mod
+      patternHash = (patternHash * BASE + pattern.charCodeAt(i)) % MOD
+      textHash = (textHash * BASE + haystack.charCodeAt(i)) % MOD
     }
 
     for (let i = 0; i <= n - m; i++) {
-      if (textHash === patternHash && this.verify(text, pattern, i)) {
+      if (textHash === patternHash && verify(haystack, pattern, i)) {
         results.push(i)
       }
       if (i < n - m) {
-        textHash = ((textHash - text.charCodeAt(i) * highOrderBase) * this.base + text.charCodeAt(i + m)) % this.mod
-        if (textHash < 0) textHash += this.mod
+        textHash =
+          ((textHash - haystackChar(haystack, i) * highOrderBase) * BASE +
+            haystackChar(haystack, i + m)) %
+          MOD
+        if (textHash < 0) textHash += MOD
       }
     }
 
     return results
   }
 
-  contains(text: string, pattern: string): boolean {
-    return this.search(text, pattern).length > 0
+  searchFirst(text: string): number {
+    const indices = this.search(text)
+    return indices.length > 0 ? indices[0]! : -1
   }
 
-  count(text: string, pattern: string): number {
-    return this.search(text, pattern).length
+  count(text: string): number {
+    return this.search(text).length
   }
 
-  searchMultiple(text: string, patterns: string[]): Map<string, number[]> {
+  contains(text: string): boolean {
+    return this.search(text).length > 0
+  }
+
+  static searchMultiple(text: string, patterns: string[]): Map<string, number[]> {
     const result = new Map<string, number[]>()
     for (const pattern of patterns) {
-      result.set(pattern, this.search(text, pattern))
+      const rk = new RabinKarp(pattern)
+      result.set(pattern, rk.search(text))
     }
     return result
   }
+}
 
-  private verify(text: string, pattern: string, start: number): boolean {
-    for (let i = 0; i < pattern.length; i++) {
-      if (text[start + i] !== pattern[i]) return false
-    }
-    return true
-  }
+function haystackChar(text: string, i: number): number {
+  return text.charCodeAt(i)
+}
 
-  private powMod(base: number, exp: number): number {
-    let result = 1
-    let b = base % this.mod
-    let e = exp
-    while (e > 0) {
-      if (e % 2 === 1) result = (result * b) % this.mod
-      e = Math.floor(e / 2)
-      b = (b * b) % this.mod
-    }
-    return result
+function verify(text: string, pattern: string, start: number): boolean {
+  for (let i = 0; i < pattern.length; i++) {
+    if (text[start + i] !== pattern[i]) return false
   }
+  return true
+}
+
+function powMod(base: number, exp: number): number {
+  let result = 1
+  let b = base % MOD
+  let e = exp
+  while (e > 0) {
+    if (e % 2 === 1) result = (result * b) % MOD
+    e = Math.floor(e / 2)
+    b = (b * b) % MOD
+  }
+  return result
 }
