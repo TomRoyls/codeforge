@@ -105,7 +105,7 @@ export class CachedFileReader {
     const regex = globToRegex(pattern)
     let count = 0
     for (const key of [...this.cache.keys()]) {
-      if (regex.test(key)) {
+      if (regex.test(key) || regex.test(path.basename(key))) {
         this.cache.delete(key)
         count++
       }

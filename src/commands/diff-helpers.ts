@@ -491,24 +491,33 @@ export function parseGitDiffOutput(output: string): string[] {
 
 export function formatSummary(report: ViolationDiffReport): string {
   const { summary } = report
-  const lines: string[] = []
+  const netChangeStr =
+    summary.netChange >= 0 ? `+${summary.netChange}` : `${summary.netChange}`
 
-  lines.push(`Comparing ${report.base} → ${report.head}`)
-  lines.push(`Base violations: ${summary.totalBase}`)
-  lines.push(`Head violations: ${summary.totalHead}`)
-  lines.push(`Added: ${summary.addedCount}`)
-  lines.push(`Removed: ${summary.removedCount}`)
-  lines.push(`Net change: ${summary.netChange}`)
-
+  let message: string
   if (summary.netChange < 0) {
-    lines.push(`Code improved — ${summary.removedCount} violations removed`)
+    message = `Code quality improved — ${Math.abs(summary.netChange)} violations removed`
   } else if (summary.netChange > 0) {
-    lines.push(`Code regressed — ${summary.addedCount} new violations`)
+    message = `Code quality regressed — ${summary.netChange} new violations added`
   } else {
-    lines.push('No net change in violations')
+    message = 'No net change'
   }
 
-  return lines.join('\n')
+  const lines = [
+    'Violation Diff Analysis',
+    `Comparing ${report.base} → ${report.head}`,
+    '',
+    'Summary:',
+    `  Base violations: ${summary.totalBase}`,
+    `  Head violations: ${summary.totalHead}`,
+    `  Added: +${summary.addedCount}`,
+    `  Removed: -${summary.removedCount}`,
+    `  Net change: ${netChangeStr}`,
+    '',
+    message,
+  ]
+
+  return lines.join('\n') + '\n'
 }
 
 export function displayAddedViolations(
@@ -520,11 +529,12 @@ export function displayAddedViolations(
   logFn('Added Violations:')
   const shown = violations.slice(0, MAX_DISPLAY_VIOLATIONS)
   for (const v of shown) {
-    logFn(`  ${v.filePath}:${v.range.start.line} — ${v.ruleId}`)
+    logFn(`  ${v.filePath}:${v.range.start.line} [${v.ruleId}]`)
   }
   if (violations.length > MAX_DISPLAY_VIOLATIONS) {
-    logFn(`  ... and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
+    logFn(`  and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
   }
+  logFn('')
 }
 
 export function displayRemovedViolations(
@@ -536,11 +546,12 @@ export function displayRemovedViolations(
   logFn('Removed Violations:')
   const shown = violations.slice(0, MAX_DISPLAY_VIOLATIONS)
   for (const v of shown) {
-    logFn(`  ${v.filePath}:${v.range.start.line} — ${v.ruleId}`)
+    logFn(`  ${v.filePath}:${v.range.start.line} [${v.ruleId}]`)
   }
   if (violations.length > MAX_DISPLAY_VIOLATIONS) {
-    logFn(`  ... and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
+    logFn(`  and ${violations.length - MAX_DISPLAY_VIOLATIONS} more`)
   }
+  logFn('')
 }
 
 export function displayDiffReport(
@@ -548,11 +559,10 @@ export function displayDiffReport(
   verbose: boolean,
   logFn: (...args: unknown[]) => void,
 ): void {
-  logFn('Violation Diff Analysis')
-
-  logFn(`Comparing ${report.base} → ${report.head}`)
-
-  logFn(formatSummary(report))
+  const summaryText = formatSummary(report)
+  for (const line of summaryText.split('\n')) {
+    logFn(line)
+  }
 
   if (verbose) {
     displayAddedViolations(report.added, logFn)
