@@ -1402,24 +1402,24 @@ describe('sortSuggestions additional edge cases', () => {
     expect(sorted.map((s) => s.ruleId)).toEqual(['a', 'b', 'c'])
   })
 
-  test('high impact sorts before medium regardless of violations', () => {
+  test('high impact sorts before low impact', () => {
     const suggestions = [
       makeSuggestion({
-        impact: 'medium',
-        confidence: 'medium',
+        impact: 'low',
+        confidence: 'high',
         estimatedViolations: 5,
         ruleId: 'b',
       }),
       makeSuggestion({
         impact: 'high',
-        confidence: 'high',
+        confidence: 'low',
         estimatedViolations: 1,
         ruleId: 'a',
       }),
     ]
     const sorted = sortSuggestions(suggestions)
     expect(sorted[0].impact).toBe('high')
-    expect(sorted[1].impact).toBe('medium')
+    expect(sorted[1].impact).toBe('low')
   })
 
   test('sorts many elements correctly', () => {

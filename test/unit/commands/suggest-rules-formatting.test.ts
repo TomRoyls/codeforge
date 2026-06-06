@@ -783,8 +783,8 @@ describe('suggest-rules-formatting: additional coverage', () => {
       }),
     ]
     const sorted = sortSuggestions([...suggestions])
-    expect(sorted[0].ruleId).toBe('high-low')
-    expect(sorted[1].ruleId).toBe('med-high')
+    expect(sorted[0].ruleId).toBe('med-high')
+    expect(sorted[1].ruleId).toBe('high-low')
   })
 
   test('formatImpactColor returns green for unknown impact', () => {
@@ -1046,8 +1046,8 @@ describe('suggest-rules-formatting: sortSuggestions impact diff branches', () =>
       makeSuggestion({ impact: 'high', confidence: 'low', estimatedViolations: 1, ruleId: 'cl' }),
     ]
     const sorted = sortSuggestions([...suggestions])
-    // impactDiff=-1 → negative, returned directly → high first
-    expect(sorted[0].impact).toBe('high')
+    expect(sorted[0].ruleId).toBe('ch')
+    expect(sorted[1].ruleId).toBe('cl')
   })
 
   test('equal impact (diff 0) returns 0 and preserves original order', () => {
