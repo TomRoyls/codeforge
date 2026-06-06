@@ -145,7 +145,7 @@ function makeReport(
 
 describe('Dependencies command static properties', () => {
   it('has correct description', () => {
-    expect(Dependencies.description).toBe('Analyze and visualize module dependencies')
+    expect(Dependencies.description).toBe('Analyze npm package.json dependencies')
   })
 
   it('has examples defined', () => {
@@ -181,9 +181,9 @@ describe('Dependencies command static properties', () => {
     expect(flag.default).toBe('table')
   })
 
-  it('format flag options are dot, json, table', () => {
+  it('format flag options are csv, dot, json, table', () => {
     const flag = Dependencies.flags!.format as Record<string, unknown>
-    expect(flag.options).toEqual(['dot', 'json', 'table'])
+    expect(flag.options).toEqual(['csv', 'dot', 'json', 'table'])
   })
 
   it('has ignore flag with char i and multiple option', () => {
