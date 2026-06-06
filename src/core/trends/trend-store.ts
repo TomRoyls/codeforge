@@ -1,4 +1,4 @@
-import * as fs from 'node:fs'
+import { promises as fs } from 'node:fs'
 import * as path from 'node:path'
 import type { TrendConfig, TrendSnapshot } from './types.js'
 import { sortedBy } from '../../utils/array-helpers.js'
@@ -10,30 +10,30 @@ export class TrendStore {
     this.config = config
   }
 
-  saveSnapshot(snapshot: TrendSnapshot): void {
+  async saveSnapshot(snapshot: TrendSnapshot): Promise<void> {
     const dir = this.config.storagePath
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
+    await fs.mkdir(dir, { recursive: true })
 
     const filePath = path.join(dir, `snapshot-${snapshot.id}.json`)
-    fs.writeFileSync(filePath, JSON.stringify(snapshot, null, 2), 'utf-8')
+    await fs.writeFile(filePath, JSON.stringify(snapshot, null, 2), 'utf-8')
   }
 
-  loadSnapshots(): TrendSnapshot[] {
+  async loadSnapshots(): Promise<TrendSnapshot[]> {
     const dir = this.config.storagePath
-    if (!fs.existsSync(dir)) {
+    let files: string[]
+    try {
+      files = await fs.readdir(dir)
+    } catch {
       return []
     }
 
-    const files = fs.readdirSync(dir)
     const snapshots: TrendSnapshot[] = []
 
     for (const file of files) {
       if (file.startsWith('snapshot-') && file.endsWith('.json')) {
         const filePath = path.join(dir, file)
         try {
-          const content = fs.readFileSync(filePath, 'utf-8')
+          const content = await fs.readFile(filePath, 'utf-8')
           const parsed = JSON.parse(content) as TrendSnapshot
           if (this.isValidSnapshot(parsed)) {
             snapshots.push(parsed)
@@ -47,24 +47,24 @@ export class TrendStore {
     return sortedBy(snapshots, s => s.timestamp)
   }
 
-  getLatestSnapshot(): TrendSnapshot | null {
-    const snapshots = this.loadSnapshots()
+  async getLatestSnapshot(): Promise<TrendSnapshot | null> {
+    const snapshots = await this.loadSnapshots()
     if (snapshots.length === 0) return null
     return snapshots[snapshots.length - 1]!
   }
 
-  getSnapshotRange(from: number, to: number): TrendSnapshot[] {
-    const snapshots = this.loadSnapshots()
+  async getSnapshotRange(from: number, to: number): Promise<TrendSnapshot[]> {
+    const snapshots = await this.loadSnapshots()
     return snapshots.filter(s => s.timestamp >= from && s.timestamp <= to)
   }
 
-  getSnapshotByCommit(commitHash: string): TrendSnapshot | null {
-    const snapshots = this.loadSnapshots()
+  async getSnapshotByCommit(commitHash: string): Promise<TrendSnapshot | null> {
+    const snapshots = await this.loadSnapshots()
     return snapshots.find(s => s.commitHash === commitHash) ?? null
   }
 
-  pruneSnapshots(maxCount: number): number {
-    const snapshots = this.loadSnapshots()
+  async pruneSnapshots(maxCount: number): Promise<number> {
+    const snapshots = await this.loadSnapshots()
     if (snapshots.length <= maxCount) return 0
 
     const toRemove = snapshots.length - maxCount
@@ -73,7 +73,7 @@ export class TrendStore {
     for (const snapshot of removed) {
       const filePath = path.join(this.config.storagePath, `snapshot-${snapshot.id}.json`)
       try {
-        fs.unlinkSync(filePath)
+        await fs.unlink(filePath)
       } catch {
         // skip files that can't be removed
       }

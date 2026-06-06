@@ -313,67 +313,67 @@ describe('TrendStore: file operations', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true })
   })
 
-  it('saves and loads snapshots', () => {
+  it('saves and loads snapshots', async () => {
     const store = new TrendStore({ ...DEFAULT_CONFIG, storagePath: tmpDir })
     const snapshot = makeSnapshot('test-1', 1000, 10, 5, 60, 100)
-    store.saveSnapshot(snapshot)
-    const loaded = store.loadSnapshots()
+    await store.saveSnapshot(snapshot)
+    const loaded = await store.loadSnapshots()
     expect(loaded).toHaveLength(1)
     expect(loaded[0]!.id).toBe('test-1')
   })
 
-  it('returns empty array when directory does not exist', () => {
+  it('returns empty array when directory does not exist', async () => {
     const store = new TrendStore({ ...DEFAULT_CONFIG, storagePath: path.join(tmpDir, 'nonexistent') })
-    expect(store.loadSnapshots()).toEqual([])
+    expect(await store.loadSnapshots()).toEqual([])
   })
 
-  it('getLatestSnapshot returns most recent', () => {
+  it('getLatestSnapshot returns most recent', async () => {
     const store = new TrendStore({ ...DEFAULT_CONFIG, storagePath: tmpDir })
-    store.saveSnapshot(makeSnapshot('old', 1000, 10, 5, 60, 100))
-    store.saveSnapshot(makeSnapshot('new', 2000, 15, 8, 55, 150))
-    const latest = store.getLatestSnapshot()
+    await store.saveSnapshot(makeSnapshot('old', 1000, 10, 5, 60, 100))
+    await store.saveSnapshot(makeSnapshot('new', 2000, 15, 8, 55, 150))
+    const latest = await store.getLatestSnapshot()
     expect(latest!.id).toBe('new')
   })
 
-  it('getLatestSnapshot returns null when empty', () => {
+  it('getLatestSnapshot returns null when empty', async () => {
     const store = new TrendStore({ ...DEFAULT_CONFIG, storagePath: tmpDir })
-    expect(store.getLatestSnapshot()).toBeNull()
+    expect(await store.getLatestSnapshot()).toBeNull()
   })
 
-  it('getSnapshotRange filters by timestamp', () => {
+  it('getSnapshotRange filters by timestamp', async () => {
     const store = new TrendStore({ ...DEFAULT_CONFIG, storagePath: tmpDir })
-    store.saveSnapshot(makeSnapshot('1', 1000, 10, 5, 60, 100))
-    store.saveSnapshot(makeSnapshot('2', 2000, 10, 5, 60, 100))
-    store.saveSnapshot(makeSnapshot('3', 3000, 10, 5, 60, 100))
-    const range = store.getSnapshotRange(1500, 2500)
+    await store.saveSnapshot(makeSnapshot('1', 1000, 10, 5, 60, 100))
+    await store.saveSnapshot(makeSnapshot('2', 2000, 10, 5, 60, 100))
+    await store.saveSnapshot(makeSnapshot('3', 3000, 10, 5, 60, 100))
+    const range = await store.getSnapshotRange(1500, 2500)
     expect(range).toHaveLength(1)
     expect(range[0]!.id).toBe('2')
   })
 
-  it('getSnapshotByCommit finds by commit hash', () => {
+  it('getSnapshotByCommit finds by commit hash', async () => {
     const store = new TrendStore({ ...DEFAULT_CONFIG, storagePath: tmpDir })
     const snap = makeSnapshot('1', 1000, 10, 5, 60, 100)
     snap.commitHash = 'abc123'
-    store.saveSnapshot(snap)
-    const found = store.getSnapshotByCommit('abc123')
+    await store.saveSnapshot(snap)
+    const found = await store.getSnapshotByCommit('abc123')
     expect(found!.id).toBe('1')
-    expect(store.getSnapshotByCommit('missing')).toBeNull()
+    expect(await store.getSnapshotByCommit('missing')).toBeNull()
   })
 
-  it('pruneSnapshots removes oldest snapshots', () => {
+  it('pruneSnapshots removes oldest snapshots', async () => {
     const store = new TrendStore({ ...DEFAULT_CONFIG, storagePath: tmpDir })
-    store.saveSnapshot(makeSnapshot('1', 1000, 10, 5, 60, 100))
-    store.saveSnapshot(makeSnapshot('2', 2000, 10, 5, 60, 100))
-    store.saveSnapshot(makeSnapshot('3', 3000, 10, 5, 60, 100))
-    const removed = store.pruneSnapshots(2)
+    await store.saveSnapshot(makeSnapshot('1', 1000, 10, 5, 60, 100))
+    await store.saveSnapshot(makeSnapshot('2', 2000, 10, 5, 60, 100))
+    await store.saveSnapshot(makeSnapshot('3', 3000, 10, 5, 60, 100))
+    const removed = await store.pruneSnapshots(2)
     expect(removed).toBe(1)
-    expect(store.loadSnapshots()).toHaveLength(2)
+    expect(await store.loadSnapshots()).toHaveLength(2)
   })
 
-  it('pruneSnapshots does nothing when under max', () => {
+  it('pruneSnapshots does nothing when under max', async () => {
     const store = new TrendStore({ ...DEFAULT_CONFIG, storagePath: tmpDir })
-    store.saveSnapshot(makeSnapshot('1', 1000, 10, 5, 60, 100))
-    expect(store.pruneSnapshots(10)).toBe(0)
+    await store.saveSnapshot(makeSnapshot('1', 1000, 10, 5, 60, 100))
+    expect(await store.pruneSnapshots(10)).toBe(0)
   })
 })
 

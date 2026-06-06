@@ -290,104 +290,104 @@ describe('TrendStore', () => {
 
   // ---- save/load ----
   describe('saveSnapshot/loadSnapshots', () => {
-    it('saves and loads a snapshot', () => {
+    it('saves and loads a snapshot', async () => {
       const snapshot = makeSnapshot()
-      store.saveSnapshot(snapshot)
-      const loaded = store.loadSnapshots()
+      await store.saveSnapshot(snapshot)
+      const loaded = await store.loadSnapshots()
       expect(loaded).toHaveLength(1)
       expect(loaded[0]!.id).toBe(snapshot.id)
     })
 
-    it('loads multiple snapshots sorted by timestamp', () => {
+    it('loads multiple snapshots sorted by timestamp', async () => {
       const snap1 = makeSnapshot({ timestamp: 1000 })
       const snap2 = makeSnapshot({ timestamp: 3000 })
       const snap3 = makeSnapshot({ timestamp: 2000 })
-      store.saveSnapshot(snap1)
-      store.saveSnapshot(snap2)
-      store.saveSnapshot(snap3)
-      const loaded = store.loadSnapshots()
+      await store.saveSnapshot(snap1)
+      await store.saveSnapshot(snap2)
+      await store.saveSnapshot(snap3)
+      const loaded = await store.loadSnapshots()
       expect(loaded).toHaveLength(3)
       expect(loaded[0]!.timestamp).toBe(1000)
       expect(loaded[1]!.timestamp).toBe(2000)
       expect(loaded[2]!.timestamp).toBe(3000)
     })
 
-    it('returns empty array when no snapshots exist', () => {
-      expect(store.loadSnapshots()).toEqual([])
+    it('returns empty array when no snapshots exist', async () => {
+      expect(await store.loadSnapshots()).toEqual([])
     })
 
-    it('ignores invalid files in storage directory', () => {
+    it('ignores invalid files in storage directory', async () => {
       fs.writeFileSync(path.join(tmpDir, 'snapshot-bad.json'), 'not json')
       const snap = makeSnapshot()
-      store.saveSnapshot(snap)
-      const loaded = store.loadSnapshots()
+      await store.saveSnapshot(snap)
+      const loaded = await store.loadSnapshots()
       expect(loaded).toHaveLength(1)
     })
   })
 
   // ---- getLatestSnapshot ----
   describe('getLatestSnapshot', () => {
-    it('returns the most recent snapshot', () => {
-      store.saveSnapshot(makeSnapshot({ timestamp: 1000 }))
-      store.saveSnapshot(makeSnapshot({ timestamp: 2000 }))
-      store.saveSnapshot(makeSnapshot({ timestamp: 3000 }))
-      const latest = store.getLatestSnapshot()
+    it('returns the most recent snapshot', async () => {
+      await store.saveSnapshot(makeSnapshot({ timestamp: 1000 }))
+      await store.saveSnapshot(makeSnapshot({ timestamp: 2000 }))
+      await store.saveSnapshot(makeSnapshot({ timestamp: 3000 }))
+      const latest = await store.getLatestSnapshot()
       expect(latest).not.toBeNull()
       expect(latest!.timestamp).toBe(3000)
     })
 
-    it('returns null when no snapshots exist', () => {
-      expect(store.getLatestSnapshot()).toBeNull()
+    it('returns null when no snapshots exist', async () => {
+      expect(await store.getLatestSnapshot()).toBeNull()
     })
   })
 
   // ---- getSnapshotRange ----
   describe('getSnapshotRange', () => {
-    it('returns snapshots within date range', () => {
-      store.saveSnapshot(makeSnapshot({ timestamp: 1000 }))
-      store.saveSnapshot(makeSnapshot({ timestamp: 2000 }))
-      store.saveSnapshot(makeSnapshot({ timestamp: 3000 }))
-      store.saveSnapshot(makeSnapshot({ timestamp: 4000 }))
-      const range = store.getSnapshotRange(1500, 3500)
+    it('returns snapshots within date range', async () => {
+      await store.saveSnapshot(makeSnapshot({ timestamp: 1000 }))
+      await store.saveSnapshot(makeSnapshot({ timestamp: 2000 }))
+      await store.saveSnapshot(makeSnapshot({ timestamp: 3000 }))
+      await store.saveSnapshot(makeSnapshot({ timestamp: 4000 }))
+      const range = await store.getSnapshotRange(1500, 3500)
       expect(range).toHaveLength(2)
     })
 
-    it('returns empty when no snapshots in range', () => {
-      store.saveSnapshot(makeSnapshot({ timestamp: 1000 }))
-      expect(store.getSnapshotRange(5000, 6000)).toHaveLength(0)
+    it('returns empty when no snapshots in range', async () => {
+      await store.saveSnapshot(makeSnapshot({ timestamp: 1000 }))
+      expect(await store.getSnapshotRange(5000, 6000)).toHaveLength(0)
     })
   })
 
   // ---- getSnapshotByCommit ----
   describe('getSnapshotByCommit', () => {
-    it('finds snapshot by commit hash', () => {
-      store.saveSnapshot(makeSnapshot({ commitHash: 'abc123' }))
-      store.saveSnapshot(makeSnapshot({ commitHash: 'def456' }))
-      const found = store.getSnapshotByCommit('abc123')
+    it('finds snapshot by commit hash', async () => {
+      await store.saveSnapshot(makeSnapshot({ commitHash: 'abc123' }))
+      await store.saveSnapshot(makeSnapshot({ commitHash: 'def456' }))
+      const found = await store.getSnapshotByCommit('abc123')
       expect(found).not.toBeNull()
       expect(found!.commitHash).toBe('abc123')
     })
 
-    it('returns null when commit not found', () => {
-      store.saveSnapshot(makeSnapshot({ commitHash: 'abc123' }))
-      expect(store.getSnapshotByCommit('nonexistent')).toBeNull()
+    it('returns null when commit not found', async () => {
+      await store.saveSnapshot(makeSnapshot({ commitHash: 'abc123' }))
+      expect(await store.getSnapshotByCommit('nonexistent')).toBeNull()
     })
   })
 
   // ---- pruneSnapshots ----
   describe('pruneSnapshots', () => {
-    it('keeps only the most recent N snapshots', () => {
+    it('keeps only the most recent N snapshots', async () => {
       for (let i = 0; i < 10; i++) {
-        store.saveSnapshot(makeSnapshot({ timestamp: i * 1000 }))
+        await store.saveSnapshot(makeSnapshot({ timestamp: i * 1000 }))
       }
-      const pruned = store.pruneSnapshots(5)
+      const pruned = await store.pruneSnapshots(5)
       expect(pruned).toBe(5)
-      expect(store.loadSnapshots()).toHaveLength(5)
+      expect(await store.loadSnapshots()).toHaveLength(5)
     })
 
-    it('returns 0 when no pruning needed', () => {
-      store.saveSnapshot(makeSnapshot())
-      expect(store.pruneSnapshots(10)).toBe(0)
+    it('returns 0 when no pruning needed', async () => {
+      await store.saveSnapshot(makeSnapshot())
+      expect(await store.pruneSnapshots(10)).toBe(0)
     })
   })
 
