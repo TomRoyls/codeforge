@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest'
-import { noUnnecessaryDateToJsonSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-date-to-json-spread.js'
+import { noUnnecessaryDateToJSONSpreadRule as noUnnecessaryDateToJsonSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-date-to-json-spread.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
 interface ReportDescriptor {

@@ -906,7 +906,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when first arg is Literal with value 0', () => {
+    test('reports when first arg is Literal with value 0 and second arg present', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArraySpliceZeroRule.create(context)
       visitor.CallExpression(
@@ -915,7 +915,7 @@ describe('no-unnecessary-array-splice-zero rule', () => {
           [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 3 }],
         ),
       )
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when first arg is NumericLiteral with value 1', () => {
