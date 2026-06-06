@@ -98,8 +98,7 @@ export default class Dependencies extends Command {
   }
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(Dependencies)
-    const { args } = await this.parse(Dependencies)
+    const { args, flags } = await this.parse(Dependencies)
 
     const targetPath = (args as { path?: string }).path ?? '.'
     const { discoverFiles } = await import('../core/file-discovery.js')

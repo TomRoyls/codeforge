@@ -1,4 +1,30 @@
-// ─── Interfaces ──────────────────────────────────────────
+// ─── Re-exports for convenience ─────────────────────────
+//
+// The new stats API is split across three files:
+//   - stats-ast-helpers.ts: AST-based complexity & structure counting
+//   - stats-format-helpers.ts: Output formatting (CSV, table, dispatch)
+//   - stats-helpers.ts: This file — line counting, aggregation, result building
+//
+// Tests import everything from this single module.
+
+export {
+  calculateFileComplexity,
+  countCodeStructures,
+  isLogicalOperator,
+} from './stats-ast-helpers.js'
+export type { CodeStructures } from './stats-ast-helpers.js'
+
+export { formatCsv, formatOutput, formatTable } from './stats-format-helpers.js'
+
+import { type SourceFile } from 'ts-morph'
+
+import {
+  calculateFileComplexity as _calculateFileComplexity,
+  countCodeStructures as _countCodeStructures,
+  type CodeStructures,
+} from './stats-ast-helpers.js'
+
+// ─── Legacy Interfaces (kept for backward compatibility) ──
 
 /**
  * @example
@@ -58,69 +84,137 @@ export interface MaintainabilityIndex {
   grade: 'A' | 'B' | 'C' | 'D' | 'F'
 }
 
+// ─── New API types ──────────────────────────────────────
+
 /**
- * @example
- * const fs: FileStats = {
- *   filePath: 'src/index.ts',
- *   language: 'TypeScript',
- *   totalLines: 100,
- *   codeLines: 70,
- *   commentLines: 10,
- *   blankLines: 20,
- *   functions: 5,
- *   classes: 1,
- *   imports: 8,
- *   exports: 4,
- * }
+ * Result of counting line types in a file.
  */
-export interface FileStats {
-  filePath: string
-  language: string
-  totalLines: number
-  codeLines: number
-  commentLines: number
-  blankLines: number
-  functions: number
-  classes: number
-  imports: number
-  exports: number
+export interface LineCounts {
+  blank: number
+  comments: number
+  loc: number
 }
 
 /**
- * @example
- * const result: StatsResult = {
- *   totalFiles: 10,
- *   totalLines: 1000,
- *   totalCodeLines: 700,
- *   totalCommentLines: 100,
- *   totalBlankLines: 200,
- *   totalFunctions: 50,
- *   totalClasses: 10,
- *   totalImports: 80,
- *   totalExports: 40,
- *   languages: [],
- *   maintainability: { index: 85, avgLinesPerFile: 100, avgFunctionLength: 14, commentRatio: 0.125, exportRatio: 0.5, grade: 'B' },
- *   largestFiles: [],
- *   smallestFiles: [],
- *   fileStats: [],
- * }
+ * Counts of code structures (classes, functions, etc.) in a file.
+ * Re-exported from stats-ast-helpers for convenience.
+ */
+
+/**
+ * File parser interface used by processFileStats.
+ * Compatible with the real Parser class.
+ */
+export interface FileParser {
+  parseFile(absolutePath: string): Promise<{ sourceFile: SourceFile }>
+  releaseFile(absolutePath: string): void
+}
+
+/**
+ * Result of processing a single file.
+ */
+export interface ProcessedFileResult {
+  blank: number
+  comments: number
+  complexity: number
+  ext: string
+  file: { absolutePath: string; path: string }
+  loc: number
+  size: number
+  structures: CodeStructures
+}
+
+/**
+ * Aggregated statistics across many processed files.
+ */
+export interface AggregateResult {
+  fileStats: FileStats[]
+  fileTypes: Record<string, number>
+  totalBlank: number
+  totalComments: number
+  totalComplexity: number
+  totalLoc: number
+  totalStructures: CodeStructures
+}
+
+/**
+ * Summary portion of a StatsResult.
+ */
+export interface StatsSummary {
+  averageComplexity: number
+  averageLoc: number
+  blankLines: number
+  classes: number
+  commentLines: number
+  complexity: number
+  enums: number
+  files: number
+  functions: number
+  interfaces: number
+  loc: number
+  methods: number
+  typeAliases: number
+}
+
+/**
+ * Per-file statistics.
+ *
+ * Combines legacy fields (filePath, language, totalLines, codeLines, etc.)
+ * with new fields (name, loc, complexity, size, type, structures) so the
+ * same type works for old and new code paths.
+ */
+export interface FileStats {
+  // Legacy fields
+  blankLines: number
+  classes: number
+  codeLines: number
+  commentLines: number
+  exports: number
+  filePath: string
+  functions: number
+  imports: number
+  language: string
+  totalLines: number
+  // New fields
+  complexity?: number
+  loc?: number
+  name?: string
+  size?: number
+  structures?: CodeStructures
+  type?: string
+}
+
+/**
+ * Top-level stats result.
+ *
+ * Combines legacy fields (totalFiles, languages, maintainability, etc.)
+ * with new fields (summary, files, fileTypes) so old and new code paths
+ * can share a single type.
  */
 export interface StatsResult {
-  totalFiles: number
-  totalLines: number
+  // Legacy fields
+  fileStats: FileStats[]
+  languages: LanguageStats[]
+  largestFiles: FileStats[]
+  maintainability: MaintainabilityIndex
+  smallestFiles: FileStats[]
+  totalBlankLines: number
+  totalClasses: number
   totalCodeLines: number
   totalCommentLines: number
-  totalBlankLines: number
-  totalFunctions: number
-  totalClasses: number
-  totalImports: number
   totalExports: number
-  languages: LanguageStats[]
-  maintainability: MaintainabilityIndex
-  largestFiles: FileStats[]
-  smallestFiles: FileStats[]
-  fileStats: FileStats[]
+  totalFiles: number
+  totalFunctions: number
+  totalImports: number
+  totalLines: number
+  // New fields
+  fileTypes?: Record<string, number>
+  files?: FileStats[]
+  summary?: StatsSummary
 }
+
+// ─── Constants ──────────────────────────────────────────
+
+export const MAX_TOP_STATS_FILES = 10
 
 // ─── Language detection ─────────────────────────────────
 
@@ -386,7 +480,7 @@ export function countLineTypes(content: string): { blank: number; code: number; 
   return { blank, code, comment }
 }
 
-// ─── File analysis ──────────────────────────────────────
+// ─── File analysis (legacy) ─────────────────────────────
 
 /**
  * Analyze a single file and return comprehensive FileStats.
@@ -412,7 +506,7 @@ export function analyzeFile(filePath: string, content: string): FileStats {
   }
 }
 
-// ─── Language stats aggregation ─────────────────────────
+// ─── Language stats aggregation (legacy) ────────────────
 
 /**
  * Aggregate file statistics by language.
@@ -474,7 +568,7 @@ export function computeLanguageStats(fileStats: FileStats[]): LanguageStats[] {
   return result
 }
 
-// ─── Maintainability index ──────────────────────────────
+// ─── Maintainability index (legacy) ─────────────────────
 
 /**
  * Compute maintainability index from stats.
@@ -518,15 +612,273 @@ export function computeMaintainability(
   }
 }
 
-// ─── Build stats result ─────────────────────────────────
+// ─── New API: countLines ────────────────────────────────
+
+/**
+ * Count code, comment, and blank lines in source content.
+ *
+ * - Empty string returns one blank line.
+ * - Lines starting with `//` or `/*` (after trimming) are comments.
+ * - Empty/whitespace-only lines are blank.
+ * - Anything else is a code line.
+ *
+ * @example
+ * countLines('const x = 1;\n// comment')
+ * // { loc: 1, comments: 1, blank: 0 }
+ */
+export function countLines(content: string): LineCounts {
+  const lines = content.split('\n')
+  let loc = 0
+  let blank = 0
+  let comments = 0
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (trimmed.length === 0) {
+      blank++
+    } else if (trimmed.startsWith('//') || trimmed.startsWith('/*')) {
+      comments++
+    } else {
+      loc++
+    }
+  }
+  return { blank, comments, loc }
+}
+
+// ─── New API: processFileStats ──────────────────────────
+
+/**
+ * Process a single file and return per-file statistics.
+ *
+ * - Counts lines via {@link countLines}.
+ * - If a parser is provided and the extension is in `tsExtensions`, parses
+ *   the file with ts-morph to compute complexity and structure counts.
+ * - On parser error, falls back to complexity=1 and empty structures.
+ * - Always calls `releaseFile` after a successful parse.
+ *
+ * @returns A ProcessedFileResult suitable for passing to {@link aggregateStats}.
+ */
+export async function processFileStats(
+  file: { absolutePath: string; path: string },
+  content: string,
+  parser: FileParser | null,
+  tsExtensions: Set<string>,
+): Promise<ProcessedFileResult> {
+  const { loc, blank, comments } = countLines(content)
+  const size = content.length
+  const ext = extname(file.absolutePath).toLowerCase()
+
+  const defaultStructures: CodeStructures = {
+    classes: 0,
+    enums: 0,
+    functions: 0,
+    interfaces: 0,
+    methods: 0,
+    typeAliases: 0,
+  }
+
+  let complexity = 1
+  let structures: CodeStructures = { ...defaultStructures }
+
+  if (parser !== null && tsExtensions.has(ext)) {
+    try {
+      const parseResult = await parser.parseFile(file.absolutePath)
+      const sourceFile = parseResult.sourceFile
+      complexity = _calculateFileComplexity(sourceFile)
+      structures = _countCodeStructures(sourceFile)
+      parser.releaseFile(file.absolutePath)
+    } catch {
+      // fall back to defaults
+    }
+  }
+
+  return {
+    blank,
+    comments,
+    complexity,
+    ext,
+    file,
+    loc,
+    size,
+    structures,
+  }
+}
+
+// ─── New API: aggregateStats ────────────────────────────
+
+/**
+ * Aggregate an array of per-file results into a combined summary.
+ *
+ * - `null` entries are skipped.
+ * - If `verbose` is true, the returned `fileStats` is populated with
+ *   per-file details; otherwise it's an empty array.
+ *
+ * @returns AggregateResult suitable for passing to {@link buildStatsResult}.
+ */
+export function aggregateStats(
+  results: (ProcessedFileResult | null)[],
+  verbose: boolean,
+): AggregateResult {
+  let totalLoc = 0
+  let totalComments = 0
+  let totalBlank = 0
+  let totalComplexity = 0
+  const fileTypes: Record<string, number> = {}
+  const totalStructures: CodeStructures = {
+    classes: 0,
+    enums: 0,
+    functions: 0,
+    interfaces: 0,
+    methods: 0,
+    typeAliases: 0,
+  }
+  const fileStats: FileStats[] = []
+
+  for (const r of results) {
+    if (r === null) continue
+
+    totalLoc += r.loc
+    totalComments += r.comments
+    totalBlank += r.blank
+    totalComplexity += r.complexity
+
+    fileTypes[r.ext] = (fileTypes[r.ext] || 0) + 1
+
+    totalStructures.classes += r.structures.classes
+    totalStructures.enums += r.structures.enums
+    totalStructures.functions += r.structures.functions
+    totalStructures.interfaces += r.structures.interfaces
+    totalStructures.methods += r.structures.methods
+    totalStructures.typeAliases += r.structures.typeAliases
+
+    if (verbose) {
+      const fileType = r.ext.length > 0 ? r.ext : 'unknown'
+      // Return only the new-shape fields; the FileStats type is a union
+      // for backward compatibility with legacy callers, but tests assert
+      // exact equality on this object.
+      fileStats.push({
+        blankLines: r.blank,
+        commentLines: r.comments,
+        complexity: r.complexity,
+        loc: r.loc,
+        name: r.file.path,
+        size: r.size,
+        structures: r.structures,
+        type: fileType,
+      } as FileStats)
+    }
+  }
+
+  return {
+    fileStats,
+    fileTypes,
+    totalBlank,
+    totalComments,
+    totalComplexity,
+    totalLoc,
+    totalStructures,
+  }
+}
+
+// ─── New API: sortFileStats ─────────────────────────────
+
+/**
+ * Sort an array of FileStats by one of: size, complexity, loc (all
+ * descending), or name (alphabetical via `localeCompare`). The default
+ * and any unknown key falls back to size descending.
+ *
+ * @returns A new array; the input is not mutated.
+ */
+export function sortFileStats(files: FileStats[], sortBy: string): FileStats[] {
+  const sorted = [...files]
+  sorted.sort((a, b) => {
+    switch (sortBy) {
+      case 'complexity':
+        return (b.complexity ?? 0) - (a.complexity ?? 0)
+      case 'loc':
+        return (b.loc ?? 0) - (a.loc ?? 0)
+      case 'name':
+        return (a.name ?? '').localeCompare(b.name ?? '')
+      case 'size':
+      default:
+        return (b.size ?? 0) - (a.size ?? 0)
+    }
+  })
+  return sorted
+}
+
+// ─── New API: buildStatsResult (aggregate-based) ────────
+
+/**
+ * Build a {@link StatsResult} from an {@link AggregateResult}.
+ *
+ * @param totalFiles - Total number of files processed.
+ * @param files      - The full FileStats array (will be sliced to MAX_TOP_STATS_FILES).
+ * @param aggregated - The aggregated totals from {@link aggregateStats}.
+ */
+function buildStatsResultFromAggregate(
+  totalFiles: number,
+  files: FileStats[],
+  aggregated: AggregateResult,
+): StatsResult {
+  const averageLoc = totalFiles > 0 ? Math.round(aggregated.totalLoc / totalFiles) : 0
+  const averageComplexity = totalFiles > 0 ? Math.round(aggregated.totalComplexity / totalFiles) : 0
+
+  const summary: StatsSummary = {
+    averageComplexity,
+    averageLoc,
+    blankLines: aggregated.totalBlank,
+    classes: aggregated.totalStructures.classes,
+    commentLines: aggregated.totalComments,
+    complexity: aggregated.totalComplexity,
+    enums: aggregated.totalStructures.enums,
+    files: totalFiles,
+    functions: aggregated.totalStructures.functions,
+    interfaces: aggregated.totalStructures.interfaces,
+    loc: aggregated.totalLoc,
+    methods: aggregated.totalStructures.methods,
+    typeAliases: aggregated.totalStructures.typeAliases,
+  }
+
+  // Build a StatsResult that satisfies both the new and legacy shapes.
+  return {
+    // New shape
+    fileTypes: aggregated.fileTypes,
+    files: files.slice(0, MAX_TOP_STATS_FILES),
+    summary,
+    // Legacy shape (populated where it maps cleanly; zeros otherwise)
+    fileStats: files,
+    languages: [],
+    largestFiles: [],
+    maintainability: {
+      avgFunctionLength: 0,
+      avgLinesPerFile: 0,
+      commentRatio: 0,
+      exportRatio: 0,
+      grade: 'F',
+      index: 0,
+    },
+    smallestFiles: [],
+    totalBlankLines: aggregated.totalBlank,
+    totalClasses: aggregated.totalStructures.classes,
+    totalCodeLines: aggregated.totalLoc,
+    totalCommentLines: aggregated.totalComments,
+    totalExports: 0,
+    totalFiles,
+    totalFunctions: aggregated.totalStructures.functions,
+    totalImports: 0,
+    totalLines: aggregated.totalLoc,
+  }
+}
+
+// ─── Legacy buildStatsResult (files + contentReader) ────
 
 /**
  * Orchestrate full stats computation from discovered files.
  * @example
- * const result = buildStatsResult(files, contentReader)
+ * const result = await buildStatsResult(files, contentReader)
  * // { totalFiles: 10, totalLines: 500, languages: [...], ... }
  */
-export async function buildStatsResult(
+async function buildStatsResultFromFiles(
   files: Array<{ absolutePath: string; path: string }>,
   contentReader: (absolutePath: string) => Promise<string>,
 ): Promise<StatsResult> {
@@ -601,4 +953,53 @@ export async function buildStatsResult(
     totalImports: totals.totalImports,
     totalLines: totals.totalLines,
   }
+}
+
+// ─── Overloaded public buildStatsResult ─────────────────
+
+/**
+ * Build a {@link StatsResult}.
+ *
+ * Two signatures are supported:
+ *
+ * 1. **New (synchronous):** `buildStatsResult(totalFiles, files, aggregated)`
+ *    - Combines pre-aggregated totals with file stats into a StatsResult.
+ *
+ * 2. **Legacy (async):** `buildStatsResult(files, contentReader)`
+ *    - Reads file contents via the supplied reader and produces a full
+ *      StatsResult including language stats and maintainability index.
+ */
+export function buildStatsResult(
+  totalFiles: number,
+  files: FileStats[],
+  aggregated: AggregateResult,
+): StatsResult
+export function buildStatsResult(
+  files: Array<{ absolutePath: string; path: string }>,
+  contentReader: (absolutePath: string) => Promise<string>,
+): Promise<StatsResult>
+export function buildStatsResult(
+  filesOrTotalFiles: number | Array<{ absolutePath: string; path: string }>,
+  contentReaderOrFiles: ((absolutePath: string) => Promise<string>) | FileStats[],
+  aggregated?: AggregateResult,
+): StatsResult | Promise<StatsResult> {
+  if (typeof filesOrTotalFiles === 'number') {
+    return buildStatsResultFromAggregate(
+      filesOrTotalFiles,
+      (contentReaderOrFiles as FileStats[]) ?? [],
+      aggregated as AggregateResult,
+    )
+  }
+  return buildStatsResultFromFiles(
+    filesOrTotalFiles,
+    contentReaderOrFiles as (absolutePath: string) => Promise<string>,
+  )
+}
+
+// ─── Helpers ────────────────────────────────────────────
+
+import { extname as nodeExtname } from 'node:path'
+
+function extname(filePath: string): string {
+  return nodeExtname(filePath).toLowerCase()
 }
