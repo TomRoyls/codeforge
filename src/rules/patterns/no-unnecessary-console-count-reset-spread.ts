@@ -20,15 +20,15 @@ export const noUnnecessaryConsoleCountResetSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `console.countReset(...items) with spread is unusual. countReset() expects an optional label string.`,
+          message: `'console.countReset(...items) with spread is unusual. countReset() expects an optional label string.'`,
           node: n,
         })
       },
     }
   },
   meta: {
-    description: 'Warn about console.countReset(...items) with spread which is likely a mistake.',
-    message: 'console.countReset(...items) with spread is unusual. countReset() expects an optional label string.',
+    description: "'Warn about console.countReset(...items) with spread which is likely a mistake.'",
+    message: "'console.countReset(...items) with spread is unusual. countReset() expects an optional label string.'",
     docs: {
       category: 'patterns',
       description: 'Warn about console.countReset(...items) with spread which is likely a mistake.',

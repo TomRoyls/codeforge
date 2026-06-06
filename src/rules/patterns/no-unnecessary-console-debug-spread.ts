@@ -2,8 +2,15 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
-export const noUnnecessaryConsoleDebugSpreadRule: RuleDefinition = {
+export const noUnnecessaryConsoleDebugSpreadRule: RuleDefinition & Record<string, unknown> = {
   name: 'no-unnecessary-console-debug-spread',
+  get type(): string { return this.meta.type },
+  get severity(): string { return this.meta.severity },
+  get category(): string | undefined { return this.meta.docs?.category },
+  get recommended(): boolean | undefined { return this.meta.docs?.recommended },
+  get description(): string | undefined { return this.meta.description ?? this.meta.docs?.description },
+  get docsUrl(): string | undefined { return this.meta.docsUrl ?? this.meta.docs?.url },
+  get schema(): unknown { return this.meta.schema },
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -29,6 +36,7 @@ export const noUnnecessaryConsoleDebugSpreadRule: RuleDefinition = {
   meta: {
     description: 'Warn about console.debug(...items) with spread which is likely a mistake.',
     message: 'console.debug(...items) with a single spread is unusual. Consider passing arguments directly.',
+    docsUrl: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-console-debug-spread.ts',
     docs: {
       category: 'patterns',
       description: 'Warn about console.debug(...items) with spread which is likely a mistake.',
