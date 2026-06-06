@@ -12,6 +12,10 @@ export class DeterministicRng {
     return (this.state >>> 0) / 4294967296
   }
 
+  nextFloat(): number {
+    return this.next()
+  }
+
   nextInt(min: number, max: number): number {
     return Math.floor(this.next() * (max - min + 1)) + min
   }
