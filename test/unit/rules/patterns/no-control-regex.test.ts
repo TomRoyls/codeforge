@@ -1350,7 +1350,7 @@ describe('no-control-regex rule', () => {
       const visitor = noControlRegexRule.create(context)
 
       const node = {
-        type: 'Literal',
+        type: 'Identifier',
         regex: { pattern: '\x00' },
         loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 3 } },
       }
