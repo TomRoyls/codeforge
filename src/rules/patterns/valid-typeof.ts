@@ -56,6 +56,7 @@ export const validTypeofRule: RuleDefinition = {
       category: 'patterns',
       description: 'Enforce comparing typeof expressions against valid strings.',
       recommended: true,
+      url: 'https://codeforge.dev/docs/rules/valid-typeof',
     },
     fixable: undefined,
     schema: [],

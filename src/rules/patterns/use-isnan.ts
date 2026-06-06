@@ -31,6 +31,7 @@ export const useIsnanRule: RuleDefinition = {
       category: 'patterns',
       description: 'Require calls to isNaN() when checking for NaN.',
       recommended: true,
+      url: 'https://codeforge.dev/docs/rules/use-isnan',
     },
     fixable: undefined,
     schema: [],

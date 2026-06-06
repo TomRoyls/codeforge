@@ -57,6 +57,7 @@ export const requireYieldRule: RuleDefinition = {
       category: 'patterns',
       description: 'Require yield in generator functions.',
       recommended: true,
+      url: 'https://codeforge.dev/docs/rules/require-yield',
     },
     fixable: undefined,
     schema: [],
