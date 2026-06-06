@@ -94,6 +94,7 @@ export const preferSnapshotHintRule: RuleDefinition = {
     },
     severity: 'warn',
     type: 'suggestion',
+    schema: [],
   },
 }
 

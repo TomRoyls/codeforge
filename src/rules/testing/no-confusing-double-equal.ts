@@ -107,6 +107,7 @@ export const noConfusingDoubleEqualRule: RuleDefinition = {
     },
     severity: 'warn',
     type: 'suggestion',
+    schema: [],
   },
 }
 
