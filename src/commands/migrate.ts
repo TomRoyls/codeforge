@@ -24,7 +24,6 @@ import {
   formatDryRunOutput,
   formatMigrationSummary,
   formatNextSteps,
-  type MigrationResult,
 } from './migrate-helpers.js'
 
 export default class Migrate extends Command {
@@ -104,7 +103,7 @@ export default class Migrate extends Command {
 
     this.log(chalk.gray('Migrating rules...'))
 
-    const result = migrateESLintConfig(config) as unknown as MigrationResult
+    const result = migrateESLintConfig(config)
     const codeforgeConfig = buildCodeForgeConfig(result.rules)
 
     formatMigrationSummary(result, MAX_UNMAPPED_RULES_TO_SHOW, (msg) => this.log(msg))
@@ -160,7 +159,7 @@ export default class Migrate extends Command {
 
     this.log(chalk.gray('Migrating rules...'))
 
-    const result = migrateTSLintConfig(config) as unknown as MigrationResult
+    const result = migrateTSLintConfig(config)
     const codeforgeConfig = buildCodeForgeConfig(result.rules)
 
     formatMigrationSummary(result, MAX_UNMAPPED_RULES_TO_SHOW, (msg) => this.log(msg))
@@ -216,7 +215,7 @@ export default class Migrate extends Command {
 
     this.log(chalk.gray('Migrating rules...'))
 
-    const result = migrateBiomeConfig(config) as unknown as MigrationResult
+    const result = migrateBiomeConfig(config)
     const codeforgeConfig = buildCodeForgeConfig(result.rules)
 
     formatMigrationSummary(result, MAX_UNMAPPED_RULES_TO_SHOW, (msg) => this.log(msg))
