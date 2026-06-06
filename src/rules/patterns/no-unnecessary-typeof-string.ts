@@ -9,7 +9,6 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isStringLiteral(node: Record<string, unknown>): boolean {
   const t = node.type as string
-  if (t === 'StringLiteral') return true
   if (t === 'Literal' && typeof node.value === 'string') return true
   if (t === 'TemplateLiteral') {
     const exprs = node.expressions
@@ -40,7 +39,7 @@ export const noUnnecessaryTypeofStringRule: RuleDefinition = {
         const r = rightNode as Record<string, unknown>
 
         const leftIsTypeof = l.type === 'UnaryExpression' && (l as Record<string, unknown>).operator === 'typeof'
-        const rightIsString = r.type === 'StringLiteral' || (r.type === 'Literal' && r.value === 'string')
+        const rightIsString = r.type === 'Literal' && r.value === 'string'
 
         if (leftIsTypeof && rightIsString) {
           const typeofArg = (l as Record<string, unknown>).argument

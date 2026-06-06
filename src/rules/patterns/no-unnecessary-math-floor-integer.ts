@@ -42,7 +42,7 @@ export const noUnnecessaryMathFloorIntegerRule: RuleDefinition = {
         const argNode = toASTNode(arg) as Record<string, unknown>
         if (!argNode) return
 
-        if (argNode.type === 'NumericLiteral' || (argNode.type === 'Literal' && typeof (argNode as Record<string, unknown>).value === 'number')) {
+        if (argNode.type === 'Literal' && typeof (argNode as Record<string, unknown>).value === 'number') {
           const value = (argNode as Record<string, unknown>).value
           if (typeof value === 'number' && Number.isInteger(value)) {
             context.report({

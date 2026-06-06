@@ -36,7 +36,7 @@ export const noUnnecessaryNumberConstructorRule: RuleDefinition = {
         const a = argNode as Record<string, unknown>
         const t = a.type as string
 
-        if (t === 'NumericLiteral' || (t === 'Literal' && typeof a.value === 'number')) {
+        if (t === 'Literal' && typeof a.value === 'number') {
           context.report({
             loc: extractLocation(n),
             message:

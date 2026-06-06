@@ -24,7 +24,7 @@ function checkIfLiteralFromAst(node: unknown): LiteralCheckResult {
 
   const {type} = argument
 
-  if (type === 'StringLiteral' || type === 'Literal') {
+  if (type === 'Literal') {
     const {value} = argument
     if (typeof value === 'string') return { isLiteral: true, literalType: 'string' }
     if (typeof value === 'number') return { isLiteral: true, literalType: 'number' }

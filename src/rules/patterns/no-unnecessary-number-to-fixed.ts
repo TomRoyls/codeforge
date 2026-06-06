@@ -31,7 +31,7 @@ export const noUnnecessaryNumberToFixedRule: RuleDefinition = {
         if (!obj || typeof obj !== 'object') return
 
         const o = obj as Record<string, unknown>
-        if (o.type === 'NumericLiteral' || (o.type === 'Literal' && typeof o.value === 'number')) {
+        if (o.type === 'Literal' && typeof o.value === 'number') {
           const args = nn.arguments
           if (
             !Array.isArray(args) ||
@@ -69,12 +69,12 @@ function isLiteralZero(arg: unknown): boolean {
   const n = toASTNode(arg)
   if (!n) return false
   const nn = n as Record<string, unknown>
-  if ((nn.type === 'NumericLiteral' || (nn.type === 'Literal' && typeof nn.value === 'number')) && nn.value === 0) return true
+  if (nn.type === 'Literal' && typeof nn.value === 'number' && nn.value === 0) return true
   if (nn.type === 'UnaryExpression' && nn.operator === '-') {
     const inner = toASTNode(nn.argument)
     if (!inner) return false
     const i = inner as Record<string, unknown>
-    if ((i.type === 'NumericLiteral' || (i.type === 'Literal' && typeof i.value === 'number')) && i.value === 0) return true
+    if (i.type === 'Literal' && typeof i.value === 'number' && i.value === 0) return true
   }
   return false
 }

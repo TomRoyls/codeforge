@@ -181,7 +181,7 @@ export const consistentImportsRule: RuleDefinition = {
         if (
           callee?.type === 'Identifier' &&
           callee.name === 'require' &&
-          (arg0?.type === 'Literal' || arg0?.type === 'StringLiteral') &&
+          arg0?.type === 'Literal' &&
           arg0.value &&
           typeof arg0.value === 'string'
         ) {

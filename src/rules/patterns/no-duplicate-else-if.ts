@@ -25,9 +25,7 @@ function serializeCondition(node: unknown, visited: Set<unknown> = new Set()): s
 
   if (
     type === 'Literal' ||
-    type === 'BooleanLiteral' ||
-    type === 'NumericLiteral' ||
-    type === 'StringLiteral'
+    type === 'BooleanLiteral'
   ) {
     return `Literal(${String(n.value)})`
   }

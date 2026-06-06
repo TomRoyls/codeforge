@@ -38,7 +38,7 @@ export const noUnnecessaryStringReplaceAllRule: RuleDefinition = {
         if (!argNode) return
 
         const a = argNode as Record<string, unknown>
-        if (a.type === 'StringLiteral' || (a.type === 'Literal' && typeof a.value === 'string')) {
+        if (a.type === 'Literal' && typeof a.value === 'string') {
           context.report({
             loc: extractLocation(n),
             message:

@@ -311,7 +311,7 @@ function getDynamicImportArgument(node: unknown): null | string {
       : undefined
 
   if (
-    (arg0?.type === 'Literal' || arg0?.type === 'StringLiteral') &&
+    arg0?.type === 'Literal' &&
     arg0.value &&
     typeof arg0.value === 'string'
   ) {

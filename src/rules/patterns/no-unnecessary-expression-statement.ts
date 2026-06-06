@@ -23,21 +23,14 @@ export const noUnnecessaryExpressionStatementRule: RuleDefinition = {
 
         const e = exprNode as Record<string, unknown>
 
-        if (e.type === 'StringLiteral') {
+        if (e.type === 'Literal' && typeof e.value === 'string') {
           context.report({
             loc: extractLocation(exprNode),
             message:
               'Unnecessary string literal as statement. This is likely a mistake or missing assignment.',
             node: exprNode,
           })
-        } else if (e.type === 'Literal' && typeof e.value === 'string') {
-          context.report({
-            loc: extractLocation(exprNode),
-            message:
-              'Unnecessary string literal as statement. This is likely a mistake or missing assignment.',
-            node: exprNode,
-          })
-        } else if (e.type === 'NumericLiteral' || (e.type === 'Literal' && typeof e.value === 'number')) {
+        } else if (e.type === 'Literal' && typeof e.value === 'number') {
           context.report({
             loc: extractLocation(exprNode),
             message:

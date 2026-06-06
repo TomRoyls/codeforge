@@ -17,8 +17,6 @@ function isLiteral(node: unknown): boolean {
   if (!n) return false
   // Babel-style discrete literal types
   if (
-    n.type === 'StringLiteral' ||
-    n.type === 'NumericLiteral' ||
     n.type === 'BooleanLiteral' ||
     n.type === 'NullLiteral' ||
     n.type === 'BigIntLiteral' ||

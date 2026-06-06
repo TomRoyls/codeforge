@@ -9,7 +9,7 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isLiteralValue(node: Record<string, unknown>): boolean {
   const t = node.type as string
-  if (t === 'StringLiteral' || t === 'NumericLiteral' || t === 'BooleanLiteral') return true
+  if (t === 'BooleanLiteral') return true
   if (t === 'BigIntLiteral') return true
   if (t === 'NullLiteral') return true
   if (t === 'Literal') {

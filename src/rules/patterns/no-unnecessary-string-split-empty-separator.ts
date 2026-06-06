@@ -37,7 +37,7 @@ export const noUnnecessaryStringSplitEmptySeparatorRule: RuleDefinition = {
         const argNode = toASTNode(firstArg) as Record<string, unknown>
         if (!argNode) return
 
-        if ((argNode.type === 'StringLiteral' || (argNode.type === 'Literal' && typeof (argNode as Record<string, unknown>).value === 'string')) && (argNode as Record<string, unknown>).value === '') {
+        if (argNode.type === 'Literal' && typeof (argNode as Record<string, unknown>).value === 'string' && (argNode as Record<string, unknown>).value === '') {
           context.report({
             loc: extractLocation(n),
             message:

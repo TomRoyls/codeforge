@@ -26,7 +26,7 @@ export const noUnnecessaryVoidOperatorRule: RuleDefinition = {
         const a = argNode as Record<string, unknown>
         const t = a.type as string
 
-        if (t === 'NumericLiteral' || t === 'StringLiteral' || t === 'BooleanLiteral' || t === 'NullLiteral') {
+        if (t === 'BooleanLiteral' || t === 'NullLiteral') {
           context.report({
             loc: extractLocation(n),
             message:

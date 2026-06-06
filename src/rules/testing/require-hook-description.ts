@@ -38,7 +38,6 @@ export const requireHookDescriptionRule: RuleDefinition = {
         }
 
         const firstArg = args[0] as { type?: string; value?: unknown } | undefined
-        if (firstArg && firstArg.type === 'StringLiteral') return
         if (firstArg && firstArg.type === 'Literal' && typeof firstArg.value === 'string') return
 
         context.report({

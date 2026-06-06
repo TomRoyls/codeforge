@@ -373,6 +373,17 @@ export function parseExtensions(input: string): string[] | null {
     .filter((ext) => ext.length > 0)
 }
 
+export function filterFilesByExtension<T extends { path: string }>(
+  files: T[],
+  extensions: string[] | null,
+): T[] {
+  if (!extensions || extensions.length === 0) return files
+  return files.filter((f) => {
+    const ext = f.path.match(/\.[^.]+$/)?.[0] ?? ''
+    return extensions.includes(ext)
+  })
+}
+
 export function sortByField(
   results: FunctionComplexity[],
   field: string,
@@ -431,11 +442,11 @@ export function formatMarkdown(data: FunctionComplexity[]): string {
   lines.push('')
 
   if (data.length > 0) {
-    lines.push('| Function | File | Line | Cyclomatic | Cognitive | Category |')
-    lines.push('|---|---|---|---|---|---|')
+    lines.push('| Function | Cyclomatic | Cognitive | Category | File |')
+    lines.push('|--------|------------|-----------|----------|------|')
     for (const f of data) {
       lines.push(
-        `| ${f.functionName} | ${f.filePath} | ${f.startLine} | ${f.cyclomatic} | ${f.cognitive} | ${f.category} |`,
+        `| ${f.functionName} | ${f.cyclomatic} | ${f.cognitive} | ${f.category} | ${f.filePath} |`,
       )
     }
     lines.push('')
@@ -445,7 +456,13 @@ export function formatMarkdown(data: FunctionComplexity[]): string {
   lines.push(`Total functions: ${data.length}`)
   if (data.length > 0) {
     const avgCyc = data.reduce((s, f) => s + f.cyclomatic, 0) / data.length
-    lines.push(`Average cyclomatic: ${avgCyc.toFixed(1)}`)
+    const avgCog = data.reduce((s, f) => s + f.cognitive, 0) / data.length
+    const maxCyc = Math.max(...data.map((f) => f.cyclomatic))
+    const maxCog = Math.max(...data.map((f) => f.cognitive))
+    lines.push(`**Average cyclomatic complexity**: ${avgCyc.toFixed(1)}`)
+    lines.push(`**Average cognitive complexity**: ${avgCog.toFixed(1)}`)
+    lines.push(`**Maximum cyclomatic complexity**: ${maxCyc}`)
+    lines.push(`**Maximum cognitive complexity**: ${maxCog}`)
   }
 
   lines.push('')
@@ -459,24 +476,34 @@ export function formatMarkdown(data: FunctionComplexity[]): string {
 }
 
 export function formatTable(data: FunctionComplexity[]): string {
-  if (data.length === 0) return 'No functions found.'
+  if (data.length === 0) return 'No functions found with complexity above threshold.'
 
   const lines: string[] = []
   lines.push('Complexity Analysis')
   lines.push('')
+  lines.push('  Function                         File:Line             Cyclomatic  Cognitive  Category')
 
   for (const f of data) {
     const name = f.functionName.length > 28
       ? f.functionName.slice(0, 28)
       : f.functionName
+    const category = f.category.toUpperCase()
     lines.push(
-      `  ${name.padEnd(30)} ${f.filePath}:${f.startLine}  cyc=${f.cyclomatic}  cog=${f.cognitive}  [${f.category}]`,
+      `  ${name.padEnd(30)} ${f.filePath}:${f.startLine}  ${String(f.cyclomatic).padStart(11)}  ${String(f.cognitive).padStart(9)}  ${category}`,
     )
   }
 
   lines.push('')
   lines.push('Summary:')
   lines.push(`  Total functions: ${data.length}`)
+  const avgCyc = data.reduce((s, f) => s + f.cyclomatic, 0) / data.length
+  const avgCog = data.reduce((s, f) => s + f.cognitive, 0) / data.length
+  const maxCyc = Math.max(...data.map((f) => f.cyclomatic))
+  const maxCog = Math.max(...data.map((f) => f.cognitive))
+  lines.push(`  Average cyclomatic complexity: ${avgCyc.toFixed(1)}`)
+  lines.push(`  Average cognitive complexity: ${avgCog.toFixed(1)}`)
+  lines.push(`  Maximum cyclomatic complexity: ${maxCyc}`)
+  lines.push(`  Maximum cognitive complexity: ${maxCog}`)
 
   lines.push('')
   lines.push('Category breakdown:')

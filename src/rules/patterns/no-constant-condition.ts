@@ -48,18 +48,6 @@ function isConstantCondition(testNode: unknown): { description: string; isConsta
     }
   }
 
-  // Check for NumericLiteral (SWC-specific)
-  if (t.type === 'NumericLiteral') {
-    const {value} = t
-    if (typeof value === 'number') {
-      const isTruthy = value !== 0
-      return {
-        description: `Unexpected constant condition: always ${isTruthy ? 'truthy' : 'falsy'} (${value})`,
-        isConstant: true,
-      }
-    }
-  }
-
   return { description: '', isConstant: false }
 }
 

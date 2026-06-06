@@ -36,7 +36,7 @@ export const noUnnecessaryStringConstructorRule: RuleDefinition = {
         const a = argNode as Record<string, unknown>
         const t = a.type as string
 
-        if (t === 'StringLiteral' || (t === 'Literal' && typeof a.value === 'string')) {
+        if (t === 'Literal' && typeof a.value === 'string') {
           context.report({
             loc: extractLocation(n),
             message:

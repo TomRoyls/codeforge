@@ -27,7 +27,7 @@ export const noMisleadingArrayMethodRule: RuleDefinition = {
         let methodName = ''
         if (propType === 'Identifier') {
           methodName = (property as { name?: string }).name ?? ''
-        } else if (propType === 'StringLiteral' || (propType === 'Literal' && typeof (property as { value?: unknown }).value === 'string')) {
+        } else if (propType === 'Literal' && typeof (property as { value?: unknown }).value === 'string') {
           methodName = (property as { value?: string }).value ?? ''
         }
 

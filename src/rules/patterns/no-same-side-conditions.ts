@@ -23,12 +23,12 @@ function getNodeKey(node: unknown): null | string {
   }
 
   // Handle NumericLiteral (SWC-specific / adapter-converted)
-  if ((n.type === 'Literal' || n.type === 'NumericLiteral') && typeof n.value === 'number') {
+  if (n.type === 'Literal' && typeof n.value === 'number') {
     return `NumericLiteral:${n.value}`
   }
 
   // Handle StringLiteral (SWC-specific / adapter-converted)
-  if ((n.type === 'Literal' || n.type === 'StringLiteral') && typeof n.value === 'string') {
+  if (n.type === 'Literal' && typeof n.value === 'string') {
     return `StringLiteral:${n.value}`
   }
 

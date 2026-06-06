@@ -9,8 +9,6 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getLiteralValue(node: Record<string, unknown>): unknown {
   const t = node.type as string
-  if (t === 'StringLiteral') return node.value
-  if (t === 'NumericLiteral') return node.value
   if (t === 'BooleanLiteral') return node.value
   if (t === 'NullLiteral') return null
   if (t === 'Literal') return node.value

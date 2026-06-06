@@ -8,7 +8,6 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isNumericLiteral(node: Record<string, unknown>, value: number): boolean {
-  if (node.type === 'NumericLiteral' && node.value === value) return true
   if (node.type === 'Literal' && node.value === value) return true
   return false
 }

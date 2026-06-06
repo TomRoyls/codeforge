@@ -37,7 +37,7 @@ export const noUnnecessaryParseIntRadixTenRule: RuleDefinition = {
         const argNode = toASTNode(secondArg) as Record<string, unknown>
         if (!argNode) return
 
-        if ((argNode.type === 'NumericLiteral' || (argNode.type === 'Literal' && typeof (argNode as Record<string, unknown>).value === 'number')) && (argNode as Record<string, unknown>).value === 10) {
+        if (argNode.type === 'Literal' && typeof (argNode as Record<string, unknown>).value === 'number' && (argNode as Record<string, unknown>).value === 10) {
           context.report({
             loc: extractLocation(n),
             message:

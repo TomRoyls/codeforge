@@ -251,7 +251,7 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
       ) {
         const arg0 = toASTNode(arguments_[0])
         if (
-          (arg0?.type === 'Literal' || arg0?.type === 'StringLiteral') &&
+          arg0?.type === 'Literal' &&
           typeof arg0.value === 'string'
         ) {
           imports.push({

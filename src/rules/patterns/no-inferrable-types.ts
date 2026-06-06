@@ -23,12 +23,10 @@ function getInitType(node: unknown): string | undefined {
 
   const initType = init.type
 
-  if (initType === 'Literal' || initType === 'StringLiteral' || initType === 'NumericLiteral') {
+  if (initType === 'Literal') {
     if (typeof init.value === 'string') return 'string'
     if (typeof init.value === 'number') return 'number'
     if (typeof init.value === 'boolean') return 'boolean'
-    if (initType === 'StringLiteral') return 'string'
-    if (initType === 'NumericLiteral') return 'number'
   }
 
   if (initType === 'BooleanLiteral') return 'boolean'

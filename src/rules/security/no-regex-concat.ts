@@ -34,8 +34,8 @@ export const noRegexConcatRule: RuleDefinition = {
           if (op === '+') {
             const left = (argNode as { left?: unknown }).left
             const right = (argNode as { right?: unknown }).right
-            const leftIsStr = left && ((left as { type?: string }).type === 'StringLiteral' || ((left as { type?: string }).type === 'Literal' && typeof (left as { value?: unknown }).value === 'string'))
-            const rightIsStr = right && ((right as { type?: string }).type === 'StringLiteral' || ((right as { type?: string }).type === 'Literal' && typeof (right as { value?: unknown }).value === 'string'))
+            const leftIsStr = left && ((left as { type?: string }).type === 'Literal' && typeof (left as { value?: unknown }).value === 'string')
+            const rightIsStr = right && ((right as { type?: string }).type === 'Literal' && typeof (right as { value?: unknown }).value === 'string')
             if (leftIsStr || rightIsStr) {
               context.report({
                 loc: extractLocation(n),
