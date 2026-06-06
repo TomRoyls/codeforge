@@ -551,11 +551,11 @@ describe('no-unnecessary-string-to-upper-case-same rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when object type is Literal (not StringLiteral)', () => {
+    test('reports when object type is Literal (not StringLiteral)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToUpperCaseSameRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'HELLO' }, 'toUpperCase'))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when object type is ObjectExpression', () => {

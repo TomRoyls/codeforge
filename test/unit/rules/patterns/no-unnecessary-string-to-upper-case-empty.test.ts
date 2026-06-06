@@ -655,11 +655,11 @@ describe('no-unnecessary-string-to-upper-case-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when argument is a Literal (not StringLiteral)', () => {
+    test('reports when argument is a Literal empty string', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToUpperCaseEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'toUpperCase', [{ type: 'Literal', value: '' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when first argument is a CallExpression', () => {

@@ -641,11 +641,11 @@ describe('no-unnecessary-string-trim-start-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when object type is Literal (not StringLiteral)', () => {
+    test('reports when object type is Literal (not StringLiteral)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringTrimStartEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Literal', value: '' }, 'trimStart'))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when object type is ObjectExpression', () => {

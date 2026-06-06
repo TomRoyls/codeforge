@@ -651,7 +651,7 @@ describe('no-unnecessary-array-flat-infinity rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when argument type is Literal (not NumericLiteral)', () => {
+    test('does not report when argument type is Literal (Infinity is an Identifier in source)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFlatInfinityRule.create(context)
       visitor.CallExpression(makeFlatCallNode(makeId('arr'), 'flat', [{ type: 'Literal', value: Infinity }]))

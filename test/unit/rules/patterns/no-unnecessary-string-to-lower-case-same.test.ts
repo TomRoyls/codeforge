@@ -578,11 +578,11 @@ describe('no-unnecessary-string-to-lower-case-same rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when object type is Literal (not StringLiteral)', () => {
+    test('reports when object is Literal string that is already lowercase', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringToLowerCaseSameRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'toLowerCase'))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when object type is ObjectExpression', () => {

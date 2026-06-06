@@ -647,11 +647,11 @@ describe('no-unnecessary-string-slice-zero-len rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when first arg is Literal not NumericLiteral', () => {
+    test('reports when first arg is Literal not NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSliceZeroLen.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [{ type: 'Literal', value: 0 }, numLit(5)]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when first arg is Identifier', () => {
@@ -661,11 +661,11 @@ describe('no-unnecessary-string-slice-zero-len rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when second arg is Literal not NumericLiteral', () => {
+    test('reports when second arg is Literal not NumericLiteral', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSliceZeroLen.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [numLit(0), { type: 'Literal', value: 5 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when second arg is Identifier', () => {

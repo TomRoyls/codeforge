@@ -416,11 +416,11 @@ describe('no-unnecessary-string-includes-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for str.includes() with Literal type argument (not StringLiteral)', () => {
+    test('reports for str.includes() with Literal type argument (not StringLiteral)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringIncludesEmpty.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [{ type: 'Literal', value: '' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report for str.includes(42) — numeric argument', () => {
