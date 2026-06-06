@@ -35,7 +35,7 @@ export const noUnnecessaryLiteralTostringRule: RuleDefinition = {
         const objNode = toASTNode(obj) as Record<string, unknown>
         if (!objNode) return
 
-        if (objNode.type === 'StringLiteral' || (objNode.type === 'Literal' && typeof (objNode as Record<string, unknown>).value === 'string')) {
+        if (objNode.type === 'Literal' && typeof (objNode as Record<string, unknown>).value === 'string') {
           context.report({
             loc: extractLocation(n),
             message:

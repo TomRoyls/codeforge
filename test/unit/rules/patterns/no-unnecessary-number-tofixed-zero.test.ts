@@ -130,17 +130,17 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('reports for (42).toFixed() — NumericLiteral object, no args', () => {
+    test('reports for (42).toFixed() — Literal object, no args', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 42 }, 'toFixed'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toFixed'))
       expect(reports.length).toBe(1)
     })
 
     test('reports for (3.14).toFixed() — decimal number, no args', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 3.14 }, 'toFixed'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 3.14 }, 'toFixed'))
       expect(reports.length).toBe(1)
     })
 
@@ -161,7 +161,7 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
     test('reports for (0).toFixed() — zero value, no args', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 0 }, 'toFixed'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 0 }, 'toFixed'))
       expect(reports.length).toBe(1)
     })
 
@@ -228,73 +228,73 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
   // ===== POSITIVE CASES — toFixed(0) WITH ZERO ARG (14) =====
 
   describe('positive cases — reports toFixed(0)', () => {
-    test('reports for x.toFixed(0) — Identifier object, NumericLiteral 0', () => {
+    test('reports for x.toFixed(0) — Identifier object, Literal 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
-    test('reports for (42).toFixed(0) — NumericLiteral object, NumericLiteral 0', () => {
+    test('reports for (42).toFixed(0) — Literal object, Literal 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 42 }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
-    test('reports for (3.14).toFixed(0) — decimal number, NumericLiteral 0', () => {
+    test('reports for (3.14).toFixed(0) — decimal number, Literal 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 3.14 }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 3.14 }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
-    test('reports for (0).toFixed(0) — zero value, NumericLiteral 0', () => {
+    test('reports for (0).toFixed(0) — zero value, Literal 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 0 }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 0 }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
-    test('reports for (999).toFixed(0) — large integer, NumericLiteral 0', () => {
+    test('reports for (999).toFixed(0) — large integer, Literal 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 999 }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 999 }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for result.toFixed(0) — CallExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'calc' }, arguments: [] }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'calc' }, arguments: [] }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for obj.prop.toFixed(0) — MemberExpression object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'val' } }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'val' } }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('reports for (-1).toFixed(0) — negative number', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: '-', argument: { type: 'NumericLiteral', value: 1 } }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'UnaryExpression', operator: '-', argument: { type: 'Literal', value: 1 } }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(1)
     })
 
     test('report message for toFixed(0) mentions unnecessary', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toMatch(/Unnecessary/)
     })
 
     test('report message for toFixed(0) is exactly as defined', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].message).toBe(
         'Unnecessary .toFixed(0) on an integer. This returns the same string as String(n) or n.toString().',
       )
@@ -303,21 +303,21 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
     test('report for toFixed(0) has loc property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].loc).toBeDefined()
     })
 
     test('report for toFixed(0) has node property', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports[0].node).toBeDefined()
     })
 
     test('report for toFixed(0) node matches input node', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }])
+      const node = makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }])
       visitor.CallExpression(node)
       expect(reports[0].node).toBe(node)
     })
@@ -325,7 +325,7 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
     test('report loc for toFixed(0) preserves node location', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }], 7, 3, 7, 18))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }], 7, 3, 7, 18))
       expect(reports[0].loc?.start.line).toBe(7)
       expect(reports[0].loc?.start.column).toBe(3)
     })
@@ -334,24 +334,24 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
   // ===== NEGATIVE CASES — DOES NOT REPORT (41) =====
 
   describe('negative cases — does NOT report', () => {
-    test('does not report for x.toFixed(2) — non-zero NumericLiteral', () => {
+    test('does not report for x.toFixed(2) — non-zero Literal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 2 }]))
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for x.toFixed(1) — NumericLiteral 1', () => {
+    test('does not report for x.toFixed(1) — Literal 1', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 1 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 1 }]))
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for x.toFixed(5) — NumericLiteral 5', () => {
+    test('does not report for x.toFixed(5) — Literal 5', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 5 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -372,35 +372,35 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
     test('does not report for (42).toString() — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 42 }, 'toString'))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toString'))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for (42).toPrecision(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NumericLiteral', value: 42 }, 'toPrecision', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toPrecision', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x.toExponential(0) — different method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toExponential', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toExponential', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x.toFixed(0, extra) — two arguments (length > 1)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }, { type: 'Identifier', name: 'extra' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }, { type: 'Identifier', name: 'extra' }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x.toFixed(0, y, z) — three arguments', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }, { type: 'Identifier', name: 'y' }, { type: 'Identifier', name: 'z' }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }, { type: 'Identifier', name: 'y' }, { type: 'Identifier', name: 'z' }]))
       expect(reports.length).toBe(0)
     })
 
@@ -573,14 +573,14 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
     test('reports for x.toFixed(-0) — negative zero equals zero with ===', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: -0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: -0 }]))
       expect(reports.length).toBe(1)
     })
 
-    test('does not report for x.toFixed(0.5) — NumericLiteral non-integer', () => {
+    test('does not report for x.toFixed(0.5) — Literal non-integer', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0.5 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0.5 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -601,7 +601,7 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
     test('does not report for x.toFixed(0 + 0) — BinaryExpression argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'BinaryExpression', operator: '+', left: { type: 'NumericLiteral', value: 0 }, right: { type: 'NumericLiteral', value: 0 } }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'BinaryExpression', operator: '+', left: { type: 'Literal', value: 0 }, right: { type: 'Literal', value: 0 } }]))
       expect(reports.length).toBe(0)
     })
 
@@ -624,14 +624,14 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
     test('does not report for x.toFixed(10) — larger argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 10 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 10 }]))
       expect(reports.length).toBe(0)
     })
 
     test('does not report for x.toFixed(100) — very large argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 100 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 100 }]))
       expect(reports.length).toBe(0)
     })
 
@@ -649,10 +649,10 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for x.toFixed(0.0) — NumericLiteral 0 as float', () => {
+    test('does not report for x.toFixed(0.0) — Literal 0 as float', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0.0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0.0 }]))
       expect(reports.length).toBe(1)
     })
   })
@@ -666,7 +666,7 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
       const visitor1 = noUnnecessaryNumberTofixedZeroRule.create(ctx1)
       const visitor2 = noUnnecessaryNumberTofixedZeroRule.create(ctx2)
       visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed'))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 2 }]))
+      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 2 }]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
@@ -675,8 +675,8 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed'))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'y' }, 'toFixed', [{ type: 'NumericLiteral', value: 2 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'z' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'y' }, 'toFixed', [{ type: 'Literal', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'z' }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       expect(reports.length).toBe(2)
     })
 
@@ -706,7 +706,7 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
           object: { type: 'Identifier', name: 'x' },
           property: { type: 'Identifier', name: 'toFixed' },
         },
-        arguments: [{ type: 'NumericLiteral', value: 0 }],
+        arguments: [{ type: 'Literal', value: 0 }],
       }
       visitor.CallExpression(node)
       expect(reports.length).toBe(1)
@@ -716,8 +716,8 @@ describe('no-unnecessary-number-tofixed-zero rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryNumberTofixedZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed'))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 2 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'NumericLiteral', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 2 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Literal', value: 0 }]))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toString'))
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'x' }, 'toFixed', [{ type: 'Identifier', name: 'n' }]))
       expect(reports.length).toBe(2)

@@ -10,8 +10,6 @@ import { toASTNode } from '../../utils/ast-helpers.js'
 function isLiteralNode(argNode: Record<string, unknown>): boolean {
   // Babel-style discrete literal types
   if (
-    argNode.type === 'StringLiteral' ||
-    argNode.type === 'NumericLiteral' ||
     argNode.type === 'BooleanLiteral' ||
     argNode.type === 'NullLiteral' ||
     argNode.type === 'BigIntLiteral'

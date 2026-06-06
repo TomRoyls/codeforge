@@ -15,7 +15,7 @@ export const noUnnecessaryStringSearchEmptyRule: RuleDefinition = {
         if (callee.property.name !== 'search') return
         const arg = n.arguments[0]
         if (!arg) return
-        if ((arg.type === 'StringLiteral' || (arg.type === 'Literal' && typeof arg.value === 'string')) && arg.value === '') {
+        if (arg.type === 'Literal' && typeof arg.value === 'string' && arg.value === '') {
           context.report({
             loc: extractLocation(n),
             message: `str.search('') always returns 0. Use str.indexOf('') or check length instead.`,

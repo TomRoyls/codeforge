@@ -15,7 +15,7 @@ export const noUnnecessaryStringMatchAllEmptyRule: RuleDefinition = {
         if (callee.property.name !== 'matchAll') return
         const arg = n.arguments[0]
         if (!arg) return
-        if ((arg.type === 'StringLiteral' || (arg.type === 'Literal' && typeof arg.value === 'string')) && arg.value === '') {
+        if (arg.type === 'Literal' && typeof arg.value === 'string' && arg.value === '') {
           context.report({
             loc: extractLocation(n),
             message: `str.matchAll('') matches every position. This is likely not the intended behavior.`,

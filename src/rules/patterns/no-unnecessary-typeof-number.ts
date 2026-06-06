@@ -29,8 +29,8 @@ export const noUnnecessaryTypeofNumberRule: RuleDefinition = {
         if (
           leftNode.type === 'UnaryExpression' &&
           (leftNode as Record<string, unknown>).operator === 'typeof' &&
-          (rightNode.type === 'StringLiteral' ||
-            (rightNode.type === 'Literal' && typeof (rightNode as Record<string, unknown>).value === 'string')) &&
+          rightNode.type === 'Literal' &&
+          typeof (rightNode as Record<string, unknown>).value === 'string' &&
           (rightNode as Record<string, unknown>).value === 'number'
         ) {
           const argument = (leftNode as Record<string, unknown>).argument
@@ -51,8 +51,8 @@ export const noUnnecessaryTypeofNumberRule: RuleDefinition = {
         if (
           rightNode.type === 'UnaryExpression' &&
           (rightNode as Record<string, unknown>).operator === 'typeof' &&
-          (leftNode.type === 'StringLiteral' ||
-            (leftNode.type === 'Literal' && typeof (leftNode as Record<string, unknown>).value === 'string')) &&
+          leftNode.type === 'Literal' &&
+          typeof (leftNode as Record<string, unknown>).value === 'string' &&
           (leftNode as Record<string, unknown>).value === 'number'
         ) {
           const argument = (rightNode as Record<string, unknown>).argument
@@ -88,8 +88,7 @@ export const noUnnecessaryTypeofNumberRule: RuleDefinition = {
 }
 
 function isNumericLiteral(node: Record<string, unknown>): boolean {
-  return node.type === 'NumericLiteral' ||
-    node.type === 'BigIntLiteral' ||
+  return node.type === 'BigIntLiteral' ||
     (node.type === 'Literal' && (typeof node.value === 'number' || typeof node.value === 'bigint'))
 }
 
