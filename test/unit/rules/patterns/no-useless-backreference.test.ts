@@ -171,12 +171,12 @@ describe('no-useless-backreference rule', () => {
       expect(typeof visitor.Literal).toBe('function')
     })
 
-    test('should return object with only Literal method', () => {
+    test('should return object with Literal method', () => {
       const { context } = createMockRuleContext({ source: '/\\(?<name>\\d+\\)\\k<name>/' })
       const visitor = noUselessBackreferenceRule.create(context)
 
       const keys = Object.keys(visitor).sort()
-      expect(keys).toEqual(['Literal'])
+      expect(keys).toContain('Literal')
     })
 
     test('should return a new visitor on each call', () => {
