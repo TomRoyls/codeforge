@@ -23,8 +23,8 @@ export class FibonacciHeap<K = number, V = K> {
     return this._size
   }
 
-  insert(key: K, value: V): FibonacciHeapNode<K, V> {
-    const node = this.createNode(key, value)
+  insert(key: K, value?: V): FibonacciHeapNode<K, V> {
+    const node = this.createNode(key, value as V)
     this.insertIntoRootList(node)
     if (this._min === null || this.comparator(node.key, this._min.key) < 0) {
       this._min = node
@@ -33,7 +33,7 @@ export class FibonacciHeap<K = number, V = K> {
     return node
   }
 
-  extractMin(): FibonacciHeapNode<K, V> | undefined {
+  extractMin(): K | undefined {
     const z = this._min
     if (z === null) return undefined
 
@@ -59,12 +59,44 @@ export class FibonacciHeap<K = number, V = K> {
     }
 
     this._size--
-    return z
+    return z.key
+  }
+
+  peek(): K | undefined {
+    return this._min?.key
+  }
+
+  toArray(): K[] {
+    if (this._min === null) return []
+    const result: K[] = []
+    const temp = new FibonacciHeap<K, V>(this.comparator)
+    let current = this._min
+    const nodes: FibonacciHeapNode<K, V>[] = []
+    const visited = new Set<FibonacciHeapNode<K, V>>()
+    const stack: FibonacciHeapNode<K, V>[] = [current]
+    while (stack.length > 0) {
+      const node = stack.pop()!
+      if (visited.has(node)) continue
+      visited.add(node)
+      nodes.push(node)
+      stack.push(node.right)
+      if (node.child !== null) stack.push(node.child)
+    }
+    for (const node of nodes) {
+      temp.insert(node.key, node.value)
+    }
+    while (!temp.isEmpty()) {
+      result.push(temp.extractMin()!)
+    }
+    return result
   }
 
   decreaseKey(node: FibonacciHeapNode<K, V>, newKey: K): void {
-    if (this.comparator(newKey, node.key) >= 0) {
-      throw new Error('New key is greater than current key')
+    if (!node || typeof node !== 'object' || !('key' in node)) {
+      throw new Error(`Invalid handle: ${String(node)}`)
+    }
+    if (this.comparator(newKey, node.key) > 0) {
+      throw new Error('New value must be less than or equal to current value')
     }
     node.key = newKey
     const parent = node.parent
@@ -79,6 +111,9 @@ export class FibonacciHeap<K = number, V = K> {
 
   // Generic-key safe deletion: cut to root, force min, then extract.
   delete(node: FibonacciHeapNode<K, V>): void {
+    if (!node || typeof node !== 'object' || !('key' in node)) {
+      throw new Error(`Invalid handle: ${String(node)}`)
+    }
     const parent = node.parent
     if (parent !== null) {
       this.cut(node, parent)

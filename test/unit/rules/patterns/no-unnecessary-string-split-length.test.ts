@@ -648,7 +648,7 @@ describe('no-unnecessary-string-split-length rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when argument is Literal with empty string instead of StringLiteral', () => {
+    test('does not report when argument is Literal with non-string value', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSplitLengthRule.create(context)
       visitor.MemberExpression(makeMemberExprLength({
@@ -659,7 +659,7 @@ describe('no-unnecessary-string-split-length rule', () => {
           property: { type: 'Identifier', name: 'split' },
           computed: false,
         },
-        arguments: [{ type: 'Literal', value: '' }],
+        arguments: [{ type: 'Literal', value: 0 }],
         loc: makeLoc(1, 0, 1, 20),
       }))
       expect(reports.length).toBe(0)
