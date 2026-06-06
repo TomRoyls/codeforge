@@ -1,118 +1,105 @@
+export interface RateLimiterOptions {
+  maxTokens: number
+  refillRate: number
+  refillIntervalMs: number
+}
+
 export class RateLimiter {
-  readonly maxRequests: number
-  readonly windowMs: number
+  private tokens: number
+  private lastRefill: number
+  private readonly _maxTokens: number
+  private readonly _refillRate: number
+  private readonly _refillIntervalMs: number
+  private _totalAcquired: number = 0
+  private _totalRejected: number = 0
+  private _totalRefills: number = 0
 
-  private readonly counters = new Map<string, Map<number, number>>()
-
-  constructor(options: { maxRequests: number; windowMs: number }) {
-    this.maxRequests = options.maxRequests
-    this.windowMs = options.windowMs
+  constructor(options: RateLimiterOptions) {
+    if (options.maxTokens < 1) {
+      throw new RangeError(`maxTokens must be >= 1, got ${options.maxTokens}`)
+    }
+    if (options.refillRate < 1) {
+      throw new RangeError(`refillRate must be >= 1, got ${options.refillRate}`)
+    }
+    if (options.refillIntervalMs < 1) {
+      throw new RangeError(`refillIntervalMs must be >= 1, got ${options.refillIntervalMs}`)
+    }
+    this._maxTokens = options.maxTokens
+    this._refillRate = options.refillRate
+    this._refillIntervalMs = options.refillIntervalMs
+    this.tokens = options.maxTokens
+    this.lastRefill = Date.now()
   }
 
-  tryAcquire(key: string = 'default'): { allowed: boolean; remaining: number; retryAfterMs: number } {
-    if (this.maxRequests === 0) {
-      return { allowed: false, remaining: 0, retryAfterMs: this.windowMs }
+  tryAcquire(count: number = 1): boolean {
+    if (count < 1) {
+      throw new RangeError(`count must be >= 1, got ${count}`)
     }
-
-    const now = Date.now()
-    const currentWindowStart = Math.floor(now / this.windowMs) * this.windowMs
-    const previousWindowStart = currentWindowStart - this.windowMs
-
-    const keyCounters = this.counters.get(key)
-    if (!keyCounters) {
-      this.counters.set(key, new Map([[currentWindowStart, 1]]))
-      return {
-        allowed: true,
-        remaining: this.maxRequests - 1,
-        retryAfterMs: 0,
-      }
+    this.refill()
+    if (this.tokens >= count) {
+      this.tokens -= count
+      this._totalAcquired += count
+      return true
     }
+    this._totalRejected++
+    return false
+  }
 
-    const currentCount = keyCounters.get(currentWindowStart) ?? 0
-    const previousCount = keyCounters.get(previousWindowStart) ?? 0
-
-    const timeIntoCurrentWindow = now - currentWindowStart
-    const previousWindowWeight = 1 - timeIntoCurrentWindow / this.windowMs
-    const weightedPreviousCount = previousCount * previousWindowWeight
-
-    const totalUsage = currentCount + weightedPreviousCount
-
-    if (totalUsage < this.maxRequests) {
-      keyCounters.set(currentWindowStart, currentCount + 1)
-      this.cleanupOldWindows(keyCounters, currentWindowStart)
-      const remaining = Math.max(0, Math.floor(this.maxRequests - (totalUsage + 1)))
-      return {
-        allowed: true,
-        remaining,
-        retryAfterMs: 0,
-      }
+  async acquire(count: number = 1): Promise<void> {
+    this.refill()
+    if (this.tokens >= count) {
+      this.tokens -= count
+      this._totalAcquired += count
+      return
     }
+    const needed = count - this.tokens
+    const intervals = Math.ceil(needed / this._refillRate)
+    const waitMs = intervals * this._refillIntervalMs
+    await new Promise((resolve) => setTimeout(resolve, waitMs))
+    this.refill()
+    this.tokens -= count
+    this._totalAcquired += count
+  }
 
-    this.cleanupOldWindows(keyCounters, currentWindowStart)
-    const retryAfterMs = Math.ceil(currentWindowStart + this.windowMs - now)
+  getAvailableTokens(): number {
+    this.refill()
+    return this.tokens
+  }
+
+  getStats(): {
+    totalAcquired: number
+    totalRejected: number
+    availableTokens: number
+    maxTokens: number
+    totalRefills: number
+  } {
     return {
-      allowed: false,
-      remaining: 0,
-      retryAfterMs,
+      totalAcquired: this._totalAcquired,
+      totalRejected: this._totalRejected,
+      availableTokens: this.tokens,
+      maxTokens: this._maxTokens,
+      totalRefills: this._totalRefills,
     }
   }
 
-  acquire(key: string = 'default'): boolean {
-    return this.tryAcquire(key).allowed
+  reset(): void {
+    this.tokens = this._maxTokens
+    this.lastRefill = Date.now()
+    this._totalAcquired = 0
+    this._totalRejected = 0
+    this._totalRefills = 0
   }
 
-  reset(key: string = 'default'): void {
-    this.counters.delete(key)
-  }
-
-  resetAll(): void {
-    this.counters.clear()
-  }
-
-  getStatus(key: string = 'default'): { remaining: number; limit: number; retryAfterMs: number } {
+  private refill(): void {
     const now = Date.now()
-    const currentWindowStart = Math.floor(now / this.windowMs) * this.windowMs
-    const previousWindowStart = currentWindowStart - this.windowMs
-
-    const keyCounters = this.counters.get(key)
-    if (!keyCounters) {
-      return {
-        remaining: this.maxRequests,
-        limit: this.maxRequests,
-        retryAfterMs: 0,
-      }
+    const elapsed = now - this.lastRefill
+    if (elapsed < this._refillIntervalMs) return
+    const intervals = Math.floor(elapsed / this._refillIntervalMs)
+    const tokensToAdd = intervals * this._refillRate
+    if (tokensToAdd > 0) {
+      this.tokens = Math.min(this._maxTokens, this.tokens + tokensToAdd)
+      this._totalRefills += intervals
     }
-
-    const currentCount = keyCounters.get(currentWindowStart) ?? 0
-    const previousCount = keyCounters.get(previousWindowStart) ?? 0
-
-    const timeIntoCurrentWindow = now - currentWindowStart
-    const previousWindowWeight = 1 - timeIntoCurrentWindow / this.windowMs
-    const weightedPreviousCount = previousCount * previousWindowWeight
-
-    const totalUsage = currentCount + weightedPreviousCount
-    const remaining = Math.max(0, Math.floor(this.maxRequests - totalUsage))
-
-    let retryAfterMs = 0
-    if (remaining === 0) {
-      retryAfterMs = Math.ceil(currentWindowStart + this.windowMs - now)
-    }
-
-    this.cleanupOldWindows(keyCounters, currentWindowStart)
-
-    return {
-      remaining,
-      limit: this.maxRequests,
-      retryAfterMs,
-    }
-  }
-
-  private cleanupOldWindows(keyCounters: Map<number, number>, currentWindowStart: number): void {
-    const keepWindow = currentWindowStart - this.windowMs
-    for (const [windowStart] of keyCounters) {
-      if (windowStart < keepWindow) {
-        keyCounters.delete(windowStart)
-      }
-    }
+    this.lastRefill += intervals * this._refillIntervalMs
   }
 }
