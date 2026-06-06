@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 const NON_PROMISE_AWARE_METHODS = new Set([
   'every',
@@ -49,7 +49,7 @@ function findParentAsyncFunction(node: unknown, depth = 0): boolean {
   if (depth > 50) return false
 
   const n = toASTNode(node)
-  const parent = toASTNode(n?.parent)
+  const parent = getParentNode(n)
   if (!parent) return false
 
   if (

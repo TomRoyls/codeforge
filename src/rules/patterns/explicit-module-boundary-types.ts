@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode, getFunctionName } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode, getFunctionName } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ExplicitModuleBoundaryTypesOptions {
@@ -21,7 +21,7 @@ function isExported(node: unknown): boolean {
   if (!n) return false
 
   // Check if parent is an export declaration
-  const parent = toASTNode(n.parent)
+  const parent = getParentNode(n)
   if (!parent) {
     return false
   }
@@ -35,9 +35,9 @@ function isExported(node: unknown): boolean {
 
   // Variable declaration in export: export const foo = () => {}
   if (parentType === 'VariableDeclarator') {
-    const varParent = toASTNode(parent.parent)
+    const varParent = getParentNode(parent)
     if (varParent?.type === 'VariableDeclaration') {
-      const varDeclParent = toASTNode(varParent.parent)
+      const varDeclParent = getParentNode(varParent)
       return varDeclParent?.type === 'ExportNamedDeclaration'
     }
   }
@@ -83,7 +83,7 @@ function isVariableTypedWithFunction(node: unknown): boolean {
   const n = toASTNode(node)
   if (!n) return false
 
-  const parentNode = toASTNode(n.parent)
+  const parentNode = getParentNode(n)
   if (!parentNode) return false
 
   if (parentNode.type === 'VariableDeclarator') {

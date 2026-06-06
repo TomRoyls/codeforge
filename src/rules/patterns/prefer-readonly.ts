@@ -6,7 +6,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { type ASTNode, toASTNode } from '../../utils/ast-helpers.js'
+import { type ASTNode, getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 import { MUTATING_ARRAY_METHODS } from '../../utils/constants.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
@@ -303,7 +303,7 @@ export const preferReadonlyRule: RuleDefinition = {
 
         if (!isArrayOrObjectInitializer(n.init)) return
 
-        const parent = toASTNode(n.parent)
+        const parent = getParentNode(n)
         const kind = (parent?.kind as string) ?? 'let'
         if (kind === 'const') return
 

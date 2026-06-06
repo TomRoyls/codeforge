@@ -91,6 +91,19 @@ export function toASTNode(node: unknown): ASTNode | null {
   return node as ASTNode
 }
 
+export function getParentNode(node: unknown): ASTNode | null {
+  const n = toASTNode(node)
+  if (!n) return null
+  // Check both _parent (test mock convention) and .parent (adapter convention).
+  // Skip empty placeholder objects (no `type` field) that some test mocks set as _parent markers.
+  const _parent = toASTNode((n as Record<string, unknown>)._parent)
+  if (_parent && _parent.type) return _parent
+  const parent = toASTNode((n as Record<string, unknown>).parent)
+  if (parent && parent.type) return parent
+  // Fallback: return whichever exists (even without type) for edge cases
+  return _parent ?? parent
+}
+
 /**
  * Extract a single ASTNode from a field that may be ASTNode | ASTNode[] | undefined.
  * Returns the node if it's a single ASTNode, null if it's an array, undefined, or null.

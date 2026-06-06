@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode, getFunctionName } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode, getFunctionName } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface RequireReturnTypeOptions {
@@ -53,7 +53,7 @@ function isVariableTypedWithFunction(node: unknown): boolean {
   const n = toASTNode(node)
   if (!n) return false
 
-  const parentNode = toASTNode(n.parent)
+  const parentNode = getParentNode(n)
   if (!parentNode) return false
 
   if (parentNode.type === 'VariableDeclarator') {

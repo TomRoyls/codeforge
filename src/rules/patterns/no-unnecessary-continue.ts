@@ -5,7 +5,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryContinueRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -14,13 +14,8 @@ export const noUnnecessaryContinueRule: RuleDefinition = {
         const n = toASTNode(node)
         if (!n || n.type !== 'ContinueStatement') return
 
-        const nn = n as Record<string, unknown>
-        const parent = nn.parent
-        if (!parent || typeof parent !== 'object') return
-
-        const p = parent as Record<string, unknown>
-
-        if (p.type !== 'BlockStatement') return
+        const p = getParentNode(n)
+        if (!p || p.type !== 'BlockStatement') return
 
         const blockStatements = p.body
         if (!Array.isArray(blockStatements)) return
@@ -29,16 +24,13 @@ export const noUnnecessaryContinueRule: RuleDefinition = {
         if (continueIndex === -1) return
 
         if (continueIndex === blockStatements.length - 1) {
-          const blockParent = p.parent
-          if (!blockParent || typeof blockParent !== 'object') return
-
-          const bp = blockParent as Record<string, unknown>
+          const bp = getParentNode(p)
           if (
-            bp.type === 'ForStatement' ||
-            bp.type === 'ForInStatement' ||
-            bp.type === 'ForOfStatement' ||
-            bp.type === 'WhileStatement' ||
-            bp.type === 'DoWhileStatement'
+            bp?.type === 'ForStatement' ||
+            bp?.type === 'ForInStatement' ||
+            bp?.type === 'ForOfStatement' ||
+            bp?.type === 'WhileStatement' ||
+            bp?.type === 'DoWhileStatement'
           ) {
             context.report({
               loc: extractLocation(n),

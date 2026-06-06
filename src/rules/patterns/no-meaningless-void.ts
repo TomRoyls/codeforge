@@ -10,7 +10,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noMeaninglessVoidRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -21,10 +21,7 @@ export const noMeaninglessVoidRule: RuleDefinition = {
 
         if ((n as { operator?: string }).operator !== 'void') return
 
-        const parent = (n as { _parent?: unknown, parent?: unknown })._parent ?? (n as { parent?: unknown }).parent
-        if (!parent) return
-
-        const parentNode = toASTNode(parent)
+        const parentNode = getParentNode(n)
         if (!parentNode) return
 
         if (

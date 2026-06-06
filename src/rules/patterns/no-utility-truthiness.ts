@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 const TRUTHY_PROPERTIES: ReadonlySet<string> = new Set([
   'count',
@@ -87,7 +87,7 @@ export const noUtilityTruthinessRule: RuleDefinition = {
         const propName = getPropertyName(n)
         if (propName === null || !TRUTHY_PROPERTIES.has(propName)) return
 
-        const parent = toASTNode(n.parent)
+        const parent = getParentNode(n)
         if (!parent || !isInBooleanContext(parent)) return
 
         if (isNegationOnly(parent)) return

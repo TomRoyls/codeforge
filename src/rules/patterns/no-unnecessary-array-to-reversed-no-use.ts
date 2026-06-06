@@ -1,6 +1,6 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryArrayToReversedNoUse: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -13,7 +13,7 @@ export const noUnnecessaryArrayToReversedNoUse: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'toReversed' && callee.property.name !== 'toSorted') return
-        const parent = n.parent as Record<string, unknown> | null | undefined
+        const parent = getParentNode(n)
         if (!parent) return
         if (parent.type === 'ExpressionStatement') {
           context.report({

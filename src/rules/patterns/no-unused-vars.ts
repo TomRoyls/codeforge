@@ -6,7 +6,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 interface VariableInfo {
   declared: boolean
@@ -224,7 +224,7 @@ export const noUnusedVarsRule: RuleDefinition = {
         if (!n) return
 
         if (isIdentifier(n.id)) {
-          const parent = toASTNode(n.parent)
+          const parent = getParentNode(n)
           const kind = (parent?.kind as VariableInfo['kind']) || 'let'
           currentScope().declareWithRange(n.id.name, extractLocation(n.id), kind, n.id)
         }
