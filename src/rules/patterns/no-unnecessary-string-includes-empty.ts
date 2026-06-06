@@ -13,7 +13,7 @@ export const noUnnecessaryStringIncludesEmpty: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'includes') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'string') return
         if (arg.value !== '') return
         context.report({
           loc: extractLocation(n),

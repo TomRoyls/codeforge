@@ -13,7 +13,7 @@ export const noUnnecessaryStringAtZero: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'at') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral' || arg.value !== 0) return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number' || arg.value !== 0) return
         context.report({
           loc: extractLocation(n),
           message: `String.prototype.at(0) is unnecessary. Use String.prototype.charAt(0) or bracket notation str[0] for clarity.`,

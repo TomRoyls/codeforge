@@ -11,7 +11,7 @@ export const noUnnecessaryStringConstructorNonEmptyRule: RuleDefinition = {
         if (!n.callee || n.callee.type !== 'Identifier' || n.callee.name !== 'String') return
         if (!n.arguments || n.arguments.length !== 1) return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'string') return
         context.report({
           loc: extractLocation(n),
           message: `new String('...') creates a String object, not a primitive. Use the literal directly.`,

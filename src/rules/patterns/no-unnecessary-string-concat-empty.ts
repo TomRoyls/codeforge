@@ -14,8 +14,8 @@ export const noUnnecessaryStringConcatEmptyRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'concat') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral' || arg.value !== '') return
-        if (!callee.object || callee.object.type !== 'StringLiteral') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'string' || arg.value !== '') return
+        if (!callee.object || callee.object.type !== 'Literal' || typeof callee.object.value !== 'string') return
         if (callee.object.value === '') {
           context.report({
             loc: extractLocation(n),

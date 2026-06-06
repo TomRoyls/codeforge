@@ -15,7 +15,7 @@ export const noUnnecessaryMathSignZeroRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'sign') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number') return
         if (arg.value === 0) {
           context.report({
             loc: extractLocation(n),

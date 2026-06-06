@@ -17,7 +17,7 @@ export const noMultiStrRule: RuleDefinition = {
     return {
       Literal(node: unknown): void {
         const n = toASTNode(node)
-        if (!n || (n.type !== 'Literal' && n.type !== 'StringLiteral')) return
+        if (!n || n.type !== 'Literal') return
 
         const value = (n as { value?: unknown }).value
         if (typeof value !== 'string') return

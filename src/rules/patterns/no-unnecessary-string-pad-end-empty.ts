@@ -14,7 +14,7 @@ export const noUnnecessaryStringPadEndEmptyRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'padEnd') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral' || arg.value !== 0) return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number' || arg.value !== 0) return
         context.report({
           loc: extractLocation(n),
           message: `str.padEnd(0) does nothing since padding length is 0.`,

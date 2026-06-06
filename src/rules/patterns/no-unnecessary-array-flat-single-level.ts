@@ -14,7 +14,7 @@ export const noUnnecessaryArrayFlatSingleLevel: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'flat') return
         if (n.arguments.length === 0) return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral' || arg.value !== 1) return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number' || arg.value !== 1) return
         context.report({
           loc: extractLocation(n),
           message: `Array.prototype.flat(1) is unnecessary. flat() without arguments defaults to depth 1.`,

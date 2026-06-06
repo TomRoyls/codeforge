@@ -13,7 +13,7 @@ export const noUnnecessaryStringPadEndZero: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'padEnd') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number') return
         if (arg.value !== 0) return
         context.report({
           loc: extractLocation(n),

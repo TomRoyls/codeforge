@@ -14,7 +14,7 @@ export const noUnnecessaryMathRoundInteger: RuleDefinition = {
         if (!callee.object || callee.object.type !== 'Identifier' || callee.object.name !== 'Math') return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'round') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number') return
         if (typeof arg.value !== 'number' || !Number.isInteger(arg.value)) return
         if (arg.value < 0) return
         context.report({

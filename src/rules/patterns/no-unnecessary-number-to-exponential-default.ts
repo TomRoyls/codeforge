@@ -11,7 +11,7 @@ export const noUnnecessaryNumberToExponentialDefaultRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length > 1) return
         if (n.arguments.length === 1) {
           const arg = n.arguments[0]
-          if (!arg || arg.type !== 'NumericLiteral' || arg.value !== undefined) return
+          if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number' || arg.value !== undefined) return
         }
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return

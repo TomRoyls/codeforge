@@ -14,7 +14,7 @@ export const noUnnecessaryStringRepeatOneRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'repeat') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral' || arg.value !== 1) return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number' || arg.value !== 1) return
         context.report({
           loc: extractLocation(n),
           message: `str.repeat(1) returns the same string. This call is unnecessary.`,

@@ -55,7 +55,7 @@ export const noRestrictedImportsRule: RuleDefinition = {
         if (!n || n.type !== 'ImportDeclaration') return
 
         const source = (n as { source?: unknown }).source
-        if (!source || (source as { type?: string }).type !== 'StringLiteral') return
+        if (!source || (source as { type?: string }).type !== 'Literal') return
 
         const value = (source as { value?: string }).value
         if (!value || typeof value !== 'string') return
@@ -82,7 +82,7 @@ export const noRestrictedImportsRule: RuleDefinition = {
         if (!args || args.length === 0) return
 
         const firstArg = args[0]
-        if (!firstArg || (firstArg as { type?: string }).type !== 'StringLiteral') return
+        if (!firstArg || (firstArg as { type?: string }).type !== 'Literal') return
 
         const value = (firstArg as { value?: string }).value
         if (!value || typeof value !== 'string') return

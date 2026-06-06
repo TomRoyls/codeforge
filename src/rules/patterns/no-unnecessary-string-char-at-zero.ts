@@ -37,7 +37,7 @@ export const noUnnecessaryStringCharAtZeroRule: RuleDefinition = {
 
         const argNode = toASTNode(arg) as Record<string, unknown>
         if (!argNode) return
-        if (argNode.type !== 'NumericLiteral' || (argNode as Record<string, unknown>).value !== 0) return
+        if (argNode.type !== 'Literal' || typeof argNode.value !== 'number' || argNode.value !== 0) return
 
         context.report({
           loc: extractLocation(n),

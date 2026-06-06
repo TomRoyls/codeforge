@@ -14,7 +14,7 @@ export const noUnnecessaryArrayIndexOfLiteralRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'indexOf') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'string') return
         if (arg.value === '') return
         context.report({
           loc: extractLocation(n),

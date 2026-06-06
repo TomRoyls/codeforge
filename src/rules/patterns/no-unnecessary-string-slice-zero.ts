@@ -14,7 +14,7 @@ export const noUnnecessaryStringSliceZeroRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'slice') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral' || arg.value !== 0) return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number' || arg.value !== 0) return
         context.report({
           loc: extractLocation(n),
           message: `str.slice(0) returns the entire string. Use str or be explicit about intent.`,

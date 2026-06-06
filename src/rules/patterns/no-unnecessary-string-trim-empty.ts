@@ -14,7 +14,7 @@ export const noUnnecessaryStringTrimEmptyRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'trim') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral' || arg.value !== '') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'string' || arg.value !== '') return
         context.report({
           loc: extractLocation(n),
           message: `''.trim('') with an empty string argument is unnecessary. trim() takes no arguments.`,

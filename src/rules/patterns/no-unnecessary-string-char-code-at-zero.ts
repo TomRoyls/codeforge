@@ -14,7 +14,7 @@ export const noUnnecessaryStringCharCodeAtZeroRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'charCodeAt') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'NumericLiteral' || arg.value !== 0) return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'number' || arg.value !== 0) return
         context.report({
           loc: extractLocation(n),
           message: `str.charCodeAt(0) gets the first character code. Consider using str.codePointAt(0) for Unicode support.`,

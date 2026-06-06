@@ -16,7 +16,7 @@ export const noUnnecessaryStringSplitLengthRule: RuleDefinition = {
         if (obj.callee.property.name !== 'split') return
         if (!obj.arguments || obj.arguments.length !== 1) return
         const arg = obj.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral' || arg.value !== '') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'string' || arg.value !== '') return
         context.report({
           loc: extractLocation(n),
           message: `str.split('').length to count characters is inefficient. Use str.length directly.`,

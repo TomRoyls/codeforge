@@ -13,7 +13,7 @@ export const noUnnecessaryStringToUpperCaseSameRule: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'toUpperCase') return
-        if (!callee.object || callee.object.type !== 'StringLiteral') return
+        if (!callee.object || callee.object.type !== 'Literal' || typeof callee.object.value !== 'string') return
         const val = callee.object.value as string
         if (val === val.toUpperCase()) {
           context.report({

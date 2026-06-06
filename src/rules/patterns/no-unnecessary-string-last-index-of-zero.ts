@@ -14,7 +14,7 @@ export const noUnnecessaryStringLastIndexOfZeroRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'lastIndexOf') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral' || arg.value !== '') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'string' || arg.value !== '') return
         context.report({
           loc: extractLocation(n),
           message: `str.lastIndexOf('') always returns str.length. This is likely not the intended behavior.`,

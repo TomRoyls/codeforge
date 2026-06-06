@@ -13,9 +13,9 @@ export const noUnnecessaryStringSliceZeroLen: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'slice') return
         const startArg = n.arguments[0]
-        if (!startArg || startArg.type !== 'NumericLiteral' || startArg.value !== 0) return
+        if (!startArg || startArg.type !== 'Literal' || typeof startArg.value !== 'number' || startArg.value !== 0) return
         const endArg = n.arguments[1]
-        if (!endArg || endArg.type !== 'NumericLiteral') return
+        if (!endArg || endArg.type !== 'Literal' || typeof endArg.value !== 'number') return
         if ((endArg.value as number) <= 0) return
         context.report({
           loc: extractLocation(n),

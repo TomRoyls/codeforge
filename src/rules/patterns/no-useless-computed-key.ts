@@ -26,7 +26,7 @@ export const noUselessComputedKeyRule: RuleDefinition = {
         if (!key || typeof key !== 'object') return
 
         const keyNode = key as Record<string, unknown>
-        if (keyNode.type !== 'Identifier' && keyNode.type !== 'StringLiteral') return
+        if (keyNode.type !== 'Identifier' && (keyNode.type !== 'Literal' || typeof keyNode.value !== 'string')) return
 
         context.report({
           loc: extractLocation(n),

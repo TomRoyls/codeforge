@@ -14,7 +14,7 @@ export const noUnnecessaryStringReplaceAllEmptyRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'replaceAll') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral' || arg.value !== '') return
+        if (!arg || arg.type !== 'Literal' || typeof arg.value !== 'string' || arg.value !== '') return
         context.report({
           loc: extractLocation(n),
           message: `str.replaceAll('', ...) with empty string search pattern is unusual and may not do what you expect.`,
