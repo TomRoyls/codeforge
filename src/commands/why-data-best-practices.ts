@@ -64,10 +64,15 @@ export const BEST_PRACTICES: Record<string, string[]> = {
     'Avoid edge cases: new Array(5) creates a sparse array',
     'Consistency: Array literals are the community standard',
   ],
+  'no-async-promise-executor': [
+    'Avoid the antipattern: Async executors in Promise constructors are redundant',
+    'Handle errors properly: Thrown errors in executors become unhandled rejections',
+    'Simplify code: Return async values directly instead of wrapping in new Promise',
+  ],
   'no-await-in-loop': [
-    'Batch async operations: Use Promise.all for independent operations',
-    'Improve performance: Sequential awaits waste time in loops',
-    'Structure for parallelism: Refactor loops into concurrent patterns',
+    'Use Promise.all: Run async operations concurrently instead of sequentially',
+    'Refactor to collection: Process arrays with async map/filter/reduce',
+    'Performance: Sequential awaits in loops are slow for independent operations',
   ],
   'no-barrel-imports': [
     'Import directly: Reference specific files instead of barrel files',
@@ -98,9 +103,6 @@ export const BEST_PRACTICES: Record<string, string[]> = {
     'Production-ready logging: Use structured logging from the start',
     'Debugging tools: Use debug builds or flags instead of console',
     'Error handling: Let the caller decide how to handle errors',
-    'Use proper logging: Replace console.log with a logging framework',
-    'Remove debug code: Debug logs should not reach production',
-    'Structured output: Log structured data, not arbitrary strings',
   ],
   'no-const-assign': [
     'Use const by default: Declare variables that do not change as const',

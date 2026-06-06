@@ -77,11 +77,17 @@ export const FIXES: Record<string, string[]> = {
     'Use Array.of: When you need to create an array from arguments',
     'Use fill: For creating arrays of a specific size with values',
   ],
+  'no-async-promise-executor': [
+    'Remove the wrapper: Return the async function result directly',
+    'Use async/await: Rewrite as an async function instead of new Promise',
+    'Handle errors with try/catch: Or chain .catch() on the returned promise',
+    'Use Promise.resolve: Wrap async results with Promise.resolve if needed',
+  ],
   'no-await-in-loop': [
     'Use Promise.all: Collect promises and await them all at once',
-    'Use Promise.allSettled: When some operations may fail independently',
-    'Use map + await: Map items to promises then await Promise.all',
-    'Use for-of for sequential: If sequential is needed, document why',
+    'Refactor to map: Use async map instead of for-of with await',
+    'Use Promise.allSettled: If you need results from all even if some fail',
+    'Batch processing: Process items in batches with Promise.all per batch',
   ],
   'no-barrel-imports': [
     'Import directly: Change path from barrel to actual source file',
@@ -118,10 +124,6 @@ export const FIXES: Record<string, string[]> = {
     'Throw errors: Let callers handle error conditions',
     'Return result objects: Return success/failure instead of logging',
     'Use debugging tools: Use proper debug logging that can be disabled',
-    'Remove the call: Delete the console.log statement entirely',
-    'Replace with logger: Use a proper logging library with log levels',
-    'Use debug flag: Wrap in if (DEBUG) or use a debug module',
-    'Add to ignore file: Configure which console methods to allow',
   ],
   'no-const-assign': [
     'Change to let: If the variable needs reassignment, use let',

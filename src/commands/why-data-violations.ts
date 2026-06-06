@@ -64,10 +64,15 @@ export const COMMON_VIOLATIONS: Record<string, string[]> = {
     'new Array(1, 2, 3) instead of [1, 2, 3]',
     'new Array(5) creating a sparse array unintentionally',
   ],
+  'no-async-promise-executor': [
+    'new Promise(async () => {}) - async executor is an antipattern',
+    'Errors in async executor become unhandled rejections',
+    'Return value of async executor is ignored by Promise constructor',
+  ],
   'no-await-in-loop': [
-    'await inside a for loop - use Promise.all for independent operations',
-    'Sequential API calls in a loop - batch them concurrently',
-    'await in forEach callback - use for-of or Promise.all',
+    'Sequential await in loop - use Promise.all for independent operations',
+    'Performance bottleneck - each iteration waits for the previous to complete',
+    'Unnecessary serialization - independent async calls are made sequential',
   ],
   'no-barrel-imports': [
     'Importing from index.ts barrel file - import from the source module',
@@ -98,9 +103,6 @@ export const COMMON_VIOLATIONS: Record<string, string[]> = {
     'console.log used for debugging - remove or use proper logger',
     'console.error for error handling - throw errors or use error handling',
     'console.warn for warnings - use structured logging',
-    'console.log left in production code - remove debug statements',
-    'console.log for error reporting - use proper error handling',
-    'console.log for performance timing - use performance API',
   ],
   'no-const-assign': [
     'Reassigning a const variable - change to let if reassignment needed',
