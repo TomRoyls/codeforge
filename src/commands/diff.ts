@@ -116,7 +116,7 @@ export default class Diff extends Command {
   ): Promise<ViolationDiffReport> {
     const base = await this.getViolationsAtRef(targetPath, baseRef)
     const head = await this.getViolationsAtRef(targetPath, headRef)
-    return buildDiffReportHelper(baseRef, headRef, base, head)
+    return buildDiffReportHelper(baseRef, headRef, base as unknown as RuleViolation[], head as unknown as RuleViolation[])
   }
 
   async getViolationsAtRef(
@@ -192,7 +192,7 @@ export default class Diff extends Command {
     if (flags.json) {
       this.log(JSON.stringify(report, null, 2))
     } else {
-      this.displayReport(report, flags.verbose as boolean)
+      this.displayReport(report as unknown as Record<string, unknown>, flags.verbose as boolean)
     }
   }
 }
