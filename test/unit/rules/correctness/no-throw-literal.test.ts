@@ -700,10 +700,10 @@ describe('no-throw-literal rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report string via StringLiteral type', () => {
+    test('should report string via Literal type', () => {
       const { context, reports } = createMockContext()
       const visitor = noThrowLiteralRule.create(context)
-      visitor.ThrowStatement(createThrowStatement('StringLiteral', 'error'))
+      visitor.ThrowStatement(createThrowStatement('Literal', 'error'))
       expect(reports.length).toBe(1)
       expect(reports[0].message).toContain('string')
     })
