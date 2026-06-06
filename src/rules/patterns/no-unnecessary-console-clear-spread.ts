@@ -3,6 +3,7 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryConsoleClearSpreadRule: RuleDefinition = {
+  name: 'no-unnecessary-console-clear-spread',
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {

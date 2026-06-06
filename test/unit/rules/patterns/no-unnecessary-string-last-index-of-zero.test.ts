@@ -433,11 +433,11 @@ describe('no-unnecessary-string-last-index-of-zero rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for Literal instead of StringLiteral as argument', () => {
+    test('reports for Literal with empty string argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringLastIndexOfZeroRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'lastIndexOf', [{ type: 'Literal', value: '' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report for null node', () => {
