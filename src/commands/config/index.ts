@@ -80,6 +80,9 @@ export default class Config extends Command {
       case 'delete':
         this.deleteConfig(flags.global, args.key!)
         break
+      case 'init':
+        this.initConfig(flags.global)
+        break
       case 'clear':
         this.clearConfig(flags.global)
         break
@@ -140,6 +143,16 @@ export default class Config extends Command {
   private clearConfig(global: boolean): void {
     resetConfig(global)
     this.log('Configuration reset to defaults.')
+  }
+
+  private initConfig(global: boolean): void {
+    const configFile = loadConfig(global)
+    if (configFile.exists) {
+      this.log('Configuration already exists. Use `config clear` to reset.')
+      return
+    }
+    saveConfig(configFile.config, global)
+    this.log(`Configuration initialized at ${configFile.path}`)
   }
 }
 
