@@ -7,8 +7,8 @@ import {
   extractImports as extractImportsHelper,
   findOrphanFiles as findOrphanFilesHelper,
 } from './dependencies-helpers.js'
+import type { CircularDependency, DependenciesReport } from './dependencies-helpers.js'
 import {
-  deduplicateCycles,
   detectCyclesFromNode as detectCyclesFromNodeHelper,
   finishNodeVisit as finishNodeVisitHelper,
   normalizeCycle as normalizeCycleHelper,
@@ -104,9 +104,9 @@ export default class Dependencies extends Command {
     const { discoverFiles } = await import('../core/file-discovery.js')
 
     const files = await discoverFiles({
-      extensions: ['.ts', '.tsx', '.js', '.jsx'],
-      ignore: flags.ignore,
-      path: targetPath,
+      cwd: targetPath,
+      ignore: flags.ignore ?? [],
+      patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     })
 
     const spinner = {
@@ -138,7 +138,7 @@ export default class Dependencies extends Command {
     return extractImportsHelper(sourceCode, filePath)
   }
 
-  detectCircularDependencies(graph: unknown): unknown[] {
+  detectCircularDependencies(graph: unknown): CircularDependency[] {
     return detectCircularDependencies(graph as Parameters<typeof detectCircularDependencies>[0])
   }
 
@@ -238,21 +238,14 @@ export default class Dependencies extends Command {
   async analyzeDependencies(
     files: Array<{ absolutePath: string; path: string }>,
     spinner: { start: () => unknown; stop: () => unknown; text?: string },
-  ): Promise<{
-    circularDependencies: unknown[]
-    externalModules: string[]
-    filesAnalyzed: number
-    graph: { edges: [string, string][]; nodes: string[] }
-    internalModules: string[]
-    orphanFiles: string[]
-  }> {
-    const result = {
-      circularDependencies: [] as unknown[],
-      externalModules: [] as string[],
+  ): Promise<DependenciesReport> {
+    const result: DependenciesReport = {
+      circularDependencies: [],
+      externalModules: [],
       filesAnalyzed: 0,
-      graph: { edges: [] as [string, string][], nodes: [] as string[] },
-      internalModules: [] as string[],
-      orphanFiles: [] as string[],
+      graph: { edges: [], nodes: [] },
+      internalModules: [],
+      orphanFiles: [],
     }
 
     if (!files || files.length === 0) {

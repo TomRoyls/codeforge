@@ -19,12 +19,12 @@ interface DependencyGraph {
   nodes: Map<string, DependencyNode>
 }
 
-interface CircularDependency {
+export interface CircularDependency {
   cycle: readonly string[]
   location: ImportInfo['location']
 }
 
-interface DependenciesReport {
+export interface DependenciesReport {
   circularDependencies: CircularDependency[]
   externalModules: string[]
   filesAnalyzed: number
@@ -43,9 +43,7 @@ interface CycleDetectionContext {
 }
 
 export type {
-  CircularDependency,
   CycleDetectionContext,
-  DependenciesReport,
   DependencyGraph,
   DependencyNode,
   ImportInfo,

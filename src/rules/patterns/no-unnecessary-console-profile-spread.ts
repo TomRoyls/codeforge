@@ -3,6 +3,7 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryConsoleProfileSpreadRule: RuleDefinition = {
+  name: 'no-unnecessary-console-profile-spread',
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -26,6 +27,8 @@ export const noUnnecessaryConsoleProfileSpreadRule: RuleDefinition = {
     }
   },
   meta: {
+    description: 'Warn about console.profile(...items) with spread which is likely a mistake.',
+    message: 'console.profile(...items) with spread is unusual. profile() expects an optional label string.',
     docs: {
       category: 'patterns',
       description: 'Warn about console.profile(...items) with spread which is likely a mistake.',

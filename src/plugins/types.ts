@@ -17,6 +17,7 @@ export type RuleSchema = ReadonlyArray<unknown> | Record<string, unknown>
  * @stable
  */
 export interface RuleMeta {
+  readonly description?: string
   readonly deprecated?: boolean
   readonly docs?: {
     readonly category?: string
@@ -25,6 +26,7 @@ export interface RuleMeta {
     readonly url?: string
   }
   readonly fixable?: 'code' | 'whitespace'
+  readonly message?: string
   readonly messages?: Record<string, string>
   readonly replacedBy?: readonly string[]
   readonly requiresTypeChecking?: boolean
@@ -95,6 +97,7 @@ export type RuleVisitor = Record<string, (node: unknown) => Promise<void> | void
 export interface RuleDefinition {
   readonly create: (context: RuleContext) => RuleVisitor
   readonly meta: RuleMeta
+  readonly name?: string
 }
 
 /**
