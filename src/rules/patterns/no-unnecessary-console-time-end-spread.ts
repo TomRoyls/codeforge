@@ -3,6 +3,7 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryConsoleTimeEndSpreadRule: RuleDefinition = {
+  name: 'no-unnecessary-console-time-end-spread',
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -26,6 +27,8 @@ export const noUnnecessaryConsoleTimeEndSpreadRule: RuleDefinition = {
     }
   },
   meta: {
+    description: 'Warn about console.timeEnd(...items) with spread which is likely a mistake.',
+    message: 'console.timeEnd(...items) with spread is unusual. timeEnd() expects an optional label string.',
     docs: {
       category: 'patterns',
       description: 'Warn about console.timeEnd(...items) with spread which is likely a mistake.',

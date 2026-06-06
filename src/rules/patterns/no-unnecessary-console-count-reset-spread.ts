@@ -3,6 +3,7 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryConsoleCountResetSpreadRule: RuleDefinition = {
+  name: 'no-unnecessary-console-count-reset-spread',
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -26,6 +27,8 @@ export const noUnnecessaryConsoleCountResetSpreadRule: RuleDefinition = {
     }
   },
   meta: {
+    description: 'Warn about console.countReset(...items) with spread which is likely a mistake.',
+    message: 'console.countReset(...items) with spread is unusual. countReset() expects an optional label string.',
     docs: {
       category: 'patterns',
       description: 'Warn about console.countReset(...items) with spread which is likely a mistake.',

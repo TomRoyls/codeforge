@@ -3,6 +3,7 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryConsoleCountSpreadRule: RuleDefinition = {
+  name: 'no-unnecessary-console-count-spread',
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -26,6 +27,8 @@ export const noUnnecessaryConsoleCountSpreadRule: RuleDefinition = {
     }
   },
   meta: {
+    description: 'Warn about console.count(...items) with spread which is likely a mistake.',
+    message: 'console.count(...items) with a single spread is unusual. count() expects an optional label string.',
     docs: {
       category: 'patterns',
       description: 'Warn about console.count(...items) with spread which is likely a mistake.',

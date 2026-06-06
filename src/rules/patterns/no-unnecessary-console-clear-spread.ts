@@ -27,6 +27,8 @@ export const noUnnecessaryConsoleClearSpreadRule: RuleDefinition = {
     }
   },
   meta: {
+    description: 'Warn about console.clear(...items) with spread which is likely a mistake.',
+    message: 'console.clear(...items) with spread is unusual. clear() takes no arguments.',
     docs: {
       category: 'patterns',
       description: 'Warn about console.clear(...items) with spread which is likely a mistake.',

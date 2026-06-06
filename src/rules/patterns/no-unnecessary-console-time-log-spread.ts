@@ -3,6 +3,7 @@ import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryConsoleTimeLogSpreadRule: RuleDefinition = {
+  name: 'no-unnecessary-console-time-log-spread',
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -26,6 +27,8 @@ export const noUnnecessaryConsoleTimeLogSpreadRule: RuleDefinition = {
     }
   },
   meta: {
+    description: 'Warn about console.timeLog(...items) with spread which is likely a mistake.',
+    message: 'console.timeLog(...items) with a single spread is unusual. Consider passing arguments directly.',
     docs: {
       category: 'patterns',
       description: 'Warn about console.timeLog(...items) with spread which is likely a mistake.',

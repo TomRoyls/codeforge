@@ -25,6 +25,7 @@ export interface RuleMeta {
     readonly recommended?: boolean
     readonly url?: string
   }
+  readonly docsUrl?: string
   readonly fixable?: 'code' | 'whitespace'
   readonly message?: string
   readonly messages?: Record<string, string>
@@ -95,6 +96,7 @@ export type RuleVisitor = Record<string, (node: unknown) => Promise<void> | void
  * @stable
  */
 export interface RuleDefinition {
+  readonly check?: (node: unknown) => boolean
   readonly create: (context: RuleContext) => RuleVisitor
   readonly meta: RuleMeta
   readonly name?: string
