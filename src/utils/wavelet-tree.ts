@@ -1,11 +1,13 @@
 export class WaveletTree {
   private readonly data: number[]
   private readonly _alphabet: number[]
+  private readonly _isString: boolean
 
   constructor(data: number[] | string, alphabet?: number[]) {
-    const numericData = typeof data === 'string'
+    this._isString = typeof data === 'string'
+    const numericData = this._isString
       ? Array.from(data, (c) => c.charCodeAt(0))
-      : [...data]
+      : [...(data as number[])]
     this.data = numericData
     this._alphabet = alphabet
       ? [...alphabet].sort((a, b) => a - b)
@@ -18,6 +20,10 @@ export class WaveletTree {
 
   get alphabetSize(): number {
     return this._alphabet.length
+  }
+
+  get text(): string {
+    return this.data.map((c) => String.fromCharCode(c)).join('')
   }
 
   getAlphabet(): number[] {
@@ -36,19 +42,22 @@ export class WaveletTree {
     return new WaveletTree(data)
   }
 
-  access(index: number): number | undefined {
-    if (index < 0 || index >= this.data.length) return undefined
-    return this.data[index]
+  access(index: number): string | number {
+    if (index < 0 || index >= this.data.length) {
+      throw new RangeError(`Index ${index} out of bounds [0, ${this.data.length})`)
+    }
+    const code = this.data[index]!
+    return this._isString ? String.fromCharCode(code) : code
   }
 
   rank(value: number | string, endIndex: number): number {
     const sym = typeof value === 'string' ? value.charCodeAt(0) : value
     if (this.data.length === 0) return 0
-    if (endIndex <= 0) return 0
+    if (endIndex < 0) return 0
     if (!this._alphabet.includes(sym)) return 0
-    const end = Math.min(endIndex, this.data.length)
+    const end = Math.min(endIndex, this.data.length - 1)
     let count = 0
-    for (let i = 0; i < end; i++) {
+    for (let i = 0; i <= end; i++) {
       if (this.data[i] === sym) count++
     }
     return count
@@ -68,8 +77,20 @@ export class WaveletTree {
     return count
   }
 
-  // Returns undefined for: negative k, negative start, end > length,
-  // or start >= end. Clamps k >= range size to the range maximum.
+  select(value: number | string, k: number): number {
+    const sym = typeof value === 'string' ? value.charCodeAt(0) : value
+    if (k < 0) return -1
+    if (!this._alphabet.includes(sym)) return -1
+    let count = 0
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i] === sym) {
+        if (count === k) return i
+        count++
+      }
+    }
+    return -1
+  }
+
   quantile(k: number, start: number, end: number): number | undefined {
     if (k < 0) return undefined
     if (start < 0) return undefined
@@ -80,7 +101,6 @@ export class WaveletTree {
     return sub[idx]
   }
 
-  // Counts values in [lo, hi] (inclusive) within data[start..end).
   rangeCount(lo: number, hi: number, start: number, end: number): number {
     if (this.data.length === 0) return 0
     if (lo > hi) return 0
