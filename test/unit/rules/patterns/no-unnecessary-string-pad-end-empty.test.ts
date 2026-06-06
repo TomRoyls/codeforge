@@ -416,11 +416,11 @@ describe('no-unnecessary-string-pad-end-empty rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for padEnd(0) with Literal argument instead of NumericLiteral', () => {
+    test('reports for padEnd(0) with Literal argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringPadEndEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'padEnd', [{ type: 'Literal', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report for padEnd(0) with negative number', () => {
