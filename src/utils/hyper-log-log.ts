@@ -33,19 +33,21 @@ export class HyperLogLog {
       sum += 1 / (1 << val)
       if (val === 0) zeros++
     }
-    const estimate = this.alpha * this.m * this.m / sum
-    if (estimate <= 2.5 * this.m && zeros > 0) {
-      return this.m * Math.log(this.m / zeros)
+    const raw = this.alpha * this.m * this.m / sum
+    let result: number
+    if (raw <= 2.5 * this.m && zeros > 0) {
+      result = this.m * Math.log(this.m / zeros)
+    } else if (raw <= (1 / 30) * (1 << 32)) {
+      result = raw
+    } else {
+      result = -(1 << 32) * Math.log(1 - raw / (1 << 32))
     }
-    if (estimate <= (1 / 30) * (1 << 32)) {
-      return estimate
-    }
-    return -(1 << 32) * Math.log(1 - estimate / (1 << 32))
+    return Math.round(result)
   }
 
   merge(other: HyperLogLog): HyperLogLog {
     if (this.precision !== other.precision) {
-      throw new Error('Cannot merge HyperLogLogs with different precision')
+      throw new Error('Cannot merge HyperLogLog with different precision')
     }
     const result = new HyperLogLog(this.precision)
     for (let i = 0; i < this.m; i++) {

@@ -28,9 +28,9 @@ export class FenwickTree2D {
   }
 
   query(row: number, col: number): number {
-    if (row < 0 || row >= this.rows || col < 0 || col >= this.cols) {
-      throw new Error('Index out of bounds');
-    }
+    if (row < 0 || col < 0) return 0;
+    if (row >= this.rows) row = this.rows - 1;
+    if (col >= this.cols) col = this.cols - 1;
     let sum = 0;
     let i = row + 1;
     while (i > 0) {
@@ -63,5 +63,10 @@ export class FenwickTree2D {
 
   get(row: number, col: number): number {
     return this.rangeQuery(row, col, row, col);
+  }
+
+  set(row: number, col: number, value: number): void {
+    const current = this.get(row, col);
+    this.update(row, col, value - current);
   }
 }

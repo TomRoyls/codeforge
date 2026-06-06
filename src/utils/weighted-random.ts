@@ -1,5 +1,5 @@
-export class WeightedRandom {
-  private items: string[] = []
+export class WeightedRandom<T = string> {
+  private items: T[] = []
   private weights: number[] = []
   private alias: number[] = []
   private prob: number[] = []
@@ -13,10 +13,12 @@ export class WeightedRandom {
     return this.weights.reduce((sum, w) => sum + w, 0)
   }
 
-  add(item: string, weight: number): void {
-    if (weight <= 0) {
-      throw new Error('Weight must be greater than 0')
-    }
+  get total(): number {
+    return this.totalWeight
+  }
+
+  add(item: T, weight: number): void {
+    if (weight <= 0) return
     if (this.built) {
       throw new Error('Cannot add items after build() is called')
     }
@@ -74,33 +76,31 @@ export class WeightedRandom {
     this.built = true
   }
 
-  sample(): string {
-    if (!this.built) {
-      throw new Error('Must call build() before sample()')
-    }
-    if (this.size === 0) {
-      throw new Error('Cannot sample from empty sampler')
-    }
+  sample(): T | undefined {
+    if (this.size === 0) return undefined
+    if (!this.built) this.build()
     const column = Math.floor(Math.random() * this.size)
     return Math.random() < this.prob[column]! ? this.items[column]! : this.items[this.alias[column]!]!
   }
 
-  sampleMultiple(count: number): string[] {
-    const result: string[] = []
+  sampleN(count: number): T[] {
+    const result: T[] = []
     for (let i = 0; i < count; i++) {
-      result.push(this.sample())
+      const s = this.sample()
+      if (s !== undefined) result.push(s)
     }
     return result
   }
 
-  probability(item: string): number {
-    if (!this.built) {
-      throw new Error('Must call build() before probability()')
-    }
+  sampleMultiple(count: number): T[] {
+    return this.sampleN(count)
+  }
+
+  probability(item: T): number {
+    if (this.size === 0) return 0
+    if (!this.built) this.build()
     const index = this.items.indexOf(item)
-    if (index === -1) {
-      return 0
-    }
+    if (index === -1) return 0
     return this.weights[index]! / this.totalWeight
   }
 

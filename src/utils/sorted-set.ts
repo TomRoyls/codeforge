@@ -195,7 +195,7 @@ export class SortedSet<T> {
       }
     }
     if (!found) {
-      return -1
+      return rank
     }
     return rank
   }
@@ -234,6 +234,86 @@ export class SortedSet<T> {
       x = x.forward[0]!
     }
     return result
+  }
+
+  contains(value: T): boolean {
+    return this.has(value)
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  select(index: number): T {
+    if (index < 0 || index >= this._size) {
+      throw new RangeError(`Index ${index} out of bounds for size ${this._size}`)
+    }
+    return this.at(index)!
+  }
+
+  ceiling(value: T): T | undefined {
+    let x = this.head
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (x.forward[i] !== null && this.compare(x.forward[i]!.value, value) < 0) {
+        x = x.forward[i]!
+      }
+    }
+    const next = x.forward[0]
+    return next ? next.value : undefined
+  }
+
+  floor(value: T): T | undefined {
+    let x = this.head
+    let result: T | undefined
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (x.forward[i] !== null && this.compare(x.forward[i]!.value, value) <= 0) {
+        x = x.forward[i]!
+      }
+    }
+    if (x !== this.head) {
+      result = x.value
+    }
+    return result !== null ? result : undefined
+  }
+
+  rangeCount(min: T, max: T): number {
+    let count = 0
+    let x = this.head
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (x.forward[i] !== null && this.compare(x.forward[i]!.value, min) < 0) {
+        x = x.forward[i]!
+      }
+    }
+    x = x.forward[0]!
+    while (x !== null && this.compare(x.value, max) <= 0) {
+      count++
+      x = x.forward[0]!
+    }
+    return count
+  }
+
+  rangeToArray(min: T, max: T): T[] {
+    const result: T[] = []
+    let x = this.head
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (x.forward[i] !== null && this.compare(x.forward[i]!.value, min) < 0) {
+        x = x.forward[i]!
+      }
+    }
+    x = x.forward[0]!
+    while (x !== null && this.compare(x.value, max) <= 0) {
+      result.push(x.value)
+      x = x.forward[0]!
+    }
+    return result
+  }
+
+  static fromArray<U>(arr: U[], compare?: (a: U, b: U) => number): SortedSet<U> {
+    const set = new SortedSet<U>(compare)
+    for (const item of arr) {
+      set.add(item)
+    }
+    return set
   }
 
   private randomLevel(): number {

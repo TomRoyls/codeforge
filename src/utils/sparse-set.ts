@@ -5,11 +5,8 @@ export class SparseSet {
   private _universe: number
 
   constructor(universe: number) {
-    if (!Number.isInteger(universe)) {
-      throw new RangeError(`Universe size must be an integer, got ${universe}`)
-    }
-    if (universe < 0) {
-      throw new RangeError(`Universe size must be non-negative, got ${universe}`)
+    if (!Number.isInteger(universe) || universe < 0) {
+      throw new RangeError(`Universe size must be a non-negative integer, got ${universe}`)
     }
     this.dense = []
     this.sparse = new Array(universe).fill(-1)
