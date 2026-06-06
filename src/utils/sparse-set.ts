@@ -4,7 +4,7 @@ export class SparseSet {
   private n: number
   private _universe: number
 
-  constructor(universe: number) {
+  constructor(universe: number = 64) {
     if (!Number.isInteger(universe) || universe < 0) {
       throw new RangeError(`Universe size must be a non-negative integer, got ${universe}`)
     }
