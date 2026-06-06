@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 import { CLIError } from '../utils/errors.js'
+
+export type OutputFormat = 'console' | 'csv' | 'gitlab' | 'html' | 'json' | 'junit' | 'markdown' | 'sarif'
 import { formatBytes } from '../utils/format-utils.js'
 import type { AnalysisResult } from '../reporters/types.js'
 import {
