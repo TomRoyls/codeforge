@@ -5,7 +5,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 const SIDE_EFFECT_METHODS = new Set(['forEach'])
 const MISLEADING_METHODS = new Set(['map', 'filter', 'reduce', 'reduceRight', 'find', 'findIndex', 'some', 'every', 'flatMap'])
@@ -66,7 +66,7 @@ export const noMisleadingArrayMethodRule: RuleDefinition = {
             if (callback && (callback as { type?: string }).type === 'ArrowFunctionExpression') {
               const body = (callback as { body?: unknown }).body
               if (body && (body as { type?: string }).type !== 'BlockStatement') {
-                const parent = (n as { parent?: unknown }).parent
+                const parent = getParentNode(n)
                 if (parent && (parent as { type?: string }).type === 'ExpressionStatement') {
                   context.report({
                     loc: extractLocation(n),

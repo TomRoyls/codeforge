@@ -5,7 +5,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 const RESTRICTED_GLOBALS = new Set([
   'event',
@@ -33,7 +33,7 @@ export const noRestrictedGlobalsRule: RuleDefinition = {
         const name = (n as { name?: string }).name
         if (!name || !RESTRICTED_GLOBALS.has(name)) return
 
-        const parent = toASTNode((n as { parent?: unknown }).parent ?? undefined)
+        const parent = getParentNode(n)
         if (parent) {
           if (parent.type === 'MemberExpression') {
             const obj = (parent as { object?: unknown }).object

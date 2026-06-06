@@ -10,7 +10,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 interface NoWeakCryptoOptions {
   readonly checkMathRandom?: boolean
@@ -108,9 +108,9 @@ function getFirstStringArgument(node: unknown): null | string {
 
 function getVariableNameFromParent(node: unknown): null | string {
   const n = toASTNode(node)
-  if (!n?.parent) return null
+  const parent = getParentNode(n)
 
-  const parent = toASTNode(n.parent)
+  if (!parent) return null
 
   if (parent?.type === 'VariableDeclarator') {
     const id = toASTNode(parent.id)

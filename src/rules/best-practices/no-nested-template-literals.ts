@@ -5,7 +5,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 function isInsideTemplateExpression(node: unknown): boolean {
   const n = toASTNode(node)
@@ -13,7 +13,7 @@ function isInsideTemplateExpression(node: unknown): boolean {
     return false
   }
 
-  const parent = toASTNode(n.parent)
+  const parent = getParentNode(n)
   if (!parent) {
     return false
   }

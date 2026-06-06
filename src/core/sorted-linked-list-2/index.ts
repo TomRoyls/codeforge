@@ -15,7 +15,7 @@ export class SortedLinkedList2<T> {
 
   constructor(comparator?: (a: T, b: T) => number) {
     this.head = null;
-    this.comparator = comparator ?? ((a: any, b: any) => a - b);
+    this.comparator = comparator ?? ((a: T, b: T) => Number(a) - Number(b));
     this.count = 0;
   }
 

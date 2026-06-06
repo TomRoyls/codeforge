@@ -5,7 +5,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryNullCheckRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -40,7 +40,7 @@ export const noUnnecessaryNullCheckRule: RuleDefinition = {
         }
 
         if (isNullLiteral(right) || isUndefinedIdentifier(right) || isVoidUnary(right)) {
-          const parent = (n as { parent?: unknown }).parent
+          const parent = getParentNode(n)
           if (parent && (parent as { type?: string }).type === 'IfStatement') {
             const consequent = (parent as { consequent?: unknown }).consequent
             if (consequent && (consequent as { type?: string }).type === 'BlockStatement') {

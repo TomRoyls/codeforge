@@ -10,7 +10,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 const BLOCK_PARENTS = new Set([
   'BlockStatement',
@@ -33,8 +33,7 @@ export const noInnerDeclarationsRule: RuleDefinition = {
         const n = toASTNode(node)
         if (!n || n.type !== 'FunctionDeclaration') return
 
-        const parent = (n as { parent?: unknown }).parent
-        const parentNode = toASTNode(parent)
+        const parentNode = getParentNode(n)
         if (!parentNode) return
 
         if (BLOCK_PARENTS.has(parentNode.type as string)) {
@@ -52,8 +51,7 @@ export const noInnerDeclarationsRule: RuleDefinition = {
         const kind = (n as { kind?: unknown }).kind
         if (kind !== 'var') return
 
-        const parent = (n as { parent?: unknown }).parent
-        const parentNode = toASTNode(parent)
+        const parentNode = getParentNode(n)
         if (!parentNode) return
 
         if (BLOCK_PARENTS.has(parentNode.type as string)) {

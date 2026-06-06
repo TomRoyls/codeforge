@@ -1,6 +1,6 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryDateNowSpreadRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -9,9 +9,7 @@ export const noUnnecessaryDateNowSpreadRule: RuleDefinition = {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
         // Skip optional chaining (Date?.now(...) or Date.now?.(...))
-        const parentNode = (node as { parent?: { type?: string } }).parent
-          ?? (n as { parent?: { type?: string } }).parent
-          ?? (n as { _parent?: { type?: string } })._parent
+        const parentNode = getParentNode(node) ?? getParentNode(n)
         if (parentNode?.type === 'ChainExpression') return
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee

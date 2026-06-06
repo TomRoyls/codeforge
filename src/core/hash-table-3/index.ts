@@ -192,7 +192,7 @@ export class HashTable3<K, V> {
     return int ^ (int >>> 16);
   }
 
-  private objectHash(obj: any): number {
+  private objectHash(obj: unknown): number {
     const str = String(obj);
     return this.stringHash(str);
   }

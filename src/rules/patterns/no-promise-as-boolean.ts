@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isLogicalExpression, isUnaryExpression, toASTNode } from '../../utils/ast-helpers.js'
+import { getParentNode, isCallExpression, isLogicalExpression, isUnaryExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function isConditionalExpression(node: unknown): boolean {
   return toASTNode(node)?.type === 'ConditionalExpression'
@@ -108,7 +108,7 @@ export const noPromiseAsBooleanRule: RuleDefinition = {
         }
 
         const n = toASTNode(node)
-        const parent = n?.parent
+        const parent = getParentNode(n)
 
         if (isInBooleanContext(parent, node)) {
           const location = extractLocation(node)
