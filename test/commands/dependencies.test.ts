@@ -40,23 +40,46 @@ vi.mock('../../src/utils/logger.js', () => ({
   },
 }))
 
-vi.mock('../../src/commands/dependencies-helpers.js', () => ({
-  deduplicateCycles: vi.fn((cycles) => cycles),
-  detectCircularDependencies: vi.fn(() => []),
-  detectCyclesFromNode: vi.fn(),
+// Shared mock functions — hoisted so they're available when vi.mock factories run
+const mockFns = vi.hoisted(() => ({
   displayCircularDependencies: vi.fn(),
   displayDependencyTree: vi.fn(),
   displayDotFormat: vi.fn(),
   displayExternalModules: vi.fn(),
   displayFullReport: vi.fn(),
-  extractImports: vi.fn(() => []),
-  findOrphanFiles: vi.fn(() => []),
-  finishNodeVisit: vi.fn(),
   formatOutput: vi.fn(() => '{}'),
   graphToDotFormat: vi.fn(() => ({ edges: [], nodes: [] })),
-  normalizeCycle: vi.fn((c) => [...c]),
+  detectCyclesFromNode: vi.fn(),
+  finishNodeVisit: vi.fn(),
+  normalizeCycle: vi.fn((c: unknown[]) => [...(c as unknown[])]),
   processDependency: vi.fn(),
   recordCycle: vi.fn(),
+}))
+
+vi.mock('../../src/commands/dependencies-helpers.js', () => ({
+  deduplicateCycles: vi.fn((cycles: unknown[]) => cycles),
+  detectCircularDependencies: vi.fn(() => []),
+  extractImports: vi.fn(() => []),
+  findOrphanFiles: vi.fn(() => []),
+  ...mockFns,
+}))
+
+vi.mock('../../src/commands/dependencies-display-helpers.js', () => ({
+  displayCircularDependencies: mockFns.displayCircularDependencies,
+  displayDependencyTree: mockFns.displayDependencyTree,
+  displayDotFormat: mockFns.displayDotFormat,
+  displayExternalModules: mockFns.displayExternalModules,
+  displayFullReport: mockFns.displayFullReport,
+  formatOutput: mockFns.formatOutput,
+  graphToDotFormat: mockFns.graphToDotFormat,
+}))
+
+vi.mock('../../src/commands/dependencies-cycle-helpers.js', () => ({
+  detectCyclesFromNode: mockFns.detectCyclesFromNode,
+  finishNodeVisit: mockFns.finishNodeVisit,
+  normalizeCycle: mockFns.normalizeCycle,
+  processDependency: mockFns.processDependency,
+  recordCycle: mockFns.recordCycle,
 }))
 
 // ─── Helpers ───

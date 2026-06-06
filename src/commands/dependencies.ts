@@ -1,4 +1,5 @@
 import { Args, Command, Flags } from '@oclif/core'
+import { existsSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
 
 import { Parser } from '../core/parser.js'
@@ -120,11 +121,24 @@ export default class Dependencies extends Command {
     const { args, flags } = await this.parse(Dependencies)
 
     const targetPath = (args as { path?: string }).path ?? '.'
+
+    if (!existsSync(targetPath)) {
+      this.error(`Path not found: ${targetPath}`, { exit: 1 })
+    }
+
     const { discoverFiles } = await import('../core/file-discovery.js')
+
+    const defaultIgnore = [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/coverage/**',
+      '**/.git/**',
+    ]
+    const ignorePatterns = [...defaultIgnore, ...(flags.ignore ?? [])]
 
     const files = await discoverFiles({
       cwd: targetPath,
-      ignore: flags.ignore ?? [],
+      ignore: ignorePatterns,
       patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     })
 
@@ -135,9 +149,8 @@ export default class Dependencies extends Command {
     }
     const report = await this.analyzeDependencies(files, spinner)
 
-    const outputData = this.formatOutput(report, flags)
-
     if (flags.output) {
+      const outputData = this.formatOutput(report, flags)
       try {
         await writeFile(flags.output, outputData, 'utf8')
         this.log(`Results written to ${flags.output}`)
@@ -146,8 +159,14 @@ export default class Dependencies extends Command {
           `Failed to write output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
         )
       }
+    } else if (flags.tree) {
+      this.displayDependencyTree(report)
+    } else if (flags.circular) {
+      this.displayCircularDependencies(report, flags.format ?? 'table')
+    } else if (flags.external) {
+      this.displayExternalModules(report, flags.format ?? 'table')
     } else {
-      this.log(outputData)
+      this.displayFullReport(report, flags.format ?? 'table')
     }
   }
 
@@ -256,7 +275,7 @@ export default class Dependencies extends Command {
 
   async analyzeDependencies(
     files: Array<{ absolutePath: string; path: string }>,
-    spinner: { start: () => unknown; stop: () => unknown; text?: string },
+    spinner: { start?: () => unknown; stop?: () => unknown; text?: string },
   ): Promise<DependenciesReport> {
     const result: DependenciesReport = {
       circularDependencies: [],
@@ -320,6 +339,9 @@ export default class Dependencies extends Command {
         }
       }
     } finally {
+      if (spinner && 'text' in spinner) {
+        spinner.text = `Analyzed ${result.filesAnalyzed} files`
+      }
       parser.dispose()
       spinner?.stop?.()
     }
