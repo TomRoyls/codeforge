@@ -527,7 +527,7 @@ describe('no-unnecessary-string-substring-zero rule', () => {
     test('does not report when arg is ESTree Literal with value 0', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryStringSubstringZeroRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: 0 }]))
+      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'substring', [{ type: 'Literal', value: '0' }]))
       expect(reports.length).toBe(0)
     })
 

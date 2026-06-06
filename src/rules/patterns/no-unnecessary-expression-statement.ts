@@ -23,18 +23,19 @@ export const noUnnecessaryExpressionStatementRule: RuleDefinition = {
 
         const e = exprNode as Record<string, unknown>
 
-        if (e.type === 'Literal' && typeof e.value === 'string') {
+        if (e.type === 'Literal') {
+          const hasValue = 'value' in e
+          const v = e.value
+          // Report string/number literals, and Literal nodes missing the value
+          // property (StringLiteral/NumericLiteral that lost value during conversion).
+          // Skip booleans, null, regex, and explicit undefined values.
+          if (hasValue && (typeof v === 'boolean' || v === null || v instanceof RegExp || v === undefined)) return
+          const isNumeric = typeof v === 'number'
           context.report({
             loc: extractLocation(exprNode),
-            message:
-              'Unnecessary string literal as statement. This is likely a mistake or missing assignment.',
-            node: exprNode,
-          })
-        } else if (e.type === 'Literal' && typeof e.value === 'number') {
-          context.report({
-            loc: extractLocation(exprNode),
-            message:
-              'Unnecessary numeric literal as statement. This is likely a mistake or missing assignment.',
+            message: isNumeric
+              ? 'Unnecessary numeric literal as statement. This is likely a mistake or missing assignment.'
+              : 'Unnecessary string literal as statement. This is likely a mistake or missing assignment.',
             node: exprNode,
           })
         }
