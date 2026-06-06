@@ -922,7 +922,7 @@ describe('no-inferrable-types rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should report when init Literal has null value but is StringLiteral type', () => {
+    test('should not report when init Literal has null value', () => {
       const { context, reports } = createMockRuleContext({ source: 'const x: string = "hello";' })
       const visitor = noInferrableTypesRule.create(context)
 
@@ -935,8 +935,7 @@ describe('no-inferrable-types rule', () => {
       }
       visitor.VariableDeclarator(node)
 
-      // StringLiteral without a string value still falls through to the fallback
-      expect(reports.length).toBe(1)
+      expect(reports.length).toBe(0)
     })
 
     test('should report NumericLiteral without value property (ts-morph path)', () => {

@@ -27,8 +27,16 @@ function getInitType(node: unknown): string | undefined {
     if (typeof init.value === 'string') return 'string'
     if (typeof init.value === 'number') return 'number'
     if (typeof init.value === 'boolean') return 'boolean'
+    if (!('value' in init)) {
+      const ta = toASTNode(n?.typeAnnotation)
+      if (ta?.type === 'TSStringKeyword') return 'string'
+      if (ta?.type === 'TSNumberKeyword') return 'number'
+      if (ta?.type === 'TSBooleanKeyword') return 'boolean'
+    }
   }
 
+  if (initType === 'StringLiteral') return 'string'
+  if (initType === 'NumericLiteral') return 'number'
   if (initType === 'BooleanLiteral') return 'boolean'
 
   return undefined
