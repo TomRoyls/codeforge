@@ -201,6 +201,36 @@ describe('HeavyLightDecomposition', () => {
     expect(path0to0).toEqual([0])
   })
 
+  it('getPath returns correct order for bottom-up paths', () => {
+    const adjacencyList = [
+      [1],
+      [0, 2],
+      [1, 3],
+      [2, 4],
+      [3],
+    ]
+    const hld = new HeavyLightDecomposition(adjacencyList, 0)
+    expect(hld.getPath(4, 0)).toEqual([4, 3, 2, 1, 0])
+    expect(hld.getPath(3, 1)).toEqual([3, 2, 1])
+    expect(hld.getPath(4, 2)).toEqual([4, 3, 2])
+  })
+
+  it('getPath returns correct order for cross-branch paths', () => {
+    const adjacencyList = [
+      [1, 2],
+      [0, 3, 4],
+      [0, 5, 6],
+      [1],
+      [1],
+      [2],
+      [2],
+    ]
+    const hld = new HeavyLightDecomposition(adjacencyList, 0)
+    expect(hld.getPath(3, 5)).toEqual([3, 1, 0, 2, 5])
+    expect(hld.getPath(6, 4)).toEqual([6, 2, 0, 1, 4])
+    expect(hld.getPath(3, 6)).toEqual([3, 1, 0, 2, 6])
+  })
+
   it('confirms root is ancestor of everyone', () => {
     const adjacencyList = [
       [1, 2],

@@ -101,7 +101,6 @@ export class HeavyLightDecomposition {
       current = this.parent[current] ?? -1
     }
     pathU.push(ancestor)
-    pathU.reverse()
 
     current = v
     while (current !== -1 && current !== ancestor) {
