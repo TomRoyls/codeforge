@@ -65,46 +65,27 @@ describe('Config command - static metadata', () => {
 
   it('has examples array', () => {
     expect(Array.isArray(Config.examples)).toBe(true)
-    expect(Config.examples.length).toBeGreaterThanOrEqual(4)
+    expect(Config.examples.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('has action arg with options', () => {
-    expect(Config.args.action).toBeDefined()
-    expect(Config.args.action.options).toContain('get')
-    expect(Config.args.action.options).toContain('set')
-    expect(Config.args.action.options).toContain('list')
-    expect(Config.args.action.options).toContain('init')
+  it('has no action arg (parent command)', () => {
+    expect(Config.args).toEqual({})
   })
 
-  it('defaults action to list', () => {
-    expect(Config.args.action.default).toBe('list')
+  it('has no key arg (parent command)', () => {
+    expect(Config.args.key).toBeUndefined()
   })
 
-  it('has key arg as optional', () => {
-    expect(Config.args.key).toBeDefined()
-    expect(Config.args.key.required).toBe(false)
-  })
-
-  it('has value arg as optional', () => {
-    expect(Config.args.value).toBeDefined()
-    expect(Config.args.value.required).toBe(false)
+  it('has no value arg (parent command)', () => {
+    expect(Config.args.value).toBeUndefined()
   })
 })
 
 // ─── Flags ──────────────────────────────────────────────
 
 describe('Config command - flags', () => {
-  it('has format flag with options', () => {
-    expect(Config.flags.format.options).toContain('table')
-    expect(Config.flags.format.options).toContain('json')
-  })
-
-  it('defaults format to table', () => {
-    expect(Config.flags.format.default).toBe('table')
-  })
-
-  it('has global flag defaulting to false', () => {
-    expect(Config.flags.global.default).toBe(false)
+  it('has no flags (parent command)', () => {
+    expect(Config.flags).toBeUndefined()
   })
 })
 
