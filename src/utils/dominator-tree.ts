@@ -76,4 +76,24 @@ export class DominatorTree {
     }
     return finger1
   }
+
+  toString(): string {
+    return `DominatorTree(n=${this.n})`
+  }
+
+  toJSON(): { n: number; edges: number[][] } {
+    return { n: this.n, edges: this.adj.map(row => [...row]) }
+  }
+
+  clone(): DominatorTree {
+    const copy = new DominatorTree(this.n)
+    copy.adj = this.adj.map(row => [...row])
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DominatorTree)) return false
+    if (this.n !== other.n) return false
+    return true
+  }
 }

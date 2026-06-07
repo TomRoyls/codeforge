@@ -57,4 +57,31 @@ export class DigitalTree {
   }
 
   get count(): number { return this._count }
+
+  toString(): string {
+    return `DigitalTree(${this._count} words)`
+  }
+
+  toJSON(): string[] {
+    const result: string[] = []
+    const collect = (node: DigitalTree, prefix: string) => {
+      if (node.isEnd) result.push(prefix)
+      node.children.forEach((child, ch) => collect(child, prefix + ch))
+    }
+    collect(this, '')
+    return result
+  }
+
+  clone(): DigitalTree {
+    const copy = new DigitalTree()
+    for (const word of this.toJSON()) {
+      copy.insert(word)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DigitalTree)) return false
+    return this._count === other._count
+  }
 }

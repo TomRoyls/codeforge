@@ -40,4 +40,22 @@ export class DisjointSparseTable<T> {
     const level = Math.floor(Math.log2(l ^ r))
     return this.combine(this.table[level + 1]![l]!, this.table[level + 1]![r]!)
   }
+
+  toString(): string {
+    return `DisjointSparseTable(n=${this.n})`
+  }
+
+  toJSON(): T[] {
+    return this.table[0] ? [...this.table[0]] : []
+  }
+
+  clone(): DisjointSparseTable<T> {
+    return new DisjointSparseTable(this.table[0] ?? [], this.combine)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DisjointSparseTable)) return false
+    if (this.n !== other.n) return false
+    return true
+  }
 }

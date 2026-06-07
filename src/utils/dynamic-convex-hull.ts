@@ -61,4 +61,25 @@ export class DynamicConvexHull {
     }
     return p
   }
+
+  toString(): string {
+    return `DynamicConvexHull(${this.points.length} points)`
+  }
+
+  toJSON(): { points: { x: number; y: number }[]; hull: { x: number; y: number }[] } {
+    return { points: [...this.points], hull: [...this.hull] }
+  }
+
+  clone(): DynamicConvexHull {
+    const copy = new DynamicConvexHull()
+    copy.points = this.points.map(p => ({ ...p }))
+    copy.hull = this.hull.map(p => ({ ...p }))
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DynamicConvexHull)) return false
+    if (this.points.length !== other.points.length) return false
+    return true
+  }
 }
