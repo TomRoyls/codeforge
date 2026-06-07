@@ -176,4 +176,36 @@ describe('RobinHopMap', () => {
     map.set('key', 42)
     expect(map.get('key')).toBe(42)
   })
+
+  it('stress test: all entries retrievable after many insertions with displacement', () => {
+    const map = new RobinHopMap<number, number>(16)
+    const ref = new Map<number, number>()
+    for (let i = 0; i < 100; i++) {
+      map.set(i, i * 3)
+      ref.set(i, i * 3)
+    }
+    for (const [k, v] of ref) {
+      expect(map.get(k)).toBe(v)
+    }
+    expect(map.size).toBe(ref.size)
+  })
+
+  it('stress test: insert delete and reinsert preserves integrity', () => {
+    const map = new RobinHopMap<number, number>(16)
+    for (let i = 0; i < 50; i++) {
+      map.set(i, i)
+    }
+    for (let i = 0; i < 25; i++) {
+      map.delete(i)
+    }
+    for (let i = 25; i < 50; i++) {
+      expect(map.get(i)).toBe(i)
+    }
+    for (let i = 50; i < 75; i++) {
+      map.set(i, i)
+    }
+    for (let i = 25; i < 75; i++) {
+      expect(map.get(i)).toBe(i)
+    }
+  })
 })

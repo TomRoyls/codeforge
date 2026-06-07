@@ -180,4 +180,36 @@ describe('CuckooHashTable', () => {
     const ht = new CuckooHashTable<string, number>(16)
     expect(ht.get('missing')).toBeUndefined()
   })
+
+  it('failed set preserves existing entries', () => {
+    const ht = new CuckooHashTable<string, number>(4)
+    const stored: Record<string, number> = {}
+    for (let i = 0; i < 4; i++) {
+      const k = `k${i}`
+      const v = i * 10
+      ht.set(k, v)
+      stored[k] = v
+    }
+    const before = new Map<string, number>()
+    for (const k of Object.keys(stored)) {
+      before.set(k, ht.get(k))
+    }
+    ht.set('overflow', 99)
+    for (const [k, v] of before) {
+      expect(ht.get(k)).toBe(v)
+    }
+  })
+
+  it('high load factor stress test preserves integrity', () => {
+    const ht = new CuckooHashTable<number, number>(32)
+    const ref = new Map<number, number>()
+    for (let i = 0; i < 25; i++) {
+      ht.set(i, i * 2)
+      ref.set(i, i * 2)
+    }
+    for (const [k, v] of ref) {
+      expect(ht.get(k)).toBe(v)
+    }
+    expect(ht.size).toBe(ref.size)
+  })
 })

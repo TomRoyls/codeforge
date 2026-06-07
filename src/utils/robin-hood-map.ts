@@ -30,14 +30,13 @@ export class RobinHopMap<K, V> {
     }
 
     const hash = this.hashKey(key)
-    let pos = this.desiredIndex(hash)
     let currentKey = key
     let currentValue = value
     let currentHash = hash
+    let currentPSL = 0
+    let idx = this.desiredIndex(hash)
 
     for (let i = 0; i < this._capacity; i++) {
-      const idx = (pos + i) & (this._capacity - 1)
-
       if (this.occupied[idx] === RobinHopMap.EMPTY || this.occupied[idx] === RobinHopMap.DELETED) {
         this.keys[idx] = currentKey
         this.values[idx] = currentValue
@@ -53,7 +52,6 @@ export class RobinHopMap<K, V> {
       }
 
       const existingPSL = this.probeSequenceLength(idx, this.hashes[idx]!)
-      const currentPSL = i
 
       if (currentPSL > existingPSL) {
         const tmpKey = this.keys[idx]!
@@ -68,16 +66,12 @@ export class RobinHopMap<K, V> {
         currentKey = tmpKey
         currentValue = tmpVal
         currentHash = tmpHash
-
-        pos = this.desiredIndex(currentHash)
-        for (let j = 0; j <= i; j++) {
-          const nidx = (pos + j) & (this._capacity - 1)
-          if (this.occupied[nidx] !== RobinHopMap.OCCUPIED || this.keysEqual(this.keys[nidx] as K, currentKey)) {
-            pos = pos
-            break
-          }
-        }
+        currentPSL = existingPSL + 1
+      } else {
+        currentPSL++
       }
+
+      idx = (idx + 1) & (this._capacity - 1)
     }
   }
 

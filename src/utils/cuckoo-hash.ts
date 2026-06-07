@@ -56,10 +56,12 @@ export class CuckooHashTable<K, V> {
     let current = { key, value }
     let table = this.table1 as Array<{ key: K; value: V } | undefined>
     let idx = idx1
+    const swapLog: Array<{ table: typeof this.table1, idx: number, prev: { key: K; value: V } | undefined }> = []
 
     for (let i = 0; i < CuckooHashTable.MAX_KICKS; i++) {
       const evicted = table[idx]
       table[idx] = current
+      swapLog.push({ table, idx, prev: evicted })
       if (evicted === undefined) {
         this._size++
         return true
@@ -69,6 +71,10 @@ export class CuckooHashTable<K, V> {
       idx = table === this.table1 ? this.hash1(current.key) : this.hash2(current.key)
     }
 
+    for (let i = swapLog.length - 1; i >= 0; i--) {
+      const s = swapLog[i]!
+      s.table[s.idx] = s.prev
+    }
     return false
   }
 
