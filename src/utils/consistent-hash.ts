@@ -70,4 +70,36 @@ export class ConsistentHash<T> {
     }
     return h >>> 0
   }
+
+  getNodes(): T[] {
+    return Array.from(new Set(this.ring.values()))
+  }
+
+  toString(): string {
+    return `ConsistentHash(nodes=${this._nodeCount}, ringSize=${this.ring.size})`
+  }
+
+  toJSON(): unknown {
+    return { virtualNodes: this.virtualNodes, nodeCount: this._nodeCount, ringSize: this.ring.size }
+  }
+
+  clone(): ConsistentHash<T> {
+    const copy = new ConsistentHash<T>({ virtualNodes: this.virtualNodes })
+    for (const [, node] of this.ring) {
+      copy.addNode(node)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof ConsistentHash)) return false
+    if (this.virtualNodes !== other.virtualNodes) return false
+    if (this._nodeCount !== other._nodeCount) return false
+    if (this.ring.size !== other.ring.size) return false
+    for (const [hash, node] of this.ring) {
+      if (this.ring.get(hash) !== other.ring.get(hash)) return false
+      void node
+    }
+    return true
+  }
 }

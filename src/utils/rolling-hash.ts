@@ -77,4 +77,37 @@ export class RollingHash {
     }
     return hash
   }
+
+  toString(): string {
+    return `RollingHash(hash=${this.hash}, windowSize=${this.window.length}, base=${this.base}, mod=${this.mod})`
+  }
+
+  toJSON(): unknown {
+    return { hash: this.hash, windowSize: this.window.length, base: this.base, mod: this.mod, isFull: this.filled }
+  }
+
+  clone(): RollingHash {
+    const copy = new RollingHash(this.window.length, this.base, this.mod)
+    copy.hash = this.hash
+    copy.idx = this.idx
+    copy.filled = this.filled
+    for (let i = 0; i < this.window.length; i++) {
+      copy.window[i] = this.window[i]!
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof RollingHash)) return false
+    if (this.base !== other.base) return false
+    if (this.mod !== other.mod) return false
+    if (this.window.length !== other.window.length) return false
+    if (this.hash !== other.hash) return false
+    if (this.idx !== other.idx) return false
+    if (this.filled !== other.filled) return false
+    for (let i = 0; i < this.window.length; i++) {
+      if (this.window[i] !== other.window[i]) return false
+    }
+    return true
+  }
 }
