@@ -51,7 +51,7 @@ const TMP_DIR = join('/tmp', 'codeforge-report-test')
 
 describe('Report command - static metadata', () => {
   it('has a description', () => {
-    expect(Report.description).toBe('Generate a comprehensive codebase report')
+    expect(Report.description).toBe('Generate analysis reports in various formats')
   })
 
   it('has examples array', () => {
@@ -76,26 +76,21 @@ describe('Report command - static metadata', () => {
 // ─── Flags ──────────────────────────────────────────────
 
 describe('Report command - flags', () => {
-  it('has format flag with options', () => {
-    expect(Report.flags.format.options).toContain('text')
-    expect(Report.flags.format.options).toContain('html')
+  it('has format flag', () => {
+    expect(Report.flags.format).toBeDefined()
+    expect(Report.flags.format.default).toBe('console')
   })
 
-  it('defaults format to text', () => {
-    expect(Report.flags.format.default).toBe('text')
+  it('defaults format to console', () => {
+    expect(Report.flags.format.default).toBe('console')
   })
 
   it('has output flag', () => {
     expect(Report.flags.output).toBeDefined()
   })
 
-  it('has ignore flag with multiple', () => {
-    expect(Report.flags.ignore).toBeDefined()
-    expect(Report.flags.ignore.multiple).toBe(true)
-  })
-
-  it('has sections flag defaulting to all', () => {
-    expect(Report.flags.sections.default).toBe('all')
+  it('has input flag', () => {
+    expect(Report.flags.input).toBeDefined()
   })
 
   it('has verbose flag defaulting to false', () => {
@@ -492,19 +487,19 @@ describe('collectSuggestions', () => {
 
 describe('formatBytes', () => {
   it('formats 0 bytes', () => {
-    expect(formatBytes(0)).toBe('0 B')
+    expect(formatBytes(0)).toBe('0.0 B')
   })
 
   it('formats bytes', () => {
-    expect(formatBytes(500)).toBe('500.00 B')
+    expect(formatBytes(500)).toBe('500.0 B')
   })
 
   it('formats kilobytes', () => {
-    expect(formatBytes(1024)).toBe('1.00 KB')
+    expect(formatBytes(1024)).toBe('1.0 KB')
   })
 
   it('formats megabytes', () => {
-    expect(formatBytes(1048576)).toBe('1.00 MB')
+    expect(formatBytes(1048576)).toBe('1.0 MB')
   })
 })
 

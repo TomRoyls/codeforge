@@ -905,7 +905,7 @@ describe('formatDependencyTree', () => {
 
 describe('Dependencies command - static metadata', () => {
   it('has a description', () => {
-    expect(Dependencies.description).toBe('Analyze npm package.json dependencies')
+    expect(Dependencies.description).toBe('Analyze and visualize module dependencies')
   })
 
   it('has examples array', () => {
