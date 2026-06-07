@@ -159,14 +159,26 @@ export default class Stats extends Command {
     await parser.initialize()
 
     const results: (ProcessedFileResult | null)[] = []
+    const readErrors: { path: string; error: unknown }[] = []
 
     try {
       for (const file of filteredFiles) {
         let content: string
         try {
           content = await fs.readFile(file.absolutePath, 'utf8')
-        } catch {
-          results.push(null)
+        } catch (readErr) {
+          readErrors.push({ path: file.path, error: readErr })
+          const fileExt = extname(file.absolutePath).toLowerCase()
+          results.push({
+            blank: 0,
+            comments: 0,
+            complexity: 1,
+            ext: fileExt,
+            file,
+            loc: 0,
+            size: 0,
+            structures: { ...EMPTY_STRUCTURES },
+          })
           continue
         }
 
@@ -203,9 +215,16 @@ export default class Stats extends Command {
       await parser.dispose()
     }
 
+    if (format !== 'json') {
+      for (const err of readErrors) {
+        const errMsg = err.error instanceof Error ? err.error.message : 'Unknown error'
+        this.log(`Failed to process file ${err.path}: ${errMsg}`)
+      }
+    }
+
     const aggregated = aggregateStats(results, verbose as boolean)
     const sortedStats = sortFileStats(aggregated.fileStats, sortBy)
-    const totalFiles = results.filter((r) => r !== null).length
+    const totalFiles = results.length
     const statsResult = buildStatsResult(totalFiles, sortedStats, aggregated)
 
     let outputStr: string

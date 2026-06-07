@@ -68,7 +68,7 @@ export default class Explain extends Command {
       this.error(message)
     }
 
-    const category = rule.meta.category ?? getRuleCategory(ruleId)
+    const category = getRuleCategory(ruleId)
     const examples = getExamples(ruleId)
     const practices = getBestPractices(ruleId)
     const relatedRules = getRelatedRules(ruleId, category)

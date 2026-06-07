@@ -36,7 +36,7 @@ import {
  * codeforge dependencies --tree
  */
 export default class Dependencies extends Command {
-  static override description = 'Analyze npm package.json dependencies'
+  static override description = 'Analyze and visualize module dependencies'
 
   static override examples = [
     {
