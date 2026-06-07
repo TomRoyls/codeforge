@@ -62,6 +62,7 @@ export class AdaptiveBST<T> {
 
   private _bubbleUp(node: AdaptiveBSTNode<T>): void {
     while (node.parent !== null && node.priority < node.parent.priority) {
+      if (this._comparator(node.value, node.parent.value) === 0) break
       if (node.parent.left === node) {
         this._rotateRight(node.parent)
       } else {
