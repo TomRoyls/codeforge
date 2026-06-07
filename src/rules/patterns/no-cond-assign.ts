@@ -40,6 +40,11 @@ export const noCondAssignRule: RuleDefinition = {
         if (n?.type !== 'ConditionalExpression') return
         checkTest(n.test, context)
       },
+      SwitchStatement(node: unknown): void {
+        const n = toASTNode(node)
+        if (n?.type !== 'SwitchStatement') return
+        checkTest(n.discriminant, context)
+      },
     }
   },
   meta: {
