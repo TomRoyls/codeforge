@@ -106,7 +106,7 @@ export const noConstantConditionRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-constant-condition',
     },
-    fixable: 'code',
+    fixable: false,
     schema: [],
     severity: 'warn',
     type: 'problem',

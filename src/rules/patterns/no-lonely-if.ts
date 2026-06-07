@@ -49,7 +49,7 @@ export const noLonelyIfRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-lonely-if',
     },
-    fixable: 'code',
+    fixable: false,
     schema: [],
     severity: 'warn',
     type: 'suggestion',

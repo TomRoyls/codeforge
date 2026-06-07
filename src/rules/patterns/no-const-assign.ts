@@ -50,7 +50,7 @@ export const noConstAssignRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-const-assign',
     },
-    fixable: 'code',
+    fixable: false,
     schema: [],
     severity: 'error',
     type: 'problem',

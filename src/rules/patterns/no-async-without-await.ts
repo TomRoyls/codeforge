@@ -88,7 +88,7 @@ export const noAsyncWithoutAwaitRule: RuleDefinition = {
       recommended: false,
       url: 'https://codeforge.dev/docs/rules/no-async-without-await',
     },
-    fixable: 'code',
+    fixable: false,
     schema: [],
     severity: 'warn',
     type: 'suggestion',

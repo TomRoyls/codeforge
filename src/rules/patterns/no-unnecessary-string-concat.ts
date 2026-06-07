@@ -106,7 +106,7 @@ export const noUnnecessaryStringConcatRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-unnecessary-string-concat',
     },
-    fixable: 'code',
+    fixable: false,
     schema: [],
     severity: 'warn',
     type: 'suggestion',

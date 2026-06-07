@@ -67,7 +67,7 @@ export const requireAwaitRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/require-await',
     },
-    fixable: 'code',
+    fixable: false,
     schema: [],
     severity: 'warn',
     type: 'suggestion',

@@ -282,7 +282,7 @@ export const preferReadonlyParameterRule: RuleDefinition = {
       recommended: false,
       url: 'https://codeforge.dev/docs/rules/prefer-readonly-parameter',
     },
-    fixable: 'code',
+    fixable: false,
     schema: [],
     severity: 'warn',
     type: 'suggestion',

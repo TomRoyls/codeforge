@@ -85,7 +85,7 @@ export const noUnnecessaryTemplateExpressionRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-unnecessary-template-expression',
     },
-    fixable: 'code',
+    fixable: false,
     schema: [],
     severity: 'warn',
     type: 'suggestion',
