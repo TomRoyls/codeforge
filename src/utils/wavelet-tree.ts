@@ -42,9 +42,9 @@ export class WaveletTree {
     return new WaveletTree(data)
   }
 
-  access(index: number): string | number {
+  access(index: number): string | number | undefined {
     if (index < 0 || index >= this.data.length) {
-      throw new RangeError(`Index ${index} out of bounds [0, ${this.data.length})`)
+      return undefined
     }
     const code = this.data[index]!
     return this._isString ? String.fromCharCode(code) : code
@@ -105,7 +105,9 @@ export class WaveletTree {
   rangeCount(lo: number, hi: number, start: number, end: number): number
   rangeCount(...args: number[]): number {
     if (args.length === 3) {
-      const [start, end, symbol] = args
+      const start = args[0]!
+      const end = args[1]!
+      const symbol = args[2]!
       if (this.data.length === 0) return 0
       if (start >= end) return 0
       const lo = Math.max(0, start)
@@ -117,7 +119,10 @@ export class WaveletTree {
       }
       return count
     }
-    const [lo, hi, start, end] = args
+    const lo = args[0]!
+    const hi = args[1]!
+    const start = args[2]!
+    const end = args[3]!
     if (this.data.length === 0) return 0
     if (lo > hi) return 0
     if (start >= end) return 0
