@@ -163,4 +163,35 @@ describe('EdmondsKarp', () => {
     const edges = [{ from: 0, to: 1, capacity: 10 }]
     expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
   })
+
+  it('minCut returns correct reachable set for simple path', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 1, to: 2, capacity: 2 },
+    ]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 2, 3)
+    expect(maxFlow).toBe(2)
+    expect(reachable.has(0)).toBe(true)
+    expect(reachable.has(1)).toBe(true)
+    expect(reachable.has(2)).toBe(false)
+  })
+
+  it('minCut returns correct reachable set for diamond', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 2, capacity: 2 },
+      { from: 1, to: 3, capacity: 2 },
+      { from: 2, to: 3, capacity: 3 },
+    ]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 3, 4)
+    expect(maxFlow).toBe(4)
+    expect(reachable.has(0)).toBe(true)
+    expect(reachable.has(3)).toBe(false)
+  })
+
+  it('minCut source equals sink', () => {
+    const result = EdmondsKarp.minCut([], 0, 0, 1)
+    expect(result.maxFlow).toBe(0)
+    expect(result.reachable.has(0)).toBe(true)
+  })
 })
