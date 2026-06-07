@@ -81,10 +81,11 @@ export class RetryManager {
         }
 
         const isLastAttempt = attempt >= this.config.maxRetries
+        const delay = isLastAttempt ? 0 : this.calculateDelay(attempt)
 
         attempts.push({
           attemptNumber: attempt,
-          delay: isLastAttempt ? 0 : this.calculateDelay(attempt),
+          delay,
           error,
           timestamp: Date.now(),
         })
@@ -101,7 +102,6 @@ export class RetryManager {
           }
         }
 
-        const delay = this.calculateDelay(attempt)
         totalDelay += delay
         await this.sleeper(delay)
       }

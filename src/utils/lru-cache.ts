@@ -140,8 +140,8 @@ export class LRUCache<K, V> {
     return `LRUCache(${this.cache.size}/${this._maxSize})`
   }
 
-  toJSON(): unknown {
-    return this.entries()
+  toJSON(): Array<[K, V]> {
+    return [...this.cache.entries()]
   }
 
   clone(): LRUCache<K, V> {
