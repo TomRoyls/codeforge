@@ -14,21 +14,24 @@ export class DominatorTree {
   build(root: number): number[] {
     const dom = new Array(this.n).fill(-1)
     const visited = new Array(this.n).fill(false)
-    const order: number[] = []
+    const postOrder: number[] = []
+    const postOrderNum = new Array(this.n).fill(-1)
 
     const dfs = (u: number): void => {
       visited[u] = true
-      order.push(u)
       for (const v of this.adj[u]!) {
         if (!visited[v]) dfs(v)
       }
+      postOrderNum[u] = postOrder.length
+      postOrder.push(u)
     }
 
     dfs(root)
-    const reachable = new Set(order)
+    const reachable = new Set(postOrder)
 
     const preds: number[][] = Array.from({ length: this.n }, () => [])
     for (let u = 0; u < this.n; u++) {
+      if (!reachable.has(u)) continue
       for (const v of this.adj[u]!) {
         if (reachable.has(v)) preds[v]!.push(u)
       }
@@ -38,13 +41,13 @@ export class DominatorTree {
     let changed = true
     while (changed) {
       changed = false
-      for (const u of order) {
-        if (u === root) continue
+      for (let i = postOrder.length - 2; i >= 0; i--) {
+        const u = postOrder[i]!
         const reachablePreds = preds[u]!.filter(p => dom[p] !== -1)
         if (reachablePreds.length === 0) continue
         let newIdom = reachablePreds[0]!
-        for (let i = 1; i < reachablePreds.length; i++) {
-          newIdom = this.intersect(newIdom, reachablePreds[i]!, dom)
+        for (let j = 1; j < reachablePreds.length; j++) {
+          newIdom = this.intersect(newIdom, reachablePreds[j]!, dom, postOrderNum)
         }
         if (dom[u] !== newIdom) {
           dom[u] = newIdom
@@ -67,12 +70,12 @@ export class DominatorTree {
     return false
   }
 
-  private intersect(b1: number, b2: number, dom: number[]): number {
+  private intersect(b1: number, b2: number, dom: number[], postOrderNum: number[]): number {
     let finger1 = b1
     let finger2 = b2
     while (finger1 !== finger2) {
-      while (finger1 > finger2) finger1 = dom[finger1]!
-      while (finger2 > finger1) finger2 = dom[finger2]!
+      while (postOrderNum[finger1]! < postOrderNum[finger2]!) finger1 = dom[finger1]!
+      while (postOrderNum[finger2]! < postOrderNum[finger1]!) finger2 = dom[finger2]!
     }
     return finger1
   }
