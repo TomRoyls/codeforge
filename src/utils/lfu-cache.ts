@@ -43,6 +43,15 @@ export class LFUCache<K, V> {
     if (entry === undefined) return false
     this.removeFromFreqMap(entry.freq, key)
     this.keyMap.delete(key)
+    if (this.keyMap.size === 0) {
+      this.minFreq = 0
+    } else if (entry.freq === this.minFreq && !this.freqMap.has(this.minFreq)) {
+      let nextMin = Infinity
+      for (const freq of this.freqMap.keys()) {
+        if (freq < nextMin) nextMin = freq
+      }
+      this.minFreq = nextMin
+    }
     return true
   }
 
