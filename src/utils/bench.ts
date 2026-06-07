@@ -32,24 +32,39 @@ export function benchAsync(
   fn: () => Promise<void>,
   iterations: number = 10000,
 ): Promise<BenchmarkResult> {
-  let resolved = 0
+  let completed = 0
   const start = performance.now()
 
   return new Promise((resolve) => {
     for (let i = 0; i < iterations; i++) {
-      fn().then(() => {
-        resolved++
-        if (resolved === iterations) {
-          const totalMs = performance.now() - start
-          resolve({
-            avgNs: (totalMs * 1e6) / iterations,
-            iterations,
-            name,
-            opsPerSec: (iterations / totalMs) * 1000,
-            totalMs,
-          })
-        }
-      })
+      fn().then(
+        () => {
+          completed++
+          if (completed === iterations) {
+            const totalMs = performance.now() - start
+            resolve({
+              avgNs: (totalMs * 1e6) / iterations,
+              iterations,
+              name,
+              opsPerSec: (iterations / totalMs) * 1000,
+              totalMs,
+            })
+          }
+        },
+        () => {
+          completed++
+          if (completed === iterations) {
+            const totalMs = performance.now() - start
+            resolve({
+              avgNs: (totalMs * 1e6) / iterations,
+              iterations,
+              name,
+              opsPerSec: (iterations / totalMs) * 1000,
+              totalMs,
+            })
+          }
+        },
+      )
     }
   })
 }

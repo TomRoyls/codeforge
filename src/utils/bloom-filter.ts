@@ -107,6 +107,7 @@ export class BloomFilter {
     if (!(other instanceof BloomFilter)) return false
     if (this.bitCount !== other.bitCount) return false
     if (this.hashCount !== other.hashCount) return false
+    if (this._size !== other._size) return false
     for (let i = 0; i < this.bits.length; i++) {
       if (this.bits[i] !== other.bits[i]) return false
     }

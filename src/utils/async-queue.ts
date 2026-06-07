@@ -52,9 +52,6 @@ export class AsyncQueue<T> {
 
   public close(): void {
     this._closed = true
-    for (const waiter of this.waiting) {
-      waiter.resolve = () => { throw new Error('AsyncQueue closed') }
-    }
     this.waiting.length = 0
   }
 
