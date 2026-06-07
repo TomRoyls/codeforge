@@ -1,5 +1,5 @@
 export class TimerWheel<T> {
-  private readonly wheel: Array<Array<{ deadline: number; payload: T }>>
+  private readonly wheel: Array<Array<{ deadline: number; payload: T; callback?: () => void }>>
   private readonly mask: number
   private currentTick = 0
 
@@ -13,9 +13,22 @@ export class TimerWheel<T> {
     }
   }
 
-  schedule(tick: number, payload: T): void {
+  schedule(tick: number, payload: T): void
+  schedule(payload: T, tick: number, callback: () => void): void
+  schedule(arg1: number | T, arg2: T | number, arg3?: () => void): void {
+    let tick: number
+    let payload: T
+    let callback: (() => void) | undefined
+    if (typeof arg1 === 'number') {
+      tick = arg1
+      payload = arg2 as T
+    } else {
+      payload = arg1 as T
+      tick = arg2 as number
+      callback = arg3
+    }
     const slot = tick & this.mask
-    this.wheel[slot]!.push({ deadline: tick, payload })
+    this.wheel[slot]!.push({ deadline: tick, payload, callback })
   }
 
   advance(): T[] {
@@ -24,11 +37,12 @@ export class TimerWheel<T> {
     this.wheel[slot] = []
 
     const ready: T[] = []
-    const pending: Array<{ deadline: number; payload: T }> = []
+    const pending: Array<{ deadline: number; payload: T; callback?: () => void }> = []
 
     for (const entry of entries) {
       if (entry.deadline <= this.currentTick) {
         ready.push(entry.payload)
+        if (entry.callback) entry.callback()
       } else {
         pending.push(entry)
       }

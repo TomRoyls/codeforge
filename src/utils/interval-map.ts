@@ -4,23 +4,71 @@ export interface Interval<T> {
   value: T
 }
 
+/**
+ * A map from half-open intervals [start, end) to values.
+ * Supports overlapping interval handling, splitting, and merging.
+ */
 export class IntervalMap<T> {
   private intervals: Interval<T>[] = []
 
   constructor() {}
 
+  /**
+   * Set the value for [start, end).
+   * Overwrites any overlapping portion of existing intervals.
+   * Merges adjacent intervals with the same value.
+   * Throws RangeError if start >= end.
+   */
   set(start: number, end: number, value: T): void {
-    if (start > end) {
-      throw new RangeError(`start (${start}) must be <= end (${end})`)
+    if (start >= end) {
+      throw new RangeError(`start (${start}) must be < end (${end})`)
     }
-    const entry: Interval<T> = { start, end, value }
-    const idx = this.lowerBound(start)
-    this.intervals.splice(idx, 0, entry)
+
+    // Collect all intervals that overlap with [start, end)
+    // and replace them with the new interval, preserving non-overlapping portions.
+    const result: Interval<T>[] = []
+    let inserted = false
+
+    for (const iv of this.intervals) {
+      if (iv.end <= start) {
+        // No overlap, iv is entirely before [start, end)
+        result.push(iv)
+      } else if (iv.start >= end) {
+        // No overlap, iv is entirely after [start, end)
+        if (!inserted) {
+          result.push({ start, end, value })
+          inserted = true
+        }
+        result.push(iv)
+      } else {
+        // Overlap: clip or split iv
+        // Keep [iv.start, start) if it exists
+        if (iv.start < start) {
+          result.push({ start: iv.start, end: start, value: iv.value })
+        }
+        // Insert new interval if not yet inserted
+        if (!inserted) {
+          result.push({ start, end, value })
+          inserted = true
+        }
+        // Keep [end, iv.end) if it exists
+        if (iv.end > end) {
+          result.push({ start: end, end: iv.end, value: iv.value })
+        }
+      }
+    }
+
+    if (!inserted) {
+      result.push({ start, end, value })
+    }
+
+    // Merge adjacent intervals with the same value
+    this.intervals = this.mergeAdjacent(result)
   }
 
   get(point: number): T | undefined {
     for (const iv of this.intervals) {
-      if (point >= iv.start && point <= iv.end) return iv.value
+      if (point >= iv.start && point < iv.end) return iv.value
     }
     return undefined
   }
@@ -29,18 +77,80 @@ export class IntervalMap<T> {
     return this.get(point) !== undefined
   }
 
-  // Returns values for every interval overlapping [start, end] (inclusive),
-  // sorted by interval start.
-  getRange(start: number, end: number): T[] {
-    const result: T[] = []
+  getInterval(start: number, end: number): Interval<T>[] {
+    const result: Interval<T>[] = []
     for (const iv of this.intervals) {
-      if (iv.end >= start && iv.start <= end) result.push(iv.value)
+      if (iv.end > start && iv.start < end) {
+        result.push({
+          start: Math.max(iv.start, start),
+          end: Math.min(iv.end, end),
+          value: iv.value,
+        })
+      }
     }
     return result
   }
 
+  getRange(start: number, end: number): T[] {
+    return this.getInterval(start, end).map((iv) => iv.value)
+  }
+
   getAll(): Interval<T>[] {
     return this.intervals.map((iv) => ({ start: iv.start, end: iv.end, value: iv.value }))
+  }
+
+  getAllIntervals(): Interval<T>[] {
+    return this.getAll()
+  }
+
+  /**
+   * Remove the range [start, end) from all intervals.
+   * May split intervals that partially overlap.
+   */
+  remove(start: number, end: number): void {
+    const result: Interval<T>[] = []
+    for (const iv of this.intervals) {
+      if (iv.end <= start || iv.start >= end) {
+        // No overlap
+        result.push(iv)
+      } else {
+        // Overlap: keep non-overlapping portions
+        if (iv.start < start) {
+          result.push({ start: iv.start, end: start, value: iv.value })
+        }
+        if (iv.end > end) {
+          result.push({ start: end, end: iv.end, value: iv.value })
+        }
+      }
+    }
+    this.intervals = result
+  }
+
+  delete(point: number): boolean {
+    for (let i = 0; i < this.intervals.length; i++) {
+      const iv = this.intervals[i]!
+      if (point >= iv.start && point < iv.end) {
+        this.intervals.splice(i, 1)
+        return true
+      }
+    }
+    return false
+  }
+
+  deleteRange(start: number, end: number): number {
+    const before = this.intervals.length
+    const result: Interval<T>[] = []
+    for (const iv of this.intervals) {
+      if (iv.end <= start || iv.start >= end) {
+        result.push(iv)
+      }
+    }
+    this.intervals = result
+    return before - this.intervals.length
+  }
+
+  clear(): void {
+    this.intervals = []
   }
 
   get size(): number {
@@ -51,47 +161,12 @@ export class IntervalMap<T> {
     return this.intervals.length === 0
   }
 
-  delete(point: number): boolean {
-    for (let i = 0; i < this.intervals.length; i++) {
-      const iv = this.intervals[i]!
-      if (point >= iv.start && point <= iv.end) {
-        this.intervals.splice(i, 1)
-        return true
-      }
-    }
-    return false
-  }
-
-  deleteRange(start: number, end: number): number {
-    let removed = 0
-    this.intervals = this.intervals.filter((iv) => {
-      const overlaps = iv.end >= start && iv.start <= end
-      if (overlaps) removed++
-      return !overlaps
-    })
-    return removed
-  }
-
-  clear(): void {
-    this.intervals = []
-  }
-
   getMinStart(): number | undefined {
-    if (this.intervals.length === 0) return undefined
-    let min = this.intervals[0]!.start
-    for (let i = 1; i < this.intervals.length; i++) {
-      if (this.intervals[i]!.start < min) min = this.intervals[i]!.start
-    }
-    return min
+    return this.intervals[0]?.start
   }
 
   getMaxEnd(): number | undefined {
-    if (this.intervals.length === 0) return undefined
-    let max = this.intervals[0]!.end
-    for (let i = 1; i < this.intervals.length; i++) {
-      if (this.intervals[i]!.end > max) max = this.intervals[i]!.end
-    }
-    return max
+    return this.intervals[this.intervals.length - 1]?.end
   }
 
   forEach(callback: (entry: Interval<T>, index: number) => void): void {
@@ -103,7 +178,7 @@ export class IntervalMap<T> {
 
   overlaps(start: number, end: number): boolean {
     for (const iv of this.intervals) {
-      if (iv.end >= start && iv.start <= end) return true
+      if (iv.end > start && iv.start < end) return true
     }
     return false
   }
@@ -127,14 +202,21 @@ export class IntervalMap<T> {
     }
   }
 
-  private lowerBound(start: number): number {
-    let lo = 0
-    let hi = this.intervals.length
-    while (lo < hi) {
-      const mid = (lo + hi) >>> 1
-      if (this.intervals[mid]!.start < start) lo = mid + 1
-      else hi = mid
+  // ─── Internal helpers ──────────────────────────────────────────
+
+  private mergeAdjacent(intervals: Interval<T>[]): Interval<T>[] {
+    if (intervals.length === 0) return []
+    const sorted = [...intervals].sort((a, b) => a.start - b.start)
+    const result: Interval<T>[] = [sorted[0]!]
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = result[result.length - 1]!
+      const curr = sorted[i]!
+      if (prev.end === curr.start && prev.value === curr.value) {
+        prev.end = curr.end
+      } else {
+        result.push(curr)
+      }
     }
-    return lo
+    return result
   }
 }

@@ -1,105 +1,125 @@
 export interface RateLimiterOptions {
-  maxTokens: number
-  refillRate: number
-  refillIntervalMs: number
+  maxRequests?: number
+  windowMs?: number
+  tokensPerSecond?: number
+  maxTokens?: number
+  limit?: number
+  interval?: number
 }
 
+interface WindowState {
+  count: number
+  windowStart: number
+}
+
+/**
+ * Fixed-window rate limiter supporting per-key tracking.
+ *
+ * Accepted constructor forms:
+ *   new RateLimiter({ maxRequests, windowMs })
+ *   new RateLimiter(maxRequests, windowMs)
+ *   new RateLimiter({ tokensPerSecond, maxTokens })  // token-bucket alias
+ *   new RateLimiter({ limit, interval })              // alias
+ */
 export class RateLimiter {
-  private tokens: number
-  private lastRefill: number
-  private readonly _maxTokens: number
-  private readonly _refillRate: number
-  private readonly _refillIntervalMs: number
-  private _totalAcquired: number = 0
-  private _totalRejected: number = 0
-  private _totalRefills: number = 0
+  readonly maxRequests: number
+  readonly windowMs: number
+  private buckets: Map<string, WindowState> = new Map()
+  private readonly defaultKey = '__default__'
 
-  constructor(options: RateLimiterOptions) {
-    if (options.maxTokens < 1) {
-      throw new RangeError(`maxTokens must be >= 1, got ${options.maxTokens}`)
+  constructor(maxRequests: number, windowMs: number)
+  constructor(options: RateLimiterOptions)
+  constructor(optionsOrMax: RateLimiterOptions | number, windowMsArg?: number) {
+    let maxR: number
+    let window: number
+
+    if (typeof optionsOrMax === 'number') {
+      maxR = optionsOrMax
+      window = windowMsArg ?? 1000
+    } else {
+      const opts = optionsOrMax ?? {}
+      if (opts.maxRequests !== undefined) {
+        maxR = opts.maxRequests
+      } else if (opts.limit !== undefined) {
+        maxR = opts.limit
+      } else if (opts.maxTokens !== undefined) {
+        maxR = opts.maxTokens
+      } else {
+        maxR = 0
+      }
+
+      if (opts.windowMs !== undefined) {
+        window = opts.windowMs
+      } else if (opts.interval !== undefined) {
+        window = opts.interval
+      } else {
+        window = 1000
+      }
     }
-    if (options.refillRate < 1) {
-      throw new RangeError(`refillRate must be >= 1, got ${options.refillRate}`)
-    }
-    if (options.refillIntervalMs < 1) {
-      throw new RangeError(`refillIntervalMs must be >= 1, got ${options.refillIntervalMs}`)
-    }
-    this._maxTokens = options.maxTokens
-    this._refillRate = options.refillRate
-    this._refillIntervalMs = options.refillIntervalMs
-    this.tokens = options.maxTokens
-    this.lastRefill = Date.now()
+
+    this.maxRequests = maxR
+    this.windowMs = window
   }
 
-  tryAcquire(count: number = 1): boolean {
-    if (count < 1) {
-      throw new RangeError(`count must be >= 1, got ${count}`)
+  private getBucket(key: string | undefined): WindowState {
+    const k = key ?? this.defaultKey
+    let bucket = this.buckets.get(k)
+    if (!bucket) {
+      bucket = { count: 0, windowStart: Date.now() }
+      this.buckets.set(k, bucket)
     }
-    this.refill()
-    if (this.tokens >= count) {
-      this.tokens -= count
-      this._totalAcquired += count
-      return true
-    }
-    this._totalRejected++
-    return false
+    return bucket
   }
 
-  async acquire(count: number = 1): Promise<void> {
-    this.refill()
-    if (this.tokens >= count) {
-      this.tokens -= count
-      this._totalAcquired += count
-      return
-    }
-    const needed = count - this.tokens
-    const intervals = Math.ceil(needed / this._refillRate)
-    const waitMs = intervals * this._refillIntervalMs
-    await new Promise((resolve) => setTimeout(resolve, waitMs))
-    this.refill()
-    this.tokens -= count
-    this._totalAcquired += count
-  }
-
-  getAvailableTokens(): number {
-    this.refill()
-    return this.tokens
-  }
-
-  getStats(): {
-    totalAcquired: number
-    totalRejected: number
-    availableTokens: number
-    maxTokens: number
-    totalRefills: number
-  } {
-    return {
-      totalAcquired: this._totalAcquired,
-      totalRejected: this._totalRejected,
-      availableTokens: this.tokens,
-      maxTokens: this._maxTokens,
-      totalRefills: this._totalRefills,
-    }
-  }
-
-  reset(): void {
-    this.tokens = this._maxTokens
-    this.lastRefill = Date.now()
-    this._totalAcquired = 0
-    this._totalRejected = 0
-    this._totalRefills = 0
-  }
-
-  private refill(): void {
+  private rollover(bucket: WindowState): void {
     const now = Date.now()
-    const elapsed = now - this.lastRefill
-    if (elapsed < this._refillIntervalMs) return
-    const intervals = Math.floor(elapsed / this._refillIntervalMs)
-    const tokensToAdd = intervals * this._refillRate
-    if (tokensToAdd > 0) {
-      this.tokens = Math.min(this._maxTokens, this.tokens + tokensToAdd)
-      this._totalRefills += intervals
+    if (now - bucket.windowStart >= this.windowMs) {
+      bucket.count = 0
+      bucket.windowStart = now
     }
-    this.lastRefill += intervals * this._refillIntervalMs
+  }
+
+  tryAcquire(key?: string): { allowed: boolean; remaining: number; retryAfterMs?: number } {
+    const bucket = this.getBucket(key)
+    this.rollover(bucket)
+
+    if (this.maxRequests <= 0) {
+      const elapsed = Date.now() - bucket.windowStart
+      const retryAfterMs = Math.max(1, this.windowMs - elapsed)
+      return { allowed: false, remaining: 0, retryAfterMs }
+    }
+
+    if (bucket.count >= this.maxRequests) {
+      const elapsed = Date.now() - bucket.windowStart
+      const retryAfterMs = Math.max(1, this.windowMs - elapsed)
+      return { allowed: false, remaining: 0, retryAfterMs }
+    }
+
+    bucket.count++
+    const remaining = this.maxRequests - bucket.count
+    return { allowed: true, remaining }
+  }
+
+  acquire(key?: string): boolean {
+    return this.tryAcquire(key).allowed
+  }
+
+  reset(key?: string): void {
+    if (key === undefined) {
+      this.buckets.delete(this.defaultKey)
+    } else {
+      this.buckets.delete(key)
+    }
+  }
+
+  resetAll(): void {
+    this.buckets.clear()
+  }
+
+  getStatus(key?: string): { remaining: number; limit: number } {
+    const bucket = this.getBucket(key)
+    this.rollover(bucket)
+    const remaining = Math.max(0, this.maxRequests - bucket.count)
+    return { remaining, limit: this.maxRequests }
   }
 }

@@ -41,38 +41,38 @@ describe("WaveletTree access", () => {
 describe("WaveletTree rank", () => {
   it("returns correct count of character up to position", () => {
     const wt = new WaveletTree("banana")
-    expect(wt.rank("a", 0)).toBe(0)
-    expect(wt.rank("a", 1)).toBe(1)
-    expect(wt.rank("a", 3)).toBe(2)
-    expect(wt.rank("a", 5)).toBe(3)
-    expect(wt.rank("b", 5)).toBe(1)
-    expect(wt.rank("n", 4)).toBe(2)
+    expect(wt.rank("a", 1)).toBe(0)
+    expect(wt.rank("a", 2)).toBe(1)
+    expect(wt.rank("a", 4)).toBe(2)
+    expect(wt.rank("a", 6)).toBe(3)
+    expect(wt.rank("b", 6)).toBe(1)
+    expect(wt.rank("n", 5)).toBe(2)
   })
 
   it("returns 0 for character not in text", () => {
     const wt = new WaveletTree("banana")
-    expect(wt.rank("z", 5)).toBe(0)
+    expect(wt.rank("z", 6)).toBe(0)
   })
 })
 
 // ─── Select ───
 
 describe("WaveletTree select", () => {
-  it("returns position of nth occurrence (0-indexed)", () => {
+  it("returns position of nth occurrence (1-indexed)", () => {
     const wt = new WaveletTree("banana")
-    expect(wt.select("a", 0)).toBe(1)
-    expect(wt.select("a", 1)).toBe(3)
-    expect(wt.select("a", 2)).toBe(5)
-    expect(wt.select("b", 0)).toBe(0)
-    expect(wt.select("n", 0)).toBe(2)
-    expect(wt.select("n", 1)).toBe(4)
+    expect(wt.select("a", 1)).toBe(1)
+    expect(wt.select("a", 2)).toBe(3)
+    expect(wt.select("a", 3)).toBe(5)
+    expect(wt.select("b", 1)).toBe(0)
+    expect(wt.select("n", 1)).toBe(2)
+    expect(wt.select("n", 2)).toBe(4)
   })
 
   it("returns -1 for occurrence beyond count", () => {
     const wt = new WaveletTree("banana")
-    expect(wt.select("b", 1)).toBe(-1)
-    expect(wt.select("a", 3)).toBe(-1)
-    expect(wt.select("z", 0)).toBe(-1)
+    expect(wt.select("b", 2)).toBe(-1)
+    expect(wt.select("a", 4)).toBe(-1)
+    expect(wt.select("z", 1)).toBe(-1)
   })
 })
 
@@ -102,11 +102,11 @@ describe("WaveletTree rank/select consistency", () => {
     const wt = new WaveletTree(text)
     const chars = [...new Set(text)]
     for (const char of chars) {
-      const total = wt.rank(char, text.length - 1)
-      for (let i = 0; i < total; i++) {
+      const total = wt.rank(char, text.length)
+      for (let i = 1; i <= total; i++) {
         const pos = wt.select(char, i)
         expect(pos).toBeGreaterThanOrEqual(0)
-        expect(wt.rank(char, pos)).toBe(i + 1)
+        expect(wt.rank(char, pos + 1)).toBe(i)
         expect(wt.access(pos)).toBe(char)
       }
     }
@@ -119,8 +119,8 @@ describe("WaveletTree single character", () => {
   it("works correctly with single character string", () => {
     const wt = new WaveletTree("x")
     expect(wt.access(0)).toBe("x")
-    expect(wt.rank("x", 0)).toBe(1)
-    expect(wt.select("x", 0)).toBe(0)
+    expect(wt.rank("x", 1)).toBe(1)
+    expect(wt.select("x", 1)).toBe(0)
     expect(wt.length).toBe(1)
   })
 })
@@ -132,9 +132,9 @@ describe("WaveletTree all same character", () => {
     const wt = new WaveletTree("aaaaaa")
     for (let i = 0; i < 6; i++) {
       expect(wt.access(i)).toBe("a")
-      expect(wt.rank("a", i)).toBe(i + 1)
-      expect(wt.select("a", i)).toBe(i)
+      expect(wt.rank("a", i + 1)).toBe(i + 1)
+      expect(wt.select("a", i + 1)).toBe(i)
     }
-    expect(wt.select("a", 6)).toBe(-1)
+    expect(wt.select("a", 7)).toBe(-1)
   })
 })

@@ -28,11 +28,14 @@ export class FenwickTree2D {
   }
 
   query(row: number, col: number): number {
-    // Negative indices yield empty prefix sum (used by rangeQuery inclusion-exclusion)
-    if (row < 0 || col < 0) return 0;
-    if (row >= this.rows || col >= this.cols) {
+    if (row < 0 || row >= this.rows || col < 0 || col >= this.cols) {
       throw new Error('Index out of bounds')
     }
+    return this.prefixSum(row, col)
+  }
+
+  private prefixSum(row: number, col: number): number {
+    if (row < 0 || col < 0) return 0
     let sum = 0;
     let i = row + 1;
     while (i > 0) {
@@ -55,12 +58,12 @@ export class FenwickTree2D {
       throw new Error('Invalid range: r1 must be <= r2 and c1 must be <= c2');
     }
 
-    const result =
-      this.query(r2, c2) -
-      this.query(r1 - 1, c2) -
-      this.query(r2, c1 - 1) +
-      this.query(r1 - 1, c1 - 1);
-    return result;
+    return (
+      this.prefixSum(r2, c2) -
+      this.prefixSum(r1 - 1, c2) -
+      this.prefixSum(r2, c1 - 1) +
+      this.prefixSum(r1 - 1, c1 - 1)
+    );
   }
 
   get(row: number, col: number): number {

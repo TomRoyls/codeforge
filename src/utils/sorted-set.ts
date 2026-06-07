@@ -177,27 +177,16 @@ export class SortedSet<T> {
   rank(value: T): number {
     let rank = 0
     let x = this.head
-    let found = false
     for (let i = this.level - 1; i >= 0; i--) {
-      while (x.forward[i] !== null) {
-        const next = x.forward[i]!
-        const cmp = this.compare(next.value, value)
-        if (cmp === 0) {
-          found = true
-          break
-        }
-        if (cmp < 0) {
-          rank += x.width[i]!
-          x = next
-        } else {
-          break
-        }
+      while (x.forward[i] !== null && this.compare(x.forward[i]!.value, value) < 0) {
+        rank += x.width[i]!
+        x = x.forward[i]!
       }
     }
-    if (!found) {
+    if (x.forward[0] !== null && this.compare(x.forward[0]!.value, value) === 0) {
       return rank
     }
-    return rank
+    return -1
   }
 
   range(start: number, end?: number): T[] {

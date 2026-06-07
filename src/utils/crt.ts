@@ -1,5 +1,17 @@
 export class ChineseRemainderTheorem {
-  static solve(remainders: number[], moduli: number[]): { remainder: number; modulus: number } | null {
+  static solve(congruences: Array<[number, number]>): { remainder: number; modulus: number } | null
+  static solve(remainders: number[], moduli: number[]): { remainder: number; modulus: number } | null
+  static solve(arg1: Array<[number, number]> | number[], arg2?: number[]): { remainder: number; modulus: number } | null {
+    let remainders: number[]
+    let moduli: number[]
+    if (Array.isArray(arg1) && arg1.length > 0 && Array.isArray((arg1 as unknown[])[0])) {
+      const congruences = arg1 as Array<[number, number]>
+      remainders = congruences.map(([r]) => r)
+      moduli = congruences.map(([, m]) => m)
+    } else {
+      remainders = arg1 as number[]
+      moduli = arg2 ?? []
+    }
     if (remainders.length !== moduli.length || remainders.length === 0) return null
     let r = remainders[0]!
     let m = moduli[0]!

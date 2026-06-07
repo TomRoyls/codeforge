@@ -16,7 +16,11 @@ export class StringHash {
   }
 
   hash(l: number, r: number): bigint {
-    const h = (this.prefix[r + 1]! - this.prefix[l]! * this.pow[r - l + 1]!) % StringHash.MOD
+    if (this.prefix.length <= 1) return 0n
+    const maxIdx = this.prefix.length - 2
+    const cl = Math.max(0, Math.min(l, maxIdx))
+    const cr = Math.max(cl, Math.min(r, maxIdx))
+    const h = (this.prefix[cr + 1]! - this.prefix[cl]! * this.pow[cr - cl + 1]!) % StringHash.MOD
     return h < 0n ? h + StringHash.MOD : h
   }
 

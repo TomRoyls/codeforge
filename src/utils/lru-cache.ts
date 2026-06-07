@@ -22,7 +22,7 @@ export class LRUCache<K, V> {
     const maxSize = typeof maxSizeOrOptions === 'number'
       ? maxSizeOrOptions
       : maxSizeOrOptions.maxSize
-    if (maxSize < 0) throw new RangeError(`maxSize must be >= 0, got ${maxSize}`)
+    if (maxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${maxSize}`)
     this._maxSize = maxSize
   }
 
@@ -96,16 +96,16 @@ export class LRUCache<K, V> {
     this._evictions = 0
   }
 
-  keys(): IterableIterator<K> {
-    return this.cache.keys()
+  keys(): K[] {
+    return [...this.cache.keys()]
   }
 
-  values(): IterableIterator<V> {
-    return this.cache.values()
+  values(): V[] {
+    return [...this.cache.values()]
   }
 
-  entries(): IterableIterator<[K, V]> {
-    return this.cache.entries()
+  entries(): [K, V][] {
+    return [...this.cache.entries()]
   }
 
   forEach(callback: (value: V, key: K) => void): void {
@@ -125,7 +125,7 @@ export class LRUCache<K, V> {
   }
 
   resize(newMaxSize: number): void {
-    if (newMaxSize < 0) throw new RangeError(`maxSize must be >= 0, got ${newMaxSize}`)
+    if (newMaxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${newMaxSize}`)
     while (this.cache.size > newMaxSize) {
       const firstKey = this.cache.keys().next()
       if (!firstKey.done) {

@@ -1,80 +1,69 @@
 export class PersistentSegmentTree {
   private readonly size: number
-  private readonly roots: PersistentNode[]
+  private versions: number[][]
   private readonly defaultValue: number
   private readonly combine: (a: number, b: number) => number
 
   constructor(
-    size: number,
+    dataOrSize: number[] | number,
     combine: (a: number, b: number) => number = (a, b) => a + b,
     defaultValue: number = 0,
   ) {
-    this.size = size
     this.combine = combine
     this.defaultValue = defaultValue
-    this.roots = [this.build(0, size - 1)]
-  }
-
-  private build(l: number, r: number): PersistentNode {
-    if (l === r) return { value: this.defaultValue, left: null, right: null }
-    const mid = (l + r) >> 1
-    return {
-      value: this.defaultValue,
-      left: this.build(l, mid),
-      right: this.build(mid + 1, r),
+    if (Array.isArray(dataOrSize)) {
+      this.size = dataOrSize.length
+      this.versions = [[...dataOrSize]]
+    } else {
+      this.size = dataOrSize
+      this.versions = [new Array(this.size).fill(defaultValue)]
     }
   }
 
-  private updateNode(node: PersistentNode, l: number, r: number, idx: number, value: number): PersistentNode {
-    if (l === r) return { value, left: null, right: null }
-    const mid = (l + r) >> 1
-    if (idx <= mid) {
-      const newLeft = this.updateNode(node.left!, l, mid, idx, value)
-      return {
-        value: this.combine(newLeft.value, node.right!.value),
-        left: newLeft,
-        right: node.right!,
+  get initialVersion(): number {
+    return 0
+  }
+
+  update(version: number, idx: number, value: number): number
+  update(version: number, left: number, right: number, value: number): number
+  update(version: number, arg2: number, arg3: number, arg4?: number): number {
+    const source = this.versions[version]
+    if (!source) throw new RangeError(`Version ${version} does not exist`)
+    const newVersion = [...source]
+    if (arg4 !== undefined) {
+      const left = arg2
+      const right = arg3
+      for (let i = left; i <= right && i < this.size; i++) {
+        newVersion[i] = arg4
       }
+    } else {
+      const idx = arg2
+      if (idx < 0 || idx >= this.size) throw new RangeError(`Index ${idx} out of bounds`)
+      newVersion[idx] = arg3
     }
-    const newRight = this.updateNode(node.right!, mid + 1, r, idx, value)
-    return {
-      value: this.combine(node.left!.value, newRight.value),
-      left: node.left!,
-      right: newRight,
-    }
-  }
-
-  update(version: number, idx: number, value: number): number {
-    const newRoot = this.updateNode(this.roots[version]!, 0, this.size - 1, idx, value)
-    this.roots.push(newRoot)
-    return this.roots.length - 1
-  }
-
-  private queryNode(node: PersistentNode, l: number, r: number, ql: number, qr: number): number {
-    if (ql > r || qr < l) return this.defaultValue
-    if (ql <= l && r <= qr) return node.value
-    const mid = (l + r) >> 1
-    return this.combine(
-      this.queryNode(node.left!, l, mid, ql, qr),
-      this.queryNode(node.right!, mid + 1, r, ql, qr),
-    )
+    this.versions.push(newVersion)
+    return this.versions.length - 1
   }
 
   query(version: number, left: number, right: number): number {
-    return this.queryNode(this.roots[version]!, 0, this.size - 1, left, right)
+    const arr = this.versions[version]
+    if (!arr) throw new RangeError(`Version ${version} does not exist`)
+    let result = this.defaultValue
+    let first = true
+    for (let i = Math.max(0, left); i <= Math.min(right, this.size - 1); i++) {
+      result = first ? arr[i]! : this.combine(result, arr[i]!)
+      first = false
+    }
+    return result
   }
 
   get versionCount(): number {
-    return this.roots.length
+    return this.versions.length
   }
 
   getPoint(version: number, idx: number): number {
-    return this.query(version, idx, idx)
+    const arr = this.versions[version]
+    if (!arr) throw new RangeError(`Version ${version} does not exist`)
+    return arr[idx] ?? this.defaultValue
   }
-}
-
-interface PersistentNode {
-  value: number
-  left: PersistentNode | null
-  right: PersistentNode | null
 }

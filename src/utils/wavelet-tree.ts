@@ -53,11 +53,11 @@ export class WaveletTree {
   rank(value: number | string, endIndex: number): number {
     const sym = typeof value === 'string' ? value.charCodeAt(0) : value
     if (this.data.length === 0) return 0
-    if (endIndex < 0) return 0
+    if (endIndex <= 0) return 0
     if (!this._alphabet.includes(sym)) return 0
-    const end = Math.min(endIndex, this.data.length - 1)
+    const end = Math.min(endIndex, this.data.length)
     let count = 0
-    for (let i = 0; i <= end; i++) {
+    for (let i = 0; i < end; i++) {
       if (this.data[i] === sym) count++
     }
     return count
@@ -79,13 +79,13 @@ export class WaveletTree {
 
   select(value: number | string, k: number): number {
     const sym = typeof value === 'string' ? value.charCodeAt(0) : value
-    if (k < 0) return -1
+    if (k < 1) return -1
     if (!this._alphabet.includes(sym)) return -1
     let count = 0
     for (let i = 0; i < this.data.length; i++) {
       if (this.data[i] === sym) {
-        if (count === k) return i
         count++
+        if (count === k) return i
       }
     }
     return -1
@@ -101,7 +101,23 @@ export class WaveletTree {
     return sub[idx]
   }
 
-  rangeCount(lo: number, hi: number, start: number, end: number): number {
+  rangeCount(start: number, end: number, symbol: number): number
+  rangeCount(lo: number, hi: number, start: number, end: number): number
+  rangeCount(...args: number[]): number {
+    if (args.length === 3) {
+      const [start, end, symbol] = args
+      if (this.data.length === 0) return 0
+      if (start >= end) return 0
+      const lo = Math.max(0, start)
+      const hi = Math.min(end, this.data.length)
+      if (lo >= hi) return 0
+      let count = 0
+      for (let i = lo; i < hi; i++) {
+        if (this.data[i] === symbol) count++
+      }
+      return count
+    }
+    const [lo, hi, start, end] = args
     if (this.data.length === 0) return 0
     if (lo > hi) return 0
     if (start >= end) return 0
@@ -114,5 +130,17 @@ export class WaveletTree {
       if (v >= lo && v <= hi) count++
     }
     return count
+  }
+
+  rangeCountAll(start: number, end: number): Map<number, number> {
+    const result = new Map<number, number>()
+    if (this.data.length === 0) return result
+    const lo = Math.max(0, start)
+    const hi = Math.min(end, this.data.length)
+    for (let i = lo; i < hi; i++) {
+      const v = this.data[i]!
+      result.set(v, (result.get(v) ?? 0) + 1)
+    }
+    return result
   }
 }
