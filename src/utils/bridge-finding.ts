@@ -38,4 +38,33 @@ export class BridgeFinding {
     }
     return bridges.sort((a, b) => a[0] - b[0] || a[1] - b[1])
   }
+
+  toString(): string {
+    return `BridgeFinding(n=${this.n})`
+  }
+
+  toJSON(): unknown {
+    return {
+      n: this.n,
+      adj: this.adj.map(row => [...row]),
+    }
+  }
+
+  clone(): this {
+    const c = new BridgeFinding(this.n)
+    c.adj = this.adj.map(row => [...row])
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BridgeFinding)) return false
+    if (this.n !== other.n) return false
+    const aBridges = new Set(this.findBridges().map(([u, v]) => `${u},${v}`))
+    const bBridges = other.findBridges()
+    if (aBridges.size !== bBridges.length) return false
+    for (const [u, v] of bBridges) {
+      if (!aBridges.has(`${u},${v}`)) return false
+    }
+    return true
+  }
 }

@@ -86,4 +86,31 @@ export class DisjointSetUnion {
       throw new RangeError(`DisjointSetUnion: index ${x} out of bounds [0, ${this._n})`)
     }
   }
+
+  toString(): string {
+    return `DisjointSetUnion(n=${this._n}, components=${this._componentCount})`
+  }
+
+  toJSON(): { parent: number[]; size: number[]; components: number } {
+    return { parent: Array.from(this.parent), size: Array.from(this.sz), components: this._componentCount }
+  }
+
+  clone(): DisjointSetUnion {
+    const copy = new DisjointSetUnion(this._n)
+    copy.parent = new Int32Array(this.parent)
+    copy.rnk = new Int32Array(this.rnk)
+    copy.sz = new Int32Array(this.sz)
+    copy._componentCount = this._componentCount
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DisjointSetUnion)) return false
+    if (this._n !== other._n) return false
+    if (this._componentCount !== other._componentCount) return false
+    for (let i = 0; i < this._n; i++) {
+      if (this.find(i) !== other.find(i)) return false
+    }
+    return true
+  }
 }

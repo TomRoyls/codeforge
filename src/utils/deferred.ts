@@ -58,4 +58,21 @@ export class DeferredBarrier {
   public get size(): number {
     return this.pending.size
   }
+
+  toString(): string {
+    return `DeferredBarrier(${this.pending.size} pending)`
+  }
+
+  toJSON(): string[] {
+    return Array.from(this.pending.keys())
+  }
+
+  clone(): DeferredBarrier {
+    return new DeferredBarrier()
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DeferredBarrier)) return false
+    return this.pending.size === other.pending.size
+  }
 }

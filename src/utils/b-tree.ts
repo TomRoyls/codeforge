@@ -254,4 +254,32 @@ export class BTree<K, V> {
   isEmpty(): boolean {
     return this._size === 0
   }
+
+  toString(): string {
+    return `BTree(order=${this.t}, size=${this._size})`
+  }
+
+  toJSON(): Array<{ key: K; value: V }> {
+    const result: Array<{ key: K; value: V }> = []
+    this.forEach((key, value) => result.push({ key, value }))
+    return result
+  }
+
+  clone(): this {
+    const c = new BTree<K, V>(this.t, this.compare)
+    this.forEach((key, value) => c.insert(key, value))
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BTree)) return false
+    if (this._size !== other._size) return false
+    const a = this.toJSON()
+    const b = other.toJSON()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i]!.key, b[i]!.key)) return false
+      if (!Object.is(a[i]!.value, b[i]!.value)) return false
+    }
+    return true
+  }
 }

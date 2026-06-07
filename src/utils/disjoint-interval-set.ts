@@ -188,4 +188,22 @@ export class DisjointIntervalSet {
   forEach(callback: (interval: Interval, index: number) => void): void {
     this.intervals.forEach((iv, i) => callback(iv, i))
   }
+
+  toString(): string {
+    return `DisjointIntervalSet(${this.intervals.length} intervals)`
+  }
+
+  toJSON(): Interval[] {
+    return this.intervals.map(iv => ({ ...iv }))
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DisjointIntervalSet)) return false
+    if (this.intervals.length !== other.intervals.length) return false
+    for (let i = 0; i < this.intervals.length; i++) {
+      if (this.intervals[i]!.start !== other.intervals[i]!.start) return false
+      if (this.intervals[i]!.end !== other.intervals[i]!.end) return false
+    }
+    return true
+  }
 }

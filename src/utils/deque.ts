@@ -83,4 +83,32 @@ export class Deque<T> {
     this.head = 0
     this.tail = this._size
   }
+
+  toString(): string {
+    return `Deque(${this._size})`
+  }
+
+  toJSON(): T[] {
+    return this.toArray()
+  }
+
+  clone(): Deque<T> {
+    const copy = new Deque<T>(Math.max(16, this.data.length))
+    copy.head = 0
+    copy.tail = 0
+    copy._size = 0
+    for (let i = 0; i < this._size; i++) {
+      copy.pushBack(this.data[(this.head + i) % this.data.length]!)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof Deque)) return false
+    if (this._size !== other._size) return false
+    for (let i = 0; i < this._size; i++) {
+      if (this.data[(this.head + i) % this.data.length] !== other.data[(other.head + i) % other.data.length]) return false
+    }
+    return true
+  }
 }

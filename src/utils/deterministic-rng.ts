@@ -52,4 +52,21 @@ export class DeterministicRng {
   reset(seed: number): void {
     this.state = seed
   }
+
+  toString(): string {
+    return `DeterministicRng(state=${this.currentSeed})`
+  }
+
+  toJSON(): number {
+    return this.state
+  }
+
+  clone(): DeterministicRng {
+    return new DeterministicRng(this.state)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DeterministicRng)) return false
+    return this.state === other.state
+  }
 }

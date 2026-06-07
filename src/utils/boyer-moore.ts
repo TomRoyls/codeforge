@@ -113,4 +113,26 @@ export class BoyerMoore {
 
     return table
   }
+
+  toString(): string {
+    return `BoyerMoore(pattern="${this.pattern}", caseSensitive=${this.caseSensitive})`
+  }
+
+  toJSON(): unknown {
+    return {
+      pattern: this.pattern,
+      caseSensitive: this.caseSensitive,
+    }
+  }
+
+  clone(): this {
+    return new BoyerMoore(this.pattern, { caseSensitive: this.caseSensitive }) as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BoyerMoore)) return false
+    if (this.caseSensitive !== other.caseSensitive) return false
+    if (this.pattern !== other.pattern) return false
+    return true
+  }
 }

@@ -107,4 +107,23 @@ export class DynamicBitset {
     n = (n & 0x33333333) + ((n >>> 2) & 0x33333333)
     return (((n + (n >>> 4)) & 0x0f0f0f0f) * 0x01010101) >>> 24
   }
+
+  toJSON(): string {
+    return this.toString()
+  }
+
+  clone(): DynamicBitset {
+    const copy = new DynamicBitset(this._length)
+    copy.words = [...this.words]
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DynamicBitset)) return false
+    if (this._length !== other._length) return false
+    for (let i = 0; i < this.words.length; i++) {
+      if (this.words[i] !== other.words[i]) return false
+    }
+    return true
+  }
 }

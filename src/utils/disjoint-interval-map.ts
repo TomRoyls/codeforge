@@ -170,4 +170,23 @@ export class DisjointIntervalMap<V> {
     }
     return -1
   }
+
+  toString(): string {
+    return `DisjointIntervalMap(${this.intervals.length} entries)`
+  }
+
+  toJSON(): Array<{ lo: number; hi: number; value: V }> {
+    return this.getAll()
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DisjointIntervalMap)) return false
+    if (this.intervals.length !== other.intervals.length) return false
+    for (let i = 0; i < this.intervals.length; i++) {
+      if (this.intervals[i]!.lo !== other.intervals[i]!.lo) return false
+      if (this.intervals[i]!.hi !== other.intervals[i]!.hi) return false
+      if (this.intervals[i]!.value !== other.intervals[i]!.value) return false
+    }
+    return true
+  }
 }

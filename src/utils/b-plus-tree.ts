@@ -427,4 +427,32 @@ export class BPlusTree<K, V> {
     while (this.isInternal(node)) node = node.children[0]!
     return this.asLeaf(node)
   }
+
+  toString(): string {
+    return `BPlusTree(order=${this.order}, size=${this._size}, height=${this._height})`
+  }
+
+  toJSON(): Array<{ key: K; value: V }> {
+    return this.entries()
+  }
+
+  clone(): this {
+    const c = new BPlusTree<K, V>(this.order, this.compare)
+    for (const { key, value } of this.entries()) {
+      c.insert(key, value)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BPlusTree)) return false
+    if (this._size !== other._size) return false
+    const a = this.entries()
+    const b = other.entries()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i]!.key, b[i]!.key)) return false
+      if (!Object.is(a[i]!.value, b[i]!.value)) return false
+    }
+    return true
+  }
 }

@@ -78,4 +78,28 @@ export class DoubleBuffer<T> {
     this.front = []
     return result
   }
+
+  toString(): string {
+    return `DoubleBuffer(front=${this.front.length}, back=${this.back.length})`
+  }
+
+  toJSON(): { front: T[]; back: T[]; swaps: number } {
+    return { front: [...this.front], back: [...this.back], swaps: this._totalSwaps }
+  }
+
+  clone(): DoubleBuffer<T> {
+    const copy = new DoubleBuffer<T>()
+    copy.front = [...this.front]
+    copy.back = [...this.back]
+    copy._totalSwaps = this._totalSwaps
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DoubleBuffer)) return false
+    if (this._totalSwaps !== other._totalSwaps) return false
+    if (this.front.length !== other.front.length) return false
+    if (this.back.length !== other.back.length) return false
+    return true
+  }
 }

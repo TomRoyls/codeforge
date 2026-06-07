@@ -60,4 +60,27 @@ export class DifferenceArray2D {
   get colCount(): number {
     return this.cols
   }
+
+  toString(): string {
+    return `DifferenceArray2D(${this.rows}x${this.cols})`
+  }
+
+  toJSON(): { rows: number; cols: number; diff: number[] } {
+    return { rows: this.rows, cols: this.cols, diff: Array.from(this.diff) }
+  }
+
+  clone(): DifferenceArray2D {
+    const copy = new DifferenceArray2D(this.rows, this.cols)
+    copy.diff.set(this.diff)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DifferenceArray2D)) return false
+    if (this.rows !== other.rows || this.cols !== other.cols) return false
+    for (let i = 0; i < this.diff.length; i++) {
+      if (this.diff[i] !== other.diff[i]) return false
+    }
+    return true
+  }
 }

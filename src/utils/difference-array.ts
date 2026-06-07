@@ -38,4 +38,27 @@ export class DifferenceArray {
   get length(): number {
     return this.n
   }
+
+  toString(): string {
+    return `DifferenceArray(${this.n})`
+  }
+
+  toJSON(): number[] {
+    return [...this.diff]
+  }
+
+  clone(): DifferenceArray {
+    const copy = new DifferenceArray(this.n)
+    copy.diff = [...this.diff]
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DifferenceArray)) return false
+    if (this.n !== other.n) return false
+    for (let i = 0; i <= this.n; i++) {
+      if (this.diff[i] !== other.diff[i]) return false
+    }
+    return true
+  }
 }
