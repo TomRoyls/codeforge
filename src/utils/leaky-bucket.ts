@@ -6,10 +6,13 @@ export class LeakyBucket {
     private capacity: number,
     private leakRate: number,
   ) {
+    if (capacity < 0) throw new RangeError('capacity must be >= 0')
+    if (leakRate < 0) throw new RangeError('leakRate must be >= 0')
     this.lastLeak = Date.now()
   }
 
   pour(amount: number = 1): boolean {
+    if (amount < 0) amount = 0
     this.leak()
     if (this.water + amount <= this.capacity) {
       this.water += amount

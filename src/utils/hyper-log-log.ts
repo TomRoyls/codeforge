@@ -19,7 +19,7 @@ export class HyperLogLog {
     const hash = this.hashString(value)
     const index = hash >>> (32 - this.precision)
     const remaining = (hash << this.precision) | (hash >>> (32 - this.precision))
-    const rho = this.rho(remaining >>> (this.precision > 0 ? 0 : 0))
+    const rho = this.rho(remaining >>> 0)
     if (rho > this.registers[index]!) {
       this.registers[index] = rho
     }
