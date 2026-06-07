@@ -22,6 +22,7 @@ export interface ASTNode {
   declarations?: unknown[]
   decorators?: unknown[]
   default?: boolean
+  discriminant?: unknown
   elements?: unknown[]
   elementType?: unknown
   end?: unknown

@@ -25,6 +25,9 @@ export function calculateBackoff(
 }
 
 export function calculateUniformBackoff(attempt: number, baseDelayMs: number, maxDelayMs: number = 30000): number {
+  if (attempt < 0) throw new RangeError(`attempt must be >= 0, got ${attempt}`)
+  if (baseDelayMs < 1) throw new RangeError(`baseDelayMs must be >= 1, got ${baseDelayMs}`)
+  if (maxDelayMs < baseDelayMs) throw new RangeError(`maxDelayMs must be >= baseDelayMs`)
   const delay = baseDelayMs * Math.pow(2, attempt)
   return Math.min(delay, maxDelayMs)
 }
