@@ -34,7 +34,7 @@ export interface ComplexityResult {
   }
 }
 
-const LOGICAL_OPERATORS = new Set([SyntaxKind.AmpersandAmpersandToken, SyntaxKind.BarBarToken])
+const LOGICAL_OPERATORS = new Set([SyntaxKind.AmpersandAmpersandToken, SyntaxKind.BarBarToken, SyntaxKind.QuestionQuestionToken])
 
 const LOW_COMPLEXITY_THRESHOLD = 5
 const MODERATE_COMPLEXITY_THRESHOLD = 10
