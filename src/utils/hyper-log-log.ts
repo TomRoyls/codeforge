@@ -18,8 +18,8 @@ export class HyperLogLog {
   add(value: string): void {
     const hash = this.hashString(value)
     const index = hash >>> (32 - this.precision)
-    const remaining = (hash << this.precision) | (hash >>> (32 - this.precision))
-    const rho = this.rho(remaining >>> 0)
+    const remaining = hash & ((1 << (32 - this.precision)) - 1)
+    const rho = this.rho(remaining)
     if (rho > this.registers[index]!) {
       this.registers[index] = rho
     }
@@ -37,10 +37,10 @@ export class HyperLogLog {
     let result: number
     if (raw <= 2.5 * this.m && zeros > 0) {
       result = this.m * Math.log(this.m / zeros)
-    } else if (raw <= (1 / 30) * (1 << 32)) {
+    } else if (raw <= (1 / 30) * 4294967296) {
       result = raw
     } else {
-      result = -(1 << 32) * Math.log(1 - raw / (1 << 32))
+      result = -4294967296 * Math.log(1 - raw / 4294967296)
     }
     return Math.round(result)
   }

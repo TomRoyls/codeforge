@@ -29,8 +29,8 @@ export class LinearProbingHashTable<K, V> {
     for (let i = 0; i < this.capacity; i++) {
       const pos = (idx + i) % this.capacity
       if (!this.occupied[pos]) {
-        if (this.deleted[pos] && firstDeleted === -1) {
-          firstDeleted = pos
+        if (this.deleted[pos]) {
+          if (firstDeleted === -1) firstDeleted = pos
           continue
         }
         const insertAt = firstDeleted !== -1 ? firstDeleted : pos

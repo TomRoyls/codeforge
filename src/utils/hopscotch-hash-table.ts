@@ -168,14 +168,13 @@ export class HopscotchHashTable<K, V> {
             const sourceIdx = (prevIdx + j) % this._entries.length
             const sourceEntry = this._entries[sourceIdx]
             if (sourceEntry !== null && sourceEntry !== undefined) {
-              const targetDist = (currentIdx - sourceIdx + this._entries.length) % this._entries.length
-              if (targetDist < this.segmentSize) {
-                const sourceIdealIdx = this.hash(sourceEntry.key) % this._entries.length
+              const sourceIdealIdx = this.hash(sourceEntry.key) % this._entries.length
+              const newOffset = (currentIdx - sourceIdealIdx + this._entries.length) % this._entries.length
+              if (newOffset < this.segmentSize) {
                 const oldOffset = (sourceIdx - sourceIdealIdx + this._entries.length) % this._entries.length
                 this.clearHopBit(sourceIdealIdx, oldOffset)
                 this._entries[currentIdx] = sourceEntry
                 this._entries[sourceIdx] = null
-                const newOffset = (currentIdx - sourceIdealIdx + this._entries.length) % this._entries.length
                 this.setHopBit(sourceIdealIdx, newOffset)
                 currentIdx = sourceIdx
                 currentDist = (currentIdx - startIdx + this._entries.length) % this._entries.length
