@@ -9,9 +9,7 @@ export interface RopeNode {
 
 function nodeWeight(node: RopeNode): number {
   if (node.text !== undefined) return node.text.length
-  let w = 0
-  if (node.left) w += subtreeLength(node.left)
-  return w
+  return node.weight
 }
 
 function subtreeLength(node: RopeNode): number {
@@ -49,7 +47,7 @@ function splitNode(node: RopeNode, i: number): [RopeNode | undefined, RopeNode |
     return [makeLeaf(node.text.slice(0, i)), makeLeaf(node.text.slice(i))]
   }
 
-  const leftLen = node.left ? subtreeLength(node.left) : 0
+  const leftLen = node.weight
 
   if (i < leftLen) {
     const [ll, lr] = node.left ? splitNode(node.left, i) : [undefined, undefined]
@@ -125,7 +123,7 @@ export class Rope {
     if (node.text !== undefined) {
       return node.text[i]!
     }
-    const leftLen = node.left ? subtreeLength(node.left) : 0
+    const leftLen = node.weight
     if (i < leftLen) {
       return this._index(node.left, i)
     }
