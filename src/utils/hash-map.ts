@@ -121,6 +121,7 @@ export class HashMap<K, V> {
         const target = firstTombstone !== -1 ? firstTombstone : j
         this.table[target] = { key, value }
         this._size++
+        if (firstTombstone !== -1) this.tombstoneCount--
         return
       } else if (this._keyEqual(slot.key, key)) {
         slot.value = value
