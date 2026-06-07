@@ -7,8 +7,7 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
     expect(ep.type).toBe('circuit')
-    const edgeCount = adj.reduce((s, n) => s + n.length, 0)
-    expect(ep.path.length).toBe(edgeCount + 1)
+    expect(ep.path.length).toBe(4)
   })
 
   it('finds eulerian path in line graph', () => {
@@ -16,8 +15,7 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
     expect(ep.type).toBe('path')
-    const edgeCount = adj.reduce((s, n) => s + n.length, 0)
-    expect(ep.path.length).toBe(edgeCount + 1)
+    expect(ep.path.length).toBe(3)
   })
 
   it('returns none for graph with too many odd vertices', () => {
@@ -44,6 +42,7 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
     expect(ep.type).toBe('path')
+    expect(ep.path.length).toBe(2)
   })
 
   it('handles cycle graph', () => {
@@ -51,6 +50,7 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
     expect(ep.type).toBe('circuit')
+    expect(ep.path.length).toBe(5)
   })
 
   it('static hasEulerianCircuit works', () => {
@@ -63,11 +63,20 @@ describe('EulerianPath', () => {
     expect(EulerianPath.hasEulerianPath([[1, 2, 3], [0], [0], [0]])).toBe(false)
   })
 
-  it('path visits all edges', () => {
+  it('path visits all edges exactly once', () => {
     const adj = [[1, 2], [0, 2], [0, 1]]
     const ep = new EulerianPath(adj)
-    const edgeCount = adj.reduce((s, n) => s + n.length, 0)
-    expect(ep.path.length).toBe(edgeCount + 1)
+    expect(ep.isEulerian).toBe(true)
+    expect(ep.path.length).toBe(4)
+    const visitedEdges = new Set<string>()
+    for (let i = 0; i < ep.path.length - 1; i++) {
+      const u = ep.path[i]!
+      const v = ep.path[i + 1]!
+      const key = u < v ? `${u}-${v}` : `${v}-${u}`
+      expect(visitedEdges.has(key)).toBe(false)
+      visitedEdges.add(key)
+    }
+    expect(visitedEdges.size).toBe(3)
   })
 
   it('handles graph with isolated nodes', () => {
@@ -94,8 +103,7 @@ describe('EulerianPath', () => {
     const adj = [[1, 2, 3], [0, 2], [0, 1, 3], [0, 2]]
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
-    const edgeCount = adj.reduce((s, n) => s + n.length, 0)
-    expect(ep.path.length).toBe(edgeCount + 1)
+    expect(ep.path.length).toBe(6)
   })
 
   it('handles larger complete graph', () => {
@@ -108,24 +116,6 @@ describe('EulerianPath', () => {
     const adj = [[1], [0], [3], [2]]
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(false)
-  })
-
-  it('handles single node', () => {
-    const adj = [[]]
-    const ep = new EulerianPath(adj)
-    expect(ep.isEulerian).toBe(true)
-  })
-
-  it('two disconnected edges not eulerian', () => {
-    const adj = [[1], [0], [3], [2]]
-    const ep = new EulerianPath(adj)
-    expect(ep.isEulerian).toBe(false)
-  })
-
-  it('single node graph is eulerian', () => {
-    const adj = [[]]
-    const ep = new EulerianPath(adj)
-    expect(ep.isEulerian).toBe(true)
   })
 
   it('non-eulerian graph', () => {
@@ -153,11 +143,31 @@ describe('EulerianPath', () => {
     expect(ep.type).toBe('circuit')
   })
 
-  it('getPath returns correct length', () => {
-    const adj = [[1, 2], [3], [3], []]
+  it('circuit path starts and ends at same node', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
     const ep = new EulerianPath(adj)
-    if (ep.isEulerian) {
-      expect(ep.getPath().length).toBeGreaterThan(0)
-    }
+    expect(ep.isEulerian).toBe(true)
+    expect(ep.type).toBe('circuit')
+    expect(ep.path[0]).toBe(ep.path[ep.path.length - 1])
+  })
+
+  it('k5 complete graph has eulerian circuit', () => {
+    const adj = [
+      [1, 2, 3, 4],
+      [0, 2, 3, 4],
+      [0, 1, 3, 4],
+      [0, 1, 2, 4],
+      [0, 1, 2, 3],
+    ]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
+    expect(ep.type).toBe('circuit')
+    expect(ep.path.length).toBe(11)
+  })
+
+  it('house graph has eulerian path', () => {
+    const adj = [[1, 2], [0, 2, 3], [0, 1, 4], [1, 4], [2, 3]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
   })
 })

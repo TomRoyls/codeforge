@@ -31,7 +31,8 @@ export class EulerianPath {
       return
     }
 
-    const edgeCount = adj.reduce((sum, neighbors) => sum + neighbors.length, 0)
+    const totalHalfEdges = adj.reduce((sum, neighbors) => sum + neighbors.length, 0)
+    const edgeCount = totalHalfEdges / 2
     if (edgeCount === 0) {
       this.path = []
       this.isEulerian = true
@@ -39,14 +40,17 @@ export class EulerianPath {
       return
     }
 
-    const adjCopy = adj.map(row => [...row])
+    const adjSets: Set<number>[] = adj.map(row => new Set(row))
     this.path = []
     const stack: number[] = [startNode]
 
     while (stack.length > 0) {
       const u = stack[stack.length - 1]!
-      if (adjCopy[u]!.length > 0) {
-        const v = adjCopy[u]!.pop()!
+      const neighbors = adjSets[u]!
+      if (neighbors.size > 0) {
+        const v = neighbors.values().next().value as number
+        neighbors.delete(v)
+        adjSets[v]!.delete(u)
         stack.push(v)
       } else {
         this.path.push(stack.pop()!)
