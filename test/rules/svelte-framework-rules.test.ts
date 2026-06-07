@@ -49,6 +49,7 @@ function createSourceFileMock(): MockNode {
 function makeNode(overrides: MockNode): MockNode {
   const sf = createSourceFileMock()
   return {
+    forEachChild: () => {},
     getEnd: () => 100,
     getKind: () => 0,
     getParent: () => ({}),
@@ -75,7 +76,7 @@ const emptyContext: MockNode = {
 describe('svelte/no-dom-manipulation', () => {
   function createDocumentCallNode(method: string): MockNode {
     const sf = createSourceFileMock()
-    const obj: MockNode = { getKind: () => SK.Identifier, getText: () => 'document' }
+    const obj: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'document' }
     const expression: MockNode = {
       getExpression: () => obj,
       getKind: () => SK.PropertyAccessExpression,
@@ -100,7 +101,7 @@ describe('svelte/no-dom-manipulation', () => {
     return makeNode({
       getKind: () => SK.BinaryExpression,
       getLeft: () => left,
-      getOperatorToken: () => ({ getText: () => operator }),
+      getOperatorToken: () => ({ forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => operator }),
       getSourceFile: () => sf,
     })
   }
@@ -198,7 +199,7 @@ describe('svelte/no-dom-manipulation', () => {
     const result = noDomManipulationRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const obj: MockNode = { getKind: () => SK.Identifier, getText: () => 'element' }
+    const obj: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'element' }
     const expression: MockNode = {
       getExpression: () => obj,
       getKind: () => SK.PropertyAccessExpression,
@@ -226,7 +227,7 @@ describe('svelte/no-dom-manipulation', () => {
     const result = noDomManipulationRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const expression: MockNode = { getKind: () => SK.Identifier, getText: () => 'fn' }
+    const expression: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'fn' }
     const node = makeNode({
       getExpression: () => expression,
       getKind: () => SK.CallExpression,
@@ -256,7 +257,7 @@ describe('svelte/no-dom-manipulation', () => {
     const node = makeNode({
       getKind: () => SK.BinaryExpression,
       getLeft: () => left,
-      getOperatorToken: () => ({ getText: () => '=' }),
+      getOperatorToken: () => ({ forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '=' }),
     })
 
     visitor.visitNode!(node, emptyContext)
@@ -267,7 +268,7 @@ describe('svelte/no-dom-manipulation', () => {
     const result = noDomManipulationRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    visitor.visitNode!(makeNode({ getKind: () => SK.Identifier }), emptyContext)
+    visitor.visitNode!(makeNode({ forEachChild: () => {}, getKind: () => SK.Identifier }), emptyContext)
     expect(result.onComplete!()).toHaveLength(0)
   })
 
@@ -275,7 +276,7 @@ describe('svelte/no-dom-manipulation', () => {
     const result = noDomManipulationRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const obj: MockNode = { getKind: () => SK.CallExpression, getText: () => 'getDoc()' }
+    const obj: MockNode = { forEachChild: () => {}, getKind: () => SK.CallExpression, getText: () => 'getDoc()' }
     const expression: MockNode = {
       getExpression: () => obj,
       getKind: () => SK.PropertyAccessExpression,
@@ -294,11 +295,11 @@ describe('svelte/no-dom-manipulation', () => {
     const result = noDomManipulationRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const left: MockNode = { getKind: () => SK.Identifier, getText: () => 'x' }
+    const left: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'x' }
     const node = makeNode({
       getKind: () => SK.BinaryExpression,
       getLeft: () => left,
-      getOperatorToken: () => ({ getText: () => '=' }),
+      getOperatorToken: () => ({ forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '=' }),
     })
 
     visitor.visitNode!(node, emptyContext)
@@ -357,7 +358,7 @@ describe('svelte/no-reactive-assignments', () => {
     rightChildren: MockNode[] = [],
   ): MockNode {
     const sf = createSourceFileMock()
-    const label: MockNode = { getText: () => '$' }
+    const label: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '$' }
 
     const right: MockNode = {
       forEachChild: (cb: (n: MockNode) => void) => {
@@ -368,10 +369,10 @@ describe('svelte/no-reactive-assignments', () => {
       getKind: () => rightIsIdentifier ? SK.Identifier : SK.BinaryExpression,
       getText: () => rightText,
     }
-    const left: MockNode = { getKind: () => SK.Identifier, getText: () => leftName }
+    const left: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => leftName }
     const binaryExpr: MockNode = {
       getLeft: () => left,
-      getOperatorToken: () => ({ getText: () => operator }),
+      getOperatorToken: () => ({ forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => operator }),
       getRight: () => right,
       getKind: () => SK.BinaryExpression,
     }
@@ -389,7 +390,7 @@ describe('svelte/no-reactive-assignments', () => {
   }
 
   it('reports self-referencing reactive assignment', () => {
-    const rightId: MockNode = { getKind: () => SK.Identifier, getText: () => 'count' }
+    const rightId: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'count' }
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
@@ -421,7 +422,7 @@ describe('svelte/no-reactive-assignments', () => {
   })
 
   it('reports self-referencing with += operator', () => {
-    const rightId: MockNode = { getKind: () => SK.Identifier, getText: () => 'total' }
+    const rightId: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'total' }
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
@@ -434,7 +435,7 @@ describe('svelte/no-reactive-assignments', () => {
   })
 
   it('reports self-referencing with -= operator', () => {
-    const rightId: MockNode = { getKind: () => SK.Identifier, getText: () => 'value' }
+    const rightId: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'value' }
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
@@ -447,7 +448,7 @@ describe('svelte/no-reactive-assignments', () => {
   })
 
   it('does not report non-self-referencing reactive assignment', () => {
-    const otherId: MockNode = { getKind: () => SK.Identifier, getText: () => 'otherValue' }
+    const otherId: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'otherValue' }
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
@@ -463,7 +464,7 @@ describe('svelte/no-reactive-assignments', () => {
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const label: MockNode = { getText: () => 'loop' }
+    const label: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'loop' }
     const node = makeNode({
       getKind: () => SK.LabeledStatement,
       getLabel: () => label,
@@ -477,8 +478,8 @@ describe('svelte/no-reactive-assignments', () => {
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const label: MockNode = { getText: () => '$' }
-    const statement: MockNode = { getKind: () => SK.Block }
+    const label: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '$' }
+    const statement: MockNode = { forEachChild: () => {}, getKind: () => SK.Block }
     const node = makeNode({
       getKind: () => SK.LabeledStatement,
       getLabel: () => label,
@@ -493,8 +494,8 @@ describe('svelte/no-reactive-assignments', () => {
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const label: MockNode = { getText: () => '$' }
-    const expr: MockNode = { getKind: () => SK.CallExpression }
+    const label: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '$' }
+    const expr: MockNode = { forEachChild: () => {}, getKind: () => SK.CallExpression }
     const statement: MockNode = {
       getExpression: () => expr,
       getKind: () => SK.ExpressionStatement,
@@ -513,11 +514,11 @@ describe('svelte/no-reactive-assignments', () => {
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const left: MockNode = { getKind: () => SK.Identifier, getText: () => 'x' }
-    const right: MockNode = { getKind: () => SK.Identifier, getText: () => 'x', forEachChild: () => {} }
+    const left: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'x' }
+    const right: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'x', forEachChild: () => {} }
     const binaryExpr: MockNode = {
       getLeft: () => left,
-      getOperatorToken: () => ({ getText: () => '===' }),
+      getOperatorToken: () => ({ forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '===' }),
       getRight: () => right,
       getKind: () => SK.BinaryExpression,
     }
@@ -525,7 +526,7 @@ describe('svelte/no-reactive-assignments', () => {
       getExpression: () => binaryExpr,
       getKind: () => SK.ExpressionStatement,
     }
-    const label: MockNode = { getText: () => '$' }
+    const label: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '$' }
     const node = makeNode({
       getKind: () => SK.LabeledStatement,
       getLabel: () => label,
@@ -540,11 +541,11 @@ describe('svelte/no-reactive-assignments', () => {
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const left: MockNode = { getKind: () => SK.PropertyAccessExpression, getText: () => 'obj.x' }
-    const right: MockNode = { getKind: () => SK.Identifier, getText: () => 'val', forEachChild: () => {} }
+    const left: MockNode = { forEachChild: () => {}, getKind: () => SK.PropertyAccessExpression, getText: () => 'obj.x' }
+    const right: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'val', forEachChild: () => {} }
     const binaryExpr: MockNode = {
       getLeft: () => left,
-      getOperatorToken: () => ({ getText: () => '=' }),
+      getOperatorToken: () => ({ forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '=' }),
       getRight: () => right,
       getKind: () => SK.BinaryExpression,
     }
@@ -552,7 +553,7 @@ describe('svelte/no-reactive-assignments', () => {
       getExpression: () => binaryExpr,
       getKind: () => SK.ExpressionStatement,
     }
-    const label: MockNode = { getText: () => '$' }
+    const label: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => '$' }
     const node = makeNode({
       getKind: () => SK.LabeledStatement,
       getLabel: () => label,
@@ -567,13 +568,13 @@ describe('svelte/no-reactive-assignments', () => {
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    visitor.visitNode!(makeNode({ getKind: () => SK.Identifier }), emptyContext)
+    visitor.visitNode!(makeNode({ forEachChild: () => {}, getKind: () => SK.Identifier }), emptyContext)
     expect(result.onComplete!()).toHaveLength(0)
   })
 
   it('reports multiple self-referencing assignments', () => {
-    const rightId1: MockNode = { getKind: () => SK.Identifier, getText: () => 'x' }
-    const rightId2: MockNode = { getKind: () => SK.Identifier, getText: () => 'y' }
+    const rightId1: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'x' }
+    const rightId2: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'y' }
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
@@ -584,7 +585,7 @@ describe('svelte/no-reactive-assignments', () => {
   })
 
   it('includes suggestion in violation', () => {
-    const rightId: MockNode = { getKind: () => SK.Identifier, getText: () => 'count' }
+    const rightId: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'count' }
     const result = noReactiveAssignmentsRule.create({})
     const visitor = looseVisitor(result.visitor)
 
@@ -615,7 +616,7 @@ describe('svelte/no-unused-store', () => {
     moduleSource: string,
   ): MockNode {
     const sf = createSourceFileMock()
-    const nameNode: MockNode = { getKind: () => SK.Identifier, getText: () => storeName }
+    const nameNode: MockNode = makeNode({ getKind: () => SK.Identifier, getSourceFile: () => sf, getText: () => storeName })
     const importDecl: MockNode = {
       getModuleSpecifierValue: () => moduleSource,
     }
@@ -653,9 +654,9 @@ describe('svelte/no-unused-store', () => {
     const result = noUnusedStoreRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const importParent: MockNode = { getKind: () => SK.ImportSpecifier }
+    const importParent: MockNode = { forEachChild: () => {}, getKind: () => SK.ImportSpecifier }
     visitor.visitNode!(createImportSpecifierNode('userStore', 'svelte/store'), emptyContext)
-    visitor.visitNode!(createIdentifierNode('userStore', { getKind: () => SK.CallExpression }), emptyContext)
+    visitor.visitNode!(createIdentifierNode('userStore', { forEachChild: () => {}, getKind: () => SK.CallExpression }), emptyContext)
 
     expect(result.onComplete!()).toHaveLength(0)
   })
@@ -705,7 +706,7 @@ describe('svelte/no-unused-store', () => {
 
     visitor.visitNode!(createImportSpecifierNode('usedStore', 'svelte/store'), emptyContext)
     visitor.visitNode!(createImportSpecifierNode('unusedStore', 'svelte/store'), emptyContext)
-    visitor.visitNode!(createIdentifierNode('usedStore', { getKind: () => SK.CallExpression }), emptyContext)
+    visitor.visitNode!(createIdentifierNode('usedStore', { forEachChild: () => {}, getKind: () => SK.CallExpression }), emptyContext)
 
     const violations = result.onComplete!()
     expect(violations).toHaveLength(1)
@@ -716,7 +717,7 @@ describe('svelte/no-unused-store', () => {
     const result = noUnusedStoreRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    visitor.visitNode!(makeNode({ getKind: () => SK.ClassDeclaration }), emptyContext)
+    visitor.visitNode!(makeNode({ forEachChild: () => {}, getKind: () => SK.ClassDeclaration }), emptyContext)
     expect(result.onComplete!()).toHaveLength(0)
   })
 
@@ -728,7 +729,7 @@ describe('svelte/no-unused-store', () => {
     const node = makeNode({
       getImportDeclaration: () => importDecl,
       getKind: () => SK.ImportSpecifier,
-      getNameNode: () => ({ getKind: () => SK.StringLiteral }),
+      getNameNode: () => ({ forEachChild: () => {}, getKind: () => SK.StringLiteral }),
     })
 
     visitor.visitNode!(node, emptyContext)
@@ -754,7 +755,7 @@ describe('svelte/no-unused-store', () => {
 
     visitor.visitNode!(createImportSpecifierNode('myStore', 'svelte/store'), emptyContext)
 
-    const importSpecifierParent: MockNode = { getKind: () => SK.ImportSpecifier }
+    const importSpecifierParent: MockNode = { forEachChild: () => {}, getKind: () => SK.ImportSpecifier }
     const idNode = createIdentifierNode('myStore', importSpecifierParent)
     visitor.visitNode!(idNode, emptyContext)
 
@@ -857,14 +858,14 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const callee: MockNode = { getKind: () => SK.Identifier, getText: () => 'handleClick' }
+    const callee: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'handleClick' }
     const body: MockNode = {
       getArguments: () => [],
       getExpression: () => callee,
       getKind: () => SK.CallExpression,
     }
     const arrowFn: MockNode = {
-      getBody: () => body,
+      getBody: () => body, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [],
     }
@@ -872,7 +873,7 @@ describe('svelte/prefer-inline-handler', () => {
       getExpression: () => arrowFn,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -893,8 +894,8 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const initializer: MockNode = { getKind: () => SK.Identifier, getText: () => 'handleClick' }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const initializer: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'handleClick' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => initializer,
       getKind: () => SK.JsxAttribute,
@@ -909,7 +910,7 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const callee: MockNode = { getKind: () => SK.Identifier, getText: () => 'handleClick' }
+    const callee: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'handleClick' }
     const body: MockNode = {
       getArguments: () => [],
       getExpression: () => callee,
@@ -917,7 +918,7 @@ describe('svelte/prefer-inline-handler', () => {
     }
     const eventParam: MockNode = { getName: () => 'event' }
     const arrowFn: MockNode = {
-      getBody: () => body,
+      getBody: () => body, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [eventParam],
     }
@@ -925,7 +926,7 @@ describe('svelte/prefer-inline-handler', () => {
       getExpression: () => arrowFn,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -940,15 +941,15 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const arg: MockNode = { getKind: () => SK.Identifier, getText: () => 'item' }
-    const callee: MockNode = { getKind: () => SK.Identifier, getText: () => 'handleClick' }
+    const arg: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'item' }
+    const callee: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'handleClick' }
     const body: MockNode = {
       getArguments: () => [arg],
       getExpression: () => callee,
       getKind: () => SK.CallExpression,
     }
     const arrowFn: MockNode = {
-      getBody: () => body,
+      getBody: () => body, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [],
     }
@@ -956,7 +957,7 @@ describe('svelte/prefer-inline-handler', () => {
       getExpression: () => arrowFn,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -971,14 +972,14 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const callee: MockNode = { getKind: () => SK.Identifier, getText: () => 'handleClick' }
+    const callee: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'handleClick' }
     const body: MockNode = {
       getArguments: () => [],
       getExpression: () => callee,
       getKind: () => SK.CallExpression,
     }
     const arrowFn: MockNode = {
-      getBody: () => body,
+      getBody: () => body, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [],
     }
@@ -986,7 +987,7 @@ describe('svelte/prefer-inline-handler', () => {
       getExpression: () => arrowFn,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'onClick' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'onClick' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -1001,7 +1002,7 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => undefined,
       getKind: () => SK.JsxAttribute,
@@ -1016,8 +1017,8 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const initializer: MockNode = { getKind: () => SK.StringLiteral }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const initializer: MockNode = { forEachChild: () => {}, getKind: () => SK.StringLiteral }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => initializer,
       getKind: () => SK.JsxAttribute,
@@ -1036,7 +1037,7 @@ describe('svelte/prefer-inline-handler', () => {
       getExpression: () => undefined,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -1051,12 +1052,12 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const innerExpr: MockNode = { getKind: () => SK.CallExpression }
+    const innerExpr: MockNode = { forEachChild: () => {}, getKind: () => SK.CallExpression }
     const expression: MockNode = {
       getExpression: () => innerExpr,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -1071,9 +1072,9 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const body: MockNode = { getKind: () => SK.Identifier, getText: () => 'value' }
+    const body: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'value' }
     const arrowFn: MockNode = {
-      getBody: () => body,
+      getBody: () => body, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [],
     }
@@ -1081,7 +1082,7 @@ describe('svelte/prefer-inline-handler', () => {
       getExpression: () => arrowFn,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -1096,14 +1097,14 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const callee: MockNode = { getKind: () => SK.PropertyAccessExpression, getText: () => 'obj.method' }
+    const callee: MockNode = { forEachChild: () => {}, getKind: () => SK.PropertyAccessExpression, getText: () => 'obj.method' }
     const body: MockNode = {
       getArguments: () => [],
       getExpression: () => callee,
       getKind: () => SK.CallExpression,
     }
     const arrowFn: MockNode = {
-      getBody: () => body,
+      getBody: () => body, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [],
     }
@@ -1111,7 +1112,7 @@ describe('svelte/prefer-inline-handler', () => {
       getExpression: () => arrowFn,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -1126,14 +1127,14 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const callee: MockNode = { getKind: () => SK.Identifier, getText: () => 'doSomething' }
+    const callee: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'doSomething' }
     const body: MockNode = {
       getArguments: () => [],
       getExpression: () => callee,
       getKind: () => SK.CallExpression,
     }
     const arrowFn: MockNode = {
-      getBody: () => body,
+      getBody: () => body, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [],
     }
@@ -1141,7 +1142,7 @@ describe('svelte/prefer-inline-handler', () => {
       getExpression: () => arrowFn,
       getKind: () => SK.JsxExpression,
     }
-    const nameNode: MockNode = { getText: () => 'on:click' }
+    const nameNode: MockNode = { forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }
     const node = makeNode({
       getInitializer: () => expression,
       getKind: () => SK.JsxAttribute,
@@ -1158,14 +1159,14 @@ describe('svelte/prefer-inline-handler', () => {
     const result = preferInlineHandlerRule.create({})
     const visitor = looseVisitor(result.visitor)
 
-    const callee1: MockNode = { getKind: () => SK.Identifier, getText: () => 'handler1' }
+    const callee1: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'handler1' }
     const body1: MockNode = {
       getArguments: () => [],
       getExpression: () => callee1,
       getKind: () => SK.CallExpression,
     }
     const arrowFn1: MockNode = {
-      getBody: () => body1,
+      getBody: () => body1, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [],
     }
@@ -1176,17 +1177,17 @@ describe('svelte/prefer-inline-handler', () => {
     const node1 = makeNode({
       getInitializer: () => expr1,
       getKind: () => SK.JsxAttribute,
-      getNameNode: () => ({ getText: () => 'on:click' }),
+      getNameNode: () => ({ forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:click' }),
     })
 
-    const callee2: MockNode = { getKind: () => SK.Identifier, getText: () => 'handler2' }
+    const callee2: MockNode = { forEachChild: () => {}, getKind: () => SK.Identifier, getText: () => 'handler2' }
     const body2: MockNode = {
       getArguments: () => [],
       getExpression: () => callee2,
       getKind: () => SK.CallExpression,
     }
     const arrowFn2: MockNode = {
-      getBody: () => body2,
+      getBody: () => body2, getSourceFile: () => createSourceFileMock(),
       getKind: () => SK.ArrowFunction,
       getParameters: () => [],
     }
@@ -1197,7 +1198,7 @@ describe('svelte/prefer-inline-handler', () => {
     const node2 = makeNode({
       getInitializer: () => expr2,
       getKind: () => SK.JsxAttribute,
-      getNameNode: () => ({ getText: () => 'on:hover' }),
+      getNameNode: () => ({ forEachChild: () => {}, getSourceFile: () => createSourceFileMock(), getText: () => 'on:hover' }),
     })
 
     visitor.visitNode!(node1, emptyContext)

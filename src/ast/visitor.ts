@@ -97,20 +97,32 @@ export function getNodePosition(node: Node): Position {
 }
 
 export function getNodeRange(node: Node): Range {
-  const sourceFile = node.getSourceFile()
-  const start = node.getStart()
-  const end = node.getEnd()
-  const startPosition = sourceFile.getLineAndColumnAtPos(start)
-  const endPosition = sourceFile.getLineAndColumnAtPos(end)
-  return {
-    end: {
-      column: endPosition.column,
-      line: endPosition.line,
-    },
-    start: {
-      column: startPosition.column,
-      line: startPosition.line,
-    },
+  try {
+    const sourceFile = node.getSourceFile()
+    const start = node.getStart()
+    const end = node.getEnd()
+    const startPosition = sourceFile.getLineAndColumnAtPos(start)
+    const endPosition = sourceFile.getLineAndColumnAtPos(end)
+    return {
+      end: {
+        column: endPosition.column,
+        line: endPosition.line,
+      },
+      start: {
+        column: startPosition.column,
+        line: startPosition.line,
+      },
+    }
+  } catch {
+    return { end: { column: 0, line: 1 }, start: { column: 0, line: 1 } }
+  }
+}
+
+export function getNodeFilePath(node: Node): string {
+  try {
+    return node.getSourceFile().getFilePath()
+  } catch {
+    return 'unknown'
   }
 }
 

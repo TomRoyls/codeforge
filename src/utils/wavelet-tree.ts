@@ -5,8 +5,8 @@ export class WaveletTree {
 
   constructor(data: number[] | string, alphabet?: number[]) {
     this._isString = typeof data === 'string'
-    const numericData = this._isString
-      ? Array.from(data, (c) => c.charCodeAt(0))
+    const numericData: number[] = this._isString
+      ? Array.from(data as string, (c) => c.charCodeAt(0))
       : [...(data as number[])]
     this.data = numericData
     this._alphabet = alphabet

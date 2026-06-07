@@ -3,7 +3,7 @@ import { Node } from 'ts-morph'
 import type { RuleViolation, VisitorContext } from '../../../ast/visitor.js'
 import type { RuleDefinition, RuleOptions } from '../../types.js'
 
-import { getNodeRange } from '../../../ast/visitor.js'
+import { getNodeFilePath, getNodeRange } from '../../../ast/visitor.js'
 
 interface NoDomManipulationOptions extends RuleOptions {}
 
@@ -38,7 +38,7 @@ export const noDomManipulationRule: RuleDefinition<NoDomManipulationOptions> = {
                 if (DOM_PATTERNS.includes(method)) {
                   const range = getNodeRange(node)
                   violations.push({
-                    filePath: node.getSourceFile().getFilePath(),
+                    filePath: getNodeFilePath(node),
                     message: `Direct DOM manipulation '${obj.getText()}.${method}()' found. Use Svelte's reactivity instead.`,
                     range,
                     ruleId: 'svelte/no-dom-manipulation',
@@ -60,7 +60,7 @@ export const noDomManipulationRule: RuleDefinition<NoDomManipulationOptions> = {
               if (STYLE_ASSIGNMENT_PATTERN.test(leftText)) {
                 const range = getNodeRange(node)
                 violations.push({
-                  filePath: node.getSourceFile().getFilePath(),
+                  filePath: getNodeFilePath(node),
                   message: `Direct style manipulation '${leftText}' found. Use Svelte's style directives instead.`,
                   range,
                   ruleId: 'svelte/no-dom-manipulation',

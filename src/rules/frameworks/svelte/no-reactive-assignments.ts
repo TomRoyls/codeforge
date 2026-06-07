@@ -3,7 +3,7 @@ import { Node } from 'ts-morph'
 import type { RuleViolation, VisitorContext } from '../../../ast/visitor.js'
 import type { RuleDefinition, RuleOptions } from '../../types.js'
 
-import { getNodeRange } from '../../../ast/visitor.js'
+import { getNodeFilePath, getNodeRange } from '../../../ast/visitor.js'
 
 interface NoReactiveAssignmentsOptions extends RuleOptions {}
 
@@ -53,7 +53,7 @@ export const noReactiveAssignmentsRule: RuleDefinition<NoReactiveAssignmentsOpti
             if (rightIdentifiers.has(leftName) || rightText.includes(`$${leftName}`)) {
               const range = getNodeRange(node)
               violations.push({
-                filePath: node.getSourceFile().getFilePath(),
+                filePath: getNodeFilePath(node),
                 message: `Reactive assignment '${leftName}' depends on itself, which may cause an infinite loop.`,
                 range,
                 ruleId: 'svelte/no-reactive-assignments',

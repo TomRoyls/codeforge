@@ -3,7 +3,7 @@ import { Node } from 'ts-morph'
 import type { RuleViolation, VisitorContext } from '../../../ast/visitor.js'
 import type { RuleDefinition, RuleOptions } from '../../types.js'
 
-import { getNodeRange } from '../../../ast/visitor.js'
+import { getNodeFilePath, getNodeRange } from '../../../ast/visitor.js'
 
 interface NoUnusedStoreOptions extends RuleOptions {}
 
@@ -19,7 +19,7 @@ export const noUnusedStoreRule: RuleDefinition<NoUnusedStoreOptions> = {
           if (usedStores.has(name)) continue
           const range = getNodeRange(node)
           violations.push({
-            filePath: node.getSourceFile().getFilePath(),
+            filePath: getNodeFilePath(node),
             message: `Store '${name}' is imported but never used.`,
             range,
             ruleId: 'svelte/no-unused-store',

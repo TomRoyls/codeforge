@@ -3,7 +3,7 @@ import { Node } from 'ts-morph'
 import type { RuleViolation, VisitorContext } from '../../../ast/visitor.js'
 import type { RuleDefinition, RuleOptions } from '../../types.js'
 
-import { getNodeRange } from '../../../ast/visitor.js'
+import { getNodeFilePath, getNodeRange } from '../../../ast/visitor.js'
 
 interface PreferInlineHandlerOptions extends RuleOptions {}
 
@@ -24,8 +24,8 @@ export const preferInlineHandlerRule: RuleDefinition<PreferInlineHandlerOptions>
             while ((match = handlerPattern.exec(text)) !== null) {
               const range = getNodeRange(node)
               violations.push({
-                filePath: node.getSourceFile().getFilePath(),
-                message: `Event handler '${match[1]}' uses an arrow function wrapper for a simple call.`,
+                filePath: getNodeFilePath(node),
+                message: `Event handler '${match[1]}' uses an arrow function wrapper for a simple call to '${match[2]}'.`,
                 range,
                 ruleId: 'svelte/prefer-inline-handler',
                 severity: 'info',
@@ -58,7 +58,7 @@ export const preferInlineHandlerRule: RuleDefinition<PreferInlineHandlerOptions>
                     if (Node.isIdentifier(callee)) {
                       const range = getNodeRange(expression)
                       violations.push({
-                        filePath: node.getSourceFile().getFilePath(),
+                        filePath: getNodeFilePath(node),
                         message: `Event handler '${name}' uses an arrow function wrapper for a simple call to '${callee.getText()}'.`,
                         range,
                         ruleId: 'svelte/prefer-inline-handler',
