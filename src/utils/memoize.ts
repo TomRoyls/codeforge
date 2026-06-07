@@ -20,7 +20,7 @@ export function memoize<A extends unknown[], R>(
   const opts = { ...DEFAULT_OPTIONS, ...options }
   const cache = new Map<string, CacheEntry<R>>()
 
-  return function (this: unknown, ...args: A): R {
+  const memoized = function (this: unknown, ...args: A): R {
     const key = serializeArgs(args)
 
     const entry = cache.get(key)
@@ -46,7 +46,10 @@ export function memoize<A extends unknown[], R>(
     })
 
     return value
-  }
+  } as ((...args: A) => R) & { _cache: Map<string, CacheEntry<R>> }
+
+  memoized._cache = cache
+  return memoized
 }
 
 function serializeArgs(args: unknown[]): string {
