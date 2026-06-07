@@ -97,8 +97,7 @@ export class ConsistentHash<T> {
     if (this._nodeCount !== other._nodeCount) return false
     if (this.ring.size !== other.ring.size) return false
     for (const [hash, node] of this.ring) {
-      if (this.ring.get(hash) !== other.ring.get(hash)) return false
-      void node
+      if (other.ring.get(hash) !== node) return false
     }
     return true
   }
