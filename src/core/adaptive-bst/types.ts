@@ -12,4 +12,5 @@ export interface AdaptiveBSTNode<T> {
   right: AdaptiveBSTNode<T> | null
   parent: AdaptiveBSTNode<T> | null
   priority: number
+  insertId: number
 }

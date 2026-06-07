@@ -12,6 +12,7 @@ export class AdaptiveBST<T> {
   private _root: AdaptiveBSTNode<T> | null
   private _size: number
   private readonly _comparator: Comparator<T>
+  private _insertCounter: number = 0
 
   constructor(options?: AdaptiveBSTOptions<T>) {
     this._comparator = options?.comparator ?? defaultComparator
@@ -26,6 +27,7 @@ export class AdaptiveBST<T> {
       right: null,
       parent: null,
       priority: randomPriority(),
+      insertId: this._insertCounter++,
     }
     if (this._root === null) {
       this._root = node
@@ -62,7 +64,6 @@ export class AdaptiveBST<T> {
 
   private _bubbleUp(node: AdaptiveBSTNode<T>): void {
     while (node.parent !== null && node.priority < node.parent.priority) {
-      if (this._comparator(node.value, node.parent.value) === 0) break
       if (node.parent.left === node) {
         this._rotateRight(node.parent)
       } else {
@@ -334,11 +335,13 @@ export class AdaptiveBST<T> {
   private _isValidBST(node: AdaptiveBSTNode<T> | null): boolean {
     if (node === null) return true
     if (node.left !== null) {
-      if (this._comparator(node.left.value, node.value) >= 0) return false
+      const cmp = this._comparator(node.left.value, node.value)
+      if (cmp > 0 || (cmp === 0 && node.left.insertId >= node.insertId)) return false
       if (node.left.parent !== node) return false
     }
     if (node.right !== null) {
-      if (this._comparator(node.right.value, node.value) < 0) return false
+      const cmp = this._comparator(node.right.value, node.value)
+      if (cmp < 0 || (cmp === 0 && node.right.insertId <= node.insertId)) return false
       if (node.right.parent !== node) return false
     }
     return this._isValidBST(node.left) && this._isValidBST(node.right)
