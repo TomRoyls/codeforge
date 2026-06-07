@@ -87,4 +87,36 @@ export class BiconnectedComponents {
     }
     return ap.reduce((acc, v, i) => { if (v) acc.push(i); return acc }, [] as number[])
   }
+
+  toString(): string {
+    return `BiconnectedComponents(n=${this.n})`
+  }
+
+  toJSON(): unknown {
+    return {
+      n: this.n,
+      adj: this.adj.map(row => [...row]),
+    }
+  }
+
+  clone(): this {
+    const c = new BiconnectedComponents(this.n)
+    c.adj = this.adj.map(row => [...row])
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BiconnectedComponents)) return false
+    if (this.n !== other.n) return false
+    if (this.adj.length !== other.adj.length) return false
+    for (let i = 0; i < this.adj.length; i++) {
+      const a = new Set(this.adj[i]!)
+      const b = new Set(other.adj[i]!)
+      if (a.size !== b.size) return false
+      for (const v of a) {
+        if (!b.has(v)) return false
+      }
+    }
+    return true
+  }
 }

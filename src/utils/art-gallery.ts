@@ -107,4 +107,29 @@ export class ArtGallery {
     const [bx, by] = this.points[b]!
     return (px - bx) * (ay - by) - (ax - bx) * (py - by)
   }
+
+  toString(): string {
+    return `ArtGallery(points=${this.points.length})`
+  }
+
+  toJSON(): [number, number][] {
+    return this.points.map(p => [p[0], p[1]])
+  }
+
+  clone(): this {
+    const c = new ArtGallery()
+    c.points = this.points.map(p => [p[0], p[1]])
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof ArtGallery)) return false
+    if (this.points.length !== other.points.length) return false
+    for (let i = 0; i < this.points.length; i++) {
+      const a = this.points[i]!
+      const b = other.points[i]!
+      if (a[0] !== b[0] || a[1] !== b[1]) return false
+    }
+    return true
+  }
 }

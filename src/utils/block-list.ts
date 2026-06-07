@@ -88,4 +88,28 @@ export class BlockList<T> {
   *[Symbol.iterator](): Iterator<T> {
     for (const block of this.blocks) yield* block
   }
+
+  toString(): string {
+    return `[${this.toArray().map(v => String(v)).join(', ')}]`
+  }
+
+  toJSON(): T[] {
+    return this.toArray()
+  }
+
+  clone(): this {
+    return BlockList.from(this.toArray(), this.blockSize) as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BlockList)) return false
+    if (this.count !== other.count) return false
+    if (this.blockSize !== other.blockSize) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i], b[i])) return false
+    }
+    return true
+  }
 }

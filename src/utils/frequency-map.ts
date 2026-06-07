@@ -188,6 +188,23 @@ export class FrequencyMap<T> {
       }
     })
   }
+
+  toString(): string {
+    return `FrequencyMap(${this.counts.size} unique, ${this.total} total)`
+  }
+
+  toJSON(): FrequencyEntry<T>[] {
+    return this.entries()
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof FrequencyMap)) return false
+    if (this.counts.size !== other.counts.size) return false
+    for (const [key, count] of this.counts) {
+      if (other.counts.get(key) !== count) return false
+    }
+    return true
+  }
 }
 
 

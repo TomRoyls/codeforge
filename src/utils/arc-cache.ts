@@ -142,4 +142,54 @@ export class ARCCache<K, V> {
       }
     }
   }
+
+  toString(): string {
+    return `ARCCache(capacity=${this.capacity}, size=${this.size})`
+  }
+
+  toJSON(): unknown {
+    return {
+      capacity: this.capacity,
+      p: this.p,
+      t1: [...this.t1.entries()],
+      t2: [...this.t2.entries()],
+      b1: [...this.b1],
+      b2: [...this.b2],
+    }
+  }
+
+  clone(): this {
+    const c = new ARCCache<K, V>(this.capacity)
+    c.p = this.p
+    c.t1 = new Map(this.t1)
+    c.t2 = new Map(this.t2)
+    c.b1 = new Set(this.b1)
+    c.b2 = new Set(this.b2)
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof ARCCache)) return false
+    if (this.capacity !== other.capacity) return false
+    if (this.p !== other.p) return false
+    if (this.t1.size !== other.t1.size) return false
+    for (const [k, v] of this.t1) {
+      const ov = other.t1.get(k)
+      if (!Object.is(ov, v)) return false
+    }
+    if (this.t2.size !== other.t2.size) return false
+    for (const [k, v] of this.t2) {
+      const ov = other.t2.get(k)
+      if (!Object.is(ov, v)) return false
+    }
+    if (this.b1.size !== other.b1.size) return false
+    for (const k of this.b1) {
+      if (!other.b1.has(k)) return false
+    }
+    if (this.b2.size !== other.b2.size) return false
+    for (const k of this.b2) {
+      if (!other.b2.has(k)) return false
+    }
+    return true
+  }
 }

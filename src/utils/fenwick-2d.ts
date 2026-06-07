@@ -74,4 +74,41 @@ export class FenwickTree2D {
     const current = this.get(row, col);
     this.update(row, col, value - current);
   }
+
+  toString(): string {
+    return `FenwickTree2D(${this.rows}x${this.cols})`;
+  }
+
+  toJSON(): { rows: number; cols: number; data: number[][] } {
+    const data: number[][] = [];
+    for (let i = 0; i < this.rows; i++) {
+      const row: number[] = [];
+      for (let j = 0; j < this.cols; j++) {
+        row.push(this.get(i, j));
+      }
+      data.push(row);
+    }
+    return { rows: this.rows, cols: this.cols, data };
+  }
+
+  clone(): FenwickTree2D {
+    const copy = new FenwickTree2D(this.rows, this.cols);
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        copy.set(i, j, this.get(i, j));
+      }
+    }
+    return copy;
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof FenwickTree2D)) return false;
+    if (this.rows !== other.rows || this.cols !== other.cols) return false;
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        if (this.get(i, j) !== other.get(i, j)) return false;
+      }
+    }
+    return true;
+  }
 }

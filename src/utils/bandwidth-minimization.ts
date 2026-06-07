@@ -62,4 +62,37 @@ export class BandwidthMinimization {
     }
     return best
   }
+
+  toString(): string {
+    return `BandwidthMinimization(n=${this.n})`
+  }
+
+  toJSON(): unknown {
+    return {
+      n: this.n,
+      adj: this.adj.map(row => [...row]),
+    }
+  }
+
+  clone(): this {
+    const c = new BandwidthMinimization(this.n)
+    c.adj = this.adj.map(row => [...row])
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BandwidthMinimization)) return false
+    if (this.n !== other.n) return false
+    if (this.adj.length !== other.adj.length) return false
+    for (let i = 0; i < this.adj.length; i++) {
+      const a = this.adj[i]!
+      const b = other.adj[i]!
+      if (a.length !== b.length) return false
+      const aset = new Set(a)
+      for (const v of b) {
+        if (!aset.has(v)) return false
+      }
+    }
+    return true
+  }
 }

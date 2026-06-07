@@ -76,4 +76,34 @@ export class BimodalMap<K, V> {
     this.mutable = new Map()
     this.deleted.clear()
   }
+
+  toString(): string {
+    return `BimodalMap(size=${this.size})`
+  }
+
+  toJSON(): Array<[K, V]> {
+    const result: Array<[K, V]> = []
+    for (const [k, v] of this.entries()) {
+      result.push([k, v])
+    }
+    return result
+  }
+
+  clone(): this {
+    const c = new BimodalMap<K, V>()
+    c.frozen = this.frozen ? new Map(this.frozen) : null
+    c.mutable = new Map(this.mutable)
+    c.deleted = new Set(this.deleted)
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BimodalMap)) return false
+    if (this.size !== other.size) return false
+    for (const [k, v] of this.entries()) {
+      const ov = other.get(k)
+      if (!Object.is(ov, v)) return false
+    }
+    return true
+  }
 }

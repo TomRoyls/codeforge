@@ -101,4 +101,34 @@ export class BoundedDeque<T> {
     this.tail = 0
     this._size = 0
   }
+
+  toString(): string {
+    return `[${this.toArray().map(v => String(v)).join(', ')}]`
+  }
+
+  toJSON(): T[] {
+    return this.toArray()
+  }
+
+  clone(): this {
+    const c = new BoundedDeque<T>(this.capacity)
+    for (const v of this.toArray()) {
+      c.pushBack(v)
+    }
+    c._evictions = this._evictions
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BoundedDeque)) return false
+    if (this.capacity !== other.capacity) return false
+    if (this._size !== other._size) return false
+    if (this._evictions !== other._evictions) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i], b[i])) return false
+    }
+    return true
+  }
 }

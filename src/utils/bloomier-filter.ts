@@ -128,6 +128,49 @@ export class BloomierFilter<V extends number = number> {
     }
     return result
   }
+
+  toString(): string {
+    return `BloomierFilter(size=${this._size}, capacity=${this._capacity}, hashCount=${this._hashCount})`
+  }
+
+  toJSON(): unknown {
+    return {
+      capacity: this._capacity,
+      hashCount: this._hashCount,
+      seed: this._seed,
+      size: this._size,
+      keys: [...this._keys],
+      table: Array.from(this.table),
+    }
+  }
+
+  clone(): this {
+    const c = Object.create(BloomierFilter.prototype) as BloomierFilter<V>
+    ;(c as unknown as { table: Int32Array }).table = new Int32Array(this.table)
+    ;(c as unknown as { _capacity: number })._capacity = this._capacity
+    ;(c as unknown as { _hashCount: number })._hashCount = this._hashCount
+    ;(c as unknown as { _seed: number })._seed = this._seed
+    ;(c as unknown as { _size: number })._size = this._size
+    ;(c as unknown as { _keys: ReadonlySet<string> })._keys = new Set(this._keys)
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BloomierFilter)) return false
+    if (this._capacity !== other._capacity) return false
+    if (this._hashCount !== other._hashCount) return false
+    if (this._seed !== other._seed) return false
+    if (this._size !== other._size) return false
+    if (this.table.length !== other.table.length) return false
+    for (let i = 0; i < this.table.length; i++) {
+      if (this.table[i] !== other.table[i]) return false
+    }
+    if (this._keys.size !== other._keys.size) return false
+    for (const k of this._keys) {
+      if (!other._keys.has(k)) return false
+    }
+    return true
+  }
 }
 
 function tryConstruct(

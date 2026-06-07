@@ -175,4 +175,55 @@ export class BloomFilter3 {
     }
     return hash
   }
+
+  toString(): string {
+    return `BloomFilter3(partitions=${this.partitions.length}, added=${this._totalAdded})`
+  }
+
+  toJSON(): unknown {
+    return {
+      initialCapacity: this.initialCapacity,
+      baseErrorRate: this.baseErrorRate,
+      maxFillRatio: this.maxFillRatio,
+      partitions: this.partitions.map(p => Array.from(p)),
+      partitionCapacities: [...this.partitionCapacities],
+      partitionHashCounts: [...this.partitionHashCounts],
+      partitionSizes: [...this.partitionSizes],
+      partitionErrorRates: [...this.partitionErrorRates],
+      totalAdded: this._totalAdded,
+    }
+  }
+
+  clone(): this {
+    const c = new BloomFilter3({
+      initialCapacity: this.initialCapacity,
+      errorRate: this.baseErrorRate,
+      maxFillRatio: this.maxFillRatio,
+    })
+    c.partitions = this.partitions.map(p => new Uint8Array(p))
+    c.partitionCapacities = [...this.partitionCapacities]
+    c.partitionHashCounts = [...this.partitionHashCounts]
+    c.partitionSizes = [...this.partitionSizes]
+    c.partitionErrorRates = [...this.partitionErrorRates]
+    c._totalAdded = this._totalAdded
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BloomFilter3)) return false
+    if (this.initialCapacity !== other.initialCapacity) return false
+    if (this.baseErrorRate !== other.baseErrorRate) return false
+    if (this.maxFillRatio !== other.maxFillRatio) return false
+    if (this._totalAdded !== other._totalAdded) return false
+    if (this.partitions.length !== other.partitions.length) return false
+    for (let i = 0; i < this.partitions.length; i++) {
+      const a = this.partitions[i]!
+      const b = other.partitions[i]!
+      if (a.length !== b.length) return false
+      for (let j = 0; j < a.length; j++) {
+        if (a[j] !== b[j]) return false
+      }
+    }
+    return true
+  }
 }

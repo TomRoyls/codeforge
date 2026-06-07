@@ -63,4 +63,37 @@ export class BinaryIndexedTree2D {
   get colCount(): number {
     return this.cols
   }
+
+  toString(): string {
+    return `BinaryIndexedTree2D(rows=${this.rows}, cols=${this.cols})`
+  }
+
+  toJSON(): number[][] {
+    return this.tree.map(row => [...row])
+  }
+
+  clone(): this {
+    const c = new BinaryIndexedTree2D(this.rows, this.cols)
+    for (let i = 0; i < this.tree.length; i++) {
+      for (let j = 0; j < this.tree[i]!.length; j++) {
+        c.tree[i]![j] = this.tree[i]![j]
+      }
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BinaryIndexedTree2D)) return false
+    if (this.rows !== other.rows) return false
+    if (this.cols !== other.cols) return false
+    for (let i = 0; i < this.tree.length; i++) {
+      const a = this.tree[i]!
+      const b = other.tree[i]!
+      if (a.length !== b.length) return false
+      for (let j = 0; j < a.length; j++) {
+        if (a[j] !== b[j]) return false
+      }
+    }
+    return true
+  }
 }

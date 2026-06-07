@@ -119,4 +119,32 @@ export class BoundedPriorityQueue<T> {
     this.heap[a] = this.heap[b]!
     this.heap[b] = tmp
   }
+
+  toString(): string {
+    return `[${this.toArray().map(v => String(v)).join(', ')}]`
+  }
+
+  toJSON(): T[] {
+    return this.toArray()
+  }
+
+  clone(): this {
+    const c = new BoundedPriorityQueue<T>(this._maxSize, this.comparator)
+    for (const v of this.toArray()) {
+      c.push(v)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BoundedPriorityQueue)) return false
+    if (this._maxSize !== other._maxSize) return false
+    if (this.heap.length !== other.heap.length) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i], b[i])) return false
+    }
+    return true
+  }
 }

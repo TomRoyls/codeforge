@@ -65,4 +65,36 @@ export class BlockCutTree {
     }
     return { isArticulation: isAp, componentOf: components }
   }
+
+  toString(): string {
+    return `BlockCutTree(n=${this.n})`
+  }
+
+  toJSON(): unknown {
+    return {
+      n: this.n,
+      adj: this.adj.map(row => [...row]),
+    }
+  }
+
+  clone(): this {
+    const c = new BlockCutTree(this.n)
+    c.adj = this.adj.map(row => [...row])
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BlockCutTree)) return false
+    if (this.n !== other.n) return false
+    if (this.adj.length !== other.adj.length) return false
+    for (let i = 0; i < this.adj.length; i++) {
+      const a = new Set(this.adj[i]!)
+      const b = new Set(other.adj[i]!)
+      if (a.size !== b.size) return false
+      for (const v of a) {
+        if (!b.has(v)) return false
+      }
+    }
+    return true
+  }
 }

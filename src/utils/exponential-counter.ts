@@ -32,4 +32,23 @@ export class ExponentialCounter {
   merge(other: ExponentialCounter): void {
     this.count += other.count
   }
+
+  toString(): string {
+    return `ExponentialCounter(${this.count})`
+  }
+
+  toJSON(): { count: number; threshold: number } {
+    return { count: this.count, threshold: this.threshold }
+  }
+
+  clone(): ExponentialCounter {
+    const copy = new ExponentialCounter(this.threshold)
+    copy.count = this.count
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof ExponentialCounter)) return false
+    return this.count === other.count && this.threshold === other.threshold
+  }
 }

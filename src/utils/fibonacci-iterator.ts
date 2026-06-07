@@ -86,4 +86,30 @@ export class FibonacciIterator implements Iterator<bigint>, Iterable<bigint> {
     }
     return x
   }
+
+  toString(): string {
+    return `FibonacciIterator(count=${this.count}, max=${this.maxCount ?? '∞'})`
+  }
+
+  toJSON(): { prev: string; curr: string; count: number; maxCount: number | null } {
+    return {
+      prev: this.prev.toString(),
+      curr: this.curr.toString(),
+      count: this.count,
+      maxCount: this.maxCount ?? null,
+    }
+  }
+
+  clone(): FibonacciIterator {
+    const copy = new FibonacciIterator({ count: this.maxCount })
+    copy.prev = this.prev
+    copy.curr = this.curr
+    copy.count = this.count
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof FibonacciIterator)) return false
+    return this.prev === other.prev && this.curr === other.curr && this.count === other.count
+  }
 }

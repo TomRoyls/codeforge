@@ -80,4 +80,38 @@ export class ApproximateSet {
     }
     return h >>> 0
   }
+
+  toString(): string {
+    return `ApproximateSet(size=${this.size}, hashCount=${this.hashCount}, count=${this._count})`
+  }
+
+  toJSON(): unknown {
+    return {
+      size: this.size,
+      hashCount: this.hashCount,
+      count: this._count,
+      bits: Array.from(this.bits),
+    }
+  }
+
+  clone(): this {
+    const c = Object.create(ApproximateSet.prototype) as ApproximateSet
+    ;(c as unknown as { bits: Uint8Array }).bits = new Uint8Array(this.bits)
+    ;(c as unknown as { size: number }).size = this.size
+    ;(c as unknown as { hashCount: number }).hashCount = this.hashCount
+    ;(c as unknown as { _count: number })._count = this._count
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof ApproximateSet)) return false
+    if (this.size !== other.size) return false
+    if (this.hashCount !== other.hashCount) return false
+    if (this._count !== other._count) return false
+    if (this.bits.length !== other.bits.length) return false
+    for (let i = 0; i < this.bits.length; i++) {
+      if (this.bits[i] !== other.bits[i]) return false
+    }
+    return true
+  }
 }

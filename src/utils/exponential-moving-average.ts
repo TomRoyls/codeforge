@@ -29,6 +29,26 @@ export class ExponentialMovingAverage {
     this.ema = null
     this._count = 0
   }
+
+  toString(): string {
+    return `EMA(alpha=${this.alpha}, value=${this.value}, n=${this._count})`
+  }
+
+  toJSON(): { alpha: number; value: number; count: number } {
+    return { alpha: this.alpha, value: this.value, count: this._count }
+  }
+
+  clone(): ExponentialMovingAverage {
+    const copy = new ExponentialMovingAverage(this.alpha)
+    copy.ema = this.ema
+    copy._count = this._count
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof ExponentialMovingAverage)) return false
+    return this.alpha === other.alpha && this.value === other.value && this._count === other._count
+  }
 }
 
 export class DoubleExponentialMovingAverage {
@@ -69,5 +89,26 @@ export class DoubleExponentialMovingAverage {
     this.ema.reset()
     this.ema2.reset()
     this.lastEma = null
+  }
+
+  toString(): string {
+    return `DEMA(level=${this.level}, trend=${this.trend}, n=${this.count})`
+  }
+
+  toJSON(): { level: number; trend: number; count: number } {
+    return { level: this.level, trend: this.trend, count: this.count }
+  }
+
+  clone(): DoubleExponentialMovingAverage {
+    const copy = new DoubleExponentialMovingAverage(this.ema['alpha'] ?? 0.1)
+    copy.ema = this.ema.clone()
+    copy.ema2 = this.ema2.clone()
+    copy.lastEma = this.lastEma
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof DoubleExponentialMovingAverage)) return false
+    return this.level === other.level && this.trend === other.trend && this.count === other.count
   }
 }

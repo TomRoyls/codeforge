@@ -166,4 +166,52 @@ export class AdjacencyListGraph implements WeightedGraph {
 
     return result.length === n ? result : null
   }
+
+  toString(): string {
+    const parts: string[] = []
+    for (const [u, neighbors] of this.adj) {
+      for (const { to, weight } of neighbors) {
+        parts.push(`${u}->${to}(${weight})`)
+      }
+    }
+    return `AdjacencyListGraph(nodes=${this._nodeCount}, edges=${this._edgeCount})[${parts.join(', ')}]`
+  }
+
+  toJSON(): Array<{ from: number; to: number; weight: number }> {
+    const edges: Array<{ from: number; to: number; weight: number }> = []
+    for (const [u, neighbors] of this.adj) {
+      for (const { to, weight } of neighbors) {
+        edges.push({ from: u, to, weight })
+      }
+    }
+    return edges
+  }
+
+  clone(): this {
+    const c = new AdjacencyListGraph()
+    for (const [u, neighbors] of this.adj) {
+      c.adj.set(u, neighbors.map(n => ({ ...n })))
+    }
+    c._nodeCount = this._nodeCount
+    c._edgeCount = this._edgeCount
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof AdjacencyListGraph)) return false
+    if (this._nodeCount !== other._nodeCount) return false
+    if (this._edgeCount !== other._edgeCount) return false
+    if (this.adj.size !== other.adj.size) return false
+    for (const [u, neighbors] of this.adj) {
+      const otherNeighbors = other.adj.get(u)
+      if (!otherNeighbors) return false
+      if (neighbors.length !== otherNeighbors.length) return false
+      for (let i = 0; i < neighbors.length; i++) {
+        const a = neighbors[i]!
+        const b = otherNeighbors[i]!
+        if (a.to !== b.to || a.weight !== b.weight) return false
+      }
+    }
+    return true
+  }
 }

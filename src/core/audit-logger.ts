@@ -78,6 +78,43 @@ export class RunContext {
     this._entry = entry
     return entry
   }
+
+  toString(): string {
+    return `RunContext(${this._command}, files=${this._filesAnalyzed}, errors=${this._errorCount}, durationMs=${this._durationMs})`
+  }
+
+  toJSON(): AuditEntry | null {
+    return this._entry
+  }
+
+  clone(): this {
+    const c = new RunContext(this._command, this._configPath ?? undefined)
+    c._durationMs = this._durationMs
+    c._entry = this._entry
+    c._rulesRun = [...this._rulesRun]
+    c._filesAnalyzed = this._filesAnalyzed
+    c._filesWithViolations = this._filesWithViolations
+    c._errorCount = this._errorCount
+    c._warningCount = this._warningCount
+    c._infoCount = this._infoCount
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof RunContext)) return false
+    if (this._command !== other._command) return false
+    if (this._configPath !== other._configPath) return false
+    if (this._filesAnalyzed !== other._filesAnalyzed) return false
+    if (this._filesWithViolations !== other._filesWithViolations) return false
+    if (this._errorCount !== other._errorCount) return false
+    if (this._warningCount !== other._warningCount) return false
+    if (this._infoCount !== other._infoCount) return false
+    if (this._rulesRun.length !== other._rulesRun.length) return false
+    for (let i = 0; i < this._rulesRun.length; i++) {
+      if (this._rulesRun[i] !== other._rulesRun[i]) return false
+    }
+    return true
+  }
 }
 
 /**
@@ -193,5 +230,22 @@ export class AuditLogger {
     } catch {
       // file may not exist
     }
+  }
+
+  toString(): string {
+    return `AuditLogger(logDir=${this.config.logDir}, maxEntries=${this.config.maxEntries})`
+  }
+
+  toJSON(): AuditConfig {
+    return { ...this.config }
+  }
+
+  clone(): this {
+    return new AuditLogger(this.config) as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof AuditLogger)) return false
+    return JSON.stringify(this.config) === JSON.stringify(other.config)
   }
 }

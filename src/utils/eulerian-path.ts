@@ -70,4 +70,28 @@ export class EulerianPath {
     const ep = new EulerianPath(adj)
     return ep.isEulerian
   }
+
+  toString(): string {
+    return `EulerianPath(type=${this.type}, length=${this.path.length})`
+  }
+
+  toJSON(): { path: number[]; type: string; isEulerian: boolean } {
+    return { path: [...this.path], type: this.type, isEulerian: this.isEulerian }
+  }
+
+  clone(): EulerianPath {
+    const copy = Object.create(EulerianPath.prototype) as EulerianPath
+    copy.path = [...this.path]
+    copy.isEulerian = this.isEulerian
+    copy.type = this.type
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof EulerianPath)) return false
+    if (this.type !== other.type || this.isEulerian !== other.isEulerian) return false
+    if (this.path.length !== other.path.length) return false
+    for (let i = 0; i < this.path.length; i++) if (this.path[i] !== other.path[i]) return false
+    return true
+  }
 }

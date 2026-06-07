@@ -58,4 +58,25 @@ export class FingerTree<T> {
   toArray(): T[] {
     return [...this.items]
   }
+
+  toString(): string {
+    return `FingerTree(${this.items.length})`
+  }
+
+  toJSON(): T[] {
+    return [...this.items]
+  }
+
+  clone(): FingerTree<T> {
+    return new FingerTree([...this.items])
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof FingerTree)) return false
+    if (this.items.length !== other.items.length) return false
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i] !== other.items[i]) return false
+    }
+    return true
+  }
 }

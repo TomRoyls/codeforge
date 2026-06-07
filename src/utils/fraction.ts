@@ -82,6 +82,14 @@ export class Fraction {
   isInteger(): boolean {
     return this.num % this.den === 0
   }
+
+  toJSON(): { num: number; den: number } {
+    return { num: this.num, den: this.den }
+  }
+
+  clone(): Fraction {
+    return new Fraction(this.num, this.den)
+  }
 }
 
 function gcd(a: number, b: number): number {

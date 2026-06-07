@@ -154,4 +154,21 @@ export class BenchmarkRunner {
       violationsPerRun,
     }
   }
+
+  toString(): string {
+    return `BenchmarkRunner(rules=${this.config.rules.length}, iterations=${this.config.iterations})`
+  }
+
+  toJSON(): BenchmarkConfig {
+    return { ...this.config }
+  }
+
+  clone(): this {
+    return new BenchmarkRunner(this.config) as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BenchmarkRunner)) return false
+    return JSON.stringify(this.config) === JSON.stringify(other.config)
+  }
 }

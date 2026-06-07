@@ -325,4 +325,34 @@ export class AVLTreeMap<K, V> {
 
     return node
   }
+
+  toString(): string {
+    return `AVLTreeMap(size=${this._size})`
+  }
+
+  toJSON(): [K, V][] {
+    return this.entries()
+  }
+
+  clone(): this {
+    const c = new AVLTreeMap<K, V>(this.compare)
+    for (const [k, v] of this.entries()) {
+      c.set(k, v)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof AVLTreeMap)) return false
+    if (this._size !== other._size) return false
+    const a = this.entries()
+    const b = other.entries()
+    for (let i = 0; i < a.length; i++) {
+      const [ak, av] = a[i]!
+      const [bk, bv] = b[i]!
+      if (!Object.is(ak, bk)) return false
+      if (!Object.is(av, bv)) return false
+    }
+    return true
+  }
 }

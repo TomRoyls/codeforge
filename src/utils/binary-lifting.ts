@@ -100,4 +100,44 @@ export class BinaryLifting {
       }
     }
   }
+
+  toString(): string {
+    return `BinaryLifting(n=${this.n}, log=${this.log})`
+  }
+
+  toJSON(): unknown {
+    return {
+      n: this.n,
+      log: this.log,
+      up: this.up.map(row => [...row]),
+      depth: [...this.depth],
+    }
+  }
+
+  clone(): this {
+    const c = Object.create(BinaryLifting.prototype) as BinaryLifting
+    ;(c as unknown as { n: number }).n = this.n
+    ;(c as unknown as { log: number }).log = this.log
+    ;(c as unknown as { up: number[][] }).up = this.up.map(row => [...row])
+    ;(c as unknown as { depth: number[] }).depth = [...this.depth]
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BinaryLifting)) return false
+    if (this.n !== other.n) return false
+    if (this.log !== other.log) return false
+    for (let i = 0; i < this.depth.length; i++) {
+      if (this.depth[i] !== other.depth[i]) return false
+    }
+    for (let i = 0; i < this.up.length; i++) {
+      const a = this.up[i]!
+      const b = other.up[i]!
+      if (a.length !== b.length) return false
+      for (let j = 0; j < a.length; j++) {
+        if (a[j] !== b[j]) return false
+      }
+    }
+    return true
+  }
 }

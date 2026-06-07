@@ -37,4 +37,35 @@ export class EventSink<T extends Record<string, unknown>> {
   get eventNames(): Array<keyof T> {
     return Array.from(this.listeners.keys())
   }
+
+  toString(): string {
+    const total = Array.from(this.listeners.values()).reduce((s, v) => s + v.size, 0)
+    return `EventSink(${this.listeners.size} events, ${total} listeners)`
+  }
+
+  toJSON(): Record<string, number> {
+    const result: Record<string, number> = {}
+    this.listeners.forEach((set, key) => {
+      result[String(key)] = set.size
+    })
+    return result
+  }
+
+  clone(): EventSink<T> {
+    const copy = new EventSink<T>()
+    this.listeners.forEach((set, key) => {
+      copy.listeners.set(key, new Set(set))
+    })
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof EventSink)) return false
+    if (this.listeners.size !== other.listeners.size) return false
+    for (const [key, set] of this.listeners) {
+      const otherSet = other.listeners.get(key)
+      if (!otherSet || otherSet.size !== set.size) return false
+    }
+    return true
+  }
 }

@@ -66,4 +66,39 @@ export class EulerTour {
     path.reverse()
     return path
   }
+
+  toString(): string {
+    return `EulerTour(${this.tour.length} nodes)`
+  }
+
+  toJSON(): { tour: number[]; first: number[]; last: number[]; depth: number[]; parent: number[] } {
+    return {
+      tour: [...this.tour],
+      first: [...this.first],
+      last: [...this.last],
+      depth: [...this.depth],
+      parent: [...this.parent],
+    }
+  }
+
+  clone(): EulerTour {
+    const copy = Object.create(EulerTour.prototype) as EulerTour
+    copy.tour = [...this.tour]
+    copy.first = [...this.first]
+    copy.last = [...this.last]
+    copy.depth = [...this.depth]
+    copy.parent = [...this.parent]
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof EulerTour)) return false
+    return arraysEqual(this.tour, other.tour) && arraysEqual(this.first, other.first)
+  }
+}
+
+function arraysEqual(a: number[], b: number[]): boolean {
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false
+  return true
 }

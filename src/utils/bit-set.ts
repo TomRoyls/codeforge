@@ -176,4 +176,11 @@ export class BitSet {
     }
     return result
   }
+
+  toJSON(): unknown {
+    return {
+      size: this._size,
+      bits: Array.from(this.data),
+    }
+  }
 }

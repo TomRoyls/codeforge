@@ -137,4 +137,43 @@ export class BitmapIndex<T extends string | number> {
     this.docToId.clear()
     this.nextId = 0
   }
+
+  toString(): string {
+    return `BitmapIndex(docs=${this.idToDoc.size}, tags=${this.bitmaps.size})`
+  }
+
+  toJSON(): unknown {
+    const tags: Record<string, T[]> = {}
+    for (const [tag, ids] of this.bitmaps) {
+      tags[tag] = [...ids].map(id => this.idToDoc.get(id)!).filter(Boolean)
+    }
+    return tags
+  }
+
+  clone(): this {
+    const c = new BitmapIndex<T>()
+    for (const [doc, id] of this.docToId) {
+      const tags: string[] = []
+      for (const [tag, ids] of this.bitmaps) {
+        if (ids.has(id)) tags.push(tag)
+      }
+      c.add(doc, tags)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BitmapIndex)) return false
+    if (this.documentCount !== other.documentCount) return false
+    if (this.bitmaps.size !== other.bitmaps.size) return false
+    for (const [tag, ids] of this.bitmaps) {
+      const oids = other.bitmaps.get(tag)
+      if (!oids) return false
+      if (ids.size !== oids.size) return false
+      for (const id of ids) {
+        if (!oids.has(id)) return false
+      }
+    }
+    return true
+  }
 }

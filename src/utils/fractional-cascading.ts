@@ -86,4 +86,28 @@ export class FractionalCascading {
   getList(index: number): number[] {
     return this.lists[index] ? [...this.lists[index]!] : []
   }
+
+  toString(): string {
+    return `FractionalCascading(${this.lists.length} lists)`
+  }
+
+  toJSON(): number[][] {
+    return this.lists.map(l => [...l])
+  }
+
+  clone(): FractionalCascading {
+    return new FractionalCascading(this.lists)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof FractionalCascading)) return false
+    if (this.lists.length !== other.lists.length) return false
+    for (let i = 0; i < this.lists.length; i++) {
+      if (this.lists[i]!.length !== other.lists[i]!.length) return false
+      for (let j = 0; j < this.lists[i]!.length; j++) {
+        if (this.lists[i]![j] !== other.lists[i]![j]) return false
+      }
+    }
+    return true
+  }
 }

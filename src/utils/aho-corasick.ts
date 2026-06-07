@@ -126,7 +126,7 @@ export class AhoCorasick {
     this.root.children.forEach((child) => {
       child.fail = this.root
     queue.push(child)
-  })
+   })
 
   let _qi = 0
   while (_qi < queue.length) {
@@ -144,6 +144,27 @@ export class AhoCorasick {
         queue.push(child)
       })
     }
+  }
+
+  toString(): string {
+    return `AhoCorasick(patterns=${this._patterns.length})`
+  }
+
+  toJSON(): string[] {
+    return [...this._patterns]
+  }
+
+  clone(): this {
+    return new AhoCorasick(this._patterns) as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof AhoCorasick)) return false
+    if (this._patterns.length !== other._patterns.length) return false
+    for (let i = 0; i < this._patterns.length; i++) {
+      if (this._patterns[i] !== other._patterns[i]) return false
+    }
+    return true
   }
 }
 

@@ -140,4 +140,31 @@ export class FlatMap<K, V> {
     const idx = this.binarySearch(key)
     return idx >= 0 ? idx : ~idx
   }
+
+  toString(): string {
+    return `FlatMap(${this._keys.length})`
+  }
+
+  toJSON(): Array<[K, V]> {
+    return this.entries()
+  }
+
+  clone(): FlatMap<K, V> {
+    const copy = new FlatMap<K, V>({ comparator: this.compare })
+    for (let i = 0; i < this._keys.length; i++) {
+      copy._keys.push(this._keys[i]!)
+      copy._values.push(this._values[i]!)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof FlatMap)) return false
+    if (this._keys.length !== other._keys.length) return false
+    for (let i = 0; i < this._keys.length; i++) {
+      if (this.compare(this._keys[i]!, other._keys[i]!) !== 0) return false
+      if (this._values[i] !== other._values[i]) return false
+    }
+    return true
+  }
 }

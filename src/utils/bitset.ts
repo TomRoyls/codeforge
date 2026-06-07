@@ -87,6 +87,22 @@ export class Bitset {
     return bs
   }
 
+  toJSON(): unknown {
+    return {
+      length: this.length,
+      words: Array.from(this.words),
+    }
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof Bitset)) return false
+    if (this.length !== other.length) return false
+    for (let i = 0; i < this.words.length; i++) {
+      if (this.words[i] !== other.words[i]) return false
+    }
+    return true
+  }
+
   private boundsCheck(index: number): void {
     if (index < 0 || index >= this.length) throw new RangeError(`Index ${index} out of bounds [0, ${this.length})`)
   }

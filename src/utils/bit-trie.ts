@@ -135,6 +135,37 @@ export class BitTrie<T> {
     }
     return map
   }
+
+  toString(): string {
+    return `BitTrie(size=${this._size})`
+  }
+
+  toJSON(): Array<{ key: number; bits: number; value: T }> {
+    return this.toArray()
+  }
+
+  clone(): this {
+    const c = new BitTrie<T>()
+    for (const { key, bits, value } of this.entries()) {
+      c.insert(key, bits, value)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BitTrie)) return false
+    if (this._size !== other._size) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    if (a.length !== b.length) return false
+    const aset = new Map<string, T>()
+    for (const { key, bits, value } of a) aset.set(`${key}/${bits}`, value)
+    for (const { key, bits, value } of b) {
+      const v = aset.get(`${key}/${bits}`)
+      if (!Object.is(v, value)) return false
+    }
+    return true
+  }
 }
 
 class BitTrieNode<T> {

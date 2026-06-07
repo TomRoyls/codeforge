@@ -126,4 +126,40 @@ export class BipartiteMatching {
     this.pairV = Array.from({ length: this.rightSize }, () => -1)
     this._edgeCount = 0
   }
+
+  toString(): string {
+    return `BipartiteMatching(left=${this.leftSize}, right=${this.rightSize}, edges=${this._edgeCount})`
+  }
+
+  toJSON(): unknown {
+    return {
+      leftSize: this.leftSize,
+      rightSize: this.rightSize,
+      adj: this.adj.map(row => [...row]),
+      edgeCount: this._edgeCount,
+    }
+  }
+
+  clone(): this {
+    const c = new BipartiteMatching(this.leftSize, this.rightSize)
+    c.adj = this.adj.map(row => [...row])
+    c._edgeCount = this._edgeCount
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BipartiteMatching)) return false
+    if (this.leftSize !== other.leftSize) return false
+    if (this.rightSize !== other.rightSize) return false
+    if (this._edgeCount !== other._edgeCount) return false
+    for (let i = 0; i < this.adj.length; i++) {
+      const a = new Set(this.adj[i]!)
+      const b = new Set(other.adj[i]!)
+      if (a.size !== b.size) return false
+      for (const v of a) {
+        if (!b.has(v)) return false
+      }
+    }
+    return true
+  }
 }

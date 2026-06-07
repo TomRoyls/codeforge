@@ -139,6 +139,43 @@ export class BinomialHeap<T> {
     tail.sibling = a ?? b
     return result
   }
+
+  toString(): string {
+    return `BinomialHeap(size=${this._size})`
+  }
+
+  toJSON(): Array<{ value: T; priority: number }> {
+    const result: Array<{ value: T; priority: number }> = []
+    const collect = (node: BinNode<T> | null): void => {
+      while (node) {
+        result.push({ value: node.value, priority: node.priority })
+        collect(node.child)
+        node = node.sibling
+      }
+    }
+    collect(this.head)
+    return result
+  }
+
+  clone(): this {
+    const c = new BinomialHeap<T>()
+    for (const { value, priority } of this.toJSON()) {
+      c.insert(value, priority)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BinomialHeap)) return false
+    if (this._size !== other._size) return false
+    const a = this.toJSON().sort((x, y) => x.priority - y.priority)
+    const b = other.toJSON().sort((x, y) => x.priority - y.priority)
+    for (let i = 0; i < a.length; i++) {
+      if (a[i]!.priority !== b[i]!.priority) return false
+      if (!Object.is(a[i]!.value, b[i]!.value)) return false
+    }
+    return true
+  }
 }
 
 interface BinNode<T> {

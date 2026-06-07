@@ -93,4 +93,35 @@ export class Bag<T> {
     }
     return result
   }
+
+  toString(): string {
+    const parts: string[] = []
+    for (const [item, count] of this.counts) {
+      parts.push(`${String(item)}×${count}`)
+    }
+    return `Bag([${parts.join(', ')}])`
+  }
+
+  toJSON(): Array<[T, number]> {
+    return [...this.counts.entries()]
+  }
+
+  clone(): this {
+    const c = new Bag<T>()
+    for (const [item, count] of this.counts) {
+      c.add(item, count)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof Bag)) return false
+    if (this._size !== other._size) return false
+    if (this.counts.size !== other.counts.size) return false
+    for (const [item, count] of this.counts) {
+      const oc = other.counts.get(item)
+      if (oc !== count) return false
+    }
+    return true
+  }
 }

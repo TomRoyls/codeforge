@@ -92,4 +92,26 @@ export class BiMap<K, V> {
       callback(key, value, this)
     }
   }
+
+  toString(): string {
+    const parts: string[] = []
+    for (const [k, v] of this.forward) {
+      parts.push(`${String(k)} => ${String(v)}`)
+    }
+    return `[${parts.join(', ')}]`
+  }
+
+  toJSON(): Array<[K, V]> {
+    return [...this.forward.entries()]
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BiMap)) return false
+    if (this.size !== other.size) return false
+    for (const [k, v] of this.forward) {
+      const ov = other.forward.get(k)
+      if (!Object.is(ov, v)) return false
+    }
+    return true
+  }
 }

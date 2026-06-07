@@ -64,4 +64,53 @@ export class BinaryTrie {
   get size(): number {
     return this.root.count
   }
+
+  toString(): string {
+    return `BinaryTrie(bits=${this.bits}, size=${this.size})`
+  }
+
+  toJSON(): unknown {
+    return {
+      bits: this.bits,
+      values: this._collectValues(),
+    }
+  }
+
+  clone(): this {
+    const c = new BinaryTrie(this.bits)
+    for (const v of this._collectValues()) {
+      c.insert(v)
+    }
+    return c as this
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof BinaryTrie)) return false
+    if (this.bits !== other.bits) return false
+    if (this.size !== other.size) return false
+    const a = this._collectValues().sort((x, y) => x - y)
+    const b = other._collectValues().sort((x, y) => x - y)
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false
+    }
+    return true
+  }
+
+  private _collectValues(): number[] {
+    const values: number[] = []
+    const walk = (node: BinaryTrieNode, value: number, bitIndex: number): void => {
+      if (bitIndex < 0) {
+        if (node.count > 0) values.push(value)
+        return
+      }
+      for (let b = 0; b < 2; b++) {
+        const child = node.children[b]
+        if (child && child.count > 0) {
+          walk(child, value | (b << bitIndex), bitIndex - 1)
+        }
+      }
+    }
+    walk(this.root, 0, this.bits - 1)
+    return values
+  }
 }
