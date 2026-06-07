@@ -11,44 +11,26 @@ function isFunctionExpression(node: unknown): boolean {
 
 function hasReturnStatement(body: unknown): boolean {
   const b = toASTNode(body)
-  if (!b) return false
+  if (!b || b.type !== 'BlockStatement' || !Array.isArray(b.body)) return false
 
-  if (b.type === 'ReturnStatement') return true
-  if (b.type === 'BlockStatement' && Array.isArray(b.body)) {
-    return b.body.some((stmt) => hasReturnStatement(stmt))
-  }
-  if (b.type === 'IfStatement') {
-    if (hasReturnStatement(b.consequent)) return true
-    if (b.alternate && hasReturnStatement(b.alternate)) return true
-    return false
-  }
-  if (b.type === 'SwitchStatement' && Array.isArray(b.cases)) {
-    return b.cases.some((c) => hasReturnStatement(c))
-  }
-  if (b.type === 'CaseClause' || b.type === 'DefaultClause') {
-    if (Array.isArray(b.consequent)) {
-      return b.consequent.some((stmt) => hasReturnStatement(stmt))
+  for (const stmt of b.body) {
+    const s = toASTNode(stmt)
+    if (!s) continue
+    if (s.type === 'ReturnStatement') return true
+    if (s.type === 'IfStatement') {
+      if (s.consequent && hasReturnInBody(s.consequent)) return true
+      if (s.alternate && hasReturnInBody(s.alternate)) return true
     }
   }
-  if (b.type === 'TryStatement') {
-    if (b.block && hasReturnStatement(b.block)) return true
-    if (b.handler && hasReturnStatement(b.handler)) return true
-    return false
-  }
-  if (b.type === 'CatchClause') {
-    if (b.body && hasReturnStatement(b.body)) return true
-    return false
-  }
-  if (b.type === 'ForStatement' || b.type === 'ForInStatement' || b.type === 'ForOfStatement' ||
-      b.type === 'WhileStatement' || b.type === 'DoStatement') {
-    if (b.body && hasReturnStatement(b.body)) return true
-    return false
-  }
-  if (b.type === 'LabeledStatement') {
-    if (b.body && hasReturnStatement(b.body)) return true
-    return false
-  }
 
+  return false
+}
+
+function hasReturnInBody(node: unknown): boolean {
+  const n = toASTNode(node)
+  if (!n) return false
+  if (n.type === 'ReturnStatement') return true
+  if (n.type === 'BlockStatement') return hasReturnStatement(n)
   return false
 }
 

@@ -66,7 +66,7 @@ export const noCompareNegZeroRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-compare-neg-zero',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [],
     severity: 'warn',
     type: 'problem',
