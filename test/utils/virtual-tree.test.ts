@@ -199,4 +199,29 @@ describe('VirtualTree', () => {
     const { lca } = vt.build([3, 4, 2])
     expect(lca(3, 4)).toBe(1)
   })
+
+  it('includes intermediate LCA for vertices in different subtrees', () => {
+    const vt = new VirtualTree(6)
+    vt.addEdge(0, 1)
+    vt.addEdge(0, 2)
+    vt.addEdge(1, 3)
+    vt.addEdge(1, 4)
+    vt.addEdge(2, 5)
+    const { vtree } = vt.build([3, 5, 4])
+    expect(vtree.has(1)).toBe(true)
+  })
+
+  it('virtual tree edges preserve ancestor relationships', () => {
+    const vt = new VirtualTree(6)
+    vt.addEdge(0, 1)
+    vt.addEdge(0, 2)
+    vt.addEdge(1, 3)
+    vt.addEdge(1, 4)
+    vt.addEdge(2, 5)
+    const { vtree } = vt.build([3, 4])
+    expect(vtree.has(1)).toBe(true)
+    const children = vtree.get(1)!
+    expect(children).toContain(3)
+    expect(children).toContain(4)
+  })
 })

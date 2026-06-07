@@ -16,25 +16,32 @@ export class VirtualTree {
     const depth = new Array(this.n).fill(0)
     const parent = new Array(this.n).fill(-1)
     const visited = new Array(this.n).fill(false)
+    const tin = new Array(this.n).fill(0)
+    let timer = 0
 
-    const bfs = (root: number): void => {
-      const queue = [root]
+    // DFS to compute depth, parent, and DFS entry time (tin)
+    // tin is required for correct virtual tree construction — sorting by depth
+    // can miss LCAs when vertices in different subtrees share the same depth.
+    const dfs = (root: number): void => {
+      const stack = [root]
       visited[root] = true
       depth[root] = 0
       parent[root] = root
-      while (queue.length > 0) {
-        const u = queue.shift()!
+      tin[root] = timer++
+      while (stack.length > 0) {
+        const u = stack.pop()!
         for (const v of this.adj[u]!) {
           if (!visited[v]) {
             visited[v] = true
             depth[v] = depth[u]! + 1
             parent[v] = u
-            queue.push(v)
+            tin[v] = timer++
+            stack.push(v)
           }
         }
       }
     }
-    bfs(0)
+    dfs(0)
 
     const lca = (a: number, b: number): number => {
       while (a !== b) {
@@ -47,7 +54,9 @@ export class VirtualTree {
     const vtree = new Map<number, number[]>()
     if (verts.length === 0) return { vtree, lca }
 
-    const sorted = [...verts].sort((a, b) => depth[a]! - depth[b]!)
+    // Sort by DFS entry time to ensure the stack-based virtual tree
+    // construction correctly adds all necessary LCAs.
+    const sorted = [...verts].sort((a, b) => tin[a]! - tin[b]!)
     const allVerts = new Set(sorted)
 
     const stack: number[] = []
