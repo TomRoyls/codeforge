@@ -13,14 +13,6 @@ function isNullNullComparison(left: unknown, right: unknown): boolean {
   return isNullLiteral(left) && isNullLiteral(right)
 }
 
-/**
- * Allow `x == null` (null on right side) — the idiomatic null/undefined check.
- * Flag `null == x` (null on left, Yoda-style) — unusual and likely a mistake.
- */
-function isIdiomaticNullCheck(left: unknown, right: unknown): boolean {
-  return !isNullLiteral(left) && isNullLiteral(right)
-}
-
 export const eqEqEqRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
@@ -38,10 +30,6 @@ export const eqEqEqRule: RuleDefinition = {
         }
 
         if (isNullNullComparison(n.left, n.right)) {
-          return
-        }
-
-        if (isIdiomaticNullCheck(n.left, n.right)) {
           return
         }
 
