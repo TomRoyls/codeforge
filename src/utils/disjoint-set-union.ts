@@ -108,8 +108,36 @@ export class DisjointSetUnion {
     if (!(other instanceof DisjointSetUnion)) return false
     if (this._n !== other._n) return false
     if (this._componentCount !== other._componentCount) return false
+
+    const thisMap = new Map<number, number>()
+    let next = 0
+    const thisPid = new Int32Array(this._n)
     for (let i = 0; i < this._n; i++) {
-      if (this.find(i) !== other.find(i)) return false
+      const root = this.find(i)
+      if (!thisMap.has(root)) thisMap.set(root, next++)
+      thisPid[i] = thisMap.get(root)!
+    }
+
+    const otherMap = new Map<number, number>()
+    next = 0
+    const otherPid = new Int32Array(this._n)
+    for (let i = 0; i < this._n; i++) {
+      const root = other.find(i)
+      if (!otherMap.has(root)) otherMap.set(root, next++)
+      otherPid[i] = otherMap.get(root)!
+    }
+
+    const forward = new Map<number, number>()
+    const backward = new Map<number, number>()
+    for (let i = 0; i < this._n; i++) {
+      const tp = thisPid[i]!
+      const op = otherPid[i]!
+      const f = forward.get(tp)
+      if (f === undefined) forward.set(tp, op)
+      else if (f !== op) return false
+      const b = backward.get(op)
+      if (b === undefined) backward.set(op, tp)
+      else if (b !== tp) return false
     }
     return true
   }

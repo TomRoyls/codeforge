@@ -5,7 +5,11 @@ export class CircularDeque<T> {
   private _size: number = 0
 
   constructor(capacity: number = 16) {
-    this.buffer = new Array(capacity).fill(undefined)
+    if (capacity < 0) {
+      throw new RangeError(`Capacity must be >= 0, got ${capacity}`)
+    }
+    const clamped = Math.max(1, capacity)
+    this.buffer = new Array(clamped).fill(undefined)
   }
 
   pushFront(val: T): void {

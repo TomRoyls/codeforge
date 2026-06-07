@@ -92,9 +92,6 @@ export class SchemaValidator {
     const issues: ValidationIssue[] = []
 
     if (value === undefined || value === null) {
-      if (property.default !== undefined) {
-        return issues
-      }
       return issues
     }
 
