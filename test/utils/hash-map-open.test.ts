@@ -172,4 +172,18 @@ describe('HashMapOpen', () => {
     map.set('key', 42)
     expect(map.get('key')).toBe(42)
   })
+
+  it('handles heavy delete+insert without infinite loop', () => {
+    const map = new HashMapOpen<number, string>(8, 0.75)
+    for (let i = 0; i < 6; i++) map.set(i, `val${i}`)
+    for (let i = 0; i < 6; i++) {
+      map.delete(i)
+      map.set(i + 100, `val${i + 100}`)
+    }
+    expect(map.size).toBe(6)
+    for (let i = 0; i < 6; i++) {
+      expect(map.get(i)).toBeUndefined()
+      expect(map.get(i + 100)).toBe(`val${i + 100}`)
+    }
+  })
 })

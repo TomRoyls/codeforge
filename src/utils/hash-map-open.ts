@@ -3,6 +3,7 @@ type Entry<K, V> = { key: K; value: V; deleted: boolean }
 export class HashMapOpen<K, V> {
   private table: (Entry<K, V> | null)[]
   private _size: number = 0
+  private _used: number = 0
   private readonly loadFactor: number
   private capacity: number
 
@@ -28,6 +29,7 @@ export class HashMapOpen<K, V> {
     this.capacity = newCap
     this.table = new Array<Entry<K, V> | null>(newCap).fill(null)
     this._size = 0
+    this._used = 0
     for (const entry of oldTable) {
       if (entry !== null && !entry.deleted) {
         this.set(entry.key, entry.value)
@@ -40,7 +42,7 @@ export class HashMapOpen<K, V> {
   }
 
   set(key: K, value: V): void {
-    if (this._size / this.capacity >= this.loadFactor) this.resize()
+    if (this._used / this.capacity >= this.loadFactor) this.resize()
     let idx = this.hash(key) % this.capacity
     let i = 0
     let firstDeleted = -1
@@ -56,6 +58,7 @@ export class HashMapOpen<K, V> {
     const targetIdx = firstDeleted !== -1 ? firstDeleted : idx
     this.table[targetIdx] = { key, value, deleted: false }
     this._size++
+    if (firstDeleted === -1) this._used++
   }
 
   get(key: K): V | undefined {
@@ -117,6 +120,7 @@ export class HashMapOpen<K, V> {
   clear(): void {
     this.table = new Array<Entry<K, V> | null>(this.capacity).fill(null)
     this._size = 0
+    this._used = 0
   }
 
   toString(): string {
