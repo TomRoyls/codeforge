@@ -10,6 +10,11 @@ const _globToRegexCache = new Map<string, RegExp>()
 
 export function globToRegex(pattern: string, options: Partial<GlobToRegexOptions> = {}): RegExp {
   const opts = { ...DEFAULT_OPTIONS, ...options }
+  const flags = opts.ignoreCase ? 'i' : ''
+  const cacheKey = `${pattern}|${flags}`
+  const cached = _globToRegexCache.get(cacheKey)
+  if (cached) return cached
+
   let i = 0
   const len = pattern.length
   let result = ''
@@ -66,13 +71,8 @@ export function globToRegex(pattern: string, options: Partial<GlobToRegexOptions
     }
   }
 
-  const flags = opts.ignoreCase ? 'i' : ''
-  const cacheKey = `${pattern}|${flags}`
-  let regex = _globToRegexCache.get(cacheKey)
-  if (!regex) {
-    regex = new RegExp('^' + result + '$', flags)
-    _globToRegexCache.set(cacheKey, regex)
-  }
+  const regex = new RegExp('^' + result + '$', flags)
+  _globToRegexCache.set(cacheKey, regex)
   return regex
 }
 

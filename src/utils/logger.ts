@@ -48,6 +48,8 @@ function safeStringify(value: unknown): string {
 
     if (typeof val === 'string') return val
     if (typeof val === 'number' || typeof val === 'boolean') return String(val)
+    if (typeof val === 'bigint') return `${val.toString()}n`
+    if (typeof val === 'symbol') return val.toString()
 
     if (typeof val === 'object') {
       if (seen.has(val as object)) return '[Circular]'
