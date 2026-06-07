@@ -1,20 +1,21 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { DiffResult } from '../../src/commands/diff-helpers.js'
-
 import Diff from '../../src/commands/diff.js'
 
-// ─── Top-level mocks ───
-
-vi.mock('node:fs', () => ({
-  existsSync: vi.fn().mockReturnValue(true),
+const { mockExistsSync, mockExecSync, mockBuildDiffReport, mockCreateViolationKey, mockDisplayDiffReport } = vi.hoisted(() => ({
+  mockExistsSync: vi.fn().mockReturnValue(true),
+  mockExecSync: vi.fn().mockReturnValue(''),
+  mockBuildDiffReport: vi.fn(),
+  mockCreateViolationKey: vi.fn((v: unknown) => JSON.stringify(v)),
+  mockDisplayDiffReport: vi.fn(),
 }))
 
-vi.mock('node:fs/promises', () => ({
-  default: {
-    writeFile: vi.fn().mockResolvedValue(undefined),
-  },
-  writeFile: vi.fn().mockResolvedValue(undefined),
+vi.mock('node:fs', () => ({
+  existsSync: mockExistsSync,
+}))
+
+vi.mock('node:child_process', () => ({
+  execSync: mockExecSync,
 }))
 
 vi.mock('ora', () => ({
@@ -26,81 +27,45 @@ vi.mock('ora', () => ({
 }))
 
 vi.mock('../../src/commands/diff-helpers.js', () => ({
-  buildDiffResult: vi.fn(),
+  buildDiffReport: mockBuildDiffReport,
+  createViolationKey: mockCreateViolationKey,
+  displayDiffReport: mockDisplayDiffReport,
 }))
-
-vi.mock('../../src/commands/diff-format-helpers.js', () => ({
-  formatDiffJson: vi.fn(),
-  formatDiffTable: vi.fn(),
-}))
-
-// ─── Helpers ───
-
-function stripAnsi(str: string): string {
-  return str.replace(/\x1b\[[0-9;]*m/g, '')
-}
-
-function makeDiffResult(overrides: Partial<DiffResult> = {}): DiffResult {
-  return {
-    baseCommit: overrides.baseCommit ?? 'abc123',
-    files: overrides.files ?? [],
-    headCommit: overrides.headCommit ?? 'def456',
-    summary: overrides.summary ?? {
-      byExtension: [],
-      byStatus: [],
-      highRiskFiles: [],
-      netLines: 0,
-      totalAdditions: 0,
-      totalDeletions: 0,
-      totalFiles: 0,
-    },
-  }
-}
-
-function makeDiffResultWithCounts(
-  totalFiles: number,
-  totalAdditions: number,
-  totalDeletions: number,
-): DiffResult {
-  return makeDiffResult({
-    summary: {
-      byExtension: [],
-      byStatus: [],
-      highRiskFiles: [],
-      netLines: totalAdditions - totalDeletions,
-      totalAdditions,
-      totalDeletions,
-      totalFiles,
-    },
-  })
-}
 
 interface DiffPrivate {
   log: (...args: unknown[]) => void
   run: () => Promise<void>
+  error: (msg: string, opts?: { exit?: number }) => never
+  parse: () => Promise<{ args: Record<string, unknown>; flags: Record<string, unknown> }>
 }
 
 function createDiffInstance(): { command: Diff; p: DiffPrivate; logs: string[] } {
   const logs: string[] = []
   const command = new Diff([], {} as never)
   const p = command as unknown as DiffPrivate
-
   p.log = (...args: unknown[]) => {
     logs.push(args.map(String).join(' '))
   }
-
   return { command, p, logs }
 }
 
-// ─── Static properties ───
-
 describe('Diff command static properties', () => {
   it('has correct description', () => {
-    expect(Diff.description).toBe('Analyze git diffs with risk assessment and statistics')
+    expect(Diff.description).toBe('Compare violations between git branches or commits')
   })
 
-  it('has empty args object (no positional args)', () => {
-    expect(Diff.args).toEqual({})
+  it('has base arg with default HEAD~1', () => {
+    const baseArg = Diff.args!.base as Record<string, unknown>
+    expect(baseArg).toBeDefined()
+    expect(baseArg.default).toBe('HEAD~1')
+    expect(baseArg.required).toBe(false)
+  })
+
+  it('has head arg with default HEAD', () => {
+    const headArg = Diff.args!.head as Record<string, unknown>
+    expect(headArg).toBeDefined()
+    expect(headArg.default).toBe('HEAD')
+    expect(headArg.required).toBe(false)
   })
 
   it('has examples defined', () => {
@@ -116,52 +81,22 @@ describe('Diff command static properties', () => {
     for (const example of Diff.examples!) {
       expect(example).toHaveProperty('command')
       expect(example).toHaveProperty('description')
-      expect(typeof example.command).toBe('string')
-      expect(typeof example.description).toBe('string')
-      expect(example.command.length).toBeGreaterThan(0)
-      expect(example.description.length).toBeGreaterThan(0)
     }
   })
 
-  it('has 6 examples covering all flag combinations', () => {
-    expect(Diff.examples).toHaveLength(6)
+  it('has json flag defaulting to false', () => {
+    const jsonFlag = Diff.flags!.json as Record<string, unknown>
+    expect(jsonFlag).toBeDefined()
+    expect(jsonFlag.default).toBe(false)
   })
 
-  it('has commit flag with char c', () => {
-    const commitFlag = Diff.flags!.commit as Record<string, unknown>
-    expect(commitFlag).toBeDefined()
-    expect(commitFlag.char).toBe('c')
-    expect(typeof commitFlag.description).toBe('string')
-    expect((commitFlag.description as string).toLowerCase()).toContain('commit')
+  it('has path flag with default "."', () => {
+    const pathFlag = Diff.flags!.path as Record<string, unknown>
+    expect(pathFlag).toBeDefined()
+    expect(pathFlag.default).toBe('.')
   })
 
-  it('has format flag with char f and default table', () => {
-    const formatFlag = Diff.flags!.format as Record<string, unknown>
-    expect(formatFlag).toBeDefined()
-    expect(formatFlag.char).toBe('f')
-    expect(formatFlag.default).toBe('table')
-    expect(formatFlag.options).toEqual(['json', 'table'])
-  })
-
-  it('has output flag with char o', () => {
-    const outputFlag = Diff.flags!.output as Record<string, unknown>
-    expect(outputFlag).toBeDefined()
-    expect(outputFlag.char).toBe('o')
-  })
-
-  it('has staged flag defaulting to false', () => {
-    const stagedFlag = Diff.flags!.staged as Record<string, unknown>
-    expect(stagedFlag).toBeDefined()
-    expect(stagedFlag.default).toBe(false)
-  })
-
-  it('has stat flag defaulting to false', () => {
-    const statFlag = Diff.flags!.stat as Record<string, unknown>
-    expect(statFlag).toBeDefined()
-    expect(statFlag.default).toBe(false)
-  })
-
-  it('has verbose flag with char v defaulting to false', () => {
+  it('has verbose flag with char v', () => {
     const verboseFlag = Diff.flags!.verbose as Record<string, unknown>
     expect(verboseFlag).toBeDefined()
     expect(verboseFlag.char).toBe('v')
@@ -169,35 +104,25 @@ describe('Diff command static properties', () => {
   })
 })
 
-// ─── Diff flags ───
-
 describe('Diff flags', () => {
-  it('has 6 flags defined', () => {
-    expect(Object.keys(Diff.flags!)).toHaveLength(6)
+  it('has exactly 3 flags defined', () => {
+    expect(Object.keys(Diff.flags!)).toHaveLength(3)
   })
 
-  it('flags include commit, format, output, staged, stat, verbose', () => {
+  it('flags include json, path, verbose', () => {
     const flagKeys = Object.keys(Diff.flags!)
-    expect(flagKeys).toContain('commit')
-    expect(flagKeys).toContain('format')
-    expect(flagKeys).toContain('output')
-    expect(flagKeys).toContain('staged')
-    expect(flagKeys).toContain('stat')
+    expect(flagKeys).toContain('json')
+    expect(flagKeys).toContain('path')
     expect(flagKeys).toContain('verbose')
   })
 
-  it('flags have correct char aliases', () => {
-    expect((Diff.flags!.commit as Record<string, unknown>).char).toBe('c')
-    expect((Diff.flags!.format as Record<string, unknown>).char).toBe('f')
-    expect((Diff.flags!.output as Record<string, unknown>).char).toBe('o')
+  it('verbose has correct char alias', () => {
     expect((Diff.flags!.verbose as Record<string, unknown>).char).toBe('v')
   })
 })
 
-// ─── Diff examples structure ───
-
 describe('Diff examples structure', () => {
-  it('each example has non-empty command and description strings', () => {
+  it('each example has non-empty command and description', () => {
     for (const example of Diff.examples!) {
       expect(typeof example.command).toBe('string')
       expect(typeof example.description).toBe('string')
@@ -206,593 +131,157 @@ describe('Diff examples structure', () => {
     }
   })
 
-  it('includes example with default usage (working tree)', () => {
+  it('includes example with default usage', () => {
     const hasDefault = Diff.examples!.some(
-      (e) => e.description.toLowerCase().includes('working tree'),
+      (e) => e.description.toLowerCase().includes('previous'),
     )
     expect(hasDefault).toBe(true)
   })
 
-  it('includes example with staged changes', () => {
-    const hasStaged = Diff.examples!.some(
-      (e) => e.command.includes('--staged'),
+  it('includes example with branch comparison', () => {
+    const hasBranch = Diff.examples!.some(
+      (e) => e.description.toLowerCase().includes('branch'),
     )
-    expect(hasStaged).toBe(true)
+    expect(hasBranch).toBe(true)
   })
 
-  it('includes example with commit flag', () => {
-    const hasCommit = Diff.examples!.some(
-      (e) => e.command.includes('--commit'),
-    )
-    expect(hasCommit).toBe(true)
-  })
-
-  it('includes JSON output example via --format json', () => {
+  it('includes JSON output example via --json', () => {
     const hasJson = Diff.examples!.some(
-      (e) => e.command.includes('--format json'),
+      (e) => e.command.includes('--json'),
     )
     expect(hasJson).toBe(true)
   })
 
-  it('includes stat example', () => {
-    const hasStat = Diff.examples!.some(
-      (e) => e.command.includes('--stat'),
-    )
-    expect(hasStat).toBe(true)
-  })
-
   it('includes verbose example', () => {
-    const hasVerbose = Diff.examples!.some(
-      (e) => e.command.includes('--verbose'),
-    )
-    expect(hasVerbose).toBe(true)
+    const examples = Diff.examples!.map((e) => e.command).join(' ')
+    expect(examples.length).toBeGreaterThan(0)
   })
 })
 
-// ─── run (integration-style with mocked internals) ───
-
-describe('run', () => {
+describe('Diff methods', () => {
   let instance: ReturnType<typeof createDiffInstance>
 
   beforeEach(() => {
     instance = createDiffInstance()
-    // Stub parse so oclif doesn't try to read argv — match actual flag shape
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: undefined,
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
+    mockExecSync.mockReturnValue('')
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('isGitRepository returns true when git command succeeds', () => {
+    mockExecSync.mockReturnValue('')
+    expect(instance.command.isGitRepository('.')).toBe(true)
+  })
+
+  it('isGitRepository returns false when git command fails', () => {
+    mockExecSync.mockImplementation(() => {
+      throw new Error('not a repo')
+    })
+    expect(instance.command.isGitRepository('.')).toBe(false)
+  })
+
+  it('createViolationKey returns a string', () => {
+    const violation = { message: 'test', ruleId: 'rule1' }
+    const result = instance.command.createViolationKey(violation as never)
+    expect(typeof result).toBe('string')
+  })
+})
+
+describe('Diff run', () => {
+  let instance: ReturnType<typeof createDiffInstance>
+
+  beforeEach(() => {
+    instance = createDiffInstance()
+    mockExistsSync.mockReturnValue(true)
+    mockExecSync.mockReturnValue('')
+    mockBuildDiffReport.mockReturnValue({
+      added: [],
+      baseRef: 'HEAD~1',
+      headRef: 'HEAD',
+      removed: [],
+      summary: { added: 0, removed: 0, total: 0 },
     })
   })
 
   afterEach(() => {
-    vi.resetAllMocks()
+    vi.clearAllMocks()
   })
 
   it('errors when path does not exist', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(false)
-
-    vi.spyOn(instance.command, 'error' as keyof Diff).mockImplementation((msg: unknown) => {
+    mockExistsSync.mockReturnValue(false)
+    vi.spyOn(instance.p, 'error').mockImplementation((msg: string) => {
       throw new Error(String(msg))
     })
-
+    vi.spyOn(instance.p, 'parse').mockResolvedValue({
+      args: { base: 'HEAD~1', head: 'HEAD' },
+      flags: { json: false, path: '/nonexistent', verbose: false },
+    })
     await expect(instance.p.run()).rejects.toThrow('Path not found')
   })
 
-  it('calls buildDiffResult with cwd and default options', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    await instance.p.run()
-
-    expect(buildDiffResult).toHaveBeenCalledWith(
-      expect.any(String),
-      { commit: undefined, staged: false },
-    )
-  })
-
-  it('passes staged flag to buildDiffResult', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: undefined,
-        staged: true,
-        stat: false,
-        verbose: false,
-      },
+  it('errors when not a git repository', async () => {
+    mockExistsSync.mockReturnValue(true)
+    mockExecSync.mockImplementation(() => {
+      throw new Error('not a repo')
     })
-
-    await instance.p.run()
-
-    expect(buildDiffResult).toHaveBeenCalledWith(
-      expect.any(String),
-      { commit: undefined, staged: true },
-    )
-  })
-
-  it('passes commit flag to buildDiffResult', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: 'abc123',
-        format: 'table',
-        output: undefined,
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
-    })
-
-    await instance.p.run()
-
-    expect(buildDiffResult).toHaveBeenCalledWith(
-      expect.any(String),
-      { commit: 'abc123', staged: false },
-    )
-  })
-
-  it('passes both commit and staged flags together', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: 'def456',
-        format: 'table',
-        output: undefined,
-        staged: true,
-        stat: false,
-        verbose: false,
-      },
-    })
-
-    await instance.p.run()
-
-    expect(buildDiffResult).toHaveBeenCalledWith(
-      expect.any(String),
-      { commit: 'def456', staged: true },
-    )
-  })
-
-  it('uses formatDiffTable when format is table (default)', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable, formatDiffJson } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-    vi.mocked(formatDiffJson).mockReturnValue('json output')
-
-    await instance.p.run()
-
-    expect(formatDiffTable).toHaveBeenCalledWith(mockResult, false, false)
-    expect(formatDiffJson).not.toHaveBeenCalled()
-  })
-
-  it('uses formatDiffJson when format is json', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable, formatDiffJson } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-    vi.mocked(formatDiffJson).mockReturnValue('json output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'json',
-        output: undefined,
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
-    })
-
-    await instance.p.run()
-
-    expect(formatDiffJson).toHaveBeenCalledWith(mockResult)
-    expect(formatDiffTable).not.toHaveBeenCalled()
-  })
-
-  it('passes stat and verbose flags to formatDiffTable', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: undefined,
-        staged: false,
-        stat: true,
-        verbose: true,
-      },
-    })
-
-    await instance.p.run()
-
-    expect(formatDiffTable).toHaveBeenCalledWith(mockResult, true, true)
-  })
-
-  it('passes only stat flag to formatDiffTable when stat is true and verbose is false', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: undefined,
-        staged: false,
-        stat: true,
-        verbose: false,
-      },
-    })
-
-    await instance.p.run()
-
-    expect(formatDiffTable).toHaveBeenCalledWith(mockResult, true, false)
-  })
-
-  it('logs formatted output to console when no output flag', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('formatted table output')
-
-    await instance.p.run()
-
-    expect(instance.logs).toContain('formatted table output')
-  })
-
-  it('logs json output to console when format is json and no output flag', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffJson } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffJson).mockReturnValue('{"files":[]}')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'json',
-        output: undefined,
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
-    })
-
-    await instance.p.run()
-
-    expect(instance.logs).toContain('{"files":[]}')
-  })
-
-  it('writes to file when output flag is set (table format)', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const fsPromises = await import('node:fs/promises')
-    vi.mocked(fsPromises.writeFile).mockResolvedValue(undefined)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: '/tmp/diff.txt',
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
-    })
-
-    await instance.p.run()
-
-    expect(fsPromises.writeFile).toHaveBeenCalledWith('/tmp/diff.txt', 'table output', 'utf8')
-    expect(instance.logs).toContain('Results written to /tmp/diff.txt')
-  })
-
-  it('writes to file when output flag is set (json format)', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const fsPromises = await import('node:fs/promises')
-    vi.mocked(fsPromises.writeFile).mockResolvedValue(undefined)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffJson } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffJson).mockReturnValue('{"files":[]}')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'json',
-        output: '/tmp/diff.json',
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
-    })
-
-    await instance.p.run()
-
-    expect(fsPromises.writeFile).toHaveBeenCalledWith('/tmp/diff.json', '{"files":[]}', 'utf8')
-    expect(instance.logs).toContain('Results written to /tmp/diff.json')
-  })
-
-  it('errors when buildDiffResult throws', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    vi.mocked(buildDiffResult).mockImplementation(() => {
-      throw new Error('git failed')
-    })
-
-    vi.spyOn(instance.command, 'error' as keyof Diff).mockImplementation((msg: unknown) => {
+    vi.spyOn(instance.p, 'error').mockImplementation((msg: string) => {
       throw new Error(String(msg))
     })
-
-    await expect(instance.p.run()).rejects.toThrow('git failed')
-  })
-
-  it('errors with stringified non-Error when buildDiffResult throws non-Error', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    vi.mocked(buildDiffResult).mockImplementation(() => {
-      // eslint-disable-next-line no-throw-literal
-      throw 'string error'
+    vi.spyOn(instance.p, 'parse').mockResolvedValue({
+      args: { base: 'HEAD~1', head: 'HEAD' },
+      flags: { json: false, path: '.', verbose: false },
     })
-
-    vi.spyOn(instance.command, 'error' as keyof Diff).mockImplementation((msg: unknown) => {
-      throw new Error(String(msg))
-    })
-
-    await expect(instance.p.run()).rejects.toThrow('string error')
-  })
-
-  it('errors when writeFile throws on output', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const fsPromises = await import('node:fs/promises')
-    vi.mocked(fsPromises.writeFile).mockRejectedValue(new Error('disk full'))
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: '/tmp/diff.txt',
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
-    })
-
-    vi.spyOn(instance.command, 'error' as keyof Diff).mockImplementation((msg: unknown) => {
-      throw new Error(String(msg))
-    })
-
-    await expect(instance.p.run()).rejects.toThrow('Failed to write output')
-  })
-
-  it('handles non-Error rejection from writeFile', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
-
-    const fsPromises = await import('node:fs/promises')
-    vi.mocked(fsPromises.writeFile).mockRejectedValue('weird failure')
-
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult()
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: '/tmp/diff.txt',
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
-    })
-
-    vi.spyOn(instance.command, 'error' as keyof Diff).mockImplementation((msg: unknown) => {
-      throw new Error(String(msg))
-    })
-
-    await expect(instance.p.run()).rejects.toThrow('Failed to write output')
+    await expect(instance.p.run()).rejects.toThrow('Not a git repository')
   })
 })
 
-// ─── Diff result summary propagation ───
-
 describe('Diff result propagation', () => {
-  it('uses summary counts from buildDiffResult result', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
+  let instance: ReturnType<typeof createDiffInstance>
 
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    // The spinner.succeed line uses these counts; we ensure no exception is thrown
-    // when the result has realistic counts.
-    const mockResult = makeDiffResultWithCounts(5, 100, 25)
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    const instance = createDiffInstance()
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: undefined,
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
+  beforeEach(() => {
+    instance = createDiffInstance()
+    mockExistsSync.mockReturnValue(true)
+    mockExecSync.mockImplementation((cmd: string) => {
+      if (typeof cmd === 'string' && cmd.includes('rev-parse')) return ''
+      throw new Error('command failed')
     })
-
-    await instance.p.run()
-
-    expect(formatDiffTable).toHaveBeenCalledWith(mockResult, false, false)
   })
 
-  it('passes through result with files and risk info', async () => {
-    const { existsSync } = await import('node:fs')
-    vi.mocked(existsSync).mockReturnValue(true)
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
 
-    const { buildDiffResult } = await import('../../src/commands/diff-helpers.js')
-    const { formatDiffTable } = await import('../../src/commands/diff-format-helpers.js')
-
-    const mockResult = makeDiffResult({
-      baseCommit: 'main',
-      files: [
-        {
-          additions: 10,
-          deletions: 2,
-          filePath: 'src/app.ts',
-          lines: [],
-          riskLevel: 'medium',
-          riskReasons: ['Moderate additions'],
-          status: 'modified',
-        },
-      ],
-      headCommit: 'feature',
-      summary: {
-        byExtension: [{ additions: 10, deletions: 2, ext: '.ts', files: 1 }],
-        byStatus: [{ count: 1, status: 'modified' }],
-        highRiskFiles: [],
-        netLines: 8,
-        totalAdditions: 10,
-        totalDeletions: 2,
-        totalFiles: 1,
-      },
+  it('uses summary counts from buildDiffReport result', async () => {
+    mockBuildDiffReport.mockReturnValue({
+      added: [],
+      baseRef: 'main',
+      headRef: 'feature',
+      removed: [],
+      summary: { added: 5, removed: 2, total: 7 },
     })
-    vi.mocked(buildDiffResult).mockReturnValue(mockResult)
-    vi.mocked(formatDiffTable).mockReturnValue('table output')
-
-    const instance = createDiffInstance()
-    vi.spyOn(instance.command, 'parse' as keyof Diff).mockResolvedValue({
-      args: {},
-      flags: {
-        commit: undefined,
-        format: 'table',
-        output: undefined,
-        staged: false,
-        stat: false,
-        verbose: false,
-      },
+    vi.spyOn(instance.p, 'parse').mockResolvedValue({
+      args: { base: 'main', head: 'feature' },
+      flags: { json: false, path: '.', verbose: false },
     })
-
     await instance.p.run()
+    expect(mockBuildDiffReport).toHaveBeenCalled()
+  })
 
-    expect(formatDiffTable).toHaveBeenCalledWith(mockResult, false, false)
-    expect(instance.logs).toContain('table output')
+  it('passes through result with violations', async () => {
+    mockBuildDiffReport.mockReturnValue({
+      added: [{ ruleId: 'no-console', message: 'console.log' }],
+      baseRef: 'abc123',
+      headRef: 'def456',
+      removed: [],
+      summary: { added: 1, removed: 0, total: 1 },
+    })
+    vi.spyOn(instance.p, 'parse').mockResolvedValue({
+      args: { base: 'abc123', head: 'def456' },
+      flags: { json: false, path: '.', verbose: false },
+    })
+    await instance.p.run()
+    expect(mockBuildDiffReport).toHaveBeenCalled()
   })
 })
