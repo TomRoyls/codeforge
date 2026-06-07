@@ -93,7 +93,7 @@ export class BimodalMap<K, V> {
     const c = new BimodalMap<K, V>()
     c.frozen = this.frozen ? new Map(this.frozen) : null
     c.mutable = new Map(this.mutable)
-    c.deleted = new Set(this.deleted)
+    for (const k of this.deleted) c.deleted.add(k)
     return c as this
   }
 

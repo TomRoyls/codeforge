@@ -142,8 +142,11 @@ export class BipartiteMatching {
 
   clone(): this {
     const c = new BipartiteMatching(this.leftSize, this.rightSize)
-    c.adj = this.adj.map(row => [...row])
-    c._edgeCount = this._edgeCount
+    for (let u = 0; u < this.leftSize; u++) {
+      for (const v of this.adj[u]!) {
+        c.addEdge(u, v)
+      }
+    }
     return c as this
   }
 

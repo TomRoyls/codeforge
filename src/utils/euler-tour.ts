@@ -82,13 +82,13 @@ export class EulerTour {
   }
 
   clone(): EulerTour {
-    const copy = Object.create(EulerTour.prototype) as EulerTour
-    copy.tour = [...this.tour]
-    copy.first = [...this.first]
-    copy.last = [...this.last]
-    copy.depth = [...this.depth]
-    copy.parent = [...this.parent]
-    return copy
+    const c = Object.create(EulerTour.prototype) as EulerTour
+    for (const v of this.tour) c.tour.push(v)
+    for (const v of this.first) c.first.push(v)
+    for (const v of this.last) c.last.push(v)
+    for (const v of this.depth) c.depth.push(v)
+    for (const v of this.parent) c.parent.push(v)
+    return c
   }
 
   equals(other: unknown): boolean {

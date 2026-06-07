@@ -76,7 +76,7 @@ export class BinaryIndexedTree2D {
     const c = new BinaryIndexedTree2D(this.rows, this.cols)
     for (let i = 0; i < this.tree.length; i++) {
       for (let j = 0; j < this.tree[i]!.length; j++) {
-        c.tree[i]![j] = this.tree[i]![j]
+        c.tree[i]![j] = this.tree[i]![j]!
       }
     }
     return c as this

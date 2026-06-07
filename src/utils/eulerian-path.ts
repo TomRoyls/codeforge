@@ -80,11 +80,11 @@ export class EulerianPath {
   }
 
   clone(): EulerianPath {
-    const copy = Object.create(EulerianPath.prototype) as EulerianPath
-    copy.path = [...this.path]
-    copy.isEulerian = this.isEulerian
-    copy.type = this.type
-    return copy
+    const c = Object.create(EulerianPath.prototype) as EulerianPath
+    Object.defineProperty(c, 'path', { value: [...this.path], writable: false, enumerable: true, configurable: true })
+    Object.defineProperty(c, 'isEulerian', { value: this.isEulerian, writable: false, enumerable: true, configurable: true })
+    Object.defineProperty(c, 'type', { value: this.type, writable: false, enumerable: true, configurable: true })
+    return c
   }
 
   equals(other: unknown): boolean {

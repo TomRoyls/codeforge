@@ -200,7 +200,7 @@ describe('BoundedPriorityQueue', () => {
   })
 
   it('pop returns and removes top element', () => {
-    const q = new BoundedPriorityQueue<number>((a, b) => b - a, 5)
+    const q = new BoundedPriorityQueue<number>((a, b) => a - b, 5)
     q.push(1)
     q.push(3)
     q.push(2)
