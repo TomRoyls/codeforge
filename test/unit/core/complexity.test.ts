@@ -591,6 +591,22 @@ describe('Complexity Analysis', () => {
       expect(complexity).toBe(1)
     })
 
+    test('counts nullish coalescing ?? operator outside if condition', () => {
+      const code = `function withNullish() { return a ?? b; }`
+      const sourceFile = createSourceFile(code)
+      const func = sourceFile.getFunction('withNullish')!
+      const complexity = calculateCognitiveComplexity(func as FunctionLikeNode)
+      expect(complexity).toBe(1)
+    })
+
+    test('counts cyclomatic complexity for nullish coalescing ?? operator', () => {
+      const code = `function withNullish() { return a ?? b; }`
+      const sourceFile = createSourceFile(code)
+      const func = sourceFile.getFunction('withNullish')!
+      const complexity = calculateCyclomaticComplexity(func as FunctionLikeNode)
+      expect(complexity).toBe(2)
+    })
+
     test('does not recurse into nested function declarations', () => {
       const code = `function outer() { function inner() { if (x) {} } }`
       const sourceFile = createSourceFile(code)
