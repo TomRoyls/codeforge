@@ -29,10 +29,10 @@ describe("WaveletTree access", () => {
     expect(wt.access(5)).toBe("a")
   })
 
-  it("throws RangeError for out-of-bounds index", () => {
+  it("returns undefined for out-of-bounds index", () => {
     const wt = new WaveletTree("abc")
-    expect(() => wt.access(-1)).toThrow(RangeError)
-    expect(() => wt.access(3)).toThrow(RangeError)
+    expect(wt.access(-1)).toBeUndefined()
+    expect(wt.access(3)).toBeUndefined()
   })
 })
 
