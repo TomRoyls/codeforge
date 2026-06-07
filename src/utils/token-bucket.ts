@@ -13,6 +13,7 @@ export class TokenBucket {
   private readonly _fillRate: number
   private readonly _refillInterval: number
   private totalGranted: number = 0
+  private totalRejected: number = 0
 
   constructor(options: TokenBucketOptions) {
     const capacity = options.capacity ?? options.maxTokens
@@ -56,6 +57,7 @@ export class TokenBucket {
       this.totalGranted += count
       return true
     }
+    this.totalRejected++
     return false
   }
 
@@ -106,11 +108,12 @@ export class TokenBucket {
     this.totalGranted += count
   }
 
-  getStats(): { capacity: number; fillRate: number; totalGranted: number } {
+  getStats(): { capacity: number; fillRate: number; totalGranted: number; totalRejected: number } {
     return {
       capacity: this._capacity,
       fillRate: this._fillRate,
       totalGranted: this.totalGranted,
+      totalRejected: this.totalRejected,
     }
   }
 
@@ -118,6 +121,7 @@ export class TokenBucket {
     this.tokens = this._capacity
     this.lastRefill = Date.now()
     this.totalGranted = 0
+    this.totalRejected = 0
   }
 
   private refill(): void {
