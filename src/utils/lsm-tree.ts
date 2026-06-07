@@ -87,10 +87,14 @@ export class LSMTree<V> {
   private compact(): void {
     if (this.levels.length <= 3) return
     const merged = new Map<string, V | undefined>()
-    for (let i = this.levels.length - 1; i >= 0; i--) {
+    // Iterate newest (index 0) to oldest; first occurrence wins
+    for (let i = 0; i < this.levels.length; i++) {
       for (const [k, v] of this.levels[i]!) {
         if (!merged.has(k)) merged.set(k, v)
       }
+    }
+    for (const [k, v] of merged) {
+      if (v === undefined) merged.delete(k)
     }
     this.levels = [merged]
   }

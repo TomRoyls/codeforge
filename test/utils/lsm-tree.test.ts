@@ -124,6 +124,39 @@ describe('LSMTree', () => {
     expect(tree.levelCount).toBeLessThan(4)
   })
 
+  it('compaction preserves newest value for updated keys', () => {
+    const tree = new LSMTree<string>(2)
+    tree.set('a', 'old')
+    tree.set('b', 'b1')
+    // flush 1: {a: 'old', b: 'b1'}
+    tree.set('a', 'new')
+    tree.set('b', 'b2')
+    // flush 2: {a: 'new', b: 'b2'}
+    tree.set('c', 'c1')
+    tree.set('d', 'd1')
+    // flush 3: {c: 'c1', d: 'd1'}
+    tree.set('e', 'e1')
+    tree.set('f', 'f1')
+    // flush 4: triggers compaction (> 3 levels)
+    expect(tree.get('a')).toBe('new')
+    expect(tree.get('b')).toBe('b2')
+  })
+
+  it('compaction removes tombstones', () => {
+    const tree = new LSMTree<string>(2)
+    tree.set('a', 'val')
+    tree.set('b', 'b1')
+    tree.delete('a')
+    tree.set('c', 'c1')
+    tree.set('d', 'd1')
+    tree.set('e', 'e1')
+    tree.set('f', 'f1')
+    tree.set('g', 'g1')
+    tree.set('h', 'h1')
+    expect(tree.has('a')).toBe(false)
+    expect(tree.get('a')).toBeUndefined()
+  })
+
   it('deleted key tombstones trigger flush', () => {
     const tree = new LSMTree<string>(3)
     tree.set('key1', 'value1')
