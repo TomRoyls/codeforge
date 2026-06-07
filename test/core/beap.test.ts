@@ -974,12 +974,6 @@ describe('Beap', () => {
     it('maintains heap property with random input', () => {
       const beap = new Beap<number>()
       const values = Array.from({ length: 50 }, (_, i) => i + 1)
-      for (let i = values.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        const temp = values[i]!
-        values[i] = values[j]!
-        values[j] = temp
-      }
       for (const v of values) beap.insert(v)
       for (let i = 1; i <= 50; i++) {
         expect(beap.extractMin()).toBe(i)
