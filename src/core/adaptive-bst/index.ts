@@ -303,6 +303,7 @@ export class AdaptiveBST<T> {
       right: null,
       parent,
       priority: node.priority,
+      insertId: node.insertId,
     }
     cloned.left = this._cloneNode(node.left, cloned)
     cloned.right = this._cloneNode(node.right, cloned)

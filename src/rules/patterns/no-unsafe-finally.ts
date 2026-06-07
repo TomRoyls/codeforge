@@ -39,12 +39,25 @@ function checkStatement(node: unknown, context: RuleContext): void {
     return
   }
 
+  if (body !== undefined && body !== null && typeof body === 'object') {
+    checkStatement(body, context)
+  }
+
   if (n.consequent) {
     checkStatement(n.consequent, context)
   }
 
   if (n.alternate) {
     checkStatement(n.alternate, context)
+  }
+
+  if (n.type === 'SwitchStatement' && Array.isArray(n.cases)) {
+    for (const c of n.cases) {
+      const caseNode = toASTNode(c)
+      if (caseNode?.type === 'SwitchCase' && Array.isArray(caseNode.consequent)) {
+        checkUnsafeFlow(caseNode.consequent, context)
+      }
+    }
   }
 }
 

@@ -65,7 +65,7 @@ export const preferNullishCoalescingRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/prefer-nullish-coalescing',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [
       {
         additionalProperties: false,

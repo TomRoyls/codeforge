@@ -250,7 +250,7 @@ export const preferStringStartsEndsWithRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/prefer-string-starts-ends-with',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [],
     severity: 'warn',
     type: 'suggestion',

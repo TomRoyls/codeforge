@@ -56,7 +56,7 @@ export const noDuplicateImportsRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-duplicate-imports',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [],
     severity: 'warn',
     type: 'suggestion',

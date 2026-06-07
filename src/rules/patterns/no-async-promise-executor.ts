@@ -44,7 +44,7 @@ export const noAsyncPromiseExecutorRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-async-promise-executor',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [],
     severity: 'error',
     type: 'problem',

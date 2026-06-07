@@ -67,7 +67,7 @@ export const preferRegexpExecRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/prefer-regexp-exec',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [],
     severity: 'warn',
     type: 'suggestion',

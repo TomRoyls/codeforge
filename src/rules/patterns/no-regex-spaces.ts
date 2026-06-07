@@ -53,7 +53,7 @@ export const noRegexSpacesRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-regex-spaces',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [],
     severity: 'warn',
     type: 'suggestion',

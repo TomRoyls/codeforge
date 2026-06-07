@@ -97,7 +97,7 @@ export const noSameSideConditionsRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-same-side-conditions',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [],
     severity: 'warn',
     type: 'problem',

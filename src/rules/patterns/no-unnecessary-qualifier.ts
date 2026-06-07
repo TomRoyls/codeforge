@@ -148,7 +148,7 @@ export const noUnnecessaryQualifierRule: RuleDefinition = {
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-unnecessary-qualifier',
     },
-    fixable: false,
+    fixable: 'code',
     schema: [],
     severity: 'warn',
     type: 'suggestion',
