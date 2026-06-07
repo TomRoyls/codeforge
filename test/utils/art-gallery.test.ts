@@ -223,4 +223,25 @@ describe('ArtGallery', () => {
     ag.addPoint(0, 4)
     expect(ag.pointInPolygon(2, 2)).toBe(true)
   })
+
+  it('triangulates CW polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(0, 4)
+    ag.addPoint(4, 4)
+    ag.addPoint(4, 0)
+    const tri = ag.triangulation()
+    expect(tri.length).toBe(2)
+  })
+
+  it('triangulates CW concave polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(0, 4)
+    ag.addPoint(2, 1)
+    ag.addPoint(4, 4)
+    ag.addPoint(4, 0)
+    const tri = ag.triangulation()
+    expect(tri.length).toBe(3)
+  })
 })

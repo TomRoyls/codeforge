@@ -12,6 +12,14 @@ export class ArtGallery {
     const indices = Array.from({ length: n }, (_, i) => i)
     const used = new Array(n).fill(false)
 
+    let signedArea = 0
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      signedArea += this.points[i]![0] * this.points[j]![1]
+      signedArea -= this.points[j]![0] * this.points[i]![1]
+    }
+    const orient = signedArea >= 0 ? 1 : -1
+
     while (indices.filter(i => !used[i]).length > 3) {
       let earFound = false
       const active = indices.filter(i => !used[i])
@@ -20,7 +28,7 @@ export class ArtGallery {
         const curr = active[i]!
         const next = active[(i + 1) % active.length]!
 
-        if (this.cross(prev, curr, next) > 0) {
+        if (this.cross(prev, curr, next) * orient > 0) {
           let isEar = true
           for (const j of active) {
             if (j !== prev && j !== curr && j !== next) {
