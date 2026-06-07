@@ -107,6 +107,47 @@ describe('SparseBitSet - set operations', () => {
     const result = a.xor(b)
     expect(result.toArray()).toEqual([1, 4])
   })
+
+  it('forEach iterates bits across multiple words (not just first word)', () => {
+    const set = new SparseBitSet()
+    // Set bits in word 0 (bits 0-31) and word 3 (bits 96-127)
+    // Words 1 and 2 are zero, which would trigger the return bug
+    set.set(1)
+    set.set(100)
+    const bits: number[] = []
+    set.forEach((bit) => bits.push(bit))
+    expect(bits).toEqual([1, 100])
+  })
+
+  it('toArray returns bits across multiple words', () => {
+    const set = new SparseBitSet()
+    set.set(0)
+    set.set(50)
+    set.set(100)
+    set.set(200)
+    expect(set.toArray()).toEqual([0, 50, 100, 200])
+  })
+
+  it('clone preserves bits across multiple words', () => {
+    const set = new SparseBitSet()
+    set.set(5)
+    set.set(100)
+    set.set(500)
+    const clone = set.clone()
+    expect(clone.toArray()).toEqual([5, 100, 500])
+    expect(clone.size).toBe(3)
+  })
+
+  it('or handles bits across multiple words', () => {
+    const a = new SparseBitSet()
+    a.set(1)
+    a.set(100)
+    const b = new SparseBitSet()
+    b.set(50)
+    b.set(200)
+    const result = a.or(b)
+    expect(result.toArray()).toEqual([1, 50, 100, 200])
+  })
 })
 
 // ─── Iteration and Clone ──────────────────────────────────

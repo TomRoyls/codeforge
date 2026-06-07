@@ -142,7 +142,7 @@ export class SparseBitSet {
     this.chunks.forEach((chunk, ci) => {
       for (let wi = 0; wi < chunk.length; wi++) {
         const val = chunk[wi]!
-        if (val === 0) return
+        if (val === 0) continue
         const base = ci * SparseBitSet.BITS_PER_CHUNK + wi * 32
         for (let b = 0; b < 32; b++) {
           if (val & (1 << b)) callback(base + b)
