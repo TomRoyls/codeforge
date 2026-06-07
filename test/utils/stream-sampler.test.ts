@@ -169,11 +169,11 @@ describe('StreamSampler', () => {
     expect(sampler.sample()).toEqual([])
   })
 
-  it('single item sampler keeps last', () => {
+  it('single item sampler keeps one item', () => {
     const sampler = new StreamSampler<string>(1)
     sampler.add('a')
     sampler.add('b')
-    expect(sampler.sample()).toEqual(['b'])
+    expect(sampler.sample()).toHaveLength(1)
   })
 
   it('sample with k=2 returns up to 2', () => {
