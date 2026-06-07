@@ -2,6 +2,7 @@ export class LinearProbingHashTable<K, V> {
   private keys: (K | undefined)[]
   private values: (V | undefined)[]
   private occupied: boolean[]
+  private deleted: boolean[]
   private _size = 0
   private readonly capacity: number
 
@@ -10,6 +11,7 @@ export class LinearProbingHashTable<K, V> {
     this.keys = new Array(capacity)
     this.values = new Array(capacity)
     this.occupied = new Array(capacity).fill(false)
+    this.deleted = new Array(capacity).fill(false)
   }
 
   private hash(key: K): number {
@@ -27,10 +29,15 @@ export class LinearProbingHashTable<K, V> {
     for (let i = 0; i < this.capacity; i++) {
       const pos = (idx + i) % this.capacity
       if (!this.occupied[pos]) {
+        if (this.deleted[pos] && firstDeleted === -1) {
+          firstDeleted = pos
+          continue
+        }
         const insertAt = firstDeleted !== -1 ? firstDeleted : pos
         this.keys[insertAt] = key
         this.values[insertAt] = value
         this.occupied[insertAt] = true
+        this.deleted[insertAt] = false
         this._size++
         return
       }
@@ -46,8 +53,8 @@ export class LinearProbingHashTable<K, V> {
     let idx = this.hash(key)
     for (let i = 0; i < this.capacity; i++) {
       const pos = (idx + i) % this.capacity
-      if (!this.occupied[pos]) return undefined
-      if (this.keys[pos] === key) return this.values[pos]
+      if (!this.occupied[pos] && !this.deleted[pos]) return undefined
+      if (this.occupied[pos] && this.keys[pos] === key) return this.values[pos]
     }
     return undefined
   }
@@ -60,11 +67,12 @@ export class LinearProbingHashTable<K, V> {
     let idx = this.hash(key)
     for (let i = 0; i < this.capacity; i++) {
       const pos = (idx + i) % this.capacity
-      if (!this.occupied[pos]) return false
-      if (this.keys[pos] === key) {
+      if (!this.occupied[pos] && !this.deleted[pos]) return false
+      if (this.occupied[pos] && this.keys[pos] === key) {
         this.keys[pos] = undefined
         this.values[pos] = undefined
         this.occupied[pos] = false
+        this.deleted[pos] = true
         this._size--
         return true
       }
@@ -116,6 +124,8 @@ export class LinearProbingHashTable<K, V> {
         copy.values[i] = this.values[i]
         copy.occupied[i] = true
         copy._size++
+      } else if (this.deleted[i]) {
+        copy.deleted[i] = true
       }
     }
     return copy

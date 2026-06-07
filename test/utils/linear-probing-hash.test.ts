@@ -179,4 +179,25 @@ describe('LinearProbingHashTable', () => {
     ht.set('key', 42)
     expect(ht.get('key')).toBe(42)
   })
+
+  it('finds colliding key after deleting earlier key (probe chain integrity)', () => {
+    const ht = new LinearProbingHashTable<string, number>(4)
+    // hash('a') = 97 % 4 = 1, hash('e') = 101 % 4 = 1 -- collides
+    ht.set('a', 1)
+    ht.set('e', 2)
+    expect(ht.get('e')).toBe(2)
+    ht.delete('a')
+    expect(ht.get('a')).toBeUndefined()
+    expect(ht.get('e')).toBe(2)
+  })
+
+  it('reuses deleted slot for new insertion', () => {
+    const ht = new LinearProbingHashTable<string, number>(4)
+    ht.set('a', 1)
+    ht.set('e', 2)
+    ht.delete('a')
+    ht.set('a', 3)
+    expect(ht.get('a')).toBe(3)
+    expect(ht.get('e')).toBe(2)
+  })
 })
