@@ -210,4 +210,15 @@ describe('HopscotchHashTable', () => {
     table.set(1, 'hello')
     expect(table.get(1)).toBe('hello')
   })
+
+  it('preserves probe chain after deleting ideal bucket entry', () => {
+    // hash('a') = 97 % 4 = 1, hash('i') = 105 % 4 = 1 -- collides
+    const ht = new HopscotchHashTable<string, number>({ capacity: 4, maxHop: 32 })
+    ht.set('a', 1)
+    ht.set('i', 2)
+    expect(ht.get('i')).toBe(2)
+    ht.delete('a')
+    expect(ht.get('a')).toBeUndefined()
+    expect(ht.get('i')).toBe(2)
+  })
 })

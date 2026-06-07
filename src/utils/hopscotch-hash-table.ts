@@ -1,5 +1,6 @@
 export class HopscotchHashTable<K, V> {
-  private _entries: Array<{ key: K; value: V; hopInfo: number } | null>
+  private _entries: Array<{ key: K; value: V } | null>
+  private _hopInfo: number[]
   private readonly segmentSize: number
   private _size: number = 0
   private readonly maxLoadFactor: number
@@ -10,6 +11,7 @@ export class HopscotchHashTable<K, V> {
     const capacity = options?.capacity ?? 16
     this.maxLoadFactor = 0.75
     this._entries = new Array(capacity).fill(null)
+    this._hopInfo = new Array(capacity).fill(0)
     this.threshold = Math.floor(capacity * this.maxLoadFactor)
   }
 
@@ -47,7 +49,7 @@ export class HopscotchHashTable<K, V> {
       const probeIdx = (idx + i) % this._entries.length
       const entry = this._entries[probeIdx] ?? null
       if (entry === null) {
-        this._entries[probeIdx] = { key, value, hopInfo: 0 }
+        this._entries[probeIdx] = { key, value }
         this._size++
         this.setHopBit(idealIdx, i)
         return
@@ -60,7 +62,9 @@ export class HopscotchHashTable<K, V> {
 
     const displaced = this.displace(idx)
     if (displaced !== -1) {
-      this._entries[displaced] = { key, value, hopInfo: 0 }
+      this._entries[displaced] = { key, value }
+      const offset = (displaced - idealIdx + this._entries.length) % this._entries.length
+      this.setHopBit(idealIdx, offset)
       this._size++
       return
     }
@@ -82,6 +86,10 @@ export class HopscotchHashTable<K, V> {
   delete(key: K): boolean {
     const idx = this.findIndex(key)
     if (idx === -1) return false
+    const hash = this.hash(key)
+    const idealIdx = hash % this._entries.length
+    const offset = (idx - idealIdx + this._entries.length) % this._entries.length
+    this.clearHopBit(idealIdx, offset)
     this._entries[idx] = null
     this._size--
     return true
@@ -97,6 +105,7 @@ export class HopscotchHashTable<K, V> {
 
   clear(): void {
     this._entries.fill(null)
+    this._hopInfo.fill(0)
     this._size = 0
   }
 
@@ -127,7 +136,7 @@ export class HopscotchHashTable<K, V> {
   private findIndex(key: K): number {
     const hash = this.hash(key)
     const idx = hash % this._entries.length
-    const hopInfo = this._entries[idx]?.hopInfo ?? 0
+    const hopInfo = this._hopInfo[idx]!
     for (let i = 0; i < this.segmentSize; i++) {
       if (hopInfo & (1 << i)) {
         const probeIdx = (idx + i) % this._entries.length
@@ -139,8 +148,11 @@ export class HopscotchHashTable<K, V> {
   }
 
   private setHopBit(bucketIdx: number, offset: number): void {
-    const entry = this._entries[bucketIdx]
-    if (entry) entry.hopInfo |= (1 << offset)
+    this._hopInfo[bucketIdx] = (this._hopInfo[bucketIdx] ?? 0) | (1 << offset)
+  }
+
+  private clearHopBit(bucketIdx: number, offset: number): void {
+    this._hopInfo[bucketIdx] = (this._hopInfo[bucketIdx] ?? 0) & ~(1 << offset)
   }
 
   private displace(startIdx: number): number {
@@ -154,11 +166,17 @@ export class HopscotchHashTable<K, V> {
           let found = false
           for (let j = 0; j < this.segmentSize - 1; j++) {
             const sourceIdx = (prevIdx + j) % this._entries.length
-            if (this._entries[sourceIdx] !== null) {
+            const sourceEntry = this._entries[sourceIdx]
+            if (sourceEntry !== null && sourceEntry !== undefined) {
               const targetDist = (currentIdx - sourceIdx + this._entries.length) % this._entries.length
               if (targetDist < this.segmentSize) {
-                this._entries[currentIdx] = this._entries[sourceIdx] ?? null
+                const sourceIdealIdx = this.hash(sourceEntry.key) % this._entries.length
+                const oldOffset = (sourceIdx - sourceIdealIdx + this._entries.length) % this._entries.length
+                this.clearHopBit(sourceIdealIdx, oldOffset)
+                this._entries[currentIdx] = sourceEntry
                 this._entries[sourceIdx] = null
+                const newOffset = (currentIdx - sourceIdealIdx + this._entries.length) % this._entries.length
+                this.setHopBit(sourceIdealIdx, newOffset)
                 currentIdx = sourceIdx
                 currentDist = (currentIdx - startIdx + this._entries.length) % this._entries.length
                 found = true
@@ -177,6 +195,7 @@ export class HopscotchHashTable<K, V> {
   private resize(): void {
     const oldEntries = this._entries
     this._entries = new Array(oldEntries.length * 2).fill(null)
+    this._hopInfo = new Array(this._entries.length).fill(0)
     this._size = 0
     this.threshold = Math.floor(this._entries.length * this.maxLoadFactor)
     for (const entry of oldEntries) {
