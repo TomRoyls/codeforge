@@ -18,12 +18,10 @@ export class WeightedRandom<T = string> {
   }
 
   add(item: T, weight: number): void {
-    if (weight <= 0) throw new Error('Weight must be greater than 0')
-    if (this.built) {
-      throw new Error('Cannot add items after build() is called')
-    }
+    if (weight <= 0) return
     this.items.push(item)
     this.weights.push(weight)
+    this.built = false
   }
 
   build(): void {
@@ -76,9 +74,9 @@ export class WeightedRandom<T = string> {
     this.built = true
   }
 
-  sample(): T {
-    if (this.size === 0) throw new Error('Cannot sample from empty sampler')
-    if (!this.built) throw new Error('Must call build() before sample()')
+  sample(): T | undefined {
+    if (this.size === 0) return undefined
+    if (!this.built) this.build()
     const column = Math.floor(Math.random() * this.size)
     return Math.random() < this.prob[column]! ? this.items[column]! : this.items[this.alias[column]!]!
   }

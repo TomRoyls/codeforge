@@ -1,125 +1,135 @@
 export interface RateLimiterOptions {
-  maxRequests?: number
-  windowMs?: number
-  tokensPerSecond?: number
-  maxTokens?: number
-  limit?: number
-  interval?: number
+  maxTokens: number
+  refillRate: number
+  refillIntervalMs: number
 }
 
-interface WindowState {
-  count: number
-  windowStart: number
+interface RateLimiterStats {
+  totalAcquired: number
+  totalRejected: number
+  availableTokens: number
+  maxTokens: number
+  totalRefills: number
 }
 
-/**
- * Fixed-window rate limiter supporting per-key tracking.
- *
- * Accepted constructor forms:
- *   new RateLimiter({ maxRequests, windowMs })
- *   new RateLimiter(maxRequests, windowMs)
- *   new RateLimiter({ tokensPerSecond, maxTokens })  // token-bucket alias
- *   new RateLimiter({ limit, interval })              // alias
- */
 export class RateLimiter {
-  readonly maxRequests: number
-  readonly windowMs: number
-  private buckets: Map<string, WindowState> = new Map()
-  private readonly defaultKey = '__default__'
+  readonly maxTokens: number
+  readonly refillRate: number
+  readonly refillIntervalMs: number
+  private tokens: number
+  private lastRefillTime: number
+  private totalAcquired = 0
+  private totalRejected = 0
+  private totalRefills = 0
 
-  constructor(maxRequests: number, windowMs: number)
-  constructor(options: RateLimiterOptions)
-  constructor(optionsOrMax: RateLimiterOptions | number, windowMsArg?: number) {
-    let maxR: number
-    let window: number
-
-    if (typeof optionsOrMax === 'number') {
-      maxR = optionsOrMax
-      window = windowMsArg ?? 1000
-    } else {
-      const opts = optionsOrMax ?? {}
-      if (opts.maxRequests !== undefined) {
-        maxR = opts.maxRequests
-      } else if (opts.limit !== undefined) {
-        maxR = opts.limit
-      } else if (opts.maxTokens !== undefined) {
-        maxR = opts.maxTokens
-      } else {
-        maxR = 0
-      }
-
-      if (opts.windowMs !== undefined) {
-        window = opts.windowMs
-      } else if (opts.interval !== undefined) {
-        window = opts.interval
-      } else {
-        window = 1000
-      }
+  constructor(options: RateLimiterOptions) {
+    if (options.maxTokens < 1) {
+      throw new RangeError('maxTokens must be >= 1')
     }
-
-    this.maxRequests = maxR
-    this.windowMs = window
+    if (options.refillRate < 1) {
+      throw new RangeError('refillRate must be >= 1')
+    }
+    if (options.refillIntervalMs < 1) {
+      throw new RangeError('refillIntervalMs must be >= 1')
+    }
+    this.maxTokens = options.maxTokens
+    this.refillRate = options.refillRate
+    this.refillIntervalMs = options.refillIntervalMs
+    this.tokens = options.maxTokens
+    this.lastRefillTime = Date.now()
   }
 
-  private getBucket(key: string | undefined): WindowState {
-    const k = key ?? this.defaultKey
-    let bucket = this.buckets.get(k)
-    if (!bucket) {
-      bucket = { count: 0, windowStart: Date.now() }
-      this.buckets.set(k, bucket)
-    }
-    return bucket
-  }
-
-  private rollover(bucket: WindowState): void {
+  private refill(): void {
     const now = Date.now()
-    if (now - bucket.windowStart >= this.windowMs) {
-      bucket.count = 0
-      bucket.windowStart = now
+    const elapsed = now - this.lastRefillTime
+    const intervals = Math.floor(elapsed / this.refillIntervalMs)
+    if (intervals > 0) {
+      this.tokens = Math.min(this.maxTokens, this.tokens + intervals * this.refillRate)
+      this.lastRefillTime += intervals * this.refillIntervalMs
+      this.totalRefills++
     }
   }
 
-  tryAcquire(key?: string): { allowed: boolean; remaining: number; retryAfterMs?: number } {
-    const bucket = this.getBucket(key)
-    this.rollover(bucket)
-
-    if (this.maxRequests <= 0) {
-      const elapsed = Date.now() - bucket.windowStart
-      const retryAfterMs = Math.max(1, this.windowMs - elapsed)
-      return { allowed: false, remaining: 0, retryAfterMs }
+  tryAcquire(count?: number): boolean {
+    const n = count ?? 1
+    if (n < 1) {
+      throw new RangeError('count must be >= 1')
     }
-
-    if (bucket.count >= this.maxRequests) {
-      const elapsed = Date.now() - bucket.windowStart
-      const retryAfterMs = Math.max(1, this.windowMs - elapsed)
-      return { allowed: false, remaining: 0, retryAfterMs }
+    this.refill()
+    if (this.tokens >= n) {
+      this.tokens -= n
+      this.totalAcquired += n
+      return true
     }
-
-    bucket.count++
-    const remaining = this.maxRequests - bucket.count
-    return { allowed: true, remaining }
+    this.totalRejected++
+    return false
   }
 
-  acquire(key?: string): boolean {
-    return this.tryAcquire(key).allowed
-  }
-
-  reset(key?: string): void {
-    if (key === undefined) {
-      this.buckets.delete(this.defaultKey)
-    } else {
-      this.buckets.delete(key)
+  async acquire(): Promise<void> {
+    while (!this.tryAcquire()) {
+      const needed = 1 - this.tokens
+      const waitMs = Math.ceil((needed / this.refillRate) * this.refillIntervalMs)
+      await new Promise((resolve) => setTimeout(resolve, Math.max(1, waitMs)))
     }
   }
 
-  resetAll(): void {
-    this.buckets.clear()
+  getAvailableTokens(): number {
+    this.refill()
+    return this.tokens
   }
 
-  getStatus(key?: string): { remaining: number; limit: number } {
-    const bucket = this.getBucket(key)
-    this.rollover(bucket)
-    const remaining = Math.max(0, this.maxRequests - bucket.count)
-    return { remaining, limit: this.maxRequests }
+  getStats(): RateLimiterStats {
+    this.refill()
+    return {
+      totalAcquired: this.totalAcquired,
+      totalRejected: this.totalRejected,
+      availableTokens: this.tokens,
+      maxTokens: this.maxTokens,
+      totalRefills: this.totalRefills,
+    }
+  }
+
+  reset(): void {
+    this.tokens = this.maxTokens
+    this.lastRefillTime = Date.now()
+    this.totalAcquired = 0
+    this.totalRejected = 0
+    this.totalRefills = 0
+  }
+
+  toString(): string {
+    return `RateLimiter(maxTokens: ${this.maxTokens}, refillRate: ${this.refillRate}, refillIntervalMs: ${this.refillIntervalMs})`
+  }
+
+  toJSON(): RateLimiterOptions & { tokens: number } {
+    return {
+      maxTokens: this.maxTokens,
+      refillRate: this.refillRate,
+      refillIntervalMs: this.refillIntervalMs,
+      tokens: this.tokens,
+    }
+  }
+
+  clone(): RateLimiter {
+    const copy = new RateLimiter({
+      maxTokens: this.maxTokens,
+      refillRate: this.refillRate,
+      refillIntervalMs: this.refillIntervalMs,
+    })
+    copy.tokens = this.tokens
+    copy.lastRefillTime = this.lastRefillTime
+    copy.totalAcquired = this.totalAcquired
+    copy.totalRejected = this.totalRejected
+    copy.totalRefills = this.totalRefills
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof RateLimiter)) return false
+    return (
+      this.maxTokens === other.maxTokens &&
+      this.refillRate === other.refillRate &&
+      this.refillIntervalMs === other.refillIntervalMs
+    )
   }
 }

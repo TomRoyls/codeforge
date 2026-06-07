@@ -186,7 +186,7 @@ export class SortedSet<T> {
     if (x.forward[0] !== null && this.compare(x.forward[0]!.value, value) === 0) {
       return rank
     }
-    return -1
+    return rank
   }
 
   range(start: number, end?: number): T[] {

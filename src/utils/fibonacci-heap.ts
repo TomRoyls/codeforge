@@ -33,7 +33,7 @@ export class FibonacciHeap<K = number, V = K> {
     return node
   }
 
-  extractMin(): K | undefined {
+  extractMin(): FibonacciHeapNode<K, V> | undefined {
     const z = this._min
     if (z === null) return undefined
 
@@ -59,7 +59,7 @@ export class FibonacciHeap<K = number, V = K> {
     }
 
     this._size--
-    return z.key
+    return z
   }
 
   peek(): K | undefined {
@@ -70,23 +70,19 @@ export class FibonacciHeap<K = number, V = K> {
     if (this._min === null) return []
     const result: K[] = []
     const temp = new FibonacciHeap<K, V>(this.comparator)
-    let current = this._min
-    const nodes: FibonacciHeapNode<K, V>[] = []
     const visited = new Set<FibonacciHeapNode<K, V>>()
-    const stack: FibonacciHeapNode<K, V>[] = [current]
+    const stack: FibonacciHeapNode<K, V>[] = [this._min]
     while (stack.length > 0) {
       const node = stack.pop()!
       if (visited.has(node)) continue
       visited.add(node)
-      nodes.push(node)
+      temp.insert(node.key, node.value)
       stack.push(node.right)
       if (node.child !== null) stack.push(node.child)
     }
-    for (const node of nodes) {
-      temp.insert(node.key, node.value)
-    }
     while (!temp.isEmpty()) {
-      result.push(temp.extractMin()!)
+      const node = temp.extractMin()!
+      result.push(node.key)
     }
     return result
   }
@@ -95,8 +91,8 @@ export class FibonacciHeap<K = number, V = K> {
     if (!node || typeof node !== 'object' || !('key' in node)) {
       throw new Error(`Invalid handle: ${String(node)}`)
     }
-    if (this.comparator(newKey, node.key) > 0) {
-      throw new Error('New value must be less than or equal to current value')
+    if (this.comparator(newKey, node.key) >= 0) {
+      throw new Error('New key is greater than current key')
     }
     node.key = newKey
     const parent = node.parent
