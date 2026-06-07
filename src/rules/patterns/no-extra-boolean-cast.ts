@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getNodeSource, getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 function isBooleanCall(node: unknown): boolean {
   const n = toASTNode(node)
@@ -28,7 +28,13 @@ export const noExtraBooleanCastRule: RuleDefinition = {
         if (Array.isArray(args) && args.length === 1) {
           const arg = args[0]
           if (isBooleanCall(arg) || isDoubleBang(arg)) {
+            const innerArg = toASTNode(arg)?.argument ?? toASTNode(arg)?.arguments?.[0]
+            const innerSource = innerArg ? getNodeSource(context, innerArg) : undefined
+            const range = getRange(node)
             context.report({
+              fix: range && innerSource
+                ? { range, text: `Boolean(${innerSource})` }
+                : undefined,
               loc: extractLocation(node),
               message: 'Redundant boolean cast.',
             })
@@ -40,7 +46,13 @@ export const noExtraBooleanCastRule: RuleDefinition = {
         const n = toASTNode(node)
         const inner = toASTNode(n?.argument)
         if (isBooleanCall(inner?.argument)) {
+          const innerArg = toASTNode(inner?.argument?.arguments?.[0])
+          const innerSource = innerArg ? getNodeSource(context, innerArg) : undefined
+          const range = getRange(node)
           context.report({
+            fix: range && innerSource
+              ? { range, text: `Boolean(${innerSource})` }
+              : undefined,
             loc: extractLocation(node),
             message: 'Redundant boolean cast.',
           })
@@ -55,7 +67,7 @@ export const noExtraBooleanCastRule: RuleDefinition = {
       recommended: true,
       url: 'https://github.com/codeforge-dev/codeforge/blob/main/src/rules/patterns/no-extra-boolean-cast.ts',
     },
-    fixable: undefined,
+    fixable: 'code',
     schema: [],
     severity: 'error',
     type: 'problem',

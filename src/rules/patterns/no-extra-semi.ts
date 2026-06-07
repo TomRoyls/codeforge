@@ -10,7 +10,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noExtraSemiRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -19,7 +19,15 @@ export const noExtraSemiRule: RuleDefinition = {
         const n = toASTNode(node)
         if (!n || n.type !== 'EmptyStatement') return
 
+        const range = getRange(node)
+
         context.report({
+          fix: range
+            ? {
+                range,
+                text: '',
+              }
+            : undefined,
           loc: extractLocation(n),
           message: 'Unnecessary semicolon.',
           node: n,
@@ -35,6 +43,7 @@ export const noExtraSemiRule: RuleDefinition = {
       recommended: false,
       url: 'https://codeforge.dev/docs/rules/no-extra-semi',
     },
+    fixable: 'code',
     schema: [],
     severity: 'warn',
     type: 'suggestion',
