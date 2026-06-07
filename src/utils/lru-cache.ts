@@ -135,4 +135,30 @@ export class LRUCache<K, V> {
     }
     this._maxSize = newMaxSize
   }
+
+  toString(): string {
+    return `LRUCache(${this.cache.size}/${this._maxSize})`
+  }
+
+  toJSON(): unknown {
+    return this.entries()
+  }
+
+  clone(): LRUCache<K, V> {
+    const copy = new LRUCache<K, V>(this._maxSize)
+    for (const [k, v] of this.cache) {
+      copy.cache.set(k, v)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LRUCache)) return false
+    if (this._maxSize !== other._maxSize) return false
+    if (this.cache.size !== other.cache.size) return false
+    for (const [k, v] of this.cache) {
+      if (!Object.is(other.cache.get(k), v)) return false
+    }
+    return true
+  }
 }

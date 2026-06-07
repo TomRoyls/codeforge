@@ -66,6 +66,22 @@ export class HuffmanCoder {
     if (node.left) this.buildCodes(node.left, prefix + '0', codes)
     if (node.right) this.buildCodes(node.right, prefix + '1', codes)
   }
+
+  toString(): string {
+    return `HuffmanCoder()`
+  }
+
+  toJSON(): unknown {
+    return {}
+  }
+
+  clone(): HuffmanCoder {
+    return new HuffmanCoder()
+  }
+
+  equals(other: unknown): boolean {
+    return other instanceof HuffmanCoder
+  }
 }
 
 interface HuffmanNode {

@@ -90,4 +90,28 @@ export class IntervalGraph {
     }
     return true
   }
+
+  toString(): string {
+    return `IntervalGraph(${this.intervals.length})`
+  }
+
+  toJSON(): unknown {
+    return this.intervals.map(([s, e]) => [s, e])
+  }
+
+  clone(): IntervalGraph {
+    const copy = new IntervalGraph()
+    copy.intervals = this.intervals.map(([s, e]) => [s, e] as [number, number])
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof IntervalGraph)) return false
+    if (this.intervals.length !== other.intervals.length) return false
+    for (let i = 0; i < this.intervals.length; i++) {
+      if (this.intervals[i]![0] !== other.intervals[i]![0]) return false
+      if (this.intervals[i]![1] !== other.intervals[i]![1]) return false
+    }
+    return true
+  }
 }

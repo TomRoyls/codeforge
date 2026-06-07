@@ -138,4 +138,32 @@ export class LRUCache3<V> {
       this._data.delete(oldestKey)
     }
   }
+
+  toString(): string {
+    return `LRUCache3(${this._data.size}/${this._options.maxSize})`
+  }
+
+  toJSON(): unknown {
+    return this.entries()
+  }
+
+  clone(): LRUCache3<V> {
+    const copy = new LRUCache3<V>({ maxSize: this._options.maxSize, ttlMs: this._ttlMs })
+    for (const [k, e] of this._data) {
+      copy._data.set(k, { value: e.value, expiresAt: e.expiresAt })
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LRUCache3)) return false
+    if (this._options.maxSize !== other._options.maxSize) return false
+    if (this._data.size !== other._data.size) return false
+    for (const [k, e] of this._data) {
+      const oe = other._data.get(k)
+      if (!oe) return false
+      if (!Object.is(e.value, oe.value)) return false
+    }
+    return true
+  }
 }

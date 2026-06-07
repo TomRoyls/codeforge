@@ -24,4 +24,27 @@ export class ImplicitKeyTree {
   toArray(): number[] {
     return [...this.data]
   }
+
+  toString(): string {
+    return `ImplicitKeyTree(${this.data.length})`
+  }
+
+  toJSON(): number[] {
+    return [...this.data]
+  }
+
+  clone(): ImplicitKeyTree {
+    const copy = new ImplicitKeyTree()
+    copy.data = [...this.data]
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof ImplicitKeyTree)) return false
+    if (this.data.length !== other.data.length) return false
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i] !== other.data[i]) return false
+    }
+    return true
+  }
 }

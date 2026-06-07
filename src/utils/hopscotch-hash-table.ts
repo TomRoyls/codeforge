@@ -194,4 +194,32 @@ export class HopscotchHashTable<K, V> {
     }
     return h >>> 0
   }
+
+  toString(): string {
+    return `HopscotchHashTable(${this._size})`
+  }
+
+  toJSON(): unknown {
+    return this.entries()
+  }
+
+  clone(): HopscotchHashTable<K, V> {
+    const copy = new HopscotchHashTable<K, V>({ capacity: this._entries.length, maxHop: this.segmentSize })
+    for (const [k, v] of this.entries()) {
+      copy.set(k, v)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HopscotchHashTable)) return false
+    if (this._size !== other._size) return false
+    for (const entry of this._entries) {
+      if (entry !== null) {
+        const v = other.get(entry.key)
+        if (v !== entry.value) return false
+      }
+    }
+    return true
+  }
 }

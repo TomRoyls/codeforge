@@ -128,4 +128,38 @@ export class LiChaoTree {
     }
     return tree
   }
+
+  toString(): string {
+    return `LiChaoTree([${this.xLo}, ${this.xHi}], ${this.lineCount()} lines)`
+  }
+
+  toJSON(): unknown {
+    const lines: Line[] = []
+    for (const l of this.lines) {
+      if (l !== null) lines.push({ a: l.a, b: l.b })
+    }
+    return { xLo: this.xLo, xHi: this.xHi, lines }
+  }
+
+  clone(): LiChaoTree {
+    const copy = new LiChaoTree(this.xLo, this.xHi)
+    for (const l of this.lines) {
+      if (l !== null) copy.insert(l.a, l.b)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LiChaoTree)) return false
+    if (this.xLo !== other.xLo || this.xHi !== other.xHi) return false
+    const a: Line[] = []
+    const b: Line[] = []
+    for (const l of this.lines) if (l !== null) a.push(l)
+    for (const l of other.lines) if (l !== null) b.push(l)
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i]!.a !== b[i]!.a || a[i]!.b !== b[i]!.b) return false
+    }
+    return true
+  }
 }

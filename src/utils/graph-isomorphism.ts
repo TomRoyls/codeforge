@@ -80,4 +80,33 @@ export class GraphIsomorphism {
     }
     return true
   }
+
+  toString(): string {
+    return `GraphIsomorphism(${this.n})`
+  }
+
+  toJSON(): unknown {
+    return { n: this.n, adj1: this.adj1.map(s => [...s]), adj2: this.adj2.map(s => [...s]) }
+  }
+
+  clone(): GraphIsomorphism {
+    const copy = new GraphIsomorphism(this.n)
+    for (let i = 0; i < this.n; i++) {
+      for (const v of this.adj1[i]!) copy.addEdgeG1(i, v)
+      for (const v of this.adj2[i]!) copy.addEdgeG2(i, v)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof GraphIsomorphism)) return false
+    if (this.n !== other.n) return false
+    for (let i = 0; i < this.n; i++) {
+      if (this.adj1[i]!.size !== other.adj1[i]!.size) return false
+      if (this.adj2[i]!.size !== other.adj2[i]!.size) return false
+      for (const v of this.adj1[i]!) if (!other.adj1[i]!.has(v)) return false
+      for (const v of this.adj2[i]!) if (!other.adj2[i]!.has(v)) return false
+    }
+    return true
+  }
 }

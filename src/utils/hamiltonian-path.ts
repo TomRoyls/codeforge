@@ -62,4 +62,33 @@ export class HamiltonianPath {
     }
     return false
   }
+
+  toString(): string {
+    return `HamiltonianPath(${this.n})`
+  }
+
+  toJSON(): unknown {
+    return { n: this.n, adj: this.adj }
+  }
+
+  clone(): HamiltonianPath {
+    const copy = new HamiltonianPath(this.n)
+    for (let i = 0; i < this.n; i++) {
+      for (let j = 0; j < this.n; j++) {
+        if (this.adj[i]![j]) copy.addEdge(i, j)
+      }
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HamiltonianPath)) return false
+    if (this.n !== other.n) return false
+    for (let i = 0; i < this.n; i++) {
+      for (let j = 0; j < this.n; j++) {
+        if (this.adj[i]![j] !== other.adj[i]![j]) return false
+      }
+    }
+    return true
+  }
 }

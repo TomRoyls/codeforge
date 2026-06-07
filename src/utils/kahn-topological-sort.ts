@@ -64,4 +64,30 @@ export class KahnTopologicalSort {
     }
     return maxDist
   }
+
+  toString(): string {
+    return `KahnTopologicalSort(order.length=${this.order.length}, hasCycle=${this.hasCycle})`
+  }
+
+  toJSON(): unknown {
+    return { order: this.order, hasCycle: this.hasCycle, cycleNodes: this.cycleNodes }
+  }
+
+  clone(): KahnTopologicalSort {
+    const copy = Object.create(KahnTopologicalSort.prototype) as KahnTopologicalSort
+    ;(copy as unknown as { order: number[] }).order = [...this.order]
+    ;(copy as unknown as { hasCycle: boolean }).hasCycle = this.hasCycle
+    ;(copy as unknown as { cycleNodes: number[] }).cycleNodes = [...this.cycleNodes]
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof KahnTopologicalSort)) return false
+    if (this.hasCycle !== other.hasCycle) return false
+    if (this.order.length !== other.order.length) return false
+    for (let i = 0; i < this.order.length; i++) {
+      if (this.order[i] !== other.order[i]) return false
+    }
+    return true
+  }
 }

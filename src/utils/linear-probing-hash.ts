@@ -95,4 +95,42 @@ export class LinearProbingHashTable<K, V> {
     }
     return result
   }
+
+  toString(): string {
+    return `LinearProbingHashTable(${this._size}/${this.capacity})`
+  }
+
+  toJSON(): unknown {
+    const entries: Array<[K, V]> = []
+    for (let i = 0; i < this.capacity; i++) {
+      if (this.occupied[i]) entries.push([this.keys[i]!, this.values[i]!])
+    }
+    return entries
+  }
+
+  clone(): LinearProbingHashTable<K, V> {
+    const copy = new LinearProbingHashTable<K, V>(this.capacity)
+    for (let i = 0; i < this.capacity; i++) {
+      if (this.occupied[i]) {
+        copy.keys[i] = this.keys[i]
+        copy.values[i] = this.values[i]
+        copy.occupied[i] = true
+        copy._size++
+      }
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LinearProbingHashTable)) return false
+    if (this._size !== other._size) return false
+    for (let i = 0; i < this.capacity; i++) {
+      if (this.occupied[i]) {
+        if (!other.occupied[i]) return false
+        if (this.keys[i] !== other.keys[i]) return false
+        if (!Object.is(this.values[i], other.values[i])) return false
+      }
+    }
+    return true
+  }
 }

@@ -106,4 +106,35 @@ export class LRUTTLCache<K, V> {
       }
     }
   }
+
+  toString(): string {
+    return `LRUTTLCache(${this.cache.size}/${this.maxSize}, ttl=${this.defaultTTL})`
+  }
+
+  toJSON(): unknown {
+    const result: Array<[K, V]> = []
+    for (const [k, e] of this.cache) result.push([k, e.value])
+    return result
+  }
+
+  clone(): LRUTTLCache<K, V> {
+    const copy = new LRUTTLCache<K, V>({ maxSize: this.maxSize, defaultTTL: this.defaultTTL })
+    for (const [k, e] of this.cache) {
+      copy.cache.set(k, { value: e.value, expiresAt: e.expiresAt })
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LRUTTLCache)) return false
+    if (this.maxSize !== other.maxSize) return false
+    if (this.defaultTTL !== other.defaultTTL) return false
+    if (this.cache.size !== other.cache.size) return false
+    for (const [k, e] of this.cache) {
+      const oe = other.cache.get(k)
+      if (!oe) return false
+      if (!Object.is(e.value, oe.value)) return false
+    }
+    return true
+  }
 }

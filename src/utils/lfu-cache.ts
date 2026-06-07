@@ -135,4 +135,35 @@ export class LFUCache<K, V> {
       this.keyMap.delete(evictKey)
     }
   }
+
+  toString(): string {
+    return `LFUCache(${this.keyMap.size}/${this.capacity})`
+  }
+
+  toJSON(): unknown {
+    return this.entries()
+  }
+
+  clone(): LFUCache<K, V> {
+    const copy = new LFUCache<K, V>(this.capacity)
+    for (const [key, entry] of this.keyMap) {
+      copy.keyMap.set(key, { value: entry.value, freq: entry.freq })
+      copy.addToFreqMap(entry.freq, key)
+    }
+    copy.minFreq = this.minFreq
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LFUCache)) return false
+    if (this.capacity !== other.capacity) return false
+    if (this.keyMap.size !== other.keyMap.size) return false
+    for (const [k, e] of this.keyMap) {
+      const oe = other.keyMap.get(k)
+      if (!oe) return false
+      if (!Object.is(e.value, oe.value)) return false
+      if (e.freq !== oe.freq) return false
+    }
+    return true
+  }
 }

@@ -274,4 +274,26 @@ export class HashArrayMappedTrie<K, V> {
       },
     }
   }
+
+  toString(): string {
+    return `HashArrayMappedTrie(${this._size})`
+  }
+
+  toJSON(): unknown {
+    return this.entries()
+  }
+
+  clone(): HashArrayMappedTrie<K, V> {
+    return HashArrayMappedTrie.from<K, V>(this.entries())
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HashArrayMappedTrie)) return false
+    if (this._size !== other._size) return false
+    const a = this.entries()
+    for (const [k, v] of a) {
+      if (other.get(k) !== v) return false
+    }
+    return true
+  }
 }

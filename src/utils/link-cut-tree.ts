@@ -200,4 +200,43 @@ export class LinkCutTree {
 
     this.makeRoot(node);
   }
+
+  toString(): string {
+    return `LinkCutTree(${this.n})`;
+  }
+
+  toJSON(): unknown {
+    return {
+      n: this.n,
+      parent: [...this.parent],
+      children: this.children.map(s => [...s]),
+      value: [...this.value],
+    };
+  }
+
+  clone(): LinkCutTree {
+    const copy = new LinkCutTree(this.n);
+    for (let i = 0; i < this.n; i++) {
+      copy.parent[i] = this.parent[i]!;
+      for (const c of this.children[i]!) copy.children[i]!.add(c);
+      copy.value[i] = this.value[i]!;
+    }
+    return copy;
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LinkCutTree)) return false;
+    if (this.n !== other.n) return false;
+    for (let i = 0; i < this.n; i++) {
+      if (this.parent[i] !== other.parent[i]) return false;
+      if (this.value[i] !== other.value[i]) return false;
+      const a = [...this.children[i]!].sort((x, y) => x - y);
+      const b = [...other.children[i]!].sort((x, y) => x - y);
+      if (a.length !== b.length) return false;
+      for (let j = 0; j < a.length; j++) {
+        if (a[j] !== b[j]) return false;
+      }
+    }
+    return true;
+  }
 }

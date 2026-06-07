@@ -61,4 +61,42 @@ export class GraphEntropy {
     }
     return count === 0 ? 0 : total / count
   }
+
+  toString(): string {
+    return `GraphEntropy(${this.n})`
+  }
+
+  toJSON(): unknown {
+    const edges: Array<[number, number]> = []
+    for (let i = 0; i < this.n; i++) {
+      for (const v of this.adj[i]!) {
+        if (i < v) edges.push([i, v])
+      }
+    }
+    return { n: this.n, edges }
+  }
+
+  clone(): GraphEntropy {
+    const copy = new GraphEntropy(this.n)
+    for (let i = 0; i < this.n; i++) {
+      for (const v of this.adj[i]!) {
+        if (i < v) copy.addEdge(i, v)
+      }
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof GraphEntropy)) return false
+    if (this.n !== other.n) return false
+    for (let i = 0; i < this.n; i++) {
+      const a = [...this.adj[i]!].sort((x, y) => x - y)
+      const b = [...other.adj[i]!].sort((x, y) => x - y)
+      if (a.length !== b.length) return false
+      for (let j = 0; j < a.length; j++) {
+        if (a[j] !== b[j]) return false
+      }
+    }
+    return true
+  }
 }

@@ -48,4 +48,28 @@ export class LineGraph {
     }
     return lineAdj.length > 0
   }
+
+  toString(): string {
+    return `LineGraph(${this.edges.length} edges)`
+  }
+
+  toJSON(): unknown {
+    return this.edges.map(([u, v]) => [u, v])
+  }
+
+  clone(): LineGraph {
+    const copy = new LineGraph(0)
+    copy.edges = this.edges.map(([u, v]) => [u, v] as [number, number])
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LineGraph)) return false
+    if (this.edges.length !== other.edges.length) return false
+    for (let i = 0; i < this.edges.length; i++) {
+      if (this.edges[i]![0] !== other.edges[i]![0]) return false
+      if (this.edges[i]![1] !== other.edges[i]![1]) return false
+    }
+    return true
+  }
 }

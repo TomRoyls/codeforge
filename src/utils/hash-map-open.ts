@@ -118,4 +118,34 @@ export class HashMapOpen<K, V> {
     this.table = new Array<Entry<K, V> | null>(this.capacity).fill(null)
     this._size = 0
   }
+
+  toString(): string {
+    return `HashMapOpen(${this._size})`
+  }
+
+  toJSON(): unknown {
+    return this.entries()
+  }
+
+  clone(): HashMapOpen<K, V> {
+    const copy = new HashMapOpen<K, V>(this.capacity, this.loadFactor)
+    for (const entry of this.table) {
+      if (entry !== null && !entry.deleted) {
+        copy.set(entry.key, entry.value)
+      }
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HashMapOpen)) return false
+    if (this._size !== other._size) return false
+    for (const entry of this.table) {
+      if (entry !== null && !entry.deleted) {
+        const v = other.get(entry.key)
+        if (v !== entry.value) return false
+      }
+    }
+    return true
+  }
 }

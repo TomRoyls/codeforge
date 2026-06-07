@@ -189,6 +189,26 @@ export class IntervalMap<T> {
     return copy
   }
 
+  toString(): string {
+    return `IntervalMap(${this.intervals.length})`
+  }
+
+  toJSON(): unknown {
+    return this.intervals.map(iv => ({ start: iv.start, end: iv.end, value: iv.value }))
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof IntervalMap)) return false
+    if (this.intervals.length !== other.intervals.length) return false
+    for (let i = 0; i < this.intervals.length; i++) {
+      const a = this.intervals[i]!
+      const b = other.intervals[i]!
+      if (a.start !== b.start || a.end !== b.end) return false
+      if (!Object.is(a.value, b.value)) return false
+    }
+    return true
+  }
+
   [Symbol.iterator](): Iterator<Interval<T>> {
     let i = 0
     const intervals = this.intervals

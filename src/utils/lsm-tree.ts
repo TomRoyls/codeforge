@@ -94,4 +94,31 @@ export class LSMTree<V> {
     }
     this.levels = [merged]
   }
+
+  toString(): string {
+    return `LSMTree(memtable=${this.memtable.size}, levels=${this.levels.length})`
+  }
+
+  toJSON(): unknown {
+    return this.entries()
+  }
+
+  clone(): LSMTree<V> {
+    const copy = new LSMTree<V>(this.flushThreshold)
+    for (const [k, v] of this.entries()) copy.set(k, v)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LSMTree)) return false
+    if (this.flushThreshold !== other.flushThreshold) return false
+    const a = this.entries()
+    const b = other.entries()
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i]![0] !== b[i]![0]) return false
+      if (!Object.is(a[i]![1], b[i]![1])) return false
+    }
+    return true
+  }
 }

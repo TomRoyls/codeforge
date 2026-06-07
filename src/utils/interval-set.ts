@@ -103,6 +103,26 @@ export class IntervalSet {
     return copy
   }
 
+  toString(): string {
+    return `IntervalSet(${this.intervals.length})`
+  }
+
+  toJSON(): unknown {
+    return this.intervals.map(iv => ({ low: iv.low, high: iv.high, lowKind: iv.lowKind, highKind: iv.highKind }))
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof IntervalSet)) return false
+    if (this.intervals.length !== other.intervals.length) return false
+    for (let i = 0; i < this.intervals.length; i++) {
+      const a = this.intervals[i]!
+      const b = other.intervals[i]!
+      if (a.low !== b.low || a.high !== b.high) return false
+      if (a.lowKind !== b.lowKind || a.highKind !== b.highKind) return false
+    }
+    return true
+  }
+
   complement(low: number, high: number): IntervalSet {
     const result = new IntervalSet()
     let prev = low

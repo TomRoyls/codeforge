@@ -67,4 +67,38 @@ export class LowestCommonAncestor {
     const lca = this.query(u, v)
     return (this.depth.get(u) ?? 0) + (this.depth.get(v) ?? 0) - 2 * (this.depth.get(lca) ?? 0)
   }
+
+  toString(): string {
+    return `LowestCommonAncestor(${this.nodeCount}, root=${this.root})`
+  }
+
+  toJSON(): unknown {
+    return {
+      root: this.root,
+      nodeCount: this.nodeCount,
+      adj: Array.from(this.adj.entries()),
+      depth: Array.from(this.depth.entries()),
+      parent: Array.from(this.parent.entries()),
+    }
+  }
+
+  clone(): LowestCommonAncestor {
+    const adjCopy = new Map<number, number[]>()
+    for (const [k, v] of this.adj) adjCopy.set(k, [...v])
+    return new LowestCommonAncestor(adjCopy, this.root)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LowestCommonAncestor)) return false
+    if (this.root !== other.root) return false
+    if (this.nodeCount !== other.nodeCount) return false
+    if (this.depth.size !== other.depth.size) return false
+    for (const [k, v] of this.depth) {
+      if (other.depth.get(k) !== v) return false
+    }
+    for (const [k, v] of this.parent) {
+      if (other.parent.get(k) !== v) return false
+    }
+    return true
+  }
 }

@@ -50,4 +50,30 @@ export class HeavyHitters<T> {
   clear(): void {
     this.counters.clear()
   }
+
+  toString(): string {
+    return `HeavyHitters(${this.k}, ${this.counters.size})`
+  }
+
+  toJSON(): unknown {
+    return [...this.counters.entries()]
+  }
+
+  clone(): HeavyHitters<T> {
+    const copy = new HeavyHitters<T>(this.k)
+    for (const [k, v] of this.counters) {
+      copy.counters.set(k, v)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HeavyHitters)) return false
+    if (this.k !== other.k) return false
+    if (this.counters.size !== other.counters.size) return false
+    for (const [k, v] of this.counters) {
+      if (other.counters.get(k) !== v) return false
+    }
+    return true
+  }
 }

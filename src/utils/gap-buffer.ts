@@ -131,4 +131,32 @@ export class GapBuffer<T> {
     }
     this.gapEnd = newGapEnd
   }
+
+  toString(): string {
+    return `GapBuffer(${this._size})`
+  }
+
+  toJSON(): T[] {
+    return this.toArray()
+  }
+
+  clone(): GapBuffer<T> {
+    const copy = new GapBuffer<T>(Math.max(32, this.buffer.length))
+    for (const item of this.toArray()) {
+      copy.insert(item)
+    }
+    copy.moveCursor(this.gapStart)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof GapBuffer)) return false
+    if (this._size !== other._size) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    for (let i = 0; i < a.length; i++) {
+      if (!Object.is(a[i], b[i])) return false
+    }
+    return true
+  }
 }

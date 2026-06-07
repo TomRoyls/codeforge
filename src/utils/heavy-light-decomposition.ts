@@ -116,4 +116,36 @@ export class HeavyLightDecomposition {
   public get nodeCount(): number {
     return this._nodeCount
   }
+
+  toString(): string {
+    return `HeavyLightDecomposition(${this._nodeCount})`
+  }
+
+  toJSON(): unknown {
+    return {
+      nodeCount: this._nodeCount,
+      parent: this.parent,
+      depth: this.depth,
+      heavy: this.heavy,
+      head: this.head,
+      position: this.position,
+    }
+  }
+
+  clone(): HeavyLightDecomposition {
+    return new HeavyLightDecomposition(this.adjacencyList.map(row => [...row]))
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HeavyLightDecomposition)) return false
+    if (this._nodeCount !== other._nodeCount) return false
+    for (let i = 0; i < this._nodeCount; i++) {
+      if (this.parent[i] !== other.parent[i]) return false
+      if (this.depth[i] !== other.depth[i]) return false
+      if (this.heavy[i] !== other.heavy[i]) return false
+      if (this.head[i] !== other.head[i]) return false
+      if (this.position[i] !== other.position[i]) return false
+    }
+    return true
+  }
 }

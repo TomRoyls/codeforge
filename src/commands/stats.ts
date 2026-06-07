@@ -212,7 +212,7 @@ export default class Stats extends Command {
     if (format === 'json') {
       outputStr = JSON.stringify(statsResult, null, 2)
     } else {
-      outputStr = formatOutput(statsResult, format, top as number)
+      outputStr = formatOutput(statsResult as unknown as Record<string, unknown>, format, top as number)
     }
 
     if (outputFlag) {

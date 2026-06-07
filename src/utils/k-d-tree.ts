@@ -342,4 +342,29 @@ export class KDTree {
     }
     return sum
   }
+
+  toString(): string {
+    return `KDTree(${this._size}, k=${this._k})`
+  }
+
+  toJSON(): unknown {
+    return this.toArray()
+  }
+
+  clone(): KDTree {
+    return new KDTree(this.toArray(), this._k)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof KDTree)) return false
+    if (this._size !== other._size) return false
+    if (this._k !== other._k) return false
+    const a = this.toArray()
+    const b = other.toArray()
+    if (a.length !== b.length) return false
+    for (const p of a) {
+      if (!b.some(q => this.pointsEqual(p, q))) return false
+    }
+    return true
+  }
 }

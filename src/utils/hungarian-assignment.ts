@@ -69,4 +69,33 @@ export class HungarianAssignment {
     }
     return { assignment, totalCost }
   }
+
+  toString(): string {
+    return `HungarianAssignment(${this.n}x${this.m})`
+  }
+
+  toJSON(): unknown {
+    return { n: this.n, m: this.m, cost: this.cost }
+  }
+
+  clone(): HungarianAssignment {
+    const copy = new HungarianAssignment(this.n, this.m)
+    for (let i = 0; i < this.n; i++) {
+      for (let j = 0; j < this.m; j++) {
+        copy.setCost(i, j, this.cost[i]![j]!)
+      }
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HungarianAssignment)) return false
+    if (this.n !== other.n || this.m !== other.m) return false
+    for (let i = 0; i < this.n; i++) {
+      for (let j = 0; j < this.m; j++) {
+        if (this.cost[i]![j] !== other.cost[i]![j]) return false
+      }
+    }
+    return true
+  }
 }

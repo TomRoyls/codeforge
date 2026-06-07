@@ -117,4 +117,45 @@ export class HierarchicalTimer {
       this.flatten(node.children, map)
     }
   }
+
+  toString(): string {
+    return `HierarchicalTimer(${this.rootChildren.length} roots)`
+  }
+
+  toJSON(): unknown {
+    return this.rootChildren
+  }
+
+  clone(): HierarchicalTimer {
+    const copy = new HierarchicalTimer({ enabled: this.enabled })
+    copy.rootChildren = this.rootChildren.map(n => this.cloneNode(n))
+    return copy
+  }
+
+  private cloneNode(node: TimerNode): TimerNode {
+    return {
+      name: node.name,
+      startTime: node.startTime,
+      endTime: node.endTime,
+      duration: node.duration,
+      children: node.children.map(c => this.cloneNode(c)),
+    }
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HierarchicalTimer)) return false
+    if (this.rootChildren.length !== other.rootChildren.length) return false
+    return this.nodesEqual(this.rootChildren, other.rootChildren)
+  }
+
+  private nodesEqual(a: readonly TimerNode[], b: readonly TimerNode[]): boolean {
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      const x = a[i]!
+      const y = b[i]!
+      if (x.name !== y.name || x.duration !== y.duration) return false
+      if (!this.nodesEqual(x.children, y.children)) return false
+    }
+    return true
+  }
 }

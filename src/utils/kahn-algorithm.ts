@@ -37,4 +37,34 @@ export class KahnAlgorithm {
     if (result.length !== this.n) return null
     return result
   }
+
+  toString(): string {
+    return `KahnAlgorithm(${this.n})`
+  }
+
+  toJSON(): unknown {
+    return { n: this.n, adj: this.adj }
+  }
+
+  clone(): KahnAlgorithm {
+    const copy = new KahnAlgorithm(this.n)
+    for (let i = 0; i < this.n; i++) {
+      for (const v of this.adj[i]!) copy.addEdge(i, v)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof KahnAlgorithm)) return false
+    if (this.n !== other.n) return false
+    for (let i = 0; i < this.n; i++) {
+      const a = [...this.adj[i]!].sort((x, y) => x - y)
+      const b = [...other.adj[i]!].sort((x, y) => x - y)
+      if (a.length !== b.length) return false
+      for (let j = 0; j < a.length; j++) {
+        if (a[j] !== b[j]) return false
+      }
+    }
+    return true
+  }
 }

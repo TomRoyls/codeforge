@@ -109,4 +109,36 @@ export class LRUKCache<K, V> {
     }
     return entry.history[0]!
   }
+
+  toString(): string {
+    return `LRUKCache(k=${this.k}, ${this.cache.size}/${this.capacity})`
+  }
+
+  toJSON(): unknown {
+    const result: Array<[K, V]> = []
+    for (const [k, e] of this.cache) result.push([k, e.value])
+    return result
+  }
+
+  clone(): LRUKCache<K, V> {
+    const copy = new LRUKCache<K, V>({ k: this.k, capacity: this.capacity })
+    for (const [k, e] of this.cache) {
+      copy.cache.set(k, { value: e.value, history: [...e.history] })
+    }
+    copy.clock = this.clock
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LRUKCache)) return false
+    if (this.k !== other.k) return false
+    if (this.capacity !== other.capacity) return false
+    if (this.cache.size !== other.cache.size) return false
+    for (const [k, e] of this.cache) {
+      const oe = other.cache.get(k)
+      if (!oe) return false
+      if (!Object.is(e.value, oe.value)) return false
+    }
+    return true
+  }
 }

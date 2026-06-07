@@ -209,4 +209,39 @@ export class HashMap<K, V> {
   get loadFactor(): number {
     return this._size / this.table.length
   }
+
+  toString(): string {
+    return `HashMap(${this._size})`
+  }
+
+  toJSON(): unknown {
+    return this.entries()
+  }
+
+  clone(): HashMap<K, V> {
+    const copy = new HashMap<K, V>({
+      initialCapacity: this.table.length,
+      loadFactor: this._loadFactor,
+      hashFn: this._hash,
+      keyEqual: this._keyEqual,
+    })
+    for (const slot of this.table) {
+      if (slot !== null && slot !== TOMBSTONE) {
+        copy.set(slot.key, slot.value)
+      }
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HashMap)) return false
+    if (this._size !== other._size) return false
+    for (const slot of this.table) {
+      if (slot !== null && slot !== TOMBSTONE) {
+        const v = other.get(slot.key)
+        if (v !== slot.value) return false
+      }
+    }
+    return true
+  }
 }

@@ -71,4 +71,36 @@ export class LazySegmentTree {
   getPoint(idx: number): number {
     return this.queryRange(idx, idx)
   }
+
+  toString(): string {
+    return `LazySegmentTree(${this.n})`
+  }
+
+  toJSON(): unknown {
+    const arr: number[] = []
+    for (let i = 0; i < this.n; i++) arr.push(this.queryRange(i, i))
+    return arr
+  }
+
+  clone(): LazySegmentTree {
+    const copy = new LazySegmentTree(
+      this.n,
+      this.combine,
+      this.applyLazy,
+      this.composeLazy,
+    )
+    for (let i = 0; i < this.n; i++) {
+      copy.updateRange(i, i, this.queryRange(i, i))
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LazySegmentTree)) return false
+    if (this.n !== other.n) return false
+    for (let i = 0; i < this.n; i++) {
+      if (this.queryRange(i, i) !== other.queryRange(i, i)) return false
+    }
+    return true
+  }
 }

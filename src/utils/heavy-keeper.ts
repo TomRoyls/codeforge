@@ -154,6 +154,47 @@ export class HeavyKeeper {
     this.total_ = 0
   }
 
+  toString(): string {
+    return `HeavyKeeper(${this.depth}, ${this.width}, total=${this.total_})`
+  }
+
+  toJSON(): unknown {
+    return {
+      depth: this.depth,
+      width: this.width,
+      decay: this.decay,
+      total: this.total_,
+      buckets: this.buckets.map(row => row.map(b => ({ key: b.key, count: b.count }))),
+    }
+  }
+
+  clone(): HeavyKeeper {
+    const copy = new HeavyKeeper({ depth: this.depth, width: this.width, decay: this.decay })
+    for (let i = 0; i < this.depth; i++) {
+      for (let j = 0; j < this.width; j++) {
+        copy.buckets[i]![j]!.key = this.buckets[i]![j]!.key
+        copy.buckets[i]![j]!.count = this.buckets[i]![j]!.count
+      }
+    }
+    copy.total_ = this.total_
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HeavyKeeper)) return false
+    if (this.depth !== other.depth || this.width !== other.width) return false
+    if (this.decay !== other.decay) return false
+    if (this.total_ !== other.total_) return false
+    for (let i = 0; i < this.depth; i++) {
+      for (let j = 0; j < this.width; j++) {
+        const a = this.buckets[i]![j]!
+        const b = other.buckets[i]![j]!
+        if (a.key !== b.key || a.count !== b.count) return false
+      }
+    }
+    return true
+  }
+
   static fromItems(
     items: string[],
     options?: { depth?: number; width?: number; decay?: number },

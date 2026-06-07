@@ -35,4 +35,26 @@ export class KMPAutomaton {
   getFailure(): number[] {
     return [...this.fail]
   }
+
+  toString(): string {
+    return `KMPAutomaton("${this.pattern}")`
+  }
+
+  toJSON(): unknown {
+    return { pattern: this.pattern, fail: this.fail }
+  }
+
+  clone(): KMPAutomaton {
+    return new KMPAutomaton(this.pattern)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof KMPAutomaton)) return false
+    if (this.pattern !== other.pattern) return false
+    if (this.fail.length !== other.fail.length) return false
+    for (let i = 0; i < this.fail.length; i++) {
+      if (this.fail[i] !== other.fail[i]) return false
+    }
+    return true
+  }
 }

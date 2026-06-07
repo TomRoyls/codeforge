@@ -77,4 +77,33 @@ export class IntegerIntervalTree<T> {
       this.sorted = true
     }
   }
+
+  toString(): string {
+    return `IntegerIntervalTree(${this.entries.length})`
+  }
+
+  toJSON(): unknown {
+    return this.entries.map(e => ({ lo: e.lo, hi: e.hi, value: e.value }))
+  }
+
+  clone(): IntegerIntervalTree<T> {
+    const copy = new IntegerIntervalTree<T>()
+    copy.entries = this.entries.map(e => ({ lo: e.lo, hi: e.hi, value: e.value }))
+    copy.sorted = this.sorted
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof IntegerIntervalTree)) return false
+    if (this.entries.length !== other.entries.length) return false
+    this.ensureSorted()
+    other.ensureSorted()
+    for (let i = 0; i < this.entries.length; i++) {
+      const a = this.entries[i]!
+      const b = other.entries[i]!
+      if (a.lo !== b.lo || a.hi !== b.hi) return false
+      if (!Object.is(a.value, b.value)) return false
+    }
+    return true
+  }
 }

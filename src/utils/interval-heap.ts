@@ -190,4 +190,32 @@ export class IntervalHeap<T> {
     }
     return heap
   }
+
+  toString(): string {
+    return `IntervalHeap(${this.heap.length})`
+  }
+
+  toJSON(): unknown {
+    return this.heap.map(e => ({ key: e.key, value: e.value }))
+  }
+
+  clone(): IntervalHeap<T> {
+    const copy = new IntervalHeap<T>()
+    for (const e of this.heap) {
+      copy.insert(e.key, e.value)
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof IntervalHeap)) return false
+    if (this.heap.length !== other.heap.length) return false
+    const a = [...this.heap].sort((x, y) => x.key - y.key)
+    const b = [...other.heap].sort((x, y) => x.key - y.key)
+    for (let i = 0; i < a.length; i++) {
+      if (a[i]!.key !== b[i]!.key) return false
+      if (!Object.is(a[i]!.value, b[i]!.value)) return false
+    }
+    return true
+  }
 }

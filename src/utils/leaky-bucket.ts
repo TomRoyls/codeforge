@@ -43,4 +43,24 @@ export class LeakyBucket {
     this.water = 0
     this.lastLeak = Date.now()
   }
+
+  toString(): string {
+    return `LeakyBucket(${this.water}/${this.capacity}, rate=${this.leakRate})`
+  }
+
+  toJSON(): unknown {
+    return { capacity: this.capacity, leakRate: this.leakRate, water: this.water, lastLeak: this.lastLeak }
+  }
+
+  clone(): LeakyBucket {
+    const copy = new LeakyBucket(this.capacity, this.leakRate)
+    copy.water = this.water
+    copy.lastLeak = this.lastLeak
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LeakyBucket)) return false
+    return this.capacity === other.capacity && this.leakRate === other.leakRate
+  }
 }

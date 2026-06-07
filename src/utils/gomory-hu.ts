@@ -75,4 +75,36 @@ export class GomoryHu {
     }
     return total
   }
+
+  toString(): string {
+    return `GomoryHu(${this.n})`
+  }
+
+  toJSON(): unknown {
+    return { n: this.n, edges: this.adj }
+  }
+
+  clone(): GomoryHu {
+    const copy = new GomoryHu(this.n)
+    for (let i = 0; i < this.n; i++) {
+      for (const [v, w] of this.adj[i]!) {
+        if (i < v) copy.addEdge(i, v, w)
+      }
+    }
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof GomoryHu)) return false
+    if (this.n !== other.n) return false
+    for (let i = 0; i < this.n; i++) {
+      const a = [...this.adj[i]!].sort((x, y) => x[0] - y[0])
+      const b = [...other.adj[i]!].sort((x, y) => x[0] - y[0])
+      if (a.length !== b.length) return false
+      for (let j = 0; j < a.length; j++) {
+        if (a[j]![0] !== b[j]![0] || a[j]![1] !== b[j]![1]) return false
+      }
+    }
+    return true
+  }
 }

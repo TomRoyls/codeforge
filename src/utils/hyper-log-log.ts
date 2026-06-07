@@ -64,6 +64,30 @@ export class HyperLogLog {
     this.registers.fill(0)
   }
 
+  toString(): string {
+    return `HyperLogLog(precision=${this.precision}, registers=${this.m})`
+  }
+
+  toJSON(): unknown {
+    return { precision: this.precision, registers: Array.from(this.registers) }
+  }
+
+  clone(): HyperLogLog {
+    const copy = new HyperLogLog(this.precision)
+    copy.registers = new Uint8Array(this.registers)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HyperLogLog)) return false
+    if (this.precision !== other.precision) return false
+    if (this.m !== other.m) return false
+    for (let i = 0; i < this.m; i++) {
+      if (this.registers[i] !== other.registers[i]) return false
+    }
+    return true
+  }
+
   private rho(value: number): number {
     if (value === 0) return 32 - this.precision + 1
     let count = 1

@@ -58,4 +58,36 @@ export class HeavyLightDecomposition {
   distance(u: number, v: number): number {
     return this.depth[u]! + this.depth[v]! - 2 * this.depth[this.lca(u, v)]!
   }
+
+  toString(): string {
+    return `HeavyLightDecomposition(${this.parent.length})`
+  }
+
+  toJSON(): unknown {
+    return {
+      parent: this.parent,
+      depth: this.depth,
+      size: this.size,
+      heavy: this.heavy,
+      head: this.head,
+    }
+  }
+
+  clone(): HeavyLightDecomposition {
+    const adjCopy = new Map<number, number[]>()
+    for (const [k, v] of this.adj) adjCopy.set(k, [...v])
+    return new HeavyLightDecomposition(adjCopy)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof HeavyLightDecomposition)) return false
+    if (this.parent.length !== other.parent.length) return false
+    for (let i = 0; i < this.parent.length; i++) {
+      if (this.parent[i] !== other.parent[i]) return false
+      if (this.depth[i] !== other.depth[i]) return false
+      if (this.heavy[i] !== other.heavy[i]) return false
+      if (this.head[i] !== other.head[i]) return false
+    }
+    return true
+  }
 }

@@ -132,6 +132,51 @@ export class KdTree<T extends KdPoint> {
     }
     if (arr.length > maxLen) arr.pop()
   }
+
+  private collectPoints(node: KdNode<T> | null, out: T[]): void {
+    if (!node) return
+    this.collectPoints(node.left, out)
+    out.push(node.point)
+    this.collectPoints(node.right, out)
+  }
+
+  private pointsEqual(a: T, b: T): boolean {
+    for (let i = 0; i < this.dims; i++) {
+      if (a.coords[i] !== b.coords[i]) return false
+    }
+    return true
+  }
+
+  toString(): string {
+    return `KdTree(${this._size}, dims=${this.dims})`
+  }
+
+  toJSON(): unknown {
+    const out: T[] = []
+    this.collectPoints(this.root, out)
+    return out
+  }
+
+  clone(): KdTree<T> {
+    const points: T[] = []
+    this.collectPoints(this.root, points)
+    return new KdTree<T>(points, this.dims)
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof KdTree)) return false
+    if (this._size !== other._size) return false
+    if (this.dims !== other.dims) return false
+    const a: T[] = []
+    const b: T[] = []
+    this.collectPoints(this.root, a)
+    other.collectPoints(other.root, b)
+    if (a.length !== b.length) return false
+    for (const p of a) {
+      if (!b.some(q => this.pointsEqual(p, q))) return false
+    }
+    return true
+  }
 }
 
 interface KdNode<T> {

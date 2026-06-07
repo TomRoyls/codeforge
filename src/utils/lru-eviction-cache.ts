@@ -60,4 +60,28 @@ export class LRUEvictionCache<K, V> {
   values(): IterableIterator<V> {
     return this.map.values()
   }
+
+  toString(): string {
+    return `LRUEvictionCache(${this.map.size}/${this._capacity})`
+  }
+
+  toJSON(): unknown {
+    return Array.from(this.map.entries())
+  }
+
+  clone(): LRUEvictionCache<K, V> {
+    const copy = new LRUEvictionCache<K, V>(this._capacity)
+    for (const [k, v] of this.map) copy.map.set(k, v)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof LRUEvictionCache)) return false
+    if (this._capacity !== other._capacity) return false
+    if (this.map.size !== other.map.size) return false
+    for (const [k, v] of this.map) {
+      if (!Object.is(other.map.get(k), v)) return false
+    }
+    return true
+  }
 }
