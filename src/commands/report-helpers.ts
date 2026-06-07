@@ -639,7 +639,10 @@ export { formatBytes } from '../utils/format-utils.js'
 export const CUSTOM_REPORTER_PREFIX = 'custom:'
 
 export function validateAnalysisResult(result: unknown): boolean {
-  if (!result || typeof result !== 'object') return false
+  if (result === null || result === undefined) {
+    throw new Error('Analysis result is required')
+  }
+  if (typeof result !== 'object') return false
   const r = result as Record<string, unknown>
   if (!r.files) return false
   if (!r.summary) return false
