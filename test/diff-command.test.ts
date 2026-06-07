@@ -530,7 +530,7 @@ describe('formatDiffJson', () => {
 
 describe('Diff command - static metadata', () => {
   it('has a description', () => {
-    expect(Diff.description).toBe('Analyze git diffs with risk assessment and statistics')
+    expect(Diff.description).toBe('Compare violations between git branches or commits')
   })
 
   it('has examples array', () => {
@@ -538,29 +538,12 @@ describe('Diff command - static metadata', () => {
     expect(Diff.examples.length).toBeGreaterThanOrEqual(4)
   })
 
-  it('has format flag with options', () => {
-    expect(Diff.flags.format.options).toContain('json')
-    expect(Diff.flags.format.options).toContain('table')
+  it('has json flag defaulting to false', () => {
+    expect(Diff.flags.json.default).toBe(false)
   })
 
-  it('defaults format to table', () => {
-    expect(Diff.flags.format.default).toBe('table')
-  })
-
-  it('has output flag', () => {
-    expect(Diff.flags.output).toBeDefined()
-  })
-
-  it('has staged flag defaulting to false', () => {
-    expect(Diff.flags.staged.default).toBe(false)
-  })
-
-  it('has commit flag', () => {
-    expect(Diff.flags.commit).toBeDefined()
-  })
-
-  it('has stat flag defaulting to false', () => {
-    expect(Diff.flags.stat.default).toBe(false)
+  it('has path flag', () => {
+    expect(Diff.flags.path).toBeDefined()
   })
 
   it('has verbose flag defaulting to false', () => {

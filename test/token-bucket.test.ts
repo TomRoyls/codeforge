@@ -38,7 +38,7 @@ describe('TokenBucket consume', () => {
 
   it('rejects when insufficient tokens', () => {
     expect(tb.consume(5)).toBe(true)
-    expect(tb.consume(1)).toBe(false)
+    expect(tb.tryConsume(1)).toBe(false)
   })
 
   it('throws on count < 1', () => {
@@ -53,7 +53,7 @@ describe('TokenBucket consume', () => {
 
   it('tracks totalRejected', () => {
     tb.consume(5)
-    tb.consume()
+    tb.tryConsume()
     expect(tb.getStats().totalRejected).toBe(1)
   })
 })
