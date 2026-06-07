@@ -95,7 +95,7 @@ describe('filterByThreshold', () => {
     expect(filterByThreshold(results, -5)).toHaveLength(1)
   })
 
-  it('filters out results below threshold', () => {
+  it('filters out results at or below threshold', () => {
     const results = [
       makeComplexity({ cyclomatic: 5 }),
       makeComplexity({ cyclomatic: 10 }),
@@ -104,9 +104,8 @@ describe('filterByThreshold', () => {
 
     const filtered = filterByThreshold(results, 10)
 
-    expect(filtered).toHaveLength(2)
-    expect(filtered[0].cyclomatic).toBe(10)
-    expect(filtered[1].cyclomatic).toBe(15)
+    expect(filtered).toHaveLength(1)
+    expect(filtered[0].cyclomatic).toBe(15)
   })
 
   it('returns empty when all below threshold', () => {
