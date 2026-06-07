@@ -51,24 +51,23 @@ describe('Stats command - metadata', () => {
     expect(Stats.flags.format.default).toBe('table')
   })
 
-  it('has sort flag with correct options', () => {
-    expect(Stats.flags.sort.options).toContain('lines')
-    expect(Stats.flags.sort.options).toContain('files')
-    expect(Stats.flags.sort.options).toContain('functions')
-    expect(Stats.flags.sort.options).toContain('classes')
-    expect(Stats.flags.sort.options).toContain('language')
+  it('has sort-by flag with correct options', () => {
+    expect(Stats.flags['sort-by'].options).toContain('complexity')
+    expect(Stats.flags['sort-by'].options).toContain('loc')
+    expect(Stats.flags['sort-by'].options).toContain('name')
+    expect(Stats.flags['sort-by'].options).toContain('size')
   })
 
-  it('defaults sort to lines', () => {
-    expect(Stats.flags.sort.default).toBe('lines')
+  it('defaults sort-by to size', () => {
+    expect(Stats.flags['sort-by'].default).toBe('size')
   })
 
-  it('has detailed flag defaulting to false', () => {
-    expect(Stats.flags.detailed.default).toBe(false)
+  it('has verbose flag defaulting to false', () => {
+    expect(Stats.flags.verbose.default).toBe(false)
   })
 
-  it('has ext flag with default .ts,.tsx,.js,.jsx', () => {
-    expect(Stats.flags.ext.default).toBe('.ts,.tsx,.js,.jsx')
+  it('has ext flag with empty default', () => {
+    expect(Stats.flags.ext.default).toBe('')
   })
 
   it('has ignore flag with multiple', () => {
