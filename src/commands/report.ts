@@ -8,7 +8,6 @@
  */
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync, statSync } from 'node:fs'
-import { readFile } from 'node:fs/promises'
 import { exec } from 'node:child_process'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
@@ -17,8 +16,15 @@ import type { RuleViolation } from '../ast/visitor.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
-import { allRules } from '../rules/index.js'
-import { createReporter, type OutputFormat } from './report-helpers.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
+import { CLIError } from '../utils/errors.js'
+import {
+  createReporter,
+  getPlatformOpenCommand,
+  readAnalysisFile,
+  type OutputFormat,
+} from './report-helpers.js'
 import type { AnalysisResult, FileAnalysisResult, Violation } from '../reporters/types.js'
 
 const execAsync = promisify(exec)
@@ -83,7 +89,6 @@ export default class Report extends Command {
       default: 'console',
       description:
         'Output format (console, json, html, junit, sarif, gitlab, markdown, or custom:<module-path>)',
-      options: ['console', 'json', 'html', 'junit', 'sarif', 'gitlab', 'markdown'],
     }),
     input: Flags.string({
       char: 'i',
@@ -118,6 +123,10 @@ export default class Report extends Command {
       this.error('--output is required when using --format html', { exit: 1 })
     }
 
+    if (typeof format === 'string' && format.startsWith('custom:') && !outputPath) {
+      this.warn('Custom reporters typically need --output for useful results')
+    }
+
     let result: AnalysisResult
     if (inputPath) {
       result = await this.loadFromInput(inputPath)
@@ -142,51 +151,14 @@ export default class Report extends Command {
   }
 
   async loadFromInput(inputPath: string): Promise<AnalysisResult> {
-    if (!existsSync(inputPath)) {
-      this.error(`Analysis file not found: ${inputPath}`, { exit: 1 })
-    }
-
-    let content: string
     try {
-      content = await readFile(inputPath, 'utf8')
+      return await readAnalysisFile(inputPath)
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      this.error(`Failed to read analysis file: ${inputPath}: ${msg}`, { exit: 1 })
+      if (err instanceof CLIError) {
+        this.error(err.message, { exit: 1 })
+      }
+      throw err
     }
-
-    if (!content || content.trim() === '') {
-      this.error(`Analysis file is empty: ${inputPath}`, { exit: 1 })
-    }
-
-    let parsed: unknown
-    try {
-      parsed = JSON.parse(content)
-    } catch {
-      this.error(`Invalid JSON in analysis file: ${inputPath}`, { exit: 1 })
-    }
-
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      this.error(`Invalid analysis file: ${inputPath} — expected JSON object`, { exit: 1 })
-    }
-
-    const obj = parsed as Record<string, unknown>
-    if (!('files' in obj)) {
-      this.error(`Invalid analysis file: ${inputPath} — missing required field: files`, {
-        exit: 1,
-      })
-    }
-    if (!('summary' in obj)) {
-      this.error(`Invalid analysis file: ${inputPath} — missing required field: summary`, {
-        exit: 1,
-      })
-    }
-    if (!('timestamp' in obj)) {
-      this.error(`Invalid analysis file: ${inputPath} — missing required field: timestamp`, {
-        exit: 1,
-      })
-    }
-
-    return parsed as AnalysisResult
   }
 
   async openInBrowser(filePath: string): Promise<void> {
@@ -199,16 +171,12 @@ export default class Report extends Command {
     this.log(`Opening report in browser: ${resolved}`)
 
     try {
-      const cmd =
-        process.platform === 'darwin'
-          ? `open "${resolved}"`
-          : process.platform === 'win32'
-            ? `start "" "${resolved}"`
-            : `xdg-open "${resolved}"`
+      const cmd = getPlatformOpenCommand(resolved, process.platform)
       await execAsync(cmd)
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
+      const msg = err instanceof Error ? err.message : 'Unknown error'
       this.warn(`Failed to open browser: ${msg}`)
+      this.log(`Please open the report manually: ${resolved}`)
     }
   }
 
@@ -220,16 +188,30 @@ export default class Report extends Command {
     const resolved = resolve(targetPath)
     const startTotal = Date.now()
 
+    if (!existsSync(resolved)) {
+      this.error(`Path not found: ${resolved}`, { exit: 1 })
+    }
+
+    this.log(`Analyzing: ${resolved}`)
+
     let filesToAnalyze: { path: string; absolutePath: string }[]
 
-    const stat = statSync(resolved)
-    if (stat.isDirectory()) {
+    let isDirectory = false
+    try {
+      isDirectory = statSync(resolved).isDirectory()
+    } catch {
+      isDirectory = true
+    }
+
+    if (isDirectory) {
       const discovered = await discoverFiles({
         cwd: resolved,
         ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
         patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
       })
-      filesToAnalyze = discovered.map((d) => ({ absolutePath: d.absolutePath, path: d.path }))
+      filesToAnalyze = discovered
+        .filter((d): d is { absolutePath: string; path: string } => d !== null && d !== undefined)
+        .map((d) => ({ absolutePath: d.absolutePath, path: d.path }))
     } else {
       filesToAnalyze = [{ absolutePath: resolved, path: targetPath }]
     }
@@ -238,10 +220,9 @@ export default class Report extends Command {
     await parser.initialize()
 
     const registry = new RuleRegistry()
-    for (const [ruleId, definition] of Object.entries(allRules)) {
-      const category =
-        (definition.meta?.category as 'complexity' | 'patterns' | 'performance' | 'security') ??
-        'patterns'
+    const loadedRules = await lazyRuleLoader.loadAllRules()
+    for (const [ruleId, definition] of Object.entries(loadedRules)) {
+      const category = getRuleCategory(ruleId)
       registry.register(ruleId, definition, category)
     }
 
@@ -257,14 +238,14 @@ export default class Report extends Command {
     void verbose
 
     for (const file of filesToAnalyze) {
-      const parseStart = Date.now()
+      if (!file) continue
       let parseResult: Awaited<ReturnType<typeof parser.parseFile>>
       try {
         parseResult = await parser.parseFile(file.absolutePath)
       } catch {
         continue
       }
-      const parseTime = Date.now() - parseStart
+      const parseTime = parseResult.parseTime ?? 0
       const analysisStart = Date.now()
 
       let rawViolations: RuleViolation[] = []
