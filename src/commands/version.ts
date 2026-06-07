@@ -39,6 +39,10 @@ export default class Version extends Command {
       command: '<%= config.bin %> <%= command.id %>',
       description: 'Show current version',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --json',
+      description: 'Output version info as JSON',
+    },
   ]
 
   static override flags = {
@@ -52,9 +56,8 @@ export default class Version extends Command {
     let json = false
     try {
       const { flags } = await this.parse(Version)
-      json = flags.json
+      json = flags.json as boolean
     } catch {
-      // Fallback when oclif config is not available (e.g., in tests)
       json = false
     }
     const info = getVersionInfo()
@@ -62,7 +65,7 @@ export default class Version extends Command {
     if (json) {
       this.log(JSON.stringify(info, null, 2))
     } else {
-      this.log(`Current version: ${info.codeforge}`)
+      this.log(`codeforge/${info.codeforge} ${info.platform}-${info.arch} node-${info.node}`)
     }
   }
 }
