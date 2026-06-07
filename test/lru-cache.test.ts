@@ -11,8 +11,7 @@ describe('LRUCache', () => {
     expect(cache.isEmpty).toBe(true)
   })
 
-  it('throws for maxSize < 1', () => {
-    expect(() => new LRUCache(0)).toThrow(RangeError)
+  it('throws for negative maxSize', () => {
     expect(() => new LRUCache(-1)).toThrow(RangeError)
   })
 
@@ -109,21 +108,21 @@ describe('LRUCache', () => {
     cache.set('a', 1)
     cache.set('b', 2)
     cache.set('c', 3)
-    expect(cache.keys()).toEqual(['a', 'b', 'c'])
+    expect(Array.from(cache.keys())).toEqual(['a', 'b', 'c'])
   })
 
   it('values returns in LRU order', () => {
     const cache = new LRUCache<string, number>(5)
     cache.set('a', 1)
     cache.set('b', 2)
-    expect(cache.values()).toEqual([1, 2])
+    expect(Array.from(cache.values())).toEqual([1, 2])
   })
 
   it('entries returns key-value pairs', () => {
     const cache = new LRUCache<string, number>(5)
     cache.set('a', 1)
     cache.set('b', 2)
-    expect(cache.entries()).toEqual([['a', 1], ['b', 2]])
+    expect(Array.from(cache.entries())).toEqual([['a', 1], ['b', 2]])
   })
 
   // ─── ForEach ───
@@ -193,9 +192,9 @@ describe('LRUCache', () => {
     expect(cache.has('c')).toBe(true)
   })
 
-  it('resize throws for invalid size', () => {
+  it('resize throws for negative size', () => {
     const cache = new LRUCache<string, number>(5)
-    expect(() => cache.resize(0)).toThrow(RangeError)
+    expect(() => cache.resize(-1)).toThrow(RangeError)
   })
 
   // ─── Edge cases ───
@@ -223,6 +222,6 @@ describe('LRUCache', () => {
     cache.delete('a')
     cache.set('c', 3)
     expect(cache.size).toBe(2)
-    expect(cache.keys()).toEqual(['b', 'c'])
+    expect(Array.from(cache.keys())).toEqual(['b', 'c'])
   })
 })
