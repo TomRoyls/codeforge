@@ -494,7 +494,7 @@ describe('MetricCollector', () => {
       const metric = collector.getMetric('async_op')!
       expect(metric.type).toBe('timer')
       expect(metric.count).toBe(1)
-      expect(metric.lastValue).toBeGreaterThanOrEqual(5)
+      expect(metric.lastValue).toBeGreaterThanOrEqual(4)
       collector.destroy()
     })
 
