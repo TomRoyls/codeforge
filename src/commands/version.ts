@@ -1,34 +1,12 @@
-/**
- * @example
- * ```bash
- * codeforge version
- * codeforge version --json
- * ```
- */
-import { Command, Flags } from '@oclif/core'
+import { Command } from '@oclif/core'
 import { readFileSync } from 'node:fs'
-import { arch, platform, release } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-export interface VersionInfo {
-  codeforge: string
-  node: string
-  platform: string
-  arch: string
-  os: string
-}
-
-export function getVersionInfo(): VersionInfo {
+export function getVersionInfo(): string {
   const packageJsonPath = join(fileURLToPath(new URL('.', import.meta.url)), '../../package.json')
   const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'))
-  return {
-    arch: arch(),
-    codeforge: packageJson.version || '0.0.0',
-    node: process.version,
-    os: release(),
-    platform: platform(),
-  }
+  return packageJson.version || '0.0.0'
 }
 
 export default class Version extends Command {
@@ -39,33 +17,12 @@ export default class Version extends Command {
       command: '<%= config.bin %> <%= command.id %>',
       description: 'Show current version',
     },
-    {
-      command: '<%= config.bin %> <%= command.id %> --json',
-      description: 'Output version info as JSON',
-    },
   ]
 
-  static override flags = {
-    json: Flags.boolean({
-      default: false,
-      description: 'Output version info as JSON',
-    }),
-  }
-
   async run(): Promise<void> {
-    let json = false
-    try {
-      const { flags } = await this.parse(Version)
-      json = flags.json as boolean
-    } catch {
-      json = false
-    }
-    const info = getVersionInfo()
-
-    if (json) {
-      this.log(JSON.stringify(info, null, 2))
-    } else {
-      this.log(`codeforge/${info.codeforge} ${info.platform}-${info.arch} node-${info.node}`)
-    }
+    const packageJsonPath = join(fileURLToPath(new URL('.', import.meta.url)), '../../package.json')
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'))
+    const version = packageJson.version || '0.0.0'
+    this.log(`Current version: ${version}`)
   }
 }

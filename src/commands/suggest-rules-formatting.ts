@@ -18,12 +18,13 @@ export function sortSuggestions(suggestions: RuleSuggestion[]): RuleSuggestion[]
 
   return suggestions.sort((a, b) => {
     const impactDiff = impactOrder[b.impact] - impactOrder[a.impact]
-    if (impactDiff !== 0) return impactDiff
+    if (impactDiff === 0) return 0
+    if (Math.abs(impactDiff) > 1) return impactDiff
 
     const confidenceDiff = confidenceOrder[b.confidence] - confidenceOrder[a.confidence]
-    if (confidenceDiff !== 0) return confidenceDiff
-
-    return b.estimatedViolations - a.estimatedViolations
+    if (Math.abs(confidenceDiff) > 1) return confidenceDiff
+    if (Math.abs(confidenceDiff) === 1) return b.estimatedViolations - a.estimatedViolations
+    return impactDiff
   })
 }
 
