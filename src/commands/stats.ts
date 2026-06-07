@@ -6,45 +6,17 @@ import { extname, resolve } from 'node:path'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import {
+  aggregateStats,
+  buildStatsResult,
   calculateFileComplexity,
   countCodeStructures as countStructures,
+  countLines,
+  formatOutput,
   isLogicalOperator,
+  sortFileStats,
   type CodeStructures,
-} from './stats-ast-helpers.js'
-import { formatOutput } from './stats-format-helpers.js'
-
-interface FileInfo {
-  name: string
-  loc: number
-  complexity: number
-  size: number
-  type: string
-  blankLines: number
-  commentLines: number
-  structures: CodeStructures
-}
-
-interface StatsSummary {
-  files: number
-  loc: number
-  commentLines: number
-  blankLines: number
-  averageLoc: number
-  complexity: number
-  averageComplexity: number
-  classes: number
-  functions: number
-  interfaces: number
-  methods: number
-  typeAliases: number
-  enums: number
-}
-
-interface StatsOutput {
-  summary: StatsSummary
-  files: FileInfo[]
-  fileTypes: Record<string, number>
-}
+  type ProcessedFileResult,
+} from './stats-helpers.js'
 
 const EMPTY_STRUCTURES: CodeStructures = {
   classes: 0,
@@ -157,7 +129,7 @@ export default class Stats extends Command {
     }
 
     const format = flags.format as 'csv' | 'json' | 'table'
-    const sortBy = flags['sort-by'] as 'complexity' | 'loc' | 'name' | 'size'
+    const sortBy = flags['sort-by'] as string
     const { ext, ignore, output: outputFlag, top, verbose } = flags
 
     const allIgnore = ignore
@@ -183,52 +155,28 @@ export default class Stats extends Command {
           extensions.includes(extname(f.path).toLowerCase()),
         )
 
-    const fileInfos: FileInfo[] = []
-    const fileTypesCount: Record<string, number> = {}
-    const errors: Array<{ name: string; error: string }> = []
-
     const parser = new Parser()
     await parser.initialize()
 
+    const results: (ProcessedFileResult | null)[] = []
+
     try {
       for (const file of filteredFiles) {
-        const filePath = file.path
-        const extLower = extname(filePath).toLowerCase()
-        const type = extLower || 'unknown'
-
-        fileTypesCount[type] = (fileTypesCount[type] || 0) + 1
-
-        let content = ''
-        let readError: string | null = null
+        let content: string
         try {
           content = await fs.readFile(file.absolutePath, 'utf8')
-        } catch (e) {
-          readError = e instanceof Error ? e.message : 'Unknown error'
-        }
-
-        if (readError !== null) {
-          if (format !== 'json') {
-            errors.push({ name: filePath, error: readError })
-          }
-          fileInfos.push({
-            name: filePath,
-            loc: 0,
-            complexity: 1,
-            size: 0,
-            type,
-            blankLines: 0,
-            commentLines: 0,
-            structures: { ...EMPTY_STRUCTURES },
-          })
+        } catch {
+          results.push(null)
           continue
         }
 
-        const { loc, blankLines, commentLines } = countLines(content)
+        const { loc, blank, comments } = countLines(content)
         const size = Buffer.byteLength(content, 'utf8')
+        const fileExt = extname(file.absolutePath).toLowerCase()
 
         let complexity = 1
         let structures: CodeStructures = { ...EMPTY_STRUCTURES }
-        if (extLower === '.ts' || extLower === '.tsx') {
+        if (fileExt === '.ts' || fileExt === '.tsx') {
           try {
             const parseResult = await parser.parseFile(file.absolutePath)
             const sourceFile = parseResult.sourceFile
@@ -240,14 +188,14 @@ export default class Stats extends Command {
           }
         }
 
-        fileInfos.push({
-          name: filePath,
-          loc,
+        results.push({
+          blank,
+          comments,
           complexity,
+          ext: fileExt,
+          file,
+          loc,
           size,
-          type,
-          blankLines,
-          commentLines,
           structures,
         })
       }
@@ -255,51 +203,16 @@ export default class Stats extends Command {
       await parser.dispose()
     }
 
-    const sortedFiles = sortFiles(fileInfos, sortBy)
-
-    const totalFiles = fileInfos.length
-    const totalLoc = sumBy(fileInfos, (f) => f.loc)
-    const totalBlank = sumBy(fileInfos, (f) => f.blankLines)
-    const totalComment = sumBy(fileInfos, (f) => f.commentLines)
-    const totalComplexity = sumBy(fileInfos, (f) => f.complexity)
-    const totalClasses = sumBy(fileInfos, (f) => f.structures.classes)
-    const totalFunctions = sumBy(fileInfos, (f) => f.structures.functions)
-    const totalInterfaces = sumBy(fileInfos, (f) => f.structures.interfaces)
-    const totalMethods = sumBy(fileInfos, (f) => f.structures.methods)
-    const totalTypeAliases = sumBy(fileInfos, (f) => f.structures.typeAliases)
-    const totalEnums = sumBy(fileInfos, (f) => f.structures.enums)
-
-    const statsOutput: StatsOutput = {
-      summary: {
-        files: totalFiles,
-        loc: totalLoc,
-        commentLines: totalComment,
-        blankLines: totalBlank,
-        averageLoc: totalFiles > 0 ? Math.round(totalLoc / totalFiles) : 0,
-        complexity: totalComplexity,
-        averageComplexity: totalFiles > 0 ? Math.round(totalComplexity / totalFiles) : 0,
-        classes: totalClasses,
-        functions: totalFunctions,
-        interfaces: totalInterfaces,
-        methods: totalMethods,
-        typeAliases: totalTypeAliases,
-        enums: totalEnums,
-      },
-      files: verbose ? sortedFiles : [],
-      fileTypes: fileTypesCount,
-    }
+    const aggregated = aggregateStats(results, verbose as boolean)
+    const sortedStats = sortFileStats(aggregated.fileStats, sortBy)
+    const totalFiles = results.filter((r) => r !== null).length
+    const statsResult = buildStatsResult(totalFiles, sortedStats, aggregated)
 
     let outputStr: string
     if (format === 'json') {
-      outputStr = JSON.stringify(statsOutput, null, 2)
+      outputStr = JSON.stringify(statsResult, null, 2)
     } else {
-      outputStr = formatOutput(statsOutput, format, top)
-    }
-
-    if (format !== 'json') {
-      for (const err of errors) {
-        this.log(`Failed to process file ${err.name}: ${err.error}`)
-      }
+      outputStr = formatOutput(statsResult, format, top as number)
     }
 
     if (outputFlag) {
@@ -308,66 +221,13 @@ export default class Stats extends Command {
         this.log(`Results written to ${outputFlag}`)
       } catch (error) {
         this.error(
-          `Failed to write output to ${outputFlag}: ${error instanceof Error ? error.message : String(error)}`,
+          `Failed to write stats output to ${outputFlag}: ${error instanceof Error ? error.message : String(error)}`,
         )
       }
     } else {
       this.log(outputStr)
     }
   }
-}
-
-function countLines(content: string): { loc: number; blankLines: number; commentLines: number } {
-  if (content.length === 0) {
-    return { loc: 0, blankLines: 0, commentLines: 0 }
-  }
-  let loc = 0
-  let blankLines = 0
-  let commentLines = 0
-  for (const line of content.split('\n')) {
-    const trimmed = line.trim()
-    if (trimmed.length === 0) {
-      blankLines++
-    } else if (
-      trimmed.startsWith('//') ||
-      trimmed.startsWith('/*') ||
-      trimmed.startsWith('*')
-    ) {
-      commentLines++
-    } else {
-      loc++
-    }
-  }
-  return { loc, blankLines, commentLines }
-}
-
-function sumBy<T>(arr: T[], fn: (x: T) => number): number {
-  let total = 0
-  for (const item of arr) {
-    total += fn(item)
-  }
-  return total
-}
-
-function sortFiles(
-  files: FileInfo[],
-  sortBy: 'complexity' | 'loc' | 'name' | 'size',
-): FileInfo[] {
-  const sorted = [...files]
-  sorted.sort((a, b) => {
-    switch (sortBy) {
-      case 'complexity':
-        return b.complexity - a.complexity
-      case 'loc':
-        return b.loc - a.loc
-      case 'name':
-        return a.name.localeCompare(b.name)
-      case 'size':
-      default:
-        return b.size - a.size
-    }
-  })
-  return sorted
 }
 
 export { buildStatsResult } from './stats-helpers.js'
