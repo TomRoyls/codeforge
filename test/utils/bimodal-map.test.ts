@@ -110,6 +110,18 @@ describe('BimodalMap', () => {
     expect(bm.get('c')).toBe(3)
   })
 
+  it('freeze preserves deletions from frozen layer', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.freeze()
+    bm.delete('a')
+    bm.freeze()
+    expect(bm.has('a')).toBe(false)
+    expect(bm.get('a')).toBeUndefined()
+    expect(bm.get('b')).toBe(2)
+  })
+
   it('delete then re-add works', () => {
     const bm = new BimodalMap<string, number>()
     bm.set('a', 1)

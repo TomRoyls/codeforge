@@ -5,6 +5,9 @@ export class BimodalMap<K, V> {
 
   freeze(): void {
     if (this.frozen !== null) {
+      for (const k of this.deleted) {
+        this.frozen.delete(k)
+      }
       for (const [k, v] of this.mutable) {
         this.frozen.set(k, v)
       }
