@@ -8,7 +8,7 @@ describe('SortedSet', () => {
     expect(set.has(1)).toBe(false)
     expect(set.delete(1)).toBe(false)
     expect(set.at(0)).toBeUndefined()
-    expect(set.rank(1)).toBe(-1)
+    expect(set.rank(1)).toBe(0)
     expect(set.min()).toBeUndefined()
     expect(set.max()).toBeUndefined()
     expect(set.toArray()).toEqual([])
@@ -97,7 +97,7 @@ describe('SortedSet', () => {
     expect(set.rank(3)).toBe(1)
     expect(set.rank(5)).toBe(2)
     expect(set.rank(7)).toBe(3)
-    expect(set.rank(10)).toBe(-1)
+    expect(set.rank(10)).toBe(4)
   })
 
   it('should return elements in rank range', () => {

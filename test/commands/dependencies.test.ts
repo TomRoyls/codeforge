@@ -168,7 +168,7 @@ function makeReport(
 
 describe('Dependencies command static properties', () => {
   it('has correct description', () => {
-    expect(Dependencies.description).toBe('Analyze npm package.json dependencies')
+    expect(Dependencies.description).toBe('Analyze and visualize module dependencies')
   })
 
   it('has examples defined', () => {

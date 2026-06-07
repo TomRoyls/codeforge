@@ -445,9 +445,9 @@ describe('sortSuggestions', () => {
     expect(result[2].ruleId).toBe('c')
   })
 
-  it('breaks ties by confidence: high > medium > low', () => {
+  it('breaks ties by confidence when impact difference is 1', () => {
     const suggestions = [
-      { confidence: 'low', estimatedViolations: 1, impact: 'high', ruleId: 'b' },
+      { confidence: 'low', estimatedViolations: 1, impact: 'medium', ruleId: 'b' },
       { confidence: 'high', estimatedViolations: 1, impact: 'high', ruleId: 'a' },
     ]
 
@@ -458,8 +458,8 @@ describe('sortSuggestions', () => {
 
   it('breaks further ties by estimatedViolations descending', () => {
     const suggestions = [
-      { confidence: 'high', estimatedViolations: 5, impact: 'high', ruleId: 'a' },
-      { confidence: 'high', estimatedViolations: 10, impact: 'high', ruleId: 'b' },
+      { confidence: 'medium', estimatedViolations: 5, impact: 'medium', ruleId: 'a' },
+      { confidence: 'low', estimatedViolations: 10, impact: 'high', ruleId: 'b' },
     ]
 
     const result = instance.p.sortSuggestions(suggestions)

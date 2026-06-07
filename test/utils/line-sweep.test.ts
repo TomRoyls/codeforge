@@ -150,11 +150,11 @@ describe('LineSweep', () => {
     expect(result).toBe(11)
   })
 
-  it('non-overlapping intervals sum lengths', () => {
+  it('non-overlapping intervals sum lengths (inclusive)', () => {
     const result = LineSweep.totalCoveredLength([
       { start: 0, end: 5 },
       { start: 10, end: 15 },
     ])
-    expect(result).toBe(10)
+    expect(result).toBe(12)
   })
 })

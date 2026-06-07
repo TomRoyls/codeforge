@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { TokenBucket } from '../../src/utils/token-bucket.js'
 
-// ─── Constructor ──────────────────────────────────────────
 describe('TokenBucket - constructor', () => {
   it('creates with valid options', () => {
     const tb = new TokenBucket({ capacity: 10, fillRate: 1 })
@@ -17,7 +16,6 @@ describe('TokenBucket - constructor', () => {
   })
 })
 
-// ─── Consume ──────────────────────────────────────────────
 describe('TokenBucket - consume', () => {
   it('consumes tokens', () => {
     const tb = new TokenBucket({ capacity: 10, fillRate: 1 })
@@ -25,19 +23,24 @@ describe('TokenBucket - consume', () => {
     expect(tb.available).toBe(5)
   })
 
-  it('rejects when insufficient tokens', () => {
+  it('rejects when insufficient tokens (tryConsume)', () => {
     const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
-    expect(tb.consume(3)).toBe(true)
-    expect(tb.consume(3)).toBe(false)
+    expect(tb.tryConsume(3)).toBe(true)
+    expect(tb.tryConsume(3)).toBe(false)
   })
 
   it('throws on invalid count', () => {
     const tb = new TokenBucket({ capacity: 10, fillRate: 1 })
     expect(() => tb.consume(0)).toThrow(RangeError)
   })
+
+  it('consume throws when insufficient (consume)', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
+    expect(tb.consume(3)).toBe(true)
+    expect(() => tb.consume(3)).toThrow('Insufficient tokens')
+  })
 })
 
-// ─── Stats and Reset ──────────────────────────────────────
 describe('TokenBucket - stats and reset', () => {
   it('tracks stats', () => {
     const tb = new TokenBucket({ capacity: 10, fillRate: 1 })
@@ -56,7 +59,6 @@ describe('TokenBucket - stats and reset', () => {
   })
 })
 
-// ─── Wait ─────────────────────────────────────────────────
 describe('TokenBucket - wait', () => {
   it('returns 0 when tokens available', () => {
     const tb = new TokenBucket({ capacity: 10, fillRate: 1 })
@@ -78,7 +80,7 @@ describe('TokenBucket - wait', () => {
   it('repeated rejections do not affect stats', () => {
     const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
     tb.consume(3)
-    const result = tb.consume(3)
+    const result = tb.tryConsume(3)
     expect(result).toBe(false)
     expect(tb.available).toBe(2)
   })
@@ -87,7 +89,7 @@ describe('TokenBucket - wait', () => {
     const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
     expect(tb.consume(5)).toBe(true)
     expect(tb.available).toBe(0)
-    expect(tb.consume(1)).toBe(false)
+    expect(tb.tryConsume(1)).toBe(false)
   })
 
   it('wait returns correct value for partially filled', () => {
@@ -122,11 +124,11 @@ describe('TokenBucket - wait', () => {
     expect(tb.available).toBe(4)
   })
 
-  it('consume returns false when not enough tokens', () => {
+  it('tryConsume returns false when not enough tokens', () => {
     const tb = new TokenBucket({ capacity: 2, fillRate: 1 })
-    expect(tb.consume(1)).toBe(true)
-    expect(tb.consume(1)).toBe(true)
-    expect(tb.consume(1)).toBe(false)
+    expect(tb.tryConsume(1)).toBe(true)
+    expect(tb.tryConsume(1)).toBe(true)
+    expect(tb.tryConsume(1)).toBe(false)
   })
 
   it('bucket starts with full capacity', () => {
@@ -134,9 +136,9 @@ describe('TokenBucket - wait', () => {
     expect(tb.consume(5)).toBe(true)
   })
 
-  it('consume returns false when insufficient', () => {
+  it('tryConsume returns false when insufficient', () => {
     const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
-    expect(tb.consume(10)).toBe(false)
+    expect(tb.tryConsume(10)).toBe(false)
   })
 
   it('consume returns true when enough tokens', () => {
@@ -144,9 +146,9 @@ describe('TokenBucket - wait', () => {
     expect(tb.consume(5)).toBe(true)
   })
 
-  it('consume returns false when not enough tokens', () => {
+  it('tryConsume returns false when not enough tokens', () => {
     const tb = new TokenBucket({ capacity: 5, fillRate: 1 })
-    expect(tb.consume(10)).toBe(false)
+    expect(tb.tryConsume(10)).toBe(false)
   })
 
   it('consume returns true when enough tokens', () => {

@@ -18,7 +18,6 @@ describe('FileWatcher constructor', () => {
     expect(w.isActive()).toBe(false)
     w.stop()
   })
-})
 
   it('creates with extensions filter', () => {
     const w = new FileWatcher({ extensions: ['.ts', '.js'] })

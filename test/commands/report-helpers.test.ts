@@ -67,11 +67,11 @@ describe('validateAnalysisResult', () => {
   })
 
   it('returns false for null input', () => {
-    expect(() => validateAnalysisResult(null as unknown as AnalysisResult)).toThrow()
+    expect(validateAnalysisResult(null as unknown as AnalysisResult)).toBe(false)
   })
 
   it('returns false for undefined input', () => {
-    expect(() => validateAnalysisResult(undefined as unknown as AnalysisResult)).toThrow()
+    expect(validateAnalysisResult(undefined as unknown as AnalysisResult)).toBe(false)
   })
 
   it('returns false when files is empty array but present', () => {

@@ -52,7 +52,8 @@ function makeFileComplexity(overrides: Partial<FileComplexity> = {}): FileComple
 
 describe('Complexity command - static metadata', () => {
   it('has a description', () => {
-    expect(Complexity.description).toContain('cyclomatic complexity')
+    expect(Complexity.description).toContain('cyclomatic')
+    expect(Complexity.description).toContain('cognitive')
   })
 
   it('has examples array', () => {
@@ -85,7 +86,7 @@ describe('Complexity command - flags', () => {
   it('has format flag with options', () => {
     expect(Complexity.flags.format.options).toContain('json')
     expect(Complexity.flags.format.options).toContain('table')
-    expect(Complexity.flags.format.options).toContain('csv')
+    expect(Complexity.flags.format.options).toContain('markdown')
   })
 
   it('defaults format to table', () => {
@@ -103,12 +104,12 @@ describe('Complexity command - flags', () => {
 
   it('has ext flag', () => {
     expect(Complexity.flags.ext).toBeDefined()
-    expect(Complexity.flags.ext.default).toBe('.ts,.tsx,.js,.jsx')
+    expect(Complexity.flags.ext.default).toBe('')
   })
 
-  it('has threshold flag defaulting to 1', () => {
+  it('has threshold flag defaulting to 0', () => {
     expect(Complexity.flags.threshold).toBeDefined()
-    expect(Complexity.flags.threshold.default).toBe(1)
+    expect(Complexity.flags.threshold.default).toBe(0)
   })
 
   it('has top flag defaulting to 20', () => {
@@ -116,19 +117,17 @@ describe('Complexity command - flags', () => {
     expect(Complexity.flags.top.default).toBe(20)
   })
 
-  it('has sort flag with options', () => {
-    expect(Complexity.flags.sort.options).toContain('complexity')
-    expect(Complexity.flags.sort.options).toContain('name')
-    expect(Complexity.flags.sort.options).toContain('file')
+  it('has sort-by flag with options', () => {    expect(Complexity.flags['sort-by'].options).toContain('complexity')
+    expect(Complexity.flags['sort-by'].options).toContain('name')
+    expect(Complexity.flags['sort-by'].options).toContain('file')
   })
 
-  it('defaults sort to complexity', () => {
-    expect(Complexity.flags.sort.default).toBe('complexity')
+  it('defaults sort-by to complexity', () => {
+    expect(Complexity.flags['sort-by'].default).toBe('complexity')
   })
 
-  it('has verbose flag defaulting to false', () => {
-    expect(Complexity.flags.verbose).toBeDefined()
-    expect(Complexity.flags.verbose.default).toBe(false)
+  it('has format flag with char f', () => {
+    expect(Complexity.flags.format.char).toBe('f')
   })
 })
 
@@ -467,20 +466,20 @@ describe('buildComplexityResult', () => {
 // ─── filterByThreshold ──────────────────────────────────
 
 describe('filterByThreshold', () => {
-  it('keeps functions at or above threshold', () => {
+  it('keeps functions above threshold', () => {
     const fns = [
       makeFunctionInfo({ complexity: 1, name: 'a' }),
       makeFunctionInfo({ complexity: 5, name: 'b' }),
       makeFunctionInfo({ complexity: 10, name: 'c' }),
     ]
     const result = filterByThreshold(fns, 5)
-    expect(result).toHaveLength(2)
-    expect(result.every((fn) => fn.complexity >= 5)).toBe(true)
+    expect(result).toHaveLength(1)
+    expect(result.every((fn) => fn.complexity > 5)).toBe(true)
   })
 
-  it('returns all with threshold 1', () => {
+  it('returns all with threshold 0', () => {
     const fns = [makeFunctionInfo({ complexity: 1 }), makeFunctionInfo({ complexity: 10 })]
-    const result = filterByThreshold(fns, 1)
+    const result = filterByThreshold(fns, 0)
     expect(result).toHaveLength(2)
   })
 

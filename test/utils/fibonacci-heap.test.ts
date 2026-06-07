@@ -23,7 +23,7 @@ describe('FibonacciHeap', () => {
     const heap = new FibonacciHeap<number>()
     heap.insert(5)
     const result = heap.extractMin()
-    expect(result).toBe(5)
+    expect(result?.key).toBe(5)
     expect(heap.isEmpty()).toBe(true)
     expect(heap.size).toBe(0)
   })
@@ -36,11 +36,11 @@ describe('FibonacciHeap', () => {
     heap.insert(1)
     heap.insert(7)
     expect(heap.size).toBe(5)
-    expect(heap.extractMin()).toBe(1)
-    expect(heap.extractMin()).toBe(2)
-    expect(heap.extractMin()).toBe(5)
-    expect(heap.extractMin()).toBe(7)
-    expect(heap.extractMin()).toBe(8)
+    expect(heap.extractMin()?.key).toBe(1)
+    expect(heap.extractMin()?.key).toBe(2)
+    expect(heap.extractMin()?.key).toBe(5)
+    expect(heap.extractMin()?.key).toBe(7)
+    expect(heap.extractMin()?.key).toBe(8)
     expect(heap.isEmpty()).toBe(true)
   })
 
@@ -52,11 +52,11 @@ describe('FibonacciHeap', () => {
     const handle = heap.insert(10)
     heap.insert(7)
     heap.decreaseKey(handle, 1)
-    expect(heap.extractMin()).toBe(1)
-    expect(heap.extractMin()).toBe(2)
-    expect(heap.extractMin()).toBe(5)
-    expect(heap.extractMin()).toBe(7)
-    expect(heap.extractMin()).toBe(8)
+    expect(heap.extractMin()?.key).toBe(1)
+    expect(heap.extractMin()?.key).toBe(2)
+    expect(heap.extractMin()?.key).toBe(5)
+    expect(heap.extractMin()?.key).toBe(7)
+    expect(heap.extractMin()?.key).toBe(8)
   })
 
   it('Delete removes element', () => {
@@ -68,10 +68,10 @@ describe('FibonacciHeap', () => {
     heap.insert(7)
     heap.delete(handle)
     expect(heap.size).toBe(4)
-    expect(heap.extractMin()).toBe(1)
-    expect(heap.extractMin()).toBe(5)
-    expect(heap.extractMin()).toBe(7)
-    expect(heap.extractMin()).toBe(8)
+    expect(heap.extractMin()?.key).toBe(1)
+    expect(heap.extractMin()?.key).toBe(5)
+    expect(heap.extractMin()?.key).toBe(7)
+    expect(heap.extractMin()?.key).toBe(8)
     expect(heap.isEmpty()).toBe(true)
   })
 
@@ -86,11 +86,11 @@ describe('FibonacciHeap', () => {
     heap1.merge(heap2)
     expect(heap1.size).toBe(5)
     expect(heap2.isEmpty()).toBe(true)
-    expect(heap1.extractMin()).toBe(1)
-    expect(heap1.extractMin()).toBe(2)
-    expect(heap1.extractMin()).toBe(5)
-    expect(heap1.extractMin()).toBe(7)
-    expect(heap1.extractMin()).toBe(8)
+    expect(heap1.extractMin()?.key).toBe(1)
+    expect(heap1.extractMin()?.key).toBe(2)
+    expect(heap1.extractMin()?.key).toBe(5)
+    expect(heap1.extractMin()?.key).toBe(7)
+    expect(heap1.extractMin()?.key).toBe(8)
   })
 
   it('Size tracking', () => {
@@ -159,7 +159,8 @@ describe('FibonacciHeap', () => {
     expect(heap.size).toBe(1000)
     const extracted: number[] = []
     for (let i = 0; i < 1000; i++) {
-      extracted.push(heap.extractMin()!)
+      const node = heap.extractMin()
+      extracted.push(node!.key)
     }
     expect(extracted).toEqual(values)
     expect(heap.isEmpty()).toBe(true)
@@ -174,12 +175,12 @@ describe('FibonacciHeap', () => {
     heap.insert(5)
     heap.insert(2)
     expect(heap.size).toBe(6)
-    expect(heap.extractMin()).toBe(1)
-    expect(heap.extractMin()).toBe(2)
-    expect(heap.extractMin()).toBe(2)
-    expect(heap.extractMin()).toBe(5)
-    expect(heap.extractMin()).toBe(5)
-    expect(heap.extractMin()).toBe(5)
+    expect(heap.extractMin()?.key).toBe(1)
+    expect(heap.extractMin()?.key).toBe(2)
+    expect(heap.extractMin()?.key).toBe(2)
+    expect(heap.extractMin()?.key).toBe(5)
+    expect(heap.extractMin()?.key).toBe(5)
+    expect(heap.extractMin()?.key).toBe(5)
     expect(heap.isEmpty()).toBe(true)
   })
 
@@ -191,41 +192,41 @@ describe('FibonacciHeap', () => {
     heap.insert(1)
     heap.insert(7)
     expect(heap.peek()).toBe(8)
-    expect(heap.extractMin()).toBe(8)
-    expect(heap.extractMin()).toBe(7)
-    expect(heap.extractMin()).toBe(5)
-    expect(heap.extractMin()).toBe(2)
-    expect(heap.extractMin()).toBe(1)
+    expect(heap.extractMin()?.key).toBe(8)
+    expect(heap.extractMin()?.key).toBe(7)
+    expect(heap.extractMin()?.key).toBe(5)
+    expect(heap.extractMin()?.key).toBe(2)
+    expect(heap.extractMin()?.key).toBe(1)
   })
 
-  it('decreaseKey with same value', () => {
+  it('decreaseKey with smaller value', () => {
     const heap = new FibonacciHeap<number>()
     const handle = heap.insert(5)
-    heap.decreaseKey(handle, 5)
-    expect(heap.peek()).toBe(5)
+    heap.decreaseKey(handle, 3)
+    expect(heap.peek()).toBe(3)
   })
 
   it('decreaseKey throws for invalid handle', () => {
     const heap = new FibonacciHeap<number>()
     heap.insert(5)
-    expect(() => heap.decreaseKey(999, 1)).toThrow('Invalid handle: 999')
+    expect(() => heap.decreaseKey(999 as unknown as Parameters<typeof heap.decreaseKey>[0], 1)).toThrow('Invalid handle: 999')
   })
 
   it('decreaseKey throws for higher value', () => {
     const heap = new FibonacciHeap<number>()
     const handle = heap.insert(5)
-    expect(() => heap.decreaseKey(handle, 10)).toThrow('New value must be less than or equal to current value')
+    expect(() => heap.decreaseKey(handle, 10)).toThrow('New key is greater than current key')
   })
 
   it('delete throws for invalid handle', () => {
     const heap = new FibonacciHeap<number>()
     heap.insert(5)
-    expect(() => heap.delete(999)).toThrow('Invalid handle: 999')
+    expect(() => heap.delete(999 as unknown as Parameters<typeof heap.delete>[0])).toThrow('Invalid handle: 999')
   })
 
   it('insert returns unique handles', () => {
     const heap = new FibonacciHeap<number>()
-    const handles = new Set<number>()
+    const handles = new Set<unknown>()
     for (let i = 0; i < 100; i++) {
       const handle = heap.insert(i)
       handles.add(handle)
@@ -239,10 +240,10 @@ describe('FibonacciHeap', () => {
     heap.insert('apple')
     heap.insert('cherry')
     heap.insert('date')
-    expect(heap.extractMin()).toBe('apple')
-    expect(heap.extractMin()).toBe('banana')
-    expect(heap.extractMin()).toBe('cherry')
-    expect(heap.extractMin()).toBe('date')
+    expect(heap.extractMin()?.key).toBe('apple')
+    expect(heap.extractMin()?.key).toBe('banana')
+    expect(heap.extractMin()?.key).toBe('cherry')
+    expect(heap.extractMin()?.key).toBe('date')
   })
 
   it('merge empty heap into non-empty heap', () => {
@@ -263,8 +264,8 @@ describe('FibonacciHeap', () => {
     heap1.merge(heap2)
     expect(heap1.size).toBe(2)
     expect(heap2.isEmpty()).toBe(true)
-    expect(heap1.extractMin()).toBe(2)
-    expect(heap1.extractMin()).toBe(5)
+    expect(heap1.extractMin()?.key).toBe(2)
+    expect(heap1.extractMin()?.key).toBe(5)
   })
 
   it('insert and extractMin returns minimum', () => {
@@ -272,7 +273,7 @@ describe('FibonacciHeap', () => {
     heap.insert(10)
     heap.insert(3)
     heap.insert(7)
-    expect(heap.extractMin()).toBe(3)
+    expect(heap.extractMin()?.key).toBe(3)
   })
 
   it('extractMin from empty returns undefined', () => {

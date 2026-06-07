@@ -28,7 +28,6 @@ describe('memoize', () => {
     expect(calls).toBe(1)
     expect(r1).toBe(r2)
   })
-})
 
   it('handles multiple arguments', () => {
     const fn = memoize((a: number, b: number) => a + b)
@@ -195,5 +194,4 @@ describe('memoize - edge cases', () => {
     expect(fn(2)).toBe(6)
     expect(calls).toBe(2)
   })
-})
 })

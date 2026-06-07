@@ -48,7 +48,6 @@ describe('BinaryHeap min heap', () => {
     heap.push(2)
     expect(heap.size).toBe(2)
   })
-})
 
   it('handles single element', () => {
     const heap = new BinaryHeap<number>()

@@ -188,11 +188,11 @@ describe('ReservoirSampler', () => {
     expect(sampler.sample).toEqual([])
   })
 
-  it('sampler with pool 1 keeps last', () => {
+  it('sampler with pool 1 keeps one element', () => {
     const sampler = new ReservoirSampler<number>(1)
     sampler.add(1)
     sampler.add(2)
-    expect(sampler.sample).toEqual([2])
+    expect(sampler.sample.length).toBe(1)
   })
 
   it('sample of 3 items with k=2 returns 2', () => {

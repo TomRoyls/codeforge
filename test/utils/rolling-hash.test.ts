@@ -42,7 +42,6 @@ describe('RollingHash', () => {
     const h2 = rh2.push(3)
     expect(h1).toBe(h2)
   })
-})
 
   it('reset clears state', () => {
     const rh = new RollingHash(3)

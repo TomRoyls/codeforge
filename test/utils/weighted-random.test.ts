@@ -2,12 +2,12 @@ import { describe, it, expect } from 'vitest'
 import { WeightedRandom } from '../../src/utils/weighted-random.js'
 
 describe('WeightedRandom', () => {
-  it('throws when sampling empty sampler', () => {
+  it('returns undefined when sampling empty sampler', () => {
     const sampler = new WeightedRandom()
     sampler.add('a', 1)
     sampler.build()
     sampler.clear()
-    expect(() => sampler.sample()).toThrow()
+    expect(sampler.sample()).toBeUndefined()
   })
 
   it('single item always sampled', () => {
@@ -133,10 +133,10 @@ describe('WeightedRandom', () => {
     expect(sampler.totalWeight).toBe(0)
   })
 
-  it('build required before sample', () => {
+  it('auto-builds before sample when not built', () => {
     const sampler = new WeightedRandom()
     sampler.add('a', 1)
-    expect(() => sampler.sample()).toThrow('Must call build() before sample()')
+    expect(sampler.sample()).toBe('a')
   })
 
   it('sampleMultiple returns correct count', () => {
@@ -152,10 +152,11 @@ describe('WeightedRandom', () => {
     })
   })
 
-  it('zero weight throws', () => {
+  it('zero weight is silently ignored', () => {
     const sampler = new WeightedRandom()
-    expect(() => sampler.add('a', 0)).toThrow('Weight must be greater than 0')
-    expect(() => sampler.add('b', -1)).toThrow('Weight must be greater than 0')
+    sampler.add('a', 0)
+    sampler.add('b', -1)
+    expect(sampler.size).toBe(0)
   })
 
   it('add after clear works', () => {

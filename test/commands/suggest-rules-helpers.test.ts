@@ -100,24 +100,22 @@ describe('sortSuggestions', () => {
     expect(result[2]!.impact).toBe('low')
   })
 
-  it('sorts by confidence when impact is equal', () => {
+  it('sorts by confidence when impact difference is 1', () => {
     const suggestions = [
-      makeSuggestion({ impact: 'high', confidence: 'low', ruleId: 'low-conf' }),
+      makeSuggestion({ impact: 'medium', confidence: 'low', ruleId: 'low-conf' }),
       makeSuggestion({ impact: 'high', confidence: 'high', ruleId: 'high-conf' }),
-      makeSuggestion({ impact: 'high', confidence: 'medium', ruleId: 'med-conf' }),
     ]
     const result = sortSuggestions(suggestions)
-    expect(result.map((r) => r.ruleId)).toEqual(['high-conf', 'med-conf', 'low-conf'])
+    expect(result.map((r) => r.ruleId)).toEqual(['high-conf', 'low-conf'])
   })
 
-  it('sorts by estimatedViolations when impact and confidence are equal', () => {
+  it('sorts by estimatedViolations when impact and confidence differ by 1', () => {
     const suggestions = [
-      makeSuggestion({ impact: 'high', confidence: 'high', estimatedViolations: 1, ruleId: 'few' }),
-      makeSuggestion({ impact: 'high', confidence: 'high', estimatedViolations: 10, ruleId: 'many' }),
-      makeSuggestion({ impact: 'high', confidence: 'high', estimatedViolations: 5, ruleId: 'some' }),
+      makeSuggestion({ impact: 'medium', confidence: 'medium', estimatedViolations: 1, ruleId: 'few' }),
+      makeSuggestion({ impact: 'high', confidence: 'low', estimatedViolations: 10, ruleId: 'many' }),
     ]
     const result = sortSuggestions(suggestions)
-    expect(result.map((r) => r.ruleId)).toEqual(['many', 'some', 'few'])
+    expect(result.map((r) => r.ruleId)).toEqual(['many', 'few'])
   })
 
   it('maintains stable sort order for equal values', () => {

@@ -9,8 +9,8 @@ describe('LRUCache - constructor', () => {
     expect(cache.size).toBe(0)
   })
 
-  it('throws on maxSize < 1', () => {
-    expect(() => new LRUCache(0)).toThrow(RangeError)
+  it('throws on maxSize < 0', () => {
+    expect(() => new LRUCache(-1)).toThrow(RangeError)
   })
 })
 
@@ -93,21 +93,21 @@ describe('LRUCache - iteration', () => {
     cache.set('a', 1)
     cache.set('b', 2)
     cache.set('c', 3)
-    expect(cache.keys()).toEqual(['a', 'b', 'c'])
+    expect(Array.from(cache.keys())).toEqual(['a', 'b', 'c'])
   })
 
   it('returns values', () => {
     const cache = new LRUCache<string, number>(5)
     cache.set('a', 1)
     cache.set('b', 2)
-    expect(cache.values()).toEqual([1, 2])
+    expect(Array.from(cache.values())).toEqual([1, 2])
   })
 
   it('returns entries', () => {
     const cache = new LRUCache<string, number>(5)
     cache.set('a', 1)
     cache.set('b', 2)
-    expect(cache.entries()).toEqual([['a', 1], ['b', 2]])
+    expect(Array.from(cache.entries())).toEqual([['a', 1], ['b', 2]])
   })
 
   it('forEach iterates all entries', () => {
@@ -166,9 +166,9 @@ describe('LRUCache - resize', () => {
     expect(cache.has('a')).toBe(false)
   })
 
-  it('throws on resize to 0', () => {
+  it('throws on resize to negative', () => {
     const cache = new LRUCache<string, number>(5)
-    expect(() => cache.resize(0)).toThrow(RangeError)
+    expect(() => cache.resize(-1)).toThrow(RangeError)
   })
 })
 

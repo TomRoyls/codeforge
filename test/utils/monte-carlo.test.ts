@@ -3,7 +3,7 @@ import { MonteCarlo } from '../../src/utils/monte-carlo.js'
 
 describe('MonteCarlo', () => {
   it('integrates x^2 from 0 to 1', () => {
-    const result = MonteCarlo.integrate((x) => x * x, 0, 1, 10000)
+    const result = MonteCarlo.integrate((x) => x * x, 0, 1, 100000)
     expect(result).toBeCloseTo(1 / 3, 2)
   })
 
@@ -13,7 +13,7 @@ describe('MonteCarlo', () => {
   })
 
   it('integrates linear function', () => {
-    const result = MonteCarlo.integrate((x) => x, 0, 1, 10000)
+    const result = MonteCarlo.integrate((x) => x, 0, 1, 100000)
     expect(result).toBeCloseTo(0.5, 2)
   })
 

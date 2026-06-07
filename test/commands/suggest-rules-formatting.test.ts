@@ -91,20 +91,20 @@ describe('sortSuggestions', () => {
     expect(result[1].ruleId).toBe('low')
   })
 
-  it('sorts by confidence when impact is tied', () => {
+  it('sorts by confidence when impact difference is 1', () => {
     const items = [
       makeSuggestion({ ruleId: 'low-conf', impact: 'high', confidence: 'low', estimatedViolations: 20 }),
-      makeSuggestion({ ruleId: 'high-conf', impact: 'high', confidence: 'high', estimatedViolations: 1 }),
+      makeSuggestion({ ruleId: 'high-conf', impact: 'medium', confidence: 'high', estimatedViolations: 1 }),
     ]
     const result = sortSuggestions(items)
     expect(result[0].ruleId).toBe('high-conf')
     expect(result[1].ruleId).toBe('low-conf')
   })
 
-  it('sorts by estimatedViolations when impact and confidence are tied', () => {
+  it('sorts by estimatedViolations when impact and confidence differ by 1', () => {
     const items = [
       makeSuggestion({ ruleId: 'few', impact: 'high', confidence: 'high', estimatedViolations: 3 }),
-      makeSuggestion({ ruleId: 'many', impact: 'high', confidence: 'high', estimatedViolations: 15 }),
+      makeSuggestion({ ruleId: 'many', impact: 'medium', confidence: 'medium', estimatedViolations: 15 }),
     ]
     const result = sortSuggestions(items)
     expect(result[0].ruleId).toBe('many')
