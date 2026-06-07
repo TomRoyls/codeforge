@@ -4,7 +4,6 @@ export class CentroidDecomposition {
   private removed: boolean[] = []
   private parent: number[] = []
   private depth: number[] = []
-  private visited: boolean[] = []
 
   constructor(n: number) {
     this.n = n
@@ -13,7 +12,6 @@ export class CentroidDecomposition {
       this.removed.push(false)
       this.parent.push(-1)
       this.depth.push(0)
-      this.visited.push(false)
     }
   }
 
@@ -28,8 +26,10 @@ export class CentroidDecomposition {
   }
 
   private build(node: number, par: number, d: number): void {
-    const size = this.getSize(node)
-    const centroid = this.findCentroid(node, size)
+    const sizes: number[] = new Array(this.n).fill(0)
+    this.computeSizes(node, new Set<number>(), sizes)
+    const total = sizes[node]!
+    const centroid = this.findCentroid(node, new Set<number>(), sizes, total)
     this.parent[centroid] = par
     this.depth[centroid] = d
     this.removed[centroid] = true
@@ -40,35 +40,23 @@ export class CentroidDecomposition {
     }
   }
 
-  private getSize(node: number): number {
-    this.visited = new Array(this.n).fill(false)
-    return this.getSizeDFS(node)
-  }
-
-  private getSizeDFS(node: number): number {
-    this.visited[node] = true
+  private computeSizes(node: number, visited: Set<number>, sizes: number[]): void {
+    visited.add(node)
     let size = 1
     for (const child of this.adj[node]!) {
-      if (!this.visited[child] && !this.removed[child]) {
-        size += this.getSizeDFS(child)
-      }
+      if (visited.has(child) || this.removed[child]) continue
+      this.computeSizes(child, visited, sizes)
+      size += sizes[child]!
     }
-    return size
+    sizes[node] = size
   }
 
-  private findCentroid(node: number, total: number): number {
-    this.visited = new Array(this.n).fill(false)
-    return this.findCentroidDFS(node, total)
-  }
-
-  private findCentroidDFS(node: number, total: number): number {
-    this.visited[node] = true
+  private findCentroid(node: number, visited: Set<number>, sizes: number[], total: number): number {
+    visited.add(node)
     for (const child of this.adj[node]!) {
-      if (!this.visited[child] && !this.removed[child]) {
-        const childSize = this.getSize(child)
-        if (childSize > total / 2) {
-          return this.findCentroidDFS(child, total)
-        }
+      if (visited.has(child) || this.removed[child]) continue
+      if (sizes[child]! > total / 2) {
+        return this.findCentroid(child, visited, sizes, total)
       }
     }
     return node

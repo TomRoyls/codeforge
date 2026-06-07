@@ -215,4 +215,87 @@ describe('CentroidDecomposition', () => {
     const { parent } = cd.decompose()
     expect(parent.length).toBe(3)
   })
+
+  it('star graph centroid is the center node', () => {
+    const cd = new CentroidDecomposition(7)
+    for (let i = 1; i < 7; i++) cd.addEdge(0, i)
+    const { parent, depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(root).toBe(0)
+    for (let i = 0; i < 7; i++) {
+      if (i !== root) {
+        expect(parent[i]).toBe(root)
+        expect(depth[i]).toBe(1)
+      }
+    }
+  })
+
+  it('path graph centroid tree has O(log n) depth', () => {
+    const n = 16
+    const cd = new CentroidDecomposition(n)
+    for (let i = 0; i < n - 1; i++) cd.addEdge(i, i + 1)
+    const { depth } = cd.decompose()
+    const maxDepth = Math.max(...depth)
+    expect(maxDepth).toBeLessThanOrEqual(Math.ceil(Math.log2(n)))
+  })
+
+  it('every node assigned exactly one parent in centroid tree', () => {
+    const cd = new CentroidDecomposition(10)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(0, 5)
+    cd.addEdge(5, 6)
+    cd.addEdge(6, 7)
+    cd.addEdge(7, 8)
+    cd.addEdge(8, 9)
+    const { parent, depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    for (let i = 0; i < 10; i++) {
+      if (i === root) {
+        expect(parent[i]).toBe(root)
+      } else {
+        expect(parent[i]).toBeGreaterThanOrEqual(0)
+        expect(parent[i]).toBeLessThan(10)
+        expect(depth[i]).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('centroid of path 0-1-2-3-4 is node 2', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    const { depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(root).toBe(2)
+  })
+
+  it('triangle graph does not infinite loop', () => {
+    const cd = new CentroidDecomposition(3)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(0, 2)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(3)
+    expect(depth.length).toBe(3)
+    const root = depth.indexOf(0)
+    expect(root).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles graph with multiple cycles', () => {
+    // 0-1-2 triangle + node 3 connected to both 0 and 2
+    const cd = new CentroidDecomposition(4)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(0, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(0, 3)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(4)
+    expect(depth.length).toBe(4)
+  })
 })
