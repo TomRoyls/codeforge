@@ -7,7 +7,7 @@ export class CuckooFilter2 {
   private readonly maxKickCount: number;
 
   constructor(capacity: number = 1024, bucketSize: number = 4, fingerprintSize: number = 1) {
-    this.capacity = capacity;
+    this.capacity = nextPowerOfTwo(capacity);
     this.bucketSize = bucketSize;
     this.fingerprintSize = fingerprintSize;
     this.maxKickCount = 500;
@@ -46,12 +46,22 @@ export class CuckooFilter2 {
 
     const bucket = this.buckets[bucketIndex]!;
     const otherFingerprint = bucket[0]!;
+    const fpHash = this.hash(otherFingerprint.toString());
+    let targetBucket = (bucketIndex ^ fpHash) % this.capacity;
+    if (targetBucket < 0) targetBucket += this.capacity;
+
+    const saved = new Array<number>(this.bucketSize);
+    const targetB = this.buckets[targetBucket]!;
+    for (let i = 0; i < this.bucketSize; i++) saved[i] = targetB[i]!;
+
     bucket[0] = fingerprint;
+    if (this.insertToFingerprintBucket(targetBucket, otherFingerprint, count + 1)) {
+      return true;
+    }
 
-    const [newH1, newH2] = this.twoHashes(this.hash(otherFingerprint.toString()), otherFingerprint);
-    const targetBucket = bucketIndex === newH1 ? newH2 : newH1;
-
-    return this.insertToFingerprintBucket(targetBucket, otherFingerprint, count + 1);
+    bucket[0] = otherFingerprint;
+    for (let i = 0; i < this.bucketSize; i++) targetB[i] = saved[i]!;
+    return false;
   }
 
   private insertToFingerprintBucket(bucketIndex: number, fingerprint: number, count: number): boolean {
@@ -160,4 +170,15 @@ export class CuckooFilter2 {
     }
     this._size = 0;
   }
+}
+
+function nextPowerOfTwo(n: number): number {
+  if (n <= 0) return 1;
+  n--;
+  n |= n >> 1;
+  n |= n >> 2;
+  n |= n >> 4;
+  n |= n >> 8;
+  n |= n >> 16;
+  return n + 1;
 }
