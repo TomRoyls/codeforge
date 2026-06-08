@@ -47,7 +47,8 @@ export class AmericanFlagSort2 {
     }
 
     const max = Math.max(...arr);
-    this.americanFlagSort(arr, 0, arr.length - 1, 0, max);
+    const maxDigits = this.digits(max);
+    this.americanFlagSort(arr, 0, arr.length - 1, maxDigits - 1, max);
 
     if (offset !== 0) {
       for (let i = 0; i < arr.length; i++) {
@@ -66,8 +67,7 @@ export class AmericanFlagSort2 {
       return;
     }
 
-    const maxDigits = this.digits(max);
-    if (digit >= maxDigits) {
+    if (digit < 0) {
       return;
     }
 
@@ -96,7 +96,7 @@ export class AmericanFlagSort2 {
       arr[low + i]! = temp[i]!;
     }
 
-    if (digit >= maxDigits - 1) {
+    if (digit <= 0) {
       return;
     }
 
@@ -104,7 +104,7 @@ export class AmericanFlagSort2 {
     for (let i = 0; i < 256; i++) {
       const count = counts[i]!;
       if (count > 1) {
-        this.americanFlagSort(arr, start, start + count - 1, digit + 1, max);
+        this.americanFlagSort(arr, start, start + count - 1, digit - 1, max);
       }
       start += count;
     }
