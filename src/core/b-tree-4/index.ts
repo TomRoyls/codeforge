@@ -150,6 +150,7 @@ export class BTree<T> {
       child.children = child.children.slice(0, order);
     }
 
+    parent.leaf = false;
     parent.children.splice(index + 1, 0, newNode);
     parent.keys.splice(index, 0, midKey);
   }
@@ -230,9 +231,10 @@ export class BTree<T> {
         node.keys[idx] = succ;
         this.deleteFromNode(succChild, succ);
       } else {
+        const keyToDelete = node.keys[idx]!;
         this.mergeChildren(node, idx);
         const leftChild = node.children[idx]!;
-        this.deleteFromNode(leftChild, node.keys[idx]!);
+        this.deleteFromNode(leftChild, keyToDelete);
       }
     }
   }
@@ -245,7 +247,8 @@ export class BTree<T> {
       this.deleteFromNode(child, value);
     } else {
       this.ensureMinKeys(node, childIdx);
-      this.deleteFromNode(node.children[childIdx]!, value);
+      const newIdx = this.findKeyIndex(node, value);
+      this.deleteFromNode(node.children[newIdx]!, value);
     }
   }
 
