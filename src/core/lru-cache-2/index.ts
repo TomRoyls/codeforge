@@ -31,7 +31,9 @@ export class LRU2Cache<K, V> {
     if (entry.accessTimes.length >= K) {
       return entry.accessTimes[0]!
     }
-    return entry.accessTimes[0]!
+    // Entries with fewer than K accesses are always evicted before
+    // entries that have been accessed K times
+    return -Infinity
   }
 
   private findEvictionKey(): K | undefined {
