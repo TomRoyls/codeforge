@@ -356,7 +356,7 @@ describe("RangeTree", () => {
       expect(tree.nearest(5)).toBe(5);
     });
 
-    it.skip("returns closest lower point", () => {
+    it("returns closest lower point", () => {
       const tree = new RangeTree([1, 5, 10]);
       expect(tree.nearest(3)).toBe(1);
     });
@@ -423,7 +423,7 @@ describe("RangeTree", () => {
       expect(result.length).toBe(3);
     });
 
-    it.skip("returns exact point and neighbors", () => {
+    it("returns exact point and neighbors", () => {
       const tree = new RangeTree([0, 10, 20, 30]);
       const result = tree.kNearest(10, 2);
       expect(result[0]).toBe(10);
@@ -624,7 +624,7 @@ describe("RangeTree", () => {
       expect(tree.toArray()).toEqual([12, 25, 37, 50, 62, 75, 87]);
     });
 
-    it.skip("handles duplicate inserts", () => {
+    it("handles duplicate inserts", () => {
       const tree = new RangeTree<number>();
       tree.insert(5);
       tree.insert(5);
