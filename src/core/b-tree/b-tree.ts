@@ -122,13 +122,27 @@ export class BTree<T> {
     return undefined
   }
 
+  private hasKeyNode(node: BTreeNode<T>, key: number): boolean {
+    const idx = this.findKeyIndex(node.keys, key)
+    if (idx < node.keys.length && node.keys[idx] === key) {
+      return true
+    }
+    if (node.isLeaf) return false
+    const child = node.children[idx]
+    if (child !== undefined) {
+      return this.hasKeyNode(child, key)
+    }
+    return false
+  }
+
   search(key: number): T | undefined {
     if (this.root === null) return undefined
     return this.searchNode(this.root, key)
   }
 
   has(key: number): boolean {
-    return this.search(key) !== undefined
+    if (this.root === null) return false
+    return this.hasKeyNode(this.root, key)
   }
 
   delete(key: number): boolean {
