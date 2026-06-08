@@ -1,5 +1,10 @@
 import { DEFAULT_CUCKOO_BLOOM_OPTIONS } from './types.js'
 
+function nextPowerOfTwo(n: number): number {
+  if (n <= 1) return 1
+  return 1 << (32 - Math.clz32(n - 1))
+}
+
 export class CuckooBloomFilter<T = string> {
   private buckets: (number | null)[][]
   private _bucketCount: number
@@ -19,7 +24,7 @@ export class CuckooBloomFilter<T = string> {
     this._fingerprintSize = fingerprintSize
     this._bucketSize = bucketSize
     this._maxKicks = maxKicks
-    this._bucketCount = Math.ceil(capacity / bucketSize)
+    this._bucketCount = nextPowerOfTwo(Math.ceil(capacity / bucketSize))
     this.buckets = []
     for (let i = 0; i < this._bucketCount; i++) {
       this.buckets.push(new Array<number | null>(this._bucketSize).fill(null))
@@ -41,25 +46,38 @@ export class CuckooBloomFilter<T = string> {
       return true
     }
 
+    // Both candidate buckets full — start eviction chain.
+    // Track the currently displaced fingerprint (not always the original).
+    // Record swaps for rollback on failure.
     let currentIndex = Math.random() < 0.5 ? i1 : i2
+    let currentFp = fp
+    const swapLog: Array<{ bucketIdx: number; slotIdx: number; prev: number | null }> = []
 
     for (let n = 0; n < this._maxKicks; n++) {
       const slotIndex = n % this._bucketSize
       const bucket = this.buckets[currentIndex]!
       const evictedFp = bucket[slotIndex]!
-      bucket[slotIndex] = fp
+      bucket[slotIndex] = currentFp
+      swapLog.push({ bucketIdx: currentIndex, slotIdx: slotIndex, prev: evictedFp })
 
       if (evictedFp === null) {
         this._size++
         return true
       }
 
+      currentFp = evictedFp
       currentIndex = this.altIndex(currentIndex, evictedFp)
 
-      if (this.insertIntoBucket(currentIndex, evictedFp)) {
+      if (this.insertIntoBucket(currentIndex, currentFp)) {
         this._size++
         return true
       }
+    }
+
+    // Rollback all swaps — filter must remain unchanged on failure
+    for (let i = swapLog.length - 1; i >= 0; i--) {
+      const s = swapLog[i]!
+      this.buckets[s.bucketIdx]![s.slotIdx] = s.prev
     }
 
     return false
