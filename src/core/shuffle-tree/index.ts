@@ -49,7 +49,7 @@ export class ShuffleTree<T> {
         return this.maybeRotate(node, newNode)
       }
       node.left = this.insertRec(node.left, item)
-      return this.maybeRotateLeft(node)
+      return this.maybeRotateRight(node)
     }
     if (node.right === null) {
       const newNode = new TreeNode(item)
@@ -58,7 +58,7 @@ export class ShuffleTree<T> {
       return this.maybeRotate(node, newNode)
     }
     node.right = this.insertRec(node.right, item)
-    return this.maybeRotateRight(node)
+    return this.maybeRotateLeft(node)
   }
 
   private maybeRotate(parent: TreeNode<T>, _child: TreeNode<T>): TreeNode<T> {
