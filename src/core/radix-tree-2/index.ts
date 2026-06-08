@@ -111,11 +111,8 @@ export class RadixTree2 {
           if (path.length > 1) {
             const parent = path[path.length - 2]
             if (!parent) return true
-            const mergedEdge = parent.node.children.get(last.edge)
-            if (mergedEdge) {
-              parent.node.children.delete(last.edge)
-              parent.node.children.set(mergedEdge + siblingEdge, siblingNode)
-            }
+            parent.node.children.delete(parent.edge)
+            parent.node.children.set(parent.edge + siblingEdge, siblingNode)
           }
         }
       }

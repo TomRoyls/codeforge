@@ -100,11 +100,30 @@ export class RobinHoodHash2<K, V> {
       if (entry.key === key) {
         this.entries[currentIdx] = null;
         this._size--;
+        this._shiftBack(currentIdx);
         return true;
       }
     }
 
     return false;
+  }
+
+  private _shiftBack(hole: number): void {
+    const cap = this.entries.length;
+    let i = (hole + 1) % cap;
+    while (this.entries[i] !== null) {
+      const entry = this.entries[i]!;
+      const preferred = this.getIndex(this.hash(entry.key));
+      const currentDist = (i - preferred + cap) % cap;
+      const holeDist = (hole - preferred + cap) % cap;
+
+      if (holeDist < currentDist) {
+        this.entries[hole] = entry;
+        this.entries[i] = null;
+        hole = i;
+      }
+      i = (i + 1) % cap;
+    }
   }
 
   get size(): number {

@@ -21,20 +21,20 @@ export class RateLimiter2 {
   }
 
   async acquire(): Promise<void> {
-    const now = Date.now();
-    this.cleanupOldTimestamps(now);
+    while (true) {
+      const now = Date.now();
+      this.cleanupOldTimestamps(now);
 
-    if (this.timestamps.length < this.maxRequests) {
-      this.timestamps.push(now);
-      return;
+      if (this.timestamps.length < this.maxRequests) {
+        this.timestamps.push(now);
+        return;
+      }
+
+      const oldestTimestamp = this.timestamps[0]!;
+      const waitTime = oldestTimestamp + this.windowMs - now;
+
+      await new Promise((resolve) => setTimeout(resolve, Math.max(0, waitTime)));
     }
-
-    const oldestTimestamp = this.timestamps[0]!;
-    const waitTime = oldestTimestamp + this.windowMs - now;
-
-    await new Promise((resolve) => setTimeout(resolve, waitTime));
-    this.timestamps.push(Date.now());
-    this.cleanupOldTimestamps(Date.now());
   }
 
   getAvailableTokens(): number {
