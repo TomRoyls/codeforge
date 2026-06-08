@@ -189,7 +189,7 @@ describe('TopK', () => {
       expect(topK.contains(2)).toBe(false);
     });
 
-    it.skip('should check heap items only', () => {
+    it('should check heap items only', () => {
       const topK = new TopK<string>(2);
       topK.add('a');
       topK.add('b');

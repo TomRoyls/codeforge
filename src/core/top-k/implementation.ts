@@ -27,7 +27,7 @@ export class TopK<T> {
       this.heap.push([item, newCount]);
       this.bubbleUp(this.heap.length - 1);
       this.currentSize++;
-    } else if (newCount > this.heap[0]![1]) {
+    } else if (newCount >= this.heap[0]![1]) {
       this.heap[0]! = [item, newCount];
       this.bubbleDown(0);
     }
