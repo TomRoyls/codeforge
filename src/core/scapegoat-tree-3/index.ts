@@ -148,15 +148,16 @@ export class ScapegoatTree3<T> {
         const scapegoat = this.findScapegoat(this.root, value, []);
         if (scapegoat) {
             const rebuilt = this.rebuildSubtree(scapegoat);
-            if (path.length > 0) {
-                const parent = path[path.length - 1];
-                if (parent!.left === scapegoat) {
-                    parent!.left = rebuilt;
-                } else {
-                    parent!.right = rebuilt;
-                }
-            } else {
+            const idx = path.indexOf(scapegoat);
+            if (idx <= 0) {
                 this.root = rebuilt;
+            } else {
+                const sgParent = path[idx - 1]!;
+                if (sgParent.left === scapegoat) {
+                    sgParent.left = rebuilt;
+                } else {
+                    sgParent.right = rebuilt;
+                }
             }
         }
     }
