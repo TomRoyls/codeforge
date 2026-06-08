@@ -111,10 +111,9 @@ export class DiffArray {
   push(item: number): number {
     this.rebuildCache()
     const prev = this._size > 0 ? this.cached[this._size - 1]! : 0
-    const delta = item - prev
+    this.diff[this._size] = item - prev
     this._size += 1
-    this.diff[this._size - 1]! += delta
-    this.diff.push(-delta)
+    this.diff.push(-item)
     this.cached.push(item)
     return this._size
   }

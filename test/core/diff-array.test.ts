@@ -508,7 +508,7 @@ describe('DiffArray', () => {
       expect(da.get(0)).toBe(5)
     })
 
-    it.skip('adds element to non-empty array', () => {
+    it('adds element to non-empty array', () => {
       const da = new DiffArray(2)
       da.set(0, 1)
       da.set(1, 2)
@@ -522,7 +522,7 @@ describe('DiffArray', () => {
       expect(da.push(10)).toBe(3)
     })
 
-    it.skip('pushes multiple elements', () => {
+    it('pushes multiple elements', () => {
       const da = new DiffArray(0)
       da.push(1)
       da.push(2)
@@ -530,21 +530,21 @@ describe('DiffArray', () => {
       expect(da.toArray()).toEqual([1, 2, 3])
     })
 
-    it.skip('pushes negative values', () => {
+    it('pushes negative values', () => {
       const da = new DiffArray(1)
       da.set(0, 5)
       da.push(-3)
       expect(da.toArray()).toEqual([5, -3])
     })
 
-    it.skip('pushes zero', () => {
+    it('pushes zero', () => {
       const da = new DiffArray(1)
       da.set(0, 10)
       da.push(0)
       expect(da.toArray()).toEqual([10, 0])
     })
 
-    it.skip('push preserves existing values', () => {
+    it('push preserves existing values', () => {
       const da = new DiffArray(2)
       da.set(0, 100)
       da.set(1, 200)
@@ -586,7 +586,7 @@ describe('DiffArray', () => {
       expect(da.pop()).toBe(5)
     })
 
-    it.skip('allows push after pop', () => {
+    it('allows push after pop', () => {
       const da = new DiffArray(2)
       da.set(0, 1)
       da.set(1, 2)
@@ -802,7 +802,7 @@ describe('DiffArray', () => {
       expect(da.toArray()).toEqual([0, 0, 7, 7, 7])
     })
 
-    it.skip('handles push and rangeAdd', () => {
+    it('handles push and rangeAdd', () => {
       const da = new DiffArray(2)
       da.set(0, 1)
       da.set(1, 2)
@@ -828,7 +828,7 @@ describe('DiffArray', () => {
       expect(da.pointQuery(0)).toBe(1)
     })
 
-    it.skip('snapshot after many operations', () => {
+    it('snapshot after many operations', () => {
       const da = DiffArray.fromArray([0, 0, 0, 0, 0])
       da.rangeAdd(0, 4, 1)
       da.rangeAdd(1, 3, 2)
@@ -838,7 +838,7 @@ describe('DiffArray', () => {
       expect(snap).toEqual([1, 3, 99, 3, 1, 10])
     })
 
-    it.skip('fromArray with subsequent push/pop', () => {
+    it('fromArray with subsequent push/pop', () => {
       const da = DiffArray.fromArray([1, 2, 3])
       da.push(4)
       expect(da.pop()).toBe(4)
@@ -852,7 +852,7 @@ describe('DiffArray', () => {
       expect([...da]).toEqual([5, 20, 5])
     })
 
-    it.skip('forEach after push', () => {
+    it('forEach after push', () => {
       const da = DiffArray.fromArray([1, 2])
       da.push(3)
       const result: number[] = []
@@ -860,7 +860,7 @@ describe('DiffArray', () => {
       expect(result).toEqual([1, 2, 3])
     })
 
-    it.skip('clone after push', () => {
+    it('clone after push', () => {
       const da = DiffArray.fromArray([1])
       da.push(2)
       const cloned = da.clone()
@@ -926,7 +926,7 @@ describe('DiffArray', () => {
       expect(da.get(1)).toBeCloseTo(0.5)
     })
 
-    it.skip('handles push on fromArray result', () => {
+    it('handles push on fromArray result', () => {
       const da = DiffArray.fromArray([1, 2, 3])
       da.push(4)
       da.push(5)
