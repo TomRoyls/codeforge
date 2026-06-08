@@ -66,10 +66,17 @@ export class BPlusTree<K, V> {
       this.insertIntoLeaf(root, key, value);
       return;
     }
-    if (
-      !this.isLeaf(root) &&
-      (root as InternalNode<K, V>).keys.length >= this.maxKeys
-    ) {
+    if (this.isLeaf(root)) {
+      this.insertIntoLeafAndSplit(root, key, value);
+      if (root.keys.length > this.maxKeys) {
+        const newRoot = new InternalNode<K, V>();
+        newRoot.children.push(root);
+        this.splitLeafChild(newRoot, 0, root);
+        this.root = newRoot;
+      }
+      return;
+    }
+    if ((root as InternalNode<K, V>).keys.length >= this.maxKeys) {
       const newRoot = new InternalNode<K, V>();
       newRoot.children.push(this.root);
       this.splitChild(newRoot, 0);

@@ -115,9 +115,6 @@ export class BlockedArray<T = unknown> {
     for (let b = 0; b < this.blocks.length - 1; b++) {
       const current = this.blocks[b]!
       const next = this.blocks[b + 1]!
-      while (current.length > this._blockSize && next.length > 0) {
-        current.push(next.shift()!)
-      }
       while (current.length < this._blockSize && next.length > 0) {
         current.push(next.shift()!)
       }

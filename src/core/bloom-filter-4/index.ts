@@ -70,13 +70,13 @@ export class BloomFilter {
     const hashes: number[] = [];
     const str = item;
     let hash1 = 0;
-    let hash2 = 0;
+    let hash2 = 0x9e3779b9;
 
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash1 = (hash1 << 5) - hash1 + char;
       hash1 |= 0;
-      hash2 = (hash2 << 5) - hash2 + char;
+      hash2 = Math.imul(hash2 ^ char, 0x5bd1e995);
       hash2 |= 0;
     }
 
@@ -84,8 +84,8 @@ export class BloomFilter {
     hash2 = hash2 >>> 0;
 
     for (let i = 0; i < this.hashCount; i++) {
-      const combinedHash = hash1 + i * hash2;
-      hashes.push(Math.abs(combinedHash % this.size));
+      const combinedHash = (hash1 + i * hash2) >>> 0;
+      hashes.push(combinedHash % this.size);
     }
 
     return hashes;
