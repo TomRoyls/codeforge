@@ -94,15 +94,19 @@ export class BinomialHeap4<T = unknown> {
       current = current.parent
     }
 
-    const { prev: minPrev, node: minNode } = this.findMinNodeWithPrev()
-
-    if (minPrev !== null) {
-      minPrev.sibling = minNode.sibling
+    if (current === this.head) {
+      this.head = current.sibling
     } else {
-      this.head = minNode.sibling
+      let prev = this.head
+      while (prev !== null && prev.sibling !== current) {
+        prev = prev.sibling
+      }
+      if (prev !== null) {
+        prev.sibling = current.sibling
+      }
     }
 
-    const childList = this.reverseChildList(minNode.child)
+    const childList = this.reverseChildList(current.child)
     if (childList !== null) {
       this.head = this.unionRoots(this.head, childList)
     }
