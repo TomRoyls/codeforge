@@ -27,8 +27,11 @@ export class CuckooFilter2 {
   }
 
   private fingerprint(hashValue: number): number {
-    const mask = (1 << (8 * this.fingerprintSize)) - 1;
-    return hashValue & mask;
+    const bits = 8 * this.fingerprintSize;
+    if (bits >= 32) {
+      return hashValue >>> 0;
+    }
+    return hashValue & ((1 << bits) - 1);
   }
 
   private twoHashes(hashValue: number, fingerprint: number): [number, number] {
@@ -85,10 +88,6 @@ export class CuckooFilter2 {
     const fp = this.fingerprint(hashValue);
     if (fp === 0) {
       return false;
-    }
-
-    if (this.contains(item)) {
-      return true;
     }
 
     const [h1, h2] = this.twoHashes(hashValue, fp);
