@@ -3,13 +3,13 @@ import { ZipTree } from '../../src/core/zip-tree/index.js';
 
 describe('ZipTree', () => {
   describe('constructor', () => {
-    it.skip('creates empty tree with default options', () => {
+    it('creates empty tree with default options', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.size()).toBe(0);
       expect(tree.isEmpty()).toBe(true);
     });
 
-    it.skip('creates tree with custom comparator', () => {
+    it('creates tree with custom comparator', () => {
       const tree = new ZipTree<string, number>({
         comparator: (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()),
       });
@@ -18,7 +18,7 @@ describe('ZipTree', () => {
       expect(tree.has('HELLO')).toBe(true);
     });
 
-    it.skip('creates tree with numeric comparator', () => {
+    it('creates tree with numeric comparator', () => {
       const tree = new ZipTree<number, number>({ comparator: (a, b) => a - b });
       tree.insert(5, 10);
       expect(tree.has(5)).toBe(true);
@@ -26,7 +26,7 @@ describe('ZipTree', () => {
   });
 
   describe('insert', () => {
-    it.skip('inserts a single element', () => {
+    it('inserts a single element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       expect(tree.size()).toBe(1);
@@ -34,7 +34,7 @@ describe('ZipTree', () => {
       expect(tree.get(1)).toBe('one');
     });
 
-    it.skip('inserts multiple elements', () => {
+    it('inserts multiple elements', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(3, 'three');
@@ -45,7 +45,7 @@ describe('ZipTree', () => {
       expect(tree.get(7)).toBe('seven');
     });
 
-    it.skip('inserts in sorted order', () => {
+    it('inserts in sorted order', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 1; i <= 10; i++) {
         tree.insert(i, i * 10);
@@ -64,7 +64,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('inserts in reverse sorted order', () => {
+    it('inserts in reverse sorted order', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 10; i >= 1; i--) {
         tree.insert(i, i * 10);
@@ -83,7 +83,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('inserts negative numbers', () => {
+    it('inserts negative numbers', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(-5, 'neg5');
       tree.insert(-10, 'neg10');
@@ -91,7 +91,7 @@ describe('ZipTree', () => {
       expect(tree.toArray()).toEqual([[-10, 'neg10'], [-5, 'neg5'], [-1, 'neg1']]);
     });
 
-    it.skip('inserts zero', () => {
+    it('inserts zero', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(0, 'zero');
       expect(tree.has(0)).toBe(true);
@@ -99,7 +99,7 @@ describe('ZipTree', () => {
       expect(tree.size()).toBe(1);
     });
 
-    it.skip('inserts strings with default comparator', () => {
+    it('inserts strings with default comparator', () => {
       const tree = new ZipTree<string, number>();
       tree.insert('banana', 2);
       tree.insert('apple', 1);
@@ -111,7 +111,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('handles many insertions', () => {
+    it('handles many insertions', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 0; i < 100; i++) {
         tree.insert(i, i);
@@ -119,7 +119,7 @@ describe('ZipTree', () => {
       expect(tree.size()).toBe(100);
     });
 
-    it.skip('handles random insertions', () => {
+    it('handles random insertions', () => {
       const tree = new ZipTree<number, string>();
       const values = [42, 17, 89, 3, 55, 23, 71, 36, 64, 8];
       for (const v of values) {
@@ -132,7 +132,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('maintains BST property after insertions', () => {
+    it('maintains BST property after insertions', () => {
       const tree = new ZipTree<number, string>();
       const values = [50, 25, 75, 10, 30, 60, 90];
       for (const v of values) {
@@ -144,7 +144,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('inserts floating point numbers', () => {
+    it('inserts floating point numbers', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(3.14, 'pi');
       tree.insert(2.71, 'e');
@@ -156,7 +156,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('inserts large numbers', () => {
+    it('inserts large numbers', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(Number.MAX_SAFE_INTEGER, 'max');
       tree.insert(Number.MIN_SAFE_INTEGER, 'min');
@@ -168,7 +168,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('inserts into tree that had all elements deleted', () => {
+    it('inserts into tree that had all elements deleted', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.delete(1);
@@ -179,24 +179,24 @@ describe('ZipTree', () => {
   });
 
   describe('get', () => {
-    it.skip('returns undefined for empty tree', () => {
+    it('returns undefined for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.get(1)).toBeUndefined();
     });
 
-    it.skip('returns value for existing key', () => {
+    it('returns value for existing key', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect(tree.get(42)).toBe('answer');
     });
 
-    it.skip('returns undefined for non-existing key', () => {
+    it('returns undefined for non-existing key', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect(tree.get(99)).toBeUndefined();
     });
 
-    it.skip('returns value after multiple insertions', () => {
+    it('returns value after multiple insertions', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 0; i < 50; i++) {
         tree.insert(i, i * 10);
@@ -207,7 +207,7 @@ describe('ZipTree', () => {
       expect(tree.get(50)).toBeUndefined();
     });
 
-    it.skip('returns undefined after deletion', () => {
+    it('returns undefined after deletion', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -216,7 +216,7 @@ describe('ZipTree', () => {
       expect(tree.get(20)).toBe('twenty');
     });
 
-    it.skip('returns correct value type', () => {
+    it('returns correct value type', () => {
       const tree = new ZipTree<number, { name: string }>();
       tree.insert(1, { name: 'one' });
       expect(tree.get(1)?.name).toBe('one');
@@ -224,24 +224,24 @@ describe('ZipTree', () => {
   });
 
   describe('has', () => {
-    it.skip('returns false for empty tree', () => {
+    it('returns false for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.has(1)).toBe(false);
     });
 
-    it.skip('returns true for existing element', () => {
+    it('returns true for existing element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect(tree.has(42)).toBe(true);
     });
 
-    it.skip('returns false for non-existing element', () => {
+    it('returns false for non-existing element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect(tree.has(99)).toBe(false);
     });
 
-    it.skip('finds elements in larger tree', () => {
+    it('finds elements in larger tree', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 50; i++) {
         tree.insert(i, `val${i}`);
@@ -252,7 +252,7 @@ describe('ZipTree', () => {
       expect(tree.has(50)).toBe(false);
     });
 
-    it.skip('returns false after deletion', () => {
+    it('returns false after deletion', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -261,7 +261,7 @@ describe('ZipTree', () => {
       expect(tree.has(20)).toBe(true);
     });
 
-    it.skip('works with string keys', () => {
+    it('works with string keys', () => {
       const tree = new ZipTree<string, number>();
       tree.insert('hello', 1);
       expect(tree.has('hello')).toBe(true);
@@ -270,18 +270,18 @@ describe('ZipTree', () => {
   });
 
   describe('delete', () => {
-    it.skip('returns false for empty tree', () => {
+    it('returns false for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.delete(1)).toBe(false);
     });
 
-    it.skip('returns false for non-existing element', () => {
+    it('returns false for non-existing element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       expect(tree.delete(10)).toBe(false);
     });
 
-    it.skip('deletes only element', () => {
+    it('deletes only element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect(tree.delete(42)).toBe(true);
@@ -290,7 +290,7 @@ describe('ZipTree', () => {
       expect(tree.get(42)).toBeUndefined();
     });
 
-    it.skip('deletes a leaf node', () => {
+    it('deletes a leaf node', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -300,7 +300,7 @@ describe('ZipTree', () => {
       expect(tree.size()).toBe(2);
     });
 
-    it.skip('deletes a node with one child (left)', () => {
+    it('deletes a node with one child (left)', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -314,7 +314,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('deletes a node with one child (right)', () => {
+    it('deletes a node with one child (right)', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(15, 'fifteen');
@@ -328,7 +328,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('deletes a node with two children', () => {
+    it('deletes a node with two children', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -341,7 +341,7 @@ describe('ZipTree', () => {
       expect(arr).toContainEqual([15, 'fifteen']);
     });
 
-    it.skip('deletes root with two children', () => {
+    it('deletes root with two children', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -355,7 +355,7 @@ describe('ZipTree', () => {
       expect(tree.size()).toBe(6);
     });
 
-    it.skip('deletes multiple elements', () => {
+    it('deletes multiple elements', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -369,7 +369,7 @@ describe('ZipTree', () => {
       expect(tree.has(7)).toBe(false);
     });
 
-    it.skip('deletes all elements', () => {
+    it('deletes all elements', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -381,7 +381,7 @@ describe('ZipTree', () => {
       expect(tree.size()).toBe(0);
     });
 
-    it.skip('maintains sorted order after deletions', () => {
+    it('maintains sorted order after deletions', () => {
       const tree = new ZipTree<number, string>();
       const values = [50, 25, 75, 10, 30, 60, 90];
       for (const v of values) {
@@ -395,7 +395,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('does not affect tree on failed delete', () => {
+    it('does not affect tree on failed delete', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -404,7 +404,7 @@ describe('ZipTree', () => {
       expect(tree.size()).toBe(3);
     });
 
-    it.skip('deletes and reinserts', () => {
+    it('deletes and reinserts', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.delete(10);
@@ -414,7 +414,7 @@ describe('ZipTree', () => {
       expect(tree.get(10)).toBe('new');
     });
 
-    it.skip('deletes max element', () => {
+    it('deletes max element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -423,7 +423,7 @@ describe('ZipTree', () => {
       expect(tree.max()).toBe(10);
     });
 
-    it.skip('deletes min element', () => {
+    it('deletes min element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -432,7 +432,7 @@ describe('ZipTree', () => {
       expect(tree.min()).toBe(10);
     });
 
-    it.skip('deletes root when it is only node', () => {
+    it('deletes root when it is only node', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       expect(tree.delete(5)).toBe(true);
@@ -442,18 +442,18 @@ describe('ZipTree', () => {
   });
 
   describe('size', () => {
-    it.skip('returns 0 for empty tree', () => {
+    it('returns 0 for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.size()).toBe(0);
     });
 
-    it.skip('returns 1 after single insert', () => {
+    it('returns 1 after single insert', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       expect(tree.size()).toBe(1);
     });
 
-    it.skip('increases with each insert', () => {
+    it('increases with each insert', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -461,7 +461,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('decreases with each delete', () => {
+    it('decreases with each delete', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 5; i++) {
         tree.insert(i, `val${i}`);
@@ -472,7 +472,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('resets after clear', () => {
+    it('resets after clear', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -482,25 +482,25 @@ describe('ZipTree', () => {
   });
 
   describe('isEmpty', () => {
-    it.skip('returns true for new tree', () => {
+    it('returns true for new tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.isEmpty()).toBe(true);
     });
 
-    it.skip('returns false after insert', () => {
+    it('returns false after insert', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       expect(tree.isEmpty()).toBe(false);
     });
 
-    it.skip('returns true after deleting all', () => {
+    it('returns true after deleting all', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.delete(1);
       expect(tree.isEmpty()).toBe(true);
     });
 
-    it.skip('returns true after clear', () => {
+    it('returns true after clear', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -508,7 +508,7 @@ describe('ZipTree', () => {
       expect(tree.isEmpty()).toBe(true);
     });
 
-    it.skip('returns false with remaining elements', () => {
+    it('returns false with remaining elements', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -518,14 +518,14 @@ describe('ZipTree', () => {
   });
 
   describe('clear', () => {
-    it.skip('clears empty tree', () => {
+    it('clears empty tree', () => {
       const tree = new ZipTree<number, string>();
       tree.clear();
       expect(tree.size()).toBe(0);
       expect(tree.isEmpty()).toBe(true);
     });
 
-    it.skip('clears tree with elements', () => {
+    it('clears tree with elements', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -538,7 +538,7 @@ describe('ZipTree', () => {
       expect(tree.has(3)).toBe(false);
     });
 
-    it.skip('allows insertions after clear', () => {
+    it('allows insertions after clear', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.clear();
@@ -548,7 +548,7 @@ describe('ZipTree', () => {
       expect(tree.has(1)).toBe(false);
     });
 
-    it.skip('clears tree multiple times', () => {
+    it('clears tree multiple times', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.clear();
@@ -558,18 +558,18 @@ describe('ZipTree', () => {
   });
 
   describe('toArray', () => {
-    it.skip('returns empty array for empty tree', () => {
+    it('returns empty array for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.toArray()).toEqual([]);
     });
 
-    it.skip('returns single element', () => {
+    it('returns single element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       expect(tree.toArray()).toEqual([[1, 'one']]);
     });
 
-    it.skip('returns elements in sorted order', () => {
+    it('returns elements in sorted order', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(3, 'three');
       tree.insert(1, 'one');
@@ -581,7 +581,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('returns sorted order for large tree', () => {
+    it('returns sorted order for large tree', () => {
       const tree = new ZipTree<number, string>();
       const values = [50, 25, 75, 10, 30, 60, 90, 5, 15, 35];
       for (const v of values) {
@@ -594,7 +594,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('returns correct array after deletions', () => {
+    it('returns correct array after deletions', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -606,14 +606,14 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('returns empty array after clear', () => {
+    it('returns empty array after clear', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.clear();
       expect(tree.toArray()).toEqual([]);
     });
 
-    it.skip('returns string array in order', () => {
+    it('returns string array in order', () => {
       const tree = new ZipTree<string, number>();
       tree.insert('cherry', 3);
       tree.insert('apple', 1);
@@ -627,14 +627,14 @@ describe('ZipTree', () => {
   });
 
   describe('forEach', () => {
-    it.skip('does nothing for empty tree', () => {
+    it('does nothing for empty tree', () => {
       const tree = new ZipTree<number, string>();
       const items: string[] = [];
       tree.forEach((value) => items.push(value));
       expect(items).toEqual([]);
     });
 
-    it.skip('iterates single element', () => {
+    it('iterates single element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       const items: string[] = [];
@@ -642,7 +642,7 @@ describe('ZipTree', () => {
       expect(items).toEqual(['one']);
     });
 
-    it.skip('iterates in sorted order', () => {
+    it('iterates in sorted order', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(3, 'three');
       tree.insert(1, 'one');
@@ -652,7 +652,7 @@ describe('ZipTree', () => {
       expect(items).toEqual(['one', 'two', 'three']);
     });
 
-    it.skip('provides key and value', () => {
+    it('provides key and value', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -666,7 +666,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('iterates all elements', () => {
+    it('iterates all elements', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, i * 10);
@@ -676,7 +676,7 @@ describe('ZipTree', () => {
       expect(count).toBe(10);
     });
 
-    it.skip('iterates after deletions', () => {
+    it('iterates after deletions', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -689,18 +689,18 @@ describe('ZipTree', () => {
   });
 
   describe('min', () => {
-    it.skip('returns undefined for empty tree', () => {
+    it('returns undefined for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.min()).toBeUndefined();
     });
 
-    it.skip('returns only element', () => {
+    it('returns only element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect(tree.min()).toBe(42);
     });
 
-    it.skip('returns smallest element', () => {
+    it('returns smallest element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -708,7 +708,7 @@ describe('ZipTree', () => {
       expect(tree.min()).toBe(5);
     });
 
-    it.skip('returns min after many insertions', () => {
+    it('returns min after many insertions', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 100; i >= 0; i--) {
         tree.insert(i, `val${i}`);
@@ -716,7 +716,7 @@ describe('ZipTree', () => {
       expect(tree.min()).toBe(0);
     });
 
-    it.skip('returns min after deletion', () => {
+    it('returns min after deletion', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -725,7 +725,7 @@ describe('ZipTree', () => {
       expect(tree.min()).toBe(5);
     });
 
-    it.skip('returns min with negative numbers', () => {
+    it('returns min with negative numbers', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(-5, 'neg5');
       tree.insert(5, 'pos5');
@@ -735,18 +735,18 @@ describe('ZipTree', () => {
   });
 
   describe('max', () => {
-    it.skip('returns undefined for empty tree', () => {
+    it('returns undefined for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.max()).toBeUndefined();
     });
 
-    it.skip('returns only element', () => {
+    it('returns only element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect(tree.max()).toBe(42);
     });
 
-    it.skip('returns largest element', () => {
+    it('returns largest element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(5, 'five');
@@ -754,7 +754,7 @@ describe('ZipTree', () => {
       expect(tree.max()).toBe(15);
     });
 
-    it.skip('returns max after many insertions', () => {
+    it('returns max after many insertions', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i <= 100; i++) {
         tree.insert(i, `val${i}`);
@@ -762,7 +762,7 @@ describe('ZipTree', () => {
       expect(tree.max()).toBe(100);
     });
 
-    it.skip('returns max after deletion', () => {
+    it('returns max after deletion', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -771,7 +771,7 @@ describe('ZipTree', () => {
       expect(tree.max()).toBe(15);
     });
 
-    it.skip('returns max with negative numbers', () => {
+    it('returns max with negative numbers', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(-5, 'neg5');
       tree.insert(-1, 'neg1');
@@ -781,12 +781,12 @@ describe('ZipTree', () => {
   });
 
   describe('floor', () => {
-    it.skip('returns undefined for empty tree', () => {
+    it('returns undefined for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.floor(5)).toBeUndefined();
     });
 
-    it.skip('returns exact match if exists', () => {
+    it('returns exact match if exists', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -794,7 +794,7 @@ describe('ZipTree', () => {
       expect(tree.floor(20)).toBe(20);
     });
 
-    it.skip('returns greatest key <= key', () => {
+    it('returns greatest key <= key', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -810,7 +810,7 @@ describe('ZipTree', () => {
       expect(tree.floor(5)).toBe(10);
     });
 
-    it.skip('returns undefined if key smaller than min', () => {
+    it('returns undefined if key smaller than min', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -818,7 +818,7 @@ describe('ZipTree', () => {
       expect(tree.floor(5)).toBeUndefined();
     });
 
-    it.skip('returns undefined if key smaller than min in tree with min', () => {
+    it('returns undefined if key smaller than min in tree with min', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(10, 'ten');
@@ -826,7 +826,7 @@ describe('ZipTree', () => {
       expect(tree.floor(0)).toBeUndefined();
     });
 
-    it.skip('works with negative numbers', () => {
+    it('works with negative numbers', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(-10, 'neg10');
       tree.insert(0, 'zero');
@@ -838,12 +838,12 @@ describe('ZipTree', () => {
   });
 
   describe('ceiling', () => {
-    it.skip('returns undefined for empty tree', () => {
+    it('returns undefined for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.ceiling(5)).toBeUndefined();
     });
 
-    it.skip('returns exact match if exists', () => {
+    it('returns exact match if exists', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -851,7 +851,7 @@ describe('ZipTree', () => {
       expect(tree.ceiling(20)).toBe(20);
     });
 
-    it.skip('returns smallest key >= key', () => {
+    it('returns smallest key >= key', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -867,7 +867,7 @@ describe('ZipTree', () => {
       expect(tree.ceiling(35)).toBe(30);
     });
 
-    it.skip('returns undefined if key larger than max', () => {
+    it('returns undefined if key larger than max', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -875,7 +875,7 @@ describe('ZipTree', () => {
       expect(tree.ceiling(35)).toBeUndefined();
     });
 
-    it.skip('returns undefined if key larger than max in tree with max', () => {
+    it('returns undefined if key larger than max in tree with max', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(10, 'ten');
@@ -883,7 +883,7 @@ describe('ZipTree', () => {
       expect(tree.ceiling(20)).toBeUndefined();
     });
 
-    it.skip('works with negative numbers', () => {
+    it('works with negative numbers', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(-10, 'neg10');
       tree.insert(0, 'zero');
@@ -895,18 +895,18 @@ describe('ZipTree', () => {
   });
 
   describe('iterator (Symbol.iterator)', () => {
-    it.skip('returns empty iterator for empty tree', () => {
+    it('returns empty iterator for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect([...tree]).toEqual([]);
     });
 
-    it.skip('iterates single element', () => {
+    it('iterates single element', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect([...tree]).toEqual([[42, 'answer']]);
     });
 
-    it.skip('iterates in sorted order', () => {
+    it('iterates in sorted order', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(3, 'three');
       tree.insert(1, 'one');
@@ -918,7 +918,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('works with for...of', () => {
+    it('works with for...of', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -934,7 +934,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('works with spread operator', () => {
+    it('works with spread operator', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -947,7 +947,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('works with Array.from', () => {
+    it('works with Array.from', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(3, 'three');
@@ -961,12 +961,12 @@ describe('ZipTree', () => {
   });
 
   describe('keys', () => {
-    it.skip('returns empty iterator for empty tree', () => {
+    it('returns empty iterator for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect([...tree.keys()]).toEqual([]);
     });
 
-    it.skip('iterates keys in sorted order', () => {
+    it('iterates keys in sorted order', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(3, 'three');
       tree.insert(1, 'one');
@@ -974,7 +974,7 @@ describe('ZipTree', () => {
       expect([...tree.keys()]).toEqual([1, 2, 3]);
     });
 
-    it.skip('returns only keys', () => {
+    it('returns only keys', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -982,7 +982,7 @@ describe('ZipTree', () => {
       expect([...tree.keys()]).toEqual([10, 20, 30]);
     });
 
-    it.skip('works with for...of', () => {
+    it('works with for...of', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(3, 'three');
@@ -996,12 +996,12 @@ describe('ZipTree', () => {
   });
 
   describe('values', () => {
-    it.skip('returns empty iterator for empty tree', () => {
+    it('returns empty iterator for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect([...tree.values()]).toEqual([]);
     });
 
-    it.skip('iterates values in sorted order by key', () => {
+    it('iterates values in sorted order by key', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(3, 'three');
       tree.insert(1, 'one');
@@ -1009,7 +1009,7 @@ describe('ZipTree', () => {
       expect([...tree.values()]).toEqual(['one', 'two', 'three']);
     });
 
-    it.skip('returns only values', () => {
+    it('returns only values', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -1017,7 +1017,7 @@ describe('ZipTree', () => {
       expect([...tree.values()]).toEqual(['ten', 'twenty', 'thirty']);
     });
 
-    it.skip('works with for...of', () => {
+    it('works with for...of', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(3, 'three');
@@ -1031,12 +1031,12 @@ describe('ZipTree', () => {
   });
 
   describe('entries', () => {
-    it.skip('returns empty iterator for empty tree', () => {
+    it('returns empty iterator for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect([...tree.entries()]).toEqual([]);
     });
 
-    it.skip('iterates entries in sorted order', () => {
+    it('iterates entries in sorted order', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(3, 'three');
       tree.insert(1, 'one');
@@ -1048,7 +1048,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('returns same as default iterator', () => {
+    it('returns same as default iterator', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       tree.insert(20, 'twenty');
@@ -1058,7 +1058,7 @@ describe('ZipTree', () => {
   });
 
   describe('iterator method', () => {
-    it.skip('returns iterator', () => {
+    it('returns iterator', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -1070,12 +1070,12 @@ describe('ZipTree', () => {
   });
 
   describe('range', () => {
-    it.skip('returns empty for empty tree', () => {
+    it('returns empty for empty tree', () => {
       const tree = new ZipTree<number, string>();
       expect([...tree.range()]).toEqual([]);
     });
 
-    it.skip('returns all elements with no bounds', () => {
+    it('returns all elements with no bounds', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -1087,7 +1087,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('returns elements >= min', () => {
+    it('returns elements >= min', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -1101,7 +1101,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('returns elements <= max', () => {
+    it('returns elements <= max', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -1116,7 +1116,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('returns elements in range [min, max]', () => {
+    it('returns elements in range [min, max]', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -1130,7 +1130,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('returns empty if min > max', () => {
+    it('returns empty if min > max', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -1138,7 +1138,7 @@ describe('ZipTree', () => {
       expect([...tree.range(8, 5)]).toEqual([]);
     });
 
-    it.skip('returns empty if range outside tree', () => {
+    it('returns empty if range outside tree', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -1146,7 +1146,7 @@ describe('ZipTree', () => {
       expect([...tree.range(20, 30)]).toEqual([]);
     });
 
-    it.skip('handles negative range', () => {
+    it('handles negative range', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(-5, 'neg5');
       tree.insert(0, 'zero');
@@ -1156,7 +1156,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('handles range boundaries', () => {
+    it('handles range boundaries', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(5, 'five');
@@ -1168,7 +1168,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('returns sorted elements in range', () => {
+    it('returns sorted elements in range', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(1, 'one');
@@ -1183,7 +1183,7 @@ describe('ZipTree', () => {
   });
 
   describe('edge cases', () => {
-    it.skip('handles empty tree operations', () => {
+    it('handles empty tree operations', () => {
       const tree = new ZipTree<number, string>();
       expect(tree.min()).toBeUndefined();
       expect(tree.max()).toBeUndefined();
@@ -1197,7 +1197,7 @@ describe('ZipTree', () => {
       expect([...tree.entries()]).toEqual([]);
     });
 
-    it.skip('handles single element tree', () => {
+    it('handles single element tree', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(42, 'answer');
       expect(tree.size()).toBe(1);
@@ -1212,7 +1212,7 @@ describe('ZipTree', () => {
       expect([...tree]).toEqual([[42, 'answer']]);
     });
 
-    it.skip('handles sorted input with balanced height', () => {
+    it('handles sorted input with balanced height', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 0; i < 100; i++) {
         tree.insert(i, i * 10);
@@ -1225,7 +1225,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('handles reverse sorted input', () => {
+    it('handles reverse sorted input', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 99; i >= 0; i--) {
         tree.insert(i, i * 10);
@@ -1237,7 +1237,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('handles alternating input pattern', () => {
+    it('handles alternating input pattern', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i % 2 === 0 ? i : -i, `val${i}`);
@@ -1249,7 +1249,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('handles clear and reuse cycle', () => {
+    it('handles clear and reuse cycle', () => {
       const tree = new ZipTree<number, string>();
       for (let cycle = 0; cycle < 3; cycle++) {
         for (let i = 0; i < 10; i++) {
@@ -1261,7 +1261,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('handles delete all elements one by one', () => {
+    it('handles delete all elements one by one', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -1272,7 +1272,7 @@ describe('ZipTree', () => {
       expect(tree.isEmpty()).toBe(true);
     });
 
-    it.skip('handles delete elements in reverse order', () => {
+    it('handles delete elements in reverse order', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -1285,7 +1285,7 @@ describe('ZipTree', () => {
   });
 
   describe('duplicate handling', () => {
-    it.skip('updates value on duplicate insert', () => {
+    it('updates value on duplicate insert', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(5, 'new five');
@@ -1293,7 +1293,7 @@ describe('ZipTree', () => {
       expect(tree.get(5)).toBe('new five');
     });
 
-    it.skip('updates string duplicates', () => {
+    it('updates string duplicates', () => {
       const tree = new ZipTree<string, number>();
       tree.insert('hello', 1);
       tree.insert('hello', 2);
@@ -1301,7 +1301,7 @@ describe('ZipTree', () => {
       expect(tree.get('hello')).toBe(2);
     });
 
-    it.skip('case-sensitive by default', () => {
+    it('case-sensitive by default', () => {
       const tree = new ZipTree<string, number>();
       tree.insert('Hello', 1);
       tree.insert('hello', 2);
@@ -1310,7 +1310,7 @@ describe('ZipTree', () => {
       expect(tree.get('hello')).toBe(2);
     });
 
-    it.skip('duplicate does not affect toArray', () => {
+    it('duplicate does not affect toArray', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(2, 'two');
@@ -1324,7 +1324,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('duplicate does not affect forEach count', () => {
+    it('duplicate does not affect forEach count', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(1, 'new one');
@@ -1334,7 +1334,7 @@ describe('ZipTree', () => {
       expect(count).toBe(2);
     });
 
-    it.skip('duplicate does not affect iteration', () => {
+    it('duplicate does not affect iteration', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(1, 'new one');
@@ -1345,7 +1345,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('duplicate at root', () => {
+    it('duplicate at root', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(1, 'new one');
@@ -1354,7 +1354,7 @@ describe('ZipTree', () => {
       expect(tree.get(1)).toBe('newer one');
     });
 
-    it.skip('duplicate after many insertions', () => {
+    it('duplicate after many insertions', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 50; i++) {
         tree.insert(i, `val${i}`);
@@ -1366,7 +1366,7 @@ describe('ZipTree', () => {
   });
 
   describe('custom comparator', () => {
-    it.skip('works with reverse comparator', () => {
+    it('works with reverse comparator', () => {
       const tree = new ZipTree<number, string>({
         comparator: (a, b) => b - a,
       });
@@ -1380,7 +1380,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('works with case-insensitive string comparator', () => {
+    it('works with case-insensitive string comparator', () => {
       const tree = new ZipTree<string, number>({
         comparator: (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()),
       });
@@ -1394,7 +1394,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('works with absolute value comparator', () => {
+    it('works with absolute value comparator', () => {
       const tree = new ZipTree<number, string>({
         comparator: (a, b) => Math.abs(a) - Math.abs(b),
       });
@@ -1410,7 +1410,7 @@ describe('ZipTree', () => {
   });
 
   describe('large datasets', () => {
-    it.skip('handles 1000 insertions', () => {
+    it('handles 1000 insertions', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 0; i < 1000; i++) {
         tree.insert(i, i * 10);
@@ -1420,7 +1420,7 @@ describe('ZipTree', () => {
       expect(tree.max()).toBe(999);
     });
 
-    it.skip('handles 1000 insertions in reverse', () => {
+    it('handles 1000 insertions in reverse', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 999; i >= 0; i--) {
         tree.insert(i, i * 10);
@@ -1430,7 +1430,7 @@ describe('ZipTree', () => {
       expect(tree.toArray()[999]![0]).toBe(999);
     });
 
-    it.skip('handles random insertions of 500 elements', () => {
+    it('handles random insertions of 500 elements', () => {
       const tree = new ZipTree<number, string>();
       const values = new Set<number>();
       for (let i = 0; i < 500; i++) {
@@ -1445,7 +1445,7 @@ describe('ZipTree', () => {
       }
     });
 
-    it.skip('handles insert and delete many elements', () => {
+    it('handles insert and delete many elements', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 200; i++) {
         tree.insert(i, `val${i}`);
@@ -1458,7 +1458,7 @@ describe('ZipTree', () => {
       expect(tree.max()).toBe(199);
     });
 
-    it.skip('handles range query on large dataset', () => {
+    it('handles range query on large dataset', () => {
       const tree = new ZipTree<number, number>();
       for (let i = 0; i < 1000; i++) {
         tree.insert(i, i);
@@ -1471,7 +1471,7 @@ describe('ZipTree', () => {
   });
 
   describe('combined operations', () => {
-    it.skip('interleaved insert and delete', () => {
+    it('interleaved insert and delete', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(3, 'three');
@@ -1486,7 +1486,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('insert delete insert same value', () => {
+    it('insert delete insert same value', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(10, 'ten');
       expect(tree.has(10)).toBe(true);
@@ -1497,7 +1497,7 @@ describe('ZipTree', () => {
       expect(tree.get(10)).toBe('new ten');
     });
 
-    it.skip('clear and rebuild', () => {
+    it('clear and rebuild', () => {
       const tree = new ZipTree<number, string>();
       for (let i = 0; i < 10; i++) {
         tree.insert(i, `val${i}`);
@@ -1511,7 +1511,7 @@ describe('ZipTree', () => {
       expect(tree.max()).toBe(19);
     });
 
-    it.skip('all methods on same tree', () => {
+    it('all methods on same tree', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(3, 'three');
@@ -1543,7 +1543,7 @@ describe('ZipTree', () => {
       expect(tree.isEmpty()).toBe(true);
     });
 
-    it.skip('stress test with many operations', () => {
+    it('stress test with many operations', () => {
       const tree = new ZipTree<number, string>();
       const inserted = new Set<number>();
       for (let i = 0; i < 200; i++) {
@@ -1566,14 +1566,14 @@ describe('ZipTree', () => {
   });
 
   describe('type variants', () => {
-    it.skip('works with numbers', () => {
+    it('works with numbers', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(3.14, 'pi');
       tree.insert(2.71, 'e');
       expect(tree.get(3.14)).toBe('pi');
     });
 
-    it.skip('works with strings', () => {
+    it('works with strings', () => {
       const tree = new ZipTree<string, number>();
       tree.insert('abc', 1);
       tree.insert('def', 2);
@@ -1583,7 +1583,7 @@ describe('ZipTree', () => {
       ]);
     });
 
-    it.skip('works with booleans', () => {
+    it('works with booleans', () => {
       const tree = new ZipTree<boolean, string>();
       tree.insert(false, 'falsy');
       tree.insert(true, 'truthy');
@@ -1616,7 +1616,7 @@ describe('ZipTree', () => {
       expect(result).toContainEqual([4, 'val4']);
     });
 
-    it.skip('range returns empty when no elements in range', () => {
+    it('range returns empty when no elements in range', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(1, 'one');
       tree.insert(10, 'ten');
@@ -1624,7 +1624,7 @@ describe('ZipTree', () => {
       expect(result).toEqual([]);
     });
 
-    it.skip('range works with duplicate keys after update', () => {
+    it('range works with duplicate keys after update', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(5, 'new five');
@@ -1634,7 +1634,7 @@ describe('ZipTree', () => {
   });
 
   describe('floor and ceiling edge cases', () => {
-    it.skip('floor with exact boundary match', () => {
+    it('floor with exact boundary match', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(10, 'ten');
@@ -1642,7 +1642,7 @@ describe('ZipTree', () => {
       expect(tree.floor(10)).toBe(10);
     });
 
-    it.skip('ceiling with exact boundary match', () => {
+    it('ceiling with exact boundary match', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(10, 'ten');
@@ -1650,7 +1650,7 @@ describe('ZipTree', () => {
       expect(tree.ceiling(10)).toBe(10);
     });
 
-    it.skip('floor returns min if key equals min', () => {
+    it('floor returns min if key equals min', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(10, 'ten');
@@ -1658,7 +1658,7 @@ describe('ZipTree', () => {
       expect(tree.floor(5)).toBe(5);
     });
 
-    it.skip('ceiling returns max if key equals max', () => {
+    it('ceiling returns max if key equals max', () => {
       const tree = new ZipTree<number, string>();
       tree.insert(5, 'five');
       tree.insert(10, 'ten');
@@ -1666,7 +1666,7 @@ describe('ZipTree', () => {
       expect(tree.ceiling(15)).toBe(15);
     });
 
-    it.skip('floor with string keys', () => {
+    it('floor with string keys', () => {
       const tree = new ZipTree<string, number>();
       tree.insert('apple', 1);
       tree.insert('banana', 2);
@@ -1674,7 +1674,7 @@ describe('ZipTree', () => {
       expect(tree.floor('blueberry')).toBe('banana');
     });
 
-    it.skip('ceiling with string keys', () => {
+    it('ceiling with string keys', () => {
       const tree = new ZipTree<string, number>();
       tree.insert('apple', 1);
       tree.insert('banana', 2);
