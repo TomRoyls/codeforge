@@ -96,16 +96,16 @@ export class BitVector2 {
         let remaining = k - count;
         let word = this.data[i]!;
         let bitPos = 0;
-        while (remaining > 0) {
-          if ((word! & 1) === 1) {
+        while (bitPos < this.BITS_PER_WORD) {
+          if ((word & 1) === 1) {
+            if (remaining === 0) {
+              return i * this.BITS_PER_WORD + bitPos;
+            }
             remaining--;
           }
-          if (remaining >= 0) {
-            bitPos++;
-          }
-          word! >>>= 1;
+          bitPos++;
+          word >>>= 1;
         }
-        return i * this.BITS_PER_WORD + bitPos;
       }
       count += wordOnes;
     }
@@ -127,16 +127,17 @@ export class BitVector2 {
           let remaining = k - count;
           let word = this.data[i]!;
           let bitPos = 0;
-          while (remaining > 0) {
-            if ((word! & 1) === 0) {
+          const limit = actualBits;
+          while (bitPos < limit) {
+            if ((word & 1) === 0) {
+              if (remaining === 0) {
+                return i * this.BITS_PER_WORD + bitPos;
+              }
               remaining--;
             }
-            if (remaining >= 0) {
-              bitPos++;
-            }
-            word! >>>= 1;
+            bitPos++;
+            word >>>= 1;
           }
-          return i * this.BITS_PER_WORD + bitPos;
         }
         count += actualZeros;
       } else {
@@ -144,16 +145,16 @@ export class BitVector2 {
           let remaining = k - count;
           let word = this.data[i]!;
           let bitPos = 0;
-          while (remaining > 0) {
-            if ((word! & 1) === 0) {
+          while (bitPos < this.BITS_PER_WORD) {
+            if ((word & 1) === 0) {
+              if (remaining === 0) {
+                return i * this.BITS_PER_WORD + bitPos;
+              }
               remaining--;
             }
-            if (remaining >= 0) {
-              bitPos++;
-            }
-            word! >>>= 1;
+            bitPos++;
+            word >>>= 1;
           }
-          return i * this.BITS_PER_WORD + bitPos;
         }
         count += wordZeros;
       }

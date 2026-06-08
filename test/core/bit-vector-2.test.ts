@@ -257,7 +257,7 @@ describe('BitVector2', () => {
       expect(bv.select1(0)).toBe(0);
     });
 
-    it.skip('should find kth 1', () => {
+    it('should find kth 1', () => {
       const bv = new BitVector2(10);
       bv.set(0, true);
       bv.set(2, true);
@@ -282,7 +282,7 @@ describe('BitVector2', () => {
       expect(() => bv.select1(2)).toThrow(RangeError);
     });
 
-    it.skip('should handle large indices', () => {
+    it('should handle large indices', () => {
       const bv = new BitVector2(100);
       bv.set(95, true);
       bv.set(96, true);
@@ -294,13 +294,13 @@ describe('BitVector2', () => {
   });
 
   describe('select0', () => {
-    it.skip('should find first 0', () => {
+    it('should find first 0', () => {
       const bv = new BitVector2(10);
       bv.set(0, true);
       expect(bv.select0(0)).toBe(1);
     });
 
-    it.skip('should find kth 0', () => {
+    it('should find kth 0', () => {
       const bv = new BitVector2(10);
       bv.set(0, true);
       bv.set(2, true);
@@ -330,7 +330,7 @@ describe('BitVector2', () => {
       expect(bv.select0(4)).toBe(4);
     });
 
-    it.skip('should handle large indices', () => {
+    it('should handle large indices', () => {
       const bv = new BitVector2(100);
       for (let i = 0; i < 95; i++) {
         bv.set(i, true);
@@ -545,7 +545,7 @@ describe('BitVector2', () => {
       expect(bv.select0(10)).toBe(21);
     });
 
-    it.skip('should handle size boundaries', () => {
+    it('should handle size boundaries', () => {
       const bv = new BitVector2(100);
       bv.set(0, true);
       bv.set(99, true);
