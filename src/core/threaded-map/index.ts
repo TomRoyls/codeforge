@@ -146,26 +146,26 @@ export class ThreadedMap<K, V> {
     return true
   }
 
-  private deleteNode(node: ThreadedNode<K, V>): void {
+  private deleteNode(node: ThreadedNode<K, V>, knownParent?: ThreadedNode<K, V>): void {
     const hasLeftChild = !node.leftThread && node.left !== null
     const hasRightChild = !node.rightThread && node.right !== null
 
     if (!hasLeftChild && !hasRightChild) {
-      this.deleteLeaf(node)
+      this.deleteLeaf(node, knownParent)
     } else if (hasLeftChild && hasRightChild) {
       this.deleteTwoChildren(node)
     } else {
-      this.deleteOneChild(node)
+      this.deleteOneChild(node, knownParent)
     }
   }
 
-  private deleteLeaf(node: ThreadedNode<K, V>): void {
+  private deleteLeaf(node: ThreadedNode<K, V>, knownParent?: ThreadedNode<K, V>): void {
     if (node === this.root) {
       this.root = null
       return
     }
 
-    const parent = this.findParent(node)
+    const parent = knownParent ?? this.findParent(node)
     if (parent === null) return
 
     if (parent.left === node) {
@@ -177,26 +177,45 @@ export class ThreadedMap<K, V> {
     }
   }
 
-  private deleteOneChild(node: ThreadedNode<K, V>): void {
+  private deleteOneChild(node: ThreadedNode<K, V>, knownParent?: ThreadedNode<K, V>): void {
+    const parent = knownParent ?? this.findParent(node)
     const hasLeftChild = !node.leftThread && node.left !== null
-    let child: ThreadedNode<K, V>
 
     if (hasLeftChild) {
-      child = this.rightmost(node.left!)
+      const child = node.left!
+      const rightmostOfChild = this.rightmost(child)
+      // rightmostOfChild.right (thread) points to `node` — update to node's successor
+      rightmostOfChild.right = node.rightThread ? node.right : null
+      rightmostOfChild.rightThread = node.rightThread
+      if (parent === null) {
+        this.root = child
+      } else if (parent.left === node) {
+        parent.left = child
+      } else {
+        parent.right = child
+      }
     } else {
-      child = this.leftmost(node.right!)
+      const child = node.right!
+      const leftmostOfChild = this.leftmost(child)
+      // leftmostOfChild.left (thread) points to `node` — update to node's predecessor
+      leftmostOfChild.left = node.leftThread ? node.left : null
+      leftmostOfChild.leftThread = node.leftThread
+      if (parent === null) {
+        this.root = child
+      } else if (parent.left === node) {
+        parent.left = child
+      } else {
+        parent.right = child
+      }
     }
-
-    node.key = child.key
-    node.value = child.value
-    this.deleteNode(child)
   }
 
   private deleteTwoChildren(node: ThreadedNode<K, V>): void {
     const successor = this.leftmost(node.right!)
+    const successorParent = this.findParent(successor)
     node.key = successor.key
     node.value = successor.value
-    this.deleteNode(successor)
+    this.deleteNode(successor, successorParent ?? undefined)
   }
 
   private findParent(node: ThreadedNode<K, V>): ThreadedNode<K, V> | null {

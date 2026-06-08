@@ -238,7 +238,7 @@ describe('ThreadedMap', () => {
       expect(map.isEmpty()).toBe(true)
     })
 
-    it.skip('deletes node with only left child', () => {
+    it('deletes node with only left child', () => {
       map.set(3, 'three')
       map.set(1, 'one')
       map.set(2, 'two')
@@ -247,7 +247,7 @@ describe('ThreadedMap', () => {
       expect(map.keys()).toEqual([1, 2])
     })
 
-    it.skip('deletes node with only right child', () => {
+    it('deletes node with only right child', () => {
       map.set(1, 'one')
       map.set(3, 'three')
       map.set(2, 'two')
