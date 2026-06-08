@@ -918,12 +918,12 @@ describe('Rope2', () => {
       expect(r.toString()).toBe('ab')
     })
 
-    it.skip('many operations in sequence', () => {
+    it('many operations in sequence', () => {
       const r = new Rope2('abcdef')
       r.delete(2, 2)
       r.insert(2, 'XY')
       r.replace(0, 1, 'A')
-      expect(r.toString()).toBe('AXYdef')
+      expect(r.toString()).toBe('AbXYef')
     })
 
     it('clear and reuse', () => {
@@ -934,13 +934,13 @@ describe('Rope2', () => {
       expect(r.toString()).toBe('world')
     })
 
-    it.skip('operations on rope with custom small leafSize', () => {
+    it('operations on rope with custom small leafSize', () => {
       const r = new Rope2('abcdefghij', { leafSize: 2 })
       expect(r.toString()).toBe('abcdefghij')
       r.insert(5, 'X')
       expect(r.toString()).toBe('abcdeXfghij')
       r.delete(3, 4)
-      expect(r.toString()).toBe('abchij')
+      expect(r.toString()).toBe('abcghij')
     })
 
     it('indexOf after multiple modifications', () => {
