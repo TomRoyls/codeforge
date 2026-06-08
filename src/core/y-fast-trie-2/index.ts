@@ -33,10 +33,6 @@ export class YFastTrie {
 
     this.insertSorted(bucket, value);
 
-    if (bucket.length > this.groupSize * 2) {
-      this.splitBucket(prefix, bucket!);
-    }
-
     if (this.minNode === null || value < this.minNode) {
       this.minNode = value;
     }
@@ -63,8 +59,6 @@ export class YFastTrie {
     if (bucket.length === 0) {
       this.buckets.delete(prefix);
       this.bucketPrefixes.delete(prefix);
-    } else if (bucket.length < this.groupSize / 2 && this.bucketPrefixes.size > 1) {
-      this.mergeBucket(prefix, bucket);
     }
 
     if (value === this.minNode) {
@@ -304,87 +298,30 @@ export class YFastTrie {
     return left;
   }
 
-  private splitBucket(prefix: bigint, bucket: number[]): void {
-    const mid = bucket.length >> 1;
-    const lowHalf = bucket.slice(0, mid);
-    const highHalf = bucket.slice(mid);
-
-    this.buckets.set(prefix, lowHalf);
-
-    const newPrefix = prefix + 1n;
-
-    this.buckets.set(newPrefix, highHalf);
-    this.bucketPrefixes.add(newPrefix);
-
-    if (lowHalf.length === 0) {
-      this.buckets.delete(prefix);
-      this.bucketPrefixes.delete(prefix);
-    }
-
-    if (highHalf.length === 0) {
-      this.buckets.delete(newPrefix);
-      this.bucketPrefixes.delete(newPrefix);
-    }
-  }
-
-  private mergeBucket(prefix: bigint, bucket: number[]): void {
-    const prevPrefix = this.getPreviousPrefix(prefix);
-
-    if (prevPrefix !== null) {
-      const prevBucket = this.buckets.get(prevPrefix)!;
-
-      if (prevBucket.length + bucket.length <= this.groupSize) {
-        const merged = [...prevBucket, ...bucket];
-        merged.sort((a, b) => a - b);
-        this.buckets.set(prevPrefix, merged);
-        this.buckets.delete(prefix);
-        this.bucketPrefixes.delete(prefix);
-        return;
-      }
-    }
-
-    const nextPrefix = this.getNextPrefix(prefix);
-
-    if (nextPrefix !== null) {
-      const nextBucket = this.buckets.get(nextPrefix)!;
-
-      if (bucket.length + nextBucket.length <= this.groupSize) {
-        const merged = [...bucket, ...nextBucket];
-        merged.sort((a, b) => a - b);
-        this.buckets.set(prefix, merged);
-        this.buckets.delete(nextPrefix);
-        this.bucketPrefixes.delete(nextPrefix);
-        return;
-      }
-    }
+  private getSortedPrefixes(): bigint[] {
+    return Array.from(this.bucketPrefixes).sort((a, b) => {
+      if (a < b) return -1
+      if (a > b) return 1
+      return 0
+    })
   }
 
   private getPreviousPrefix(prefix: bigint): bigint | null {
-    const sortedPrefixes = Array.from(this.bucketPrefixes).sort((a, b) => {
-      if (a < b) return -1;
-      if (a > b) return 1;
-      return 0;
-    });
-
-    const index = sortedPrefixes.indexOf(prefix);
-
-    if (index <= 0) return null;
-
-    return sortedPrefixes[index - 1]!;
+    const sorted = this.getSortedPrefixes()
+    let result: bigint | null = null
+    for (const p of sorted) {
+      if (p >= prefix) break
+      result = p
+    }
+    return result
   }
 
   private getNextPrefix(prefix: bigint): bigint | null {
-    const sortedPrefixes = Array.from(this.bucketPrefixes).sort((a, b) => {
-      if (a < b) return -1;
-      if (a > b) return 1;
-      return 0;
-    });
-
-    const index = sortedPrefixes.indexOf(prefix);
-
-    if (index === -1 || index >= sortedPrefixes.length - 1) return null;
-
-    return sortedPrefixes[index + 1]!;
+    const sorted = this.getSortedPrefixes()
+    for (const p of sorted) {
+      if (p > prefix) return p
+    }
+    return null
   }
 
   private updateMin(): void {
