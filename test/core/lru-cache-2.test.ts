@@ -748,7 +748,7 @@ describe('LRU2Cache', () => {
       expect(cache.size()).toBe(3)
     })
 
-    it.skip('prefers evicting entries with fewer accesses', () => {
+    it('prefers evicting entries with fewer accesses', () => {
       const cache = new LRU2Cache<string, number>({ maxSize: 3 })
       cache.set('a', 1)
       cache.set('b', 2)
@@ -902,7 +902,7 @@ describe('LRU2Cache', () => {
       expect(cache.has(100)).toBe(true)
     })
 
-    it.skip('handles many accesses', () => {
+    it('handles many accesses', () => {
       const cache = new LRU2Cache<number, number>({ maxSize: 100 })
       for (let i = 0; i < 100; i++) {
         cache.set(i, i)
@@ -960,7 +960,7 @@ describe('LRU2Cache', () => {
       expect(cache.has('c')).toBe(false)
     })
 
-    it.skip('access pattern affects eviction order', () => {
+    it('access pattern affects eviction order', () => {
       const cache = new LRU2Cache<string, number>({ maxSize: 3 })
       cache.set('a', 1)
       cache.set('b', 2)
@@ -973,11 +973,11 @@ describe('LRU2Cache', () => {
       cache.get('a')
       cache.set('d', 4)
       expect(cache.has('a')).toBe(true)
-      expect(cache.has('b')).toBe(true)
-      expect(cache.has('c')).toBe(true).toBe(false)
+      expect(cache.has('b')).toBe(false)
+      expect(cache.has('c')).toBe(true)
     })
 
-    it.skip('LRU-2 correctly prioritizes twice-accessed entries', () => {
+    it('LRU-2 correctly prioritizes twice-accessed entries', () => {
       const cache = new LRU2Cache<string, number>({ maxSize: 3 })
       cache.set('a', 1)
       cache.set('b', 2)
