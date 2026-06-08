@@ -47,9 +47,9 @@ export class XorFilter2 {
         const idx0 = XorFilter2.getBlockIndex(h1, blockSize, 0);
         const idx1 = XorFilter2.getBlockIndex(h2, blockSize, 1);
         const idx2 = XorFilter2.getBlockIndex(h3, blockSize, 2);
-        counts[idx0]++;
-        counts[idx1]++;
-        counts[idx2]++;
+        counts[idx0]!++;
+        counts[idx1]!++;
+        counts[idx2]!++;
         positionItems[idx0]!.push([i, 0]);
         positionItems[idx1]!.push([i, 1]);
         positionItems[idx2]!.push([i, 2]);
@@ -65,12 +65,12 @@ export class XorFilter2 {
       const peelOrder: Array<[number, number]> = [];
 
       while (qi < queue.length) {
-        const pos = queue[qi++];
-        if (counts[pos] !== 1) continue;
+        const pos = queue[qi++]!;
+        if (counts[pos]! !== 1) continue;
 
         let foundItem = -1;
         let foundSlot = -1;
-        for (const [itemIdx, slot] of positionItems[pos]!) {
+        for (const [itemIdx, slot] of positionItems[pos!]!) {
           if (!assigned[itemIdx]) {
             foundItem = itemIdx;
             foundSlot = slot;
@@ -87,7 +87,7 @@ export class XorFilter2 {
         const idx1 = XorFilter2.getBlockIndex(h2, blockSize, 1);
         const idx2 = XorFilter2.getBlockIndex(h3, blockSize, 2);
         for (const p of [idx0, idx1, idx2]) {
-          counts[p]--;
+          counts[p]!--;
           if (counts[p] === 1) queue.push(p);
         }
       }
