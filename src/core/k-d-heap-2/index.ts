@@ -11,7 +11,7 @@ export class KDHeap2<T> {
     }
     this.d = d;
     this.heap = [];
-    this.comparator = comparator || ((a: T, b: T) => (a as any) - (b as any));
+    this.comparator = comparator || ((a: T, b: T) => (a < b ? -1 : a > b ? 1 : 0));
   }
 
   size(): number {

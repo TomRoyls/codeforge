@@ -12,7 +12,7 @@ export class BTree<T> {
 
   constructor(order?: number, comparator?: (a: T, b: T) => number) {
     this.order = order ?? 4;
-    this.comparator = comparator ?? ((a: T, b: T) => (a as any) - (b as any));
+    this.comparator = comparator ?? ((a: T, b: T) => (a < b ? -1 : a > b ? 1 : 0));
     this.root = null;
     this.treeSize = 0;
   }
