@@ -50,7 +50,7 @@ describe('JumpList', () => {
       expect(list.get(1)).toEqual({ id: 2 })
     })
 
-    it.skip('should handle large batch push', () => {
+    it('should handle large batch push', () => {
       const list = new JumpList<number>()
       for (let i = 0; i < 100; i++) {
         list.push(i)
@@ -262,7 +262,7 @@ describe('JumpList', () => {
       expect(list.get(1)).toBe(3)
     })
 
-    it.skip('should get value at large index', () => {
+    it('should get value at large index', () => {
       const list = new JumpList<number>()
       for (let i = 0; i < 100; i++) {
         list.push(i)
@@ -968,7 +968,7 @@ describe('JumpList', () => {
   })
 
   describe('custom blockSize', () => {
-    it.skip('should use custom blockSize', () => {
+    it('should use custom blockSize', () => {
       const list = new JumpList<number>({ blockSize: 10 })
       for (let i = 0; i < 30; i++) {
         list.push(i)
@@ -977,7 +977,7 @@ describe('JumpList', () => {
       expect(list.get(20)).toBe(20)
     })
 
-    it.skip('should handle small blockSize', () => {
+    it('should handle small blockSize', () => {
       const list = new JumpList<number>({ blockSize: 5 })
       for (let i = 0; i < 20; i++) {
         list.push(i)
@@ -986,7 +986,7 @@ describe('JumpList', () => {
       expect(list.get(15)).toBe(15)
     })
 
-    it.skip('should handle large blockSize', () => {
+    it('should handle large blockSize', () => {
       const list = new JumpList<number>({ blockSize: 100 })
       for (let i = 0; i < 200; i++) {
         list.push(i)
@@ -1006,13 +1006,13 @@ describe('JumpList', () => {
       expect(list.toArray()).toEqual([2, 3])
     })
 
-    it.skip('should handle unshift and pop mix', () => {
+    it('should handle unshift and pop mix', () => {
       const list = new JumpList<number>()
       list.unshift(1)
       list.unshift(2)
       list.pop()
       list.unshift(3)
-      expect(list.toArray()).toEqual([3, 2, 1])
+      expect(list.toArray()).toEqual([3, 2])
     })
 
     it('should handle insert and delete mix', () => {
@@ -1025,7 +1025,7 @@ describe('JumpList', () => {
       expect(list.toArray()).toEqual([2, 3, 4])
     })
 
-    it.skip('should handle complex sequence', () => {
+    it('should handle complex sequence', () => {
       const list = new JumpList<number>()
       list.push(1)
       list.push(2)
@@ -1034,7 +1034,7 @@ describe('JumpList', () => {
       list.unshift(0)
       list.insert(2, 2.5)
       list.delete(1)
-      expect(list.toArray()).toEqual([0, 2, 2.5, 3])
+      expect(list.toArray()).toEqual([0, 2.5, 3])
     })
   })
 
