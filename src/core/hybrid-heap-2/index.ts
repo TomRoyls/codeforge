@@ -11,11 +11,13 @@ export class HybridHeap2<T = unknown> {
   }
 
   insert(value: T): void {
-    if (this.heap.length < 64) {
-      this.heap.push(value)
+    this.heap.push(value)
+    if (this.heap.length === 64) {
+      // Transition from binary to 4-ary: rebuild entire heap
+      this.heapify4Ary()
+    } else if (this.heap.length < 64) {
       this.bubbleUpBinary(this.heap.length - 1)
     } else {
-      this.heap.push(value)
       this.bubbleUp4Ary(this.heap.length - 1)
     }
   }
@@ -28,10 +30,12 @@ export class HybridHeap2<T = unknown> {
     const last = this.heap.pop()
     if (this.heap.length > 0 && last !== undefined) {
       this.heap[0] = last
-      if (this.heap.length >= 64) {
-        this.sinkDown4Ary(0)
-      } else {
+      if (this.heap.length === 63) {
+        this.heapifyBinary()
+      } else if (this.heap.length < 64) {
         this.sinkDownBinary(0)
+      } else {
+        this.sinkDown4Ary(0)
       }
     }
     return top
@@ -59,12 +63,18 @@ export class HybridHeap2<T = unknown> {
   toArray(): T[] {
     const result: T[] = []
     const copy: T[] = [...this.heap]
+    let is4Ary = copy.length >= 64
     while (copy.length > 0) {
       result.push(copy[0]!)
       const last = copy.pop()
       if (copy.length > 0 && last !== undefined) {
         copy[0] = last
-        if (copy.length >= 64) {
+        if (is4Ary && copy.length < 64) {
+          for (let i = Math.floor((copy.length - 2) / 2); i >= 0; i--) {
+            this.sinkDownBinaryCopy(copy, i)
+          }
+          is4Ary = false
+        } else if (is4Ary) {
           this.sinkDown4AryCopy(copy, 0)
         } else {
           this.sinkDownBinaryCopy(copy, 0)
@@ -163,6 +173,18 @@ export class HybridHeap2<T = unknown> {
       } else {
         break
       }
+    }
+  }
+
+  private heapify4Ary(): void {
+    for (let i = Math.floor((this.heap.length - 2) / 4); i >= 0; i--) {
+      this.sinkDown4Ary(i)
+    }
+  }
+
+  private heapifyBinary(): void {
+    for (let i = Math.floor((this.heap.length - 2) / 2); i >= 0; i--) {
+      this.sinkDownBinary(i)
     }
   }
 
