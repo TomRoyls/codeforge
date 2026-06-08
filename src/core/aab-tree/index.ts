@@ -69,9 +69,6 @@ export class AABTree<T> {
   delete(value: T): boolean {
     const deleted = { value: false };
     this.root = this.deleteNode(this.root, value, deleted);
-    if (this.root !== null) {
-      this.root.level = this.calculateHeight(this.root);
-    }
     return deleted.value;
   }
 
@@ -101,32 +98,30 @@ export class AABTree<T> {
       }
 
       const successor = this.findMin(node.right);
-      const sameValue = this.comparator(successor.value, node.value) === 0;
       node.value = successor.value;
-
-      if (sameValue && successor.left === null) {
-        node.right = successor.right;
-        this.nodeCount--;
-      } else if (sameValue) {
-        node.right = this.removeMin(node.right);
-        this.nodeCount--;
-      } else {
-        node.right = this.deleteNode(node.right, successor.value, { value: false });
-      }
+      node.right = this.deleteNode(node.right, successor.value, { value: false });
     }
 
-    if (node.left !== null && node.right !== null) {
-      node.level = 1 + Math.min(this.calculateHeight(node.left!), this.calculateHeight(node.right!));
-    } else if (node.left !== null) {
-      node.level = 1 + this.calculateHeight(node.left!);
-    } else if (node.right !== null) {
-      node.level = 1 + this.calculateHeight(node.right!);
-    } else {
-      node.level = 1;
+    const leftLevel = node.left !== null ? node.left.level : 0;
+    const rightLevel = node.right !== null ? node.right.level : 0;
+    node.level = Math.min(leftLevel, rightLevel) + 1;
+
+    if (node.right !== null && node.right.level > node.level) {
+      node.right.level = node.level;
     }
 
     node = this.skew(node);
+    if (node.right !== null) {
+      node.right = this.skew(node.right);
+      if (node.right.right !== null) {
+        node.right.right = this.skew(node.right.right);
+      }
+    }
+
     node = this.split(node);
+    if (node.right !== null) {
+      node.right = this.split(node.right);
+    }
 
     return node;
   }
@@ -135,12 +130,6 @@ export class AABTree<T> {
     while (node.left !== null) {
       node = node.left!;
     }
-    return node;
-  }
-
-  private removeMin(node: AABTreeNode<T>): AABTreeNode<T> | null {
-    if (node.left === null) return node.right;
-    node.left = this.removeMin(node.left!);
     return node;
   }
 
