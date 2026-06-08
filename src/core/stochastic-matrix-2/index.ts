@@ -130,7 +130,13 @@ export class StochasticMatrix2 {
       return identity;
     }
     if (n === 1) {
-      return new StochasticMatrix2(this.states);
+      const copy = new StochasticMatrix2(this.states);
+      for (const from of this.states) {
+        for (const to of this.states) {
+          copy.setTransition(from, to, this.getTransition(from, to));
+        }
+      }
+      return copy;
     }
     let result: StochasticMatrix2 = this;
     for (let i = 1; i < n; i++) {
