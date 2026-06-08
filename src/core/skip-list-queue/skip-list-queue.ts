@@ -152,19 +152,11 @@ export class SkipListQueue<T> {
     }
 
     const update: (SkipListNode<T> | null)[] = new Array(this.maxLevel).fill(null)
-    let current: SkipListNode<T> = this.header
 
     for (let i = this.level - 1; i >= 0; i--) {
+      let current: SkipListNode<T> = this.header
       while (current.forward[i] !== null && current.forward[i] !== undefined && current.forward[i] !== node) {
-        const nextNode = current.forward[i]!
-        const cmp = this.comparator(nextNode.priority, node.priority)
-        if (cmp < 0) {
-          current = nextNode
-        } else if (cmp === 0 && nextNode !== node) {
-          current = nextNode
-        } else {
-          break
-        }
+        current = current.forward[i]!
       }
       update[i] = current
     }
