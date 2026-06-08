@@ -101,12 +101,10 @@ export class LeftistTree<T> {
       return false;
     }
 
-    this.nodes.delete(node);
     node.value = newValue;
-    this.nodes.add(node);
 
-    const newTree = this.removeNodeFromTree(this.root, node);
-    this.root = this.mergeTrees(newTree, node);
+    this.root = this.cutSubtree(this.root, node);
+    this.root = this.mergeTrees(this.root, node);
     return true;
   }
 
@@ -117,9 +115,7 @@ export class LeftistTree<T> {
 
     this.nodes.delete(node);
     const value = node.value;
-    const mergedChildren = this.mergeTrees(node.left, node.right);
     this.root = this.removeNodeFromTree(this.root, node);
-    this.root = this.mergeTrees(this.root, mergedChildren);
     this.itemCount--;
     return value;
   }
@@ -176,6 +172,22 @@ export class LeftistTree<T> {
 
     tree.left = this.removeNodeFromTree(tree.left, target);
     tree.right = this.removeNodeFromTree(tree.right, target);
+    this.restoreLeftistProperty(tree);
+
+    return tree;
+  }
+
+  private cutSubtree(tree: LeftistTreeNode<T> | null, target: LeftistTreeNode<T>): LeftistTreeNode<T> | null {
+    if (tree === null) {
+      return null;
+    }
+
+    if (tree === target) {
+      return null;
+    }
+
+    tree.left = this.cutSubtree(tree.left, target);
+    tree.right = this.cutSubtree(tree.right, target);
     this.restoreLeftistProperty(tree);
 
     return tree;
