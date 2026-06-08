@@ -264,10 +264,10 @@ describe('BloomFilter', () => {
       expect(ratio5).toBeGreaterThanOrEqual(ratio1)
     })
 
-    it.skip('returns 1 when all bits set', () => {
+    it('returns 1 when all bits set', () => {
       const bf = new BloomFilter({ bitCount: 10, hashCount: 1 })
       for (let i = 0; i < 10; i++) {
-        bf.add(`unique_${i}_${Date.now()}`)
+        bf.add(`unique_${i}`)
       }
       expect(bf.fillRatio).toBeGreaterThanOrEqual(0.5)
       expect(bf.fillRatio).toBeLessThanOrEqual(1)

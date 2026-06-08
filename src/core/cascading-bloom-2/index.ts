@@ -60,8 +60,9 @@ export class CascadingBloom2 {
   }
 
   mightContain(item: string): boolean {
-    for (const filter of this.filters) {
-      const indices = this.getIndices(item, this.filters.indexOf(filter))
+    for (let i = 0; i < this.filters.length; i++) {
+      const filter = this.filters[i]!
+      const indices = this.getIndices(item, i)
       if (indices.every(idx => filter[idx!] === 1)) {
         return true
       }

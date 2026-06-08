@@ -423,9 +423,9 @@ describe('SkipList3', () => {
       expect(list.min()).toBe(1)
     })
 
-    it.skip('max returns largest element', () => {
+    it('max returns largest element', () => {
       const list = createFilled([3, 1, 2])
-      expect(list.max()).toBe(2)
+      expect(list.max()).toBe(3)
     })
 
     it('min returns undefined on empty', () => {
