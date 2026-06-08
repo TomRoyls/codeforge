@@ -1,18 +1,15 @@
 import type { HashFunction, BloomFilterOptions, SerializedBloomFilter } from './types.js'
 
 function defaultHash(element: string, seed: number): number {
-  let h1 = 0xdeadbeef ^ seed
-  let h2 = 0x41c6ce57 ^ seed
+  let h = seed
   for (let i = 0; i < element.length; i++) {
     const ch = element.charCodeAt(i)
-    h1 = Math.imul(h1 ^ ch, 2654435761)
-    h2 = Math.imul(h2 ^ ch, 1597334677)
+    h = Math.imul(h ^ ch, 2654435761)
+    h = (h ^ (h >>> 16)) | 1
   }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507)
-  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507)
-  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
-  return (h2 >>> 0) * 4294967296 + (h1 >>> 0)
+  h = Math.imul(h ^ (h >>> 13), 3266489909)
+  h = h ^ (h >>> 16)
+  return h >>> 0
 }
 
 export class BloomFilter {
