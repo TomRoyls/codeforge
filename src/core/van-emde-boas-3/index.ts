@@ -5,16 +5,30 @@ function nextPowerOf2(n: number): number {
   return p
 }
 
+function log2Int(n: number): number {
+  let k = 0
+  while ((1 << k) < n) k++
+  return k
+}
+
+function upperSqrt(u: number): number {
+  return 1 << Math.ceil(log2Int(u) / 2)
+}
+
+function lowerSqrt(u: number): number {
+  return 1 << Math.floor(log2Int(u) / 2)
+}
+
 function high(x: number, u: number): number {
-  return Math.floor(x / Math.sqrt(u))
+  return Math.floor(x / lowerSqrt(u))
 }
 
 function low(x: number, u: number): number {
-  return x % Math.floor(Math.sqrt(u))
+  return x % lowerSqrt(u)
 }
 
 function index(i: number, j: number, u: number): number {
-  return i * Math.floor(Math.sqrt(u)) + j
+  return i * lowerSqrt(u) + j
 }
 
 class VanEmdeBoas3 {
@@ -32,11 +46,12 @@ class VanEmdeBoas3 {
     this._size = 0
 
     if (this.universeSize > 2) {
-      const upperSqrt = Math.floor(Math.sqrt(this.universeSize))
-      this.summary = new VanEmdeBoas3(upperSqrt)
+      const upper = upperSqrt(this.universeSize)
+      const lower = lowerSqrt(this.universeSize)
+      this.summary = new VanEmdeBoas3(upper)
       this.cluster = []
-      for (let i = 0; i < upperSqrt; i++) {
-        this.cluster.push(new VanEmdeBoas3(upperSqrt))
+      for (let i = 0; i < upper; i++) {
+        this.cluster.push(new VanEmdeBoas3(lower))
       }
     }
   }
