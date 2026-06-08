@@ -153,12 +153,13 @@ export class BloomFilter {
     for (let i = 0; i < this._bitCount; i++) {
       result.bits[i] = this.bits[i]! | other.bits[i]!
     }
+    const seen = new Set<string>(result.elements)
     for (const el of other.elements) {
-      if (!this.mightContain(el) || !result.elements.includes(el)) {
-        if (!result.elements.includes(el)) {
-          result._size++
-          result.elements.push(el)
-        }
+      if (seen.has(el)) continue
+      if (!this.mightContain(el)) {
+        seen.add(el)
+        result._size++
+        result.elements.push(el)
       }
     }
     return result
