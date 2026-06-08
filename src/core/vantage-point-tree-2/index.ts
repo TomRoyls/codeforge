@@ -31,9 +31,9 @@ export class VantagePointTree2<T> {
 
     const remaining = items.filter((_, i) => i !== vantageIdx)
     const distances = remaining.map((item) => this.distance(vantagePoint, item))
-    distances.sort((a, b) => a - b)
+    const sortedDistances = [...distances].sort((a, b) => a - b)
 
-    const threshold = distances[Math.floor(distances.length / 2)]!
+    const threshold = sortedDistances[Math.floor(sortedDistances.length / 2)]!
 
     const insideItems: T[] = []
     const outsideItems: T[] = []
