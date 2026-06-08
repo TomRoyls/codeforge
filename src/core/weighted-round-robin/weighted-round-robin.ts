@@ -111,21 +111,20 @@ export class WeightedRoundRobin<T> {
   private buildInterleavedSequence(): T[] {
     const gcd = this.computeGcd()
     const sequence: T[] = []
-    let remaining = this.entries.map((e) => e.weight / gcd)
+    const remaining = this.entries.map((e) => e.weight / gcd)
     const total = remaining.reduce((s, v) => s + v, 0)
 
     for (let i = 0; i < total; i++) {
+      let maxIdx = 0
       let maxVal = remaining[0]!
       for (let k = 1; k < remaining.length; k++) {
-        if (remaining[k]! > maxVal) maxVal = remaining[k]!
-      }
-      for (let j = 0; j < remaining.length; j++) {
-        if (remaining[j] === maxVal) {
-          sequence.push(this.entries[j]!.item)
-          remaining[j]!--
-          break
+        if (remaining[k]! > maxVal) {
+          maxVal = remaining[k]!
+          maxIdx = k
         }
       }
+      sequence.push(this.entries[maxIdx]!.item)
+      remaining[maxIdx]!--
     }
 
     return sequence
