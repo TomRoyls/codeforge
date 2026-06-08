@@ -281,8 +281,8 @@ export class JumpList<T> {
 
     if (this.jumpPointers.length > 0) {
       const jumpIndex = Math.floor(index / this.blockSize)
-      if (jumpIndex > 0 && jumpIndex <= this.jumpPointers.length) {
-        const jumpNode = this.jumpPointers[jumpIndex - 1]!
+      if (jumpIndex > 0 && jumpIndex < this.jumpPointers.length) {
+        const jumpNode = this.jumpPointers[jumpIndex]!
         current = jumpNode
         currentIndex = jumpIndex * this.blockSize
       }
@@ -302,7 +302,7 @@ export class JumpList<T> {
       return
     }
 
-    const expectedPointerCount = Math.floor((this.count - 1) / this.blockSize)
+    const expectedPointerCount = Math.floor((this.count - 1) / this.blockSize) + 1
     if (this.jumpPointers.length === expectedPointerCount) {
       return
     }

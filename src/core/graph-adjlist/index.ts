@@ -84,7 +84,7 @@ export class GraphAdjList<T> {
 
     for (const [from, neighbors] of this.adjacencyList) {
       for (const [to, weight] of neighbors) {
-        if (this.directed || from < to || (!this.directed && String(from) <= String(to))) {
+        if (this.directed || String(from) <= String(to)) {
           edges.push([from, to, weight]);
         }
       }
