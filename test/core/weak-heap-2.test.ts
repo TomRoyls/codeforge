@@ -85,11 +85,11 @@ describe('WeakHeap2', () => {
       expect(heap.peek()).toBe(Number.MIN_SAFE_INTEGER);
     });
 
-    it('should return node with index', () => {
+    it('should return node with correct index after siftUp', () => {
       const node1 = heap.insert(5);
       const node2 = heap.insert(3);
-      expect(node1.index).toBe(0);
-      expect(node2.index).toBe(1);
+      expect(node1.index).toBe(1);
+      expect(node2.index).toBe(0);
     });
 
     it('should assign unique id to each node', () => {

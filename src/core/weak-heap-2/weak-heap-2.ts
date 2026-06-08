@@ -66,7 +66,8 @@ export class WeakHeap2<T> {
     if (this._size > 0) {
       this.heap[0] = this.heap[this._size]!;
       this.heap[this._size] = undefined;
-      this._updateNodeIndex(0);
+      const movedNode = this._findNodeByIndex(this._size);
+      if (movedNode) movedNode.index = 0;
       this._siftDown(0);
     } else {
       this.heap[0] = undefined;
@@ -149,17 +150,19 @@ export class WeakHeap2<T> {
     this.heap[i] = this.heap[j]!;
     this.heap[j] = temp;
 
-    this._updateNodeIndex(i);
-    this._updateNodeIndex(j);
+    const nodeAtI = this._findNodeByIndex(i);
+    const nodeAtJ = this._findNodeByIndex(j);
+    if (nodeAtI) nodeAtI.index = j;
+    if (nodeAtJ) nodeAtJ.index = i;
   }
 
-  private _updateNodeIndex(index: number): void {
+  private _findNodeByIndex(index: number): WeakHeapNode<T> | undefined {
     for (const [, node] of this.nodeMap) {
       if (node.index === index) {
-        node.index = index;
-        break;
+        return node;
       }
     }
+    return undefined;
   }
 
   private _findNodeId(index: number): number | undefined {

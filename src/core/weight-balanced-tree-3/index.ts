@@ -30,24 +30,39 @@ export class WeightBalancedTree3<T> {
   }
 
   insert(value: T): void {
-    this.root = this._insert(this.root, value);
-    this._size++;
+    const { node, inserted } = this._insert(this.root, value);
+    this.root = node;
+    if (inserted) {
+      this._size++;
+    }
   }
 
-  private _insert(node: Node<T> | null, value: T): Node<T> {
+  private _insert(node: Node<T> | null, value: T): { node: Node<T>; inserted: boolean } {
     if (!node) {
-      return new Node(value);
+      return { node: new Node(value), inserted: true };
     }
 
     const cmp = this.comparator(value, node.value);
     if (cmp < 0) {
-      node.left = this._insert(node.left, value);
+      const result = this._insert(node.left, value);
+      node.left = result.node;
+      if (!result.inserted) {
+        node.size = 1 + this._getSize(node.left) + this._getSize(node.right);
+        return { node, inserted: false };
+      }
     } else if (cmp > 0) {
-      node.right = this._insert(node.right, value);
+      const result = this._insert(node.right, value);
+      node.right = result.node;
+      if (!result.inserted) {
+        node.size = 1 + this._getSize(node.left) + this._getSize(node.right);
+        return { node, inserted: false };
+      }
+    } else {
+      return { node, inserted: false };
     }
 
     node.size = 1 + this._getSize(node.left) + this._getSize(node.right);
-    return this._rebalance(node);
+    return { node: this._rebalance(node), inserted: true };
   }
 
   delete(value: T): void {

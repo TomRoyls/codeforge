@@ -73,12 +73,12 @@ describe('WeightBalancedTree3', () => {
       expect(t.toArray()).toEqual([1, 2, 3, 4, 5])
     })
 
-    it('tracks size for duplicate inserts but deduplicates in tree', () => {
+    it('deduplicates on insert', () => {
       const t = new WeightBalancedTree3<number>()
       t.insert(1)
       t.insert(1)
       t.insert(1)
-      expect(t.size).toBe(3)
+      expect(t.size).toBe(1)
       expect(t.search(1)).toBe(true)
     })
 
