@@ -49,30 +49,34 @@ export class ZipTree<K, V> {
   ): [ZipNode<K, V> | null, ZipNode<K, V> | null] {
     if (node === null) return [null, null];
     const cmp = this.compare(key, node.key);
-    if (cmp < 0) {
+    if (cmp <= 0) {
       const [left, right] = this.unzip(node.left, key);
-      return [left, this.zip(right, node)];
+      return [left, { ...node, left: right }];
     }
     const [left, right] = this.unzip(node.right, key);
-    return [this.zip(node, left), right];
+    return [{ ...node, right: left }, right];
+  }
+
+  private removeMin(node: ZipNode<K, V>): ZipNode<K, V> | null {
+    if (node.left === null) return node.right;
+    return { ...node, left: this.removeMin(node.left) };
+  }
+
+  private updateMinValue(
+    node: ZipNode<K, V>,
+    value: V
+  ): ZipNode<K, V> {
+    if (node.left === null) return { ...node, value };
+    return { ...node, left: this.updateMinValue(node.left, value) };
   }
 
   insert(key: K, value: V): void {
     const [left, right] = this.unzip(this.root, key);
-    let newRight = right;
-    let existingKey = false;
+    let newRight: ZipNode<K, V> | null;
 
-    if (right !== null) {
-      const minNode = this.findMin(right);
-      if (this.compare(key, minNode!.key) === 0) {
-        existingKey = true;
-        const newMin = { ...minNode!, value };
-        const [, newRightWithoutMin] = this.unzip(right, key);
-        newRight = this.zip(newMin, newRightWithoutMin);
-      }
-    }
-
-    if (!existingKey) {
+    if (right !== null && this.compare(key, this.findMin(right).key) === 0) {
+      newRight = this.updateMinValue(right, value);
+    } else {
       const newNode: ZipNode<K, V> = {
         key,
         value,
@@ -94,14 +98,12 @@ export class ZipTree<K, V> {
       return false;
     }
 
-    const minNode = this.findMin(right);
-    if (this.compare(key, minNode!.key) !== 0) {
+    if (this.compare(key, this.findMin(right).key) !== 0) {
       this.root = this.zip(left, right);
       return false;
     }
 
-    const [, newRight] = this.unzip(right, key);
-    this.root = this.zip(left, newRight);
+    this.root = this.zip(left, this.removeMin(right));
     this._size--;
     return true;
   }
