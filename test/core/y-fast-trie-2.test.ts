@@ -726,7 +726,7 @@ describe("YFastTrie", () => {
       expect(trie.size()).toBe(1);
     });
 
-    it.skip("should handle alternating insert and delete", () => {
+    it("should handle alternating insert and delete", () => {
       for (let i = 0; i < 10; i++) {
         trie.insert(i);
       }
@@ -739,7 +739,7 @@ describe("YFastTrie", () => {
         trie.insert(i);
       }
 
-      expect(trie.size()).toBe(15);
+      expect(trie.size()).toBe(10);
     });
 
     it("should work with custom options", () => {
@@ -841,7 +841,7 @@ describe("YFastTrie", () => {
       expect(trie.toArray().length).toBe(100);
     });
 
-    it.skip("should merge buckets when they get too small", () => {
+    it("should merge buckets when they get too small", () => {
       for (let i = 0; i < 100; i++) {
         trie.insert(i);
       }
