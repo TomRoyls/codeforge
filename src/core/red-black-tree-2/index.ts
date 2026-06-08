@@ -365,7 +365,7 @@ export class RedBlackTree2<T> {
             if (sibling!.left !== null) {
               sibling!.left.color = Color.BLACK;
             }
-            this.rotateLeft(node.parent!);
+            this.rotateRight(node.parent!);
             node = this.root!;
           }
         } else {
