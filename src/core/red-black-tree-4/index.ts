@@ -215,6 +215,7 @@ export class RedBlackTree4<T> {
         if (successor.right !== null) {
           successor.right.parent = successor;
         }
+        this._updateAncestorSizes(xParent);
       }
 
       this._transplant(node, successor);

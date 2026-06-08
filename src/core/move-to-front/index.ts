@@ -156,8 +156,12 @@ export class MoveToFront<T> {
     this.nodeMap.clear()
     this._size = 0
     this.frequencies.clear()
+    const seen = new Set<T>()
     for (const item of this.initialItems) {
-      this.appendBack(item)
+      if (!seen.has(item)) {
+        seen.add(item)
+        this.appendBack(item)
+      }
     }
   }
 
