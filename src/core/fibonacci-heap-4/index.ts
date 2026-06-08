@@ -181,11 +181,11 @@ export class FibonacciHeap4<T> {
     if (other.minNode === null) return;
     const otherMin = other.minNode!;
     const thisMinLeft = this.minNode!.left!;
-    const otherMinRight = otherMin.right!;
+    const otherMinLeft = otherMin.left!;
     thisMinLeft.right = otherMin;
-    otherMin.left = thisMinLeft!;
-    this.minNode!.left = otherMinRight;
-    otherMinRight.right = this.minNode!;
+    otherMin.left = thisMinLeft;
+    otherMinLeft.right = this.minNode!;
+    this.minNode!.left = otherMinLeft;
   }
 
   private link(child: FibonacciHeapNode<T>, parent: FibonacciHeapNode<T>): void {

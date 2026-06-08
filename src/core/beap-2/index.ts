@@ -50,7 +50,7 @@ export class Beap2<T> {
   }
 
   private getRow(index: number): number {
-    return Math.ceil((Math.sqrt(8 * index + 1) - 1) / 2);
+    return Math.floor((Math.sqrt(8 * index + 1) - 1) / 2);
   }
 
   private getCol(index: number): number {
@@ -65,12 +65,13 @@ export class Beap2<T> {
     if (row === 0) return [];
 
     const parentRow = row - 1;
-    const parent1Index = parentRow * (parentRow + 1) / 2 + col;
-    const parent2Index = col > 0 ? parentRow * (parentRow + 1) / 2 + col - 1 : -1;
+    const parents: number[] = [];
 
-    const parents = [parent1Index];
-    if (parent2Index >= 0) {
-      parents.push(parent2Index);
+    if (col <= parentRow) {
+      parents.push(parentRow * (parentRow + 1) / 2 + col);
+    }
+    if (col > 0) {
+      parents.push(parentRow * (parentRow + 1) / 2 + col - 1);
     }
 
     return parents;
@@ -80,23 +81,33 @@ export class Beap2<T> {
     if (index === 0) return;
 
     const parents = this.getParentIndices(index);
-    const current = this.data[index]!;
+    if (parents.length === 0) return;
 
-    let shouldSwap = false;
-    let swapParentIndex = -1;
-
-    for (const parentIndex of parents) {
-      if (this.comparator(current, this.data[parentIndex]!) < 0) {
-        if (swapParentIndex === -1 || this.comparator(this.data[parentIndex]!, this.data[swapParentIndex]!) < 0) {
-          swapParentIndex = parentIndex;
+    let swapWith = -1;
+    for (const p of parents) {
+      if (this.comparator(this.data[index]!, this.data[p]!) < 0) {
+        if (swapWith === -1 || this.comparator(this.data[p]!, this.data[swapWith]!) < 0) {
+          swapWith = p;
         }
-        shouldSwap = true;
       }
     }
 
-    if (shouldSwap && swapParentIndex >= 0) {
-      [this.data[index], this.data[swapParentIndex]] = [this.data[swapParentIndex]!, this.data[index]!];
-      this.siftUp(swapParentIndex);
+    if (swapWith === -1) return;
+
+    [this.data[index], this.data[swapWith]] = [this.data[swapWith]!, this.data[index]!];
+
+    this.siftUp(swapWith);
+
+    // In a biparental heap, the displaced value at index may violate
+    // the heap property with its other parent after the swap above.
+    const allParents = this.getParentIndices(index);
+    for (const p of allParents) {
+      if (this.comparator(this.data[index]!, this.data[p]!) < 0) {
+        [this.data[index], this.data[p]] = [this.data[p]!, this.data[index]!];
+        this.siftUp(p);
+        this.siftUp(index);
+        return;
+      }
     }
   }
 
