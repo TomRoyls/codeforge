@@ -249,10 +249,11 @@ export class DoubleArrayTrie2 {
         this.base[t]! = -tailIndex;
       }
     } else {
-      children.push(chars[0]!);
-      const base = this.findBase(children);
+      const newCode = chars[0]!;
+      const allCodes = [...children, newCode];
+      const base = this.findBase(allCodes);
       this.rebase(parent, children, base);
-      const t = base + chars[0]!;
+      const t = base + newCode;
       this.ensureCapacity(t);
       this.check[t]! = parent;
 
@@ -333,10 +334,11 @@ export class DoubleArrayTrie2 {
       this.tail.push(this.codesToString(chars.slice(1)));
       this.base[t]! = -tailIndex;
     } else {
-      children.push(chars[0]!);
-      const base = this.findBase(children);
+      const newCode = chars[0]!;
+      const allCodes = [...children, newCode];
+      const base = this.findBase(allCodes);
       this.rebase(parent, children, base);
-      const t = base + chars[0]!;
+      const t = base + newCode;
       this.ensureCapacity(t);
       this.check[t]! = parent;
 
@@ -421,14 +423,47 @@ export class DoubleArrayTrie2 {
     const oldBase = this.base[parent]!;
     this.base[parent]! = newBase;
 
+    const saved: Array<{
+      oldT: number;
+      newT: number;
+      baseVal: number;
+      grandchildren: number[];
+    }> = [];
+
     for (const child of children) {
       const oldT = oldBase + child;
       const newT = newBase + child;
       this.ensureCapacity(newT);
-      this.base[newT]! = this.base[oldT]!;
-      this.check[newT]! = parent;
+      const childBase = this.base[oldT]!;
+      const gc: number[] = [];
+
+      if (childBase > 0) {
+        for (let code = 0; code < 128; code++) {
+          const gcPos = childBase + code;
+          if (gcPos < this.check.length && this.check[gcPos] === oldT) {
+            gc.push(gcPos);
+          }
+        }
+      }
+
+      saved.push({ oldT, newT, baseVal: childBase, grandchildren: gc });
+    }
+
+    for (const { oldT } of saved) {
       this.base[oldT]! = 0;
       this.check[oldT]! = -1;
+    }
+
+    for (const { oldT, newT, baseVal, grandchildren } of saved) {
+      this.base[newT]! = baseVal;
+      this.check[newT]! = parent;
+      for (const gcPos of grandchildren) {
+        this.check[gcPos]! = newT;
+      }
+      if (this.wordEnd.has(oldT)) {
+        this.wordEnd.delete(oldT);
+        this.wordEnd.add(newT);
+      }
     }
   }
 
