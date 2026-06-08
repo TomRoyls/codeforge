@@ -104,17 +104,13 @@ export class CartesianTree3<T> {
       return
     }
 
-    if (node.value >= low) {
-      this.range(node.left, low, high, result)
-    }
+    this.range(node.left, low, high, result)
 
     if (node.value >= low && node.value <= high) {
       result.push(node.value)
     }
 
-    if (node.value <= high) {
-      this.range(node.right, low, high, result)
-    }
+    this.range(node.right, low, high, result)
   }
 
   findMin(): T | undefined {

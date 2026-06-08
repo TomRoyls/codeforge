@@ -242,10 +242,10 @@ function pushBackNode<T>(node: CatenableDequeNode<T>, value: T): CatenableDequeN
         return { tag: 'leaf', front: total + 1, back: 0, buffer: newBuf }
       }
       const newBuf: (T | undefined)[] = new Array(4)
-      newBuf[0] = value
-      newBuf[1] = node.buffer[node.buffer.length - 1]
-      newBuf[2] = node.buffer[node.buffer.length - 2]
-      newBuf[3] = node.buffer[node.buffer.length - 3]
+      newBuf[0] = node.buffer[node.buffer.length - 3]
+      newBuf[1] = node.buffer[node.buffer.length - 2]
+      newBuf[2] = node.buffer[node.buffer.length - 1]
+      newBuf[3] = value
       const rest: (T | undefined)[] = []
       for (let i = 0; i < node.front - 3; i++) rest.push(node.buffer[i])
       for (let i = node.buffer.length - node.back; i < node.buffer.length - 3; i++) rest.push(node.buffer[i])
