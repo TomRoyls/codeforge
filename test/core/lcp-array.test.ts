@@ -9,11 +9,11 @@ describe("buildLCPArray", () => {
     expect(lcp).toEqual([]);
   });
 
-  it.skip("should build correct LCP array for single character", () => {
+  it("should build correct LCP array for single character", () => {
     const s = "a";
     const sa = [0];
     const lcp = buildLCPArray(s, sa);
-    expect(lcp).toEqual([0]);
+    expect(lcp).toEqual([]);
   });
 
   it("should build correct LCP array for all same characters", () => {
@@ -37,25 +37,25 @@ describe("buildLCPArray", () => {
     expect(lcp).toEqual([1, 3, 0, 0, 2]);
   });
 
-  it.skip("should build correct LCP array for ababa", () => {
+  it("should build correct LCP array for ababa", () => {
     const s = "ababa";
-    const sa = [2, 0, 4, 2, 0, 4];
+    const sa = [4, 2, 0, 3, 1];
     const lcp = buildLCPArray(s, sa);
-    expect(lcp).toEqual([3, 1, 2, 0, 0]);
+    expect(lcp).toEqual([1, 3, 0, 2]);
   });
 
-  it.skip("should build correct LCP array for mississippi", () => {
+  it("should build correct LCP array for mississippi", () => {
     const s = "mississippi";
     const sa = [10, 7, 4, 1, 0, 9, 8, 6, 3, 5, 2];
     const lcp = buildLCPArray(s, sa);
-    expect(lcp).toEqual([1, 4, 0, 0, 1, 0, 2, 1, 3, 0]);
+    expect(lcp).toEqual([1, 1, 4, 0, 0, 1, 0, 2, 1, 3]);
   });
 
-  it.skip("should build correct LCP array for abcabc", () => {
+  it("should build correct LCP array for abcabc", () => {
     const s = "abcabc";
     const sa = [0, 3, 1, 4, 2, 5];
     const lcp = buildLCPArray(s, sa);
-    expect(lcp).toEqual([3, 0, 3, 0, 0]);
+    expect(lcp).toEqual([3, 0, 2, 0, 1]);
   });
 
   it("should build correct LCP array for aaaab", () => {
@@ -65,11 +65,11 @@ describe("buildLCPArray", () => {
     expect(lcp).toEqual([0, 1, 2, 3]);
   });
 
-  it.skip("should build correct LCP array for bacab", () => {
+  it("should build correct LCP array for bacab", () => {
     const s = "bacab";
-    const sa = [0, 2, 4, 1, 3];
+    const sa = [3, 1, 4, 0, 2];
     const lcp = buildLCPArray(s, sa);
-    expect(lcp).toEqual([2, 1, 0, 0]);
+    expect(lcp).toEqual([1, 0, 1, 0]);
   });
 
   it("should handle single repeated character", () => {
@@ -86,11 +86,11 @@ describe("buildLCPArray", () => {
     expect(lcp).toEqual([2, 4, 0, 1, 3]);
   });
 
-  it.skip("should handle string with spaces", () => {
+  it("should handle string with spaces", () => {
     const s = "a b c";
     const sa = [0, 2, 4, 1, 3];
     const lcp = buildLCPArray(s, sa);
-    expect(lcp).toEqual([0, 0, 0, 0]);
+    expect(lcp).toEqual([0, 0, 0, 1]);
   });
 });
 
@@ -104,13 +104,13 @@ describe("LCPArray constructor", () => {
     expect(lcpArray.toArray()).toEqual([]);
   });
 
-  it.skip("should create LCPArray for single character", () => {
+  it("should create LCPArray for single character", () => {
     const s = "a";
     const sa = [0];
     const lcpArray = new LCPArray(s, sa);
     expect(lcpArray.length).toBe(1);
     expect(lcpArray.size).toBe(1);
-    expect(lcpArray.toArray()).toEqual([0]);
+    expect(lcpArray.toArray()).toEqual([]);
   });
 
   it("should create LCPArray for banana", () => {
@@ -122,22 +122,22 @@ describe("LCPArray constructor", () => {
     expect(lcpArray.toArray()).toEqual([1, 3, 0, 0, 2]);
   });
 
-  it.skip("should create LCPArray with RMQ enabled", () => {
+  it("should create LCPArray with RMQ enabled", () => {
     const s = "abcabc";
     const sa = [0, 3, 1, 4, 2, 5];
     const lcpArray = new LCPArray(s, sa, { enableRMQ: true });
     expect(lcpArray.length).toBe(6);
     expect(lcpArray.size).toBe(6);
-    expect(lcpArray.toArray()).toEqual([3, 0, 3, 0, 0]);
+    expect(lcpArray.toArray()).toEqual([3, 0, 2, 0, 1]);
   });
 
-  it.skip("should create LCPArray with RMQ disabled", () => {
+  it("should create LCPArray with RMQ disabled", () => {
     const s = "abcabc";
     const sa = [0, 3, 1, 4, 2, 5];
     const lcpArray = new LCPArray(s, sa, { enableRMQ: false });
     expect(lcpArray.length).toBe(6);
     expect(lcpArray.size).toBe(6);
-    expect(lcpArray.toArray()).toEqual([3, 0, 3, 0, 0]);
+    expect(lcpArray.toArray()).toEqual([3, 0, 2, 0, 1]);
   });
 });
 
@@ -205,16 +205,16 @@ describe("LCPArray.getLCP", () => {
     expect(lcpArray.getLCP(5)).toBe(2);
   });
 
-  it.skip("should return all LCP values for abcabc", () => {
+  it("should return all LCP values for abcabc", () => {
     const s = "abcabc";
     const sa = [0, 3, 1, 4, 2, 5];
     const lcpArray = new LCPArray(s, sa);
     expect(lcpArray.getLCP(0)).toBe(0);
     expect(lcpArray.getLCP(1)).toBe(3);
     expect(lcpArray.getLCP(2)).toBe(0);
-    expect(lcpArray.getLCP(3)).toBe(3);
+    expect(lcpArray.getLCP(3)).toBe(2);
     expect(lcpArray.getLCP(4)).toBe(0);
-    expect(lcpArray.getLCP(5)).toBe(0);
+    expect(lcpArray.getLCP(5)).toBe(1);
   });
 
   it("should return all LCP values for aaaa", () => {
@@ -262,7 +262,7 @@ describe("LCPArray.getLCPBetween", () => {
     expect(lcpArray.getLCPBetween(2, 2)).toBe(5);
   });
 
-  it.skip("should return correct LCP for adjacent suffixes", () => {
+  it("should return correct LCP for adjacent suffixes", () => {
     const s = "banana";
     const sa = [5, 3, 1, 0, 4, 2];
     const lcpArray = new LCPArray(s, sa);
@@ -271,7 +271,7 @@ describe("LCPArray.getLCPBetween", () => {
     expect(lcpArray.getLCPBetween(2, 3)).toBe(0);
   });
 
-  it.skip("should return correct LCP for non-adjacent suffixes", () => {
+  it("should return correct LCP for non-adjacent suffixes", () => {
     const s = "banana";
     const sa = [5, 3, 1, 0, 4, 2];
     const lcpArray = new LCPArray(s, sa);
@@ -280,15 +280,15 @@ describe("LCPArray.getLCPBetween", () => {
     expect(lcpArray.getLCPBetween(1, 3)).toBe(0);
   });
 
-  it.skip("should return correct LCP for far apart suffixes", () => {
+  it("should return correct LCP for far apart suffixes", () => {
     const s = "banana";
     const sa = [5, 3, 1, 0, 4, 2];
     const lcpArray = new LCPArray(s, sa);
-    expect(lcpArray.getLCPBetween(0, 5)).toBe(1);
+    expect(lcpArray.getLCPBetween(0, 5)).toBe(0);
     expect(lcpArray.getLCPBetween(1, 4)).toBe(0);
   });
 
-  it.skip("should handle reversed order of indices", () => {
+  it("should handle reversed order of indices", () => {
     const s = "banana";
     const sa = [5, 3, 1, 0, 4, 2];
     const lcpArray = new LCPArray(s, sa);
@@ -296,17 +296,17 @@ describe("LCPArray.getLCPBetween", () => {
     expect(lcpArray.getLCPBetween(3, 1)).toBe(0);
   });
 
-  it.skip("should return correct LCP for abcabc", () => {
+  it("should return correct LCP for abcabc", () => {
     const s = "abcabc";
     const sa = [0, 3, 1, 4, 2, 5];
     const lcpArray = new LCPArray(s, sa);
     expect(lcpArray.getLCPBetween(0, 1)).toBe(3);
     expect(lcpArray.getLCPBetween(0, 2)).toBe(0);
-    expect(lcpArray.getLCPBetween(0, 3)).toBe(3);
+    expect(lcpArray.getLCPBetween(0, 3)).toBe(0);
     expect(lcpArray.getLCPBetween(1, 3)).toBe(0);
   });
 
-  it.skip("should return correct LCP for all same characters", () => {
+  it("should return correct LCP for all same characters", () => {
     const s = "aaaa";
     const sa = [3, 2, 1, 0];
     const lcpArray = new LCPArray(s, sa);
@@ -327,7 +327,7 @@ describe("LCPArray.getLCPBetween", () => {
     expect(lcpArray.getLCPBetween(0, 3)).toBe(0);
   });
 
-  it.skip("should work with RMQ enabled", () => {
+  it("should work with RMQ enabled", () => {
     const s = "banana";
     const sa = [5, 3, 1, 0, 4, 2];
     const lcpArray = new LCPArray(s, sa, { enableRMQ: true });
@@ -335,7 +335,7 @@ describe("LCPArray.getLCPBetween", () => {
     expect(lcpArray.getLCPBetween(1, 5)).toBe(0);
   });
 
-  it.skip("should work with RMQ disabled", () => {
+  it("should work with RMQ disabled", () => {
     const s = "banana";
     const sa = [5, 3, 1, 0, 4, 2];
     const lcpArray = new LCPArray(s, sa, { enableRMQ: false });
@@ -343,22 +343,22 @@ describe("LCPArray.getLCPBetween", () => {
     expect(lcpArray.getLCPBetween(1, 5)).toBe(0);
   });
 
-  it.skip("should handle mississippi", () => {
+  it("should handle mississippi", () => {
     const s = "mississippi";
     const sa = [10, 7, 4, 1, 0, 9, 8, 6, 3, 5, 2];
     const lcpArray = new LCPArray(s, sa);
     expect(lcpArray.getLCPBetween(0, 1)).toBe(1);
-    expect(lcpArray.getLCPBetween(0, 2)).toBe(0);
+    expect(lcpArray.getLCPBetween(0, 2)).toBe(1);
     expect(lcpArray.getLCPBetween(1, 2)).toBe(1);
   });
 
-  it.skip("should handle ababa", () => {
+  it("should handle ababa", () => {
     const s = "ababa";
-    const sa = [2, 0, 4, 2, 0, 4];
+    const sa = [4, 2, 0, 3, 1];
     const lcpArray = new LCPArray(s, sa);
-    expect(lcpArray.getLCPBetween(0, 1)).toBe(3);
+    expect(lcpArray.getLCPBetween(0, 1)).toBe(1);
     expect(lcpArray.getLCPBetween(0, 2)).toBe(1);
-    expect(lcpArray.getLCPBetween(1, 2)).toBe(1);
+    expect(lcpArray.getLCPBetween(1, 2)).toBe(3);
   });
 
   it("should handle single character string", () => {
@@ -405,7 +405,7 @@ describe("LCPArray.longestRepeatedSubstring", () => {
     expect(lcpArray.longestRepeatedSubstring()).toBe("ana");
   });
 
-  it.skip("should find abc in abcabc", () => {
+  it("should find abc in abcabc", () => {
     const s = "abcabc";
     const sa = [0, 3, 1, 4, 2, 5];
     const lcpArray = new LCPArray(s, sa);
@@ -421,7 +421,7 @@ describe("LCPArray.longestRepeatedSubstring", () => {
 
   it("should find ab in ababa", () => {
     const s = "ababa";
-    const sa = [2, 0, 4, 2, 0, 4];
+    const sa = [4, 2, 0, 3, 1];
     const lcpArray = new LCPArray(s, sa);
     expect(lcpArray.longestRepeatedSubstring()).toBe("aba");
   });
@@ -440,11 +440,11 @@ describe("LCPArray.longestRepeatedSubstring", () => {
     expect(lcpArray.longestRepeatedSubstring()).toBe("aaa");
   });
 
-  it.skip("should find correct substring for bacab", () => {
+  it("should find correct substring for bacab", () => {
     const s = "bacab";
-    const sa = [0, 2, 4, 1, 3];
+    const sa = [3, 1, 4, 0, 2];
     const lcpArray = new LCPArray(s, sa);
-    expect(lcpArray.longestRepeatedSubstring()).toBe("ba");
+    expect(lcpArray.longestRepeatedSubstring()).toBe("a");
   });
 
   it("should find correct substring for ababab", () => {
@@ -476,14 +476,14 @@ describe("LCPArray.longestRepeatedSubstring", () => {
     expect(lcpArray.longestRepeatedSubstring()).toBe("");
   });
 
-  it.skip("should find substring for pattern with overlap", () => {
+  it("should find substring for pattern with overlap", () => {
     const s = "abcabca";
     const sa = [0, 3, 6, 1, 4, 2, 5];
     const lcpArray = new LCPArray(s, sa);
-    expect(lcpArray.longestRepeatedSubstring()).toBe("abc");
+    expect(lcpArray.longestRepeatedSubstring()).toBe("abca");
   });
 
-  it.skip("should handle two character patterns", () => {
+  it("should handle two character patterns", () => {
     const s = "abab";
     const sa = [2, 0, 3, 1];
     const lcpArray = new LCPArray(s, sa);

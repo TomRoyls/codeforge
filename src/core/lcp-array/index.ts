@@ -112,8 +112,8 @@ export class LCPArray {
       return this.s.length - this.sa[ri]!;
     }
 
-    const l = Math.min(ri, rj) + 1;
-    const r = Math.max(ri, rj);
+    const l = Math.min(ri, rj);
+    const r = Math.max(ri, rj) - 1;
 
     if (l > r) {
       return 0;
@@ -139,9 +139,9 @@ export class LCPArray {
     }
 
     let maxLCP = 0;
-    let maxIndex = 1;
+    let maxIndex = 0;
 
-    for (let i = 1; i < this.lcp.length; i++) {
+    for (let i = 0; i < this.lcp.length; i++) {
       if (this.lcp[i]! > maxLCP) {
         maxLCP = this.lcp[i]!;
         maxIndex = i;
