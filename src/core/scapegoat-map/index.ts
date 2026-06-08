@@ -12,6 +12,7 @@ interface ScapegoatNode<K, V> {
 export class ScapegoatMap<K = unknown, V = unknown> {
   private root: ScapegoatNode<K, V> | null = null
   private _size: number = 0
+  private _maxSize: number = 0
   private _alpha: number
   private _comparator: (a: K, b: K) => number
 
@@ -107,6 +108,9 @@ export class ScapegoatMap<K = unknown, V = unknown> {
 
     if (!result.found) {
       this._size++
+    }
+    if (this._size > this._maxSize) {
+      this._maxSize = this._size
     }
 
     this.root = result.node
@@ -221,10 +225,11 @@ export class ScapegoatMap<K = unknown, V = unknown> {
       this._size--
       if (
         this.root !== null &&
-        this.root.size > 0 &&
-        this._size < this.root.size * this._alpha
+        this._maxSize > 0 &&
+        this._size < this._maxSize * this._alpha
       ) {
         this.root = this.rebuildSubtree(this.root)
+        this._maxSize = this._size
       }
     }
     return result.found
@@ -241,6 +246,7 @@ export class ScapegoatMap<K = unknown, V = unknown> {
   clear(): void {
     this.root = null
     this._size = 0
+    this._maxSize = 0
   }
 
   min(): K | undefined {
@@ -363,6 +369,7 @@ export class ScapegoatMap<K = unknown, V = unknown> {
 
     cloned.root = cloneNode(this.root)
     cloned._size = this._size
+    cloned._maxSize = this._maxSize
     return cloned
   }
 }
