@@ -152,6 +152,7 @@ export class PairHeap2<T> {
       result = this.mergeNodes(merged[i]!, result)!;
     }
 
+    result.parent = null;
     return result;
   }
 }
