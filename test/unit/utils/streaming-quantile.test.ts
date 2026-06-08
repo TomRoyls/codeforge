@@ -108,6 +108,21 @@ describe('StreamingQuantile', () => {
       expect(sq.min()).toBeGreaterThanOrEqual(50)
       expect(sq.max()).toBe(199)
     })
+
+    it('does not bias quantiles after compaction', () => {
+      const sq = new StreamingQuantile(100)
+      for (let i = 0; i < 200; i++) sq.push(i)
+      expect(sq.median()).toBeGreaterThanOrEqual(140)
+      expect(sq.median()).toBeLessThanOrEqual(160)
+    })
+
+    it('drops oldest values not smallest values', () => {
+      const sq = new StreamingQuantile(10)
+      for (let i = 0; i < 20; i++) sq.push(i)
+      expect(sq.min()).toBe(10)
+      expect(sq.max()).toBe(19)
+      expect(sq.count).toBe(10)
+    })
   })
 
   describe('out of order insertion', () => {

@@ -1,6 +1,8 @@
 export class StreamingQuantile {
   private samples: number[] = []
   private readonly maxSize: number
+  private insertionBuffer: number[] = []
+  private bufferHead = 0
 
   constructor(maxSize: number = 10000) {
     this.maxSize = maxSize
@@ -8,8 +10,19 @@ export class StreamingQuantile {
 
   push(value: number): void {
     if (this.samples.length >= this.maxSize) {
-      const mid = this.samples.length >>> 1
-      this.samples.splice(0, mid)
+      const oldest = this.insertionBuffer[this.bufferHead % this.maxSize]
+      if (oldest !== undefined) {
+        let lo = 0
+        let hi = this.samples.length
+        while (lo < hi) {
+          const mid = (lo + hi) >>> 1
+          if (this.samples[mid]! < oldest) lo = mid + 1
+          else hi = mid
+        }
+        if (lo < this.samples.length && this.samples[lo] === oldest) {
+          this.samples.splice(lo, 1)
+        }
+      }
     }
     let lo = 0
     let hi = this.samples.length
@@ -19,6 +32,8 @@ export class StreamingQuantile {
       else hi = mid
     }
     this.samples.splice(lo, 0, value)
+    this.insertionBuffer[this.bufferHead % this.maxSize] = value
+    this.bufferHead++
   }
 
   quantile(q: number): number {
