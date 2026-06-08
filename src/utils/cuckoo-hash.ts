@@ -56,7 +56,7 @@ export class CuckooHashTable<K, V> {
     let current = { key, value }
     let table = this.table1 as Array<{ key: K; value: V } | undefined>
     let idx = idx1
-    const swapLog: Array<{ table: typeof this.table1, idx: number, prev: { key: K; value: V } | undefined }> = []
+    const swapLog: Array<{ table: Array<{ key: K; value: V } | undefined>, idx: number, prev: { key: K; value: V } | undefined }> = []
 
     for (let i = 0; i < CuckooHashTable.MAX_KICKS; i++) {
       const evicted = table[idx]
