@@ -439,7 +439,8 @@ export class CrossFileAnalyzer {
       }
     }
 
-    return [...visited].filter((d) => !directDependents.includes(d))
+    const directSet = new Set(directDependents)
+    return [...visited].filter((d) => !directSet.has(d))
   }
 
   private countTotalImports(graph: ImportGraph): number {
