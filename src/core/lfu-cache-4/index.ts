@@ -52,12 +52,15 @@ class LFUCache4<K, V> {
     if (!this.cache.has(key)) return false
 
     const entry = this.cache.get(key)!
-    if (entry.freq === this.minFreq) {
-      this.recalcMinFreq()
-    }
+    const wasMinFreq = entry.freq === this.minFreq
 
     this.cache.delete(key)
     this._size--
+
+    if (wasMinFreq) {
+      this.recalcMinFreq()
+    }
+
     return true
   }
 
