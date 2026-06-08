@@ -181,15 +181,16 @@ export class CountedQueue<T> {
   }
 
   private resize(): void {
+    const oldSize = this.size
     const newCapacity = this.capacity * 2
     const newQueue: T[] = new Array(newCapacity)
-    for (let i = 0; i < this.size; i++) {
+    for (let i = 0; i < oldSize; i++) {
       const index = (this.head + i) % this.capacity
       newQueue[i] = this.queue[index]!
     }
     this.queue = newQueue
     this.head = 0
-    this.tail = this.size
+    this.tail = oldSize
   }
 
   static from<T>(arr: T[], options?: CountedQueueOptions): CountedQueue<T> {
