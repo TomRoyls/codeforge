@@ -211,15 +211,8 @@ export class CuckooSet2<T> {
     for (let i = 0; i < oldCapacity; i++) {
       const slot1 = oldTable1[i]!
       if (slot1 !== EMPTY) {
-        this._size++
-        const pos1 = hash1(slot1 as T, this._capacity)
-        const pos2 = hash2(slot1 as T, this._capacity)
-        if (this.table1[pos1] === EMPTY) {
-          this.table1[pos1] = slot1
-        } else if (this.table2[pos2] === EMPTY) {
-          this.table2[pos2] = slot1
-        } else {
-          this._size--
+        if (this.insertWithEviction(slot1 as T, 0)) {
+          this._size++
         }
       }
     }
@@ -227,15 +220,8 @@ export class CuckooSet2<T> {
     for (let i = 0; i < oldCapacity; i++) {
       const slot2 = oldTable2[i]!
       if (slot2 !== EMPTY) {
-        this._size++
-        const pos1 = hash1(slot2 as T, this._capacity)
-        const pos2 = hash2(slot2 as T, this._capacity)
-        if (this.table1[pos1] === EMPTY) {
-          this.table1[pos1] = slot2
-        } else if (this.table2[pos2] === EMPTY) {
-          this.table2[pos2] = slot2
-        } else {
-          this._size--
+        if (this.insertWithEviction(slot2 as T, 0)) {
+          this._size++
         }
       }
     }
