@@ -37,8 +37,11 @@ class WeakHashMap2<K extends Key, V> {
         this.sizeCounter++;
       }
     } else {
+      const keyExists = this.primitiveEntries.has(key as PrimitiveKey);
       this.primitiveEntries.set(key as PrimitiveKey, value);
-      this.sizeCounter++;
+      if (!keyExists) {
+        this.sizeCounter++;
+      }
     }
   }
 
