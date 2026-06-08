@@ -2,6 +2,7 @@ export class AdaptivePQ2<T> {
   private threshold: number
   private items: {priority: number, value: T}[] = []
   private _head = 0
+  private _heapMode = false
 
   constructor(threshold?: number) {
     this.threshold = threshold ?? 64
@@ -55,6 +56,7 @@ export class AdaptivePQ2<T> {
   clear(): void {
     this.items = []
     this._head = 0
+    this._heapMode = false
   }
 
   toArray(): {priority: number, value: T}[] {
@@ -79,12 +81,21 @@ export class AdaptivePQ2<T> {
   }
 
   contains(value: T): boolean {
-    return this.items.some((item) => item.value === value)
+    for (let i = this._head; i < this.items.length; i++) {
+      if (this.items[i]!.value === value) return true
+    }
+    return false
   }
 
   remove(value: T): boolean {
-    const index = this.items.findIndex((item) => item.value === value)
-    if (index === -1 || index < this._head) {
+    let index = -1
+    for (let i = this._head; i < this.items.length; i++) {
+      if (this.items[i]!.value === value) {
+        index = i
+        break
+      }
+    }
+    if (index === -1) {
       return false
     }
 
@@ -98,8 +109,14 @@ export class AdaptivePQ2<T> {
   }
 
   update(value: T, newPriority: number): boolean {
-    const index = this.items.findIndex((item) => item.value === value)
-    if (index === -1 || index < this._head) {
+    let index = -1
+    for (let i = this._head; i < this.items.length; i++) {
+      if (this.items[i]!.value === value) {
+        index = i
+        break
+      }
+    }
+    if (index === -1) {
       return false
     }
 
@@ -120,7 +137,14 @@ export class AdaptivePQ2<T> {
   }
 
   private shouldUseHeap(): boolean {
-    return this.items.length > this.threshold
+    if (this._heapMode) return true
+    const effectiveSize = this.items.length - this._head
+    if (effectiveSize > this.threshold) {
+      this._heapMode = true
+      if (this._head > 0) this._compact()
+      return true
+    }
+    return false
   }
 
   private sortedInsert(priority: number, value: T): void {

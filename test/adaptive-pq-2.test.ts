@@ -515,4 +515,66 @@ describe('AdaptivePQ2', () => {
     pq.push(1, 'a')
     expect(pq.isEmpty()).toBe(false)
   })
+
+  describe('sorted-to-heap transition', () => {
+    it('should return correct items after popping in sorted mode then crossing threshold', () => {
+      const pq = new AdaptivePQ2<number>(10)
+
+      for (let i = 0; i < 10; i++) {
+        pq.push(i * 10, i)
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const item = pq.pop()
+        expect(item?.value).toBe(i)
+      }
+      expect(pq.size).toBe(5)
+
+      for (let i = 0; i < 8; i++) {
+        pq.push(55 + i * 10, 100 + i)
+      }
+      expect(pq.size).toBe(13)
+
+      const result: number[] = []
+      while (!pq.isEmpty()) {
+        result.push(pq.pop()!.value)
+      }
+
+      const expected = [5, 100, 6, 101, 7, 102, 8, 103, 9, 104, 105, 106, 107]
+      expect(result).toEqual(expected)
+    })
+
+    it('should not find items in dead zone via contains', () => {
+      const pq = new AdaptivePQ2<string>(10)
+
+      for (let i = 0; i < 6; i++) {
+        pq.push(i, `item${i}`)
+      }
+
+      pq.pop()
+      pq.pop()
+      pq.pop()
+
+      expect(pq.contains('item0')).toBe(false)
+      expect(pq.contains('item1')).toBe(false)
+      expect(pq.contains('item2')).toBe(false)
+      expect(pq.contains('item3')).toBe(true)
+      expect(pq.contains('item4')).toBe(true)
+      expect(pq.contains('item5')).toBe(true)
+    })
+
+    it('should not remove items from dead zone', () => {
+      const pq = new AdaptivePQ2<string>(10)
+
+      for (let i = 0; i < 6; i++) {
+        pq.push(i, `item${i}`)
+      }
+
+      pq.pop()
+      expect(pq.size).toBe(5)
+
+      expect(pq.remove('item0')).toBe(false)
+      expect(pq.size).toBe(5)
+    })
+  })
 })

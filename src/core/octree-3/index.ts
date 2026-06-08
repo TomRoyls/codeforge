@@ -45,8 +45,8 @@ class OctreeNode<T> {
     }
   }
 
-  insert(point: Point3D, data: T, maxItems: number, rootSize: number): boolean {
-    if (!this.containsPoint(point, rootSize)) {
+  insert(point: Point3D, data: T, maxItems: number): boolean {
+    if (!this.containsPoint(point)) {
       return false;
     }
 
@@ -59,11 +59,11 @@ class OctreeNode<T> {
     }
 
     const index = this.getOctantIndex(point);
-    return this.children[index]!.insert(point, data, maxItems, rootSize);
+    return this.children[index]!.insert(point, data, maxItems);
   }
 
-  containsPoint(point: Point3D, rootSize: number): boolean {
-    const halfSize = rootSize / 2;
+  containsPoint(point: Point3D): boolean {
+    const halfSize = this.size / 2;
     return (
       point.x >= this.center.x - halfSize &&
       point.x <= this.center.x + halfSize &&
@@ -74,8 +74,8 @@ class OctreeNode<T> {
     );
   }
 
-  remove(point: Point3D, maxItems: number, rootSize: number): boolean {
-    if (!this.containsPoint(point, rootSize)) {
+  remove(point: Point3D, maxItems: number): boolean {
+    if (!this.containsPoint(point)) {
       return false;
     }
 
@@ -94,7 +94,7 @@ class OctreeNode<T> {
     }
 
     const octantIndex = this.getOctantIndex(point);
-    const result = this.children[octantIndex]!.remove(point, maxItems, rootSize);
+    const result = this.children[octantIndex]!.remove(point, maxItems);
     if (result) {
       this.tryMerge(maxItems);
     }
@@ -120,10 +120,10 @@ class OctreeNode<T> {
     }
   }
 
-  query(center: Point3D, radius: number, rootSize: number): OctreeItem<T>[] {
+  query(center: Point3D, radius: number): OctreeItem<T>[] {
     const results: OctreeItem<T>[] = [];
 
-    if (!this.intersectsSphere(center, radius, rootSize)) {
+    if (!this.intersectsSphere(center, radius)) {
       return results;
     }
 
@@ -141,14 +141,14 @@ class OctreeNode<T> {
     }
 
     for (let i = 0; i < 8; i++) {
-      results.push(...this.children[i]!.query(center, radius, rootSize));
+      results.push(...this.children[i]!.query(center, radius));
     }
 
     return results;
   }
 
-  intersectsSphere(center: Point3D, radius: number, rootSize: number): boolean {
-    const halfSize = rootSize / 2;
+  intersectsSphere(center: Point3D, radius: number): boolean {
+    const halfSize = this.size / 2;
     const minX = this.center.x - halfSize;
     const maxX = this.center.x + halfSize;
     const minY = this.center.y - halfSize;
@@ -168,8 +168,8 @@ class OctreeNode<T> {
     return distanceSquared <= radius * radius;
   }
 
-  contains(point: Point3D, rootSize: number): boolean {
-    if (!this.containsPoint(point, rootSize)) {
+  contains(point: Point3D): boolean {
+    if (!this.containsPoint(point)) {
       return false;
     }
 
@@ -183,7 +183,7 @@ class OctreeNode<T> {
     }
 
     const index = this.getOctantIndex(point);
-    return this.children[index]!.contains(point, rootSize);
+    return this.children[index]!.contains(point);
   }
 
   count(): number {
@@ -233,19 +233,19 @@ export class Octree3<T> {
   }
 
   insert(point: Point3D, data: T): boolean {
-    return this.root.insert(point, data, this.maxItems, this.root.size);
+    return this.root.insert(point, data, this.maxItems);
   }
 
   remove(point: Point3D): boolean {
-    return this.root.remove(point, this.maxItems, this.root.size);
+    return this.root.remove(point, this.maxItems);
   }
 
   query(center: Point3D, radius: number): OctreeItem<T>[] {
-    return this.root.query(center, radius, this.root.size);
+    return this.root.query(center, radius);
   }
 
   contains(point: Point3D): boolean {
-    return this.root.contains(point, this.root.size);
+    return this.root.contains(point);
   }
 
   get size(): number {

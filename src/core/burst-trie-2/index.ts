@@ -61,7 +61,15 @@ export class BurstTrie2 {
       if (!node.children.has(char)) return false
       node = node.children.get(char)!
     }
-    return node.values.includes(word)
+    return this.containsInSubtree(node, word)
+  }
+
+  private containsInSubtree(node: BurstTrieNode, word: string): boolean {
+    if (node.values.includes(word)) return true
+    for (const child of node.children.values()) {
+      if (this.containsInSubtree(child, word)) return true
+    }
+    return false
   }
 
   remove(word: string): boolean {
@@ -71,11 +79,20 @@ export class BurstTrie2 {
       if (!node.children.has(char)) return false
       node = node.children.get(char)!
     }
+    return this.removeFromSubtree(node, word)
+  }
+
+  private removeFromSubtree(node: BurstTrieNode, word: string): boolean {
     const idx = node.values.indexOf(word)
-    if (idx === -1) return false
-    node.values.splice(idx, 1)
-    this.count--
-    return true
+    if (idx !== -1) {
+      node.values.splice(idx, 1)
+      this.count--
+      return true
+    }
+    for (const child of node.children.values()) {
+      if (this.removeFromSubtree(child, word)) return true
+    }
+    return false
   }
 
   size(): number {
