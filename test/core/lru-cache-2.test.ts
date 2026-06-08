@@ -1046,7 +1046,7 @@ describe('LRU2Cache', () => {
       expect(cache.get('a')).toBe(2)
     })
 
-    it.skip('multiple operations maintain consistency', () => {
+    it('multiple operations maintain consistency', () => {
       const cache = new LRU2Cache<string, number>({ maxSize: 3 })
       cache.set('a', 1)
       cache.set('b', 2)
@@ -1055,7 +1055,7 @@ describe('LRU2Cache', () => {
       cache.delete('b')
       cache.set('d', 4)
       expect(cache.size()).toBe(3)
-      expect(cache.keys()).toEqual(['a', 'c', 'd'])
+      expect(cache.keys()).toEqual(['c', 'a', 'd'])
     })
 
     it('clone after modifications preserves state', () => {

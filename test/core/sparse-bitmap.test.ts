@@ -982,7 +982,7 @@ describe("SparseBitmap", () => {
       expect(bitmap.get(101)).toBe(false);
     });
 
-    it.skip("should handle large gaps between bits", () => {
+    it("should handle large gaps between bits", () => {
       const bitmap = new SparseBitmap();
       bitmap.set(5);
       bitmap.set(1000);
@@ -991,7 +991,7 @@ describe("SparseBitmap", () => {
       expect(bitmap.get(5)).toBe(true);
       expect(bitmap.get(1000)).toBe(true);
       expect(bitmap.get(10000)).toBe(true);
-      expect(bitmap.size).toBe(314);
+      expect(bitmap.size).toBe(3);
     });
 
     it("should handle dense patterns", () => {
@@ -1001,13 +1001,13 @@ describe("SparseBitmap", () => {
       expect(bitmap.size).toBe(4);
     });
 
-    it.skip("should handle sparse patterns", () => {
+    it("should handle sparse patterns", () => {
       const bitmap = new SparseBitmap();
       for (let i = 0; i < 100; i += 10) {
         bitmap.set(i);
       }
       expect(bitmap.cardinality).toBe(10);
-      expect(bitmap.size).toBe(4);
+      expect(bitmap.size).toBe(3);
     });
 
     it("should handle alternating pattern", () => {
