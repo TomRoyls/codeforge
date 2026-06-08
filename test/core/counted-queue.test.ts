@@ -446,7 +446,7 @@ describe('CountedQueue', () => {
       expect(q.mostFrequent()).toEqual([3, 1, 2])
     })
 
-    it.skip('should update after dequeue', () => {
+    it('should update after dequeue', () => {
       const q = new CountedQueue<number>()
       q.enqueue(1)
       q.enqueue(2)
