@@ -762,7 +762,7 @@ describe('Deque', () => {
       expect(d.toArray()).toEqual([1, 2, 3])
     })
 
-    it.skip('handles rotation larger than size', () => {
+    it('handles rotation larger than size', () => {
       const d = Deque.from([1, 2, 3])
       d.rotate(5)
       expect(d.toArray()).toEqual([3, 1, 2])

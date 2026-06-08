@@ -103,14 +103,14 @@ describe('ChunkedArray', () => {
       expect(arr.size).toBe(2)
     })
 
-    it.skip('removes empty chunks after pop', () => {
+    it('removes empty chunks after pop', () => {
       const arr = new ChunkedArray<number>(2)
       arr.push(1)
       arr.push(2)
       arr.push(3)
       expect(arr.chunkCount).toBe(2)
       arr.pop()
-      expect(arr.chunkCount).toBe(2)
+      expect(arr.chunkCount).toBe(1)
       arr.pop()
       expect(arr.chunkCount).toBe(1)
       arr.pop()

@@ -270,11 +270,11 @@ describe('MedianHeap', () => {
       expect(heap.size).toBe(2)
     })
 
-    it.skip('maintains correct median after removal', () => {
+    it('maintains correct median after removal', () => {
       const heap = new MedianHeap()
       for (let i = 1; i <= 5; i++) heap.insert(i)
       heap.remove(3)
-      expect(heap.median()).toBe(2.5)
+      expect(heap.median()).toBe(3)
     })
 
     it('removes only first occurrence of duplicates', () => {
