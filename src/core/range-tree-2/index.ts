@@ -100,13 +100,13 @@ export class RangeTree<T> {
     if (node === null) return;
     const cmpLo = this.compare(node.value, lo);
     const cmpHi = this.compare(node.value, hi);
-    if (cmpLo > 0) {
+    if (cmpLo >= 0) {
       this.queryRangeHelper(node.left, lo, hi, result);
     }
     if (cmpLo >= 0 && cmpHi <= 0) {
       result.push(node.value);
     }
-    if (cmpHi < 0) {
+    if (cmpHi <= 0) {
       this.queryRangeHelper(node.right, lo, hi, result);
     }
   }
@@ -180,16 +180,16 @@ export class RangeTree<T> {
       const node = stack.pop()!;
       const cmp = this.compare(point, node.value);
       const dist = cmp < 0 ? -cmp : cmp;
-      if (dist < bestDist) {
+      if (dist < bestDist || (dist === bestDist && this.compare(node.value, best) < 0)) {
         bestDist = dist;
         best = node.value;
       }
       if (cmp < 0) {
         if (node.left !== null) stack.push(node.left);
-        if (node.right !== null && dist <= bestDist * 2) stack.push(node.right);
+        if (node.right !== null && dist <= bestDist) stack.push(node.right);
       } else if (cmp > 0) {
         if (node.right !== null) stack.push(node.right);
-        if (node.left !== null && dist <= bestDist * 2) stack.push(node.left);
+        if (node.left !== null && dist <= bestDist) stack.push(node.left);
       }
     }
     return best;
@@ -213,7 +213,7 @@ export class RangeTree<T> {
     const cmp = this.compare(point, node.value);
     const dist = cmp < 0 ? -cmp : cmp;
     candidates.push({ value: node.value, distance: dist });
-    candidates.sort((a, b) => a.distance - b.distance);
+    candidates.sort((a, b) => a.distance - b.distance || this.compare(a.value, b.value));
     if (candidates.length > k) candidates.length = k;
 
     const primary = cmp < 0 ? node.left : node.right;
