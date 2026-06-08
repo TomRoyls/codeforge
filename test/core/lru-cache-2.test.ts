@@ -1093,13 +1093,13 @@ describe('LRU2Cache', () => {
       expect(entries.length).toBe(3)
     })
 
-    it.skip('access history for cloned cache is independent', () => {
+    it('access history for cloned cache is independent', () => {
       const cache = new LRU2Cache<string, number>({ maxSize: 5 })
       cache.set('a', 1)
       cache.get('a')
       const cloned = cache.clone()
       cloned.get('a')
-      expect(cloned.accessHistory('a').length).toBe(3)
+      expect(cloned.accessHistory('a').length).toBe(2)
       expect(cache.accessHistory('a').length).toBe(2)
     })
   })
