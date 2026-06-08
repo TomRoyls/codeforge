@@ -166,7 +166,7 @@ export class DanceLink {
       if (_mode === 'count') {
         this.solutionCount++;
       } else {
-        this.solutions.push([...this.solution]);
+        this.solutions.push(this.solution.slice(0, k));
       }
       return _mode === 'one' || this.solutions.length >= this.maxSolutions;
     }
