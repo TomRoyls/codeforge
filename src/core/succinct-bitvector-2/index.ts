@@ -45,7 +45,7 @@ export class SuccinctBitvector2 {
     if (index < 0) {
       return 0;
     }
-    if (index > this._length) {
+    if (index >= this._length) {
       return this._totalOnes;
     }
     const blockIndex = Math.floor(index / BLOCK_SIZE);
