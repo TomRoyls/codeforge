@@ -293,13 +293,13 @@ describe('StochasticMatrix2 – power', () => {
     expect(result.getTransition('b', 'a')).toBe(0)
   })
 
-  it('returns empty copy for power 1', () => {
+  it('returns copy of self for power 1', () => {
     const m = new StochasticMatrix2(['a', 'b'])
     m.setTransition('a', 'a', 0.5)
     m.setTransition('a', 'b', 0.5)
     const result = m.power(1)
-    expect(result.getTransition('a', 'a')).toBe(0)
-    expect(result.getTransition('a', 'b')).toBe(0)
+    expect(result.getTransition('a', 'a')).toBe(0.5)
+    expect(result.getTransition('a', 'b')).toBe(0.5)
   })
 
   it('throws for negative power', () => {
