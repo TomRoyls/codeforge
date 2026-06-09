@@ -147,4 +147,8 @@ export class AmericanFlagSort2 {
     }
     return true;
   }
+
+  toString(): string {
+    return `AmericanFlagSort2()`
+  }
 }

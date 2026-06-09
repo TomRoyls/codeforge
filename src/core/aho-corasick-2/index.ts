@@ -130,4 +130,8 @@ export class AhoCorasick2 {
     this.buildTrie(this.patternList);
     this.buildFailureLinks();
   }
+
+  toString(): string {
+    return `AhoCorasick2()`
+  }
 }

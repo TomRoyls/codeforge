@@ -151,4 +151,8 @@ export class DynamicArray3<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `DynamicArray3()`
+  }
 }

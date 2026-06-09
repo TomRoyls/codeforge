@@ -67,4 +67,8 @@ export class BilinearMap2 {
   static from(items: any[]): BilinearMap2 {
     return new BilinearMap2(items)
   }
+
+  toString(): string {
+    return `BilinearMap2()`
+  }
 }

@@ -138,4 +138,8 @@ export class BloomLink2 {
   isEmpty(): boolean {
     return this.itemCount === 0;
   }
+
+  toString(): string {
+    return `BloomLink2({ size: ${this.size} })`
+  }
 }

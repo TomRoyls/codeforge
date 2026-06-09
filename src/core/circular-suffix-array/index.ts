@@ -132,4 +132,8 @@ export class CircularSuffixArray {
     }
     throw new RangeError(`Character ${c} does not have ${k + 1} occurrence(s) in BWT`)
   }
+
+  toString(): string {
+    return `CircularSuffixArray()`
+  }
 }

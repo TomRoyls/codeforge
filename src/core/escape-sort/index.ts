@@ -108,4 +108,8 @@ export class EscapeSort {
     }
     return true;
   }
+
+  toString(): string {
+    return `EscapeSort()`
+  }
 }

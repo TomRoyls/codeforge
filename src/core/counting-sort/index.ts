@@ -221,6 +221,10 @@ export class CountingSort {
     cs.sort(arr)
     return cs
   }
+
+  toString(): string {
+    return `CountingSort()`
+  }
 }
 
 export type { CountingSortOptions, DistributionEntry } from './types.js'

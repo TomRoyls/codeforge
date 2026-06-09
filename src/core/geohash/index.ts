@@ -183,4 +183,8 @@ export class Geohash {
 
     return true;
   }
+
+  toString(): string {
+    return `Geohash()`
+  }
 }

@@ -163,4 +163,8 @@ export class CacheObliviousArray<T> {
   static fromArray<U>(items: U[]): CacheObliviousArray<U> {
     return new CacheObliviousArray<U>(items)
   }
+
+  toString(): string {
+    return `CacheObliviousArray({ size: ${this._size} })`
+  }
 }

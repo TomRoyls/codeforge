@@ -114,4 +114,8 @@ export class FlashSort2<T> {
       arr[j + 1] = key
     }
   }
+
+  toString(): string {
+    return `FlashSort2()`
+  }
 }

@@ -120,4 +120,8 @@ export class GallopingSearch<T> {
   has(target: T): boolean {
     return this.contains(target)
   }
+
+  toString(): string {
+    return `GallopingSearch()`
+  }
 }

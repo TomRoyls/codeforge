@@ -239,4 +239,8 @@ export class GraphAdjMatrix<T extends string | number> {
   toArray() {
     return this.getEdges()
   }
+
+  toString(): string {
+    return `GraphAdjMatrix()`
+  }
 }

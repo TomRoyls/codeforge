@@ -97,4 +97,8 @@ export class GnomeSort3<T> {
     this.array[i] = this.array[j]!
     this.array[j] = temp
   }
+
+  toString(): string {
+    return `GnomeSort3()`
+  }
 }

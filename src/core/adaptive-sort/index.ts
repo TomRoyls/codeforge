@@ -183,4 +183,8 @@ export class AdaptiveSort<T> {
 
     return 'O(n log n)'
   }
+
+  toString(): string {
+    return `AdaptiveSort()`
+  }
 }

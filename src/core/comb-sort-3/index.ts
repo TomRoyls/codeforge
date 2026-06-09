@@ -101,4 +101,8 @@ export class CombSort3<T> {
   getSpaceComplexity(): string {
     return 'O(1)'
   }
+
+  toString(): string {
+    return `CombSort3()`
+  }
 }

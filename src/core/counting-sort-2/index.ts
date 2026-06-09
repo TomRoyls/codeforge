@@ -114,4 +114,8 @@ export class CountingSort {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `CountingSort()`
+  }
 }

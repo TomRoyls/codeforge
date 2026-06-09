@@ -282,4 +282,8 @@ export class AVLTree<T> {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `AVLTree({ size: ${this._size} })`
+  }
 }

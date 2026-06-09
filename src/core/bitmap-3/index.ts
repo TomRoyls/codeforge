@@ -188,4 +188,8 @@ export class Bitmap3 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `Bitmap3({ size: ${this.size} })`
+  }
 }

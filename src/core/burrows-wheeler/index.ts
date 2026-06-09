@@ -60,6 +60,10 @@ export class BurrowsWheeler {
   static getTransforms(input: string): string[] {
     return getTransforms(input);
   }
+
+  toString(): string {
+    return `BurrowsWheeler()`
+  }
 }
 
 function getTransforms(input: string): string[] {

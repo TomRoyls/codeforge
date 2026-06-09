@@ -110,4 +110,8 @@ export class EdgeGraph2 {
   toArray() {
     return this.getEdges()
   }
+
+  toString(): string {
+    return `EdgeGraph2()`
+  }
 }

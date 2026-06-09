@@ -94,4 +94,8 @@ export class BloomFilter {
   isEmpty(): boolean {
     return this.size === 0
   }
+
+  toString(): string {
+    return `BloomFilter({ size: ${this.size} })`
+  }
 }

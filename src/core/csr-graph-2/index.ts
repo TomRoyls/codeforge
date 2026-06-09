@@ -98,4 +98,8 @@ export class CSRGraph2 {
     this.csrEdges = null
     this._edgeCount = 0
   }
+
+  toString(): string {
+    return `CSRGraph2()`
+  }
 }

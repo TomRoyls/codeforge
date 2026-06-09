@@ -141,4 +141,8 @@ export class FibonacciSearch3<T = number> {
     const last = this.searchLast(arr, target);
     return [first, last];
   }
+
+  toString(): string {
+    return `FibonacciSearch3()`
+  }
 }

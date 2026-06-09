@@ -121,4 +121,8 @@ export class BlockSort2 {
     }
     return true;
   }
+
+  toString(): string {
+    return `BlockSort2()`
+  }
 }

@@ -151,4 +151,8 @@ export class CocktailSort3<T> {
     this.passCount = 0
     this.swapCount = 0
   }
+
+  toString(): string {
+    return `CocktailSort3()`
+  }
 }

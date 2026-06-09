@@ -163,4 +163,8 @@ export class EditBuffer2 {
       stack.splice(0, excess)
     }
   }
+
+  toString(): string {
+    return `EditBuffer2()`
+  }
 }

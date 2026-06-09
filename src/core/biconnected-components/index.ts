@@ -226,4 +226,8 @@ export class BiconnectedComponents {
   clear(): void {
     this.edges = 0
   }
+
+  toString(): string {
+    return `BiconnectedComponents()`
+  }
 }

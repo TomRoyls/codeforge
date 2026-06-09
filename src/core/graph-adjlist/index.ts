@@ -333,4 +333,8 @@ export class GraphAdjList<T> {
   toArray() {
     return this.getEdges()
   }
+
+  toString(): string {
+    return `GraphAdjList()`
+  }
 }

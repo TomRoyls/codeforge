@@ -59,4 +59,8 @@ export class CubeSort2 {
       }
     }
   }
+
+  toString(): string {
+    return `CubeSort2()`
+  }
 }

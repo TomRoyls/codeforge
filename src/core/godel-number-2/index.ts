@@ -117,4 +117,8 @@ export class GodelNumber2 {
 
     return result;
   }
+
+  toString(): string {
+    return `GodelNumber2()`
+  }
 }

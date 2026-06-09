@@ -161,4 +161,8 @@ export class BurstSort2<T> {
     }
     return true
   }
+
+  toString(): string {
+    return `BurstSort2()`
+  }
 }

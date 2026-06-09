@@ -64,4 +64,8 @@ export class BoyerMooreHorspool2 {
   pattern(): string {
     return this._pattern;
   }
+
+  toString(): string {
+    return `BoyerMooreHorspool2()`
+  }
 }

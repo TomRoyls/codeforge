@@ -288,4 +288,8 @@ export class BucketSort4<T extends number> {
       arr[j + 1]! = key;
     }
   }
+
+  toString(): string {
+    return `BucketSort4()`
+  }
 }

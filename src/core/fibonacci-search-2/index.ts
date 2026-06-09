@@ -211,4 +211,8 @@ export class FibonacciSearch {
   has(target: number): boolean {
     return this.contains(target)
   }
+
+  toString(): string {
+    return `FibonacciSearch()`
+  }
 }

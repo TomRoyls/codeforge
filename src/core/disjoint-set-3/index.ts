@@ -98,4 +98,8 @@ export class DisjointSet3 {
   clear(): void {
     this.setCount = 0
   }
+
+  toString(): string {
+    return `DisjointSet3({ size: ${this.size} })`
+  }
 }

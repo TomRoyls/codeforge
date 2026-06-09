@@ -72,4 +72,8 @@ export class BogoSort2<T> {
   getSpaceComplexity(): string {
     return 'O(n)'
   }
+
+  toString(): string {
+    return `BogoSort2()`
+  }
 }

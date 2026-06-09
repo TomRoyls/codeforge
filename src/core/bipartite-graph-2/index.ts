@@ -106,4 +106,8 @@ export class BipartiteGraph2 {
     }
     return count;
   }
+
+  toString(): string {
+    return `BipartiteGraph2()`
+  }
 }

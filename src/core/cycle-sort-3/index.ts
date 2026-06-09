@@ -105,4 +105,8 @@ export class CycleSort3<T> {
   getSpaceComplexity(): string {
     return 'O(1)'
   }
+
+  toString(): string {
+    return `CycleSort3()`
+  }
 }

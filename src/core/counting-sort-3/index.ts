@@ -113,4 +113,8 @@ export class CountingSort {
     this.maxValue = 0
     this.counts = []
   }
+
+  toString(): string {
+    return `CountingSort()`
+  }
 }

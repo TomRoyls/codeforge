@@ -72,4 +72,8 @@ export class GoldenRatioSearch {
   clear(): void {
     this.iterations = 0
   }
+
+  toString(): string {
+    return `GoldenRatioSearch()`
+  }
 }

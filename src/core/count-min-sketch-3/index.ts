@@ -63,4 +63,8 @@ export class CountMinSketch3 {
 
     return (h >>> 0);
   }
+
+  toString(): string {
+    return `CountMinSketch3()`
+  }
 }

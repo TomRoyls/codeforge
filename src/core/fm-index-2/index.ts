@@ -120,4 +120,8 @@ export class FMIndex2 {
   get length(): number {
     return this.originalText.length;
   }
+
+  toString(): string {
+    return `FMIndex2()`
+  }
 }

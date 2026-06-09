@@ -211,4 +211,8 @@ export class BubbleSort4<T> {
   clear(): void {
     this.passCount = 0
   }
+
+  toString(): string {
+    return `BubbleSort4()`
+  }
 }

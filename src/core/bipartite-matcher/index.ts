@@ -268,4 +268,8 @@ export class BipartiteMatcher<L, R> {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `BipartiteMatcher()`
+  }
 }
