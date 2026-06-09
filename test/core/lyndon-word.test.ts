@@ -58,12 +58,12 @@ describe('lyndonFactorize', () => {
         expect(lyndonFactorize('abcabc')).toEqual(['abc', 'abc']);
     });
 
-    it.skip('factors complex string 1', () => {
-        expect(lyndonFactorize('ababb')).toEqual(['ab', 'abb']);
+    it('factors complex string 1', () => {
+        expect(lyndonFactorize('ababb')).toEqual(['ababb']);
     });
 
-    it.skip('factors complex string 2', () => {
-        expect(lyndonFactorize('bacab')).toEqual(['b', 'a', 'cab']);
+    it('factors complex string 2', () => {
+        expect(lyndonFactorize('bacab')).toEqual(['b', 'ac', 'ab']);
     });
 
     it('factors complex string 3', () => {
@@ -89,18 +89,18 @@ describe('lyndonFactorize', () => {
         expect(lyndonFactorize('abcabcabc')).toEqual(['abc', 'abc', 'abc']);
     });
 
-    it.skip('factors mixed case', () => {
-        expect(lyndonFactorize('aA')).toEqual(['A', 'a']);
-        expect(lyndonFactorize('Ab')).toEqual(['A', 'b']);
+    it('factors mixed case', () => {
+        expect(lyndonFactorize('aA')).toEqual(['a', 'A']);
+        expect(lyndonFactorize('Ab')).toEqual(['Ab']);
     });
 
     it('factors alternating pattern', () => {
         expect(lyndonFactorize('abababa')).toEqual(['ab', 'ab', 'ab', 'a']);
     });
 
-    it.skip('factors non-alphabetic characters', () => {
-        expect(lyndonFactorize('0101')).toEqual(['0', '0', '1', '1']);
-        expect(lyndonFactorize('ab12')).toEqual(['a', 'b', '1', '2']);
+    it('factors non-alphabetic characters', () => {
+        expect(lyndonFactorize('0101')).toEqual(['01', '01']);
+        expect(lyndonFactorize('ab12')).toEqual(['ab', '12']);
     });
 
     it('factors long string', () => {
@@ -118,8 +118,8 @@ describe('lyndonFactorize', () => {
         expect(lyndonFactorize('aba')).toEqual(['ab', 'a']);
     });
 
-    it.skip('factors palindrome 2', () => {
-        expect(lyndonFactorize('abba')).toEqual(['a', 'bb', 'a']);
+    it('factors palindrome 2', () => {
+        expect(lyndonFactorize('abba')).toEqual(['abb', 'a']);
     });
 
     it('factors string starting with largest char', () => {
@@ -139,9 +139,9 @@ describe('lyndonFactorize', () => {
         expect(lyndonFactorize('cba')).toEqual(['c', 'b', 'a']);
     });
 
-    it.skip('factors single repeated char then different', () => {
-        expect(lyndonFactorize('aaab')).toEqual(['a', 'aab']);
-        expect(lyndonFactorize('bbbc')).toEqual(['b', 'bbc']);
+    it('factors single repeated char then different', () => {
+        expect(lyndonFactorize('aaab')).toEqual(['aaab']);
+        expect(lyndonFactorize('bbbc')).toEqual(['bbbc']);
     });
 
     it('factors mixed with duplicates', () => {
@@ -149,13 +149,12 @@ describe('lyndonFactorize', () => {
         expect(lyndonFactorize('ccbbaa')).toEqual(['c', 'c', 'b', 'b', 'a', 'a']);
     });
 
-    it.skip('factors non-increasing property holds', () => {
+    it('factors non-increasing property holds', () => {
         const factors1 = lyndonFactorize('abab');
         expect(factors1[0]! >= factors1[1]!).toBe(true);
 
         const factors2 = lyndonFactorize('bacb');
         expect(factors2[0]! >= factors2[1]!).toBe(true);
-        expect(factors2[1]! >= factors2[2]!).toBe(true);
     });
 
     it('factors each factor is Lyndon word', () => {
@@ -189,12 +188,12 @@ describe('lyndonFactorize', () => {
         expect(lyndonFactorize('aabbcc')).toEqual(['aabbcc']);
     });
 
-    it.skip('factors aababc', () => {
-        expect(lyndonFactorize('aababc')).toEqual(['aab', 'abc']);
+    it('factors aababc', () => {
+        expect(lyndonFactorize('aababc')).toEqual(['aababc']);
     });
 
-    it.skip('factors ababbab', () => {
-        expect(lyndonFactorize('ababbab')).toEqual(['ab', 'abb', 'ab']);
+    it('factors ababbab', () => {
+        expect(lyndonFactorize('ababbab')).toEqual(['ababb', 'ab']);
     });
 });
 
@@ -256,16 +255,16 @@ describe('isLyndonWord', () => {
         expect(isLyndonWord('aba')).toBe(false);
     });
 
-    it.skip('abcabc is not Lyndon word', () => {
+    it('abcabc is not Lyndon word', () => {
         expect(isLyndonWord('abcabc')).toBe(false);
     });
 
-    it.skip('abab is not Lyndon word', () => {
+    it('abab is not Lyndon word', () => {
         expect(isLyndonWord('abab')).toBe(false);
     });
 
-    it.skip('ababb is not Lyndon word', () => {
-        expect(isLyndonWord('ababb')).toBe(false);
+    it('ababb is Lyndon word', () => {
+        expect(isLyndonWord('ababb')).toBe(true);
     });
 
     it('acbd is Lyndon word (complex)', () => {
@@ -304,16 +303,16 @@ describe('isLyndonWord', () => {
         expect(isLyndonWord('dc')).toBe(false);
     });
 
-    it.skip('two chars same', () => {
+    it('two chars same', () => {
         expect(isLyndonWord('ee')).toBe(false);
     });
 
-    it.skip('mixed case', () => {
+    it('mixed case', () => {
         expect(isLyndonWord('aA')).toBe(false);
-        expect(isLyndonWord('Ab')).toBe(false);
+        expect(isLyndonWord('Ab')).toBe(true);
     });
 
-    it.skip('repeated pattern not Lyndon', () => {
+    it('repeated pattern not Lyndon', () => {
         expect(isLyndonWord('ababab')).toBe(false);
         expect(isLyndonWord('abcabc')).toBe(false);
     });
@@ -349,8 +348,8 @@ describe('isLyndonWord', () => {
         expect(isLyndonWord('aabbcc')).toBe(true);
     });
 
-    it.skip('aababc is not Lyndon word', () => {
-        expect(isLyndonWord('aababc')).toBe(false);
+    it('aababc is Lyndon word', () => {
+        expect(isLyndonWord('aababc')).toBe(true);
     });
 
     it('ababbab is not Lyndon word', () => {
@@ -436,9 +435,9 @@ describe('LyndonFactorization class', () => {
         expect(lf.minRotation('abab')).toBe('abab');
     });
 
-    it.skip('minRotation handles decreasing string', () => {
+    it('minRotation handles decreasing string', () => {
         const lf = new LyndonFactorization();
-        expect(lf.minRotation('dcba')).toBe('abcd');
+        expect(lf.minRotation('dcba')).toBe('adcb');
     });
 
     it('minRotation handles string with duplicates', () => {
@@ -479,10 +478,9 @@ describe('LyndonFactorization class', () => {
         expect(lf.getFactors()).toEqual(['ab', 'ab']);
     });
 
-    it.skip('countLyndonFactors works without factorize call', () => {
+    it('countLyndonFactors works without factorize call', () => {
         const lf = new LyndonFactorization();
         expect(lf.countLyndonFactors('abc')).toBe(1);
-        expect(lf.getFactors()).toEqual(['abc']);
     });
 
     it('isLyndon works independently', () => {
@@ -519,7 +517,7 @@ describe('edge cases', () => {
         expect(lyndonFactorize('aaaa')).toEqual(['a', 'a', 'a', 'a']);
     });
 
-    it.skip('handles all same chars Lyndon check', () => {
+    it('handles all same chars Lyndon check', () => {
         expect(isLyndonWord('aaaa')).toBe(false);
     });
 
@@ -528,7 +526,7 @@ describe('edge cases', () => {
         expect(lf.minRotation('aaaa')).toBe('aaaa');
     });
 
-    it.skip('handles two chars same', () => {
+    it('handles two chars same', () => {
         expect(lyndonFactorize('aa')).toEqual(['a', 'a']);
         expect(isLyndonWord('aa')).toBe(false);
     });
@@ -545,7 +543,7 @@ describe('edge cases', () => {
         expect(isLyndonWord('αβγ')).toBe(true);
     });
 
-    it.skip('handles very long string', () => {
+    it('handles very long string', () => {
         const s = 'a'.repeat(1000);
         expect(lyndonFactorize(s)).toEqual(Array(1000).fill('a'));
         expect(isLyndonWord(s)).toBe(false);
@@ -633,18 +631,18 @@ describe('random and complex patterns', () => {
         expect(isLyndonWord('ababa')).toBe(false);
     });
 
-    it.skip('handles pattern aaabbb', () => {
-        expect(lyndonFactorize('aaabbb')).toEqual(['a', 'aabbb']);
-        expect(isLyndonWord('aaabbb')).toBe(false);
+    it('handles pattern aaabbb', () => {
+        expect(lyndonFactorize('aaabbb')).toEqual(['aaabbb']);
+        expect(isLyndonWord('aaabbb')).toBe(true);
     });
 
-    it.skip('handles pattern bbbaaa', () => {
-        expect(lyndonFactorize('bbbaaa')).toEqual(['b', 'bb', 'aaa']);
+    it('handles pattern bbbaaa', () => {
+        expect(lyndonFactorize('bbbaaa')).toEqual(['b', 'b', 'b', 'a', 'a', 'a']);
         expect(isLyndonWord('bbbaaa')).toBe(false);
     });
 
-    it.skip('handles pattern abcdeedcba', () => {
-        expect(lyndonFactorize('abcdeedcba')).toEqual(['a', 'bcdeedcba']);
+    it('handles pattern abcdeedcba', () => {
+        expect(lyndonFactorize('abcdeedcba')).toEqual(['abcdeedcb', 'a']);
         expect(isLyndonWord('abcdeedcba')).toBe(false);
     });
 
@@ -657,9 +655,9 @@ describe('random and complex patterns', () => {
         expect(factors.join('')).toBe(s);
     });
 
-    it.skip('handles repeated single char prefix', () => {
-        expect(lyndonFactorize('aabc')).toEqual(['a', 'abc']);
-        expect(lyndonFactorize('aaabc')).toEqual(['a', 'aabc']);
+    it('handles repeated single char prefix', () => {
+        expect(lyndonFactorize('aabc')).toEqual(['aabc']);
+        expect(lyndonFactorize('aaabc')).toEqual(['aaabc']);
     });
 
     it('handles non-uniform distribution', () => {
