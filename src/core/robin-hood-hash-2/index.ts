@@ -164,4 +164,36 @@ export class RobinHoodHash2<K, V> {
       }
     }
   }
+
+
+
+  toEntryArray(): [K, V][] {
+    const result: [K, V][] = []
+    for (const entry of this.entries) {
+      if (entry !== null) {
+        result.push([entry.key, entry.value])
+      }
+    }
+    return result
+  }
+
+  keyArray(): K[] {
+    const result: K[] = []
+    for (const entry of this.entries) {
+      if (entry !== null) {
+        result.push(entry.key)
+      }
+    }
+    return result
+  }
+
+  valueArray(): V[] {
+    const result: V[] = []
+    for (const entry of this.entries) {
+      if (entry !== null) {
+        result.push(entry.value)
+      }
+    }
+    return result
+  }
 }
