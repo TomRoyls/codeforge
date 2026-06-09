@@ -91,4 +91,11 @@ export class CSRGraph2 {
 
     return false;
   }
+
+  clear(): void {
+    this.edges = []
+    this.offsets = null
+    this.csrEdges = null
+    this._edgeCount = 0
+  }
 }

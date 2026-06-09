@@ -222,4 +222,8 @@ export class BiconnectedComponents {
   getTimeComplexity(): string {
     return 'O(V + E)';
   }
+
+  clear(): void {
+    this.edges = 0
+  }
 }

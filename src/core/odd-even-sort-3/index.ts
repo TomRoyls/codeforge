@@ -107,4 +107,9 @@ export class OddEvenSort3<T> {
     arr[i]! = arr[j]!;
     arr[j]! = temp;
   }
+
+  clear(): void {
+    this.swapCount = 0
+    this.passCount = 0
+  }
 }

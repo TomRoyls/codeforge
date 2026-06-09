@@ -101,4 +101,10 @@ export class PigeonholeSort3 {
     const k = this.findRange();
     return `O(n + k) = O(${n} + ${k})`;
   }
+
+  clear(): void {
+    this.array = []
+    this.min = 0
+    this.max = 0
+  }
 }

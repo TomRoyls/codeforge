@@ -94,4 +94,8 @@ export class DisjointSet3 {
   isEmpty(): boolean {
     return this.size.size === 0
   }
+
+  clear(): void {
+    this.setCount = 0
+  }
 }

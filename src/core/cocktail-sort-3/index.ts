@@ -146,4 +146,9 @@ export class CocktailSort3<T> {
       start = lastSwapBackward;
     }
   }
+
+  clear(): void {
+    this.passCount = 0
+    this.swapCount = 0
+  }
 }

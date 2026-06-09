@@ -118,4 +118,8 @@ export class InterpolationSearch {
   getTimeComplexity(): string {
     return 'Average: O(log(log(n))), Worst: O(n))';
   }
+
+  clear(): void {
+    this.array = []
+  }
 }

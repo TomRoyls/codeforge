@@ -207,4 +207,8 @@ export class BubbleSort4<T> {
       start = lastSwapBackward;
     }
   }
+
+  clear(): void {
+    this.passCount = 0
+  }
 }

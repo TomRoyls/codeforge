@@ -118,4 +118,9 @@ export class LCPArray2 {
   isEmpty(): boolean {
     return this.size === 0
   }
+
+  clear(): void {
+    this.lcp = []
+    this.rank = []
+  }
 }

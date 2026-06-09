@@ -68,4 +68,8 @@ export class GoldenRatioSearch {
   getTimeComplexity(): string {
     return "O(log(1/tolerance))";
   }
+
+  clear(): void {
+    this.iterations = 0
+  }
 }

@@ -77,4 +77,8 @@ export class FenwickTree3 {
   toString(): string {
     return `${FenwickTree3}({ size: ${this.size} })`
   }
+
+  clear(): void {
+    this._size = 0
+  }
 }

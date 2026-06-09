@@ -250,4 +250,11 @@ export class CountingSort4 {
       callback(item, i++)
     }
   }
+
+  clear(): void {
+    this.array = []
+    this.minValue = undefined
+    this.maxValue = 0
+    this.counts = []
+  }
 }

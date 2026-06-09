@@ -61,4 +61,9 @@ export class HashClock2 {
   get length(): number {
     return this.history.length;
   }
+
+  clear(): void {
+    this.history = []
+    this.counter = 0
+  }
 }

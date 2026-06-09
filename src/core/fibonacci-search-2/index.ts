@@ -203,4 +203,8 @@ export class FibonacciSearch {
 
     return firstIndex;
   }
+
+  clear(): void {
+    this.array = []
+  }
 }
