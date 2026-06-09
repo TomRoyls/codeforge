@@ -296,16 +296,61 @@ export class BTreeSet<T> {
   }
 
   [Symbol.iterator](): Iterator<T> {
-    const items = this.toArray()
-    let index = 0
+    if (this._size === 0) {
+      return { next: () => ({ value: undefined as unknown as T, done: true }) };
+    }
+
+    const stack: Array<{ node: BTreeNode<T>; keyIdx: number; childVisited: boolean }> = [];
+
+    const pushLeftmost = (node: BTreeNode<T>): void => {
+      let n = node;
+      while (true) {
+        stack.push({ node: n, keyIdx: 0, childVisited: false });
+        if (n.leaf || !n.children[0]) break;
+        n = n.children[0]!;
+      }
+    };
+
+    pushLeftmost(this.root);
+
     return {
       next(): IteratorResult<T> {
-        if (index < items.length) {
-          return { value: items[index++]!, done: false }
+        while (stack.length > 0) {
+          const frame = stack[stack.length - 1]!;
+          const { node } = frame;
+
+          if (node.leaf) {
+            if (frame.keyIdx < node.keys.length) {
+              const value = node.keys[frame.keyIdx]!;
+              frame.keyIdx++;
+              return { value, done: false };
+            }
+            stack.pop();
+            continue;
+          }
+
+          if (!frame.childVisited) {
+            frame.childVisited = true;
+            const child = node.children[frame.keyIdx];
+            if (child) {
+              pushLeftmost(child);
+              continue;
+            }
+          }
+
+          if (frame.keyIdx < node.keys.length) {
+            const value = node.keys[frame.keyIdx]!;
+            frame.keyIdx++;
+            frame.childVisited = false;
+            return { value, done: false };
+          }
+
+          stack.pop();
         }
-        return { value: undefined as unknown as T, done: true }
+
+        return { value: undefined as unknown as T, done: true };
       },
-    }
+    };
   }
 
   range(min: T, max: T): T[] {
