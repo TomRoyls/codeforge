@@ -133,4 +133,8 @@ export class SpatialHash2<T = unknown> {
     const cy = Math.floor(y / this.cellSize)
     return `${cx},${cy}`
   }
+
+  toString(): string {
+    return `SpatialHash2({ size: ${this.size} })`
+  }
 }

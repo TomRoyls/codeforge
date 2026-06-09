@@ -202,4 +202,8 @@ export class SpatialGrid<T> {
   }
 
 
+
+  toString(): string {
+    return `SpatialGrid({ size: ${this._size} })`
+  }
 }

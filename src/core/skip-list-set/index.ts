@@ -325,4 +325,8 @@ export class SkipListSet<T = number> {
   values(): Generator<T, void, unknown> {
     return this[Symbol.iterator]()
   }
+
+  toString(): string {
+    return `SkipListSet({ size: ${this.size} })`
+  }
 }

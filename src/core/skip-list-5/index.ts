@@ -185,4 +185,8 @@ export class SkipList<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `SkipList()`
+  }
 }

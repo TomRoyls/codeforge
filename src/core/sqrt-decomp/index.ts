@@ -268,4 +268,8 @@ export class SqrtDecomposition<T> {
   static from<T>(items: T[]): SqrtDecomposition<T> {
     return new SqrtDecomposition<T>(items)
   }
+
+  toString(): string {
+    return `SqrtDecomposition({ size: ${this.size} })`
+  }
 }

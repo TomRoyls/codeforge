@@ -184,4 +184,8 @@ export class SortedArrayMap<K = number, V = unknown> {
       },
     };
   }
+
+  toString(): string {
+    return `SortedArrayMap({ size: ${this.size} })`
+  }
 }

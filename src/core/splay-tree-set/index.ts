@@ -454,4 +454,8 @@ export class SplayTreeSet<T = number> {
     }
     return _c
   }
+
+  toString(): string {
+    return `SplayTreeSet({ size: ${this.size} })`
+  }
 }

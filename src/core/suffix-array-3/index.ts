@@ -108,4 +108,8 @@ export class SuffixArray3 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `SuffixArray3({ size: ${this.suffixArray.length} })`
+  }
 }

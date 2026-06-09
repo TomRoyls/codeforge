@@ -161,4 +161,8 @@ export class SparseSet2 {
     }
     return result;
   }
+
+  toString(): string {
+    return `SparseSet2({ size: ${this.size} })`
+  }
 }

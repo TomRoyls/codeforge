@@ -190,6 +190,10 @@ export class SlidingWindowMax<T = number> {
       this.push(val)
     }
   }
+
+  toString(): string {
+    return `SlidingWindowMax({ size: ${this.size} })`
+  }
 }
 
 export { defaultComparator } from './types.js'

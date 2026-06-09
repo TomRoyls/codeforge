@@ -229,4 +229,8 @@ export class StreamingQuantile<T = number> {
       this._hasNumericSum = true
     }
   }
+
+  toString(): string {
+    return `StreamingQuantile()`
+  }
 }

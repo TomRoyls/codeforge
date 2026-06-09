@@ -511,6 +511,10 @@ export class SparseBitSet {
   get blockSize(): number {
     return this._blockSize
   }
+
+  toString(): string {
+    return `SparseBitSet({ size: ${this.size} })`
+  }
 }
 
 function popcountBlock(block: Uint32Array): number {

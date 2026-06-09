@@ -133,4 +133,8 @@ export class TernaryHeap<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `TernaryHeap({ size: ${this.size} })`
+  }
 }

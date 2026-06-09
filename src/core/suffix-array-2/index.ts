@@ -153,4 +153,8 @@ export class SuffixArray2 {
   has(pattern: string): boolean {
     return this.contains(pattern)
   }
+
+  toString(): string {
+    return `SuffixArray2({ size: ${this.size} })`
+  }
 }

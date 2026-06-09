@@ -158,4 +158,8 @@ export class SuccinctBitvector2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `SuccinctBitvector2()`
+  }
 }

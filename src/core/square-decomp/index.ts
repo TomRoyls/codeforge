@@ -181,4 +181,8 @@ export class SquareDecomp {
   clone(): SquareDecomp {
     return SquareDecomp.from(this.toArray())
   }
+
+  toString(): string {
+    return `SquareDecomp({ size: ${this.size} })`
+  }
 }

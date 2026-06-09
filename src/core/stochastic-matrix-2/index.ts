@@ -194,4 +194,8 @@ export class StochasticMatrix2 {
   static from(items: any[]): StochasticMatrix2 {
     return new StochasticMatrix2(items)
   }
+
+  toString(): string {
+    return `StochasticMatrix2({ size: ${this.states.length} })`
+  }
 }

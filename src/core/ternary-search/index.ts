@@ -108,4 +108,8 @@ export class TernarySearch {
   has(target: number): boolean {
     return this.contains(target)
   }
+
+  toString(): string {
+    return `TernarySearch()`
+  }
 }

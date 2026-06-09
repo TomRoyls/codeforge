@@ -133,4 +133,8 @@ export class SpreadSort2 {
     this.comparisons = 0;
     this.swaps = 0;
   }
+
+  toString(): string {
+    return `SpreadSort2()`
+  }
 }

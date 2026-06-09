@@ -201,4 +201,8 @@ export class SnapArray<T> {
   static fromArray<U>(arr: U[]): SnapArray<U> {
     return new SnapArray(arr)
   }
+
+  toString(): string {
+    return `SnapArray({ size: ${this.data.length} })`
+  }
 }

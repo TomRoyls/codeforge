@@ -329,6 +329,10 @@ export class SortedArraySet<T = unknown> {
     }
     return lo
   }
+
+  toString(): string {
+    return `SortedArraySet({ size: ${this.size} })`
+  }
 }
 
 export type { Comparator, SortedArraySetOptions, SortedArraySetStats } from './types.js'

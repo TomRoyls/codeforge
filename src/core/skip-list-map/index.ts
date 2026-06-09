@@ -407,6 +407,10 @@ export class SkipListMap<K = unknown, V = unknown> {
 toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `SkipListMap({ size: ${this.size} })`
+  }
 }
 
 export type { SkipListMapOptions 

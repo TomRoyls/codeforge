@@ -84,4 +84,8 @@ export class SkylineSet2<T> {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  toString(): string {
+    return `SkylineSet2({ size: ${this._items.length} })`
+  }
 }

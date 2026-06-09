@@ -235,4 +235,8 @@ export class TernarySearchTree2 {
     }
     return complexities
   }
+
+  toString(): string {
+    return `TernarySearchTree2({ size: ${this.size} })`
+  }
 }

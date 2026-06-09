@@ -141,4 +141,8 @@ export class SparseMatrix2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `SparseMatrix2({ size: ${this.values.length} })`
+  }
 }

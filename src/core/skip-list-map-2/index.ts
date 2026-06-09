@@ -358,4 +358,8 @@ export class SkipListMap2<K, V> {
     }
     return undefined;
   }
+
+  toString(): string {
+    return `SkipListMap2({ size: ${this.size} })`
+  }
 }

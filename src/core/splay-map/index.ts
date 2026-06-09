@@ -359,6 +359,10 @@ export class SplayMap<K, V> {
     }
     return map
   }
+
+  toString(): string {
+    return `SplayMap({ size: ${this.size} })`
+  }
 }
 
 export type { SplayNode, CompareFunction, SplayMapOptions } from './types.js'

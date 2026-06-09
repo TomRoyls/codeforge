@@ -112,4 +112,8 @@ export class StrandSort2 {
   sortInstance(arr: number[]): number[] {
     return StrandSort2.sort(arr)
   }
+
+  toString(): string {
+    return `StrandSort2()`
+  }
 }

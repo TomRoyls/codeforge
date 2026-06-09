@@ -187,4 +187,8 @@ export class SortedLinkedList<T> {
   iterator(): Iterator<T> {
     return this[Symbol.iterator]();
   }
+
+  toString(): string {
+    return `SortedLinkedList({ size: ${this.size} })`
+  }
 }

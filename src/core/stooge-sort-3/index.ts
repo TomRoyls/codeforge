@@ -74,4 +74,8 @@ export class StoogeSort3<T> {
   getSpaceComplexity(): string {
     return 'O(n)'
   }
+
+  toString(): string {
+    return `StoogeSort3()`
+  }
 }

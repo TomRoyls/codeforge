@@ -153,6 +153,10 @@ export class SplitOrderedList<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `SplitOrderedList({ size: ${this.size} })`
+  }
 }
 
 export type { SplitOrderedListOptions };

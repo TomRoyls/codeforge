@@ -69,4 +69,8 @@ export class TaggedUnion2<T> {
   equals(other: TaggedUnion2<T>): boolean {
     return this.tag === other.tag && this.value === other.value
   }
+
+  toString(): string {
+    return `TaggedUnion2()`
+  }
 }

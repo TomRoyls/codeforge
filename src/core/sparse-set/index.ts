@@ -190,6 +190,10 @@ export class SparseSet {
       },
     }
   }
+
+  toString(): string {
+    return `SparseSet({ size: ${this.size} })`
+  }
 }
 
 export type { SparseSetOptions } from './types.js'

@@ -373,6 +373,10 @@ export class SkipList3<K = unknown> {
       current = this.fwd(current, 0)
     }
   }
+
+  toString(): string {
+    return `SkipList3({ size: ${this.size} })`
+  }
 }
 
 export type { SkipList3Options, Comparator }

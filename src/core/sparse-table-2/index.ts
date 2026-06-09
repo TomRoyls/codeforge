@@ -101,4 +101,8 @@ export class SparseTable {
   clone(): SparseTable {
     return SparseTable.from(this.toArray())
   }
+
+  toString(): string {
+    return `SparseTable({ size: ${this.array.length} })`
+  }
 }

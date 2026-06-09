@@ -371,4 +371,8 @@ export class SuffixTree {
     const originalText = fullText.slice(0, -1);
     return new SuffixTree(originalText, { terminator });
   }
+
+  toString(): string {
+    return `SuffixTree({ size: ${this.size} })`
+  }
 }

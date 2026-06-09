@@ -258,4 +258,8 @@ export class SplayTree2<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `SplayTree2({ size: ${this.size} })`
+  }
 }

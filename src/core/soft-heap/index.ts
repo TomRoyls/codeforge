@@ -294,6 +294,10 @@ export class SoftHeap<T = unknown> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `SoftHeap({ size: ${this._size} })`
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

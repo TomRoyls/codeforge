@@ -277,4 +277,8 @@ export class SkipList3<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `SkipList3({ size: ${this.size} })`
+  }
 }

@@ -330,4 +330,8 @@ export class SqrtDecomp2<T> {
   static from<T>(items: T[]): SqrtDecomp2<T> {
     return new SqrtDecomp2<T>(items)
   }
+
+  toString(): string {
+    return `SqrtDecomp2({ size: ${this.size} })`
+  }
 }

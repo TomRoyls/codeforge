@@ -273,4 +273,8 @@ export class SplayMap2<K, V> {
   toArray(): any[] {
     return [...this]
   }
+
+  toString(): string {
+    return `SplayMap2({ size: ${this.size} })`
+  }
 }

@@ -470,4 +470,8 @@ export class TernarySearchTree<V = unknown> {
     this.wildcardSearch(node.eq, prefix + node.char, pattern, pIdx, wildcard, results);
     this.consumeAll(node.hi, prefix, pattern, pIdx, wildcard, results);
   }
+
+  toString(): string {
+    return `TernarySearchTree({ size: ${this.size} })`
+  }
 }

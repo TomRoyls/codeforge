@@ -302,4 +302,8 @@ export class SplayTreeMap2<K, V> {
     };
   }
 
+
+  toString(): string {
+    return `SplayTreeMap2({ size: ${this.size} })`
+  }
 }

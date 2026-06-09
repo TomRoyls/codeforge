@@ -137,4 +137,8 @@ export class SortedLinkedList2<T> {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  toString(): string {
+    return `SortedLinkedList2()`
+  }
 }

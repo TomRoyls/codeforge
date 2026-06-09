@@ -64,4 +64,8 @@ export class SmoothSort2 {
   getComparisons(): number { return this.comparisons; }
   getSwaps(): number { return this.swaps; }
   resetCounters(): void { this.comparisons = 0; this.swaps = 0; }
+
+  toString(): string {
+    return `SmoothSort2()`
+  }
 }

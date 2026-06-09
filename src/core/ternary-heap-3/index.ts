@@ -108,4 +108,8 @@ export class TernaryHeap3<T> {
     };
   }
 
+
+  toString(): string {
+    return `TernaryHeap3({ size: ${this.size} })`
+  }
 }

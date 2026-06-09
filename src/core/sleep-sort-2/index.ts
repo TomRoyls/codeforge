@@ -236,4 +236,8 @@ export class SleepSort2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `SleepSort2()`
+  }
 }
