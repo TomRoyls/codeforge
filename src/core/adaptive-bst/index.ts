@@ -510,8 +510,11 @@ export class AdaptiveBST<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
-}
 
-export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback 
+toString(): string {
+    return `${AdaptiveBST}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }}
+
+export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback
 
 } from './types.js'

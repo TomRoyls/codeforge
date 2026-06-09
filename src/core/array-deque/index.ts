@@ -145,6 +145,11 @@ export class ArrayDeque<T = unknown> {
     }
     return deque
   }
-}
 
-export type { ArrayDequeOptions } from './types.js'
+toString(): string {
+    return `${ArrayDeque}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }}
+
+export type { ArrayDequeOptions
+
+} from './types.js'

@@ -365,4 +365,8 @@ export class AVLSet<T = number> {
   get isAVLBalanced(): boolean {
     return this.isBalanced(this.root)
   }
+
+  toString(): string {
+    return `${AVLSet}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

@@ -320,11 +320,16 @@ export class AVLTree4<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
-}
+
+  toString(): string {
+    return `${AVLTree4}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }}
 
 interface Node<T> {
   value: T;
   left: Node<T> | null;
   right: Node<T> | null;
   height: number;
+
+
 }

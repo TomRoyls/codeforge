@@ -369,4 +369,8 @@ export class BTree<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `${BTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

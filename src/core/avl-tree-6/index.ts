@@ -335,4 +335,8 @@ export class AVLTree6<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `${AVLTree6}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

@@ -211,8 +211,11 @@ export class Beap<T = number> {
   has(value: T): boolean {
     return this.contains(value)
   }
-}
 
-export type { BeapOptions 
+toString(): string {
+    return `${Beap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }}
+
+export type { BeapOptions
 
 } from './types.js'

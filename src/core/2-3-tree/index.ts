@@ -488,4 +488,8 @@ export class TwoThreeTree<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `${TwoThreeTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

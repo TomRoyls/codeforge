@@ -300,7 +300,10 @@ export class AVLTreeSet2<T> {
       current = current.right;
     }
   }
-}
+
+toString(): string {
+    return `${AVLTreeSet2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }}
 
 class AVLNode<T> {
   height: number = 1;
@@ -316,4 +319,6 @@ class AVLNode<T> {
     const rightHeight = this.right ? this.right.height : 0;
     this.height = Math.max(leftHeight, rightHeight) + 1;
   }
+
+  
 }

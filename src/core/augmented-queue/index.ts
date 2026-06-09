@@ -204,6 +204,11 @@ export class AugmentedQueue {
     }
     return queue
   }
-}
 
-export type { AugmentedQueueOptions } from './types.js'
+toString(): string {
+    return `${AugmentedQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }}
+
+export type { AugmentedQueueOptions
+
+} from './types.js'

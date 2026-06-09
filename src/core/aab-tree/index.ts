@@ -228,4 +228,8 @@ export class AABTree<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `${AABTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

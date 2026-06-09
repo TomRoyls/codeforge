@@ -300,4 +300,8 @@ export class AdaptivePQ2<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `${AdaptivePQ2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
