@@ -343,4 +343,11 @@ export class MinMaxHeap<T> {
   toString(): string {
     return `MinMaxHeap({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

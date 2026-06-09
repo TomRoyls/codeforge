@@ -162,4 +162,11 @@ export class MinHeap<T> {
   toString(): string {
     return `MinHeap({ size: ${this.heap.length} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

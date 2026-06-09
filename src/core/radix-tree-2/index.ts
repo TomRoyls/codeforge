@@ -305,4 +305,11 @@ export class RadixTree2 {
   toString(): string {
     return `RadixTree2({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

@@ -250,4 +250,11 @@ export class KDTree3 {
   has(point: Point): boolean {
     return this.contains(point)
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

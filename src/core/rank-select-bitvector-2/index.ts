@@ -179,6 +179,13 @@ export class RankSelectBitvector2 {
   toString(): string {
     return `RankSelectBitvector2()`
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 function popcount(n: number): number {

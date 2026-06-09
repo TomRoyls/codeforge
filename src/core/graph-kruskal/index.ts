@@ -168,4 +168,11 @@ export class GraphKruskal {
   toString(): string {
     return `GraphKruskal()`
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

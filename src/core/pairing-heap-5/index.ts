@@ -8,7 +8,6 @@ export class PairingHeapNode5<T> {
     this.children = [];
     this.parent = undefined;
   }
-
 }
 
 export class PairingHeap5<T> {

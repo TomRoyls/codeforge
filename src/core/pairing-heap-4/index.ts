@@ -153,6 +153,13 @@ export class PairingHeap4<T> {
   toString(): string {
     return `PairingHeap4({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 class PairingHeapNode<T> {

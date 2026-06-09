@@ -141,4 +141,11 @@ export class Matrix2 {
   toString(): string {
     return `Matrix2()`
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
