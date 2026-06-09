@@ -192,12 +192,22 @@ export class Treap3<K, V> {
   }
 
   [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+    const stack: Array<TreapNode<K, V>> = [];
+    let current: TreapNode<K, V> | null = this.root;
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        while (current !== null || stack.length > 0) {
+          while (current !== null) {
+            stack.push(current);
+            current = current.left;
+          }
+          current = stack.pop()!;
+          const value: [K, V] = [current.key, current.value];
+          current = current.right;
+          return { value: value as ReturnType<this['toArray']>[number], done: false };
+        }
+        return { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true };
+      }
     };
   }
 }

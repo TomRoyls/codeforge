@@ -256,13 +256,18 @@ export class Treap<K, V = undefined> {
   }
 
   [Symbol.iterator](): Iterator<K> {
-    const arr = this.toArray()
-    let idx = 0
+    const stack: Array<TreapNode<K, V>> = []
+    let current: TreapNode<K, V> | null = this.root
     return {
       next: () => {
-        if (idx < arr.length) {
-          const value = arr[idx]!
-          idx++
+        while (current !== null || stack.length > 0) {
+          while (current !== null) {
+            stack.push(current)
+            current = current.left
+          }
+          current = stack.pop()!
+          const value = current.key
+          current = current.right
           return { value, done: false }
         }
         return { value: undefined, done: true } as IteratorResult<K>
