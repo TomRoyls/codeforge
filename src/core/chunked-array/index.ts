@@ -19,6 +19,14 @@ export class ChunkedArray<T = unknown> {
   }
 
   private locate(index: number): { ci: number; ei: number } {
+    let remaining = index
+    for (let ci = 0; ci < this.chunks.length; ci++) {
+      const chunkLen = this.chunks[ci]!.length
+      if (remaining < chunkLen) {
+        return { ci, ei: remaining }
+      }
+      remaining -= chunkLen
+    }
     const ci = Math.floor(index / this._chunkSize)
     const ei = index % this._chunkSize
     return { ci, ei }

@@ -907,7 +907,7 @@ describe('ChunkedArray', () => {
       expect(dequeued).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     })
 
-    it.skip('unshift and pop as reverse queue', () => {
+    it('unshift and pop as reverse queue', () => {
       const arr = new ChunkedArray<number>(4)
       for (let i = 0; i < 5; i++) arr.unshift(i)
       const result: number[] = []
