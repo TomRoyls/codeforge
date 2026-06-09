@@ -205,4 +205,8 @@ export class DisjointSet<T> {
   some(predicate: (item: T) => boolean): boolean {
     return this.toArray().some(predicate)
   }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
 }

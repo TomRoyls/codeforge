@@ -469,6 +469,10 @@ export class FibonacciHeap3<T = number> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

@@ -325,4 +325,8 @@ export class DoublyLinkedList3<T> {
   toJSON() {
     return { type: 'DoublyLinkedList3', size: this.size, items: this.toArray() }
   }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
 }

@@ -203,4 +203,8 @@ export class BeapSet2<T> {
   }
 
 
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
 }

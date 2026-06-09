@@ -371,6 +371,10 @@ export class Deque2<T = unknown> {
   toJSON() {
     return { type: 'Deque2', size: this.size, items: this.toArray() }
   }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
 }
 
 export type { Deque2Options } from './types.js'

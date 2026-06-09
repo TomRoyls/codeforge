@@ -798,6 +798,10 @@ export class CatenableDeque<T> {
   toJSON() {
     return { type: 'CatenableDeque', size: this.size, items: this.toArray() }
   }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

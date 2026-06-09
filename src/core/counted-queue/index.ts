@@ -245,4 +245,8 @@ export class CountedQueue<T> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
 }
