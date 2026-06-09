@@ -392,4 +392,8 @@ export class BTree<T> {
   filter(fn: (item: T) => boolean): T[] {
     return this.toArray().filter(fn)
   }
+
+  reduce<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduce(fn, initial)
+  }
 }
