@@ -2,6 +2,8 @@ export class BucketSort4<T extends number> {
   private bucketSize: number;
 
   constructor(bucketSize: number = 10) {
+    if (bucketSize < 1) throw new RangeError('bucketSize must be >= 1')
+
     this.bucketSize = bucketSize;
   }
 

@@ -9,6 +9,8 @@ class OctreeNode<T> {
   hasChildren: boolean = false;
 
   constructor(center: Point3D, size: number) {
+    if (size < 1) throw new RangeError('size must be >= 1')
+
     this.center = center;
     this.size = size;
   }
@@ -287,7 +289,7 @@ export class Octree3<T> {
           if (node.hasChildren) {
             for (let i = 7; i >= 0; i--) {
               const child = node.children[i];
-              if (child !== null) {
+              if (child) {
                 nodeStack.push(child);
               }
             }

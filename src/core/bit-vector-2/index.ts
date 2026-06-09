@@ -4,6 +4,8 @@ export class BitVector2 {
   private readonly BITS_PER_WORD: number = 32;
 
   constructor(size: number = 0) {
+    if (size < 1) throw new RangeError('size must be >= 1')
+
     this._size = size;
     const wordCount = Math.ceil(size / this.BITS_PER_WORD);
     this.data = new Uint32Array(wordCount);

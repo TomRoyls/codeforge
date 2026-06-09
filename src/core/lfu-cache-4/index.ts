@@ -6,6 +6,8 @@ class LFUCache4<K, V> {
   private _size: number
 
   constructor(capacity: number) {
+    if (capacity < 1) throw new RangeError('capacity must be >= 1')
+
     this.capacity = capacity
     this.cache = new Map()
     this.minFreq = 0

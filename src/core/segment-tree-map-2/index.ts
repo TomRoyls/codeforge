@@ -4,6 +4,8 @@ export class SegmentTreeMap2 {
   private readonly _size: number
 
   constructor(size: number) {
+    if (size < 1) throw new RangeError('size must be >= 1')
+
     this._size = size
     this.tree = new Float64Array(size * 4)
     this.lazy = new Float64Array(size * 4)

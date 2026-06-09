@@ -75,6 +75,8 @@ export class Hamt3<T> {
   private _size: number;
 
   private constructor(root: Node<T> | null, size: number) {
+    if (size < 1) throw new RangeError('size must be >= 1')
+
     this.root = root;
     this._size = size;
   }

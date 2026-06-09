@@ -48,6 +48,8 @@ export class PersistentBitset {
   private readonly _size: number
 
   private constructor(words: Uint32Array, size: number) {
+    if (size < 1) throw new RangeError('size must be >= 1')
+
     this._words = words
     this._size = size
   }

@@ -9,6 +9,8 @@ export class CountingBloomFilter {
   private bucketCount: number
 
   constructor(capacity: number, errorRate: number = DEFAULT_ERROR_RATE) {
+    if (capacity < 1) throw new RangeError('capacity must be >= 1')
+
     this._capacity = capacity
     this.errorRate = errorRate
     this.bucketCount = this.calculateBucketCount(capacity, errorRate)

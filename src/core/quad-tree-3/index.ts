@@ -13,6 +13,8 @@ export class QuadTree {
   southwest: QuadTree | null;
 
   constructor(boundary: Boundary, capacity: number = 4) {
+    if (capacity < 1) throw new RangeError('capacity must be >= 1')
+
     this.boundary = boundary;
     this.capacity = capacity;
     this.points = [];
