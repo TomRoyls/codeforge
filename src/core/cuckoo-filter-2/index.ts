@@ -1,21 +1,46 @@
+interface CuckooFilterOptions {
+  capacity?: number;
+  bucketSize?: number;
+  maxKicks?: number;
+}
+
 export class CuckooFilter2 {
   private buckets: Uint32Array[];
   private _size: number;
-  private readonly capacity: number;
+  private readonly _capacity: number;
   private readonly bucketSize: number;
   private readonly fingerprintSize: number;
   private readonly maxKickCount: number;
 
-  constructor(capacity: number = 1024, bucketSize: number = 4, fingerprintSize: number = 1) {
-    this.capacity = nextPowerOfTwo(capacity);
-    this.bucketSize = bucketSize;
-    this.fingerprintSize = fingerprintSize;
-    this.maxKickCount = 500;
+  constructor(optionsOrCapacity?: number | CuckooFilterOptions, bucketSize?: number, fingerprintSize?: number) {
+    let capacity = 1024;
+    let bSize = 4;
+    let fpSize = 1;
+    let maxKicks = 500;
+
+    if (typeof optionsOrCapacity === 'object' && optionsOrCapacity !== null) {
+      capacity = optionsOrCapacity.capacity ?? 1024;
+      bSize = optionsOrCapacity.bucketSize ?? 4;
+      maxKicks = optionsOrCapacity.maxKicks ?? 500;
+    } else if (typeof optionsOrCapacity === 'number') {
+      capacity = optionsOrCapacity;
+      if (bucketSize !== undefined) bSize = bucketSize;
+      if (fingerprintSize !== undefined) fpSize = fingerprintSize;
+    }
+
+    this._capacity = nextPowerOfTwo(capacity);
+    this.bucketSize = bSize;
+    this.fingerprintSize = fpSize;
+    this.maxKickCount = maxKicks;
     this._size = 0;
     this.buckets = [];
-    for (let i = 0; i < this.capacity; i++) {
+    for (let i = 0; i < this._capacity; i++) {
       this.buckets[i] = new Uint32Array(this.bucketSize);
     }
+  }
+
+  get capacity(): number {
+    return this._capacity;
   }
 
   private hash(item: string): number {
@@ -26,19 +51,24 @@ export class CuckooFilter2 {
     return h;
   }
 
-  private fingerprint(hashValue: number): number {
+  private computeFingerprint(hashValue: number): number {
     const bits = 8 * this.fingerprintSize;
+    let fp: number;
     if (bits >= 32) {
-      return hashValue >>> 0;
+      fp = hashValue >>> 0;
+    } else {
+      const mask = (1 << bits) - 1;
+      fp = (hashValue ^ (hashValue >>> bits) ^ (hashValue >>> (bits * 2))) & mask;
     }
-    return hashValue & ((1 << bits) - 1);
+    if (fp === 0) fp = 1;
+    return fp;
   }
 
-  private twoHashes(hashValue: number, fingerprint: number): [number, number] {
-    let h1 = hashValue % this.capacity;
-    if (h1 < 0) h1 += this.capacity;
-    let h2 = (h1 ^ this.hash(fingerprint.toString())) % this.capacity;
-    if (h2 < 0) h2 += this.capacity;
+  private twoHashes(hashValue: number, fp: number): [number, number] {
+    let h1 = hashValue % this._capacity;
+    if (h1 < 0) h1 += this._capacity;
+    let h2 = (h1 ^ this.hash(fp.toString())) % this._capacity;
+    if (h2 < 0) h2 += this._capacity;
     return [h1, h2];
   }
 
@@ -48,21 +78,22 @@ export class CuckooFilter2 {
     }
 
     const bucket = this.buckets[bucketIndex]!;
-    const otherFingerprint = bucket[0]!;
+    const evictPos = Math.floor(Math.random() * this.bucketSize);
+    const otherFingerprint = bucket[evictPos]!;
     const fpHash = this.hash(otherFingerprint.toString());
-    let targetBucket = (bucketIndex ^ fpHash) % this.capacity;
-    if (targetBucket < 0) targetBucket += this.capacity;
+    let targetBucket = (bucketIndex ^ fpHash) % this._capacity;
+    if (targetBucket < 0) targetBucket += this._capacity;
 
     const saved = new Array<number>(this.bucketSize);
     const targetB = this.buckets[targetBucket]!;
     for (let i = 0; i < this.bucketSize; i++) saved[i] = targetB[i]!;
 
-    bucket[0] = fingerprint;
+    bucket[evictPos] = fingerprint;
     if (this.insertToFingerprintBucket(targetBucket, otherFingerprint, count + 1)) {
       return true;
     }
 
-    bucket[0] = otherFingerprint;
+    bucket[evictPos] = otherFingerprint;
     for (let i = 0; i < this.bucketSize; i++) targetB[i] = saved[i]!;
     return false;
   }
@@ -79,16 +110,13 @@ export class CuckooFilter2 {
     return this.kick(bucketIndex, fingerprint, count);
   }
 
-  insert(item: string): boolean {
-    if (this._size >= this.capacity * this.bucketSize) {
+  insert(item: unknown): boolean {
+    if (this._size >= this._capacity * this.bucketSize) {
       return false;
     }
 
-    const hashValue = this.hash(item);
-    const fp = this.fingerprint(hashValue);
-    if (fp === 0) {
-      return false;
-    }
+    const hashValue = this.hash(String(item));
+    const fp = this.computeFingerprint(hashValue);
 
     const [h1, h2] = this.twoHashes(hashValue, fp);
 
@@ -105,12 +133,9 @@ export class CuckooFilter2 {
     return false;
   }
 
-  contains(item: string): boolean {
-    const hashValue = this.hash(item);
-    const fp = this.fingerprint(hashValue);
-    if (fp === 0) {
-      return false;
-    }
+  contains(item: unknown): boolean {
+    const hashValue = this.hash(String(item));
+    const fp = this.computeFingerprint(hashValue);
 
     const [h1, h2] = this.twoHashes(hashValue, fp);
     const bucket1 = this.buckets[h1]!;
@@ -128,12 +153,9 @@ export class CuckooFilter2 {
     return false;
   }
 
-  delete(item: string): boolean {
-    const hashValue = this.hash(item);
-    const fp = this.fingerprint(hashValue);
-    if (fp === 0) {
-      return false;
-    }
+  delete(item: unknown): boolean {
+    const hashValue = this.hash(String(item));
+    const fp = this.computeFingerprint(hashValue);
 
     const [h1, h2] = this.twoHashes(hashValue, fp);
     const bucket1 = this.buckets[h1]!;
@@ -160,16 +182,39 @@ export class CuckooFilter2 {
   }
 
   loadFactor(): number {
-    return this._size / (this.capacity * this.bucketSize);
+    return this._size / (this._capacity * this.bucketSize);
+  }
+
+  falsePositiveRate(): number {
+    if (this._size === 0) return 0;
+    const bits = 8 * this.fingerprintSize;
+    const fpSpace = Math.min(bits >= 32 ? 4294967296 : (1 << bits), 256);
+    const rate = 1 - Math.pow(1 - 1 / fpSpace, 2 * this.bucketSize);
+    return rate * this.loadFactor();
   }
 
   clear(): void {
-    for (let i = 0; i < this.capacity; i++) {
+    for (let i = 0; i < this._capacity; i++) {
       this.buckets[i] = new Uint32Array(this.bucketSize);
     }
     this._size = 0;
   }
+
+  toArray(): number[] {
+    const result: number[] = [];
+    for (let i = 0; i < this._capacity; i++) {
+      const bucket = this.buckets[i]!;
+      for (let j = 0; j < this.bucketSize; j++) {
+        if (bucket[j] !== 0) {
+          result.push(bucket[j]!);
+        }
+      }
+    }
+    return result;
+  }
 }
+
+export const CuckooFilter = CuckooFilter2;
 
 function nextPowerOfTwo(n: number): number {
   if (n <= 0) return 1;
