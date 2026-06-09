@@ -356,6 +356,10 @@ export class PathCompressionTrie<T = unknown> {
   }
 
 
+
+  toString(): string {
+    return `PathCompressionTrie({ size: ${this.size} })`
+  }
 }
 
 function commonPrefixLength(a: string, b: string): number {

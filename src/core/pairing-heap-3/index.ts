@@ -288,6 +288,10 @@ export class PairingHeap3<T = number> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `PairingHeap3({ size: ${this.size} })`
+  }
 }
 
 export type { PairingHeap3Options, PairingHeap3Node } from './types.js'

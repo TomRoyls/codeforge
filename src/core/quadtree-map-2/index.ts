@@ -222,4 +222,8 @@ export class QuadTreeMap2<V> {
   has(x: number, y: number): boolean {
     return this.contains(x, y)
   }
+
+  toString(): string {
+    return `QuadTreeMap2()`
+  }
 }

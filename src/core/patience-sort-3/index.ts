@@ -152,4 +152,8 @@ export class PatienceSort3<T> {
   getSpaceComplexity(): string {
     return 'O(n)'
   }
+
+  toString(): string {
+    return `PatienceSort3()`
+  }
 }

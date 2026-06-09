@@ -202,4 +202,8 @@ export class Multiset<T> {
   static fromEntries<T>(entries: MultisetEntry<T>[]): Multiset<T> {
     return new Multiset<T>({ entries })
   }
+
+  toString(): string {
+    return `Multiset({ size: ${this.size} })`
+  }
 }

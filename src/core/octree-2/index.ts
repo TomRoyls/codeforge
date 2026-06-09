@@ -93,6 +93,10 @@ export class Octree2<V> {
   has(x: number, y: number, z: number): boolean {
     return this.contains(x, y, z)
   }
+
+  toString(): string {
+    return `Octree2()`
+  }
 }
 
 class OctreeNode<V> {

@@ -237,4 +237,8 @@ export class PrioritySearchTree2 {
   has(point: Point): boolean {
     return this.contains(point)
   }
+
+  toString(): string {
+    return `PrioritySearchTree2({ size: ${this.size} })`
+  }
 }

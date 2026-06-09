@@ -164,4 +164,8 @@ export class QuadHeap<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `QuadHeap({ size: ${this.data.length} })`
+  }
 }

@@ -207,6 +207,10 @@ export class PairingArray<K, V> {
       this._index.set(entry[0], i)
     }
   }
+
+  toString(): string {
+    return `PairingArray({ size: ${this._entries.length} })`
+  }
 }
 
 export type { PairingArrayEntry } from './types.js'

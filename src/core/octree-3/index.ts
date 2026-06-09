@@ -306,4 +306,8 @@ export class Octree3<T> {
   has(point: Point3D): boolean {
     return this.contains(point)
   }
+
+  toString(): string {
+    return `Octree3({ size: ${this.size} })`
+  }
 }

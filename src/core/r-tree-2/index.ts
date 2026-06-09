@@ -530,4 +530,8 @@ export class RTree2<T> {
   has(item: T): boolean {
     return this.contains(item)
   }
+
+  toString(): string {
+    return `RTree2({ size: ${this.size} })`
+  }
 }

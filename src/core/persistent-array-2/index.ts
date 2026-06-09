@@ -83,4 +83,8 @@ export class PersistentArray2<T> {
   clone(): PersistentArray2<T> {
     return PersistentArray2.from(this.toArray())
   }
+
+  toString(): string {
+    return `PersistentArray2({ size: ${this.items.length} })`
+  }
 }

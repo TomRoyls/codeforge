@@ -113,4 +113,8 @@ export class MultiMap3<K, V> {
   toArray(): any[] {
     return [...this]
   }
+
+  toString(): string {
+    return `MultiMap3({ size: ${this.size} })`
+  }
 }

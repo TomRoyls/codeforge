@@ -352,4 +352,8 @@ export class OrderedStatisticsTree<T> {
       },
     }
   }
+
+  toString(): string {
+    return `OrderedStatisticsTree()`
+  }
 }

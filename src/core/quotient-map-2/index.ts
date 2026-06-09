@@ -168,4 +168,8 @@ export class QuotientMap2<T> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `QuotientMap2({ size: ${this.size} })`
+  }
 }

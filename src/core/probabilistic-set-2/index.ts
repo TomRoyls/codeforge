@@ -64,4 +64,8 @@ export class ProbabilisticSet2<T> {
   bitCount(): number {
     return this.bits.length * 8;
   }
+
+  toString(): string {
+    return `ProbabilisticSet2({ size: ${this.size} })`
+  }
 }

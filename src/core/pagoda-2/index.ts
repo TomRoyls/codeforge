@@ -163,4 +163,8 @@ export class Pagoda2<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `Pagoda2({ size: ${this.size} })`
+  }
 }

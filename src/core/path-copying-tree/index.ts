@@ -209,4 +209,8 @@ export class PathCopyingTree<K, V> {
     this._size = 0;
     this.root = null;
   }
+
+  toString(): string {
+    return `PathCopyingTree({ size: ${this.size} })`
+  }
 }

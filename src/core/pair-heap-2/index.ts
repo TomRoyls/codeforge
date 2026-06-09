@@ -167,4 +167,8 @@ export class PairHeap2<T> {
   }
 
 
+
+  toString(): string {
+    return `PairHeap2({ size: ${this.size} })`
+  }
 }

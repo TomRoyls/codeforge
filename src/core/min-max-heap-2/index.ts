@@ -339,4 +339,8 @@ export class MinMaxHeap<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `MinMaxHeap({ size: ${this.size} })`
+  }
 }

@@ -133,4 +133,8 @@ export class PancakeSort3<T> {
       right--
     }
   }
+
+  toString(): string {
+    return `PancakeSort3()`
+  }
 }

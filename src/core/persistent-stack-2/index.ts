@@ -131,6 +131,10 @@ export class PersistentStack2<T> {
   clone(): PersistentStack2<T> {
     return PersistentStack2.from(this.toArray())
   }
+
+  toString(): string {
+    return `PersistentStack2({ size: ${this.size} })`
+  }
 }
 
 interface Node<T> {

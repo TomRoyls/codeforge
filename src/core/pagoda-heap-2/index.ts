@@ -103,4 +103,8 @@ export class PagodaHeap2<T> {
     };
   }
 
+
+  toString(): string {
+    return `PagodaHeap2({ size: ${this.size} })`
+  }
 }

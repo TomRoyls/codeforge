@@ -104,4 +104,8 @@ export class PairingFunction2 {
     }
     return x;
   }
+
+  toString(): string {
+    return `PairingFunction2()`
+  }
 }

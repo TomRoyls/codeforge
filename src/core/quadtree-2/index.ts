@@ -430,6 +430,10 @@ export class QuadTree2<T = undefined> {
   has(point: { x: number; y: number }): boolean {
     return this.contains(point)
   }
+
+  toString(): string {
+    return `QuadTree2({ size: ${this.size} })`
+  }
 }
 
 export type { Point2D, Rect2D, QuadTree2Options }

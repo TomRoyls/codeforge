@@ -317,4 +317,8 @@ export class PatriciaTrie<V = unknown> {
       yield entry;
     }
   }
+
+  toString(): string {
+    return `PatriciaTrie({ size: ${this.size} })`
+  }
 }

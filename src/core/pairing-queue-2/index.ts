@@ -167,4 +167,8 @@ export class PairingQueue2<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `PairingQueue2({ size: ${this.size} })`
+  }
 }

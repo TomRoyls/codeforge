@@ -149,6 +149,10 @@ export class PairingHeap4<T> {
     };
   }
 
+
+  toString(): string {
+    return `PairingHeap4({ size: ${this.size} })`
+  }
 }
 
 class PairingHeapNode<T> {

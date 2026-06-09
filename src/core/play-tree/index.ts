@@ -337,6 +337,10 @@ export class PlayTree<T> {
   depth(): number {
     return this.computeDepth(this.root)
   }
+
+  toString(): string {
+    return `PlayTree({ size: ${this.size} })`
+  }
 }
 
 export type { PlayTreeNode, CompareFunction, PlayTreeOptions } from './types.js'

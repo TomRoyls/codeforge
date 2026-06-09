@@ -112,4 +112,8 @@ export class ProbabilityMap2 {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `ProbabilityMap2({ size: ${this.size} })`
+  }
 }

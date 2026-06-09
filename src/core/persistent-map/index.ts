@@ -553,6 +553,10 @@ export class PersistentMap<K, V> {
   count(): number {
     return this._size
   }
+
+  toString(): string {
+    return `PersistentMap({ size: ${this.size} })`
+  }
 }
 
 export type { PersistentMapOptions, HashFunction } from './types.js'

@@ -210,6 +210,10 @@ export class MinMaxDeque<T> {
     }
     return deque
   }
+
+  toString(): string {
+    return `MinMaxDeque({ size: ${this._size} })`
+  }
 }
 
 export type { MinMaxDequeOptions } from './types.js'

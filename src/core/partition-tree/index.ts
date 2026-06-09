@@ -212,6 +212,10 @@ export class PartitionTree<T = undefined> {
   has(x: number, y: number): boolean {
     return this.contains(x, y)
   }
+
+  toString(): string {
+    return `PartitionTree({ size: ${this.size} })`
+  }
 }
 
 export type { PartitionPoint, Rectangle } from './types.js'

@@ -112,4 +112,8 @@ export class OddEvenSort3<T> {
     this.swapCount = 0
     this.passCount = 0
   }
+
+  toString(): string {
+    return `OddEvenSort3()`
+  }
 }

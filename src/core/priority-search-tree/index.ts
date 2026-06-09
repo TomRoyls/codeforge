@@ -281,6 +281,10 @@ export class PrioritySearchTree<K, P = number> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `PrioritySearchTree({ size: ${this.size} })`
+  }
 }
 
 export type { Comparator, PriorityEntry, PrioritySearchTreeOptions } from "./types.js";

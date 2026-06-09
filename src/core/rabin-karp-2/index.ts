@@ -109,4 +109,8 @@ export class RabinKarp2 {
 
     return result;
   }
+
+  toString(): string {
+    return `RabinKarp2()`
+  }
 }

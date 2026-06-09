@@ -199,4 +199,8 @@ export class QuickSort5 {
   getSpaceComplexity(): string {
     return 'O(log n) recursion stack';
   }
+
+  toString(): string {
+    return `QuickSort5()`
+  }
 }

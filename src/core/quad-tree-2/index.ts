@@ -381,4 +381,8 @@ export class QuadTree {
   has(point: Point): boolean {
     return this.contains(point)
   }
+
+  toString(): string {
+    return `QuadTree({ size: ${this.size} })`
+  }
 }

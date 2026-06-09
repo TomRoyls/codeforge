@@ -327,4 +327,8 @@ export class OrderedHashSet<T> {
     }
     return -1
   }
+
+  toString(): string {
+    return `OrderedHashSet({ size: ${this.size} })`
+  }
 }

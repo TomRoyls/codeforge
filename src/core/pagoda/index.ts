@@ -160,6 +160,10 @@ export class Pagoda<T = number> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `Pagoda({ size: ${this.size} })`
+  }
 }
 
 export type { PagodaOptions, PagodaNode } from './types.js'

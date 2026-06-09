@@ -78,4 +78,8 @@ export class ProbabilisticSketch {
   getConfidence(): number {
     return 1 - Math.exp(-this.depth);
   }
+
+  toString(): string {
+    return `ProbabilisticSketch()`
+  }
 }

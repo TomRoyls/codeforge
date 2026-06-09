@@ -211,6 +211,10 @@ export class OrderStatisticTree2<T> {
       }
     };
   }
+
+  toString(): string {
+    return `OrderStatisticTree2({ size: ${this.size} })`
+  }
 }
 
 type Node<T> = {

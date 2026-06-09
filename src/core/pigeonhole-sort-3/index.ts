@@ -107,4 +107,8 @@ export class PigeonholeSort3 {
     this.min = 0
     this.max = 0
   }
+
+  toString(): string {
+    return `PigeonholeSort3()`
+  }
 }

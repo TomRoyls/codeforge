@@ -152,4 +152,8 @@ export class ProMap2<K, V> {
   toArray(): any[] {
     return [...this]
   }
+
+  toString(): string {
+    return `ProMap2({ size: ${this.size} })`
+  }
 }

@@ -158,4 +158,8 @@ export class MinHeap<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `MinHeap({ size: ${this.heap.length} })`
+  }
 }

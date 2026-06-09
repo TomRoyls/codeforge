@@ -415,6 +415,10 @@ export class RTree3<T> {
   }
 
 
+
+  toString(): string {
+    return `RTree3({ size: ${this.size} })`
+  }
 }
 
 type Rect = {minX: number, minY: number, maxX: number, maxY: number}
