@@ -40,6 +40,11 @@ export class CatMap2<T> {
     return this.map.size === 0
   }
 
+  clear(): void {
+    this.map.clear()
+    this.inverse.clear()
+  }
+
   compose(other: CatMap2<T>): CatMap2<T> {
     const pairs: [T, T][] = []
     for (const [a, b] of this.map) {

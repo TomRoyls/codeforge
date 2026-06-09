@@ -40,6 +40,7 @@ export class CartesianTree<T> {
     return this._values.length === 0
   }
 
+
   inorder(): T[] {
     const result: T[] = []
     const stack: CTNode<T>[] = []

@@ -149,6 +149,11 @@ export class VantagePointTree2<T> {
     return this._size === 0
   }
 
+  clear(): void {
+    this.root = null
+    this._size = 0
+  }
+
   toArray(): T[] {
     const result: T[] = []
 

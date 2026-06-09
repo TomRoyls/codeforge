@@ -356,6 +356,11 @@ export class HashArrayMappedTrie2<K, V> {
     return this._size === 0
   }
 
+  clear(): void {
+    this._root = makeInternal(0, []) as unknown as Node<K, V>
+    this._size = 0
+  }
+
   keys(): K[] {
     const result: K[] = []
     iterateNode(this._root, (_v, k) => result.push(k))

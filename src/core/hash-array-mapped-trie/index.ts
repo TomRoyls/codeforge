@@ -315,6 +315,11 @@ export class HashArrayMappedTrie<K, V> {
     return this._size === 0;
   }
 
+  clear(): void {
+    this._root = empty<K, V>()
+    this._size = 0
+  }
+
   get(key: K): V | undefined {
     return lookup(this._root, key, this._hash(key), 0);
   }

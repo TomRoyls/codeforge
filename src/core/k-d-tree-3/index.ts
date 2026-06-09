@@ -27,6 +27,11 @@ export class KDTree3 {
     return this._size === 0
   }
 
+  clear(): void {
+    this.root = null
+    this._size = 0
+  }
+
   toArray(): Point[] {
     return [...this.points]
   }

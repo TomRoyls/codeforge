@@ -173,6 +173,12 @@ export class WaveletTree {
     return this.size === 0
   }
 
+  clear(): void {
+    this.root = null
+    this._dataSize = 0
+    this._symbolToIndex.clear()
+  }
+
   get length(): number {
     return this._dataSize
   }
