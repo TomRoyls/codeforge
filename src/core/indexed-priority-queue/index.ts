@@ -245,6 +245,13 @@ export class IndexedPriorityQueue<T = number> {
   toString(): string {
     return `${IndexedPriorityQueue}({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: IndexedPriorityQueueEntry<T>, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 export type { IndexedPriorityQueueOptions, IndexedPriorityQueueEntry, IndexedPriorityQueueStats }

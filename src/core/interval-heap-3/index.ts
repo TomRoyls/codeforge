@@ -174,4 +174,11 @@ export class IntervalHeap3<T> {
   toString(): string {
     return `${IntervalHeap3}({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

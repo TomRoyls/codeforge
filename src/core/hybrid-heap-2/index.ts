@@ -268,4 +268,11 @@ export class HybridHeap2<T = unknown> {
     return `${HybridHeap2}({ size: ${this.size} })`
   }
 
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

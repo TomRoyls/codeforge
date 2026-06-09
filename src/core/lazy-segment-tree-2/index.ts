@@ -119,4 +119,11 @@ export class LazySegmentTree {
   clone(): LazySegmentTree {
     return LazySegmentTree.from(this.toArray())
   }
+
+  forEach(callback: (item: number, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

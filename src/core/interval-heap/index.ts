@@ -309,6 +309,13 @@ export class IntervalHeap<T> {
   toString(): string {
     return `${IntervalHeap}({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

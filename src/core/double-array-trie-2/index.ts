@@ -528,4 +528,11 @@ export class DoubleArrayTrie2 {
   toString(): string {
     return `${DoubleArrayTrie2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  forEach(callback: (item: string, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
