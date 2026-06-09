@@ -218,4 +218,8 @@ export class HashTable3<K, V> {
       },
     };
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

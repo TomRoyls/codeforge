@@ -253,7 +253,12 @@ export class CuckooFilter<T = string> {
     h = (h >> 16) ^ h
     return h >>> 0
   }
+
+  toArray() {
+    return [...this]
+  }
 }
 
 export { BUCKET_SIZE, DEFAULT_FINGERPRINT_SIZE, DEFAULT_MAX_KICKS, defaultHash } from './types.js'
-export type { CuckooFilterOptions, CuckooFilterStatistics, HashFunction } from './types.js'
+export type { CuckooFilterOptions, CuckooFilterStatistics, HashFunction 
+} from './types.js'

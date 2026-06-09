@@ -235,4 +235,8 @@ export class GraphAdjMatrix<T extends string | number> {
   *[Symbol.iterator]() {
     yield* this.getEdges()
   }
+
+  toArray() {
+    return this.getEdges()
+  }
 }

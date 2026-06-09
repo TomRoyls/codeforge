@@ -184,4 +184,8 @@ export class HashMap<K, V> {
   getTimeComplexity(): string {
     return "O(1) average case, O(n) worst case";
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

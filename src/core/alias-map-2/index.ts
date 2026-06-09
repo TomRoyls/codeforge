@@ -110,4 +110,8 @@ export class AliasMap2<T> {
   [Symbol.iterator]() {
     return this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

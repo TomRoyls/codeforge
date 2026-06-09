@@ -173,4 +173,8 @@ export class CollisionMap2<T> {
   *[Symbol.iterator]() {
     yield* this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

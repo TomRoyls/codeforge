@@ -85,4 +85,8 @@ export class CatMap2<T> {
   *[Symbol.iterator]() {
     yield* this.getPairs()
   }
+
+  toArray() {
+    return this.getPairs()
+  }
 }

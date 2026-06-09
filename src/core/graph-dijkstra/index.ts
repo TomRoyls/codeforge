@@ -155,4 +155,8 @@ export class GraphDijkstra {
   *[Symbol.iterator]() {
     yield* this.edges()
   }
+
+  toArray() {
+    return this.edges()
+  }
 }

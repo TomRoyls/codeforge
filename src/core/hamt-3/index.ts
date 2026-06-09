@@ -413,4 +413,8 @@ export class Hamt3<T> {
   *[Symbol.iterator]() {
     yield* this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

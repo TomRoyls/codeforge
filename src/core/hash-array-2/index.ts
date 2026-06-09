@@ -145,4 +145,8 @@ export class HashArray2<T> {
   *[Symbol.iterator]() {
     yield* this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

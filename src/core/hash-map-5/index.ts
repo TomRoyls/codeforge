@@ -220,4 +220,8 @@ export class HashMap5<K, V> {
       },
     };
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

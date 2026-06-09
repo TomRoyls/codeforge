@@ -160,4 +160,8 @@ export class GraphKruskal {
   *[Symbol.iterator]() {
     yield* this.edges()
   }
+
+  toArray() {
+    return [...this]
+  }
 }

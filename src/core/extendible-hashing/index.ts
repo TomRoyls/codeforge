@@ -266,4 +266,8 @@ export class ExtendibleHashTable<K, V> {
   [Symbol.iterator]() {
     return this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

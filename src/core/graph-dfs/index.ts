@@ -297,4 +297,8 @@ export class GraphDFS {
   *[Symbol.iterator]() {
     yield* this.edges()
   }
+
+  toArray() {
+    return this.edges()
+  }
 }

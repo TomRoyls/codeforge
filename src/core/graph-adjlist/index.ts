@@ -329,4 +329,8 @@ export class GraphAdjList<T> {
   *[Symbol.iterator]() {
     yield* this.getEdges()
   }
+
+  toArray() {
+    return this.getEdges()
+  }
 }

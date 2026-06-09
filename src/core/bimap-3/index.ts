@@ -99,4 +99,8 @@ export class BiMap3<K, V> {
       },
     };
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

@@ -282,4 +282,8 @@ export class AVLMap3<K, V> {
       yield val;
     }
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

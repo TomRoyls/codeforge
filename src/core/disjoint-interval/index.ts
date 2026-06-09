@@ -238,6 +238,9 @@ export class DisjointIntervalSet {
     }
     return undefined
   }
+  toArray() {
+    return [...this]
+  }
 }
 
 export type { Interval, IntervalOptions }

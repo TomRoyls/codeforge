@@ -188,4 +188,8 @@ export class GraphTopoSort {
   *[Symbol.iterator]() {
     yield* this.edges()
   }
+
+  toArray() {
+    return this.edges()
+  }
 }

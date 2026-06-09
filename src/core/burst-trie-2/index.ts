@@ -148,4 +148,8 @@ export class BurstTrie2 {
   *[Symbol.iterator]() {
     yield* this.getAll()
   }
+
+  toArray() {
+    return this.getAll()
+  }
 }

@@ -424,4 +424,8 @@ export class HashArrayMappedTrie2<K, V> {
   clone(): HashArrayMappedTrie2<K, V> {
     return this._build(cloneNode(this._root), this._size)
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

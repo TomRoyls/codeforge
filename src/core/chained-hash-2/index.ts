@@ -159,4 +159,8 @@ export class ChainedHash2<V> {
   *[Symbol.iterator]() {
     yield* this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

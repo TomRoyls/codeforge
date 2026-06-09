@@ -190,4 +190,8 @@ export class CartesianTree3<T> {
       yield val;
     }
   }
+
+  toArray() {
+    return [...this]
+  }
 }
