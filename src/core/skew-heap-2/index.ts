@@ -95,7 +95,7 @@ export class SkewHeap2<T> {
   extractMin(): T | null {
     if (!this.root) return null
 
-    while (this.root && this.root.value === undefined as any) {
+    while (this.root && (this.root.value as unknown) === undefined) {
       this.root = this.mergeNodes(this.root.left, this.root.right)
     }
 
@@ -142,7 +142,7 @@ export class SkewHeap2<T> {
     const leftValues = this._extractAllValues(node.left)
     const rightValues = this._extractAllValues(node.right)
 
-    if (node.value === undefined as any) {
+    if ((node.value as unknown) === undefined) {
       return [...leftValues, ...rightValues]
     }
 

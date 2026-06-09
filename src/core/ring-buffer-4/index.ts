@@ -126,7 +126,7 @@ export class RingBuffer4<T> {
     return {
       next: (): IteratorResult<T> => {
         if (i >= this.count) {
-          return { done: true, value: undefined as any };
+          return { done: true, value: undefined as unknown as T };
         }
         const index = (this.head + i) % this.capacity;
         const value = this.buffer[index]!;

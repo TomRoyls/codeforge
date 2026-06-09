@@ -98,7 +98,7 @@ export class SparseSet2 {
           index++;
           return { value, done: false };
         }
-        return { value: undefined as any, done: true };
+        return { value: undefined as unknown as number, done: true };
       }
     };
   }

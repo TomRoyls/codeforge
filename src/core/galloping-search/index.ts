@@ -6,7 +6,7 @@ export class GallopingSearch<T> {
     this.array = [...sortedArray];
     this.compare = comparator || ((a: T, b: T) => {
       if (a === b) return 0;
-      return (a as any) < (b as any) ? -1 : 1;
+      return (a as unknown as number) < (b as unknown as number) ? -1 : 1;
     });
   }
 

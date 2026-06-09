@@ -114,7 +114,7 @@ export class LinkedHashSet<T> {
     return this.values();
   }
 
-  getTimeComplexity(): string {
+  getTimeComplexity(): Record<string, string> {
     return {
       add: 'O(1)',
       delete: 'O(1)',
@@ -127,6 +127,6 @@ export class LinkedHashSet<T> {
       last: 'O(1)',
       forEach: 'O(n)',
       toArray: 'O(n)'
-    } as any as string;
+    };
   }
 }

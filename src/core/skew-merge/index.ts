@@ -57,6 +57,10 @@ export class SkewMerge<T> {
     return this._size === 0;
   }
 
+  private setSize(n: number): void {
+    this._size = n;
+  }
+
   clear(): void {
     this.root = null;
     this._size = 0;
@@ -66,7 +70,7 @@ export class SkewMerge<T> {
     const result: T[] = [];
     const temp = new SkewMerge<T>(this.comparator);
     temp.root = this._cloneNode(this.root);
-    (temp as any)._size = this._size;
+    temp.setSize(this._size);
 
     while (!temp.isEmpty()) {
       const value = temp.extractMin();

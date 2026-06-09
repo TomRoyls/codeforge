@@ -110,8 +110,7 @@ export class HeapSort4<T> {
     }
 
     const copy = [...arr]
-    heapSortInternal(copy, this.compare)
-    return copy[k - 1]!
+    return this.quickselect(copy, 0, copy.length - 1, k - 1)
   }
 
   kthLargest(arr: T[], k: number): T {
@@ -120,8 +119,32 @@ export class HeapSort4<T> {
     }
 
     const copy = [...arr]
-    heapSortInternal(copy, this.compare)
-    return copy[copy.length - k]!
+    return this.quickselect(copy, 0, copy.length - 1, copy.length - k)
+  }
+
+  private quickselect(arr: T[], left: number, right: number, k: number): T {
+    while (true) {
+      if (left === right) return arr[left]!
+      const pivotIndex = this.partition(arr, left, right)
+      if (k === pivotIndex) return arr[k]!
+      else if (k < pivotIndex) right = pivotIndex - 1
+      else left = pivotIndex + 1
+    }
+  }
+
+  private partition(arr: T[], left: number, right: number): number {
+    const mid = (left + right) >>> 1
+    const pivot = arr[mid]!
+    let i = left - 1
+    let j = right + 1
+    while (true) {
+      do { i++ } while (this.compare(arr[i]!, pivot) < 0)
+      do { j-- } while (this.compare(arr[j]!, pivot) > 0)
+      if (i >= j) return j
+      const tmp = arr[i]!
+      arr[i] = arr[j]!
+      arr[j] = tmp
+    }
   }
 
   isMaxHeap(arr: T[]): boolean {

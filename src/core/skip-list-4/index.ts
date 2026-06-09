@@ -23,7 +23,7 @@ export class SkipList4<T> {
     this.level = 0;
     this.compare = compare || ((a: T, b: T) => {
       if (a === b) return 0;
-      return (a as any) < (b as any) ? -1 : 1;
+      return (a as unknown as number) < (b as unknown as number) ? -1 : 1;
     });
     this.head = new Node<T>(undefined as unknown as T, this.maxLevel);
     this.tail = new Node<T>(undefined as unknown as T, this.maxLevel);
