@@ -144,4 +144,8 @@ export class XorFilter2 {
   size(): number {
     return this.fingerprints.length;
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }

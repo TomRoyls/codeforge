@@ -80,4 +80,8 @@ export class SkylineSet2<T> {
     }
     return atLeastOneStrictlyGreater;
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }

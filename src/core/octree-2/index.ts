@@ -85,6 +85,10 @@ export class Octree2<V> {
            point.z >= bounds.z && 
            point.z < bounds.z + bounds.size;
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }
 
 class OctreeNode<V> {

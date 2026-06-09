@@ -157,4 +157,8 @@ export class IntervalSet2 {
     }
     return total
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }

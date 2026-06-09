@@ -214,4 +214,8 @@ export class QuadTreeMap2<V> {
              b2.y >= b1.y + b1.height ||
              b2.y + b2.height <= b1.y);
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }

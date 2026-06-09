@@ -63,4 +63,8 @@ export class MinHash2 {
   getSignature(): number[] {
     return this.signature;
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }

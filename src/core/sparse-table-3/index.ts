@@ -133,4 +133,8 @@ export class SparseTable3 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }

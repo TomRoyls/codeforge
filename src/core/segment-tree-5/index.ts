@@ -59,4 +59,8 @@ export class SegmentTree5 {
   size(): number {
     return this.dataSize;
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }

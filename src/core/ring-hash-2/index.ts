@@ -77,4 +77,8 @@ export class RingHash2 {
     this.ring = [];
     this.nodeSet.clear();
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }

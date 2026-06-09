@@ -256,4 +256,8 @@ export class AdaptiveHash2<K, V> {
       }
     }
   }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
 }

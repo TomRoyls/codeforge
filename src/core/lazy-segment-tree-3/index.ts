@@ -89,4 +89,8 @@ export class LazySegmentTree3 {
   size(): number {
     return this.n;
   }
+
+  isEmpty(): boolean {
+    return this.size() === 0
+  }
 }
