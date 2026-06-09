@@ -407,6 +407,10 @@ export class FibHeap<T = number> {
     node.mark = false
   }
 
+
+  toString(): string {
+    return `${FibHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'

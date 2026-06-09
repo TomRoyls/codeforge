@@ -241,6 +241,10 @@ export class DisjointIntervalSet {
   toArray() {
     return [...this]
   }
+
+  toString(): string {
+    return `${DisjointIntervalSet}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export type { Interval, IntervalOptions }

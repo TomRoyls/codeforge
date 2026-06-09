@@ -300,4 +300,8 @@ export class CountedBTree2<T> {
       }
     };
   }
+
+  toString(): string {
+    return `${CountedBTree2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

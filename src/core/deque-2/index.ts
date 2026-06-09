@@ -359,6 +359,10 @@ export class Deque2<T = unknown> {
     }
     return result
   }
+
+  toString(): string {
+    return `${Deque2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export type { Deque2Options } from './types.js'

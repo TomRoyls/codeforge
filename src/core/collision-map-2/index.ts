@@ -184,4 +184,8 @@ export class CollisionMap2<T> {
       callback(items[i]!, i)
     }
   }
+
+  toString(): string {
+    return `${CollisionMap2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

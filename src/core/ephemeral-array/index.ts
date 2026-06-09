@@ -336,4 +336,8 @@ export class EphemeralArray<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${EphemeralArray}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

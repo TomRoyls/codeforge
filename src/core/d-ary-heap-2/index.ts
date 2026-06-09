@@ -193,4 +193,8 @@ export class DAryHeap<T> {
     this.heap[i] = this.heap[j]!
     this.heap[j] = tmp
   }
+
+  toString(): string {
+    return `${DAryHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

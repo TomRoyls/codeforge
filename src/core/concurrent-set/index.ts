@@ -284,4 +284,8 @@ export class ConcurrentSet<T> {
       throw e
     }
   }
+
+  toString(): string {
+    return `${ConcurrentSet}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

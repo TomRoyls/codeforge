@@ -176,4 +176,8 @@ export class CoalescingMap<K, V> {
       yield { start: r.start, end: r.end, value: r.value }
     }
   }
+
+  toString(): string {
+    return `${CoalescingMap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

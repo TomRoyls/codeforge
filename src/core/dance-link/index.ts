@@ -272,4 +272,8 @@ export class DanceLink {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${DanceLink}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

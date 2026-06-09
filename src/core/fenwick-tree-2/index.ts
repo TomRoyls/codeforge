@@ -166,4 +166,8 @@ export class FenwickTree2<T = number> {
       callback(this.vals[i]!, i)
     }
   }
+
+  toString(): string {
+    return `${FenwickTree2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

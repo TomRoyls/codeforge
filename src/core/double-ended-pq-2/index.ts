@@ -304,4 +304,8 @@ export class DoubleEndedPQ2<T = number> {
     this.heap[i] = this.heap[j]!;
     this.heap[j] = temp;
   }
+
+  toString(): string {
+    return `${DoubleEndedPQ2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

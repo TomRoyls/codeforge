@@ -154,6 +154,10 @@ export class DynamicFenwick<T = number> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${DynamicFenwick}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'

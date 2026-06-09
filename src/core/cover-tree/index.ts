@@ -251,6 +251,10 @@ export class CoverTree<T = number> {
     }
     return tree
   }
+
+  toString(): string {
+    return `${CoverTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

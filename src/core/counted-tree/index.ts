@@ -422,4 +422,8 @@ export class CountedTree<T> {
     }
     return this.rank(value)
   }
+
+  toString(): string {
+    return `${CountedTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

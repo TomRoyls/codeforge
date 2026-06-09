@@ -258,4 +258,8 @@ export class ConcTree<T> {
     for (const v of values) tree.append(v)
     return tree
   }
+
+  toString(): string {
+    return `${ConcTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

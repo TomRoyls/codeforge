@@ -164,4 +164,8 @@ export class DiffArray {
     this.rebuildCache()
     return this.cached.slice()
   }
+
+  toString(): string {
+    return `${DiffArray}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

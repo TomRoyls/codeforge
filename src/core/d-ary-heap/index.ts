@@ -275,6 +275,10 @@ export class DAryHeap<T = number> {
     this.heap[i] = this.heap[j]!
     this.heap[j] = temp
   }
+
+  toString(): string {
+    return `${DAryHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export type { DAryHeapOptions } from './types.js'

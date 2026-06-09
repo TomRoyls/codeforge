@@ -297,6 +297,10 @@ export class DoubleEndedPQ<T = number> {
     this.heap[i] = this.heap[j]!
     this.heap[j] = temp
   }
+
+  toString(): string {
+    return `${DoubleEndedPQ}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

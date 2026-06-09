@@ -182,4 +182,8 @@ export class DisjointSet<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${DisjointSet}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

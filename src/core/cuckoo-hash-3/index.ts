@@ -280,4 +280,8 @@ export class CuckooHash3<K, V> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `${CuckooHash3}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

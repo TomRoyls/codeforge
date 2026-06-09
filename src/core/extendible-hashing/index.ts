@@ -270,4 +270,8 @@ export class ExtendibleHashTable<K, V> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `${ExtendibleHashTable}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

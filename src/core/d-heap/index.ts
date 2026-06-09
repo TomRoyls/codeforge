@@ -129,4 +129,8 @@ export class DHeap<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${DHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
