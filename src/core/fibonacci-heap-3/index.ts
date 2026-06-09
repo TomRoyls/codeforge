@@ -482,6 +482,10 @@ export class FibonacciHeap3<T = number> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

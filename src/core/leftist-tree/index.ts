@@ -237,4 +237,8 @@ export class LeftistTree<T> {
   reverse(): T[] {
     return this.toArray().reverse()
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }

@@ -443,6 +443,10 @@ export class FibonacciHeap<T = number> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }
 
 export type { FibonacciHeapOptions, FibonacciHeapNode } from './types.js'

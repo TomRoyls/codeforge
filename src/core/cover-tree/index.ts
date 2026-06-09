@@ -300,6 +300,10 @@ export class CoverTree<T = number> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

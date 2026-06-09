@@ -173,4 +173,8 @@ export class LeftistHeap4<T> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }

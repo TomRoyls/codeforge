@@ -237,4 +237,5 @@ export class MergeableMap<K, V> {
   toJSON() {
     return { type: 'MergeableMap', size: this.size, items: this.toArray() }
   }
+
 }

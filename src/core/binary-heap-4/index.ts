@@ -222,4 +222,8 @@ export class BinaryHeap<T> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }

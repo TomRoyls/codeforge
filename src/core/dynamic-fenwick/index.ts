@@ -202,6 +202,10 @@ export class DynamicFenwick<T = number> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'

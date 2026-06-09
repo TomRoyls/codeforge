@@ -303,6 +303,10 @@ export class ChunkedArray<T = unknown> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

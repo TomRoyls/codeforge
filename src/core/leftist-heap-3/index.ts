@@ -300,6 +300,10 @@ export class LeftistHeap3<T = number> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

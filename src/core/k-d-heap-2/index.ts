@@ -148,4 +148,8 @@ export class KDHeap2<T> {
   includes(item: T): boolean {
     return this.toArray().includes(item)
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }

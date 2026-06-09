@@ -310,4 +310,8 @@ export class CircularBuffer<T> {
     const arr = this.toArray()
     return index >= 0 ? arr[index] : arr[arr.length + index]
   }
+
+  slice(start?: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }
