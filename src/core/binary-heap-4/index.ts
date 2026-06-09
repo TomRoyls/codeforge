@@ -158,8 +158,8 @@ export class BinaryHeap<T> {
 
 
   *[Symbol.iterator](): IterableIterator<T> {
-    for (const val of this.toArray()) {
-      yield val;
+    for (let i = 0; i < this.heap.length; i++) {
+      yield this.heap[i]!;
     }
   }
 

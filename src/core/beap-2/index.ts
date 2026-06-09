@@ -137,8 +137,8 @@ export class Beap2<T> {
 
 
   *[Symbol.iterator](): IterableIterator<T> {
-    for (const val of this.toArray()) {
-      yield val;
+    for (let i = 0; i < this.size; i++) {
+      yield this.data[i]!;
     }
   }
 
