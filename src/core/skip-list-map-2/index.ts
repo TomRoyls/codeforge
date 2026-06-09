@@ -10,6 +10,12 @@ class Node<K, V> {
   }
 }
 
+interface SkipListOptions<K> {
+  maxLevel?: number;
+  probability?: number;
+  comparator?: (a: K, b: K) => number;
+}
+
 export class SkipListMap2<K, V> {
   private maxLevel: number;
   private probability: number;
@@ -18,14 +24,28 @@ export class SkipListMap2<K, V> {
   private _size: number;
   private comparator: (a: K, b: K) => number;
 
-  constructor(comparator?: (a: K, b: K) => number, maxLevel = 16, probability = 0.5) {
-    this.maxLevel = maxLevel;
-    this.probability = probability;
-    this.comparator = comparator || ((a: K, b: K) => {
-      const numA = a as unknown as number;
-      const numB = b as unknown as number;
-      return numA < numB ? -1 : numA > numB ? 1 : 0;
-    });
+  constructor(optionsOrComparator?: SkipListOptions<K> | ((a: K, b: K) => number), maxLevel = 16, probability = 0.5) {
+    if (typeof optionsOrComparator === 'function') {
+      this.maxLevel = maxLevel;
+      this.probability = probability;
+      this.comparator = optionsOrComparator;
+    } else if (optionsOrComparator && typeof optionsOrComparator === 'object') {
+      this.maxLevel = optionsOrComparator.maxLevel ?? 16;
+      this.probability = optionsOrComparator.probability ?? 0.5;
+      this.comparator = optionsOrComparator.comparator ?? ((a: K, b: K) => {
+        const numA = a as unknown as number;
+        const numB = b as unknown as number;
+        return numA < numB ? -1 : numA > numB ? 1 : 0;
+      });
+    } else {
+      this.maxLevel = maxLevel;
+      this.probability = probability;
+      this.comparator = (a: K, b: K) => {
+        const numA = a as unknown as number;
+        const numB = b as unknown as number;
+        return numA < numB ? -1 : numA > numB ? 1 : 0;
+      };
+    }
     this.head = new Node<K, V>(null as unknown as K, null as unknown as V, this.maxLevel);
     this.level = 0;
     this._size = 0;
@@ -50,10 +70,10 @@ export class SkipListMap2<K, V> {
       update[i] = current;
     }
 
-    current = current.forward[0]!;
+    const next = current.forward[0] ?? null;
 
-    if (current !== null && this.comparator(current.key, key) === 0) {
-      current.value = value;
+    if (next !== null && this.comparator(next.key, key) === 0) {
+      next.value = value;
     } else {
       const lvl = this.randomLevel();
       if (lvl > this.level) {
@@ -72,25 +92,27 @@ export class SkipListMap2<K, V> {
     }
   }
 
-  get(key: K): V | undefined {
+  private findNode(key: K): Node<K, V> | null {
     let current = this.head;
-
     for (let i = this.level; i >= 0; i--) {
       while (current.forward[i] !== null && this.comparator(current.forward[i]!.key, key) < 0) {
         current = current.forward[i]!;
       }
     }
-
-    current = current.forward[0]!;
-
-    if (current !== null && this.comparator(current.key, key) === 0) {
-      return current.value;
+    const node = current.forward[0] ?? null;
+    if (node !== null && this.comparator(node.key, key) === 0) {
+      return node;
     }
-    return undefined;
+    return null;
+  }
+
+  get(key: K): V | undefined {
+    const node = this.findNode(key);
+    return node !== null ? node.value : undefined;
   }
 
   has(key: K): boolean {
-    return this.get(key) !== undefined;
+    return this.findNode(key) !== null;
   }
 
   delete(key: K): boolean {
@@ -104,14 +126,14 @@ export class SkipListMap2<K, V> {
       update[i] = current;
     }
 
-    current = current.forward[0]!;
+    const target = current.forward[0] ?? null;
 
-    if (current !== null && this.comparator(current.key, key) === 0) {
+    if (target !== null && this.comparator(target.key, key) === 0) {
       for (let i = 0; i <= this.level; i++) {
-        if (update[i]!.forward[i] !== current) {
+        if (update[i]!.forward[i] !== target) {
           break;
         }
-        update[i]!.forward[i] = current.forward[i] ?? null;
+        update[i]!.forward[i] = target.forward[i] ?? null;
       }
 
       while (this.level > 0 && this.head.forward[this.level] === null) {
@@ -129,21 +151,22 @@ export class SkipListMap2<K, V> {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0;
+  }
+
   clear(): void {
     this.head = new Node<K, V>(null as unknown as K, null as unknown as V, this.maxLevel);
     this.level = 0;
     this._size = 0;
   }
 
-  min(): { key: K; value: V } | undefined {
-    const node = this.head.forward[0];
-    if (node != null) {
-      return { key: node.key, value: node.value };
-    }
-    return undefined;
+  min(): K | undefined {
+    const node = this.head.forward[0] ?? null;
+    return node != null ? node.key : undefined;
   }
 
-  max(): { key: K; value: V } | undefined {
+  max(): K | undefined {
     let current = this.head;
     for (let i = this.level; i >= 0; i--) {
       while (current.forward[i] !== null) {
@@ -151,28 +174,188 @@ export class SkipListMap2<K, V> {
       }
     }
     if (current !== this.head) {
-      return { key: current.key, value: current.value };
+      return current.key;
     }
     return undefined;
   }
 
-  range(min: K, max: K): { key: K; value: V }[] {
-    const result: { key: K; value: V }[] = [];
-    let current = this.head;
+  minEntry(): [K, V] | undefined {
+    const node = this.head.forward[0] ?? null;
+    return node != null ? [node.key, node.value] : undefined;
+  }
 
+  maxEntry(): [K, V] | undefined {
+    let current = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] !== null) {
+        current = current.forward[i]!;
+      }
+    }
+    if (current !== this.head) {
+      return [current.key, current.value];
+    }
+    return undefined;
+  }
+
+  floor(key: K): K | undefined {
+    const entry = this.floorEntry(key);
+    return entry !== undefined ? entry[0] : undefined;
+  }
+
+  ceiling(key: K): K | undefined {
+    const entry = this.ceilingEntry(key);
+    return entry !== undefined ? entry[0] : undefined;
+  }
+
+  lower(key: K): K | undefined {
+    const entry = this.lowerEntry(key);
+    return entry !== undefined ? entry[0] : undefined;
+  }
+
+  higher(key: K): K | undefined {
+    const entry = this.higherEntry(key);
+    return entry !== undefined ? entry[0] : undefined;
+  }
+
+  floorEntry(key: K): [K, V] | undefined {
+    let current = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] !== null && this.comparator(current.forward[i]!.key, key) <= 0) {
+        current = current.forward[i]!;
+      }
+    }
+    if (current !== this.head) {
+      return [current.key, current.value];
+    }
+    return undefined;
+  }
+
+  ceilingEntry(key: K): [K, V] | undefined {
+    let current = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] !== null && this.comparator(current.forward[i]!.key, key) < 0) {
+        current = current.forward[i]!;
+      }
+    }
+    const node = current.forward[0] ?? null;
+    return node !== null ? [node.key, node.value] : undefined;
+  }
+
+  lowerEntry(key: K): [K, V] | undefined {
+    let current = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] !== null && this.comparator(current.forward[i]!.key, key) < 0) {
+        current = current.forward[i]!;
+      }
+    }
+    if (current !== this.head) {
+      return [current.key, current.value];
+    }
+    return undefined;
+  }
+
+  higherEntry(key: K): [K, V] | undefined {
+    let current = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] !== null && this.comparator(current.forward[i]!.key, key) <= 0) {
+        current = current.forward[i]!;
+      }
+    }
+    const node = current.forward[0] ?? null;
+    return node !== null ? [node.key, node.value] : undefined;
+  }
+
+  *range(min: K, max: K): IterableIterator<[K, V]> {
+    if (this.comparator(min, max) > 0) return;
+
+    let current = this.head;
     for (let i = this.level; i >= 0; i--) {
       while (current.forward[i] !== null && this.comparator(current.forward[i]!.key, min) < 0) {
         current = current.forward[i]!;
       }
     }
 
-    current = current.forward[0]!;
-
-    while (current !== null && this.comparator(current.key, max) <= 0) {
-      result.push({ key: current.key, value: current.value });
-      current = current.forward[0]!;
+    let node = current.forward[0] ?? null;
+    while (node !== null && this.comparator(node.key, max) <= 0) {
+      yield [node.key, node.value];
+      node = node.forward[0] ?? null;
     }
+  }
 
+  *rangeEntries(min: K, max: K): IterableIterator<[K, V]> {
+    yield* this.range(min, max);
+  }
+
+  *keys(): IterableIterator<K> {
+    let node = this.head.forward[0] ?? null;
+    while (node !== null) {
+      yield node.key;
+      node = node.forward[0] ?? null;
+    }
+  }
+
+  *values(): IterableIterator<V> {
+    let node = this.head.forward[0] ?? null;
+    while (node !== null) {
+      yield node.value;
+      node = node.forward[0] ?? null;
+    }
+  }
+
+  *entries(): IterableIterator<[K, V]> {
+    let node = this.head.forward[0] ?? null;
+    while (node !== null) {
+      yield [node.key, node.value];
+      node = node.forward[0] ?? null;
+    }
+  }
+
+  [Symbol.iterator](): IterableIterator<[K, V]> {
+    return this.entries();
+  }
+
+  toArray(): [K, V][] {
+    const result: [K, V][] = [];
+    let node = this.head.forward[0] ?? null;
+    while (node !== null) {
+      result.push([node.key, node.value]);
+      node = node.forward[0] ?? null;
+    }
     return result;
+  }
+
+  forEach(callback: (value: V, key: K, map: this) => void): void {
+    let node = this.head.forward[0] ?? null;
+    while (node !== null) {
+      callback(node.value, node.key, this);
+      node = node.forward[0] ?? null;
+    }
+  }
+
+  indexOf(key: K): number {
+    let index = 0;
+    let node: Node<K, V> | null = this.head.forward[0] ?? null;
+    while (node !== null) {
+      if (this.comparator(node.key, key) === 0) {
+        return index;
+      }
+      index++;
+      node = node.forward[0] ?? null;
+    }
+    return -1;
+  }
+
+  at(index: number): [K, V] | undefined {
+    if (index < 0) return undefined;
+    let i = 0;
+    let node: Node<K, V> | null = this.head.forward[0] ?? null;
+    while (node !== null) {
+      if (i === index) {
+        return [node.key, node.value];
+      }
+      i++;
+      node = node.forward[0] ?? null;
+    }
+    return undefined;
   }
 }

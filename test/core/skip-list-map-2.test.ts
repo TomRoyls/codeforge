@@ -11,23 +11,23 @@ function createFilled(entries: [number, string][]): SkipListMap<number, string> 
 
 describe('SkipListMap', () => {
   describe('constructor', () => {
-    it.skip('creates empty map', () => {
+    it('creates empty map', () => {
       const map = new SkipListMap()
       expect(map.size).toBe(0)
       expect(map.isEmpty()).toBe(true)
     })
 
-    it.skip('accepts custom maxLevel', () => {
+    it('accepts custom maxLevel', () => {
       const map = new SkipListMap<number, string>({ maxLevel: 16 })
       expect(map.size).toBe(0)
     })
 
-    it.skip('accepts custom probability', () => {
+    it('accepts custom probability', () => {
       const map = new SkipListMap<number, string>({ probability: 0.25 })
       expect(map.size).toBe(0)
     })
 
-    it.skip('accepts custom comparator', () => {
+    it('accepts custom comparator', () => {
       const reverseComp = (a: number, b: number): number => b - a
       const map = new SkipListMap<number, string>({ comparator: reverseComp })
       map.set(1, 'a')
@@ -38,18 +38,18 @@ describe('SkipListMap', () => {
   })
 
   describe('set and get', () => {
-    it.skip('sets and gets a single entry', () => {
+    it('sets and gets a single entry', () => {
       const map = new SkipListMap<number, string>()
       map.set(1, 'one')
       expect(map.get(1)).toBe('one')
     })
 
-    it.skip('returns undefined for missing key', () => {
+    it('returns undefined for missing key', () => {
       const map = new SkipListMap<number, string>()
       expect(map.get(99)).toBeUndefined()
     })
 
-    it.skip('updates existing key', () => {
+    it('updates existing key', () => {
       const map = new SkipListMap<number, string>()
       map.set(1, 'one')
       map.set(1, 'uno')
@@ -57,12 +57,12 @@ describe('SkipListMap', () => {
       expect(map.size).toBe(1)
     })
 
-    it.skip('maintains sorted order', () => {
+    it('maintains sorted order', () => {
       const map = createFilled([[3, 'c'], [1, 'a'], [2, 'b']])
       expect(map.toArray()).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
     })
 
-    it.skip('handles many insertions', () => {
+    it('handles many insertions', () => {
       const map = new SkipListMap<number, number>()
       const count = 100
       for (let i = count; i >= 1; i--) {
@@ -74,7 +74,7 @@ describe('SkipListMap', () => {
       }
     })
 
-    it.skip('handles duplicate keys correctly', () => {
+    it('handles duplicate keys correctly', () => {
       const map = new SkipListMap<number, string>()
       map.set(1, 'a')
       map.set(1, 'b')
@@ -83,7 +83,7 @@ describe('SkipListMap', () => {
       expect(map.get(1)).toBe('c')
     })
 
-    it.skip('handles string keys', () => {
+    it('handles string keys', () => {
       const map = new SkipListMap<string, number>()
       map.set('banana', 2)
       map.set('apple', 1)
@@ -93,88 +93,88 @@ describe('SkipListMap', () => {
       expect(map.get('cherry')).toBe(3)
     })
 
-    it.skip('handles zero as key', () => {
+    it('handles zero as key', () => {
       const map = new SkipListMap<number, string>()
       map.set(0, 'zero')
       expect(map.get(0)).toBe('zero')
     })
 
-    it.skip('handles negative keys', () => {
+    it('handles negative keys', () => {
       const map = createFilled([[-1, 'neg'], [0, 'zero'], [1, 'pos']])
       expect(map.toArray()).toEqual([[-1, 'neg'], [0, 'zero'], [1, 'pos']])
     })
 
-    it.skip('handles float keys', () => {
+    it('handles float keys', () => {
       const map = createFilled([[1.5, 'a'], [2.5, 'b'], [0.5, 'c']])
       expect(map.toArray()).toEqual([[0.5, 'c'], [1.5, 'a'], [2.5, 'b']])
     })
   })
 
   describe('has', () => {
-    it.skip('returns true for existing key', () => {
+    it('returns true for existing key', () => {
       const map = new SkipListMap<number, string>()
       map.set(1, 'one')
       expect(map.has(1)).toBe(true)
     })
 
-    it.skip('returns false for missing key', () => {
+    it('returns false for missing key', () => {
       const map = new SkipListMap<number, string>()
       expect(map.has(1)).toBe(false)
     })
 
-    it.skip('returns false after deletion', () => {
+    it('returns false after deletion', () => {
       const map = new SkipListMap<number, string>()
       map.set(1, 'one')
       map.delete(1)
       expect(map.has(1)).toBe(false)
     })
 
-    it.skip('returns true for updated key', () => {
+    it('returns true for updated key', () => {
       const map = new SkipListMap<number, string>()
       map.set(1, 'one')
       map.set(1, 'uno')
       expect(map.has(1)).toBe(true)
     })
 
-    it.skip('returns false on empty map', () => {
+    it('returns false on empty map', () => {
       const map = new SkipListMap<number, string>()
       expect(map.has(42)).toBe(false)
     })
   })
 
   describe('delete', () => {
-    it.skip('deletes an existing key', () => {
+    it('deletes an existing key', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect(map.delete(2)).toBe(true)
       expect(map.get(2)).toBeUndefined()
       expect(map.size).toBe(2)
     })
 
-    it.skip('returns false for missing key', () => {
+    it('returns false for missing key', () => {
       const map = new SkipListMap<number, string>()
       expect(map.delete(99)).toBe(false)
     })
 
-    it.skip('deletes first element', () => {
+    it('deletes first element', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       map.delete(1)
       expect(map.toArray()).toEqual([[2, 'b'], [3, 'c']])
     })
 
-    it.skip('deletes last element', () => {
+    it('deletes last element', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       map.delete(3)
       expect(map.toArray()).toEqual([[1, 'a'], [2, 'b']])
     })
 
-    it.skip('deletes only element', () => {
+    it('deletes only element', () => {
       const map = createFilled([[1, 'a']])
       map.delete(1)
       expect(map.size).toBe(0)
       expect(map.isEmpty()).toBe(true)
     })
 
-    it.skip('deletes all elements sequentially', () => {
+    it('deletes all elements sequentially', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       map.delete(1)
       map.delete(2)
@@ -183,7 +183,7 @@ describe('SkipListMap', () => {
       expect(map.isEmpty()).toBe(true)
     })
 
-    it.skip('deletes all elements in reverse', () => {
+    it('deletes all elements in reverse', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       map.delete(3)
       map.delete(2)
@@ -191,34 +191,34 @@ describe('SkipListMap', () => {
       expect(map.size).toBe(0)
     })
 
-    it.skip('maintains order after deletions', () => {
+    it('maintains order after deletions', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c'], [4, 'd'], [5, 'e']])
       map.delete(2)
       map.delete(4)
       expect(map.toArray()).toEqual([[1, 'a'], [3, 'c'], [5, 'e']])
     })
 
-    it.skip('handles delete on empty map', () => {
+    it('handles delete on empty map', () => {
       const map = new SkipListMap<number, string>()
       expect(map.delete(1)).toBe(false)
     })
   })
 
   describe('clear', () => {
-    it.skip('clears all entries', () => {
+    it('clears all entries', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       map.clear()
       expect(map.size).toBe(0)
       expect(map.isEmpty()).toBe(true)
     })
 
-    it.skip('clear on empty map is no-op', () => {
+    it('clear on empty map is no-op', () => {
       const map = new SkipListMap<number, string>()
       map.clear()
       expect(map.size).toBe(0)
     })
 
-    it.skip('allows set after clear', () => {
+    it('allows set after clear', () => {
       const map = createFilled([[1, 'a']])
       map.clear()
       map.set(2, 'b')
@@ -228,7 +228,7 @@ describe('SkipListMap', () => {
   })
 
   describe('size and isEmpty', () => {
-    it.skip('size reflects number of entries', () => {
+    it('size reflects number of entries', () => {
       const map = new SkipListMap<number, string>()
       expect(map.size).toBe(0)
       map.set(1, 'a')
@@ -237,18 +237,18 @@ describe('SkipListMap', () => {
       expect(map.size).toBe(2)
     })
 
-    it.skip('isEmpty is true when empty', () => {
+    it('isEmpty is true when empty', () => {
       const map = new SkipListMap<number, string>()
       expect(map.isEmpty()).toBe(true)
     })
 
-    it.skip('isEmpty is false when not empty', () => {
+    it('isEmpty is false when not empty', () => {
       const map = new SkipListMap<number, string>()
       map.set(1, 'a')
       expect(map.isEmpty()).toBe(false)
     })
 
-    it.skip('isEmpty after delete all', () => {
+    it('isEmpty after delete all', () => {
       const map = createFilled([[1, 'a']])
       map.delete(1)
       expect(map.isEmpty()).toBe(true)
@@ -256,48 +256,48 @@ describe('SkipListMap', () => {
   })
 
   describe('min and max', () => {
-    it.skip('min returns smallest key', () => {
+    it('min returns smallest key', () => {
       const map = createFilled([[3, 'c'], [1, 'a'], [2, 'b']])
       expect(map.min()).toBe(1)
     })
 
-    it.skip('max returns largest key', () => {
+    it('max returns largest key', () => {
       const map = createFilled([[3, 'c'], [1, 'a'], [2, 'b']])
       expect(map.max()).toBe(3)
     })
 
-    it.skip('min returns undefined on empty', () => {
+    it('min returns undefined on empty', () => {
       const map = new SkipListMap<number, string>()
       expect(map.min()).toBeUndefined()
     })
 
-    it.skip('max returns undefined on empty', () => {
+    it('max returns undefined on empty', () => {
       const map = new SkipListMap<number, string>()
       expect(map.max()).toBeUndefined()
     })
 
-    it.skip('min equals max with single entry', () => {
+    it('min equals max with single entry', () => {
       const map = createFilled([[5, 'five']])
       expect(map.min()).toBe(5)
       expect(map.max()).toBe(5)
     })
 
-    it.skip('minEntry returns [key, value]', () => {
+    it('minEntry returns [key, value]', () => {
       const map = createFilled([[3, 'c'], [1, 'a']])
       expect(map.minEntry()).toEqual([1, 'a'])
     })
 
-    it.skip('maxEntry returns [key, value]', () => {
+    it('maxEntry returns [key, value]', () => {
       const map = createFilled([[3, 'c'], [1, 'a']])
       expect(map.maxEntry()).toEqual([3, 'c'])
     })
 
-    it.skip('minEntry undefined on empty', () => {
+    it('minEntry undefined on empty', () => {
       const map = new SkipListMap<number, string>()
       expect(map.minEntry()).toBeUndefined()
     })
 
-    it.skip('maxEntry undefined on empty', () => {
+    it('maxEntry undefined on empty', () => {
       const map = new SkipListMap<number, string>()
       expect(map.maxEntry()).toBeUndefined()
     })
@@ -306,52 +306,52 @@ describe('SkipListMap', () => {
   describe('floor and ceiling', () => {
     const map = createFilled([[1, 'a'], [3, 'c'], [5, 'e'], [7, 'g']])
 
-    it.skip('floor returns exact match', () => {
+    it('floor returns exact match', () => {
       expect(map.floor(3)).toBe(3)
     })
 
-    it.skip('floor returns lower key when no exact match', () => {
+    it('floor returns lower key when no exact match', () => {
       expect(map.floor(4)).toBe(3)
     })
 
-    it.skip('floor returns undefined when all keys are greater', () => {
+    it('floor returns undefined when all keys are greater', () => {
       expect(map.floor(0)).toBeUndefined()
     })
 
-    it.skip('floor returns max when key exceeds all', () => {
+    it('floor returns max when key exceeds all', () => {
       expect(map.floor(10)).toBe(7)
     })
 
-    it.skip('ceiling returns exact match', () => {
+    it('ceiling returns exact match', () => {
       expect(map.ceiling(5)).toBe(5)
     })
 
-    it.skip('ceiling returns higher key when no exact match', () => {
+    it('ceiling returns higher key when no exact match', () => {
       expect(map.ceiling(4)).toBe(5)
     })
 
-    it.skip('ceiling returns undefined when all keys are less', () => {
+    it('ceiling returns undefined when all keys are less', () => {
       expect(map.ceiling(10)).toBeUndefined()
     })
 
-    it.skip('ceiling returns min when key below all', () => {
+    it('ceiling returns min when key below all', () => {
       expect(map.ceiling(0)).toBe(1)
     })
 
-    it.skip('floorEntry returns entry', () => {
+    it('floorEntry returns entry', () => {
       expect(map.floorEntry(4)).toEqual([3, 'c'])
     })
 
-    it.skip('ceilingEntry returns entry', () => {
+    it('ceilingEntry returns entry', () => {
       expect(map.ceilingEntry(4)).toEqual([5, 'e'])
     })
 
-    it.skip('floor on empty map', () => {
+    it('floor on empty map', () => {
       const empty = new SkipListMap<number, string>()
       expect(empty.floor(1)).toBeUndefined()
     })
 
-    it.skip('ceiling on empty map', () => {
+    it('ceiling on empty map', () => {
       const empty = new SkipListMap<number, string>()
       expect(empty.ceiling(1)).toBeUndefined()
     })
@@ -360,116 +360,116 @@ describe('SkipListMap', () => {
   describe('lower and higher', () => {
     const map = createFilled([[1, 'a'], [3, 'c'], [5, 'e'], [7, 'g']])
 
-    it.skip('lower returns strictly less key', () => {
+    it('lower returns strictly less key', () => {
       expect(map.lower(5)).toBe(3)
     })
 
-    it.skip('lower with exact match returns predecessor', () => {
+    it('lower with exact match returns predecessor', () => {
       expect(map.lower(3)).toBe(1)
     })
 
-    it.skip('lower returns undefined for key <= min', () => {
+    it('lower returns undefined for key <= min', () => {
       expect(map.lower(1)).toBeUndefined()
     })
 
-    it.skip('lower for key below min', () => {
+    it('lower for key below min', () => {
       expect(map.lower(0)).toBeUndefined()
     })
 
-    it.skip('higher returns strictly greater key', () => {
+    it('higher returns strictly greater key', () => {
       expect(map.higher(3)).toBe(5)
     })
 
-    it.skip('higher with exact match returns successor', () => {
+    it('higher with exact match returns successor', () => {
       expect(map.higher(5)).toBe(7)
     })
 
-    it.skip('higher returns undefined for key >= max', () => {
+    it('higher returns undefined for key >= max', () => {
       expect(map.higher(7)).toBeUndefined()
     })
 
-    it.skip('higher for key above max', () => {
+    it('higher for key above max', () => {
       expect(map.higher(10)).toBeUndefined()
     })
 
-    it.skip('lowerEntry returns entry', () => {
+    it('lowerEntry returns entry', () => {
       expect(map.lowerEntry(5)).toEqual([3, 'c'])
     })
 
-    it.skip('higherEntry returns entry', () => {
+    it('higherEntry returns entry', () => {
       expect(map.higherEntry(3)).toEqual([5, 'e'])
     })
 
-    it.skip('lower on empty map', () => {
+    it('lower on empty map', () => {
       const empty = new SkipListMap<number, string>()
       expect(empty.lower(1)).toBeUndefined()
     })
 
-    it.skip('higher on empty map', () => {
+    it('higher on empty map', () => {
       const empty = new SkipListMap<number, string>()
       expect(empty.higher(1)).toBeUndefined()
     })
   })
 
   describe('range', () => {
-    it.skip('returns entries in range', () => {
+    it('returns entries in range', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c'], [4, 'd'], [5, 'e']])
       expect([...map.range(2, 4)]).toEqual([[2, 'b'], [3, 'c'], [4, 'd']])
     })
 
-    it.skip('returns single entry range', () => {
+    it('returns single entry range', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect([...map.range(2, 2)]).toEqual([[2, 'b']])
     })
 
-    it.skip('returns empty for no matching range', () => {
+    it('returns empty for no matching range', () => {
       const map = createFilled([[1, 'a'], [5, 'e']])
       expect([...map.range(2, 4)]).toEqual([])
     })
 
-    it.skip('range includes endpoints', () => {
+    it('range includes endpoints', () => {
       const map = createFilled([[1, 'a'], [3, 'c'], [5, 'e']])
       expect([...map.range(1, 5)]).toEqual([[1, 'a'], [3, 'c'], [5, 'e']])
     })
 
-    it.skip('range on empty map', () => {
+    it('range on empty map', () => {
       const map = new SkipListMap<number, string>()
       expect([...map.range(1, 5)]).toEqual([])
     })
 
-    it.skip('rangeEntries yields same as range', () => {
+    it('rangeEntries yields same as range', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect([...map.rangeEntries(1, 3)]).toEqual([...map.range(1, 3)])
     })
   })
 
   describe('indexOf', () => {
-    it.skip('returns 0 for first element', () => {
+    it('returns 0 for first element', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect(map.indexOf(1)).toBe(0)
     })
 
-    it.skip('returns correct index for middle element', () => {
+    it('returns correct index for middle element', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect(map.indexOf(2)).toBe(1)
     })
 
-    it.skip('returns last index', () => {
+    it('returns last index', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect(map.indexOf(3)).toBe(2)
     })
 
-    it.skip('returns -1 for missing key', () => {
+    it('returns -1 for missing key', () => {
       const map = createFilled([[1, 'a'], [2, 'b']])
       expect(map.indexOf(99)).toBe(-1)
     })
 
-    it.skip('returns -1 on empty map', () => {
+    it('returns -1 on empty map', () => {
       const map = new SkipListMap<number, string>()
       expect(map.indexOf(1)).toBe(-1)
     })
 
-    it.skip('updates index after deletion', () => {
+    it('updates index after deletion', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       map.delete(1)
       expect(map.indexOf(2)).toBe(0)
@@ -478,81 +478,81 @@ describe('SkipListMap', () => {
   })
 
   describe('at', () => {
-    it.skip('returns entry at index 0', () => {
+    it('returns entry at index 0', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect(map.at(0)).toEqual([1, 'a'])
     })
 
-    it.skip('returns entry at middle index', () => {
+    it('returns entry at middle index', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect(map.at(1)).toEqual([2, 'b'])
     })
 
-    it.skip('returns entry at last index', () => {
+    it('returns entry at last index', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect(map.at(2)).toEqual([3, 'c'])
     })
 
-    it.skip('returns undefined for negative index', () => {
+    it('returns undefined for negative index', () => {
       const map = createFilled([[1, 'a']])
       expect(map.at(-1)).toBeUndefined()
     })
 
-    it.skip('returns undefined for out of bounds', () => {
+    it('returns undefined for out of bounds', () => {
       const map = createFilled([[1, 'a']])
       expect(map.at(5)).toBeUndefined()
     })
 
-    it.skip('returns undefined on empty map', () => {
+    it('returns undefined on empty map', () => {
       const map = new SkipListMap<number, string>()
       expect(map.at(0)).toBeUndefined()
     })
   })
 
   describe('keys, values, entries', () => {
-    it.skip('keys returns all keys in order', () => {
+    it('keys returns all keys in order', () => {
       const map = createFilled([[3, 'c'], [1, 'a'], [2, 'b']])
       expect([...map.keys()]).toEqual([1, 2, 3])
     })
 
-    it.skip('values returns all values in key order', () => {
+    it('values returns all values in key order', () => {
       const map = createFilled([[3, 'c'], [1, 'a'], [2, 'b']])
       expect([...map.values()]).toEqual(['a', 'b', 'c'])
     })
 
-    it.skip('entries returns all entries in order', () => {
+    it('entries returns all entries in order', () => {
       const map = createFilled([[3, 'c'], [1, 'a'], [2, 'b']])
       expect([...map.entries()]).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
     })
 
-    it.skip('keys on empty map', () => {
+    it('keys on empty map', () => {
       const map = new SkipListMap<number, string>()
       expect([...map.keys()]).toEqual([])
     })
 
-    it.skip('values on empty map', () => {
+    it('values on empty map', () => {
       const map = new SkipListMap<number, string>()
       expect([...map.values()]).toEqual([])
     })
 
-    it.skip('entries on empty map', () => {
+    it('entries on empty map', () => {
       const map = new SkipListMap<number, string>()
       expect([...map.entries()]).toEqual([])
     })
   })
 
   describe('toArray', () => {
-    it.skip('returns array of entries', () => {
+    it('returns array of entries', () => {
       const map = createFilled([[2, 'b'], [1, 'a']])
       expect(map.toArray()).toEqual([[1, 'a'], [2, 'b']])
     })
 
-    it.skip('returns empty array for empty map', () => {
+    it('returns empty array for empty map', () => {
       const map = new SkipListMap<number, string>()
       expect(map.toArray()).toEqual([])
     })
 
-    it.skip('returns copy (not same reference)', () => {
+    it('returns copy (not same reference)', () => {
       const map = createFilled([[1, 'a']])
       const arr = map.toArray()
       arr.push([99, 'z'])
@@ -561,21 +561,21 @@ describe('SkipListMap', () => {
   })
 
   describe('forEach', () => {
-    it.skip('iterates all entries in order', () => {
+    it('iterates all entries in order', () => {
       const map = createFilled([[3, 'c'], [1, 'a'], [2, 'b']])
       const collected: [number, string][] = []
       map.forEach((v, k) => collected.push([k, v]))
       expect(collected).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
     })
 
-    it.skip('receives map as third argument', () => {
+    it('receives map as third argument', () => {
       const map = createFilled([[1, 'a']])
       let received: SkipListMap<number, string> | undefined
       map.forEach((_v, _k, m) => { received = m })
       expect(received).toBe(map)
     })
 
-    it.skip('does not iterate on empty map', () => {
+    it('does not iterate on empty map', () => {
       const map = new SkipListMap<number, string>()
       let count = 0
       map.forEach(() => { count++ })
@@ -584,13 +584,13 @@ describe('SkipListMap', () => {
   })
 
   describe('Symbol.iterator', () => {
-    it.skip('is iterable', () => {
+    it('is iterable', () => {
       const map = createFilled([[2, 'b'], [1, 'a']])
       const result = [...map]
       expect(result).toEqual([[1, 'a'], [2, 'b']])
     })
 
-    it.skip('works in for-of loop', () => {
+    it('works in for-of loop', () => {
       const map = createFilled([[1, 'a'], [2, 'b']])
       const keys: number[] = []
       for (const [k] of map) {
@@ -599,14 +599,14 @@ describe('SkipListMap', () => {
       expect(keys).toEqual([1, 2])
     })
 
-    it.skip('empty map yields nothing', () => {
+    it('empty map yields nothing', () => {
       const map = new SkipListMap<number, string>()
       expect([...map]).toEqual([])
     })
   })
 
   describe('stress tests', () => {
-    it.skip('handles large number of insertions', () => {
+    it('handles large number of insertions', () => {
       const map = new SkipListMap<number, number>()
       const n = 500
       for (let i = 0; i < n; i++) {
@@ -618,7 +618,7 @@ describe('SkipListMap', () => {
       }
     })
 
-    it.skip('handles random insertions and lookups', () => {
+    it('handles random insertions and lookups', () => {
       const map = new SkipListMap<number, number>()
       const keys = new Set<number>()
       for (let i = 0; i < 200; i++) {
@@ -632,7 +632,7 @@ describe('SkipListMap', () => {
       }
     })
 
-    it.skip('handles interleaved insert and delete', () => {
+    it('handles interleaved insert and delete', () => {
       const map = new SkipListMap<number, string>()
       for (let i = 0; i < 100; i++) {
         map.set(i, `v${i}`)
@@ -645,7 +645,7 @@ describe('SkipListMap', () => {
       expect(map.get(50)).toBe('v50')
     })
 
-    it.skip('insertions maintain sorted order', () => {
+    it('insertions maintain sorted order', () => {
       const map = new SkipListMap<number, number>()
       const shuffled = Array.from({ length: 100 }, (_, i) => i)
       for (let i = shuffled.length - 1; i > 0; i--) {
@@ -663,7 +663,7 @@ describe('SkipListMap', () => {
       }
     })
 
-    it.skip('indexOf consistent with at for many entries', () => {
+    it('indexOf consistent with at for many entries', () => {
       const map = new SkipListMap<number, number>()
       for (let i = 0; i < 50; i++) {
         map.set(i * 2, i)
@@ -678,7 +678,7 @@ describe('SkipListMap', () => {
   })
 
   describe('custom comparator', () => {
-    it.skip('works with reverse comparator', () => {
+    it('works with reverse comparator', () => {
       const map = new SkipListMap<number, string>({
         comparator: (a, b) => b - a,
       })
@@ -690,7 +690,7 @@ describe('SkipListMap', () => {
       expect([...map.keys()]).toEqual([3, 2, 1])
     })
 
-    it.skip('works with case-insensitive string comparator', () => {
+    it('works with case-insensitive string comparator', () => {
       const map = new SkipListMap<string, number>({
         comparator: (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()),
       })
@@ -700,7 +700,7 @@ describe('SkipListMap', () => {
       expect([...map.keys()]).toEqual(['apple', 'Banana', 'Cherry'])
     })
 
-    it.skip('works with object keys via custom comparator', () => {
+    it('works with object keys via custom comparator', () => {
       interface Obj { id: number }
       const map = new SkipListMap<Obj, string>({
         comparator: (a, b) => a.id - b.id,
@@ -716,7 +716,7 @@ describe('SkipListMap', () => {
   })
 
   describe('edge cases', () => {
-    it.skip('set/delete/set same key', () => {
+    it('set/delete/set same key', () => {
       const map = new SkipListMap<number, string>()
       map.set(1, 'a')
       map.delete(1)
@@ -725,7 +725,7 @@ describe('SkipListMap', () => {
       expect(map.size).toBe(1)
     })
 
-    it.skip('operations on single element map', () => {
+    it('operations on single element map', () => {
       const map = createFilled([[42, 'answer']])
       expect(map.min()).toBe(42)
       expect(map.max()).toBe(42)
@@ -737,7 +737,7 @@ describe('SkipListMap', () => {
       expect(map.at(0)).toEqual([42, 'answer'])
     })
 
-    it.skip('floor/ceiling/lower/higher on single element', () => {
+    it('floor/ceiling/lower/higher on single element', () => {
       const map = createFilled([[5, 'five']])
       expect(map.floor(5)).toBe(5)
       expect(map.floor(6)).toBe(5)
@@ -751,22 +751,22 @@ describe('SkipListMap', () => {
       expect(map.higher(4)).toBe(5)
     })
 
-    it.skip('range with same lo and hi that exists', () => {
+    it('range with same lo and hi that exists', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect([...map.range(2, 2)]).toEqual([[2, 'b']])
     })
 
-    it.skip('range with same lo and hi that does not exist', () => {
+    it('range with same lo and hi that does not exist', () => {
       const map = createFilled([[1, 'a'], [3, 'c']])
       expect([...map.range(2, 2)]).toEqual([])
     })
 
-    it.skip('range where lo > hi returns empty', () => {
+    it('range where lo > hi returns empty', () => {
       const map = createFilled([[1, 'a'], [2, 'b'], [3, 'c']])
       expect([...map.range(3, 1)]).toEqual([])
     })
 
-    it.skip('two element map operations', () => {
+    it('two element map operations', () => {
       const map = createFilled([[1, 'a'], [3, 'c']])
       expect(map.floor(2)).toBe(1)
       expect(map.ceiling(2)).toBe(3)
@@ -778,27 +778,27 @@ describe('SkipListMap', () => {
   })
 
   describe('generics', () => {
-    it.skip('works with string values', () => {
+    it('works with string values', () => {
       const map = new SkipListMap<string, number>()
       map.set('a', 1)
       map.set('b', 2)
       expect(map.get('a')).toBe(1)
     })
 
-    it.skip('works with object values', () => {
+    it('works with object values', () => {
       const map = new SkipListMap<number, { name: string }>()
       map.set(1, { name: 'one' })
       map.set(2, { name: 'two' })
       expect(map.get(1)?.name).toBe('one')
     })
 
-    it.skip('works with null values', () => {
+    it('works with null values', () => {
       const map = new SkipListMap<number, string | null>()
       map.set(1, null)
       expect(map.get(1)).toBeNull()
     })
 
-    it.skip('works with undefined values', () => {
+    it('works with undefined values', () => {
       const map = new SkipListMap<number, string | undefined>()
       map.set(1, undefined)
       expect(map.get(1)).toBeUndefined()
@@ -807,7 +807,7 @@ describe('SkipListMap', () => {
   })
 
   describe('consistency after mutations', () => {
-    it.skip('maintains invariants after many operations', () => {
+    it('maintains invariants after many operations', () => {
       const map = new SkipListMap<number, string>()
       const reference = new Map<number, string>()
 
@@ -837,7 +837,7 @@ describe('SkipListMap', () => {
       expect([...map.keys()]).toEqual(sortedKeys)
     })
 
-    it.skip('at and indexOf are inverse operations', () => {
+    it('at and indexOf are inverse operations', () => {
       const map = new SkipListMap<number, string>()
       const keys = [10, 20, 30, 40, 50]
       for (const k of keys) map.set(k, `v${k}`)
@@ -850,7 +850,7 @@ describe('SkipListMap', () => {
       }
     })
 
-    it.skip('range results match filter on toArray', () => {
+    it('range results match filter on toArray', () => {
       const map = new SkipListMap<number, string>()
       for (let i = 0; i < 20; i++) map.set(i, `v${i}`)
 
