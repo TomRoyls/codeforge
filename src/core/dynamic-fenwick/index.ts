@@ -189,6 +189,10 @@ export class DynamicFenwick<T = number> {
   includes(item: T): boolean {
     return this.toArray().includes(item)
   }
+
+  reverse(): T[] {
+    return this.toArray().reverse()
+  }
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'

@@ -233,4 +233,8 @@ export class LeftistTree<T> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+  reverse(): T[] {
+    return this.toArray().reverse()
+  }
 }

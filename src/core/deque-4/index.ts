@@ -283,4 +283,8 @@ export class Deque4<T> {
   includes(item: T): boolean {
     return this.toArray().includes(item)
   }
+
+  reverse(): T[] {
+    return this.toArray().reverse()
+  }
 }

@@ -129,4 +129,8 @@ export class CircularBuffer3<T> {
   includes(item: T): boolean {
     return this.toArray().includes(item)
   }
+
+  reverse(): T[] {
+    return this.toArray().reverse()
+  }
 }

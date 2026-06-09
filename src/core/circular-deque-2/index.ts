@@ -266,4 +266,8 @@ export class CircularDeque2<T = unknown> {
   includes(item: T): boolean {
     return this.toArray().includes(item)
   }
+
+  reverse(): T[] {
+    return this.toArray().reverse()
+  }
 }
