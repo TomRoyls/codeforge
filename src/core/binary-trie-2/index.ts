@@ -218,4 +218,5 @@ export class BinaryTrie2 {
   toString(): string {
     return `${BinaryTrie2}({ size: ${this.size} })`
   }
+
 }

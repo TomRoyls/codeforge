@@ -196,4 +196,5 @@ export class HashMap<K, V> {
   toJSON() {
     return { type: 'HashMap', items: this.toArray() }
   }
+
 }

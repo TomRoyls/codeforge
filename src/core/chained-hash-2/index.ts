@@ -175,4 +175,5 @@ export class ChainedHash2<V> {
   toJSON() {
     return { type: 'ChainedHash2', items: this.toArray() }
   }
+
 }

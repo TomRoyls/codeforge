@@ -161,4 +161,12 @@ export class DynamicArray3<T> {
   toJSON() {
     return { type: 'DynamicArray3', items: this.toArray() }
   }
+
+  static from<T>(items: T[]): DynamicArray3<T> {
+    const instance = new DynamicArray3<T>()
+    for (const item of items) {
+      instance.push(item)
+    }
+    return instance
+  }
 }

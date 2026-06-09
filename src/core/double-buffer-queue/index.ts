@@ -121,4 +121,5 @@ export class DoubleBufferQueue<T> {
   toJSON() {
     return { type: 'DoubleBufferQueue', items: this.toArray() }
   }
+
 }

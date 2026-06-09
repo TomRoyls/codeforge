@@ -230,4 +230,5 @@ export class HashTable3<K, V> {
   toJSON() {
     return { type: 'HashTable3', size: this.size, items: this.toArray() }
   }
+
 }

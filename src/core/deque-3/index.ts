@@ -150,4 +150,5 @@ export class Deque3<T> {
   toJSON() {
     return { type: 'Deque3', size: this.size, items: this.toArray() }
   }
+
 }

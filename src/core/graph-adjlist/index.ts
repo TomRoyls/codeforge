@@ -341,4 +341,5 @@ export class GraphAdjList<T> {
   toJSON() {
     return { type: 'GraphAdjList', items: this.toArray() }
   }
+
 }

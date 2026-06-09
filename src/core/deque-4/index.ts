@@ -262,4 +262,5 @@ export class Deque4<T> {
   toJSON() {
     return { type: 'Deque4', size: this.size, items: this.toArray() }
   }
+
 }

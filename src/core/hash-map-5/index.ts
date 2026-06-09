@@ -232,4 +232,5 @@ export class HashMap5<K, V> {
   toJSON() {
     return { type: 'HashMap5', size: this.size, items: this.toArray() }
   }
+
 }

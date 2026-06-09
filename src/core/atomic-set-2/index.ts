@@ -121,4 +121,12 @@ export class AtomicSet2<T> {
   toJSON() {
     return { type: 'AtomicSet2', size: this.size, items: this.toArray() }
   }
+
+  static from<T>(items: T[]): AtomicSet2<T> {
+    const instance = new AtomicSet2<T>()
+    for (const item of items) {
+      instance.add(item)
+    }
+    return instance
+  }
 }
