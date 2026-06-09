@@ -244,4 +244,8 @@ export class RoaringBitmap2 {
       this.runs.splice(index + 1, 1);
     }
   }
+
+  toString(): string {
+    return `RoaringBitmap2({ size: ${this.size} })`
+  }
 }

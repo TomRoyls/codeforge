@@ -145,4 +145,8 @@ export class RopeQueue2<T> {
     this.root = merge(newRoot, this.root);
     this._size += items.length;
   }
+
+  toString(): string {
+    return `RopeQueue2({ size: ${this.size} })`
+  }
 }

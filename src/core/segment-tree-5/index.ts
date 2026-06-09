@@ -67,4 +67,8 @@ export class SegmentTree5 {
   static from(items: any[]): SegmentTree5 {
     return new SegmentTree5(items)
   }
+
+  toString(): string {
+    return `SegmentTree5()`
+  }
 }

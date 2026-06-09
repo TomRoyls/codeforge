@@ -196,4 +196,8 @@ export class RobinHoodHash2<K, V> {
     }
     return result
   }
+
+  toString(): string {
+    return `RobinHoodHash2({ size: ${this.size} })`
+  }
 }

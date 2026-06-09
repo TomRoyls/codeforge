@@ -177,4 +177,8 @@ export class RingBuffer5<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `RingBuffer5({ size: ${this.size} })`
+  }
 }

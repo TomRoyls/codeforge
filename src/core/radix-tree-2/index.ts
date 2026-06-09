@@ -301,4 +301,8 @@ export class RadixTree2 {
     }
     return instance
   }
+
+  toString(): string {
+    return `RadixTree2({ size: ${this.size} })`
+  }
 }

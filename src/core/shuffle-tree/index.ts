@@ -237,4 +237,8 @@ export class ShuffleTree<T> {
     copy.right = this.cloneNode(node.right)
     return copy
   }
+
+  toString(): string {
+    return `ShuffleTree({ size: ${this._size} })`
+  }
 }

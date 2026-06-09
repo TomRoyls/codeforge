@@ -268,4 +268,8 @@ export class RecursiveSegTree {
   static from(items: any[]): RecursiveSegTree {
     return new RecursiveSegTree(items)
   }
+
+  toString(): string {
+    return `RecursiveSegTree({ size: ${this.size} })`
+  }
 }

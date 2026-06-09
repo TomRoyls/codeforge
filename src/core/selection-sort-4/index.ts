@@ -167,4 +167,8 @@ export class SelectionSort4<T> {
     arr[i] = arr[j]!
     arr[j] = temp
   }
+
+  toString(): string {
+    return `SelectionSort4()`
+  }
 }

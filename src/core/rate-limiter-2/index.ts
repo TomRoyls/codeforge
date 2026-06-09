@@ -56,4 +56,8 @@ export class RateLimiter2 {
 
     this.timestamps = this.timestamps.slice(i);
   }
+
+  toString(): string {
+    return `RateLimiter2()`
+  }
 }

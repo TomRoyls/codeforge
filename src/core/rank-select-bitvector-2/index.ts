@@ -175,6 +175,10 @@ export class RankSelectBitvector2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `RankSelectBitvector2()`
+  }
 }
 
 function popcount(n: number): number {

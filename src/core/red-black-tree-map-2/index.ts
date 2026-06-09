@@ -333,6 +333,10 @@ export class RedBlackTreeMap2<K, V> {
     };
   }
 
+
+  toString(): string {
+    return `RedBlackTreeMap2({ size: ${this.size} })`
+  }
 }
 
 interface Node<K, V> {

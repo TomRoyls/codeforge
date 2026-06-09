@@ -422,4 +422,8 @@ export class ScapegoatTree<K, V = undefined> {
   clone(): ScapegoatTree<K, V> {
     return ScapegoatTree.from(this.toArray())
   }
+
+  toString(): string {
+    return `ScapegoatTree({ size: ${this.size} })`
+  }
 }

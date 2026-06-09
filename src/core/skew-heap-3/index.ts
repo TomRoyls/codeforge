@@ -85,6 +85,10 @@ export class SkewHeap3<T> {
     };
   }
 
+
+  toString(): string {
+    return `SkewHeap3({ size: ${this.size} })`
+  }
 }
 
 interface SkewNode<T> {

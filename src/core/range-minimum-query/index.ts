@@ -167,4 +167,8 @@ export class RangeMinimumQuery<T> {
   static from<T>(items: T[]): RangeMinimumQuery<T> {
     return new RangeMinimumQuery<T>(items)
   }
+
+  toString(): string {
+    return `RangeMinimumQuery({ size: ${this._data.length} })`
+  }
 }

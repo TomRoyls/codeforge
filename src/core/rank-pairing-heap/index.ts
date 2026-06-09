@@ -478,6 +478,10 @@ export class RankPairingHeap<T> {
     }
     return head
   }
+
+  toString(): string {
+    return `RankPairingHeap({ size: ${this.size} })`
+  }
 }
 
 export type { RankPairingHeapOptions, RankPairingHeapNode, Comparator, ForEachCallback } from './types.js'

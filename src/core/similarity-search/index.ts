@@ -120,6 +120,10 @@ export class SimilaritySearch {
   clear(): void {
     this.documents.clear();
   }
+
+  toString(): string {
+    return `SimilaritySearch({ size: ${this.size} })`
+  }
 }
 
 export { tokenize, computeSignature, estimateSimilarity };

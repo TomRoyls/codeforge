@@ -223,4 +223,8 @@ export class SegmentTreePoint<T> {
   static from<T>(items: T[]): SegmentTreePoint<T> {
     return new SegmentTreePoint<T>(items)
   }
+
+  toString(): string {
+    return `SegmentTreePoint({ size: ${this.size} })`
+  }
 }

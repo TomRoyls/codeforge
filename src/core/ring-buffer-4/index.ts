@@ -184,4 +184,8 @@ export class RingBuffer4<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `RingBuffer4({ size: ${this.size} })`
+  }
 }

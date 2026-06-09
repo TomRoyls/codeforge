@@ -116,4 +116,8 @@ export class SegmentTree {
   isEmpty(): boolean {
     return this.size === 0
   }
+
+  toString(): string {
+    return `SegmentTree()`
+  }
 }

@@ -373,6 +373,10 @@ export class ScapegoatMap<K = unknown, V = unknown> {
     return cloned
   }
 
+
+  toString(): string {
+    return `ScapegoatMap({ size: ${this._size} })`
+  }
 }
 
 export type { ScapegoatMapOptions }

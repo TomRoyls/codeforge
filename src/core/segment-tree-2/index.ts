@@ -315,4 +315,8 @@ export class SegmentTree2<T> {
   static from<T>(items: T[]): SegmentTree2<T> {
     return new SegmentTree2<T>(items)
   }
+
+  toString(): string {
+    return `SegmentTree2({ size: ${this.size} })`
+  }
 }

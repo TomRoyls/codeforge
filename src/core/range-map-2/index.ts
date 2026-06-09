@@ -154,4 +154,8 @@ export class RangeMap2<V> {
 
     this._ranges = merged;
   }
+
+  toString(): string {
+    return `RangeMap2({ size: ${this.size} })`
+  }
 }

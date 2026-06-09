@@ -161,4 +161,8 @@ export class RadixMap2<T> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `RadixMap2({ size: ${this.size} })`
+  }
 }

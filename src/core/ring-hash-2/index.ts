@@ -81,4 +81,8 @@ export class RingHash2 {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  toString(): string {
+    return `RingHash2({ size: ${this.ring.length} })`
+  }
 }

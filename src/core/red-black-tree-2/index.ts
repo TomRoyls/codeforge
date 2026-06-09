@@ -454,4 +454,8 @@ export class RedBlackTree2<T> {
   }
 
 
+
+  toString(): string {
+    return `RedBlackTree2({ size: ${this.size} })`
+  }
 }

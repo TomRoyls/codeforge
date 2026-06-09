@@ -407,4 +407,8 @@ export class RedBlackSet<T> implements Iterable<T> {
   isSupersetOf(other: RedBlackSet<T>): boolean {
     return other.isSubsetOf(this)
   }
+
+  toString(): string {
+    return `RedBlackSet({ size: ${this.size} })`
+  }
 }

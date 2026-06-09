@@ -270,4 +270,8 @@ export class SegmentMap2<V> {
 
     return 1 + this.countSegments(node.left) + this.countSegments(node.right);
   }
+
+  toString(): string {
+    return `SegmentMap2({ size: ${this.size} })`
+  }
 }

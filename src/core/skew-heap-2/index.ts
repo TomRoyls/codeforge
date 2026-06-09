@@ -223,4 +223,8 @@ export class SkewHeap2<T> {
   }
 
 
+
+  toString(): string {
+    return `SkewHeap2({ size: ${this._size} })`
+  }
 }

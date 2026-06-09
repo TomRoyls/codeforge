@@ -156,4 +156,8 @@ export class SegmentTree {
   clone(): SegmentTree {
     return SegmentTree.from(this.toArray())
   }
+
+  toString(): string {
+    return `SegmentTree()`
+  }
 }

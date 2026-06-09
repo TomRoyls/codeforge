@@ -256,4 +256,8 @@ export class RadixTree {
     }
     return instance
   }
+
+  toString(): string {
+    return `RadixTree({ size: ${this.size} })`
+  }
 }

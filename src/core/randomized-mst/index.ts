@@ -319,4 +319,8 @@ export class RandomizedMST<V> {
   edgeCount(): number {
     return this.edges.length
   }
+
+  toString(): string {
+    return `RandomizedMST({ size: ${this.edges.length} })`
+  }
 }

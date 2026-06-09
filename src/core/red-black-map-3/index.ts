@@ -383,4 +383,8 @@ export class RedBlackMap3<K, V> {
   toArray(): any[] {
     return [...this]
   }
+
+  toString(): string {
+    return `RedBlackMap3({ size: ${this.size} })`
+  }
 }

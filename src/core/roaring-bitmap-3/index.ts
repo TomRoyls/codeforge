@@ -111,4 +111,8 @@ export class RoaringBitmap3 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `RoaringBitmap3({ size: ${this.size} })`
+  }
 }

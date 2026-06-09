@@ -116,4 +116,8 @@ export class RunLengthQueue2<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `RunLengthQueue2({ size: ${this.size} })`
+  }
 }

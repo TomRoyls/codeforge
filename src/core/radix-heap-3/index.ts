@@ -144,4 +144,8 @@ export class RadixHeap3<T> {
         this.lastExtracted = undefined;
         this._size = 0;
     }
+
+  toString(): string {
+    return `RadixHeap3({ size: ${this.size} })`
+  }
 }

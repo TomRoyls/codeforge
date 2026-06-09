@@ -399,4 +399,8 @@ export class ResizableArray<T> {
       },
     }
   }
+
+  toString(): string {
+    return `ResizableArray()`
+  }
 }

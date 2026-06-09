@@ -222,4 +222,8 @@ export class RingBuffer<T = unknown> {
       },
     }
   }
+
+  toString(): string {
+    return `RingBuffer({ size: ${this.size} })`
+  }
 }
