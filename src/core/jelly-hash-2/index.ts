@@ -182,4 +182,11 @@ export class JellyHash2<K, V> {
       },
     };
   }
+
+  forEach(callback: (entry: [K,  V], index: number) => void): void {
+    const items = this.entries()
+    for (let i = 0; i < items.length; i++) {
+      callback(items[i]!, i)
+    }
+  }
 }

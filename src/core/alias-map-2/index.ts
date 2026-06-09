@@ -114,4 +114,11 @@ export class AliasMap2<T> {
   toArray() {
     return this.entries()
   }
+
+  forEach(callback: (entry: [string, T], index: number) => void): void {
+    const items = this.entries()
+    for (let i = 0; i < items.length; i++) {
+      callback(items[i]!, i)
+    }
+  }
 }

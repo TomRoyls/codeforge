@@ -101,4 +101,11 @@ export class ProbabilityMap2 {
   *[Symbol.iterator]() {
     yield* this.entries()
   }
+
+  forEach(callback: (entry: any, index: number) => void): void {
+    const items = this.entries()
+    for (let i = 0; i < items.length; i++) {
+      callback(items[i]!, i)
+    }
+  }
 }
