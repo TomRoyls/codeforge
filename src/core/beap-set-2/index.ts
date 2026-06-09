@@ -201,4 +201,6 @@ export class BeapSet2<T> {
   some(predicate: (item: T) => boolean): boolean {
     return this.toArray().some(predicate)
   }
+
+
 }

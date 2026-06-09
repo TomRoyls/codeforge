@@ -328,4 +328,12 @@ export class FingerprintSet<T> implements Iterable<T> {
   toJSON() {
     return { type: 'FingerprintSet', size: this.size, items: this.toArray() }
   }
+
+  find(predicate: (item: T) => boolean): T | undefined {
+    return this.toArray().find(predicate)
+  }
+
+  findIndex(predicate: (item: T) => boolean): number {
+    return this.toArray().findIndex(predicate)
+  }
 }

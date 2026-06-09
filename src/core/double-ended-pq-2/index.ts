@@ -328,4 +328,12 @@ export class DoubleEndedPQ2<T = number> {
   some(predicate: (item: T) => boolean): boolean {
     return this.toArray().some(predicate)
   }
+
+  find(predicate: (item: T) => boolean): T | undefined {
+    return this.toArray().find(predicate)
+  }
+
+  findIndex(predicate: (item: T) => boolean): number {
+    return this.toArray().findIndex(predicate)
+  }
 }
