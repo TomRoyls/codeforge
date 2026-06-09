@@ -267,11 +267,14 @@ describe('TimSort3 countRuns', () => {
 // ─── getMinRun ───
 
 describe('TimSort3 getMinRun', () => {
-  it('returns the input value', () => {
+  it('returns appropriate minRun values', () => {
     const sorter = new TimSort3<number>()
     expect(sorter.getMinRun(32)).toBe(32)
     expect(sorter.getMinRun(1)).toBe(1)
-    expect(sorter.getMinRun(100)).toBe(100)
+    expect(sorter.getMinRun(100)).toBe(50)
+    expect(sorter.getMinRun(64)).toBe(32)
+    expect(sorter.getMinRun(1000)).toBe(63)
+    expect(sorter.getMinRun(63)).toBe(63)
   })
 })
 

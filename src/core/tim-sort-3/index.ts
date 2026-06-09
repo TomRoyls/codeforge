@@ -290,7 +290,12 @@ export class TimSort3<T> {
   }
 
   getMinRun(n: number): number {
-    return n
+    let r = 0
+    while (n >= 64) {
+      r |= n & 1
+      n >>>= 1
+    }
+    return n + r
   }
 
   getTimeComplexity(): string {
