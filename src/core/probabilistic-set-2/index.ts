@@ -24,7 +24,7 @@ export class ProbabilisticSet2<T> {
 
   add(value: T): void {
     for (let i = 0; i < this.numHashes; i++) {
-      const hashVal = this.hash(value, i) % (this.bits.length * 8);
+      const hashVal = ((this.hash(value, i) % (this.bits.length * 8)) + (this.bits.length * 8)) % (this.bits.length * 8);
       const byteIndex = Math.floor(hashVal / 8);
       const bitIndex = hashVal % 8;
       this.bits[byteIndex] = this.bits[byteIndex]! | (1 << bitIndex);
@@ -34,7 +34,7 @@ export class ProbabilisticSet2<T> {
 
   has(value: T): boolean {
     for (let i = 0; i < this.numHashes; i++) {
-      const hashVal = this.hash(value, i) % (this.bits.length * 8);
+      const hashVal = ((this.hash(value, i) % (this.bits.length * 8)) + (this.bits.length * 8)) % (this.bits.length * 8);
       const byteIndex = Math.floor(hashVal / 8);
       const bitIndex = hashVal % 8;
       if ((this.bits[byteIndex]! & (1 << bitIndex)) === 0) {
