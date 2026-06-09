@@ -209,4 +209,12 @@ export class CartesianTree3<T> {
   toJSON() {
     return { type: 'CartesianTree3', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }

@@ -246,4 +246,12 @@ export class CircularDeque2<T = unknown> {
   toJSON() {
     return { type: 'CircularDeque2', items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }

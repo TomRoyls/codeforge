@@ -301,6 +301,14 @@ export class BootstrappedHeap<T = number> {
   toJSON() {
     return { type: 'BootstrappedHeap', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

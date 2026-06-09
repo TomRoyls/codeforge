@@ -151,4 +151,12 @@ export class Deque3<T> {
     return { type: 'Deque3', size: this.size, items: this.toArray() }
   }
 
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }

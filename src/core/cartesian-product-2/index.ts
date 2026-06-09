@@ -105,4 +105,6 @@ export class CartesianProduct2<T> {
   toJSON() {
     return { type: 'CartesianProduct2', items: this.toArray() }
   }
+
+
 }

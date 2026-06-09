@@ -314,4 +314,6 @@ export class IntervalSet<T = number> {
   toJSON() {
     return { type: 'IntervalSet', size: this.size, items: this.toArray() }
   }
+
+
 }

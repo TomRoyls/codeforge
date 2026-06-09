@@ -453,6 +453,14 @@ export class FibonacciHeap3<T = number> {
   toJSON() {
     return { type: 'FibonacciHeap3', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

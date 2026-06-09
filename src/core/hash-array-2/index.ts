@@ -164,4 +164,6 @@ export class HashArray2<T> {
   toJSON() {
     return { type: 'HashArray2', size: this.size, items: this.toArray() }
   }
+
+
 }

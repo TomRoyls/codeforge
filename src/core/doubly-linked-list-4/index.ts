@@ -314,4 +314,12 @@ export class DoublyLinkedList4<T> {
   toJSON() {
     return { type: 'DoublyLinkedList4', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }

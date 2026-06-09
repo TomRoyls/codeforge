@@ -279,4 +279,12 @@ export class HybridHeap2<T = unknown> {
   toJSON() {
     return { type: 'HybridHeap2', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }

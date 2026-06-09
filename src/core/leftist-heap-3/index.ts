@@ -284,6 +284,14 @@ export class LeftistHeap3<T = number> {
   toJSON() {
     return { type: 'LeftistHeap3', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

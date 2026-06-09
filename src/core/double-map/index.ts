@@ -228,4 +228,6 @@ export class DoubleMap<K1, K2, V> {
   toJSON() {
     return { type: 'DoubleMap', size: this.size, items: this.toArray() }
   }
+
+
 }

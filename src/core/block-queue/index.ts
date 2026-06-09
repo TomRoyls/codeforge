@@ -121,4 +121,12 @@ export class BlockQueue<T> {
   reduce<R>(fn: (acc: R, item: T) => R, initial: R): R {
     return this.toArray().reduce(fn, initial)
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }

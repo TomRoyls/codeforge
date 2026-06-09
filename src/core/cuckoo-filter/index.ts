@@ -269,6 +269,8 @@ export class CuckooFilter<T = string> {
   toJSON() {
     return { type: 'CuckooFilter', size: this.size, items: this.toArray() }
   }
+
+
 }
 
 export { BUCKET_SIZE, DEFAULT_FINGERPRINT_SIZE, DEFAULT_MAX_KICKS, defaultHash } from './types.js'

@@ -256,6 +256,8 @@ export class IndexedPriorityQueue<T = number> {
   toJSON() {
     return { type: 'IndexedPriorityQueue', size: this.size, items: this.toArray() }
   }
+
+
 }
 
 export type { IndexedPriorityQueueOptions, IndexedPriorityQueueEntry, IndexedPriorityQueueStats }

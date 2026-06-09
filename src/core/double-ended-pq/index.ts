@@ -313,6 +313,14 @@ export class DoubleEndedPQ<T = number> {
   peek(): T {
     return this.peekMin()
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

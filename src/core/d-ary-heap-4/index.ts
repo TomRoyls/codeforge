@@ -160,4 +160,12 @@ export class DAryHeap4<T> {
   toJSON() {
     return { type: 'DAryHeap4', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }

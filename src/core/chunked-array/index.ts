@@ -278,6 +278,14 @@ export class ChunkedArray<T = unknown> {
   toJSON() {
     return { type: 'ChunkedArray', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

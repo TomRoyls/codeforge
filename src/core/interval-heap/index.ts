@@ -324,6 +324,14 @@ export class IntervalHeap<T> {
   toJSON() {
     return { type: 'IntervalHeap', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

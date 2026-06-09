@@ -320,4 +320,12 @@ export class DoubleEndedPQ2<T = number> {
   peek(): T {
     return this.peekMin()
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }

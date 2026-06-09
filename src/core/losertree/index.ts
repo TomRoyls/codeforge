@@ -294,6 +294,14 @@ export class LoserTree<T = number> {
   toJSON() {
     return { type: 'LoserTree', size: this.size, items: this.toArray() }
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }
 
 export type { Comparator, ForEachCallback, LoserTreeOptions } from './types.js'
