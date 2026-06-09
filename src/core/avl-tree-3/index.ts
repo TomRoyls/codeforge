@@ -269,4 +269,8 @@ export class AVLTree3<T> {
   toJSON() {
     return { type: 'AVLTree3', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }

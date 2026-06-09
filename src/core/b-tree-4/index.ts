@@ -384,4 +384,8 @@ export class BTree<T> {
   toJSON() {
     return { type: 'BTree', items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }

@@ -130,4 +130,5 @@ export class AliasMap2<T> {
     return { type: 'AliasMap2', size: this.size, items: this.toArray() }
   }
 
+
 }

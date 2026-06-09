@@ -303,4 +303,8 @@ export class AATree2<T> {
   toJSON() {
     return { type: 'AATree2', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }

@@ -314,5 +314,5 @@ export class AdaptivePQ2<T> {
 
   toJSON() {
     return { type: 'AdaptivePQ2', size: this.size, items: this.toArray() }
-  }
+}
 }

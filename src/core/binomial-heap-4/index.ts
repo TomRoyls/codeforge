@@ -367,4 +367,8 @@ export class BinomialHeap4<T = unknown> {
   toJSON() {
     return { type: 'BinomialHeap4', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }

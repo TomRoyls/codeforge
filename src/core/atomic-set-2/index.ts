@@ -129,4 +129,8 @@ export class AtomicSet2<T> {
     }
     return instance
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }

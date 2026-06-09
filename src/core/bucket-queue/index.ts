@@ -282,5 +282,5 @@ export class BucketQueue<T> {
 
   toJSON() {
     return { type: 'BucketQueue', size: this.size, items: this.toArray() }
-  }
+}
 }

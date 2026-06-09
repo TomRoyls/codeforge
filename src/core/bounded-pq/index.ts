@@ -178,6 +178,10 @@ export class BoundedPriorityQueue<T> {
   toJSON() {
     return { type: 'BoundedPriorityQueue', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

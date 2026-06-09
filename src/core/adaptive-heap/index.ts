@@ -239,4 +239,8 @@ export class AdaptiveHeap<T> {
   toJSON() {
     return { type: 'AdaptiveHeap', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }

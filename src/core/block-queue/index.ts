@@ -109,4 +109,8 @@ export class BlockQueue<T> {
   toJSON() {
     return { type: 'BlockQueue', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }

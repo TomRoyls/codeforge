@@ -404,6 +404,10 @@ export class BinomialQueue<T = number> {
   toJSON() {
     return { type: 'BinomialQueue', items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

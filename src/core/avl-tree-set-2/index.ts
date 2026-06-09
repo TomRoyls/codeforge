@@ -307,6 +307,10 @@ toString(): string {
   toJSON() {
     return { type: 'AVLTreeSet2', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }
 
 class AVLNode<T> {

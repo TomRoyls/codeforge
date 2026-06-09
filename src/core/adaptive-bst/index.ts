@@ -517,6 +517,10 @@ toString(): string {
   toJSON() {
     return { type: 'AdaptiveBST', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback

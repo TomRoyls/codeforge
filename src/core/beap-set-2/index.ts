@@ -181,4 +181,8 @@ export class BeapSet2<T> {
   toJSON() {
     return { type: 'BeapSet2', size: this.size, items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }

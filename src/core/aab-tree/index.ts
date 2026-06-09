@@ -243,4 +243,8 @@ export class AABTree<T> {
   toJSON() {
     return { type: 'AABTree', items: this.toArray() }
   }
+
+  map<R>(fn: (item: T) => R): R[] {
+    return this.toArray().map(fn)
+  }
 }
