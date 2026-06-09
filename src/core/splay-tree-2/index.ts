@@ -262,4 +262,11 @@ export class SplayTree2<T> {
   toString(): string {
     return `SplayTree2({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

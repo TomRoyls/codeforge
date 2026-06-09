@@ -120,4 +120,11 @@ export class RunLengthQueue2<T> {
   toString(): string {
     return `RunLengthQueue2({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

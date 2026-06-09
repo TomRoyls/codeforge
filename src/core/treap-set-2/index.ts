@@ -249,4 +249,11 @@ export class TreapSet2<T> {
       }
     };
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

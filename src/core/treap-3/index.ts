@@ -214,4 +214,11 @@ export class Treap3<K, V> {
   has(key: K): boolean {
     return this.contains(key)
   }
+
+  forEach(callback: (entry: [K, V], index: number) => void): void {
+    let i = 0
+    for (const entry of this) {
+      callback(entry, i++)
+    }
+  }
 }

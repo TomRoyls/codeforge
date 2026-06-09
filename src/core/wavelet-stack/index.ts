@@ -123,6 +123,13 @@ export class WaveletStack<T = unknown> {
       },
     }
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 export type { WaveletStackOptions } from './types.js'

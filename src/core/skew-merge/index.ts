@@ -122,4 +122,11 @@ export class SkewMerge<T> {
   toString(): string {
     return `SkewMerge({ size: ${this.size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

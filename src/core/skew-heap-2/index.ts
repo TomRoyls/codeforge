@@ -227,4 +227,11 @@ export class SkewHeap2<T> {
   toString(): string {
     return `SkewHeap2({ size: ${this._size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

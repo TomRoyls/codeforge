@@ -298,6 +298,13 @@ export class SoftHeap<T = unknown> {
   toString(): string {
     return `SoftHeap({ size: ${this._size} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'
