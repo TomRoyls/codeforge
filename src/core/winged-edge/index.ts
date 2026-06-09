@@ -226,4 +226,11 @@ increment(vertexCount, edge.v1);
   getTimeComplexity(): string {
     return 'addVertex: O(1), addEdge: O(1), addFace: O(k) where k is face edge count, getVertex: O(1), getEdgeVertices: O(1), getEdgeFaces: O(1), getAdjacentEdges: O(1), getVertexEdges: O(degree), getFaceEdges: O(1), removeFace: O(k), isManifold: O(E), getTimeComplexity: O(1)';
   }
+
+  clear(): void {
+    this.vertices = []
+    this.edges = []
+    this.faces = []
+    this.vertexEdges = new Map()
+  }
 }

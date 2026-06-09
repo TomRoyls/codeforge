@@ -200,4 +200,5 @@ export class WaveletTree {
   isEmpty(): boolean {
     return this.size === 0
   }
+
 }

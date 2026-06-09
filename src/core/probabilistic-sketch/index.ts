@@ -82,4 +82,8 @@ export class ProbabilisticSketch {
   toString(): string {
     return `ProbabilisticSketch()`
   }
+
+  clear(): void {
+    this._itemCount = 0
+  }
 }

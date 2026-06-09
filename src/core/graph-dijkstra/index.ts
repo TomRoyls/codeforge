@@ -170,4 +170,8 @@ export class GraphDijkstra {
       callback(item, i++)
     }
   }
+
+  clear(): void {
+    this.adjacencyList = new Map()
+  }
 }

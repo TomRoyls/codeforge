@@ -262,4 +262,8 @@ export class GraphDFS2 {
   toString(): string {
     return `GraphDFS2()`
   }
+
+  clear(): void {
+    this.adjacencyList = new Map()
+  }
 }

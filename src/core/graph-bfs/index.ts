@@ -312,4 +312,8 @@ export class GraphBFS {
       callback(item, i++)
     }
   }
+
+  clear(): void {
+    this.adjacencyList = new Map()
+  }
 }

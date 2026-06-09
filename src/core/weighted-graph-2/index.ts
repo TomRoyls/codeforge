@@ -98,4 +98,8 @@ export class WeightedGraph2 {
   vertices(): string[] {
     return Array.from(this.adjacencyList.keys());
   }
+
+  clear(): void {
+    this.adjacencyList = new Map()
+  }
 }

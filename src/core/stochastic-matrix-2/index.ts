@@ -198,4 +198,8 @@ export class StochasticMatrix2 {
   toString(): string {
     return `StochasticMatrix2({ size: ${this.states.length} })`
   }
+
+  clear(): void {
+    this.transitions = new Map()
+  }
 }

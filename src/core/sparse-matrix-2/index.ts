@@ -145,4 +145,9 @@ export class SparseMatrix2 {
   toString(): string {
     return `SparseMatrix2({ size: ${this.values.length} })`
   }
+
+  clear(): void {
+    this.values = []
+    this.colIndices = []
+  }
 }

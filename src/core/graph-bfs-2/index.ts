@@ -299,4 +299,8 @@ export class GraphBFS2 {
   toString(): string {
     return `GraphBFS2()`
   }
+
+  clear(): void {
+    this.adjacencyList = new Map()
+  }
 }

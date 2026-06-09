@@ -185,4 +185,11 @@ export class SquareDecomp {
   toString(): string {
     return `SquareDecomp({ size: ${this.size} })`
   }
+
+  clear(): void {
+    this.blocks = []
+    this.blockSum = []
+    this.blockMin = []
+    this.blockMax = []
+  }
 }

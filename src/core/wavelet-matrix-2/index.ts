@@ -179,4 +179,9 @@ export class WaveletMatrix2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  clear(): void {
+    this.bitVectors = []
+    this.mid = []
+  }
 }

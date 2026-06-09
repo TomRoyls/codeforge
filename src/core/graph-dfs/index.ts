@@ -312,4 +312,8 @@ export class GraphDFS {
       callback(item, i++)
     }
   }
+
+  clear(): void {
+    this.adjacencyList = new Map()
+  }
 }

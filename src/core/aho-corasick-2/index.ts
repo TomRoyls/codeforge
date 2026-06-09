@@ -134,4 +134,8 @@ export class AhoCorasick2 {
   toString(): string {
     return `AhoCorasick2()`
   }
+
+  clear(): void {
+    this.patternList = []
+  }
 }

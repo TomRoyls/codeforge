@@ -207,4 +207,10 @@ export class WaveletTree3 {
     }
     return result.join('');
   }
+
+  clear(): void {
+    this.leftChild = null
+    this.rightChild = null
+    this.low = 0
+  }
 }

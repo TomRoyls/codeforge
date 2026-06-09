@@ -110,4 +110,10 @@ export class BipartiteGraph2 {
   toString(): string {
     return `BipartiteGraph2()`
   }
+
+  clear(): void {
+    this.leftVertices = new Set()
+    this.rightVertices = new Set()
+    this.edges = new Map()
+  }
 }
