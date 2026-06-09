@@ -145,4 +145,11 @@ export class DAryHeap4<T> {
   toString(): string {
     return `${DAryHeap4}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

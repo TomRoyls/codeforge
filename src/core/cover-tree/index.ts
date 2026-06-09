@@ -255,6 +255,13 @@ export class CoverTree<T = number> {
   toString(): string {
     return `${CoverTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

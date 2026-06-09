@@ -163,6 +163,13 @@ export class BoundedPriorityQueue<T> {
   toString(): string {
     return `${BoundedPriorityQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

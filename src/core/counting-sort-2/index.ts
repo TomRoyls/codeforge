@@ -107,4 +107,11 @@ export class CountingSort {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

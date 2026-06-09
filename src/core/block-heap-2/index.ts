@@ -191,4 +191,11 @@ export class BlockHeap2 {
   toString(): string {
     return `${BlockHeap2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

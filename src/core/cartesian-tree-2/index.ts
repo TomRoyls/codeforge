@@ -258,4 +258,11 @@ export class CartesianTree<T> {
   toString(): string {
     return `${CartesianTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

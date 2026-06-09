@@ -226,6 +226,13 @@ export class CuckooFilter2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
 
 export const CuckooFilter = CuckooFilter2;

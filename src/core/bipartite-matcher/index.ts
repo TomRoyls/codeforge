@@ -261,4 +261,11 @@ export class BipartiteMatcher<L, R> {
   toArray() {
     return this.getEdges()
   }
+
+  forEach(callback: (item: [L, R], index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

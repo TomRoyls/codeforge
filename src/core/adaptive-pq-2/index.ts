@@ -304,4 +304,11 @@ export class AdaptivePQ2<T> {
   toString(): string {
     return `${AdaptivePQ2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }

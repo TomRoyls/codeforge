@@ -268,4 +268,11 @@ export class BucketQueue<T> {
   toString(): string {
     return `${BucketQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  forEach(callback: (item: unknown, index: number) => void): void {
+    let i = 0
+    for (const item of this) {
+      callback(item, i++)
+    }
+  }
 }
