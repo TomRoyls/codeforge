@@ -169,6 +169,10 @@ export class WaveletTree {
     return this._dataSize
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   get length(): number {
     return this._dataSize
   }

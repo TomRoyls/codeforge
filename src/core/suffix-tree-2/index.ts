@@ -350,6 +350,10 @@ export class SuffixTree {
     return this.text.length;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   get nodeCount(): number {
     return this.countNodes(this.root);
   }

@@ -69,6 +69,10 @@ export class WeightedUnion {
     return this.parent.length
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   weight(x: number): number {
     const root = this.find(x)
     return this.weights[root]!

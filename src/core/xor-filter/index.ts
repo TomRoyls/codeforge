@@ -177,6 +177,10 @@ export class XorFilter {
     return this._size
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   get capacity(): number {
     return this._size
   }
