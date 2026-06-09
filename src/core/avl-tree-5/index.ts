@@ -207,6 +207,13 @@ export class AVLTree<T> {
     return this.inOrderTraversal();
   }
 
+  *[Symbol.iterator](): IterableIterator<T> {
+    const result = this.inOrderTraversal();
+    for (const val of result) {
+      yield val;
+    }
+  }
+
   getTimeComplexity(): string {
     return "O(log n) for insert, delete, search, min, max; O(n) for traversals";
   }

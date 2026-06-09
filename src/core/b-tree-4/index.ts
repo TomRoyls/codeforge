@@ -114,6 +114,13 @@ export class BTree<T> {
     return this.inOrderTraversal();
   }
 
+  *[Symbol.iterator](): IterableIterator<T> {
+    const result = this.inOrderTraversal();
+    for (const val of result) {
+      yield val;
+    }
+  }
+
   getHeight(): number {
     if (this.root === null) {
       return 0;

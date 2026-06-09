@@ -138,13 +138,17 @@ export class HashMap<K, V> {
   }
 
   forEach(callback: (value: V, key: K) => void): void {
-    for (let i = 0; i < this.capacity; i++) {
+    for (let i = 0; i < this.buckets.length; i++) {
       const bucket = this.buckets[i]!;
       for (let j = 0; j < bucket.length; j++) {
         const entry = bucket[j]!;
         callback(entry[1], entry[0]);
       }
     }
+  }
+
+  [Symbol.iterator](): IterableIterator<[K, V]> {
+    return this.entries()[Symbol.iterator]();
   }
 
   resize(newCapacity: number): void {
