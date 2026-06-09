@@ -260,4 +260,39 @@ export class AdaptiveHash2<K, V> {
   isEmpty(): boolean {
     return this._size === 0
   }
+
+  entries(): [K, V][] {
+    const result: [K, V][] = []
+    if (this.mode === 'open-addressing') {
+      for (const entry of this.oaBuckets) {
+        if (entry !== null) {
+          result.push(entry)
+        }
+      }
+    } else {
+      for (const bucket of this.chBuckets) {
+        if (bucket !== null) {
+          for (const entry of bucket) {
+            result.push(entry)
+          }
+        }
+      }
+    }
+    return result
+  }
+
+  keys(): K[] {
+    return this.entries().map(e => e[0])
+  }
+
+  values(): V[] {
+    return this.entries().map(e => e[1])
+  }
+
+  forEach(callback: (entry: [K, V], index: number) => void): void {
+    const items = this.entries()
+    for (let i = 0; i < items.length; i++) {
+      callback(items[i]!, i)
+    }
+  }
 }

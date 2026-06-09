@@ -246,4 +246,30 @@ export class CuckooHash3<K, V> {
   loadFactor(): number {
     return this._size / (this.capacity * 2);
   }
+
+  entries(): [K, V][] {
+    const result: [K, V][] = []
+    for (const entry of this.table1) {
+      if (entry !== null) result.push([entry.key, entry.value])
+    }
+    for (const entry of this.table2) {
+      if (entry !== null) result.push([entry.key, entry.value])
+    }
+    return result
+  }
+
+  keys(): K[] {
+    return this.entries().map(e => e[0])
+  }
+
+  values(): V[] {
+    return this.entries().map(e => e[1])
+  }
+
+  forEach(callback: (entry: [K, V], index: number) => void): void {
+    const items = this.entries()
+    for (let i = 0; i < items.length; i++) {
+      callback(items[i]!, i)
+    }
+  }
 }
