@@ -238,4 +238,8 @@ export class KDTree3 {
   static from(items: any[]): KDTree3 {
     return new KDTree3(items)
   }
+
+  clone(): KDTree3 {
+    return KDTree3.from(this.toArray())
+  }
 }

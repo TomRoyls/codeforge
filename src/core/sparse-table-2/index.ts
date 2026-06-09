@@ -97,4 +97,8 @@ export class SparseTable {
   static from(items: any[]): SparseTable {
     return new SparseTable(items)
   }
+
+  clone(): SparseTable {
+    return SparseTable.from(this.toArray())
+  }
 }

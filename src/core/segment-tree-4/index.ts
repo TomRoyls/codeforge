@@ -152,4 +152,8 @@ export class SegmentTree {
   static from(items: any[]): SegmentTree {
     return new SegmentTree(items)
   }
+
+  clone(): SegmentTree {
+    return SegmentTree.from(this.toArray())
+  }
 }

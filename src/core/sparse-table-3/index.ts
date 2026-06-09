@@ -141,4 +141,8 @@ export class SparseTable3 {
   static from(items: any[]): SparseTable3 {
     return new SparseTable3(items)
   }
+
+  clone(): SparseTable3 {
+    return SparseTable3.from(this.toArray())
+  }
 }

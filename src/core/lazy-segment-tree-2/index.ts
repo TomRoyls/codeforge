@@ -115,4 +115,8 @@ export class LazySegmentTree {
   static from(items: any[]): LazySegmentTree {
     return new LazySegmentTree(items)
   }
+
+  clone(): LazySegmentTree {
+    return LazySegmentTree.from(this.toArray())
+  }
 }

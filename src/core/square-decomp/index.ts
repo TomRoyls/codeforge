@@ -177,4 +177,8 @@ export class SquareDecomp {
   static from(items: any[]): SquareDecomp {
     return new SquareDecomp(items)
   }
+
+  clone(): SquareDecomp {
+    return SquareDecomp.from(this.toArray())
+  }
 }

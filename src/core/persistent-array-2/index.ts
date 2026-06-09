@@ -79,4 +79,8 @@ export class PersistentArray2<T> {
   static from<T>(items: T[]): PersistentArray2<T> {
     return new PersistentArray2<T>(items)
   }
+
+  clone(): PersistentArray2<T> {
+    return PersistentArray2.from(this.toArray())
+  }
 }
