@@ -137,4 +137,8 @@ export class Matrix2 {
   clear(): void {
     this.data = [];
   }
+
+  toString(): string {
+    return `Matrix2()`
+  }
 }

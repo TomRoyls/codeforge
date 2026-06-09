@@ -441,4 +441,8 @@ export class HalfEdgeMesh {
 
     return null;
   }
+
+  toString(): string {
+    return `HalfEdgeMesh()`
+  }
 }

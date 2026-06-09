@@ -295,4 +295,8 @@ export class GraphBFS2 {
 
     return false;
   }
+
+  toString(): string {
+    return `GraphBFS2()`
+  }
 }

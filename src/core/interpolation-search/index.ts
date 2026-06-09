@@ -126,4 +126,8 @@ export class InterpolationSearch {
   has(target: number): boolean {
     return this.contains(target)
   }
+
+  toString(): string {
+    return `InterpolationSearch()`
+  }
 }

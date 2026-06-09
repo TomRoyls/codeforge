@@ -180,4 +180,8 @@ export class LCPArray {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `LCPArray({ size: ${this.size} })`
+  }
 }

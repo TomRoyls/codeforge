@@ -88,4 +88,8 @@ export class KMPSearch {
   has(text: string): boolean {
     return this.contains(text)
   }
+
+  toString(): string {
+    return `KMPSearch()`
+  }
 }

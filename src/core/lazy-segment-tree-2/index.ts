@@ -126,4 +126,8 @@ export class LazySegmentTree {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `LazySegmentTree()`
+  }
 }

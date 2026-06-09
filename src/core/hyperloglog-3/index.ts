@@ -137,4 +137,8 @@ export class HyperLogLog3 {
   clear(): void {
     this.registers = new Uint8Array(1 << this.precision);
   }
+
+  toString(): string {
+    return `HyperLogLog3()`
+  }
 }

@@ -164,4 +164,8 @@ export class GraphKruskal {
   toArray() {
     return [...this]
   }
+
+  toString(): string {
+    return `GraphKruskal()`
+  }
 }

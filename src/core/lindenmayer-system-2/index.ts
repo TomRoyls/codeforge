@@ -53,4 +53,8 @@ export class LindenmayerSystem2 {
   removeRule(predecessor: string): boolean {
     return this.rules.delete(predecessor);
   }
+
+  toString(): string {
+    return `LindenmayerSystem2()`
+  }
 }

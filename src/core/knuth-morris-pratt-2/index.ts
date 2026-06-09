@@ -78,4 +78,8 @@ export class KnuthMorrisPratt2 {
   pattern(): string {
     return this._pattern;
   }
+
+  toString(): string {
+    return `KnuthMorrisPratt2()`
+  }
 }

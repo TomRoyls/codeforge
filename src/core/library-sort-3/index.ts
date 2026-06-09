@@ -115,4 +115,8 @@ export class LibrarySort3<T> {
     }
     return m
   }
+
+  toString(): string {
+    return `LibrarySort3()`
+  }
 }

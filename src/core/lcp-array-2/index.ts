@@ -123,4 +123,8 @@ export class LCPArray2 {
     this.lcp = []
     this.rank = []
   }
+
+  toString(): string {
+    return `LCPArray2({ size: ${this.size} })`
+  }
 }

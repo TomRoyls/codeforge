@@ -67,4 +67,8 @@ export class MinHash2 {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  toString(): string {
+    return `MinHash2({ size: ${this.size} })`
+  }
 }

@@ -177,4 +177,8 @@ export class Introsort3 {
   getSpaceComplexity(): string {
     return 'O(log n) recursion stack';
   }
+
+  toString(): string {
+    return `Introsort3()`
+  }
 }

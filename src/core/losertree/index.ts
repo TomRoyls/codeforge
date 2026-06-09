@@ -286,6 +286,10 @@ export class LoserTree<T = number> {
     this._cursors = savedCursors
     this._tree = savedTree
   }
+
+  toString(): string {
+    return `LoserTree({ size: ${this.size} })`
+  }
 }
 
 export type { Comparator, ForEachCallback, LoserTreeOptions } from './types.js'

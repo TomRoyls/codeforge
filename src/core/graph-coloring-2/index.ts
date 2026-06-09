@@ -115,4 +115,8 @@ export class GraphColoring2 {
   getColorCount(coloring: Map<string, number>): number {
     return new Set(coloring.values()).size;
   }
+
+  toString(): string {
+    return `GraphColoring2()`
+  }
 }

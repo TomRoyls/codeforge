@@ -135,4 +135,8 @@ export class LeftistTree2<T> {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `LeftistTree2({ size: ${this.size} })`
+  }
 }

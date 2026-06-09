@@ -96,4 +96,8 @@ export class LRUSet2<T> {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `LRUSet2({ size: ${this.size} })`
+  }
 }

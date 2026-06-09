@@ -123,4 +123,8 @@ export class MergeSort2 {
     this.comparisons = 0;
     this.swaps = 0;
   }
+
+  toString(): string {
+    return `MergeSort2()`
+  }
 }

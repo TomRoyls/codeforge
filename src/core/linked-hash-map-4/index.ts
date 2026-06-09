@@ -171,6 +171,10 @@ export class LinkedHashMap<K, V> {
   toArray(): any[] {
     return [...this]
   }
+
+  toString(): string {
+    return `LinkedHashMap({ size: ${this.size} })`
+  }
 }
 
 interface Node<K> {

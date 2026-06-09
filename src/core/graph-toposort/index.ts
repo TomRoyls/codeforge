@@ -192,4 +192,8 @@ export class GraphTopoSort {
   toArray() {
     return this.edges()
   }
+
+  toString(): string {
+    return `GraphTopoSort()`
+  }
 }

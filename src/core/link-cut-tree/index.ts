@@ -339,4 +339,8 @@ export class LinkCutTree {
     }
     return copy
   }
+
+  toString(): string {
+    return `LinkCutTree({ size: ${this.size} })`
+  }
 }

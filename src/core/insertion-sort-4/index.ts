@@ -125,4 +125,8 @@ export class InsertionSort4<T> {
     }
     return result
   }
+
+  toString(): string {
+    return `InsertionSort4()`
+  }
 }

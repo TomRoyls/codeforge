@@ -196,4 +196,8 @@ export class HeapSort4<T> {
   getSpaceComplexity(): string {
     return 'O(1)'
   }
+
+  toString(): string {
+    return `HeapSort4()`
+  }
 }

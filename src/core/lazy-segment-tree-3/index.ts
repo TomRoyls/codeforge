@@ -97,4 +97,8 @@ export class LazySegmentTree3 {
   static from(items: any[]): LazySegmentTree3 {
     return new LazySegmentTree3(items)
   }
+
+  toString(): string {
+    return `LazySegmentTree3({ size: ${this.size} })`
+  }
 }

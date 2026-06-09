@@ -346,6 +346,10 @@ export class MedianHeap<T = number> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `MedianHeap({ size: ${this.size} })`
+  }
 }
 
 export type { MedianHeapOptions } from './types.js'

@@ -159,4 +159,8 @@ export class GraphDijkstra {
   toArray() {
     return this.edges()
   }
+
+  toString(): string {
+    return `GraphDijkstra()`
+  }
 }

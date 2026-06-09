@@ -198,6 +198,10 @@ export class LRU2Cache<K, V> {
   toArray(): any[] {
     return [...this]
   }
+
+  toString(): string {
+    return `LRU2Cache()`
+  }
 }
 
 export type { LRU2CacheOptions } from './types.js'

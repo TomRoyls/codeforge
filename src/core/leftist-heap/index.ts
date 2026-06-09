@@ -276,4 +276,8 @@ export class LeftistHeap<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `LeftistHeap({ size: ${this.size} })`
+  }
 }

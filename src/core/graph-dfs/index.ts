@@ -301,4 +301,8 @@ export class GraphDFS {
   toArray() {
     return this.edges()
   }
+
+  toString(): string {
+    return `GraphDFS()`
+  }
 }

@@ -149,4 +149,8 @@ export class LeftistHeap4<T> {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `LeftistHeap4({ size: ${this.size} })`
+  }
 }

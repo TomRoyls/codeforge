@@ -229,4 +229,8 @@ export class MergeableMap<K, V> {
     }
     return obj
   }
+
+  toString(): string {
+    return `MergeableMap({ size: ${this.size} })`
+  }
 }

@@ -89,4 +89,8 @@ export class MergeSort5 {
       k++;
     }
   }
+
+  toString(): string {
+    return `MergeSort5()`
+  }
 }

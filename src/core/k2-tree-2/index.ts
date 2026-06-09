@@ -226,4 +226,8 @@ export class K2Tree2 {
       callback(item, i++)
     }
   }
+
+  toString(): string {
+    return `K2Tree2({ size: ${this.size} })`
+  }
 }

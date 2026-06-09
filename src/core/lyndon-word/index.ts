@@ -83,4 +83,8 @@ export class LyndonFactorization {
 
         return minStr;
     }
+
+  toString(): string {
+    return `LyndonFactorization()`
+  }
 }

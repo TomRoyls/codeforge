@@ -253,6 +253,10 @@ export class LRUCache4<K, V> {
   toArray(): any[] {
     return [...this]
   }
+
+  toString(): string {
+    return `LRUCache4({ size: ${this.size} })`
+  }
 }
 
 interface Node<K, V> {

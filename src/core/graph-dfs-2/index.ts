@@ -258,4 +258,8 @@ export class GraphDFS2 {
       { operation: 'Graph Storage', time: '-', space: 'O(V + E)' }
     ];
   }
+
+  toString(): string {
+    return `GraphDFS2()`
+  }
 }

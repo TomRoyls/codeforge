@@ -87,4 +87,8 @@ export class MergeHeap2<T> {
       this.siftDown(i);
     }
   }
+
+  toString(): string {
+    return `MergeHeap2({ size: ${this.size} })`
+  }
 }

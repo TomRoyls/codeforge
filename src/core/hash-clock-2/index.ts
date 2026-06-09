@@ -66,4 +66,8 @@ export class HashClock2 {
     this.history = []
     this.counter = 0
   }
+
+  toString(): string {
+    return `HashClock2()`
+  }
 }
