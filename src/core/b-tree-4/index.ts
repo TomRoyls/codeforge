@@ -365,4 +365,8 @@ export class BTree<T> {
     }
     return 1 + this.computeHeight(node.children[0]!);
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

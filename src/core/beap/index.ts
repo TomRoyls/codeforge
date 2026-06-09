@@ -207,6 +207,12 @@ export class Beap<T = number> {
     this.heap[i] = this.heap[j]!
     this.heap[j] = temp
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
-export type { BeapOptions } from './types.js'
+export type { BeapOptions 
+
+} from './types.js'

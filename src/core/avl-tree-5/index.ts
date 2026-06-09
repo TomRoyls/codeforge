@@ -271,4 +271,8 @@ export class AVLTree<T> {
 
     return y;
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

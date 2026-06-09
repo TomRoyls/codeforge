@@ -220,4 +220,8 @@ export class AdaptiveHeap<T> {
     this.accesses.set(value, count)
     this.totalAccesses++
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

@@ -386,6 +386,12 @@ export class BinomialHeap<T = number> {
       current = current.sibling
     }
   }
+
+  has(item: T): boolean {
+    return this.contains(item)
+  }
 }
 
-export type { BinomialHeapOptions } from './types.js'
+export type { BinomialHeapOptions 
+
+} from './types.js'

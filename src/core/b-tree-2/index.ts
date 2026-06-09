@@ -350,4 +350,8 @@ export class BTree2<T> {
       stack.pop();
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

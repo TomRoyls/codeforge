@@ -331,4 +331,8 @@ export class AVLTree6<T> {
       current = current.right;
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

@@ -506,6 +506,12 @@ export class AdaptiveBST<T> {
     }
     return node
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
-export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback } from './types.js'
+export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback 
+
+} from './types.js'

@@ -224,4 +224,8 @@ export class AABTree<T> {
       current = current.right;
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

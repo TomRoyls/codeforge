@@ -162,4 +162,8 @@ export class BinaryHeap<T> {
       yield val;
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
