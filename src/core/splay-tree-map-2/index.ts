@@ -310,4 +310,5 @@ export class SplayTreeMap2<K, V> {
   toJSON() {
     return { type: 'SplayTreeMap2', size: this.size, items: this.toArray() }
   }
+
 }
