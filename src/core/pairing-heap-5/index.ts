@@ -179,4 +179,17 @@ export class PairingHeap5<T> {
 
     return result;
   }
+
+  [Symbol.iterator](): Iterator<T> {
+    const items = this.toArray();
+    let index = 0;
+    return {
+      next(): IteratorResult<T> {
+        if (index < items.length) {
+          return { value: items[index++]!, done: false };
+        }
+        return { value: undefined as unknown as T, done: true };
+      },
+    };
+  }
 }

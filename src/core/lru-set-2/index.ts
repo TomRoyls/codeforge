@@ -75,4 +75,14 @@ export class LRUSet2<T> {
     }
     return result;
   }
+
+  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
+    const arr = this.toArray();
+    let i = 0;
+    return {
+      next: () => i < arr.length
+        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
+        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+    };
+  }
 }

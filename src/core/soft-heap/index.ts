@@ -284,6 +284,16 @@ export class SoftHeap<T = unknown> {
       next: this.cloneTree(root.next),
     }
   }
+
+  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
+    const arr = this.toArray();
+    let i = 0;
+    return {
+      next: () => i < arr.length
+        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
+        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+    };
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

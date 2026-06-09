@@ -294,6 +294,16 @@ export class WaveletTree {
     if (!node) return 0
     return node.bitvector.length + this.computeTotalBits(node.left) + this.computeTotalBits(node.right)
   }
+
+  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
+    const arr = this.toArray();
+    let i = 0;
+    return {
+      next: () => i < arr.length
+        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
+        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+    };
+  }
 }
 
 export type { WaveletTreeNode, WaveletTreeOptions, RankAllResult, WaveletTreeStats } from './types.js'

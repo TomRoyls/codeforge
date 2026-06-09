@@ -171,4 +171,14 @@ export class SkipList<T> {
   getTimeComplexity(): string {
     return "Search: O(log n), Insert: O(log n), Delete: O(log n), Space: O(n)";
   }
+
+  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
+    const arr = this.toArray();
+    let i = 0;
+    return {
+      next: () => i < arr.length
+        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
+        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+    };
+  }
 }

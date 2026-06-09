@@ -144,6 +144,16 @@ export class DynamicFenwick<T = number> {
       throw new RangeError(`Index ${index} out of bounds [0, ${this._size - 1}]`)
     }
   }
+
+  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
+    const arr = this.toArray();
+    let i = 0;
+    return {
+      next: () => i < arr.length
+        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
+        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+    };
+  }
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'
