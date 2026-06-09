@@ -28,7 +28,7 @@ export class CuckooHash3<K, V> {
       hash = Math.imul(hash, 31) + charCode;
       hash = hash ^ (hash >>> 16);
     }
-    return Math.abs(hash % this.capacity);
+    return ((hash % this.capacity) + this.capacity) % this.capacity;
   }
 
   private hash2(key: K): number {
@@ -41,7 +41,7 @@ export class CuckooHash3<K, V> {
     }
     hash = hash ^ 0x9e3779b9;
     hash = hash ^ (hash >>> 16);
-    return Math.abs(hash % this.capacity);
+    return ((hash % this.capacity) + this.capacity) % this.capacity;
   }
 
   set(key: K, value: V): boolean {

@@ -29,7 +29,7 @@ export class CascadingBloom2 {
     for (let i = 0; i < item.length; i++) {
       h = ((h << 5) - h + item.charCodeAt(i)) | 0
     }
-    return Math.abs(h) % this.config.numBits
+    return (h >>> 0) % this.config.numBits
   }
 
   private getIndices(item: string, filterIdx: number): number[] {

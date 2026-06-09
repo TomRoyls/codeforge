@@ -20,7 +20,7 @@ export class ChainedHash2<V> {
     for (let i = 0; i < key.length; i++) {
       h = ((h << 5) - h + key.charCodeAt(i)) | 0
     }
-    return Math.abs(h) % this.capacity
+    return (h >>> 0) % this.capacity
   }
 
   put(key: string, value: V): void {

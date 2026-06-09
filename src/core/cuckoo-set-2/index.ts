@@ -17,7 +17,7 @@ function hash1<T>(value: T, capacity: number): number {
   for (let i = 0; i < str.length; i++) {
     h = ((h << 5) - h + str.charCodeAt(i)) | 0
   }
-  return Math.abs(h) % capacity
+  return (h >>> 0) % capacity
 }
 
 function hash2<T>(value: T, capacity: number): number {
@@ -31,7 +31,7 @@ function hash2<T>(value: T, capacity: number): number {
   for (let i = 0; i < str.length; i++) {
     h = ((h << 5) + h + str.charCodeAt(i) * 31) | 0
   }
-  return Math.abs(h) % capacity
+  return (h >>> 0) % capacity
 }
 
 export class CuckooSet2<T> {

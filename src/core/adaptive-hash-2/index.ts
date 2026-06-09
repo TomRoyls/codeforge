@@ -26,7 +26,7 @@ export class AdaptiveHash2<K, V> {
       h = ((h << 5) - h) + str.charCodeAt(i);
       h = h & h;
     }
-    return Math.abs(h) % capacity;
+    return (h >>> 0) % capacity;
   }
 
   private currentCapacity(): number {
