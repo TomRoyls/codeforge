@@ -424,4 +424,9 @@ export class DynamicArray<T> {
   some(predicate: (item: T) => boolean): boolean {
     return this.toArray().some(predicate)
   }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    return index >= 0 ? arr[index] : arr[arr.length + index]
+  }
 }

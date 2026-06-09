@@ -250,6 +250,11 @@ toString(): string {
   includes(item: T): boolean {
     return this.toArray().includes(item)
   }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    return index >= 0 ? arr[index] : arr[arr.length + index]
+  }
 }
 
 export type { BeapOptions

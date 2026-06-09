@@ -133,4 +133,9 @@ export class CircularBuffer3<T> {
   reverse(): T[] {
     return this.toArray().reverse()
   }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    return index >= 0 ? arr[index] : arr[arr.length + index]
+  }
 }

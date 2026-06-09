@@ -343,6 +343,11 @@ export class Deque<T> {
   toJSON() {
     return { type: 'Deque', size: this.size, items: this.toArray() }
   }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    return index >= 0 ? arr[index] : arr[arr.length + index]
+  }
 }
 
 function nextPow2(n: number): number {

@@ -196,4 +196,9 @@ export class DWaveHeap<T> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    return index >= 0 ? arr[index] : arr[arr.length + index]
+  }
 }
