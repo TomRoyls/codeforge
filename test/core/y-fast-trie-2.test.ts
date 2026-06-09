@@ -794,7 +794,7 @@ describe("YFastTrie", () => {
       expect(trie.max()).toBe(30);
     });
 
-    it.skip("should maintain invariants after many operations", () => {
+    it("should maintain invariants after many operations", () => {
       const values = [50, 25, 75, 12, 37, 62, 87, 6, 18, 31, 43, 56, 68, 81, 93];
 
       for (const value of values) {
