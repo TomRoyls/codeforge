@@ -105,4 +105,5 @@ export class CascadingBloom2 {
   toString(): string {
     return `${CascadingBloom2}({ size: ${this.size} })`
   }
+
 }

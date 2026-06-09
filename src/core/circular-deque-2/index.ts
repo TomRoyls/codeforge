@@ -270,4 +270,8 @@ export class CircularDeque2<T = unknown> {
   reverse(): T[] {
     return this.toArray().reverse()
   }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
 }

@@ -335,4 +335,8 @@ export class CountedBTree2<T> {
   includes(item: T): boolean {
     return this.toArray().includes(item)
   }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
 }

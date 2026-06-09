@@ -209,4 +209,8 @@ export class IntervalHeap3<T> {
   reverse(): T[] {
     return this.toArray().reverse()
   }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
 }

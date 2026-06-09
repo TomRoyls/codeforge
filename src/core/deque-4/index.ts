@@ -292,4 +292,8 @@ export class Deque4<T> {
     const arr = this.toArray()
     return index >= 0 ? arr[index] : arr[arr.length + index]
   }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
 }
