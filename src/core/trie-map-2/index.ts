@@ -127,4 +127,8 @@ export class TrieMap2<V> {
   *[Symbol.iterator]() {
     yield* this.keysWithPrefix("")
   }
+
+  toArray() {
+    return this.keysWithPrefix("")
+  }
 }

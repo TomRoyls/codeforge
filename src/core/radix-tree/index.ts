@@ -244,4 +244,8 @@ export class RadixTree {
   *[Symbol.iterator]() {
     yield* this.getAllWords()
   }
+
+  toArray() {
+    return this.getAllWords()
+  }
 }

@@ -125,4 +125,8 @@ export class TopologicalQueue2 {
   *[Symbol.iterator]() {
     yield* this.getEdges()
   }
+
+  toArray() {
+    return this.getEdges()
+  }
 }

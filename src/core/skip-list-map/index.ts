@@ -403,6 +403,12 @@ export class SkipListMap<K = unknown, V = unknown> {
   successor(key: K): [K, V] | undefined {
     return this.upperBound(key)
   }
+
+toArray() {
+    return this.entries()
+  }
 }
 
-export type { SkipListMapOptions }
+export type { SkipListMapOptions 
+ 
+}

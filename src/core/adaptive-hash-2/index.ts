@@ -299,4 +299,8 @@ export class AdaptiveHash2<K, V> {
   *[Symbol.iterator]() {
     yield* this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

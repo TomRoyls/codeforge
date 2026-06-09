@@ -262,4 +262,8 @@ export class TernarySearchTrie<T = unknown> {
   *[Symbol.iterator]() {
     yield* this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

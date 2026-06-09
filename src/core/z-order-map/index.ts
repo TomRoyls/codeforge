@@ -203,6 +203,12 @@ export class ZOrderMap<T> {
   get bits(): number {
     return this._bits
   }
+
+toArray() {
+    return this.entries()
+  }
 }
 
-export type { ZOrderMapOptions, ZOrderEntry, Point2D } from './types.js'
+export type { ZOrderMapOptions, ZOrderEntry, Point2D 
+ 
+} from './types.js'

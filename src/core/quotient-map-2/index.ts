@@ -164,4 +164,8 @@ export class QuotientMap2<T> {
       callback(items[i]!, i)
     }
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

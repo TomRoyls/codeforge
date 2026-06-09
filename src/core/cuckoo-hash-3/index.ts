@@ -276,4 +276,8 @@ export class CuckooHash3<K, V> {
   *[Symbol.iterator]() {
     yield* this.entries()
   }
+
+  toArray() {
+    return this.entries()
+  }
 }

@@ -257,4 +257,8 @@ export class BipartiteMatcher<L, R> {
   *[Symbol.iterator]() {
     yield* this.getEdges()
   }
+
+  toArray() {
+    return this.getEdges()
+  }
 }

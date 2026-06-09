@@ -106,4 +106,8 @@ export class EdgeGraph2 {
   *[Symbol.iterator]() {
     yield* this.getEdges()
   }
+
+  toArray() {
+    return this.getEdges()
+  }
 }

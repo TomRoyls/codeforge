@@ -200,4 +200,8 @@ export class Trie3 {
   *[Symbol.iterator]() {
     yield* this.getAllWords()
   }
+
+  toArray() {
+    return this.getAllWords()
+  }
 }

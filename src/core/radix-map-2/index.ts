@@ -157,4 +157,8 @@ export class RadixMap2<T> {
       callback(items[i]!, i)
     }
   }
+
+  toArray() {
+    return this.entries()
+  }
 }
