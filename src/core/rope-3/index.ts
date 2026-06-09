@@ -358,4 +358,8 @@ export class Rope3 {
     const ropeA = typeof a === 'string' ? new Rope3(a) : a
     return ropeA.concat(b)
   }
+
+  clear(): void {
+    this.root = { tag: 'leaf', text: '' } as RopeNode
+  }
 }

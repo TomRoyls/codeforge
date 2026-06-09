@@ -133,4 +133,8 @@ export class Matrix2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  clear(): void {
+    this.data = [];
+  }
 }

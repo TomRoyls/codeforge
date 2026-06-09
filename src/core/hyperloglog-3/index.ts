@@ -133,4 +133,8 @@ export class HyperLogLog3 {
     if ((v & 0x80000000) === 0) { n += 1 }
     return n
   }
+
+  clear(): void {
+    this.registers = new Uint8Array(1 << this.precision);
+  }
 }

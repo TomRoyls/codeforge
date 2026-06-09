@@ -220,4 +220,8 @@ export class Rope {
   getTimeComplexity(): string {
     return "O(log n) for insert/delete/concat, O(n) for toString/indexOf"
   }
+
+  clear(): void {
+    this.root = null;
+  }
 }

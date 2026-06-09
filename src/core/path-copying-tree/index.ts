@@ -204,4 +204,9 @@ export class PathCopyingTree<K, V> {
       current = current.right
     }
   }
+
+  clear(): void {
+    this._size = 0;
+    this.root = null;
+  }
 }
