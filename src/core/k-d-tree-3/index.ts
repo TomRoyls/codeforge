@@ -234,4 +234,8 @@ export class KDTree3 {
       }
     };
   }
+
+  static from(items: any[]): KDTree3 {
+    return new KDTree3(items)
+  }
 }

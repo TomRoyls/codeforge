@@ -63,4 +63,8 @@ export class SegmentTree5 {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  static from(items: any[]): SegmentTree5 {
+    return new SegmentTree5(items)
+  }
 }

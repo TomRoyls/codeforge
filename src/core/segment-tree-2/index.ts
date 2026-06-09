@@ -3,7 +3,7 @@ import type { SegmentTree2Options, ForEachCallback } from './types.js'
 const defaultMerge = (a: number, b: number): number => a + b
 const defaultIdentity = 0
 
-export class SegmentTree2<T = number> {
+export class SegmentTree2<T> {
   private tree: T[]
   private lazy: T[]
   private _data: T[]
@@ -310,5 +310,9 @@ export class SegmentTree2<T = number> {
     if (this._n > 0) {
       this.buildTree(1, 0, this._n - 1)
     }
+  }
+
+  static from<T>(items: T[]): SegmentTree2<T> {
+    return new SegmentTree2<T>(items)
   }
 }

@@ -173,4 +173,8 @@ export class SquareDecomp {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  static from(items: any[]): SquareDecomp {
+    return new SquareDecomp(items)
+  }
 }

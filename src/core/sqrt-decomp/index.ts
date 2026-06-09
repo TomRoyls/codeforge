@@ -5,7 +5,7 @@ const defaultOptions: SqrtDecompositionOptions<number> = {
   identity: 0,
 }
 
-export class SqrtDecomposition<T = number> {
+export class SqrtDecomposition<T> {
   private data: T[]
   private blocks: T[]
   private lazy: T[]
@@ -263,5 +263,9 @@ export class SqrtDecomposition<T = number> {
 
   get blockSize(): number {
     return this._blockSize
+  }
+
+  static from<T>(items: T[]): SqrtDecomposition<T> {
+    return new SqrtDecomposition<T>(items)
   }
 }

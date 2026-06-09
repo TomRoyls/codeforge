@@ -93,4 +93,8 @@ export class SparseTable {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  static from(items: any[]): SparseTable {
+    return new SparseTable(items)
+  }
 }

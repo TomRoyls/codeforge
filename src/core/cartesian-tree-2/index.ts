@@ -250,4 +250,8 @@ export class CartesianTree<T> {
       current = current.right;
     }
   }
+
+  static from<T>(items: T[]): CartesianTree<T> {
+    return new CartesianTree<T>(items)
+  }
 }

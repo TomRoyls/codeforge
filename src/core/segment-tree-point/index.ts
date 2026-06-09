@@ -3,7 +3,7 @@ import type { SegmentTreePointOptions, ForEachCallback } from './types.js'
 const defaultOperation = (a: number, b: number): number => a + b
 const defaultIdentity = 0
 
-export class SegmentTreePoint<T = number> {
+export class SegmentTreePoint<T> {
   private tree: T[]
   private _data: T[]
   private _n: number
@@ -218,5 +218,9 @@ export class SegmentTreePoint<T = number> {
         ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
+  }
+
+  static from<T>(items: T[]): SegmentTreePoint<T> {
+    return new SegmentTreePoint<T>(items)
   }
 }

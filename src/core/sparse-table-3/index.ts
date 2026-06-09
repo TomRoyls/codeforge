@@ -137,4 +137,8 @@ export class SparseTable3 {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  static from(items: any[]): SparseTable3 {
+    return new SparseTable3(items)
+  }
 }

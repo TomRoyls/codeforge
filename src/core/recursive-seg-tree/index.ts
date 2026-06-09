@@ -264,4 +264,8 @@ export class RecursiveSegTree {
     }
     return value
   }
+
+  static from(items: any[]): RecursiveSegTree {
+    return new RecursiveSegTree(items)
+  }
 }

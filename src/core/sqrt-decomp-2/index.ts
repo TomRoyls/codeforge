@@ -3,7 +3,7 @@ import type { SqrtDecomp2Options, ForEachCallback } from './types.js'
 const defaultMerge = (a: number, b: number): number => a + b
 const defaultIdentity = 0
 
-export class SqrtDecomp2<T = number> {
+export class SqrtDecomp2<T> {
   private data: T[]
   private blocks: T[]
   private lazy: T[]
@@ -325,5 +325,9 @@ export class SqrtDecomp2<T = number> {
       this.recomputeBlock(lastBlockIndex)
     }
     return value
+  }
+
+  static from<T>(items: T[]): SqrtDecomp2<T> {
+    return new SqrtDecomp2<T>(items)
   }
 }

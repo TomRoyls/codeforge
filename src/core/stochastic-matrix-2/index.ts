@@ -190,4 +190,8 @@ export class StochasticMatrix2 {
 
     return distribution;
   }
+
+  static from(items: any[]): StochasticMatrix2 {
+    return new StochasticMatrix2(items)
+  }
 }

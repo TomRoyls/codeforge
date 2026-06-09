@@ -2,7 +2,7 @@ import type { RMQComparator, RMQResult } from "./types.js"
 
 const defaultComparator: RMQComparator<number> = (a, b) => a - b
 
-export class RangeMinimumQuery<T = number> {
+export class RangeMinimumQuery<T> {
   private readonly _data: T[]
   private readonly _comparator: RMQComparator<T>
   private readonly _table: number[][]
@@ -162,5 +162,9 @@ export class RangeMinimumQuery<T = number> {
     for (let i = 0; i < this._data.length; i++) {
       yield this._data[i]!
     }
+  }
+
+  static from<T>(items: T[]): RangeMinimumQuery<T> {
+    return new RangeMinimumQuery<T>(items)
   }
 }

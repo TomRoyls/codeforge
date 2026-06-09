@@ -104,4 +104,8 @@ export class SegmentTree {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  static from(items: any[]): SegmentTree {
+    return new SegmentTree(items)
+  }
 }

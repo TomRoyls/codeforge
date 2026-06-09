@@ -75,4 +75,8 @@ export class PersistentArray2<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  static from<T>(items: T[]): PersistentArray2<T> {
+    return new PersistentArray2<T>(items)
+  }
 }

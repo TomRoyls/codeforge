@@ -111,4 +111,8 @@ export class LazySegmentTree {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  static from(items: any[]): LazySegmentTree {
+    return new LazySegmentTree(items)
+  }
 }

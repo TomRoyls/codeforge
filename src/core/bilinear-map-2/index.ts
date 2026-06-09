@@ -63,4 +63,8 @@ export class BilinearMap2 {
   getGrid(): number[][] {
     return this.grid.map(row => [...row]);
   }
+
+  static from(items: any[]): BilinearMap2 {
+    return new BilinearMap2(items)
+  }
 }

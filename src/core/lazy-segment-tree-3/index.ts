@@ -93,4 +93,8 @@ export class LazySegmentTree3 {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  static from(items: any[]): LazySegmentTree3 {
+    return new LazySegmentTree3(items)
+  }
 }
