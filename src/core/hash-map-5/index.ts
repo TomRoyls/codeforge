@@ -9,6 +9,9 @@ export class HashMap5<K, V> {
   private _size: number;
 
   constructor(initialCapacity: number = 16, loadFactor: number = 0.75) {
+    if (initialCapacity < 1) {
+      throw new RangeError(`Initial capacity must be >= 1, got ${initialCapacity}`);
+    }
     this.capacity = initialCapacity;
     this.loadFactor = loadFactor;
     this._size = 0;
