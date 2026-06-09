@@ -252,6 +252,10 @@ export class Octree3<T> {
     return this.root.count();
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   clear(): void {
     this.root.clear();
   }
@@ -267,13 +271,33 @@ export class Octree3<T> {
     };
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<OctreeItem<T>> {
+    const nodeStack: OctreeNode<T>[] = [this.root];
+    let buffer: OctreeItem<T>[] = [];
+    let bi = 0;
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        if (bi < buffer.length) {
+          return { value: buffer[bi++]!, done: false };
+        }
+        while (nodeStack.length > 0) {
+          const node = nodeStack.pop()!;
+          buffer = node.items;
+          bi = 0;
+          if (node.hasChildren) {
+            for (let i = 7; i >= 0; i--) {
+              const child = node.children[i];
+              if (child !== null) {
+                nodeStack.push(child);
+              }
+            }
+          }
+          if (buffer.length > 0) {
+            return { value: buffer[bi++]!, done: false };
+          }
+        }
+        return { value: undefined as unknown as OctreeItem<T>, done: true };
+      }
     };
   }
 }

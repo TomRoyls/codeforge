@@ -63,6 +63,10 @@ export class DynamicBitset2 {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
   get capacity(): number {
     return this._data.length * BITS_PER_WORD;
   }

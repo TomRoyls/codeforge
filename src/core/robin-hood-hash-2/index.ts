@@ -130,6 +130,10 @@ export class RobinHoodHash2<K, V> {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
   clear(): void {
     for (let i = 0; i < this.entries.length; i++) {
       this.entries[i] = null;

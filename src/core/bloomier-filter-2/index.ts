@@ -64,6 +64,10 @@ export class BloomierFilter2 {
     return this.entryCount;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   loadFactor(): number {
     return this.entryCount / this.tableSize;
   }

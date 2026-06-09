@@ -43,6 +43,10 @@ export class SquareDecomp {
     return this.array.length;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   get(index: number): number {
     return this.array[index] ?? 0;
   }

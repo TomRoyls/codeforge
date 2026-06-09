@@ -96,6 +96,10 @@ export class HashArray2<T> {
     return this._used;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   get capacity(): number {
     return this._capacity;
   }

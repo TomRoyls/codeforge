@@ -133,6 +133,10 @@ export class QuotientMap2<T> {
     return this.data.size;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   clear(): void {
     this.parent.clear();
     this.rank.clear();

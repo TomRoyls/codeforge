@@ -114,4 +114,8 @@ export class LCPArray2 {
     get size(): number {
         return this.lcp.length;
     }
+
+  isEmpty(): boolean {
+    return this.size === 0
+  }
 }

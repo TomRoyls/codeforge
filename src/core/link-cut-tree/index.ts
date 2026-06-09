@@ -296,6 +296,10 @@ export class LinkCutTree {
     return this.n
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   getSize(): number {
     return this.n
   }

@@ -30,6 +30,10 @@ export class JellyHash2<K, V> {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
   get capacity(): number {
     return this.buckets.length;
   }

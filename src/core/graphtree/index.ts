@@ -78,6 +78,10 @@ export class GraphTree<T = unknown> {
     return count
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   find(predicate: GraphTreePredicate<T>): GraphTree<T> | undefined {
     if (predicate(this)) return this
     for (const child of this._children) {

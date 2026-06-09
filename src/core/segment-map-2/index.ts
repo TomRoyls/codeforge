@@ -43,6 +43,10 @@ export class SegmentMap2<V> {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
   clear(): void {
     this.root = null;
     this._size = 0;

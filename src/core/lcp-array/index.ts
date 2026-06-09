@@ -84,6 +84,10 @@ export class LCPArray {
     return this._length;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   constructor(s: string, sa: number[], options: LCPArrayOptions = {}) {
     this.s = s;
     this.sa = sa;

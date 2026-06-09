@@ -349,13 +349,31 @@ export class QuadTree {
     return qt
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<Point> {
+    const nodeStack: QuadTreeNode[] = [this.root];
+    let buffer: Point[] = [];
+    let bi = 0;
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        if (bi < buffer.length) {
+          return { value: buffer[bi++]!, done: false };
+        }
+        while (nodeStack.length > 0) {
+          const node = nodeStack.pop()!;
+          buffer = node.points;
+          bi = 0;
+          if (node.divided) {
+            if (node.southeast) nodeStack.push(node.southeast);
+            if (node.southwest) nodeStack.push(node.southwest);
+            if (node.northeast) nodeStack.push(node.northeast);
+            if (node.northwest) nodeStack.push(node.northwest);
+          }
+          if (buffer.length > 0) {
+            return { value: buffer[bi++]!, done: false };
+          }
+        }
+        return { value: undefined as unknown as Point, done: true };
+      }
     };
   }
 }

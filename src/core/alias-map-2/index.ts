@@ -87,6 +87,10 @@ export class AliasMap2<T> {
         return this.map.size;
     }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
     clear(): void {
         this.map.clear();
         this.aliases.clear();

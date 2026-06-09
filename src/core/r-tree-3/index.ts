@@ -377,13 +377,40 @@ export class RTree3<T> {
     }
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<{rect: {minX: number, minY: number, maxX: number, maxY: number}, data: T}> {
+    type Item = {rect: {minX: number, minY: number, maxX: number, maxY: number}, data: T};
+    const nodeStack: Node<T>[] = [];
+    let buffer: Item[] = [];
+    let bi = 0;
+    if (this.root !== null) nodeStack.push(this.root);
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        if (bi < buffer.length) {
+          return { value: buffer[bi++]!, done: false };
+        }
+        while (nodeStack.length > 0) {
+          const node = nodeStack.pop()!;
+          if (node.type === 'leaf') {
+            const leaf = node as LeafNode<T>;
+            const items: Item[] = [];
+            for (let i = 0; i < leaf.entries!.length; i++) {
+              const entry = leaf.entries![i]!;
+              items.push({rect: entry.rect, data: entry.data});
+            }
+            buffer = items;
+            bi = 0;
+            if (buffer.length > 0) {
+              return { value: buffer[bi++]!, done: false };
+            }
+          } else {
+            const internal = node as InternalNode<T>;
+            for (let i = internal.children!.length - 1; i >= 0; i--) {
+              nodeStack.push(internal.children![i]!);
+            }
+          }
+        }
+        return { value: undefined as unknown as Item, done: true };
+      }
     };
   }
 }

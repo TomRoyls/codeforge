@@ -119,6 +119,10 @@ export class SpatialHash2<T = unknown> {
     return this.entries.size
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   clear(): void {
     this.cells.clear()
     this.entries.clear()

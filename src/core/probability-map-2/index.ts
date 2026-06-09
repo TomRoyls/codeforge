@@ -60,6 +60,10 @@ export class ProbabilityMap2 {
     return this.map.size;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   totalWeight(): number {
     return this._totalWeight;
   }

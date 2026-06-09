@@ -71,6 +71,10 @@ export class LRUCache5<K, V> {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
   get capacityValue(): number {
     return this.capacity;
   }

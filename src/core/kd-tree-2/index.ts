@@ -375,13 +375,24 @@ export class KDTree {
     return tree
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<KDPoint> {
+    const stack: KDTreeNode[] = [];
+    let current: KDTreeNode | null = this.root;
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        while (current !== null || stack.length > 0) {
+          if (current !== null) {
+            stack.push(current);
+            current = current.left;
+            continue;
+          }
+          current = stack.pop()!;
+          const value = current.point;
+          current = current.right;
+          return { value, done: false };
+        }
+        return { value: undefined as unknown as KDPoint, done: true };
+      }
     };
   }
 }

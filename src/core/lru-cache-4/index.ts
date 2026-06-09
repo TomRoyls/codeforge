@@ -127,6 +127,10 @@ export class LRUCache4<K, V> {
     return this.map.size;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   get capacity(): number {
     return this._capacity;
   }

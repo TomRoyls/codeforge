@@ -181,6 +181,10 @@ export class CuckooFilter2 {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
   loadFactor(): number {
     return this._size / (this._capacity * this.bucketSize);
   }

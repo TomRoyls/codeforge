@@ -87,6 +87,10 @@ export class ProMap2<K, V> {
     return this.store.size;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   keys(): K[] {
     const now = Date.now();
     const validKeys: K[] = [];

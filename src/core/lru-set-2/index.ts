@@ -18,6 +18,10 @@ export class LRUSet2<T> {
     return this.items.size;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   add(item: T): boolean {
     const existing = this.items.has(item);
     if (existing) {

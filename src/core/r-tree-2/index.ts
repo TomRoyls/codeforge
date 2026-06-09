@@ -492,13 +492,38 @@ export class RTree2<T> {
     );
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<T> {
+    const nodeStack: Node<T>[] = [];
+    let buffer: T[] = [];
+    let bi = 0;
+    if (this.root !== null) nodeStack.push(this.root);
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        if (bi < buffer.length) {
+          return { value: buffer[bi++]!, done: false };
+        }
+        while (nodeStack.length > 0) {
+          const node = nodeStack.pop()!;
+          if (node.isLeaf) {
+            const vals: T[] = [];
+            for (const entry of node.entries) {
+              if (entry!.value !== undefined) {
+                vals.push(entry!.value);
+              }
+            }
+            buffer = vals;
+            bi = 0;
+            if (buffer.length > 0) {
+              return { value: buffer[bi++]!, done: false };
+            }
+          } else {
+            for (let i = node.entries.length - 1; i >= 0; i--) {
+              nodeStack.push(node.entries[i]!.node!);
+            }
+          }
+        }
+        return { value: undefined as unknown as T, done: true };
+      }
     };
   }
 }

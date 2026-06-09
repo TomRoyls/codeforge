@@ -370,9 +370,35 @@ export class TernarySearchTree<V = unknown> {
   }
 
   *[Symbol.iterator](): Iterator<Entry<V>> {
-    const entries = this.toArray();
-    for (const entry of entries) {
-      yield entry;
+    if (this.hasEmptyStr) yield { key: "", value: this.emptyValue as V };
+    type Frame = { node: TSTNode<V>; prefix: string; phase: number };
+    const stack: Frame[] = [];
+    if (this.root !== undefined) {
+      stack.push({ node: this.root, prefix: "", phase: 0 });
+    }
+    while (stack.length > 0) {
+      const top = stack[stack.length - 1]!;
+      if (top.phase === 0) {
+        top.phase = 1;
+        if (top.node.lo !== undefined) {
+          stack.push({ node: top.node.lo, prefix: top.prefix, phase: 0 });
+        }
+      } else if (top.phase === 1) {
+        top.phase = 2;
+        if (top.node.isEnd) {
+          yield { key: top.prefix + top.node.char, value: top.node.value as V };
+        }
+      } else if (top.phase === 2) {
+        top.phase = 3;
+        if (top.node.eq !== undefined) {
+          stack.push({ node: top.node.eq, prefix: top.prefix + top.node.char, phase: 0 });
+        }
+      } else {
+        stack.pop();
+        if (top.node.hi !== undefined) {
+          stack.push({ node: top.node.hi, prefix: top.prefix, phase: 0 });
+        }
+      }
     }
   }
 

@@ -11,6 +11,10 @@ export class RangeMap2<V> {
     return this._ranges.length;
   }
 
+  isEmpty(): boolean {
+    return this.size === 0
+  }
+
   clear(): void {
     this._ranges = [];
   }

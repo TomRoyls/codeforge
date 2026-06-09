@@ -360,13 +360,24 @@ export class KDTree4<T = number[]> {
     return true;
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<number[]> {
+    const stack: KDNode[] = [];
+    let current: KDNode | null = this.root;
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        while (current !== null || stack.length > 0) {
+          if (current !== null) {
+            stack.push(current);
+            current = current.left;
+            continue;
+          }
+          current = stack.pop()!;
+          const value = current.point;
+          current = current.right;
+          return { value, done: false };
+        }
+        return { value: undefined as unknown as number[], done: true };
+      }
     };
   }
 }

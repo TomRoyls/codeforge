@@ -233,6 +233,10 @@ export class CuckooHash3<K, V> {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
   clear(): void {
     this.table1.fill(null);
     this.table2.fill(null);

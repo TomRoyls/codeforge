@@ -66,6 +66,10 @@ export class FenwickTree3 {
     return this._size;
   }
 
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
   private lsb(i: number): number {
     return i & -i;
   }

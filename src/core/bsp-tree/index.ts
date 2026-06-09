@@ -321,13 +321,19 @@ export class BSPTree {
     return this.collectSegments(this.root);
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<LineSegment> {
+    const stack: BSPNode[] = [];
+    if (this.root !== null) stack.push(this.root);
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        while (stack.length > 0) {
+          const node = stack.pop()!;
+          if (node.front) stack.push(node.front);
+          if (node.back) stack.push(node.back);
+          return { value: node.segment, done: false };
+        }
+        return { value: undefined as unknown as LineSegment, done: true };
+      }
     };
   }
 }
