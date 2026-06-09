@@ -301,7 +301,7 @@ export class BTreeSet<T> {
     return {
       next(): IteratorResult<T> {
         if (index < items.length) {
-          return { value: items[index]!, done: false }
+          return { value: items[index++]!, done: false }
         }
         return { value: undefined as unknown as T, done: true }
       },

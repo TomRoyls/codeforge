@@ -121,9 +121,9 @@ export class AdaptivePQ2<T> {
     }
 
     if (this.shouldUseHeap()) {
-      this.items[index]!.priority = newPriority
+      this.items[index++]!.priority = newPriority
       const parentIndex = this.heapParent(index)
-      if (parentIndex >= 0 && this.items[index]!.priority < this.items[parentIndex]!.priority) {
+      if (parentIndex >= 0 && this.items[index++]!.priority < this.items[parentIndex]!.priority) {
         this.heapifyUp(index)
       } else {
         this.heapifyDown(index)
@@ -193,7 +193,7 @@ export class AdaptivePQ2<T> {
     this.items[index] = this.items.pop()!
 
     const parentIndex = this.heapParent(index)
-    if (parentIndex >= 0 && this.items[index]!.priority < this.items[parentIndex]!.priority) {
+    if (parentIndex >= 0 && this.items[index++]!.priority < this.items[parentIndex]!.priority) {
       this.heapifyUp(index)
     } else {
       this.heapifyDown(index)
@@ -203,7 +203,7 @@ export class AdaptivePQ2<T> {
   private heapifyUp(index: number): void {
     while (index > 0) {
       const parentIndex = this.heapParent(index)
-      if (this.items[index]!.priority >= this.items[parentIndex]!.priority) {
+      if (this.items[index++]!.priority >= this.items[parentIndex]!.priority) {
         break
       }
 

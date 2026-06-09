@@ -129,7 +129,7 @@ export class RandomizedQueue<T> {
     if (index < 0 || index >= this.items.length) {
       throw new RangeError(`Index ${index} out of bounds for queue of size ${this.items.length}`)
     }
-    const item = this.items[index]!
+    const item = this.items[index++]!
     const lastIdx = this.items.length - 1
     if (index !== lastIdx) {
       this.items[index] = this.items[lastIdx]!
@@ -177,7 +177,7 @@ export class RandomizedQueue<T> {
     if (index < 0 || index >= this.items.length) {
       throw new RangeError(`Index ${index} out of bounds for queue of size ${this.items.length}`)
     }
-    return this.items[index]!
+    return this.items[index++]!
   }
 
   first(): T {
