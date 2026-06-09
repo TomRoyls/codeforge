@@ -161,8 +161,31 @@ export class MergeSortTree {
       throw new RangeError(`k=${k} out of bounds for range [${l}, ${r}]`)
     }
     const values = this.extractRange(l, r)
-    values.sort((a, b) => a - b)
-    return values[k - 1]!
+    return this.quickselect(values, 0, values.length - 1, k - 1)
+  }
+
+  private quickselect(arr: number[], left: number, right: number, k: number): number {
+    while (true) {
+      if (left === right) return arr[left]!
+      const pivotIndex = this.partition(arr, left, right)
+      if (k <= pivotIndex) right = pivotIndex
+      else left = pivotIndex + 1
+    }
+  }
+
+  private partition(arr: number[], left: number, right: number): number {
+    const mid = (left + right) >>> 1
+    const pivot = arr[mid]!
+    let i = left - 1
+    let j = right + 1
+    while (true) {
+      do { i++ } while (arr[i]! < pivot)
+      do { j-- } while (arr[j]! > pivot)
+      if (i >= j) return j
+      const tmp = arr[i]!
+      arr[i] = arr[j]!
+      arr[j] = tmp
+    }
   }
 
   private extractRange(l: number, r: number): number[] {
