@@ -23,7 +23,7 @@ export class HashMap5<K, V> {
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
-    return Math.abs(hash) % this.capacity;
+    return (hash >>> 0) % this.capacity;
   }
 
   private findSlot(key: K): { index: number; found: boolean } {

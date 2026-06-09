@@ -18,7 +18,7 @@ export class CollisionMap2<T> {
       hash = ((hash << 5) - hash + char) | 0;
       hash = hash & hash;
     }
-    return Math.abs(hash) % this.buckets.length;
+    return (hash >>> 0) % this.buckets.length;
   }
 
   set(key: string, value: T): void {

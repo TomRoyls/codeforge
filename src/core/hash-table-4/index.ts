@@ -190,7 +190,7 @@ export class HashTable4<K, V> {
     } else {
       hash = this.objectHash(key);
     }
-    return Math.abs(hash) % this.capacity;
+    return (hash >>> 0) % this.capacity;
   }
 
   private probe(startIndex: number, attempt: number): number {

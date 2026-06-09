@@ -22,7 +22,7 @@ export class HashMap<K, V> {
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
-    return Math.abs(hash) % this.capacity;
+    return (hash >>> 0) % this.capacity;
   }
 
   set(key: K, value: V): void {
