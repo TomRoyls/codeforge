@@ -410,4 +410,7 @@ export class Hamt3<T> {
   clear(): Hamt3<T> {
     return Hamt3.createEmpty();
   }
+  *[Symbol.iterator]() {
+    yield* this.entries()
+  }
 }

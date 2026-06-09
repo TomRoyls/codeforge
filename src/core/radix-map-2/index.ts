@@ -147,4 +147,7 @@ export class RadixMap2<T> {
     negatives.reverse();
     this._entries = [...negatives, ...positives];
   }
+  *[Symbol.iterator]() {
+    yield* this.entries()
+  }
 }

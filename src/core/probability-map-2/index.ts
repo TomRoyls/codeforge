@@ -98,4 +98,7 @@ export class ProbabilityMap2 {
     this._totalWeight = 1;
     this.map = normalized;
   }
+  *[Symbol.iterator]() {
+    yield* this.entries()
+  }
 }

@@ -82,4 +82,7 @@ export class CatMap2<T> {
     }
     return result
   }
+  *[Symbol.iterator]() {
+    yield* this.getPairs()
+  }
 }

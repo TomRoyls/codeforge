@@ -154,4 +154,7 @@ export class QuotientMap2<T> {
   entries(): [string, T][] {
     return Array.from(this.data.entries());
   }
+  *[Symbol.iterator]() {
+    yield* this.entries()
+  }
 }

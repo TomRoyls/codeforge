@@ -145,4 +145,7 @@ export class BurstTrie2 {
     }
     return count
   }
+  *[Symbol.iterator]() {
+    yield* this.getAll()
+  }
 }

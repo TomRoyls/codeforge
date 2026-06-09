@@ -107,4 +107,7 @@ export class AliasMap2<T> {
     entries(): [string, T][] {
         return Array.from(this.map.entries());
     }
+  [Symbol.iterator]() {
+    return this.entries()
+  }
 }

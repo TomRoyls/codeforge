@@ -142,4 +142,7 @@ export class HashArray2<T> {
     this._buckets = new Array(this._capacity).fill(null);
     this._used = 0;
   }
+  *[Symbol.iterator]() {
+    yield* this.entries()
+  }
 }
