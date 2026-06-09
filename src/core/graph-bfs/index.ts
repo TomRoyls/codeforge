@@ -294,4 +294,7 @@ export class GraphBFS {
 
     return true;
   }
+  *[Symbol.iterator]() {
+    yield* this.edges()
+  }
 }

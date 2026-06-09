@@ -157,4 +157,7 @@ export class GraphKruskal {
 
     return components;
   }
+  *[Symbol.iterator]() {
+    yield* this.edges()
+  }
 }

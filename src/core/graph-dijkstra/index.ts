@@ -152,4 +152,7 @@ export class GraphDijkstra {
     }
     return count;
   }
+  *[Symbol.iterator]() {
+    yield* this.edges()
+  }
 }

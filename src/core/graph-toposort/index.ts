@@ -185,4 +185,7 @@ export class GraphTopoSort {
   hasCycle(): boolean {
     return !this.isDAG();
   }
+  *[Symbol.iterator]() {
+    yield* this.edges()
+  }
 }

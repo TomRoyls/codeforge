@@ -326,4 +326,7 @@ export class GraphAdjList<T> {
       return this.getNeighbors(v).length;
     }
   }
+  *[Symbol.iterator]() {
+    yield* this.getEdges()
+  }
 }

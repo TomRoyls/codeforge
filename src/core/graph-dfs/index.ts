@@ -294,4 +294,7 @@ export class GraphDFS {
     }
     return result.reverse();
   }
+  *[Symbol.iterator]() {
+    yield* this.edges()
+  }
 }
