@@ -205,4 +205,5 @@ export class WaveletTree {
   toJSON() {
     return { type: 'WaveletTree', items: this.toArray() }
   }
+
 }
