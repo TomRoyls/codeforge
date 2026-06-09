@@ -193,7 +193,7 @@ describe('BTreeSet', () => {
     })
   })
 
-  describe.skip('delete', () => {
+  describe('delete', () => {
     it('returns false for empty set', () => {
       const set = new BTreeSet<number>()
       expect(set.delete(1)).toBe(false)
@@ -292,7 +292,7 @@ describe('BTreeSet', () => {
       expect(set.size()).toBe(9)
     })
 
-    it.skip('handles delete with order 2', () => {
+    it('handles delete with order 2', () => {
       const set = new BTreeSet<number>({ order: 2 })
       for (let i = 0; i < 5; i++) {
         set.add(i)
@@ -302,7 +302,7 @@ describe('BTreeSet', () => {
       expect(set.size()).toBe(4)
     })
 
-    it.skip('handles deleting with rebalancing', () => {
+    it('handles deleting with rebalancing', () => {
       const set = new BTreeSet<number>({ order: 3 })
       for (let i = 0; i < 20; i++) {
         set.add(i)
@@ -337,7 +337,7 @@ describe('BTreeSet', () => {
       expect(set.size()).toBe(3)
     })
 
-    it.skip('returns correct size after deletes', () => {
+    it('returns correct size after deletes', () => {
       const set = new BTreeSet<number>()
       set.add(1)
       set.add(2)
@@ -366,7 +366,7 @@ describe('BTreeSet', () => {
       expect(set.isEmpty()).toBe(false)
     })
 
-    it.skip('returns true after deleting all elements', () => {
+    it('returns true after deleting all elements', () => {
       const set = new BTreeSet<number>()
       set.add(1)
       set.delete(1)
@@ -430,7 +430,7 @@ describe('BTreeSet', () => {
       expect(set.min()).toBe(1)
     })
 
-    it.skip('updates after deletion', () => {
+    it('updates after deletion', () => {
       const set = new BTreeSet<number>()
       set.add(1)
       set.add(2)
@@ -467,7 +467,7 @@ describe('BTreeSet', () => {
       expect(set.max()).toBe(5)
     })
 
-    it.skip('updates after deletion', () => {
+    it('updates after deletion', () => {
       const set = new BTreeSet<number>()
       set.add(1)
       set.add(2)
@@ -504,7 +504,7 @@ describe('BTreeSet', () => {
       expect(set.toArray()).toEqual([1])
     })
 
-    it.skip('returns correctly after deletes', () => {
+    it('returns correctly after deletes', () => {
       const set = new BTreeSet<number>()
       set.add(1)
       set.add(2)
@@ -1019,7 +1019,7 @@ describe('BTreeSet', () => {
   })
 
   describe('edge cases', () => {
-    it.skip('handles single element lifecycle', () => {
+    it('handles single element lifecycle', () => {
       const set = new BTreeSet<number>()
       expect(set.add(1)).toBe(true)
       expect(set.has(1)).toBe(true)
@@ -1039,7 +1039,7 @@ describe('BTreeSet', () => {
       expect(set.add(1)).toBe(false)
     })
 
-    it.skip('handles duplicate deletes gracefully', () => {
+    it('handles duplicate deletes gracefully', () => {
       const set = new BTreeSet<number>()
       set.add(1)
       expect(set.delete(1)).toBe(true)
@@ -1137,7 +1137,7 @@ describe('BTreeSet', () => {
     })
   })
 
-  describe.skip('large datasets', () => {
+  describe('large datasets', () => {
     it('handles 1000 sequential inserts', () => {
       const set = new BTreeSet<number>()
       for (let i = 0; i < 1000; i++) {
@@ -1160,7 +1160,7 @@ describe('BTreeSet', () => {
       }
     })
 
-    it.skip('handles 1000 sequential deletes', () => {
+    it('handles 1000 sequential deletes', () => {
       const set = new BTreeSet<number>()
       for (let i = 0; i < 100; i++) {
         set.add(i)
@@ -1171,7 +1171,7 @@ describe('BTreeSet', () => {
       expect(set.isEmpty()).toBe(true)
     })
 
-    it.skip('handles reverse sequential deletes', () => {
+    it('handles reverse sequential deletes', () => {
       const set = new BTreeSet<number>()
       for (let i = 0; i < 100; i++) {
         set.add(i)
@@ -1182,7 +1182,7 @@ describe('BTreeSet', () => {
       expect(set.isEmpty()).toBe(true)
     })
 
-    it.skip('handles alternating deletes', () => {
+    it('handles alternating deletes', () => {
       const set = new BTreeSet<number>()
       for (let i = 0; i < 100; i++) {
         set.add(i)
