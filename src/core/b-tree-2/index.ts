@@ -320,8 +320,34 @@ export class BTree2<T> {
 
 
   *[Symbol.iterator](): IterableIterator<T> {
-    for (const val of this.toArray()) {
-      yield val;
+    type N = BTreeNode<T>;
+    type Frame = { node: N; keyIdx: number; childVisited: boolean };
+    if (this.root === null) return;
+    const stack: Array<Frame> = [];
+    const pushLeftmost = (node: N): void => {
+      stack.push({ node, keyIdx: 0, childVisited: false });
+    };
+    pushLeftmost(this.root);
+    while (stack.length > 0) {
+      const frame = stack[stack.length - 1]!;
+      if (!frame.childVisited && !frame.node.leaf && frame.keyIdx < frame.node.children.length) {
+        frame.childVisited = true;
+        pushLeftmost(frame.node.children[frame.keyIdx]!);
+        continue;
+      }
+      if (frame.keyIdx < frame.node.keys.length) {
+        const key = frame.node.keys[frame.keyIdx]!;
+        frame.keyIdx++;
+        frame.childVisited = false;
+        yield key;
+        continue;
+      }
+      if (!frame.node.leaf && frame.keyIdx < frame.node.children.length) {
+        frame.childVisited = false;
+        pushLeftmost(frame.node.children[frame.keyIdx]!);
+        continue;
+      }
+      stack.pop();
     }
   }
 }

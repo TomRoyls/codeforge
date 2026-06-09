@@ -252,12 +252,23 @@ export class Treap4<T> {
   }
 
   [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+    type N = TreapNode<T>;
+    const stack: Array<N> = [];
+    let current: N | null = this.root;
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        while (current !== null || stack.length > 0) {
+          while (current !== null) {
+            stack.push(current);
+            current = current.left;
+          }
+          current = stack.pop()!;
+          const value = current.value as ReturnType<this['toArray']>[number];
+          current = current.right;
+          return { value, done: false };
+        }
+        return { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true };
+      }
     };
   }
 }
