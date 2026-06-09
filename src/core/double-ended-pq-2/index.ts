@@ -316,4 +316,8 @@ export class DoubleEndedPQ2<T = number> {
   toJSON() {
     return { type: 'DoubleEndedPQ2', size: this.size, items: this.toArray() }
   }
+
+  peek(): T {
+    return this.peekMin()
+  }
 }

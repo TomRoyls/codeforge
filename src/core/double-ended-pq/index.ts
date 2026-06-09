@@ -309,6 +309,10 @@ export class DoubleEndedPQ<T = number> {
   toJSON() {
     return { type: 'DoubleEndedPQ', items: this.toArray() }
   }
+
+  peek(): T {
+    return this.peekMin()
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'
