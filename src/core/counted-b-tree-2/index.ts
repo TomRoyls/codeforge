@@ -12,6 +12,9 @@ export class CountedBTree2<T> {
   private _size: number;
 
   constructor(order?: number, compare?: (a: T, b: T) => number) {
+    if (order !== undefined && order < 2) {
+      throw new RangeError(`B-tree order must be >= 2, got ${order}`);
+    }
     this.order = order ?? 4;
     this.comparator = compare ?? ((a: T, b: T) => {
       if (a < b) return -1;

@@ -11,6 +11,9 @@ export class BTree<T> {
   private treeSize: number;
 
   constructor(order?: number, comparator?: (a: T, b: T) => number) {
+    if (order !== undefined && order < 2) {
+      throw new RangeError(`B-tree order must be >= 2, got ${order}`);
+    }
     this.order = order ?? 4;
     this.comparator = comparator ?? ((a: T, b: T) => (a < b ? -1 : a > b ? 1 : 0));
     this.root = null;
