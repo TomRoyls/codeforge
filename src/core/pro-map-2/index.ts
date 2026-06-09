@@ -131,4 +131,17 @@ export class ProMap2<K, V> {
 
     return validEntries;
   }
+
+  [Symbol.iterator](): Iterator<[K, V]> {
+    const items = this.entries();
+    let index = 0;
+    return {
+      next(): IteratorResult<[K, V]> {
+        if (index < items.length) {
+          return { value: items[index++]!, done: false };
+        }
+        return { value: undefined as unknown as [K, V], done: true };
+      },
+    };
+  }
 }

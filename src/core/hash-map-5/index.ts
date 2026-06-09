@@ -207,4 +207,17 @@ export class HashMap5<K, V> {
       }
     }
   }
+
+  [Symbol.iterator](): Iterator<[K, V]> {
+    const items = this.entries();
+    let index = 0;
+    return {
+      next(): IteratorResult<[K, V]> {
+        if (index < items.length) {
+          return { value: items[index++]!, done: false };
+        }
+        return { value: undefined as unknown as [K, V], done: true };
+      },
+    };
+  }
 }
