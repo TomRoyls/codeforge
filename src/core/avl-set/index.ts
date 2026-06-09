@@ -377,4 +377,8 @@ export class AVLSet<T = number> {
   map<R>(fn: (item: T) => R): R[] {
     return this.toArray().map(fn)
   }
+
+  filter(fn: (item: T) => boolean): T[] {
+    return this.toArray().filter(fn)
+  }
 }
