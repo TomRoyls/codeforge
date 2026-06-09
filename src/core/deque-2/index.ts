@@ -363,6 +363,10 @@ export class Deque2<T = unknown> {
   toString(): string {
     return `${Deque2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
 export type { Deque2Options } from './types.js'

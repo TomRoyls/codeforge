@@ -348,4 +348,8 @@ export class ThreadedTree<T> {
       current = this.inOrderPredecessor(current)
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

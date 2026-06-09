@@ -284,6 +284,10 @@ export class PairingHeap3<T = number> {
       }
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
 export type { PairingHeap3Options, PairingHeap3Node } from './types.js'

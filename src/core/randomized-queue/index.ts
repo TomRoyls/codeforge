@@ -212,4 +212,8 @@ export class RandomizedQueue<T> {
       capacity: this.items.length,
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

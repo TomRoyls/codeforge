@@ -233,6 +233,10 @@ export class CuckooFilter2 {
       callback(item, i++)
     }
   }
+
+  has(item: unknown): boolean {
+    return this.contains(item)
+  }
 }
 
 export const CuckooFilter = CuckooFilter2;

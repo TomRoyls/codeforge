@@ -253,4 +253,8 @@ export class IntervalTree3 {
   toString(): string {
     return `${IntervalTree3}({ size: ${this.size} })`
   }
+
+  has(low: number, high: number): boolean {
+    return this.contains(low, high)
+  }
 }

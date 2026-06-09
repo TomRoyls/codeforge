@@ -302,4 +302,8 @@ export class Octree3<T> {
       }
     };
   }
+
+  has(point: Point3D): boolean {
+    return this.contains(point)
+  }
 }

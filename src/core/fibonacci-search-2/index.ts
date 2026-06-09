@@ -207,4 +207,8 @@ export class FibonacciSearch {
   clear(): void {
     this.array = []
   }
+
+  has(target: number): boolean {
+    return this.contains(target)
+  }
 }

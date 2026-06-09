@@ -271,4 +271,8 @@ export class Treap4<T> {
       }
     };
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

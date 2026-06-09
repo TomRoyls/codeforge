@@ -526,4 +526,8 @@ export class RTree2<T> {
       }
     };
   }
+
+  has(item: T): boolean {
+    return this.contains(item)
+  }
 }

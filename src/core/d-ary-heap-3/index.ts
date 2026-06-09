@@ -166,4 +166,8 @@ export class DAryHeap<T> {
       callback(item, i++)
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

@@ -116,4 +116,8 @@ export class GallopingSearch<T> {
   getTimeComplexity(): string {
     return 'O(log n) - Exponential search combines galloping phase O(log i) with binary search O(log n)';
   }
+
+  has(target: T): boolean {
+    return this.contains(target)
+  }
 }

@@ -198,4 +198,8 @@ export class BlockHeap2 {
       callback(item, i++)
     }
   }
+
+  has(value: number): boolean {
+    return this.contains(value)
+  }
 }

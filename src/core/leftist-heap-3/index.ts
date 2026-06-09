@@ -272,6 +272,10 @@ export class LeftistHeap3<T = number> {
     }
     return root
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

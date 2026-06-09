@@ -246,4 +246,8 @@ export class KDTree3 {
   toString(): string {
     return `${KDTree3}({ size: ${this.size} })`
   }
+
+  has(point: Point): boolean {
+    return this.contains(point)
+  }
 }

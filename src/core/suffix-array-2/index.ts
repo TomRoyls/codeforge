@@ -149,4 +149,8 @@ export class SuffixArray2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  has(pattern: string): boolean {
+    return this.contains(pattern)
+  }
 }

@@ -263,6 +263,10 @@ export class CoverTree<T = number> {
     }
   }
 
+
+  has(point: T): boolean {
+    return this.contains(point)
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

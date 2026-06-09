@@ -203,4 +203,8 @@ export class VectorHeap2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  has(value: number): boolean {
+    return this.contains(value)
+  }
 }

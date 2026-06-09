@@ -238,4 +238,8 @@ export class CircularDeque2<T = unknown> {
     return `${CircularDeque2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
 
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

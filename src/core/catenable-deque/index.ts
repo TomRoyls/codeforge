@@ -790,6 +790,10 @@ export class CatenableDeque<T> {
   toString(): string {
     return `${CatenableDeque}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

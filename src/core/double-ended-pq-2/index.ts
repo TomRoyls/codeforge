@@ -308,4 +308,8 @@ export class DoubleEndedPQ2<T = number> {
   toString(): string {
     return `${DoubleEndedPQ2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(item: T): boolean {
+    return this.contains(item)
+  }
 }

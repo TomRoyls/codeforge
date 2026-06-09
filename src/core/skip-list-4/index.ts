@@ -281,4 +281,8 @@ export class SkipList4<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

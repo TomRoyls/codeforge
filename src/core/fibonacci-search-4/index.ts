@@ -175,4 +175,8 @@ export class FibonacciSearch4 {
       callback(item, i++)
     }
   }
+
+  has(target: number): boolean {
+    return this.contains(target)
+  }
 }

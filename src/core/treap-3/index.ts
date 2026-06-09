@@ -210,4 +210,8 @@ export class Treap3<K, V> {
       }
     };
   }
+
+  has(key: K): boolean {
+    return this.contains(key)
+  }
 }

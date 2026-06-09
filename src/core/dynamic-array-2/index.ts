@@ -408,4 +408,8 @@ export class DynamicArray<T> {
   static of<T>(...items: T[]): DynamicArray<T> {
     return DynamicArray.from(items)
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

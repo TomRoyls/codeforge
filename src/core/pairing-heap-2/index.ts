@@ -427,6 +427,10 @@ export class PairingHeap2<T> {
     }
     return result
   }
+
+  has(node: PairingHeap2Node<T>): boolean {
+    return this.contains(node)
+  }
 }
 
 export type { PairingHeap2Options, PairingHeap2Node, Comparator, ForEachCallback } from './types.js'

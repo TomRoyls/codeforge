@@ -142,4 +142,8 @@ export class Deque3<T> {
   toString(): string {
     return `${Deque3}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

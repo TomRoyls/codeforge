@@ -181,4 +181,8 @@ export class CoalescingMap<K, V> {
     return `${CoalescingMap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
 
+
+  has(key: K): boolean {
+    return this.contains(key)
+  }
 }

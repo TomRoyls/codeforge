@@ -384,6 +384,10 @@ export class KDTree4<T = number[]> {
   toString(): string {
     return `${KDTree4}({ size: ${this.size} })`
   }
+
+  has(point: number[]): boolean {
+    return this.contains(point)
+  }
 }
 
 interface KDNode {

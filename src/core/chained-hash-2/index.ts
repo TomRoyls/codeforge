@@ -167,4 +167,8 @@ export class ChainedHash2<V> {
   toString(): string {
     return `${ChainedHash2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(key: string): boolean {
+    return this.contains(key)
+  }
 }

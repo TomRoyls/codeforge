@@ -104,4 +104,8 @@ export class TernarySearch {
   getTimeComplexity(): string {
     return 'O(log3 n)';
   }
+
+  has(target: number): boolean {
+    return this.contains(target)
+  }
 }

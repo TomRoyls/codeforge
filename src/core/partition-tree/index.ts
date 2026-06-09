@@ -208,6 +208,10 @@ export class PartitionTree<T = undefined> {
     }
     return { minX, maxX, minY, maxY }
   }
+
+  has(x: number, y: number): boolean {
+    return this.contains(x, y)
+  }
 }
 
 export type { PartitionPoint, Rectangle } from './types.js'

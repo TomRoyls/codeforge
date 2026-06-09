@@ -426,6 +426,10 @@ export class QuadTree2<T = undefined> {
   get depth(): number {
     return this._depth
   }
+
+  has(point: { x: number; y: number }): boolean {
+    return this.contains(point)
+  }
 }
 
 export type { Point2D, Rect2D, QuadTree2Options }

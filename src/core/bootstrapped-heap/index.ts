@@ -293,6 +293,10 @@ export class BootstrappedHeap<T = number> {
   toString(): string {
     return `${BootstrappedHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

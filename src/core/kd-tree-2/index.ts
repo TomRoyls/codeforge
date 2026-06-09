@@ -403,4 +403,8 @@ export class KDTree {
   clone(): KDTree {
     return KDTree.from(this.toArray())
   }
+
+  has(point: KDPoint): boolean {
+    return this.contains(point)
+  }
 }

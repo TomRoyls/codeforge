@@ -316,4 +316,8 @@ export class ScapegoatTree3<T> {
       }
     };
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

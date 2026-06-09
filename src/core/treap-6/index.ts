@@ -339,4 +339,8 @@ export class Treap6<T> {
       }
     };
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

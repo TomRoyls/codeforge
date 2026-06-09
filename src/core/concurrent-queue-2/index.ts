@@ -263,6 +263,10 @@ export class ConcurrentQueue<T = unknown> {
     return `${ConcurrentQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
 
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

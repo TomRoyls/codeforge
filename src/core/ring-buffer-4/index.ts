@@ -180,4 +180,8 @@ export class RingBuffer4<T> {
   contains(value: T): boolean {
     return this.indexOf(value) !== -1;
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

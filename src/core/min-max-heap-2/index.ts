@@ -335,4 +335,8 @@ export class MinMaxHeap<T> {
     this.heap[i] = this.heap[j]!
     this.heap[j] = tmp
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

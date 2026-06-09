@@ -426,4 +426,8 @@ export class CountedTree<T> {
   toString(): string {
     return `${CountedTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

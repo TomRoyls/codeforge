@@ -179,4 +179,8 @@ export class CuckooFilter3 {
 
     return false;
   }
+
+  has(item: string): boolean {
+    return this.contains(item)
+  }
 }

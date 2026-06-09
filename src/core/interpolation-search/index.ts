@@ -122,4 +122,8 @@ export class InterpolationSearch {
   clear(): void {
     this.array = []
   }
+
+  has(target: number): boolean {
+    return this.contains(target)
+  }
 }

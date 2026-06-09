@@ -396,6 +396,10 @@ export class BinomialQueue<T = number> {
   toString(): string {
     return `${BinomialQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(item: T): boolean {
+    return this.contains(item)
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

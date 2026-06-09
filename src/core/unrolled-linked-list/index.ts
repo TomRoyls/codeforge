@@ -320,4 +320,8 @@ export class UnrolledLinkedList<T> {
       current = current.next;
     }
   }
+
+  has(item: T): boolean {
+    return this.contains(item)
+  }
 }

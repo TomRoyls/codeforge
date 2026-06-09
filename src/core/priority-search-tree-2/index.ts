@@ -233,4 +233,8 @@ export class PrioritySearchTree2 {
 
     return min;
   }
+
+  has(point: Point): boolean {
+    return this.contains(point)
+  }
 }

@@ -161,4 +161,8 @@ export class QuadTree {
   getTimeComplexity(): string {
     return "Average: O(log n), Worst: O(n)";
   }
+
+  has(point: Point): boolean {
+    return this.contains(point)
+  }
 }

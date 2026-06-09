@@ -170,6 +170,10 @@ export class BoundedPriorityQueue<T> {
       callback(item, i++)
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

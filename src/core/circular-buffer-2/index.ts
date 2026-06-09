@@ -277,4 +277,8 @@ export class CircularBuffer<T> {
     }
     return buf
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

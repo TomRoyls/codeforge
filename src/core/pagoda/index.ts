@@ -156,6 +156,10 @@ export class Pagoda<T = number> {
       yield this.items[i]!
     }
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
 
 export type { PagodaOptions, PagodaNode } from './types.js'

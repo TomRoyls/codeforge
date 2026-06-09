@@ -312,4 +312,8 @@ export class LeftistHeap<T> {
 
     return true
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }

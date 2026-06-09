@@ -324,6 +324,10 @@ export class KDTree3<T = number[]> {
   toString(): string {
     return `${KDTree3}({ size: ${this.size} })`
   }
+
+  has(point: number[]): boolean {
+    return this.contains(point)
+  }
 }
 
 interface KDNode {

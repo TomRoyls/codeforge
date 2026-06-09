@@ -218,4 +218,8 @@ export class QuadTreeMap2<V> {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  has(x: number, y: number): boolean {
+    return this.contains(x, y)
+  }
 }

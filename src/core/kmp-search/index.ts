@@ -84,4 +84,8 @@ export class KMPSearch {
 
     return lps;
   }
+
+  has(text: string): boolean {
+    return this.contains(text)
+  }
 }

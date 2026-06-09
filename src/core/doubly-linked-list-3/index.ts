@@ -317,4 +317,8 @@ export class DoublyLinkedList3<T> {
   toString(): string {
     return `${DoublyLinkedList3}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  has(value: T): boolean {
+    return this.contains(value)
+  }
 }
