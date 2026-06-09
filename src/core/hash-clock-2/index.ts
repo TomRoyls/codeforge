@@ -4,7 +4,7 @@ function simpleHash(str: string): string {
     hash = ((hash << 5) - hash) + str.charCodeAt(i);
     hash |= 0;
   }
-  return Math.abs(hash).toString(16);
+  return (hash >>> 0).toString(16);
 }
 
 export class HashClock2 {

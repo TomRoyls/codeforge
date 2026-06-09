@@ -31,7 +31,7 @@ export class ProbabilisticSketch {
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
-    return Math.abs(hash);
+    return (hash >>> 0);
   }
 
   estimate(item: string | number): number {

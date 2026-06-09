@@ -123,7 +123,7 @@ export class CuckooFilter3 {
       hash %= 2_147_483_647;
     }
 
-    return Math.abs(hash);
+    return (hash >>> 0);
   }
 
   private relocate(bucket1: number, bucket2: number, fingerprint: number, depth: number): boolean {

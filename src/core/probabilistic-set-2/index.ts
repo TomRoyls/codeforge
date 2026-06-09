@@ -19,7 +19,7 @@ export class ProbabilisticSet2<T> {
       hash = ((hash << 5) - hash) + str.charCodeAt(i);
       hash = hash & hash;
     }
-    return Math.abs(hash);
+    return (hash >>> 0);
   }
 
   add(value: T): void {

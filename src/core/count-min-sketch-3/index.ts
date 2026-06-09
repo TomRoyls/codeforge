@@ -61,6 +61,6 @@ export class CountMinSketch3 {
       h = Math.trunc(h);
     }
 
-    return Math.abs(h);
+    return (h >>> 0);
   }
 }

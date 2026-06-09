@@ -20,7 +20,7 @@ export class RobinHoodHash2<K, V> {
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
-    return Math.abs(hash);
+    return (hash >>> 0);
   }
 
   private getIndex(hash: number): number {

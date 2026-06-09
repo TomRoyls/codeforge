@@ -23,7 +23,7 @@ export class JellyHash2<K, V> {
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
-    return Math.abs(hash);
+    return (hash >>> 0);
   }
 
   get size(): number {

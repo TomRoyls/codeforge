@@ -16,7 +16,7 @@ export class MinHash2 {
     for (let j = 0; j < item.length; j++) {
       hash = ((hash * 31) + item.charCodeAt(j)) % 2147483647;
     }
-    return Math.abs(hash);
+    return (hash >>> 0);
   }
 
   add(item: string): void {

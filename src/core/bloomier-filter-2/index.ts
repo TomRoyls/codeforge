@@ -84,7 +84,7 @@ export class BloomierFilter2 {
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
-    const baseHash = Math.abs(hash);
+    const baseHash = (hash >>> 0);
     for (let i = 0; i < this.hashFunctions; i++) {
       const hashValue = (baseHash * (i + 1) * 31) % this.tableSize;
       values.push(hashValue);

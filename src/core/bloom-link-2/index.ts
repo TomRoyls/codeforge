@@ -31,7 +31,7 @@ export class BloomLink2 {
       hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
-    return Math.abs(hash);
+    return (hash >>> 0);
   }
 
   private hash2(item: string): number {
@@ -39,7 +39,7 @@ export class BloomLink2 {
     for (let i = 0; i < item.length; i++) {
       hash = (hash * 33) ^ item.charCodeAt(i);
     }
-    return Math.abs(hash);
+    return (hash >>> 0);
   }
 
   private getHash(item: string, index: number): number {

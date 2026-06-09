@@ -8,7 +8,7 @@ const MAX_EVICTION_STEPS = 100
 
 function hash1<T>(value: T, capacity: number): number {
   if (typeof value === 'number' && Number.isFinite(value)) {
-    const x = Math.abs(value)
+    const x = (value >>> 0)
     const h = (x * 2654435761 + capacity) & 0x7fffffff
     return h % capacity
   }
@@ -22,7 +22,7 @@ function hash1<T>(value: T, capacity: number): number {
 
 function hash2<T>(value: T, capacity: number): number {
   if (typeof value === 'number' && Number.isFinite(value)) {
-    const x = Math.abs(value)
+    const x = (value >>> 0)
     const h = (x * 907633485 + 2 * capacity) & 0x7fffffff
     return h % capacity
   }
