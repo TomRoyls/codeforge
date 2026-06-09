@@ -150,4 +150,8 @@ export class SparseMatrix2 {
     this.values = []
     this.colIndices = []
   }
+
+  toJSON() {
+    return { type: 'SparseMatrix2', items: this.toArray() }
+  }
 }

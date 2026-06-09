@@ -162,4 +162,8 @@ export class SuccinctBitvector2 {
   toString(): string {
     return `SuccinctBitvector2()`
   }
+
+  toJSON() {
+    return { type: 'SuccinctBitvector2', items: this.toArray() }
+  }
 }

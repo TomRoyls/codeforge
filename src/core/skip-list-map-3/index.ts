@@ -188,6 +188,10 @@ export class SkipListMap3<T> {
   toString(): string {
     return `SkipListMap3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SkipListMap3', size: this.size, items: this.toArray() }
+  }
 }
 
 class Node<T> {

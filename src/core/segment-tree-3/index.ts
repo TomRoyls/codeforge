@@ -120,4 +120,8 @@ export class SegmentTree {
   toString(): string {
     return `SegmentTree()`
   }
+
+  toJSON() {
+    return { type: 'SegmentTree', items: this.toArray() }
+  }
 }

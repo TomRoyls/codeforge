@@ -188,4 +188,8 @@ export class RingBuffer4<T> {
   toString(): string {
     return `RingBuffer4({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RingBuffer4', size: this.size, items: this.toArray() }
+  }
 }

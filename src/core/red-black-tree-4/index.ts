@@ -578,4 +578,8 @@ export class RedBlackTree4<T> {
   toString(): string {
     return `RedBlackTree4({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RedBlackTree4', size: this.size, items: this.toArray() }
+  }
 }

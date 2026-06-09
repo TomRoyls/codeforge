@@ -252,6 +252,10 @@ export class IndexedPriorityQueue<T = number> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'IndexedPriorityQueue', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { IndexedPriorityQueueOptions, IndexedPriorityQueueEntry, IndexedPriorityQueueStats }

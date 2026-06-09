@@ -178,4 +178,8 @@ export class PairHeap2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'PairHeap2', size: this.size, items: this.toArray() }
+  }
 }

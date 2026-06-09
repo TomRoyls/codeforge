@@ -377,4 +377,8 @@ export class YFastTrie {
     }
     return instance
   }
+
+  toJSON() {
+    return { type: 'YFastTrie', items: this.toArray() }
+  }
 }

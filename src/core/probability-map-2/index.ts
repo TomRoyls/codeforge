@@ -116,4 +116,8 @@ export class ProbabilityMap2 {
   toString(): string {
     return `ProbabilityMap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'ProbabilityMap2', size: this.size, items: this.toArray() }
+  }
 }

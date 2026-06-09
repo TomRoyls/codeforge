@@ -241,4 +241,8 @@ export class ShuffleTree<T> {
   toString(): string {
     return `ShuffleTree({ size: ${this._size} })`
   }
+
+  toJSON() {
+    return { type: 'ShuffleTree', items: this.toArray() }
+  }
 }

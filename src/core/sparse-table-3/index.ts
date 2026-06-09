@@ -149,4 +149,8 @@ export class SparseTable3 {
   toString(): string {
     return `SparseTable3({ size: ${this.array.length} })`
   }
+
+  toJSON() {
+    return { type: 'SparseTable3', items: this.toArray() }
+  }
 }

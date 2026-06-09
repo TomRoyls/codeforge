@@ -334,4 +334,8 @@ export class SqrtDecomp2<T> {
   toString(): string {
     return `SqrtDecomp2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SqrtDecomp2', size: this.size, items: this.toArray() }
+  }
 }

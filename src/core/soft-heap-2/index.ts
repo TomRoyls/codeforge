@@ -128,4 +128,8 @@ export class SoftHeap2<T> {
   toString(): string {
     return `SoftHeap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SoftHeap2', size: this.size, items: this.toArray() }
+  }
 }

@@ -226,4 +226,8 @@ export class HashTable3<K, V> {
   toString(): string {
     return `${HashTable3}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HashTable3', size: this.size, items: this.toArray() }
+  }
 }

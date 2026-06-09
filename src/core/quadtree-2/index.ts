@@ -434,6 +434,10 @@ export class QuadTree2<T = undefined> {
   toString(): string {
     return `QuadTree2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'QuadTree2', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { Point2D, Rect2D, QuadTree2Options }

@@ -197,6 +197,10 @@ export class WeightedUnion {
     }
     return members
   }
+
+  toJSON() {
+    return { type: 'WeightedUnion', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { WeightedUnionOptions, ComponentInfo } from './types.js'

@@ -426,4 +426,8 @@ export class ScapegoatTree<K, V = undefined> {
   toString(): string {
     return `ScapegoatTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'ScapegoatTree', size: this.size, items: this.toArray() }
+  }
 }

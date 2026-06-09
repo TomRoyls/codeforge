@@ -192,4 +192,8 @@ export class SquareDecomp {
     this.blockMin = []
     this.blockMax = []
   }
+
+  toJSON() {
+    return { type: 'SquareDecomp', size: this.size, items: this.toArray() }
+  }
 }

@@ -167,4 +167,8 @@ export class WeightedReservoir<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'WeightedReservoir', size: this.size, items: this.toArray() }
+  }
 }

@@ -275,4 +275,8 @@ export class Treap4<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'Treap4', size: this.size, items: this.toArray() }
+  }
 }

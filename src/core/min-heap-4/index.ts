@@ -169,4 +169,8 @@ export class MinHeap<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'MinHeap', items: this.toArray() }
+  }
 }

@@ -178,4 +178,8 @@ export class PairingQueue2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'PairingQueue2', size: this.size, items: this.toArray() }
+  }
 }

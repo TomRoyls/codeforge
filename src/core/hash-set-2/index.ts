@@ -333,4 +333,8 @@ export class HashSet<T> {
   clone(): HashSet<T> {
     return HashSet.from(this.toArray())
   }
+
+  toJSON() {
+    return { type: 'HashSet', size: this.size, items: this.toArray() }
+  }
 }

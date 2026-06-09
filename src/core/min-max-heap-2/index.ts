@@ -350,4 +350,8 @@ export class MinMaxHeap<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'MinMaxHeap', size: this.size, items: this.toArray() }
+  }
 }

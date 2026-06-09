@@ -129,4 +129,8 @@ export class SkewMerge<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'SkewMerge', size: this.size, items: this.toArray() }
+  }
 }

@@ -292,6 +292,10 @@ export class PairingHeap3<T = number> {
   toString(): string {
     return `PairingHeap3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'PairingHeap3', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { PairingHeap3Options, PairingHeap3Node } from './types.js'

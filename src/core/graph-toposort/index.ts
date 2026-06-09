@@ -203,4 +203,8 @@ export class GraphTopoSort {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'GraphTopoSort', items: this.toArray() }
+  }
 }

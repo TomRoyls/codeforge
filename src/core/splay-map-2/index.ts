@@ -277,4 +277,8 @@ export class SplayMap2<K, V> {
   toString(): string {
     return `SplayMap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SplayMap2', size: this.size, items: this.toArray() }
+  }
 }

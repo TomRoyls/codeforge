@@ -175,4 +175,8 @@ export class GraphKruskal {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'GraphKruskal', items: this.toArray() }
+  }
 }

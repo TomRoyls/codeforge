@@ -148,4 +148,8 @@ export class Matrix2 {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'Matrix2', items: this.toArray() }
+  }
 }

@@ -96,6 +96,10 @@ export class SkewHeap3<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'SkewHeap3', size: this.size, items: this.toArray() }
+  }
 }
 
 interface SkewNode<T> {

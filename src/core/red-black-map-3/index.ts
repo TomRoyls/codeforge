@@ -387,4 +387,8 @@ export class RedBlackMap3<K, V> {
   toString(): string {
     return `RedBlackMap3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RedBlackMap3', size: this.size, items: this.toArray() }
+  }
 }

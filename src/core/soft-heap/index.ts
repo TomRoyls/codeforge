@@ -305,6 +305,10 @@ export class SoftHeap<T = unknown> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'SoftHeap', items: this.toArray() }
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

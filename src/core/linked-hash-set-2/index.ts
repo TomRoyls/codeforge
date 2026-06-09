@@ -143,4 +143,8 @@ export class LinkedHashSet<T> {
   toString(): string {
     return `LinkedHashSet({ size: ${this._size} })`
   }
+
+  toJSON() {
+    return { type: 'LinkedHashSet', items: this.toArray() }
+  }
 }

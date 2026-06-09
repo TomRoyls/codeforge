@@ -165,4 +165,8 @@ export class SparseSet2 {
   toString(): string {
     return `SparseSet2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SparseSet2', size: this.size, items: this.toArray() }
+  }
 }

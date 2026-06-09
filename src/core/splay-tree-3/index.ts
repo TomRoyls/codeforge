@@ -382,4 +382,8 @@ export class SplayTree3<T> {
   toString(): string {
     return `SplayTree3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SplayTree3', size: this.size, items: this.toArray() }
+  }
 }

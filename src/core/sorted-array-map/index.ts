@@ -188,4 +188,8 @@ export class SortedArrayMap<K = number, V = unknown> {
   toString(): string {
     return `SortedArrayMap({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SortedArrayMap', size: this.size, items: this.toArray() }
+  }
 }

@@ -325,4 +325,8 @@ export class UnrolledLinkedList<T> {
     return this.contains(item)
   }
 
+
+  toJSON() {
+    return { type: 'UnrolledLinkedList', size: this.size, items: this.toArray() }
+  }
 }

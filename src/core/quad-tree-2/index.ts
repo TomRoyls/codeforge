@@ -385,4 +385,8 @@ export class QuadTree {
   toString(): string {
     return `QuadTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'QuadTree', size: this.size, items: this.toArray() }
+  }
 }

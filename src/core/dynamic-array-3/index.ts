@@ -157,4 +157,8 @@ export class DynamicArray3<T> {
   }
 
 
+
+  toJSON() {
+    return { type: 'DynamicArray3', items: this.toArray() }
+  }
 }

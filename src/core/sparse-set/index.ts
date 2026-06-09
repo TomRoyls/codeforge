@@ -194,6 +194,10 @@ export class SparseSet {
   toString(): string {
     return `SparseSet({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SparseSet', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { SparseSetOptions } from './types.js'

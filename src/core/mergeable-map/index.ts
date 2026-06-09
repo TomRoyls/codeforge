@@ -233,4 +233,8 @@ export class MergeableMap<K, V> {
   toString(): string {
     return `MergeableMap({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'MergeableMap', size: this.size, items: this.toArray() }
+  }
 }

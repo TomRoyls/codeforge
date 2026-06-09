@@ -316,4 +316,8 @@ export class RadixTree2 {
   clone(): RadixTree2 {
     return RadixTree2.from(this.toArray())
   }
+
+  toJSON() {
+    return { type: 'RadixTree2', size: this.size, items: this.toArray() }
+  }
 }

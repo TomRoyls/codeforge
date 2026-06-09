@@ -350,4 +350,8 @@ export class HashMap2<K, V> {
   toString(): string {
     return `${HashMap2}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HashMap2', size: this.size, items: this.toArray() }
+  }
 }

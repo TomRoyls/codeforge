@@ -112,4 +112,8 @@ export class SuffixArray3 {
   toString(): string {
     return `SuffixArray3({ size: ${this.suffixArray.length} })`
   }
+
+  toJSON() {
+    return { type: 'SuffixArray3', items: this.toArray() }
+  }
 }

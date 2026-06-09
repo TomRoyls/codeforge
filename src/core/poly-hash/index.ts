@@ -220,4 +220,8 @@ export class PolyHash {
     const h2 = new PolyHash(str, { base: base2, mod })
     return { hash1: h1.hash(), hash2: h2.hash() }
   }
+
+  toJSON() {
+    return { type: 'PolyHash', size: this.size, items: this.toArray() }
+  }
 }

@@ -187,6 +187,10 @@ export class LRUCache5<K, V> {
   toString(): string {
     return `LRUCache5({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LRUCache5', size: this.size, items: this.toArray() }
+  }
 }
 
 interface Node<K, V> {

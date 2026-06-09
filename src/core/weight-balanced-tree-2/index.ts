@@ -411,4 +411,8 @@ export class WeightBalancedTree<K, V = unknown> {
     cb(node.key)
     this.forEachNode(node.right, cb)
   }
+
+  toJSON() {
+    return { type: 'WeightBalancedTree', size: this.size, items: this.toArray() }
+  }
 }

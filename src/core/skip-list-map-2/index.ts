@@ -362,4 +362,8 @@ export class SkipListMap2<K, V> {
   toString(): string {
     return `SkipListMap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SkipListMap2', size: this.size, items: this.toArray() }
+  }
 }

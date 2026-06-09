@@ -114,4 +114,8 @@ export class PagodaHeap2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'PagodaHeap2', size: this.size, items: this.toArray() }
+  }
 }

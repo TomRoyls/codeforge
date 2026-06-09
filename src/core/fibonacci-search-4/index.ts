@@ -183,4 +183,8 @@ export class FibonacciSearch4 {
   toString(): string {
     return `FibonacciSearch4()`
   }
+
+  toJSON() {
+    return { type: 'FibonacciSearch4', items: this.toArray() }
+  }
 }

@@ -356,4 +356,8 @@ export class OrderedStatisticsTree<T> {
   toString(): string {
     return `OrderedStatisticsTree()`
   }
+
+  toJSON() {
+    return { type: 'OrderedStatisticsTree', items: this.toArray() }
+  }
 }

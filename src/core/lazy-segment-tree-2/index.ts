@@ -130,4 +130,8 @@ export class LazySegmentTree {
   toString(): string {
     return `LazySegmentTree()`
   }
+
+  toJSON() {
+    return { type: 'LazySegmentTree', items: this.toArray() }
+  }
 }

@@ -289,4 +289,8 @@ export class SkipList4<T> {
   toString(): string {
     return `SkipList4({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SkipList4', size: this.size, items: this.toArray() }
+  }
 }

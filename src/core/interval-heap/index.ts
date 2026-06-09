@@ -320,6 +320,10 @@ export class IntervalHeap<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'IntervalHeap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

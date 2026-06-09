@@ -310,6 +310,10 @@ export class VanEmdeBoasTree {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toJSON() {
+    return { type: 'VanEmdeBoasTree', items: this.toArray() }
+  }
 }
 
 export { DEFAULT_UNIVERSE_SIZE } from './types.js'

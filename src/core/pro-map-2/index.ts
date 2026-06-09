@@ -156,4 +156,8 @@ export class ProMap2<K, V> {
   toString(): string {
     return `ProMap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'ProMap2', size: this.size, items: this.toArray() }
+  }
 }

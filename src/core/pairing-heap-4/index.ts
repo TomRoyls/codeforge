@@ -160,6 +160,10 @@ export class PairingHeap4<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'PairingHeap4', size: this.size, items: this.toArray() }
+  }
 }
 
 class PairingHeapNode<T> {

@@ -474,4 +474,8 @@ export class TernarySearchTree<V = unknown> {
   toString(): string {
     return `TernarySearchTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'TernarySearchTree', size: this.size, items: this.toArray() }
+  }
 }

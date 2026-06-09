@@ -290,6 +290,10 @@ export class LoserTree<T = number> {
   toString(): string {
     return `LoserTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LoserTree', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { Comparator, ForEachCallback, LoserTreeOptions } from './types.js'

@@ -224,4 +224,8 @@ export class DoubleMap<K1, K2, V> {
   toString(): string {
     return `${DoubleMap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'DoubleMap', size: this.size, items: this.toArray() }
+  }
 }

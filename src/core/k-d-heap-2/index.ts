@@ -124,4 +124,8 @@ export class KDHeap2<T> {
   }
 
 
+
+  toJSON() {
+    return { type: 'KDHeap2', items: this.toArray() }
+  }
 }

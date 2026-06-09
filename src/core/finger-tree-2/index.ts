@@ -405,4 +405,8 @@ export class FingerTree2<T> {
     return `${FingerTree2}({ size: ${this.size} })`
   }
 
+
+  toJSON() {
+    return { type: 'FingerTree2', size: this.size, items: this.toArray() }
+  }
 }

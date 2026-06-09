@@ -278,4 +278,8 @@ export class WeightBalancedTree3<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'WeightBalancedTree3', size: this.size, items: this.toArray() }
+  }
 }

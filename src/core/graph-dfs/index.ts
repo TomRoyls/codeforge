@@ -316,4 +316,8 @@ export class GraphDFS {
   clear(): void {
     this.adjacencyList = new Map()
   }
+
+  toJSON() {
+    return { type: 'GraphDFS', items: this.toArray() }
+  }
 }

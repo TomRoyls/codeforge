@@ -240,6 +240,10 @@ export class HollowHeap<T> {
   toString(): string {
     return `${HollowHeap}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HollowHeap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { HollowHeapOptions } from './types.js';

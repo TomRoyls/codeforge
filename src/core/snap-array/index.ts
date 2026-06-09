@@ -205,4 +205,8 @@ export class SnapArray<T> {
   toString(): string {
     return `SnapArray({ size: ${this.data.length} })`
   }
+
+  toJSON() {
+    return { type: 'SnapArray', items: this.toArray() }
+  }
 }

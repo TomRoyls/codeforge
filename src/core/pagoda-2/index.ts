@@ -174,4 +174,8 @@ export class Pagoda2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'Pagoda2', size: this.size, items: this.toArray() }
+  }
 }

@@ -115,4 +115,8 @@ export class RoaringBitmap3 {
   toString(): string {
     return `RoaringBitmap3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RoaringBitmap3', size: this.size, items: this.toArray() }
+  }
 }

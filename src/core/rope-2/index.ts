@@ -257,4 +257,8 @@ export class Rope2 {
     const str = this.toString()
     this.root = buildFromString(str, this.leafSize)
   }
+
+  toJSON() {
+    return { type: 'Rope2', items: this.toArray() }
+  }
 }

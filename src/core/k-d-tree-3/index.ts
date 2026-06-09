@@ -257,4 +257,8 @@ export class KDTree3 {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'KDTree3', size: this.size, items: this.toArray() }
+  }
 }

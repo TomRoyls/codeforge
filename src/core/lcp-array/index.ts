@@ -184,4 +184,8 @@ export class LCPArray {
   toString(): string {
     return `LCPArray({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LCPArray', size: this.size, items: this.toArray() }
+  }
 }

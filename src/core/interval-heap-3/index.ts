@@ -181,4 +181,8 @@ export class IntervalHeap3<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'IntervalHeap3', size: this.size, items: this.toArray() }
+  }
 }

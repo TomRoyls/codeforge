@@ -282,4 +282,8 @@ export class PersistentBitset {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'PersistentBitset', size: this.size, items: this.toArray() }
+  }
 }

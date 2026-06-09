@@ -240,4 +240,8 @@ export class SleepSort2 {
   toString(): string {
     return `SleepSort2()`
   }
+
+  toJSON() {
+    return { type: 'SleepSort2', items: this.toArray() }
+  }
 }

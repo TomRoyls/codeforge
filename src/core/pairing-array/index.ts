@@ -211,6 +211,10 @@ export class PairingArray<K, V> {
   toString(): string {
     return `PairingArray({ size: ${this._entries.length} })`
   }
+
+  toJSON() {
+    return { type: 'PairingArray', items: this.toArray() }
+  }
 }
 
 export type { PairingArrayEntry } from './types.js'

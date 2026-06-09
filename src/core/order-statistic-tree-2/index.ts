@@ -215,6 +215,10 @@ export class OrderStatisticTree2<T> {
   toString(): string {
     return `OrderStatisticTree2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'OrderStatisticTree2', size: this.size, items: this.toArray() }
+  }
 }
 
 type Node<T> = {

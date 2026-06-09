@@ -333,6 +333,10 @@ export class SortedArraySet<T = unknown> {
   toString(): string {
     return `SortedArraySet({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SortedArraySet', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { Comparator, SortedArraySetOptions, SortedArraySetStats } from './types.js'

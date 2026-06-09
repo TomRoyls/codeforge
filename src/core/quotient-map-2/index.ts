@@ -172,4 +172,8 @@ export class QuotientMap2<T> {
   toString(): string {
     return `QuotientMap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'QuotientMap2', size: this.size, items: this.toArray() }
+  }
 }

@@ -175,4 +175,8 @@ export class QuadHeap<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'QuadHeap', items: this.toArray() }
+  }
 }

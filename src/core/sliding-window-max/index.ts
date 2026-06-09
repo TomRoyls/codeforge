@@ -194,6 +194,10 @@ export class SlidingWindowMax<T = number> {
   toString(): string {
     return `SlidingWindowMax({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SlidingWindowMax', size: this.size, items: this.toArray() }
+  }
 }
 
 export { defaultComparator } from './types.js'

@@ -160,4 +160,8 @@ export class HashArray2<T> {
   toString(): string {
     return `${HashArray2}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HashArray2', size: this.size, items: this.toArray() }
+  }
 }

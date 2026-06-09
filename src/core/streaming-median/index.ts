@@ -192,4 +192,8 @@ export class StreamingMedian {
   toString(): string {
     return `StreamingMedian({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'StreamingMedian', size: this.size, items: this.toArray() }
+  }
 }

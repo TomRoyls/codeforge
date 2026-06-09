@@ -127,4 +127,8 @@ export class RunLengthQueue2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'RunLengthQueue2', size: this.size, items: this.toArray() }
+  }
 }

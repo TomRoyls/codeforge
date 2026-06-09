@@ -432,4 +432,8 @@ export class HashArrayMappedTrie2<K, V> {
   toString(): string {
     return `${HashArrayMappedTrie2}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HashArrayMappedTrie2', items: this.toArray() }
+  }
 }

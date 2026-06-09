@@ -284,4 +284,8 @@ export class Treap<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'Treap', items: this.toArray() }
+  }
 }

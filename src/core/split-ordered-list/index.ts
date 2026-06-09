@@ -157,6 +157,10 @@ export class SplitOrderedList<T> {
   toString(): string {
     return `SplitOrderedList({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SplitOrderedList', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { SplitOrderedListOptions };

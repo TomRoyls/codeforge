@@ -206,4 +206,8 @@ export class Multiset<T> {
   toString(): string {
     return `Multiset({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'Multiset', size: this.size, items: this.toArray() }
+  }
 }

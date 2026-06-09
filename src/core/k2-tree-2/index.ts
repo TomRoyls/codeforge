@@ -230,4 +230,8 @@ export class K2Tree2 {
   toString(): string {
     return `K2Tree2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'K2Tree2', items: this.toArray() }
+  }
 }

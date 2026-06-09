@@ -428,6 +428,10 @@ export class ThreadedMap<K, V> {
   ): ThreadedMap<K, V> {
     return new ThreadedMap<K, V>(entries, options)
   }
+
+  toJSON() {
+    return { type: 'ThreadedMap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { ThreadedNode, Comparator, ThreadedMapOptions } from './types.js'

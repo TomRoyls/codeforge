@@ -377,6 +377,10 @@ export class ScapegoatMap<K = unknown, V = unknown> {
   toString(): string {
     return `ScapegoatMap({ size: ${this._size} })`
   }
+
+  toJSON() {
+    return { type: 'ScapegoatMap', items: this.toArray() }
+  }
 }
 
 export type { ScapegoatMapOptions }

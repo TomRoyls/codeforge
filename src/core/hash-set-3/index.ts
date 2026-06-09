@@ -242,4 +242,8 @@ export class HashSet3<T> {
   toString(): string {
     return `${HashSet3}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HashSet3', size: this.size, items: this.toArray() }
+  }
 }

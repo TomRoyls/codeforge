@@ -131,4 +131,8 @@ export class TrieMap2<V> {
   toArray() {
     return this.keysWithPrefix("")
   }
+
+  toJSON() {
+    return { type: 'TrieMap2', size: this.size, items: this.toArray() }
+  }
 }

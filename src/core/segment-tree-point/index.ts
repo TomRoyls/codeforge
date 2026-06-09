@@ -227,4 +227,8 @@ export class SegmentTreePoint<T> {
   toString(): string {
     return `SegmentTreePoint({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SegmentTreePoint', size: this.size, items: this.toArray() }
+  }
 }

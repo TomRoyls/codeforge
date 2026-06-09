@@ -216,6 +216,10 @@ export class PartitionTree<T = undefined> {
   toString(): string {
     return `PartitionTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'PartitionTree', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { PartitionPoint, Rectangle } from './types.js'

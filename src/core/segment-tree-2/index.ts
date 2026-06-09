@@ -319,4 +319,8 @@ export class SegmentTree2<T> {
   toString(): string {
     return `SegmentTree2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SegmentTree2', size: this.size, items: this.toArray() }
+  }
 }

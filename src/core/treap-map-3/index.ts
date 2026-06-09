@@ -224,4 +224,8 @@ export class TreapMap3<K, V> {
     };
   }
 
+
+  toJSON() {
+    return { type: 'TreapMap3', size: this.size, items: this.toArray() }
+  }
 }

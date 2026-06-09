@@ -284,4 +284,8 @@ export class ZipTree<K, V> {
   iterator(): Generator<[K, V]> {
     return this.entries();
   }
+
+  toJSON() {
+    return { type: 'ZipTree', items: this.toArray() }
+  }
 }

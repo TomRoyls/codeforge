@@ -557,6 +557,10 @@ export class PersistentMap<K, V> {
   toString(): string {
     return `PersistentMap({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'PersistentMap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { PersistentMapOptions, HashFunction } from './types.js'

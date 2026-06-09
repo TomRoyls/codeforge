@@ -310,4 +310,8 @@ export class DoublyLinkedList4<T> {
   toString(): string {
     return `${DoublyLinkedList4}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'DoublyLinkedList4', size: this.size, items: this.toArray() }
+  }
 }

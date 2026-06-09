@@ -216,4 +216,8 @@ export class RandomizedQueue<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'RandomizedQueue', size: this.size, items: this.toArray() }
+  }
 }

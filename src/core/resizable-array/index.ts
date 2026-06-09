@@ -403,4 +403,8 @@ export class ResizableArray<T> {
   toString(): string {
     return `ResizableArray()`
   }
+
+  toJSON() {
+    return { type: 'ResizableArray', items: this.toArray() }
+  }
 }

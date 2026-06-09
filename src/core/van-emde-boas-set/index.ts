@@ -414,4 +414,8 @@ export class VanEmdeBoasSet {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toJSON() {
+    return { type: 'VanEmdeBoasSet', items: this.toArray() }
+  }
 }

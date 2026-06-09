@@ -329,4 +329,8 @@ export class SkipListSet<T = number> {
   toString(): string {
     return `SkipListSet({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SkipListSet', size: this.size, items: this.toArray() }
+  }
 }

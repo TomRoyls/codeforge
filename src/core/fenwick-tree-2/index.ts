@@ -170,4 +170,8 @@ export class FenwickTree2<T = number> {
   toString(): string {
     return `${FenwickTree2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'FenwickTree2', size: this.size, items: this.toArray() }
+  }
 }

@@ -305,6 +305,10 @@ export class DoubleEndedPQ<T = number> {
   has(item: T): boolean {
     return this.contains(item)
   }
+
+  toJSON() {
+    return { type: 'DoubleEndedPQ', items: this.toArray() }
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

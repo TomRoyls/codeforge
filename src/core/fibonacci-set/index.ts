@@ -428,4 +428,8 @@ export class FibonacciSet<T> {
   toString(): string {
     return `${FibonacciSet}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'FibonacciSet', size: this.size, items: this.toArray() }
+  }
 }

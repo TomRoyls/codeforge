@@ -272,4 +272,8 @@ export class SqrtDecomposition<T> {
   toString(): string {
     return `SqrtDecomposition({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SqrtDecomposition', size: this.size, items: this.toArray() }
+  }
 }

@@ -331,4 +331,8 @@ export class OrderedHashSet<T> {
   toString(): string {
     return `OrderedHashSet({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'OrderedHashSet', size: this.size, items: this.toArray() }
+  }
 }

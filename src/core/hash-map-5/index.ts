@@ -228,4 +228,8 @@ export class HashMap5<K, V> {
   toString(): string {
     return `${HashMap5}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HashMap5', size: this.size, items: this.toArray() }
+  }
 }

@@ -337,6 +337,10 @@ export class RedBlackTreeMap2<K, V> {
   toString(): string {
     return `RedBlackTreeMap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RedBlackTreeMap2', size: this.size, items: this.toArray() }
+  }
 }
 
 interface Node<K, V> {

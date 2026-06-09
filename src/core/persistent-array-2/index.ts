@@ -94,4 +94,8 @@ export class PersistentArray2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'PersistentArray2', items: this.toArray() }
+  }
 }

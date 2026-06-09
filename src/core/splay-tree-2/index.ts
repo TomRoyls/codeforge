@@ -269,4 +269,8 @@ export class SplayTree2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'SplayTree2', size: this.size, items: this.toArray() }
+  }
 }

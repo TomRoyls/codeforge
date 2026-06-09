@@ -341,6 +341,10 @@ export class PlayTree<T> {
   toString(): string {
     return `PlayTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'PlayTree', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { PlayTreeNode, CompareFunction, PlayTreeOptions } from './types.js'

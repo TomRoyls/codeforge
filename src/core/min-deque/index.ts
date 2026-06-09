@@ -264,6 +264,10 @@ export class MinDeque<T = unknown> {
   toString(): string {
     return `MinDeque({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'MinDeque', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { MinDequeOptions } from './types.js'

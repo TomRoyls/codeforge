@@ -458,4 +458,8 @@ export class TreapSet<T> {
   isSupersetOf(other: TreapSet<T>): boolean {
     return other.isSubsetOf(this)
   }
+
+  toJSON() {
+    return { type: 'TreapSet', size: this.size, items: this.toArray() }
+  }
 }

@@ -147,4 +147,8 @@ export class SegmentTreeMap2 {
   toString(): string {
     return `SegmentTreeMap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SegmentTreeMap2', size: this.size, items: this.toArray() }
+  }
 }

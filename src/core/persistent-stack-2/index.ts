@@ -135,6 +135,10 @@ export class PersistentStack2<T> {
   toString(): string {
     return `PersistentStack2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'PersistentStack2', size: this.size, items: this.toArray() }
+  }
 }
 
 interface Node<T> {

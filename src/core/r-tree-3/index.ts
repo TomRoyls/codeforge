@@ -419,6 +419,10 @@ export class RTree3<T> {
   toString(): string {
     return `RTree3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RTree3', size: this.size, items: this.toArray() }
+  }
 }
 
 type Rect = {minX: number, minY: number, maxX: number, maxY: number}

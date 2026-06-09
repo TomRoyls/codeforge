@@ -200,4 +200,8 @@ export class MoveToFront<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'MoveToFront', items: this.toArray() }
+  }
 }

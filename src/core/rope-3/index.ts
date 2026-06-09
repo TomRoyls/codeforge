@@ -362,4 +362,8 @@ export class Rope3 {
   clear(): void {
     this.root = { tag: 'leaf', text: '' } as RopeNode
   }
+
+  toJSON() {
+    return { type: 'Rope3', items: this.toArray() }
+  }
 }

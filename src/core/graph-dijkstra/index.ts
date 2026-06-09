@@ -174,4 +174,8 @@ export class GraphDijkstra {
   clear(): void {
     this.adjacencyList = new Map()
   }
+
+  toJSON() {
+    return { type: 'GraphDijkstra', items: this.toArray() }
+  }
 }

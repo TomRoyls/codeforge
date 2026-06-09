@@ -207,6 +207,10 @@ export class ZOrderMap<T> {
 toArray() {
     return this.entries()
   }
+
+  toJSON() {
+    return { type: 'ZOrderMap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { ZOrderMapOptions, ZOrderEntry, Point2D 

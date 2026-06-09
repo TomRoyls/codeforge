@@ -184,4 +184,8 @@ export class VantagePointTree2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'VantagePointTree2', items: this.toArray() }
+  }
 }

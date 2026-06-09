@@ -280,6 +280,10 @@ export class LeftistHeap3<T = number> {
   toString(): string {
     return `LeftistHeap3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LeftistHeap3', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

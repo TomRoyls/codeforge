@@ -350,4 +350,8 @@ export class Treap6<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'Treap6', size: this.size, items: this.toArray() }
+  }
 }

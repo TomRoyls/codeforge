@@ -193,4 +193,8 @@ export class DisjointSet<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'DisjointSet', size: this.size, items: this.toArray() }
+  }
 }

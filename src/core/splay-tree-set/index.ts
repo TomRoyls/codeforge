@@ -458,4 +458,8 @@ export class SplayTreeSet<T = number> {
   toString(): string {
     return `SplayTreeSet({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SplayTreeSet', size: this.size, items: this.toArray() }
+  }
 }

@@ -132,4 +132,8 @@ export class SparseArray3<T> {
   toString(): string {
     return `SparseArray3()`
   }
+
+  toJSON() {
+    return { type: 'SparseArray3', items: this.toArray() }
+  }
 }

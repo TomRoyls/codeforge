@@ -213,4 +213,8 @@ export class LeftistTree<T> {
   toString(): string {
     return `LeftistTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LeftistTree', size: this.size, items: this.toArray() }
+  }
 }

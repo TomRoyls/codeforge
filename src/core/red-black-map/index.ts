@@ -501,6 +501,10 @@ export class RedBlackMap<K, V> {
   toString(): string {
     return `RedBlackMap({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RedBlackMap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { RBNode, RBColor, CompareFunction, RedBlackMapOptions } from './types.js'

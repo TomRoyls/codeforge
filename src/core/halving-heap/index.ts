@@ -196,6 +196,10 @@ export class HalvingHeap<T> {
   toString(): string {
     return `${HalvingHeap}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HalvingHeap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { HalvingHeapOptions } from './types.js';

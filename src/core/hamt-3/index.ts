@@ -421,4 +421,8 @@ export class Hamt3<T> {
   toString(): string {
     return `${Hamt3}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'Hamt3', size: this.size, items: this.toArray() }
+  }
 }

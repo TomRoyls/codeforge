@@ -202,6 +202,10 @@ export class LRU2Cache<K, V> {
   toString(): string {
     return `LRU2Cache()`
   }
+
+  toJSON() {
+    return { type: 'LRU2Cache', items: this.toArray() }
+  }
 }
 
 export type { LRU2CacheOptions } from './types.js'

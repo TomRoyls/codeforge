@@ -213,4 +213,8 @@ export class PathCopyingTree<K, V> {
   toString(): string {
     return `PathCopyingTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'PathCopyingTree', size: this.size, items: this.toArray() }
+  }
 }

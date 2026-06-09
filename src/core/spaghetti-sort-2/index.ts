@@ -128,4 +128,8 @@ export class SpaghettiSort2 {
   toString(): string {
     return `SpaghettiSort2()`
   }
+
+  toJSON() {
+    return { type: 'SpaghettiSort2', items: this.toArray() }
+  }
 }

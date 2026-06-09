@@ -179,4 +179,8 @@ export class SpatialIndex2 {
   }
 
 
+
+  toJSON() {
+    return { type: 'SpatialIndex2', size: this.size, items: this.toArray() }
+  }
 }

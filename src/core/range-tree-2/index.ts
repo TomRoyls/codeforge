@@ -300,4 +300,8 @@ export class RangeTree<T> {
   toString(): string {
     return `RangeTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RangeTree', size: this.size, items: this.toArray() }
+  }
 }

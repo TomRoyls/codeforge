@@ -118,4 +118,8 @@ export class TwoThreeHeap<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'TwoThreeHeap', size: this.size, items: this.toArray() }
+  }
 }

@@ -339,6 +339,10 @@ export class Deque<T> {
   toString(): string {
     return `${Deque}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'Deque', size: this.size, items: this.toArray() }
+  }
 }
 
 function nextPow2(n: number): number {

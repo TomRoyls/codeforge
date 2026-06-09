@@ -119,4 +119,8 @@ export class TernaryHeap3<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'TernaryHeap3', size: this.size, items: this.toArray() }
+  }
 }

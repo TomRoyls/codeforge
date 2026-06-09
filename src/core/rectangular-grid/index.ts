@@ -225,4 +225,8 @@ export class RectangularGrid<T> {
   toString(): string {
     return `RectangularGrid()`
   }
+
+  toJSON() {
+    return { type: 'RectangularGrid', items: this.toArray() }
+  }
 }

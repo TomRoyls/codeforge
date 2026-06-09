@@ -547,4 +547,8 @@ export class DoubleArrayTrie2 {
   clone(): DoubleArrayTrie2 {
     return DoubleArrayTrie2.from(this.toArray())
   }
+
+  toJSON() {
+    return { type: 'DoubleArrayTrie2', size: this.size, items: this.toArray() }
+  }
 }

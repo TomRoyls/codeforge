@@ -100,4 +100,8 @@ export class LRUSet2<T> {
   toString(): string {
     return `LRUSet2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LRUSet2', size: this.size, items: this.toArray() }
+  }
 }

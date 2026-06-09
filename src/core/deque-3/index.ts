@@ -146,4 +146,8 @@ export class Deque3<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'Deque3', size: this.size, items: this.toArray() }
+  }
 }

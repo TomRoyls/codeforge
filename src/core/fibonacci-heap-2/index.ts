@@ -410,6 +410,10 @@ export class FibonacciHeap<T = number> {
   toString(): string {
     return `${FibonacciHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'FibonacciHeap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { FibonacciHeapOptions, FibonacciHeapNode } from './types.js'

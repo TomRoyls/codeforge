@@ -214,6 +214,10 @@ export class MinMaxDeque<T> {
   toString(): string {
     return `MinMaxDeque({ size: ${this._size} })`
   }
+
+  toJSON() {
+    return { type: 'MinMaxDeque', items: this.toArray() }
+  }
 }
 
 export type { MinMaxDequeOptions } from './types.js'

@@ -275,4 +275,8 @@ export class HybridHeap2<T = unknown> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'HybridHeap2', size: this.size, items: this.toArray() }
+  }
 }

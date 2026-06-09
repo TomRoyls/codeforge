@@ -310,4 +310,8 @@ export class Octree3<T> {
   toString(): string {
     return `Octree3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'Octree3', size: this.size, items: this.toArray() }
+  }
 }

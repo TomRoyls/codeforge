@@ -377,6 +377,10 @@ export class SkipList3<K = unknown> {
   toString(): string {
     return `SkipList3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SkipList3', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { SkipList3Options, Comparator }

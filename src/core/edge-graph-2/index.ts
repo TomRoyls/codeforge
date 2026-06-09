@@ -121,4 +121,8 @@ export class EdgeGraph2 {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'EdgeGraph2', items: this.toArray() }
+  }
 }

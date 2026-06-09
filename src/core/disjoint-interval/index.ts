@@ -249,6 +249,10 @@ export class DisjointIntervalSet {
   has(point: number): boolean {
     return this.contains(point)
   }
+
+  toJSON() {
+    return { type: 'DisjointIntervalSet', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { Interval, IntervalOptions }

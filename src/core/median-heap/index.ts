@@ -350,6 +350,10 @@ export class MedianHeap<T = number> {
   toString(): string {
     return `MedianHeap({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'MedianHeap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { MedianHeapOptions } from './types.js'

@@ -234,4 +234,8 @@ export class SkewHeap2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'SkewHeap2', items: this.toArray() }
+  }
 }

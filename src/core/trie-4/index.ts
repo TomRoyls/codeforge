@@ -219,4 +219,8 @@ export class Trie4 {
   clone(): Trie4 {
     return Trie4.from(this.toArray())
   }
+
+  toJSON() {
+    return { type: 'Trie4', size: this.size, items: this.toArray() }
+  }
 }

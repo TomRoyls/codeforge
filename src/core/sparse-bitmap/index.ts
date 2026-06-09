@@ -244,4 +244,8 @@ export class SparseBitmap {
   toString(): string {
     return `SparseBitmap({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'SparseBitmap', size: this.size, items: this.toArray() }
+  }
 }

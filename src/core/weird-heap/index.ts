@@ -408,6 +408,10 @@ export class WeirdHeap<T = unknown> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'WeirdHeap', items: this.toArray() }
+  }
 }
 
 export { DEFAULT_WEIRD_HEAP_OPTIONS } from './types.js'

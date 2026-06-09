@@ -310,4 +310,8 @@ export class IntervalSet<T = number> {
     return `${IntervalSet}({ size: ${this.size} })`
   }
 
+
+  toJSON() {
+    return { type: 'IntervalSet', size: this.size, items: this.toArray() }
+  }
 }

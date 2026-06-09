@@ -221,4 +221,8 @@ export class Treap3<K, V> {
       callback(entry, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'Treap3', size: this.size, items: this.toArray() }
+  }
 }

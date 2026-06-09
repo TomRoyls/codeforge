@@ -130,6 +130,10 @@ export class WaveletStack<T = unknown> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'WaveletStack', items: this.toArray() }
+  }
 }
 
 export type { WaveletStackOptions } from './types.js'

@@ -473,4 +473,8 @@ export class TreapMap2<K, V> {
     }
     return false
   }
+
+  toJSON() {
+    return { type: 'TreapMap2', size: this.size, items: this.toArray() }
+  }
 }

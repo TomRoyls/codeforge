@@ -165,6 +165,10 @@ export class DynamicFenwick<T = number> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'DynamicFenwick', items: this.toArray() }
+  }
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'

@@ -201,4 +201,8 @@ export class WaveletTree {
     return this.size === 0
   }
 
+
+  toJSON() {
+    return { type: 'WaveletTree', items: this.toArray() }
+  }
 }

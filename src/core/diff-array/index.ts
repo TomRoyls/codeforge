@@ -168,4 +168,8 @@ export class DiffArray {
   toString(): string {
     return `${DiffArray}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'DiffArray', size: this.size, items: this.toArray() }
+  }
 }

@@ -320,4 +320,8 @@ export class LeftistHeap<T> {
   toString(): string {
     return `LeftistHeap({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LeftistHeap', size: this.size, items: this.toArray() }
+  }
 }

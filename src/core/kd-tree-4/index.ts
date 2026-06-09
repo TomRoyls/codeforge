@@ -390,6 +390,10 @@ export class KDTree4<T = number[]> {
   }
 
 
+
+  toJSON() {
+    return { type: 'KDTree4', size: this.size, items: this.toArray() }
+  }
 }
 
 interface KDNode {

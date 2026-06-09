@@ -411,4 +411,8 @@ export class RedBlackSet<T> implements Iterable<T> {
   toString(): string {
     return `RedBlackSet({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RedBlackSet', size: this.size, items: this.toArray() }
+  }
 }

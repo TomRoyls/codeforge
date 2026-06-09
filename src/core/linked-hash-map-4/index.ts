@@ -175,6 +175,10 @@ export class LinkedHashMap<K, V> {
   toString(): string {
     return `LinkedHashMap({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LinkedHashMap', size: this.size, items: this.toArray() }
+  }
 }
 
 interface Node<K> {

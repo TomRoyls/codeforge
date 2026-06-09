@@ -207,4 +207,8 @@ export class VectorHeap2 {
   has(value: number): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'VectorHeap2', size: this.size, items: this.toArray() }
+  }
 }

@@ -164,6 +164,10 @@ export class Pagoda<T = number> {
   toString(): string {
     return `Pagoda({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'Pagoda', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { PagodaOptions, PagodaNode } from './types.js'

@@ -139,4 +139,8 @@ export class LeftistTree2<T> {
   toString(): string {
     return `LeftistTree2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'LeftistTree2', size: this.size, items: this.toArray() }
+  }
 }

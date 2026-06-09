@@ -197,4 +197,8 @@ export class JellyHash2<K, V> {
   toArray(): any[] {
     return [...this]
   }
+
+  toJSON() {
+    return { type: 'JellyHash2', size: this.size, items: this.toArray() }
+  }
 }

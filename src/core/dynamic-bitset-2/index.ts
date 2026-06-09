@@ -255,4 +255,8 @@ export class DynamicBitset2 {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'DynamicBitset2', size: this.size, items: this.toArray() }
+  }
 }

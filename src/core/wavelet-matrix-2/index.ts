@@ -184,4 +184,8 @@ export class WaveletMatrix2 {
     this.bitVectors = []
     this.mid = []
   }
+
+  toJSON() {
+    return { type: 'WaveletMatrix2', items: this.toArray() }
+  }
 }

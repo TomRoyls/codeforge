@@ -141,4 +141,8 @@ export class SortedLinkedList2<T> {
   toString(): string {
     return `SortedLinkedList2()`
   }
+
+  toJSON() {
+    return { type: 'SortedLinkedList2', items: this.toArray() }
+  }
 }

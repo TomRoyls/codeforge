@@ -541,4 +541,8 @@ export class RTree2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'RTree2', size: this.size, items: this.toArray() }
+  }
 }

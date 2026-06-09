@@ -196,4 +196,8 @@ export class SkipList<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'SkipList', items: this.toArray() }
+  }
 }

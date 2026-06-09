@@ -162,4 +162,8 @@ export class HopscotchSet2 {
   toString(): string {
     return `${HopscotchSet2}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'HopscotchSet2', size: this.size, items: this.toArray() }
+  }
 }

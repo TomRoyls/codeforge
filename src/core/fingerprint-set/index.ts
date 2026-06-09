@@ -324,4 +324,8 @@ export class FingerprintSet<T> implements Iterable<T> {
   toString(): string {
     return `${FingerprintSet}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'FingerprintSet', size: this.size, items: this.toArray() }
+  }
 }

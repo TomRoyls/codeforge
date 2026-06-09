@@ -321,4 +321,8 @@ export class PatriciaTrie<V = unknown> {
   toString(): string {
     return `PatriciaTrie({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'PatriciaTrie', size: this.size, items: this.toArray() }
+  }
 }

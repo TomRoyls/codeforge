@@ -340,6 +340,10 @@ export class SigmaSet {
     }
     return result
   }
+
+  toJSON() {
+    return { type: 'SigmaSet', size: this.size, items: this.toArray() }
+  }
 }
 
 function popcount(value: number): number {

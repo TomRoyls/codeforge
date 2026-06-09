@@ -465,4 +465,8 @@ export class RedBlackTree2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'RedBlackTree2', size: this.size, items: this.toArray() }
+  }
 }

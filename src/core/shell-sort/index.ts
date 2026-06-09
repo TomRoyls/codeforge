@@ -93,4 +93,8 @@ export class ShellSort<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'ShellSort', items: this.toArray() }
+  }
 }

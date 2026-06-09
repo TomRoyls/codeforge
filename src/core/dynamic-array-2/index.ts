@@ -412,4 +412,8 @@ export class DynamicArray<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'DynamicArray', size: this.size, items: this.toArray() }
+  }
 }

@@ -186,6 +186,10 @@ export class RankSelectBitvector2 {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'RankSelectBitvector2', items: this.toArray() }
+  }
 }
 
 function popcount(n: number): number {

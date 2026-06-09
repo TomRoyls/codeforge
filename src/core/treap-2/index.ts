@@ -343,4 +343,8 @@ export class Treap<K, V = undefined> {
   clone(): Treap<K, V> {
     return Treap.from(this.toArray())
   }
+
+  toJSON() {
+    return { type: 'Treap', size: this.size, items: this.toArray() }
+  }
 }

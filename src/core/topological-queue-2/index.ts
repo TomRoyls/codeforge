@@ -129,4 +129,8 @@ export class TopologicalQueue2 {
   toArray() {
     return this.getEdges()
   }
+
+  toJSON() {
+    return { type: 'TopologicalQueue2', items: this.toArray() }
+  }
 }

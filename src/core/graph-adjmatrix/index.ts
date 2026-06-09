@@ -243,4 +243,8 @@ export class GraphAdjMatrix<T extends string | number> {
   toString(): string {
     return `GraphAdjMatrix()`
   }
+
+  toJSON() {
+    return { type: 'GraphAdjMatrix', items: this.toArray() }
+  }
 }

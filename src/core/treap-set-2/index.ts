@@ -256,4 +256,8 @@ export class TreapSet2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'TreapSet2', size: this.size, items: this.toArray() }
+  }
 }

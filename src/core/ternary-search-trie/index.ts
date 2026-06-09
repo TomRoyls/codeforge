@@ -267,4 +267,8 @@ export class TernarySearchTrie<T = unknown> {
     return this.entries()
   }
 
+
+  toJSON() {
+    return { type: 'TernarySearchTrie', items: this.toArray() }
+  }
 }

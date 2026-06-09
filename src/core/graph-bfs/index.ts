@@ -316,4 +316,8 @@ export class GraphBFS {
   clear(): void {
     this.adjacencyList = new Map()
   }
+
+  toJSON() {
+    return { type: 'GraphBFS', items: this.toArray() }
+  }
 }

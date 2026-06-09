@@ -412,6 +412,10 @@ export class YFastTrie {
       maxBucketSize: this.buckets.size > 0 ? maxBucketSize : 0,
     }
   }
+
+  toJSON() {
+    return { type: 'YFastTrie', items: this.toArray() }
+  }
 }
 
 export { DEFAULT_UNIVERSE_SIZE } from './types.js'

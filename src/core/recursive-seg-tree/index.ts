@@ -272,4 +272,8 @@ export class RecursiveSegTree {
   toString(): string {
     return `RecursiveSegTree({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RecursiveSegTree', size: this.size, items: this.toArray() }
+  }
 }

@@ -314,6 +314,10 @@ export class WaveletTree {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toJSON() {
+    return { type: 'WaveletTree', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { WaveletTreeNode, WaveletTreeOptions, RankAllResult, WaveletTreeStats } from './types.js'

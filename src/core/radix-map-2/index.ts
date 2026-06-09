@@ -165,4 +165,8 @@ export class RadixMap2<T> {
   toString(): string {
     return `RadixMap2({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'RadixMap2', size: this.size, items: this.toArray() }
+  }
 }

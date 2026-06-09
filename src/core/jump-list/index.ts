@@ -318,4 +318,8 @@ export class JumpList<T> {
   toString(): string {
     return `${JumpList}({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'JumpList', size: this.size, items: this.toArray() }
+  }
 }

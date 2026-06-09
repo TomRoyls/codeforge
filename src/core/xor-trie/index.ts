@@ -196,6 +196,10 @@ export class XorTrie {
     }
     return instance
   }
+
+  toJSON() {
+    return { type: 'XorTrie', size: this.size, items: this.toArray() }
+  }
 }
 
 class XorNode {

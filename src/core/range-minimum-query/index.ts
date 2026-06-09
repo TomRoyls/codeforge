@@ -171,4 +171,8 @@ export class RangeMinimumQuery<T> {
   toString(): string {
     return `RangeMinimumQuery({ size: ${this._data.length} })`
   }
+
+  toJSON() {
+    return { type: 'RangeMinimumQuery', items: this.toArray() }
+  }
 }

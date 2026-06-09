@@ -304,4 +304,8 @@ export class TrieSet implements Iterable<string> {
     }
     return bytes
   }
+
+  toJSON() {
+    return { type: 'TrieSet', size: this.size, items: this.toArray() }
+  }
 }

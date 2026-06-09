@@ -96,4 +96,8 @@ export class PancakeSort<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'PancakeSort', items: this.toArray() }
+  }
 }

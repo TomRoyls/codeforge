@@ -407,4 +407,8 @@ export class KDTree {
   has(point: KDPoint): boolean {
     return this.contains(point)
   }
+
+  toJSON() {
+    return { type: 'KDTree', size: this.size, items: this.toArray() }
+  }
 }

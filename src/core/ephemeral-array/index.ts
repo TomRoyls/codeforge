@@ -340,4 +340,8 @@ export class EphemeralArray<T> {
   toString(): string {
     return `${EphemeralArray}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'EphemeralArray', size: this.size, items: this.toArray() }
+  }
 }

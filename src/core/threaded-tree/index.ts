@@ -352,4 +352,8 @@ export class ThreadedTree<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'ThreadedTree', size: this.size, items: this.toArray() }
+  }
 }

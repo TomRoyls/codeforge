@@ -278,6 +278,10 @@ export class GallopingHeap<T> {
     }
     return instance
   }
+
+  toJSON() {
+    return { type: 'GallopingHeap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { GallopingHeapNode };

@@ -360,6 +360,10 @@ export class PathCompressionTrie<T = unknown> {
   toString(): string {
     return `PathCompressionTrie({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'PathCompressionTrie', size: this.size, items: this.toArray() }
+  }
 }
 
 function commonPrefixLength(a: string, b: string): number {
