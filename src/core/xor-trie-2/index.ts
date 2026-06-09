@@ -250,6 +250,14 @@ export class XorTrie2 {
   has(value: number): boolean {
     return this.contains(value)
   }
+
+  static from(items: number[]): XorTrie2 {
+    const instance = new XorTrie2()
+    for (const item of items) {
+      instance.insert(item as number)
+    }
+    return instance
+  }
 }
 
 class XorNode2 {

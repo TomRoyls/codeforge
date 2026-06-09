@@ -177,4 +177,6 @@ export class SpatialIndex2 {
   toString(): string {
     return `SpatialIndex2({ size: ${this.size} })`
   }
+
+
 }

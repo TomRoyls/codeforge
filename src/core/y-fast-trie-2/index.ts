@@ -369,4 +369,12 @@ export class YFastTrie {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  static from(items: number[]): YFastTrie {
+    const instance = new YFastTrie()
+    for (const item of items) {
+      instance.insert(item as number)
+    }
+    return instance
+  }
 }

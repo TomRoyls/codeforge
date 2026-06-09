@@ -543,4 +543,8 @@ export class DoubleArrayTrie2 {
     }
     return instance
   }
+
+  clone(): DoubleArrayTrie2 {
+    return DoubleArrayTrie2.from(this.toArray())
+  }
 }

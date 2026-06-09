@@ -270,6 +270,14 @@ export class GallopingHeap<T> {
   }
 
 
+
+  static from<T>(items: T[]): GallopingHeap<T> {
+    const instance = new GallopingHeap<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }
 
 export type { GallopingHeapNode };

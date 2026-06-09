@@ -312,4 +312,8 @@ export class RadixTree2 {
       callback(item, i++)
     }
   }
+
+  clone(): RadixTree2 {
+    return RadixTree2.from(this.toArray())
+  }
 }

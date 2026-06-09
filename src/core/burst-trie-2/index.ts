@@ -171,4 +171,8 @@ export class BurstTrie2 {
     }
     return instance
   }
+
+  clone(): BurstTrie2 {
+    return BurstTrie2.from(this.toArray())
+  }
 }

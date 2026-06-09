@@ -215,4 +215,8 @@ export class Trie4 {
     }
     return instance
   }
+
+  clone(): Trie4 {
+    return Trie4.from(this.toArray())
+  }
 }

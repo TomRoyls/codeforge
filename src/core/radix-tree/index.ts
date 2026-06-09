@@ -260,4 +260,8 @@ export class RadixTree {
   toString(): string {
     return `RadixTree({ size: ${this.size} })`
   }
+
+  clone(): RadixTree {
+    return RadixTree.from(this.toArray())
+  }
 }
