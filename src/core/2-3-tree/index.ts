@@ -499,4 +499,8 @@ export class TwoThreeTree<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'TwoThreeTree', items: this.toArray() }
+  }
 }

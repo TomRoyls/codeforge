@@ -202,4 +202,8 @@ export class BlockHeap2 {
   has(value: number): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'BlockHeap2', size: this.size, items: this.toArray() }
+  }
 }

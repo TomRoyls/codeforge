@@ -275,4 +275,8 @@ export class BloomFilter {
   toString(): string {
     return `${BloomFilter}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'BloomFilter', size: this.size, items: this.toArray() }
+  }
 }

@@ -117,4 +117,8 @@ export class AtomicSet2<T> {
   toString(): string {
     return `${AtomicSet2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'AtomicSet2', size: this.size, items: this.toArray() }
+  }
 }

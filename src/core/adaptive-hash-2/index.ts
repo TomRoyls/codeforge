@@ -307,4 +307,8 @@ export class AdaptiveHash2<K, V> {
   toString(): string {
     return `${AdaptiveHash2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'AdaptiveHash2', items: this.toArray() }
+  }
 }

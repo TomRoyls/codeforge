@@ -347,4 +347,8 @@ export class BSPTree {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'BSPTree', size: this.size, items: this.toArray() }
+  }
 }

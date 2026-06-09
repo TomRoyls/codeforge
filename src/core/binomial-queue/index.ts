@@ -400,6 +400,10 @@ export class BinomialQueue<T = number> {
   has(item: T): boolean {
     return this.contains(item)
   }
+
+  toJSON() {
+    return { type: 'BinomialQueue', items: this.toArray() }
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

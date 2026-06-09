@@ -152,4 +152,8 @@ export class Beap2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'Beap2', size: this.size, items: this.toArray() }
+  }
 }

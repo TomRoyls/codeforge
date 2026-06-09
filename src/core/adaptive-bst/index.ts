@@ -513,7 +513,11 @@ export class AdaptiveBST<T> {
 
 toString(): string {
     return `${AdaptiveBST}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
-  }}
+  }
+  toJSON() {
+    return { type: 'AdaptiveBST', size: this.size, items: this.toArray() }
+  }
+}
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback
 

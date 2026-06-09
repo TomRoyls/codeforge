@@ -363,4 +363,8 @@ export class BinomialHeap4<T = unknown> {
   toString(): string {
     return `${BinomialHeap4}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'BinomialHeap4', size: this.size, items: this.toArray() }
+  }
 }

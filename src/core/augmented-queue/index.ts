@@ -207,7 +207,11 @@ export class AugmentedQueue {
 
 toString(): string {
     return `${AugmentedQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
-  }}
+  }
+  toJSON() {
+    return { type: 'AugmentedQueue', items: this.toArray() }
+  }
+}
 
 export type { AugmentedQueueOptions
 

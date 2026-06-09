@@ -177,4 +177,8 @@ export class BinaryHeap<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'BinaryHeap', items: this.toArray() }
+  }
 }

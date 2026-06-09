@@ -369,4 +369,8 @@ export class AVLSet<T = number> {
   toString(): string {
     return `${AVLSet}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'AVLSet', size: this.size, items: this.toArray() }
+  }
 }

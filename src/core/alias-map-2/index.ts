@@ -125,4 +125,8 @@ export class AliasMap2<T> {
   toString(): string {
     return `${AliasMap2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'AliasMap2', size: this.size, items: this.toArray() }
+  }
 }

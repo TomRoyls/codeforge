@@ -624,4 +624,8 @@ export class BTreeMap<K, V> {
   toString(): string {
     return `${BTreeMap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'BTreeMap', size: this.size, items: this.toArray() }
+  }
 }

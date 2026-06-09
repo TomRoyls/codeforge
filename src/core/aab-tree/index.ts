@@ -239,4 +239,8 @@ export class AABTree<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'AABTree', items: this.toArray() }
+  }
 }

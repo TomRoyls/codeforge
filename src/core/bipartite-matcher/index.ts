@@ -272,4 +272,8 @@ export class BipartiteMatcher<L, R> {
   toString(): string {
     return `BipartiteMatcher()`
   }
+
+  toJSON() {
+    return { type: 'BipartiteMatcher', items: this.toArray() }
+  }
 }

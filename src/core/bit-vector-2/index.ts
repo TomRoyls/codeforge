@@ -246,4 +246,8 @@ export class BitVector2 {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'BitVector2', size: this.size, items: this.toArray() }
+  }
 }

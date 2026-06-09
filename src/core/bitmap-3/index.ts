@@ -192,4 +192,8 @@ export class Bitmap3 {
   toString(): string {
     return `Bitmap3({ size: ${this.size} })`
   }
+
+  toJSON() {
+    return { type: 'Bitmap3', items: this.toArray() }
+  }
 }

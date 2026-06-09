@@ -311,4 +311,8 @@ export class AdaptivePQ2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'AdaptivePQ2', size: this.size, items: this.toArray() }
+  }
 }

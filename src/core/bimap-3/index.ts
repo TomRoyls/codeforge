@@ -107,4 +107,8 @@ export class BiMap3<K, V> {
   toString(): string {
     return `${BiMap3}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'BiMap3', size: this.size, items: this.toArray() }
+  }
 }

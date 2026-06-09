@@ -177,4 +177,8 @@ export class BeapSet2<T> {
   toString(): string {
     return `${BeapSet2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'BeapSet2', size: this.size, items: this.toArray() }
+  }
 }

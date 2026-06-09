@@ -297,6 +297,10 @@ export class BootstrappedHeap<T = number> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'BootstrappedHeap', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

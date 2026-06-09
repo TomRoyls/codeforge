@@ -105,4 +105,8 @@ export class BlockQueue<T> {
     }
   }
 
+
+  toJSON() {
+    return { type: 'BlockQueue', size: this.size, items: this.toArray() }
+  }
 }

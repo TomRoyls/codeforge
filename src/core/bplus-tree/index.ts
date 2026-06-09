@@ -575,4 +575,8 @@ export class BPlusTree<K, V> {
   toString(): string {
     return `${BPlusTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'BPlusTree', size: this.size, items: this.toArray() }
+  }
 }

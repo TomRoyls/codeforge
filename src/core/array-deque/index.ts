@@ -149,6 +149,10 @@ export class ArrayDeque<T = unknown> {
 toString(): string {
     return `${ArrayDeque}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'ArrayDeque', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { ArrayDequeOptions

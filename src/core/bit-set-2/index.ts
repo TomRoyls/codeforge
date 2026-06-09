@@ -357,6 +357,10 @@ export class BitSet2 {
   get words(): Uint32Array {
     return this._words
   }
+
+  toJSON() {
+    return { type: 'BitSet2', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { BitSetOptions } from './types.js'

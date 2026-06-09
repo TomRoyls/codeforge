@@ -323,7 +323,11 @@ export class AVLTree4<T> {
 
   toString(): string {
     return `${AVLTree4}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
-  }}
+  }
+  toJSON() {
+    return { type: 'AVLTree4', size: this.size, items: this.toArray() }
+  }
+}
 
 interface Node<T> {
   value: T;

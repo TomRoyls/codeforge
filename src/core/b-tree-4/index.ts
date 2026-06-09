@@ -380,4 +380,8 @@ export class BTree<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'BTree', items: this.toArray() }
+  }
 }

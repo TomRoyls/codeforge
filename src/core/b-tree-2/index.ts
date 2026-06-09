@@ -360,4 +360,8 @@ export class BTree2<T> {
   }
 
 
+
+  toJSON() {
+    return { type: 'BTree2', size: this.size, items: this.toArray() }
+  }
 }

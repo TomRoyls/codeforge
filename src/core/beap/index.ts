@@ -214,7 +214,11 @@ export class Beap<T = number> {
 
 toString(): string {
     return `${Beap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
-  }}
+  }
+  toJSON() {
+    return { type: 'Beap', size: this.size, items: this.toArray() }
+  }
+}
 
 export type { BeapOptions
 

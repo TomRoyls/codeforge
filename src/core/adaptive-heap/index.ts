@@ -235,4 +235,8 @@ export class AdaptiveHeap<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'AdaptiveHeap', size: this.size, items: this.toArray() }
+  }
 }

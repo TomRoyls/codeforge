@@ -346,4 +346,8 @@ export class AVLTree6<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'AVLTree6', size: this.size, items: this.toArray() }
+  }
 }

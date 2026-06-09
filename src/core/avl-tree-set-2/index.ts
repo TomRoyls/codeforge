@@ -303,7 +303,11 @@ export class AVLTreeSet2<T> {
 
 toString(): string {
     return `${AVLTreeSet2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
-  }}
+  }
+  toJSON() {
+    return { type: 'AVLTreeSet2', size: this.size, items: this.toArray() }
+  }
+}
 
 class AVLNode<T> {
   height: number = 1;

@@ -299,4 +299,8 @@ export class AATree2<T> {
   toString(): string {
     return `${AATree2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'AATree2', size: this.size, items: this.toArray() }
+  }
 }

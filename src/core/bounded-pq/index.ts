@@ -174,6 +174,10 @@ export class BoundedPriorityQueue<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'BoundedPriorityQueue', size: this.size, items: this.toArray() }
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

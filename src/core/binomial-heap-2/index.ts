@@ -394,6 +394,10 @@ export class BinomialHeap<T = number> {
   toString(): string {
     return `${BinomialHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'BinomialHeap', items: this.toArray() }
+  }
 }
 
 export type { BinomialHeapOptions 

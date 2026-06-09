@@ -265,4 +265,8 @@ export class AVLTree3<T> {
   toString(): string {
     return `${AVLTree3}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'AVLTree3', size: this.size, items: this.toArray() }
+  }
 }

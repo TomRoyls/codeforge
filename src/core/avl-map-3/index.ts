@@ -290,4 +290,8 @@ export class AVLMap3<K, V> {
   toString(): string {
     return `${AVLMap3}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'AVLMap3', size: this.size, items: this.toArray() }
+  }
 }
