@@ -83,4 +83,8 @@ export class ConcurrentQueue3<T> {
       resolve();
     }
   }
+
+  toString(): string {
+    return `${ConcurrentQueue3}({ size: ${this.size} })`
+  }
 }

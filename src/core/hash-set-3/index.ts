@@ -238,4 +238,8 @@ export class HashSet3<T> {
     }
     return true;
   }
+
+  toString(): string {
+    return `${HashSet3}({ size: ${this.size} })`
+  }
 }

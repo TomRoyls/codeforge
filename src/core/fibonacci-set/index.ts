@@ -424,4 +424,8 @@ export class FibonacciSet<T> {
     }
     return undefined
   }
+
+  toString(): string {
+    return `${FibonacciSet}({ size: ${this.size} })`
+  }
 }

@@ -323,6 +323,10 @@ export class IntervalTree2<T = unknown> {
       }
     };
   }
+
+  toString(): string {
+    return `${IntervalTree2}({ size: ${this.size} })`
+  }
 }
 
 export class IntervalTree<T = unknown> extends IntervalTree2<T> {}

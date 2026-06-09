@@ -170,4 +170,8 @@ export class IntervalHeap3<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${IntervalHeap3}({ size: ${this.size} })`
+  }
 }

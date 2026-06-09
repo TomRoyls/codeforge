@@ -161,4 +161,8 @@ export class IntervalSet2 {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  toString(): string {
+    return `${IntervalSet2}({ size: ${this.size} })`
+  }
 }

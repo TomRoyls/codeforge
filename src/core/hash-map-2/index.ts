@@ -346,4 +346,8 @@ export class HashMap2<K, V> {
   rehash(): void {
     this.rehashTo(this._capacity)
   }
+
+  toString(): string {
+    return `${HashMap2}({ size: ${this.size} })`
+  }
 }

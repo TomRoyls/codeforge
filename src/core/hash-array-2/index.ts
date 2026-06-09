@@ -156,4 +156,8 @@ export class HashArray2<T> {
       callback(items[i]!, i)
     }
   }
+
+  toString(): string {
+    return `${HashArray2}({ size: ${this.size} })`
+  }
 }

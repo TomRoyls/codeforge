@@ -417,4 +417,8 @@ export class Hamt3<T> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `${Hamt3}({ size: ${this.size} })`
+  }
 }

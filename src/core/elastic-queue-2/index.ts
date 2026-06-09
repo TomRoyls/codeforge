@@ -56,4 +56,8 @@ export class ElasticQueue2<T> {
   capacity(): number | undefined {
     return this.maxSize;
   }
+
+  toString(): string {
+    return `${ElasticQueue2}({ size: ${this.size} })`
+  }
 }

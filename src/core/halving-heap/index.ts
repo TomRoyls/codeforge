@@ -192,6 +192,10 @@ export class HalvingHeap<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${HalvingHeap}({ size: ${this.size} })`
+  }
 }
 
 export type { HalvingHeapOptions } from './types.js';

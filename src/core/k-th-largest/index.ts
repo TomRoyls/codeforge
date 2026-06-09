@@ -78,4 +78,8 @@ export class KthLargest {
       index = smallestChildIndex;
     }
   }
+
+  toString(): string {
+    return `${KthLargest}({ size: ${this.size} })`
+  }
 }

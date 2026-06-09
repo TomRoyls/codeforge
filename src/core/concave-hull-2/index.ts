@@ -181,4 +181,8 @@ export class ConcaveHull2 {
 
     return inside
   }
+
+  toString(): string {
+    return `${ConcaveHull2}({ size: ${this.size} })`
+  }
 }

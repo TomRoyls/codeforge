@@ -263,4 +263,8 @@ export class HybridHeap2<T = unknown> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${HybridHeap2}({ size: ${this.size} })`
+  }
 }

@@ -224,4 +224,8 @@ export class HashMap5<K, V> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `${HashMap5}({ size: ${this.size} })`
+  }
 }

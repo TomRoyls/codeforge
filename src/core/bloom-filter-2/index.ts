@@ -144,4 +144,8 @@ export class BloomFilter2 {
     const mask = 1 << bitIndex;
     return ((this.bitArray[byteIndex] ?? 0) & mask) !== 0;
   }
+
+  toString(): string {
+    return `${BloomFilter2}({ size: ${this.size} })`
+  }
 }

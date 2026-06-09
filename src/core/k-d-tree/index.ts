@@ -387,6 +387,10 @@ export class KDTree {
     }
     return true
   }
+
+  toString(): string {
+    return `${KDTree}({ size: ${this.size} })`
+  }
 }
 
 export { euclideanSquared } from './types.js'

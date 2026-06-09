@@ -286,4 +286,8 @@ export class FibonacciHeap4<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `FibonacciHeap4({ size: ${this.size} })`
+  }
 }

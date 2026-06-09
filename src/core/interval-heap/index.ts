@@ -305,6 +305,10 @@ export class IntervalHeap<T> {
       yield item
     }
   }
+
+  toString(): string {
+    return `${IntervalHeap}({ size: ${this.size} })`
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

@@ -236,6 +236,10 @@ export class HollowHeap<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${HollowHeap}({ size: ${this.size} })`
+  }
 }
 
 export type { HollowHeapOptions } from './types.js';

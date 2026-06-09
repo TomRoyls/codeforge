@@ -198,6 +198,10 @@ export class CountingBloomFilter<T = string> {
   private serialize(item: T): string {
     return JSON.stringify(item)
   }
+
+  toString(): string {
+    return `${CountingBloomFilter}({ size: ${this.size} })`
+  }
 }
 
 export type { CountingBloomFilterOptions } from './types.js'

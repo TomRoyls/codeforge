@@ -395,4 +395,8 @@ export class KDTree {
       }
     };
   }
+
+  toString(): string {
+    return `${KDTree}({ size: ${this.size} })`
+  }
 }

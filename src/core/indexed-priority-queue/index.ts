@@ -241,6 +241,10 @@ export class IndexedPriorityQueue<T = number> {
       }
     }
   }
+
+  toString(): string {
+    return `${IndexedPriorityQueue}({ size: ${this.size} })`
+  }
 }
 
 export type { IndexedPriorityQueueOptions, IndexedPriorityQueueEntry, IndexedPriorityQueueStats }

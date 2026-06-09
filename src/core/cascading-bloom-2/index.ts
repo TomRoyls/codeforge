@@ -101,4 +101,8 @@ export class CascadingBloom2 {
   getConfig(): CascadingBloomConfig {
     return { ...this.config }
   }
+
+  toString(): string {
+    return `${CascadingBloom2}({ size: ${this.size} })`
+  }
 }

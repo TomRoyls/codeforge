@@ -410,4 +410,8 @@ export class HashArrayMappedTrie<K, V> {
   clone(): HashArrayMappedTrie<K, V> {
     return HashArrayMappedTrie._build(this._root, this._size, this._hash);
   }
+
+  toString(): string {
+    return `${HashArrayMappedTrie}({ size: ${this.size} })`
+  }
 }

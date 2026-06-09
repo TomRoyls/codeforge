@@ -214,4 +214,8 @@ export class BinaryTrie2 {
     this.root = new TrieNode();
     this._size = 0;
   }
+
+  toString(): string {
+    return `${BinaryTrie2}({ size: ${this.size} })`
+  }
 }

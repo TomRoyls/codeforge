@@ -400,4 +400,8 @@ export class FingerTree2<T> {
   static empty<T>(): FingerTree2<T> {
     return new FingerTree2<T>()
   }
+
+  toString(): string {
+    return `${FingerTree2}({ size: ${this.size} })`
+  }
 }

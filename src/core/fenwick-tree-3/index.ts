@@ -73,4 +73,8 @@ export class FenwickTree3 {
   private lsb(i: number): number {
     return i & -i;
   }
+
+  toString(): string {
+    return `${FenwickTree3}({ size: ${this.size} })`
+  }
 }

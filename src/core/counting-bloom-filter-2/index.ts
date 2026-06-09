@@ -201,6 +201,10 @@ export class CountingBloomFilter {
     h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
     return (4294967296 * (2097151 & h2) + (h1 >>> 0)) >>> 0
   }
+
+  toString(): string {
+    return `${CountingBloomFilter}({ size: ${this.size} })`
+  }
 }
 
 export { DEFAULT_ERROR_RATE } from './types.js'

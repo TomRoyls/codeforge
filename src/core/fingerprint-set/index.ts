@@ -320,4 +320,8 @@ export class FingerprintSet<T> implements Iterable<T> {
   private valuesEqual(a: T, b: T): boolean {
     return this.serializer(a) === this.serializer(b)
   }
+
+  toString(): string {
+    return `${FingerprintSet}({ size: ${this.size} })`
+  }
 }

@@ -95,4 +95,8 @@ export class BloomierFilter2 {
     }
     return values;
   }
+
+  toString(): string {
+    return `${BloomierFilter2}({ size: ${this.size} })`
+  }
 }

@@ -264,6 +264,10 @@ export class GallopingHeap<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${GallopingHeap}({ size: ${this.size} })`
+  }
 }
 
 export type { GallopingHeapNode };

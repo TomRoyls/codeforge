@@ -320,6 +320,10 @@ export class KDTree3<T = number[]> {
       }
     };
   }
+
+  toString(): string {
+    return `${KDTree3}({ size: ${this.size} })`
+  }
 }
 
 interface KDNode {

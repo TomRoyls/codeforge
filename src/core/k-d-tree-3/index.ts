@@ -242,4 +242,8 @@ export class KDTree3 {
   clone(): KDTree3 {
     return KDTree3.from(this.toArray())
   }
+
+  toString(): string {
+    return `${KDTree3}({ size: ${this.size} })`
+  }
 }

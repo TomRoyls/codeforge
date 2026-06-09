@@ -148,4 +148,8 @@ export class IndexedPQ2 {
       this.heap[i] = undefined!;
     }
   }
+
+  toString(): string {
+    return `${IndexedPQ2}({ size: ${this.size} })`
+  }
 }

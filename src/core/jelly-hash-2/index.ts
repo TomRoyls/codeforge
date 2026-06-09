@@ -189,4 +189,8 @@ export class JellyHash2<K, V> {
       callback(items[i]!, i)
     }
   }
+
+  toString(): string {
+    return `${JellyHash2}({ size: ${this.size} })`
+  }
 }

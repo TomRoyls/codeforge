@@ -428,4 +428,8 @@ export class HashArrayMappedTrie2<K, V> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `${HashArrayMappedTrie2}({ size: ${this.size} })`
+  }
 }

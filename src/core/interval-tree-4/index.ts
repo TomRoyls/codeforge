@@ -258,4 +258,8 @@ export class IntervalTree4 {
       }
     };
   }
+
+  toString(): string {
+    return `${IntervalTree4}({ size: ${this.size} })`
+  }
 }

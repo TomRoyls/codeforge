@@ -314,4 +314,8 @@ export class JumpList<T> {
       steps++
     }
   }
+
+  toString(): string {
+    return `${JumpList}({ size: ${this.size} })`
+  }
 }
