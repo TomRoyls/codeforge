@@ -388,6 +388,8 @@ export class KDTree4<T = number[]> {
   has(point: number[]): boolean {
     return this.contains(point)
   }
+
+
 }
 
 interface KDNode {

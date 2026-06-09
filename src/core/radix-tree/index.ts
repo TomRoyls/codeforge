@@ -248,4 +248,12 @@ export class RadixTree {
   toArray() {
     return this.getAllWords()
   }
+
+  static from(items: any[]): RadixTree {
+    const instance = new RadixTree()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

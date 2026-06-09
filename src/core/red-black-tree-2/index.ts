@@ -452,4 +452,6 @@ export class RedBlackTree2<T> {
   has(data: T): boolean {
     return this.contains(data)
   }
+
+
 }

@@ -171,4 +171,6 @@ export class SpatialIndex2 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+
 }

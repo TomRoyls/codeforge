@@ -266,4 +266,5 @@ export class TernarySearchTrie<T = unknown> {
   toArray() {
     return this.entries()
   }
+
 }

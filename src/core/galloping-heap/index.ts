@@ -268,6 +268,8 @@ export class GallopingHeap<T> {
   toString(): string {
     return `${GallopingHeap}({ size: ${this.size} })`
   }
+
+
 }
 
 export type { GallopingHeapNode };

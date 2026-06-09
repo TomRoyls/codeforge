@@ -122,4 +122,6 @@ export class KDHeap2<T> {
       callback(item, i++)
     }
   }
+
+
 }

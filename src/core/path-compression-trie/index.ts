@@ -354,6 +354,8 @@ export class PathCompressionTrie<T = unknown> {
   toArray(): any[] {
     return [...this]
   }
+
+
 }
 
 function commonPrefixLength(a: string, b: string): number {

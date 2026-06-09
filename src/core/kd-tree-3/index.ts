@@ -328,6 +328,8 @@ export class KDTree3<T = number[]> {
   has(point: number[]): boolean {
     return this.contains(point)
   }
+
+
 }
 
 interface KDNode {

@@ -163,4 +163,12 @@ export class BurstTrie2 {
       callback(item, i++)
     }
   }
+
+  static from(items: any[]): BurstTrie2 {
+    const instance = new BurstTrie2()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

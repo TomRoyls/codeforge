@@ -535,4 +535,12 @@ export class DoubleArrayTrie2 {
       callback(item, i++)
     }
   }
+
+  static from(items: any[]): DoubleArrayTrie2 {
+    const instance = new DoubleArrayTrie2()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

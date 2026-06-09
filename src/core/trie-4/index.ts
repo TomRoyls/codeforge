@@ -207,4 +207,12 @@ export class Trie4 {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  static from(items: any[]): Trie4 {
+    const instance = new Trie4()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

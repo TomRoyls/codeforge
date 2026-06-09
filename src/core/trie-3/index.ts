@@ -204,4 +204,12 @@ export class Trie3 {
   toArray() {
     return this.getAllWords()
   }
+
+  static from(items: any[]): Trie3 {
+    const instance = new Trie3()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

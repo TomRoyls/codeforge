@@ -293,4 +293,12 @@ export class RadixTree2 {
   has(word: string): boolean {
     return this.contains(word)
   }
+
+  static from(items: any[]): RadixTree2 {
+    const instance = new RadixTree2()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }
