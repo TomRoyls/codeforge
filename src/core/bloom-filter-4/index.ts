@@ -90,4 +90,8 @@ export class BloomFilter {
 
     return hashes;
   }
+
+  isEmpty(): boolean {
+    return this.size === 0
+  }
 }

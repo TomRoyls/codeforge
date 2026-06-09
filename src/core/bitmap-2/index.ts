@@ -167,4 +167,8 @@ export class Bitmap2 {
     }
     return true;
   }
+
+  isEmpty(): boolean {
+    return this.size === 0
+  }
 }

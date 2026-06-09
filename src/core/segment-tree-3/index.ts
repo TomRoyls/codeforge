@@ -112,4 +112,8 @@ export class SegmentTree {
   clone(): SegmentTree {
     return SegmentTree.from(this.toArray())
   }
+
+  isEmpty(): boolean {
+    return this.size === 0
+  }
 }

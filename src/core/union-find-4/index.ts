@@ -62,4 +62,8 @@ export class UnionFind4 {
   count(): number {
     return this.parent.length;
   }
+
+  isEmpty(): boolean {
+    return this.parent.length === 0
+  }
 }
