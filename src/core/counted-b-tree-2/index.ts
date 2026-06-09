@@ -273,13 +273,31 @@ export class CountedBTree2<T> {
     }
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<T> {
+    type Frame = { node: CountedBTreeNode<T>; idx: number; childVisited: boolean };
+    const stack: Frame[] = [];
+    if (this.root !== null) {
+      stack.push({ node: this.root, idx: 0, childVisited: false });
+    }
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next: () => {
+        while (stack.length > 0) {
+          const frame = stack[stack.length - 1]!;
+          if (!frame.node.leaf && !frame.childVisited && frame.idx < frame.node.children.length) {
+            frame.childVisited = true;
+            stack.push({ node: frame.node.children[frame.idx]!, idx: 0, childVisited: false });
+            continue;
+          }
+          if (frame.idx < frame.node.keys.length) {
+            const value = frame.node.keys[frame.idx]!;
+            frame.idx++;
+            frame.childVisited = false;
+            return { value: value as T, done: false };
+          }
+          stack.pop();
+        }
+        return { value: undefined as unknown as T, done: true };
+      }
     };
   }
 }

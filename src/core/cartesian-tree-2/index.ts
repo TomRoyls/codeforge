@@ -237,8 +237,16 @@ export class CartesianTree<T> {
 
 
   *[Symbol.iterator](): IterableIterator<T> {
-    for (const val of this.toArray()) {
-      yield val;
+    const stack: Array<CTNode<T>> = [];
+    let current: CTNode<T> | null = this.root;
+    while (current !== null || stack.length > 0) {
+      while (current !== null) {
+        stack.push(current);
+        current = current.left;
+      }
+      current = stack.pop()!;
+      yield current.value;
+      current = current.right;
     }
   }
 }

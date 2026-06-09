@@ -279,8 +279,16 @@ export class AATree2<T> {
 
 
   *[Symbol.iterator](): IterableIterator<T> {
-    for (const val of this.toArray()) {
-      yield val;
+    const stack: Array<Node<T>> = [];
+    let current: Node<T> | null = this.root;
+    while (current !== null || stack.length > 0) {
+      while (current !== null) {
+        stack.push(current);
+        current = current.left;
+      }
+      current = stack.pop()!;
+      yield current.value;
+      current = current.right;
     }
   }
 }

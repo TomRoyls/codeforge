@@ -549,13 +549,23 @@ export class RedBlackTree4<T> {
     return "O(log n) for insert, delete, search, min, max, rank, select; O(k + log n) for rangeSearch (k = result size); O(n) for traversals";
   }
 
-  [Symbol.iterator](): Iterator<ReturnType<this['toArray']>[number]> {
-    const arr = this.toArray();
-    let i = 0;
+  [Symbol.iterator](): Iterator<T> {
+    const stack: Array<RBNode<T>> = [];
+    let current: RBNode<T> | null = this.root;
     return {
-      next: () => i < arr.length
-        ? { value: arr[i++] as ReturnType<this['toArray']>[number], done: false }
-        : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
+      next(): IteratorResult<T> {
+        while (current !== null || stack.length > 0) {
+          while (current !== null) {
+            stack.push(current);
+            current = current.left;
+          }
+          current = stack.pop()!;
+          const value = current.value;
+          current = current.right;
+          return { value: value as T, done: false };
+        }
+        return { value: undefined as unknown as T, done: true };
+      }
     };
   }
 }
