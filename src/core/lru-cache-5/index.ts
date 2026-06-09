@@ -179,6 +179,10 @@ export class LRUCache5<K, V> {
       callback(items[i]!, i)
     }
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }
 
 interface Node<K, V> {

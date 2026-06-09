@@ -167,6 +167,10 @@ export class LinkedHashMap<K, V> {
       },
     };
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }
 
 interface Node<K> {

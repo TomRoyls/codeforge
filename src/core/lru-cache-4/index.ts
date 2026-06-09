@@ -249,6 +249,10 @@ export class LRUCache4<K, V> {
       },
     };
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }
 
 interface Node<K, V> {

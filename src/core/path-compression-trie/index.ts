@@ -350,6 +350,10 @@ export class PathCompressionTrie<T = unknown> {
       yield* this.collectEntriesGen(child, childKey)
     }
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }
 
 function commonPrefixLength(a: string, b: string): number {

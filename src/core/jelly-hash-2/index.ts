@@ -193,4 +193,8 @@ export class JellyHash2<K, V> {
   toString(): string {
     return `${JellyHash2}({ size: ${this.size} })`
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }

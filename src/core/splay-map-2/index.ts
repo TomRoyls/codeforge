@@ -269,4 +269,8 @@ export class SplayMap2<K, V> {
       callback(items[i]!, i)
     }
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }

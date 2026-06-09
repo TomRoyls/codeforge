@@ -109,4 +109,8 @@ export class MultiMap3<K, V> {
       callback(items[i]!, i)
     }
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }

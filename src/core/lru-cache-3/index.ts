@@ -185,6 +185,10 @@ export class LRUCache3<K, V> {
       },
     };
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }
 
 interface Node<K, V> {

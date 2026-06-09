@@ -379,4 +379,8 @@ export class RedBlackMap3<K, V> {
       callback(items[i]!, i)
     }
   }
+
+  toArray(): any[] {
+    return [...this]
+  }
 }
