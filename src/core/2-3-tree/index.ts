@@ -477,4 +477,11 @@ export class TwoThreeTree<T> {
     }
     return `O(h) - height: ${h}, size: ${n} (unbalanced)`;
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.inOrderTraversal()) {
+      yield val;
+    }
+  }
 }

@@ -242,4 +242,11 @@ export class AVLTree3<T> {
 
     return y;
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }

@@ -234,4 +234,11 @@ export class CartesianTree<T> {
   static build<T>(values: T[], comparator?: CompareFn<T>): CartesianTree<T> {
     return new CartesianTree<T>(values, comparator)
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }

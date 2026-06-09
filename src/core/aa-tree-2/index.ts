@@ -276,4 +276,11 @@ export class AATree2<T> {
     const rightHeight = this.calculateHeight(node.right);
     return 1 + Math.max(leftHeight, rightHeight);
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }

@@ -155,4 +155,11 @@ export class BinaryHeap<T> {
   getTimeComplexity(): string {
     return "insert: O(log n), extract: O(log n), peek: O(1), size: O(1), isEmpty: O(1), increaseKey: O(log n), delete: O(log n), heapify: O(n), toArray: O(n), contains: O(n), merge: O(m + n), replace: O(log n), clear: O(1)";
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }

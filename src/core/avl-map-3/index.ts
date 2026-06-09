@@ -275,4 +275,11 @@ export class AVLMap3<K, V> {
   forEach(callback: (key: K, value: V) => void): void {
     inOrderForEach(this._root, callback);
   }
+
+
+  *[Symbol.iterator](): IterableIterator<[K, V]> {
+    for (const val of this.entries()) {
+      yield val;
+    }
+  }
 }

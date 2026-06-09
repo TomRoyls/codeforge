@@ -209,4 +209,11 @@ export class AABTree<T> {
   getTimeComplexity(): string {
     return "O(log n)";
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }

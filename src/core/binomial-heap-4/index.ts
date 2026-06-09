@@ -352,4 +352,11 @@ export class BinomialHeap4<T = unknown> {
       current = current.sibling
     }
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }

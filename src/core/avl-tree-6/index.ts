@@ -316,4 +316,11 @@ export class AVLTree6<T> {
     }
     return mergedTree;
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }

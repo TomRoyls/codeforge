@@ -302,6 +302,12 @@ export class AVLTree4<T> {
 
     return Math.max(left, right) + 1;
   }
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }
 
 interface Node<T> {

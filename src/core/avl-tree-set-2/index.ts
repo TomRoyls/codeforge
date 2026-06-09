@@ -286,6 +286,12 @@ export class AVLTreeSet2<T> {
     const rightHeight = node.right ? node.right.height : 0;
     return leftHeight - rightHeight;
   }
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }
 
 class AVLNode<T> {

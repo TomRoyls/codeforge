@@ -135,6 +135,12 @@ class BinomialQueue2<T> {
       return b
     }
   }
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }
 
 export { BinomialQueue2 }

@@ -317,4 +317,11 @@ export class BTree2<T> {
     const arr = this.toArray();
     arr.forEach(callback);
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }

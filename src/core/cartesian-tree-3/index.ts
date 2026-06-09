@@ -183,4 +183,11 @@ export class CartesianTree3<T> {
   getTimeComplexity(): string {
     return 'Build: O(n), Query: O(log n), Worst: O(n)'
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.inorderTraversal()) {
+      yield val;
+    }
+  }
 }

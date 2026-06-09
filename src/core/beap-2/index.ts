@@ -134,4 +134,11 @@ export class Beap2<T> {
       this.siftDown(smallest);
     }
   }
+
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const val of this.toArray()) {
+      yield val;
+    }
+  }
 }
