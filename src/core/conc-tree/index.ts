@@ -262,4 +262,8 @@ export class ConcTree<T> {
   toString(): string {
     return `${ConcTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'ConcTree', size: this.size, items: this.toArray() }
+  }
 }

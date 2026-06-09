@@ -274,6 +274,10 @@ export class ChunkedArray<T = unknown> {
   toString(): string {
     return `${ChunkedArray}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'ChunkedArray', size: this.size, items: this.toArray() }
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

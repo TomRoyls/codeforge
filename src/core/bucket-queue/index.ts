@@ -279,4 +279,8 @@ export class BucketQueue<T> {
   clone(): BucketQueue<T> {
     return BucketQueue.from(this.toArray())
   }
+
+  toJSON() {
+    return { type: 'BucketQueue', size: this.size, items: this.toArray() }
+  }
 }

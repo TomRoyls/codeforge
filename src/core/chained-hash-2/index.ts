@@ -171,4 +171,8 @@ export class ChainedHash2<V> {
   has(key: string): boolean {
     return this.contains(key)
   }
+
+  toJSON() {
+    return { type: 'ChainedHash2', items: this.toArray() }
+  }
 }

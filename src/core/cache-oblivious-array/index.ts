@@ -167,4 +167,8 @@ export class CacheObliviousArray<T> {
   toString(): string {
     return `CacheObliviousArray({ size: ${this._size} })`
   }
+
+  toJSON() {
+    return { type: 'CacheObliviousArray', items: this.toArray() }
+  }
 }

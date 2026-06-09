@@ -176,4 +176,8 @@ export class DWaveHeap<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'DWaveHeap', size: this.size, items: this.toArray() }
+  }
 }

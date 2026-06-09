@@ -208,4 +208,8 @@ export class DAryHeap<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'DAryHeap', size: this.size, items: this.toArray() }
+  }
 }

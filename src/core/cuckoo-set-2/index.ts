@@ -240,4 +240,8 @@ export class CuckooSet2<T> {
   toString(): string {
     return `${CuckooSet2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'CuckooSet2', size: this.size, items: this.toArray() }
+  }
 }

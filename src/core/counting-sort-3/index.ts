@@ -117,4 +117,8 @@ export class CountingSort {
   toString(): string {
     return `CountingSort()`
   }
+
+  toJSON() {
+    return { type: 'CountingSort', items: this.toArray() }
+  }
 }

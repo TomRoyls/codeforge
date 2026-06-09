@@ -311,4 +311,8 @@ export class CountedBTree2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'CountedBTree2', size: this.size, items: this.toArray() }
+  }
 }

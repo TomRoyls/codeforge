@@ -486,4 +486,8 @@ export class BTreeSet<T> {
   toString(): string {
     return `${BTreeSet}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'BTreeSet', items: this.toArray() }
+  }
 }

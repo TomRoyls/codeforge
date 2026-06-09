@@ -188,4 +188,8 @@ export class CollisionMap2<T> {
   toString(): string {
     return `${CollisionMap2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'CollisionMap2', size: this.size, items: this.toArray() }
+  }
 }

@@ -242,4 +242,8 @@ export class CircularDeque2<T = unknown> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'CircularDeque2', items: this.toArray() }
+  }
 }

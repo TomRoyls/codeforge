@@ -185,4 +185,8 @@ export class CoalescingMap<K, V> {
   has(key: K): boolean {
     return this.contains(key)
   }
+
+  toJSON() {
+    return { type: 'CoalescingMap', size: this.size, items: this.toArray() }
+  }
 }

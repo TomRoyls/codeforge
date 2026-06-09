@@ -175,4 +175,8 @@ export class BurstTrie2 {
   clone(): BurstTrie2 {
     return BurstTrie2.from(this.toArray())
   }
+
+  toJSON() {
+    return { type: 'BurstTrie2', items: this.toArray() }
+  }
 }

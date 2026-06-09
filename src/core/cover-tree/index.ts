@@ -267,6 +267,10 @@ export class CoverTree<T = number> {
   has(point: T): boolean {
     return this.contains(point)
   }
+
+  toJSON() {
+    return { type: 'CoverTree', size: this.size, items: this.toArray() }
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

@@ -95,4 +95,8 @@ export class ChunkedList2<T> {
   toString(): string {
     return `${ChunkedList2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'ChunkedList2', size: this.size, items: this.toArray() }
+  }
 }

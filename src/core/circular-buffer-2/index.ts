@@ -281,4 +281,8 @@ export class CircularBuffer<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'CircularBuffer', size: this.size, items: this.toArray() }
+  }
 }

@@ -205,4 +205,8 @@ export class CartesianTree3<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'CartesianTree3', size: this.size, items: this.toArray() }
+  }
 }

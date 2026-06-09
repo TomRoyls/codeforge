@@ -100,4 +100,8 @@ export class CatMap2<T> {
       callback(item, i++)
     }
   }
+
+  toJSON() {
+    return { type: 'CatMap2', items: this.toArray() }
+  }
 }

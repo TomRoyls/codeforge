@@ -283,6 +283,10 @@ export class DAryHeap<T = number> {
   has(item: T): boolean {
     return this.contains(item)
   }
+
+  toJSON() {
+    return { type: 'DAryHeap', items: this.toArray() }
+  }
 }
 
 export type { DAryHeapOptions } from './types.js'

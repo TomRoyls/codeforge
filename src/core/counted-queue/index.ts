@@ -225,4 +225,8 @@ export class CountedQueue<T> {
   clone(): CountedQueue<T> {
     return CountedQueue.from(this.toArray())
   }
+
+  toJSON() {
+    return { type: 'CountedQueue', size: this.size, items: this.toArray() }
+  }
 }

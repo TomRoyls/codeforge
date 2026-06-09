@@ -409,4 +409,8 @@ export class BTrie<V = unknown> {
   }
 
 
+
+  toJSON() {
+    return { type: 'BTrie', size: this.size, items: this.toArray() }
+  }
 }

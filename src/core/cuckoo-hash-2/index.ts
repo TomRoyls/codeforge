@@ -293,4 +293,8 @@ export class CuckooHash<K, V> {
   toString(): string {
     return `${CuckooHash}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'CuckooHash', size: this.size, items: this.toArray() }
+  }
 }

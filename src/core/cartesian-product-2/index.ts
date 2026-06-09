@@ -101,4 +101,8 @@ export class CartesianProduct2<T> {
   toString(): string {
     return `${CartesianProduct2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'CartesianProduct2', items: this.toArray() }
+  }
 }

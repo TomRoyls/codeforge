@@ -237,6 +237,10 @@ export class CuckooFilter2 {
   has(item: unknown): boolean {
     return this.contains(item)
   }
+
+  toJSON() {
+    return { type: 'CuckooFilter2', size: this.size, items: this.toArray() }
+  }
 }
 
 export const CuckooFilter = CuckooFilter2;

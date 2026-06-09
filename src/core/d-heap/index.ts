@@ -142,4 +142,8 @@ export class DHeap<T> {
   }
 
 
+
+  toJSON() {
+    return { type: 'DHeap', size: this.size, items: this.toArray() }
+  }
 }

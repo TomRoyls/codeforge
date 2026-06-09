@@ -430,4 +430,8 @@ export class CountedTree<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toJSON() {
+    return { type: 'CountedTree', size: this.size, items: this.toArray() }
+  }
 }

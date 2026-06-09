@@ -208,4 +208,8 @@ export class CircularBuffer4<T> {
   toString(): string {
     return `${CircularBuffer4}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
+  toJSON() {
+    return { type: 'CircularBuffer4', size: this.size, items: this.toArray() }
+  }
 }
