@@ -229,4 +229,8 @@ export class TreapMap3<K, V> {
     return { type: 'TreapMap3', size: this.size, items: this.toArray() }
   }
 
+
+  toString(): string {
+    return `TreapMap3({ size: ${this.size} })`
+  }
 }

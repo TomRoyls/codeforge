@@ -538,4 +538,8 @@ export class WaveletMatrix {
   toJSON() {
     return { type: 'WaveletMatrix', items: this.toArray() }
   }
+
+  toString(): string {
+    return `WaveletMatrix({ size: ${this._size} })`
+  }
 }

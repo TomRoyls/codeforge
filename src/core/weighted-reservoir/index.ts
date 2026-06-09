@@ -171,4 +171,8 @@ export class WeightedReservoir<T> {
   toJSON() {
     return { type: 'WeightedReservoir', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `WeightedReservoir({ size: ${this.size} })`
+  }
 }

@@ -171,6 +171,10 @@ export class TrieMap3<T> {
       this.collectEntries(child, prefix + char, result);
     }
   }
+
+  toString(): string {
+    return `TrieMap3({ size: ${this.size} })`
+  }
 }
 
 class TrieNode<T> {

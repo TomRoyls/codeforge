@@ -83,4 +83,8 @@ export class TreeSort2<T> {
     result.push(node.value)
     this.inOrderTraversal(node.right, result)
   }
+
+  toString(): string {
+    return `TreeSort2()`
+  }
 }

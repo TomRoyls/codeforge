@@ -148,4 +148,8 @@ export class XorFilter2 {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  toString(): string {
+    return `XorFilter2({ size: ${this.fingerprints.length} })`
+  }
 }

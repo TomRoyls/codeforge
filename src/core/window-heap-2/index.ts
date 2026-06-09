@@ -106,4 +106,8 @@ export class WindowHeap2 {
     this.values = [];
     this._head = 0;
   }
+
+  toString(): string {
+    return `WindowHeap2({ size: ${this.size} })`
+  }
 }

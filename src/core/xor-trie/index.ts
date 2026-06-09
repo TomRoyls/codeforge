@@ -200,6 +200,10 @@ export class XorTrie {
   toJSON() {
     return { type: 'XorTrie', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `XorTrie({ size: ${this.size} })`
+  }
 }
 
 class XorNode {

@@ -102,4 +102,8 @@ export class WeightedGraph2 {
   clear(): void {
     this.adjacencyList = new Map()
   }
+
+  toString(): string {
+    return `WeightedGraph2()`
+  }
 }

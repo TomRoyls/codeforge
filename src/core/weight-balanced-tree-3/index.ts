@@ -282,4 +282,8 @@ export class WeightBalancedTree3<T> {
   toJSON() {
     return { type: 'WeightBalancedTree3', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `WeightBalancedTree3({ size: ${this.size} })`
+  }
 }

@@ -347,4 +347,8 @@ export class Treap<K, V = undefined> {
   toJSON() {
     return { type: 'Treap', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `Treap({ size: ${this.size} })`
+  }
 }

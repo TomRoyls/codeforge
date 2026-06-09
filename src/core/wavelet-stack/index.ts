@@ -134,6 +134,10 @@ export class WaveletStack<T = unknown> {
   toJSON() {
     return { type: 'WaveletStack', items: this.toArray() }
   }
+
+  toString(): string {
+    return `WaveletStack({ size: ${this.items.length} })`
+  }
 }
 
 export type { WaveletStackOptions } from './types.js'

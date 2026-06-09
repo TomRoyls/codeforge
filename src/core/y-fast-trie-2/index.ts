@@ -381,4 +381,8 @@ export class YFastTrie {
   toJSON() {
     return { type: 'YFastTrie', items: this.toArray() }
   }
+
+  toString(): string {
+    return `YFastTrie({ size: ${this._size} })`
+  }
 }

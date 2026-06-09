@@ -318,6 +318,10 @@ export class WaveletTree {
   toJSON() {
     return { type: 'WaveletTree', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `WaveletTree({ size: ${this.size} })`
+  }
 }
 
 export type { WaveletTreeNode, WaveletTreeOptions, RankAllResult, WaveletTreeStats } from './types.js'

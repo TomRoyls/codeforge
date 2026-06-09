@@ -412,6 +412,10 @@ export class WeirdHeap<T = unknown> {
   toJSON() {
     return { type: 'WeirdHeap', items: this.toArray() }
   }
+
+  toString(): string {
+    return `WeirdHeap({ size: ${this._size} })`
+  }
 }
 
 export { DEFAULT_WEIRD_HEAP_OPTIONS } from './types.js'

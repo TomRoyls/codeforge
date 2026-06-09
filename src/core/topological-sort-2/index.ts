@@ -106,4 +106,8 @@ export class TopologicalSort2 {
     }
     return count;
   }
+
+  toString(): string {
+    return `TopologicalSort2()`
+  }
 }

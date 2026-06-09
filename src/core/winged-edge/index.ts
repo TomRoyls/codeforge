@@ -233,4 +233,8 @@ increment(vertexCount, edge.v1);
     this.faces = []
     this.vertexEdges = new Map()
   }
+
+  toString(): string {
+    return `WingedEdgeMesh({ size: ${this.vertices.length} })`
+  }
 }

@@ -82,4 +82,8 @@ export class WorkspaceSet2<T> {
       ws.clear();
     }
   }
+
+  toString(): string {
+    return `WorkspaceSet2()`
+  }
 }

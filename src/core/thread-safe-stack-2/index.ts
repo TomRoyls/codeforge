@@ -62,4 +62,8 @@ export class ThreadSafeStack2<T> {
     }
     this.locked = false;
   }
+
+  toString(): string {
+    return `ThreadSafeStack2({ size: ${this.size} })`
+  }
 }

@@ -271,4 +271,8 @@ export class TernarySearchTrie<T = unknown> {
   toJSON() {
     return { type: 'TernarySearchTrie', items: this.toArray() }
   }
+
+  toString(): string {
+    return `TernarySearchTrie({ size: ${this._size} })`
+  }
 }

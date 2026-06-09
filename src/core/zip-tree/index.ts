@@ -288,4 +288,8 @@ export class ZipTree<K, V> {
   toJSON() {
     return { type: 'ZipTree', items: this.toArray() }
   }
+
+  toString(): string {
+    return `ZipTree({ size: ${this._size} })`
+  }
 }

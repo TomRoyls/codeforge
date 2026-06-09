@@ -135,4 +135,8 @@ export class TrieMap2<V> {
   toJSON() {
     return { type: 'TrieMap2', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `TrieMap2({ size: ${this.size} })`
+  }
 }

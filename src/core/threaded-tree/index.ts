@@ -356,4 +356,8 @@ export class ThreadedTree<T> {
   toJSON() {
     return { type: 'ThreadedTree', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `ThreadedTree({ size: ${this.size} })`
+  }
 }

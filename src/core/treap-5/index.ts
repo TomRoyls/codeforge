@@ -288,4 +288,8 @@ export class Treap<T> {
   toJSON() {
     return { type: 'Treap', items: this.toArray() }
   }
+
+  toString(): string {
+    return `Treap({ size: ${this._size} })`
+  }
 }

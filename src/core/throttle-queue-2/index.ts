@@ -66,4 +66,8 @@ export class ThrottleQueue2<T> {
       this.active--;
     }
   }
+
+  toString(): string {
+    return `ThrottleQueue2({ size: ${this.size} })`
+  }
 }

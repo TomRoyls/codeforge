@@ -330,6 +330,10 @@ export class TimSort3<T> {
 
     mergeForceCollapse(arr, stack, this.compare, this.tmp)
   }
+
+  toString(): string {
+    return `TimSort3()`
+  }
 }
 
 export type { RunInfo }

@@ -133,4 +133,8 @@ export class TopologicalQueue2 {
   toJSON() {
     return { type: 'TopologicalQueue2', items: this.toArray() }
   }
+
+  toString(): string {
+    return `TopologicalQueue2()`
+  }
 }

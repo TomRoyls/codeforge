@@ -314,6 +314,10 @@ export class VanEmdeBoasTree {
   toJSON() {
     return { type: 'VanEmdeBoasTree', items: this.toArray() }
   }
+
+  toString(): string {
+    return `VanEmdeBoasTree()`
+  }
 }
 
 export { DEFAULT_UNIVERSE_SIZE } from './types.js'

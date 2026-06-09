@@ -172,4 +172,8 @@ export class TernarySearchTrie2<V> {
       this._collect(node.right, prefix, keys)
     }
   }
+
+  toString(): string {
+    return `TernarySearchTrie2({ size: ${this.size} })`
+  }
 }

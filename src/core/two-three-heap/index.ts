@@ -122,4 +122,8 @@ export class TwoThreeHeap<T> {
   toJSON() {
     return { type: 'TwoThreeHeap', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `TwoThreeHeap({ size: ${this.size} })`
+  }
 }

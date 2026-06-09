@@ -223,4 +223,8 @@ export class Trie4 {
   toJSON() {
     return { type: 'Trie4', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `Trie4({ size: ${this.size} })`
+  }
 }

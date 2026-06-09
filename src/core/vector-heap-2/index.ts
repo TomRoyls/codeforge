@@ -211,4 +211,8 @@ export class VectorHeap2 {
   toJSON() {
     return { type: 'VectorHeap2', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `VectorHeap2({ size: ${this.size} })`
+  }
 }

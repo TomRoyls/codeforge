@@ -432,6 +432,10 @@ export class ThreadedMap<K, V> {
   toJSON() {
     return { type: 'ThreadedMap', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `ThreadedMap({ size: ${this.size} })`
+  }
 }
 
 export type { ThreadedNode, Comparator, ThreadedMapOptions } from './types.js'

@@ -206,4 +206,8 @@ export class WaveletTree {
     return { type: 'WaveletTree', items: this.toArray() }
   }
 
+
+  toString(): string {
+    return `WaveletTree()`
+  }
 }

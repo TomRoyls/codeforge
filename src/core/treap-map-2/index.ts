@@ -477,4 +477,8 @@ export class TreapMap2<K, V> {
   toJSON() {
     return { type: 'TreapMap2', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `TreapMap2({ size: ${this.size} })`
+  }
 }

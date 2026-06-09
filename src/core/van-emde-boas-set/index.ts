@@ -418,4 +418,8 @@ export class VanEmdeBoasSet {
   toJSON() {
     return { type: 'VanEmdeBoasSet', items: this.toArray() }
   }
+
+  toString(): string {
+    return `VanEmdeBoasSet({ size: ${this._size} })`
+  }
 }

@@ -462,4 +462,8 @@ export class TreapSet<T> {
   toJSON() {
     return { type: 'TreapSet', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `TreapSet({ size: ${this.size} })`
+  }
 }

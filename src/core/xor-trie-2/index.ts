@@ -262,6 +262,10 @@ export class XorTrie2 {
   toJSON() {
     return { type: 'XorTrie2', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `XorTrie2({ size: ${this.size} })`
+  }
 }
 
 class XorNode2 {

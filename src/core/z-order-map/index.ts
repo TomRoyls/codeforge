@@ -211,6 +211,10 @@ toArray() {
   toJSON() {
     return { type: 'ZOrderMap', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `ZOrderMap({ size: ${this.size} })`
+  }
 }
 
 export type { ZOrderMapOptions, ZOrderEntry, Point2D 

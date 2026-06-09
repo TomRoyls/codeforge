@@ -354,4 +354,8 @@ export class Treap6<T> {
   toJSON() {
     return { type: 'Treap6', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `Treap6({ size: ${this.size} })`
+  }
 }

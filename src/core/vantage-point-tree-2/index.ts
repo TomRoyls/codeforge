@@ -188,4 +188,8 @@ export class VantagePointTree2<T> {
   toJSON() {
     return { type: 'VantagePointTree2', items: this.toArray() }
   }
+
+  toString(): string {
+    return `VantagePointTree2({ size: ${this._size} })`
+  }
 }

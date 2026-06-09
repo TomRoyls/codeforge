@@ -249,4 +249,8 @@ export class XorFilter {
     }
     return true
   }
+
+  toString(): string {
+    return `XorFilter({ size: ${this.size} })`
+  }
 }

@@ -66,4 +66,8 @@ export class UnionFind4 {
   isEmpty(): boolean {
     return this.parent.length === 0
   }
+
+  toString(): string {
+    return `UnionFind4({ size: ${this.parent.length} })`
+  }
 }

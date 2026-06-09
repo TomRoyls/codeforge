@@ -220,4 +220,8 @@ export class Trie3 {
   toJSON() {
     return { type: 'Trie3', size: this.size, items: this.toArray() }
   }
+
+  toString(): string {
+    return `Trie3({ size: ${this.size} })`
+  }
 }
