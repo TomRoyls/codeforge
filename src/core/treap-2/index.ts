@@ -339,4 +339,8 @@ export class Treap<K, V = undefined> {
     }
     return t
   }
+
+  clone(): Treap<K, V> {
+    return Treap.from(this.toArray())
+  }
 }

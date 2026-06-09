@@ -127,6 +127,10 @@ export class PersistentStack2<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  clone(): PersistentStack2<T> {
+    return PersistentStack2.from(this.toArray())
+  }
 }
 
 interface Node<T> {

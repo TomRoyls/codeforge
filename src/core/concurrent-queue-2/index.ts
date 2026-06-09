@@ -262,6 +262,7 @@ export class ConcurrentQueue<T = unknown> {
   toString(): string {
     return `${ConcurrentQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

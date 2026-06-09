@@ -311,4 +311,8 @@ export class IntervalHeap<T> {
   toString(): string {
     return `${IntervalHeap}({ size: ${this.size} })`
   }
+
+  clone(): IntervalHeap<T> {
+    return IntervalHeap.from(this.toArray())
+  }
 }

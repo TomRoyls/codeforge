@@ -262,6 +262,7 @@ export class CoverTree<T = number> {
       callback(item, i++)
     }
   }
+
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

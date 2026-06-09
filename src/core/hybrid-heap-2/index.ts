@@ -267,4 +267,5 @@ export class HybridHeap2<T = unknown> {
   toString(): string {
     return `${HybridHeap2}({ size: ${this.size} })`
   }
+
 }

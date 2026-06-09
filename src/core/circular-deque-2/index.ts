@@ -237,4 +237,5 @@ export class CircularDeque2<T = unknown> {
   toString(): string {
     return `${CircularDeque2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
 }

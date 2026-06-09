@@ -104,4 +104,5 @@ export class BlockQueue<T> {
       callback(item, i++)
     }
   }
+
 }

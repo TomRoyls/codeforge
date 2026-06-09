@@ -404,4 +404,5 @@ export class FingerTree2<T> {
   toString(): string {
     return `${FingerTree2}({ size: ${this.size} })`
   }
+
 }

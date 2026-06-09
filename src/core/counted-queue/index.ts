@@ -221,4 +221,8 @@ export class CountedQueue<T> {
       callback(item, i++)
     }
   }
+
+  clone(): CountedQueue<T> {
+    return CountedQueue.from(this.toArray())
+  }
 }

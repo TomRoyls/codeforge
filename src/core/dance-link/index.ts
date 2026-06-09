@@ -276,4 +276,5 @@ export class DanceLink {
   toString(): string {
     return `${DanceLink}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
 }

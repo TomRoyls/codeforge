@@ -275,4 +275,8 @@ export class BucketQueue<T> {
       callback(item, i++)
     }
   }
+
+  clone(): BucketQueue<T> {
+    return BucketQueue.from(this.toArray())
+  }
 }

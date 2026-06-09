@@ -141,4 +141,5 @@ export class LeftistHeap4<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
 }

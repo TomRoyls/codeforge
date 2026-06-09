@@ -329,4 +329,8 @@ export class HashSet<T> {
   toString(): string {
     return `${HashSet}({ size: ${this.size} })`
   }
+
+  clone(): HashSet<T> {
+    return HashSet.from(this.toArray())
+  }
 }

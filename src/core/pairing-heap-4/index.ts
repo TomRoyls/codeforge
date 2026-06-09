@@ -148,6 +148,7 @@ export class PairingHeap4<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
 }
 
 class PairingHeapNode<T> {

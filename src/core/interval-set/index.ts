@@ -309,4 +309,5 @@ export class IntervalSet<T = number> {
   toString(): string {
     return `${IntervalSet}({ size: ${this.size} })`
   }
+
 }
