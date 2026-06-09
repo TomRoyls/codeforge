@@ -152,7 +152,7 @@ describe('JumpList', () => {
       expect(list.toArray()).toEqual(['b', 'a'])
     })
 
-    it.skip('should handle large batch unshift', () => {
+    it('should handle large batch unshift', () => {
       const list = new JumpList<number>()
       for (let i = 0; i < 100; i++) {
         list.unshift(i)

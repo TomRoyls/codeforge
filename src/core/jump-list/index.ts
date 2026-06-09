@@ -302,11 +302,6 @@ export class JumpList<T> {
       return
     }
 
-    const expectedPointerCount = Math.floor((this.count - 1) / this.blockSize) + 1
-    if (this.jumpPointers.length === expectedPointerCount) {
-      return
-    }
-
     this.jumpPointers = []
     let current = this.head
     let steps = 0
