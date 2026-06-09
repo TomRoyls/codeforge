@@ -65,7 +65,7 @@ export class CuckooFilter2 {
   }
 
   private twoHashes(hashValue: number, fp: number): [number, number] {
-    let h1 = hashValue % this._capacity;
+    let h1 = ((hashValue % this._capacity) + this._capacity) % this._capacity;
     if (h1 < 0) h1 += this._capacity;
     let h2 = (h1 ^ this.hash(fp.toString())) % this._capacity;
     if (h2 < 0) h2 += this._capacity;

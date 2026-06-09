@@ -96,7 +96,7 @@ export class CuckooFilter3 {
   private computeHashes(item: string): readonly [number, number, number] {
     const baseHash = this.hash(item);
     const fingerprint = Math.max(1, baseHash % (this.fingerprintMask + 1));
-    const bucket1 = baseHash % this.bucketCount;
+    const bucket1 = ((baseHash % this.bucketCount) + this.bucketCount) % this.bucketCount;
     const bucket2 = ((bucket1 + this.hash(fingerprint.toString())) % 2_147_483_647) % this.bucketCount;
 
     return [fingerprint, bucket1, bucket2];

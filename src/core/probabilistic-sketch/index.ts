@@ -17,7 +17,7 @@ export class ProbabilisticSketch {
   add(item: string | number, count: number = 1): void {
     for (let i = 0; i < this.depth; i++) {
       const hash = this.hash(item, this.seeds[i]!);
-      const index = hash % this.width;
+      const index = ((hash % this.width) + this.width) % this.width;
       this.table[i]![index]! += count;
     }
     this._itemCount += count;
@@ -38,7 +38,7 @@ export class ProbabilisticSketch {
     let minCount = Infinity;
     for (let i = 0; i < this.depth; i++) {
       const hash = this.hash(item, this.seeds[i]!);
-      const index = hash % this.width;
+      const index = ((hash % this.width) + this.width) % this.width;
       minCount = Math.min(minCount, this.table[i]![index]!);
     }
     return minCount;

@@ -21,7 +21,7 @@ export class BloomFilter2 {
   add(item: string): void {
     for (const hashFn of this.hashFunctions) {
       const hash = hashFn(item);
-      const position = hash % this.bitCount;
+      const position = ((hash % this.bitCount) + this.bitCount) % this.bitCount;
       this.setBit(position);
     }
     this.itemCount++;
@@ -30,7 +30,7 @@ export class BloomFilter2 {
   has(item: string): boolean {
     for (const hashFn of this.hashFunctions) {
       const hash = hashFn(item);
-      const position = hash % this.bitCount;
+      const position = ((hash % this.bitCount) + this.bitCount) % this.bitCount;
       if (!this.getBit(position)) {
         return false;
       }

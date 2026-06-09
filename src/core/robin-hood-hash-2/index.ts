@@ -24,7 +24,7 @@ export class RobinHoodHash2<K, V> {
   }
 
   private getIndex(hash: number): number {
-    return hash % this.entries.length;
+    return ((hash % this.entries.length) + this.entries.length) % this.entries.length;
   }
 
   set(key: K, value: V): void {

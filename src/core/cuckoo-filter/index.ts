@@ -206,7 +206,7 @@ export class CuckooFilter<T = string> {
 
   private hashIndex(key: string): number {
     const hash = this._hashFunction(key)
-    return hash % this._bucketCount
+    return ((hash % this._bucketCount) + this._bucketCount) % this._bucketCount
   }
 
   private altIndex(index: number, fp: number): number {

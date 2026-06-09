@@ -44,7 +44,7 @@ export class JellyHash2<K, V> {
 
   private getIndex(key: K): number {
     const hash = this.hashFn(key);
-    return hash % this.buckets.length;
+    return ((hash % this.buckets.length) + this.buckets.length) % this.buckets.length;
   }
 
   set(key: K, value: V): void {

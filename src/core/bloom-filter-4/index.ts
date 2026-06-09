@@ -85,7 +85,7 @@ export class BloomFilter {
 
     for (let i = 0; i < this.hashCount; i++) {
       const combinedHash = (hash1 + i * hash2) >>> 0;
-      hashes.push(combinedHash % this.size);
+      hashes.push(((combinedHash % this.size) + this.size) % this.size);
     }
 
     return hashes;
