@@ -49,7 +49,7 @@ export class DanceLink {
     root.down = root;
     root.col = root;
 
-    if (matrix.length === 0 || matrix[0]!.length === 0) {
+    if (matrix.length === 0 || (matrix[0] !== undefined && matrix[0]!.length === 0)) {
       return root;
     }
 

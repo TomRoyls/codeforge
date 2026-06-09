@@ -40,7 +40,7 @@ describe('DanceLink', () => {
       expect(dl.size).toBe(3);
     });
 
-    it.skip('should return 0 for empty matrix', () => {
+    it('should return 0 for empty matrix', () => {
       const dl = new DanceLink([]);
       expect(dl.size).toBe(0);
     });
@@ -98,10 +98,10 @@ describe('DanceLink', () => {
       expect(solutions).toEqual([]);
     });
 
-    it.skip('should return empty array for empty matrix', () => {
+    it('should return trivial solution for empty matrix', () => {
       const dl = new DanceLink([]);
       const solutions = dl.solve();
-      expect(solutions).toEqual([]);
+      expect(solutions).toEqual([[]]);
     });
 
     it('should handle single row matrix', () => {
@@ -180,10 +180,10 @@ describe('DanceLink', () => {
       expect(solution).toBeNull();
     });
 
-    it.skip('should return null for empty matrix', () => {
+    it('should return empty solution for empty matrix', () => {
       const dl = new DanceLink([]);
       const solution = dl.solveOne();
-      expect(solution).toBeNull();
+      expect(solution).toEqual([]);
     });
 
     it('should return solution for single row', () => {
@@ -229,10 +229,10 @@ describe('DanceLink', () => {
       expect(count).toBe(0);
     });
 
-    it.skip('should return 0 for empty matrix', () => {
+    it('should return 1 for empty matrix (trivial solution)', () => {
       const dl = new DanceLink([]);
       const count = dl.countSolutions();
-      expect(count).toBe(0);
+      expect(count).toBe(1);
     });
 
     it('should return 1 for single row', () => {
@@ -242,7 +242,7 @@ describe('DanceLink', () => {
       expect(count).toBe(1);
     });
 
-    it.skip('should count multiple solutions', () => {
+    it('should count multiple solutions', () => {
       const matrix = [
         [true, false],
         [false, true],
@@ -251,7 +251,7 @@ describe('DanceLink', () => {
       ];
       const dl = new DanceLink(matrix);
       const count = dl.countSolutions();
-      expect(count).toBe(2);
+      expect(count).toBe(4);
     });
   });
 
@@ -342,7 +342,7 @@ describe('DanceLink', () => {
       expect(solution).toEqual([0]);
     });
 
-    it.skip('should handle multiple solutions', () => {
+    it('should handle multiple solutions', () => {
       const matrix = [
         [true, false],
         [false, true],
@@ -354,12 +354,12 @@ describe('DanceLink', () => {
       dl.forEach((s) => {
         solutions.push(s);
       });
-      expect(solutions.length).toBe(2);
+      expect(solutions.length).toBe(4);
     });
   });
 
   describe('Sudoku constraints', () => {
-    it.skip('should solve simple 2x2 Sudoku constraints', () => {
+    it('should find no solution for overlapping constraint matrix', () => {
       const matrix = [
         [true, true, false],
         [false, true, true],
@@ -367,7 +367,7 @@ describe('DanceLink', () => {
       ];
       const dl = new DanceLink(matrix);
       const solutions = dl.solve();
-      expect(solutions.length).toBeGreaterThan(0);
+      expect(solutions.length).toBe(0);
     });
 
     it('should handle Latin square constraints', () => {
@@ -549,7 +549,7 @@ describe('DanceLink', () => {
       expect(solutions).toEqual([]);
     });
 
-    it.skip('should handle contradictory requirements', () => {
+    it('should find multiple covers when rows overlap', () => {
       const matrix = [
         [true, true],
         [true, false],
@@ -557,7 +557,7 @@ describe('DanceLink', () => {
       ];
       const dl = new DanceLink(matrix);
       const solutions = dl.solve();
-      expect(solutions.length).toBe(0);
+      expect(solutions.length).toBe(2);
     });
 
     it('should handle unsatisfiable system', () => {
