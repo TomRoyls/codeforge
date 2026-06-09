@@ -211,7 +211,7 @@ describe('SimilaritySearch query', () => {
     expect(results[0].id).toBe('doc1');
   });
 
-  it.skip('returns empty array for no matches', () => {
+  it('returns empty array for no matches', () => {
     const ss = new SimilaritySearch();
     ss.add('doc1', 'hello');
     const results = ss.query('completely different');

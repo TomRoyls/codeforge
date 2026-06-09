@@ -899,14 +899,14 @@ describe('DiffArray', () => {
       expect(da.get(1)).toBe(-1e15)
     })
 
-    it.skip('handles alternating set and rangeAdd', () => {
+    it('handles alternating set and rangeAdd', () => {
       const da = new DiffArray(5)
       da.set(0, 5)
       da.rangeAdd(0, 4, 1)
       da.set(1, 10)
       da.rangeAdd(1, 3, 2)
       da.set(4, 0)
-      expect(da.toArray()).toEqual([6, 13, 5, 5, 0])
+      expect(da.toArray()).toEqual([6, 12, 3, 3, 0])
     })
 
     it('handles size 1 array fully', () => {

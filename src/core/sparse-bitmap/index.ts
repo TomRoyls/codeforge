@@ -173,7 +173,7 @@ export class SparseBitmap {
     for (let i = 0; i <= maxChunkIndex; i++) {
       const chunk = this.chunks.get(i) ?? 0;
       let mask: number;
-      if (i < maxChunkIndex) {
+      if (i < maxChunkIndex || (maxBit % 32) === 31) {
         mask = 0xffffffff;
       } else {
         mask = (1 << ((maxBit % 32) + 1)) - 1;

@@ -781,7 +781,7 @@ describe("SparseBitmap", () => {
       expect(result.get(0)).toBe(false);
     });
 
-    it.skip("should handle maxBit aligned to chunk boundary", () => {
+    it("should handle maxBit aligned to chunk boundary", () => {
       const bitmap = new SparseBitmap();
       const result = bitmap.not(31);
       expect(result.cardinality).toBe(32);

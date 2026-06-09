@@ -82,7 +82,7 @@ export class SimilaritySearch {
     const results: QueryResult[] = [];
     for (const doc of this.documents.values()) {
       const similarity = estimateSimilarity(signature, doc.signature);
-      if (similarity >= threshold) {
+      if (similarity > threshold) {
         results.push({ id: doc.id, similarity });
       }
     }

@@ -534,15 +534,15 @@ describe('BitVector2', () => {
   });
 
   describe('integration tests', () => {
-    it.skip('should handle complex operations', () => {
+    it('should handle complex operations', () => {
       const bv = new BitVector2(50);
-      bv.fromString('10101010101010101010101010101010101010101010101010101');
+      bv.fromString('10101010101010101010101010101010101010101010101010');
       expect(bv.countOnes()).toBe(25);
       expect(bv.countZeros()).toBe(25);
       expect(bv.rank1(10)).toBe(5);
       expect(bv.rank0(10)).toBe(5);
-      expect(bv.select1(10)).toBe(20);
-      expect(bv.select0(10)).toBe(21);
+      expect(bv.select1(10)).toBe(21);
+      expect(bv.select0(10)).toBe(20);
     });
 
     it('should handle size boundaries', () => {
