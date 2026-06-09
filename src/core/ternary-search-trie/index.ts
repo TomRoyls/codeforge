@@ -258,4 +258,8 @@ export class TernarySearchTrie<T = unknown> {
     this.collectEntries(node.middle, prefix + node.char, result)
     this.collectEntries(node.right, prefix, result)
   }
+
+  *[Symbol.iterator]() {
+    yield* this.entries()
+  }
 }

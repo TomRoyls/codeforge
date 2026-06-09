@@ -272,4 +272,8 @@ export class CuckooHash3<K, V> {
       callback(items[i]!, i)
     }
   }
+
+  *[Symbol.iterator]() {
+    yield* this.entries()
+  }
 }

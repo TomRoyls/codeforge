@@ -196,4 +196,8 @@ export class Trie3 {
   hasWord(word: string): boolean {
     return this.search(word)
   }
+
+  *[Symbol.iterator]() {
+    yield* this.getAllWords()
+  }
 }

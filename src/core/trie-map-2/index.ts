@@ -123,4 +123,8 @@ export class TrieMap2<V> {
       this._collectKeys(child, prefix + char, result);
     }
   }
+
+  *[Symbol.iterator]() {
+    yield* this.keysWithPrefix("")
+  }
 }

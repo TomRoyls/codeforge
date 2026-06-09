@@ -240,4 +240,8 @@ export class RadixTree {
     }
     return str1.slice(0, i);
   }
+
+  *[Symbol.iterator]() {
+    yield* this.getAllWords()
+  }
 }

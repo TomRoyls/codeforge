@@ -102,4 +102,8 @@ export class EdgeGraph2 {
     this.vertices.clear();
     this.edges = [];
   }
+
+  *[Symbol.iterator]() {
+    yield* this.getEdges()
+  }
 }

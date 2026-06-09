@@ -121,4 +121,8 @@ export class TopologicalQueue2 {
     this.adjacency.clear();
     this.inDegreeMap.clear();
   }
+
+  *[Symbol.iterator]() {
+    yield* this.getEdges()
+  }
 }
