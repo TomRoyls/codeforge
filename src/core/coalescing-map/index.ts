@@ -180,4 +180,5 @@ export class CoalescingMap<K, V> {
   toString(): string {
     return `${CoalescingMap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
   }
+
 }

@@ -372,6 +372,7 @@ export class ScapegoatMap<K = unknown, V = unknown> {
     cloned._maxSize = this._maxSize
     return cloned
   }
+
 }
 
 export type { ScapegoatMapOptions }
