@@ -89,4 +89,8 @@ export class CatMap2<T> {
   toArray() {
     return this.getPairs()
   }
+
+  toString(): string {
+    return `${CatMap2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

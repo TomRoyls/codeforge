@@ -173,4 +173,8 @@ export class BeapSet2<T> {
       yield val;
     }
   }
+
+  toString(): string {
+    return `${BeapSet2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

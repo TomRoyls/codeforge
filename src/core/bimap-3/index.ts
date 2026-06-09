@@ -103,4 +103,8 @@ export class BiMap3<K, V> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `${BiMap3}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

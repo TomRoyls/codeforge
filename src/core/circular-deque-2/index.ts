@@ -233,4 +233,8 @@ export class CircularDeque2<T = unknown> {
       callback(this.buffer[(this.head + i) % this._capacity]!, i)
     }
   }
+
+  toString(): string {
+    return `${CircularDeque2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

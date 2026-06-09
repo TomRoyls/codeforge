@@ -159,6 +159,10 @@ export class BoundedPriorityQueue<T> {
       yield item
     }
   }
+
+  toString(): string {
+    return `${BoundedPriorityQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

@@ -786,6 +786,10 @@ export class CatenableDeque<T> {
   *[Symbol.iterator](): Iterator<T> {
     yield* flattenNode(this._root)
   }
+
+  toString(): string {
+    return `${CatenableDeque}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

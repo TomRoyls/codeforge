@@ -392,6 +392,10 @@ export class BinomialQueue<T = number> {
       current = current.sibling
     }
   }
+
+  toString(): string {
+    return `${BinomialQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

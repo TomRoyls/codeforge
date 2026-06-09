@@ -166,4 +166,8 @@ export class BinaryHeap<T> {
   has(value: T): boolean {
     return this.contains(value)
   }
+
+  toString(): string {
+    return `${BinaryHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

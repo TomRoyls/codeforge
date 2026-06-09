@@ -152,4 +152,8 @@ export class BurstTrie2 {
   toArray() {
     return this.getAll()
   }
+
+  toString(): string {
+    return `${BurstTrie2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

@@ -141,4 +141,8 @@ export class Beap2<T> {
       yield val;
     }
   }
+
+  toString(): string {
+    return `${Beap2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

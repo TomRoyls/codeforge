@@ -163,4 +163,8 @@ export class ChainedHash2<V> {
   toArray() {
     return this.entries()
   }
+
+  toString(): string {
+    return `${ChainedHash2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

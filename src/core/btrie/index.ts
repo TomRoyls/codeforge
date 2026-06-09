@@ -403,4 +403,8 @@ export class BTrie<V = unknown> {
   countForPrefix(prefix: string): number {
     return this.keysWithPrefix(prefix).length;
   }
+
+  toString(): string {
+    return `${BTrie}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

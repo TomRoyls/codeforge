@@ -254,4 +254,8 @@ export class CartesianTree<T> {
   static from<T>(items: T[]): CartesianTree<T> {
     return new CartesianTree<T>(items)
   }
+
+  toString(): string {
+    return `${CartesianTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

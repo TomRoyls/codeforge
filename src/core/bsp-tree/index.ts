@@ -336,4 +336,8 @@ export class BSPTree {
       }
     };
   }
+
+  toString(): string {
+    return `${BSPTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

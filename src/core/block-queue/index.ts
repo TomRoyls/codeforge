@@ -93,4 +93,8 @@ export class BlockQueue<T> {
     }
     return q
   }
+
+  toString(): string {
+    return `${BlockQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

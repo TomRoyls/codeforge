@@ -97,4 +97,8 @@ export class CartesianProduct2<T> {
   isEmpty(): boolean {
     return this.size() === 0
   }
+
+  toString(): string {
+    return `${CartesianProduct2}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

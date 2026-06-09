@@ -289,6 +289,10 @@ export class BootstrappedHeap<T = number> {
       return cloned
     })
   }
+
+  toString(): string {
+    return `${BootstrappedHeap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

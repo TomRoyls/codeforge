@@ -620,4 +620,8 @@ export class BTreeMap<K, V> {
   iterator(): Iterator<Entry<K, V>> {
     return this[Symbol.iterator]();
   }
+
+  toString(): string {
+    return `${BTreeMap}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

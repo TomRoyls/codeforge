@@ -571,4 +571,8 @@ export class BPlusTree<K, V> {
       leaf = leaf.next;
     }
   }
+
+  toString(): string {
+    return `${BPlusTree}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

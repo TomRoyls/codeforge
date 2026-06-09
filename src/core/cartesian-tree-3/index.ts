@@ -194,4 +194,8 @@ export class CartesianTree3<T> {
   toArray() {
     return [...this]
   }
+
+  toString(): string {
+    return `${CartesianTree3}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

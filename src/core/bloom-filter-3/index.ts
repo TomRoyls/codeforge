@@ -271,4 +271,8 @@ export class BloomFilter {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${BloomFilter}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

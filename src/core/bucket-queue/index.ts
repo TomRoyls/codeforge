@@ -264,4 +264,8 @@ export class BucketQueue<T> {
         : { value: undefined as unknown as ReturnType<this['toArray']>[number], done: true }
     };
   }
+
+  toString(): string {
+    return `${BucketQueue}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }

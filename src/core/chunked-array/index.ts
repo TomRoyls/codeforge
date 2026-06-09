@@ -270,6 +270,10 @@ export class ChunkedArray<T = unknown> {
       ci++
     }
   }
+
+  toString(): string {
+    return `${ChunkedArray}({ size: ${this.size}, items: ${JSON.stringify(this.toArray())} })`
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
