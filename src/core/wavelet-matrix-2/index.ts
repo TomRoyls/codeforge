@@ -192,4 +192,8 @@ export class WaveletMatrix2 {
   toString(): string {
     return `WaveletMatrix2()`
   }
+
+  get size(): number {
+    return this.n
+  }
 }

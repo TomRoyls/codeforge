@@ -435,4 +435,8 @@ export class AVLTree<T> {
     }
     return result
   }
+
+  get size(): number {
+    return this._size
+  }
 }

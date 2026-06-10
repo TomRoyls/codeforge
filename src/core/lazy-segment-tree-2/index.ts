@@ -143,4 +143,8 @@ export class LazySegmentTree {
     this.n = 0
     this.tree.length = 0
   }
+
+  get size(): number {
+    return this.n
+  }
 }

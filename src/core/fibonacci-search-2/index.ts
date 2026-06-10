@@ -219,4 +219,8 @@ export class FibonacciSearch {
   isEmpty(): boolean {
     return this.n === 0
   }
+
+  get size(): number {
+    return this.n
+  }
 }

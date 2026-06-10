@@ -324,4 +324,8 @@ export class CacheObliviousArray<T> {
   static empty<T>(): CacheObliviousArray<T> {
     return new CacheObliviousArray<T>()
   }
+
+  get size(): number {
+    return this._size
+  }
 }
