@@ -160,4 +160,81 @@ describe('FractionalCascading', () => {
     const result = fc.search(3)
     expect(result).toBeDefined()
   })
+
+  it('toString returns descriptive string', () => {
+    const fc = new FractionalCascading([[1, 2], [3, 4]])
+    expect(fc.toString()).toBe('FractionalCascading(2 lists)')
+  })
+
+  it('toString with empty lists', () => {
+    const fc = new FractionalCascading([])
+    expect(fc.toString()).toBe('FractionalCascading(0 lists)')
+  })
+
+  it('toJSON returns sorted lists', () => {
+    const fc = new FractionalCascading([[3, 1], [6, 4]])
+    expect(fc.toJSON()).toEqual([[1, 3], [4, 6]])
+  })
+
+  it('toJSON returns copy', () => {
+    const fc = new FractionalCascading([[1, 2]])
+    const json = fc.toJSON()
+    json[0]!.push(99)
+    expect(fc.getList(0)).toEqual([1, 2])
+  })
+
+  it('clone produces equal but independent copy', () => {
+    const fc = new FractionalCascading([[1, 3, 5], [2, 4]])
+    const c = fc.clone()
+    expect(c.equals(fc)).toBe(true)
+    expect(c.listCount).toBe(2)
+  })
+
+  it('equals returns true for identical lists', () => {
+    const fc1 = new FractionalCascading([[1, 2], [3, 4]])
+    const fc2 = new FractionalCascading([[1, 2], [3, 4]])
+    expect(fc1.equals(fc2)).toBe(true)
+  })
+
+  it('equals returns false for different lists', () => {
+    const fc1 = new FractionalCascading([[1, 2]])
+    const fc2 = new FractionalCascading([[1, 3]])
+    expect(fc1.equals(fc2)).toBe(false)
+  })
+
+  it('equals returns false for different list count', () => {
+    const fc1 = new FractionalCascading([[1, 2]])
+    const fc2 = new FractionalCascading([[1, 2], [3, 4]])
+    expect(fc1.equals(fc2)).toBe(false)
+  })
+
+  it('equals returns false for non-FractionalCascading', () => {
+    const fc = new FractionalCascading([[1, 2]])
+    expect(fc.equals(null)).toBe(false)
+    expect(fc.equals({})).toBe(false)
+  })
+
+  it('getList returns copy not reference', () => {
+    const fc = new FractionalCascading([[1, 2, 3]])
+    const list = fc.getList(0)
+    list.push(99)
+    expect(fc.getList(0)).toEqual([1, 2, 3])
+  })
+
+  it('handles many lists with shared values', () => {
+    const lists = Array.from({ length: 5 }, (_, i) => [i, i + 5, i + 10])
+    const fc = new FractionalCascading(lists)
+    const result = fc.search(5)
+    expect(result.length).toBe(5)
+    expect(result[0]).toBe(1)
+    expect(result[1]).toBe(-1)
+    expect(result[4]).toBe(-1)
+  })
+
+  it('search for zero in lists containing zero', () => {
+    const fc = new FractionalCascading([[0, 1, 2], [0, 3, 6]])
+    const result = fc.search(0)
+    expect(result[0]).toBe(0)
+    expect(result[1]).toBe(0)
+  })
 })
