@@ -672,6 +672,14 @@ export class ChunkedArray<T = unknown> {
   toSet(): Set<T> {
     return new Set(this.toArray())
   }
+
+  frequency(item: T): number {
+    let count = 0
+    for (const element of this.toArray()) {
+      if (element === item) count++
+    }
+    return count
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

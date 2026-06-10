@@ -761,4 +761,12 @@ export class AVLTree6<T> {
   toSet(): Set<T> {
     return new Set(this.toArray())
   }
+
+  frequency(item: T): number {
+    let count = 0
+    for (const element of this.toArray()) {
+      if (element === item) count++
+    }
+    return count
+  }
 }
