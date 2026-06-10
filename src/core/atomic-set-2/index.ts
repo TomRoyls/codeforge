@@ -577,4 +577,8 @@ export class AtomicSet2<T> {
     }
     return [arr.slice(0, i), arr.slice(i)]
   }
+
+  breakWhen(predicate: (item: T) => boolean): [T[], T[]] {
+    return this.span(item => !predicate(item))
+  }
 }

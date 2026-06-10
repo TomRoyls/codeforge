@@ -952,6 +952,10 @@ toString(): string {
     }
     return [arr.slice(0, i), arr.slice(i)]
   }
+
+  breakWhen(predicate: (item: T) => boolean): [T[], T[]] {
+    return this.span(item => !predicate(item))
+  }
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback

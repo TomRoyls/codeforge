@@ -708,6 +708,10 @@ export class ChunkedArray<T = unknown> {
     }
     return [arr.slice(0, i), arr.slice(i)]
   }
+
+  breakWhen(predicate: (item: T) => boolean): [T[], T[]] {
+    return this.span(item => !predicate(item))
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
