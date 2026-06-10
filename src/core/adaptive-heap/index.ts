@@ -393,4 +393,13 @@ export class AdaptiveHeap<T> {
     }
     return result
   }
+
+  chunk(size: number): T[][] {
+    const arr = this.toArray()
+    const result: T[][] = []
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size))
+    }
+    return result
+  }
 }
