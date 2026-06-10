@@ -944,4 +944,45 @@ export class TwoThreeHeap<T> {
   enumerate(): [number, T][] {
     return this.toArray().map((item, i) => [i, item] as [number, T])
   }
+
+  isSorted(comparator?: (a: T, b: T) => number): boolean {
+    const arr = this.toArray()
+    const cmp = comparator ?? ((a: T, b: T) => a < b ? -1 : a > b ? 1 : 0)
+    for (let i = 1; i < arr.length; i++) {
+      if (cmp(arr[i - 1]!, arr[i]!) > 0) return false
+    }
+    return true
+  }
+
+  palindrome(): boolean {
+    const arr = this.toArray()
+    for (let i = 0; i < arr.length / 2; i++) {
+      if (arr[i] !== arr[arr.length - 1 - i]) return false
+    }
+    return true
+  }
+
+  isStrictlyIncreasing(this: { toArray(): number[] }): boolean {
+    const arr = this.toArray()
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i - 1]! >= arr[i]!) return false
+    }
+    return true
+  }
+
+  isStrictlyDecreasing(this: { toArray(): number[] }): boolean {
+    const arr = this.toArray()
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i - 1]! <= arr[i]!) return false
+    }
+    return true
+  }
+
+  replaceAt(index: number, value: T): T[] {
+    const arr = [...this.toArray()]
+    if (index >= 0 && index < arr.length) {
+      arr[index] = value
+    }
+    return arr
+  }
 }
