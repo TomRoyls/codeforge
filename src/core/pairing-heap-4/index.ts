@@ -701,6 +701,28 @@ export class PairingHeap4<T> {
     }
     return arr.slice(i)
   }
+
+  gather(): T[][] {
+    const arr = this.toArray()
+    if (arr.length === 0) return []
+    const result: T[][] = [[arr[0]!]]
+    for (let i = 1; i < arr.length; i++) {
+      const last = result[result.length - 1]!
+      if (arr[i] === last[last.length - 1]) {
+        last.push(arr[i]!)
+      } else {
+        result.push([arr[i]!])
+      }
+    }
+    return result
+  }
+
+  splitWhen(predicate: (item: T, index: number) => boolean): [T[], T[]] {
+    const arr = this.toArray()
+    const idx = arr.findIndex(predicate)
+    if (idx === -1) return [[...arr], []]
+    return [arr.slice(0, idx), arr.slice(idx)]
+  }
 }
 
 class PairingHeapNode<T> {
