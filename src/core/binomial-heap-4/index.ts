@@ -697,4 +697,14 @@ export class BinomialHeap4<T = unknown> {
     }
     return arr
   }
+
+  sample(): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    return arr[Math.floor(Math.random() * arr.length)]
+  }
+
+  sampleN(n: number): T[] {
+    return this.shuffle().slice(0, n)
+  }
 }
