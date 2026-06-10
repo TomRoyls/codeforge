@@ -49,10 +49,8 @@ export class BinomialQueue<T = number> {
     return removedKey
   }
 
-  peek(): T {
-    if (this.head === null) {
-      throw new Error('Queue is empty')
-    }
+  peek(): T | undefined {
+    if (this.head === null) return undefined
     return this.findMinRoot().min!.key
   }
 

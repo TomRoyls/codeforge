@@ -151,4 +151,20 @@ export class LinkedHashSet<T> {
   get [Symbol.toStringTag](): string {
     return 'LinkedHashSet'
   }
+
+  filter(predicate: (item: T, index: number) => boolean): T[] {
+    return this.toArray().filter(predicate)
+  }
+
+  reduce<R>(fn: (acc: R, item: T, index: number) => R, init: R): R {
+    return this.toArray().reduce(fn, init)
+  }
+
+  every(predicate: (item: T, index: number) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T, index: number) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
 }
