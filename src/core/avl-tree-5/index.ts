@@ -516,4 +516,8 @@ export class AVLTree<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): AVLTree<T> {
+    return AVLTree.from(items)
+  }
 }

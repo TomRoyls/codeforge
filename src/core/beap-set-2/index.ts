@@ -417,4 +417,8 @@ export class BeapSet2<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): BeapSet2<T> {
+    return BeapSet2.from(items)
+  }
 }

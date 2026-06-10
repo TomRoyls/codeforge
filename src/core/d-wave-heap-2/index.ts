@@ -291,4 +291,8 @@ export class DWaveHeap<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): DWaveHeap<T> {
+    return DWaveHeap.from(items)
+  }
 }

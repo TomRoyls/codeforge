@@ -233,4 +233,8 @@ export class IntervalHeap3<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): IntervalHeap3<T> {
+    return IntervalHeap3.from(items)
+  }
 }

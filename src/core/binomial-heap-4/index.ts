@@ -591,4 +591,8 @@ export class BinomialHeap4<T = unknown> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): BinomialHeap4<T> {
+    return BinomialHeap4.from(items)
+  }
 }

@@ -696,4 +696,8 @@ export class BTreeSet<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): BTreeSet<T> {
+    return BTreeSet.from(items)
+  }
 }

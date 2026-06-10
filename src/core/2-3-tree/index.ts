@@ -725,4 +725,8 @@ export class TwoThreeTree<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): TwoThreeTree<T> {
+    return TwoThreeTree.from(items)
+  }
 }

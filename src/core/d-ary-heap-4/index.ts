@@ -293,4 +293,8 @@ export class DAryHeap4<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): DAryHeap4<T> {
+    return DAryHeap4.from(items)
+  }
 }

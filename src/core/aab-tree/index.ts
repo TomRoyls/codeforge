@@ -473,4 +473,8 @@ export class AABTree<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): AABTree<T> {
+    return AABTree.from(items)
+  }
 }

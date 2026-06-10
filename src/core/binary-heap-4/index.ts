@@ -423,4 +423,8 @@ export class BinaryHeap<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): BinaryHeap<T> {
+    return BinaryHeap.from(items)
+  }
 }

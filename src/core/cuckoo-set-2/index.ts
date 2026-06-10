@@ -380,4 +380,8 @@ export class CuckooSet2<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): CuckooSet2<T> {
+    return CuckooSet2.from(items)
+  }
 }

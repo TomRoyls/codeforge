@@ -271,4 +271,8 @@ export class DHeap<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): DHeap<T> {
+    return DHeap.from(items)
+  }
 }

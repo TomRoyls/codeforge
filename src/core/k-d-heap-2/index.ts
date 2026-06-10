@@ -167,4 +167,8 @@ export class KDHeap2<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): KDHeap2<T> {
+    return KDHeap2.from(items)
+  }
 }

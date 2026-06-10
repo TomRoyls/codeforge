@@ -172,4 +172,8 @@ export class LeftistTree2<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): LeftistTree2<T> {
+    return LeftistTree2.from(items)
+  }
 }

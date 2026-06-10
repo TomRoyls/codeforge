@@ -399,4 +399,8 @@ export class Beap2<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): Beap2<T> {
+    return Beap2.from(items)
+  }
 }

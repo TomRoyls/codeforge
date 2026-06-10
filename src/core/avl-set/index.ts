@@ -599,4 +599,8 @@ export class AVLSet<T = number> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): AVLSet<T> {
+    return AVLSet.from(items)
+  }
 }

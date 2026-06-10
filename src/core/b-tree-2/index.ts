@@ -590,4 +590,8 @@ export class BTree2<T> {
     }
     return instance
   }
+
+  static of<T>(...items: T[]): BTree2<T> {
+    return BTree2.from(items)
+  }
 }
