@@ -184,8 +184,140 @@ describe('BinaryTrie', () => {
   })
 
   it('insert and find returns true', () => {
-    const bt = new BinaryTrie()
-    bt.insert(5)
-    expect(bt.find(5)).toBe(true)
+    const trie = new BinaryTrie(8)
+    trie.insert(42)
+    expect(trie.find(42)).toBe(true)
+  })
+
+  describe('BinaryTrie toString', () => {
+    it('returns correct format for empty', () => {
+      const trie = new BinaryTrie(8)
+      expect(trie.toString()).toBe('BinaryTrie(bits=8, size=0)')
+    })
+
+    it('reflects size after insertions', () => {
+      const trie = new BinaryTrie(8)
+      trie.insert(1)
+      trie.insert(2)
+      expect(trie.toString()).toBe('BinaryTrie(bits=8, size=2)')
+    })
+
+    it('reflects custom bits', () => {
+      const trie = new BinaryTrie(16)
+      expect(trie.toString()).toBe('BinaryTrie(bits=16, size=0)')
+    })
+  })
+
+  describe('BinaryTrie toJSON', () => {
+    it('returns structure with bits and values', () => {
+      const trie = new BinaryTrie(8)
+      trie.insert(5)
+      trie.insert(10)
+      const json = trie.toJSON() as { bits: number; values: number[] }
+      expect(json.bits).toBe(8)
+      expect(json.values).toContain(5)
+      expect(json.values).toContain(10)
+    })
+
+    it('returns empty values for empty trie', () => {
+      const trie = new BinaryTrie(8)
+      const json = trie.toJSON() as { bits: number; values: number[] }
+      expect(json.values).toEqual([])
+    })
+  })
+
+  describe('BinaryTrie clone', () => {
+    it('creates independent copy', () => {
+      const trie = new BinaryTrie(8)
+      trie.insert(1)
+      trie.insert(2)
+      const copy = trie.clone()
+      expect(copy.find(1)).toBe(true)
+      expect(copy.find(2)).toBe(true)
+      expect(copy.size).toBe(2)
+    })
+
+    it('modifications to clone do not affect original', () => {
+      const trie = new BinaryTrie(8)
+      trie.insert(1)
+      const copy = trie.clone()
+      copy.insert(99)
+      expect(trie.find(99)).toBe(false)
+      expect(copy.find(99)).toBe(true)
+    })
+
+    it('clone of empty is empty', () => {
+      const trie = new BinaryTrie(8)
+      const copy = trie.clone()
+      expect(copy.size).toBe(0)
+    })
+  })
+
+  describe('BinaryTrie equals', () => {
+    it('empty tries are equal', () => {
+      const a = new BinaryTrie(8)
+      const b = new BinaryTrie(8)
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('same data are equal', () => {
+      const a = new BinaryTrie(8)
+      const b = new BinaryTrie(8)
+      a.insert(1)
+      a.insert(2)
+      b.insert(1)
+      b.insert(2)
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('different sizes are not equal', () => {
+      const a = new BinaryTrie(8)
+      const b = new BinaryTrie(8)
+      a.insert(1)
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('different bits are not equal', () => {
+      const a = new BinaryTrie(8)
+      const b = new BinaryTrie(16)
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('returns false for non-BinaryTrie', () => {
+      const trie = new BinaryTrie(8)
+      expect(trie.equals(null)).toBe(false)
+      expect(trie.equals(undefined)).toBe(false)
+      expect(trie.equals({})).toBe(false)
+    })
+
+    it('self equals self', () => {
+      const trie = new BinaryTrie(8)
+      trie.insert(42)
+      expect(trie.equals(trie)).toBe(true)
+    })
+  })
+
+  it('handles many insertions and removals', () => {
+    const trie = new BinaryTrie(16)
+    for (let i = 0; i < 100; i++) {
+      trie.insert(i)
+    }
+    expect(trie.size).toBe(100)
+    for (let i = 0; i < 50; i++) {
+      trie.remove(i)
+    }
+    expect(trie.size).toBe(50)
+    for (let i = 50; i < 100; i++) {
+      expect(trie.find(i)).toBe(true)
+    }
+  })
+
+  it('maxXor returns value that maximizes xor result', () => {
+    const trie = new BinaryTrie(8)
+    trie.insert(0b00001111)
+    trie.insert(0b11110000)
+    const result = trie.maxXor(0b10101010)
+    const xorResult = result ^ 0b10101010
+    expect(xorResult).toBeGreaterThan(0)
   })
 })

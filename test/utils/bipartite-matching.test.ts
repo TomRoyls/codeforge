@@ -201,4 +201,125 @@ describe('BipartiteMatching', () => {
     const graph = new BipartiteMatching(2, 2)
     expect(graph.maxMatching()).toBe(0)
   })
+
+  describe('BipartiteMatching toString', () => {
+    it('returns correct format for empty graph', () => {
+      const graph = new BipartiteMatching(3, 4)
+      expect(graph.toString()).toBe('BipartiteMatching(left=3, right=4, edges=0)')
+    })
+
+    it('reflects edge count', () => {
+      const graph = new BipartiteMatching(2, 2)
+      graph.addEdge(0, 0)
+      graph.addEdge(1, 1)
+      expect(graph.toString()).toContain('edges=2')
+    })
+  })
+
+  describe('BipartiteMatching toJSON', () => {
+    it('returns structure with leftSize, rightSize, adj', () => {
+      const graph = new BipartiteMatching(2, 3)
+      graph.addEdge(0, 0)
+      graph.addEdge(1, 2)
+      const json = graph.toJSON() as Record<string, unknown>
+      expect(json.leftSize).toBe(2)
+      expect(json.rightSize).toBe(3)
+      expect(json.edgeCount).toBe(2)
+      expect(Array.isArray(json.adj)).toBe(true)
+    })
+
+    it('adj reflects edges', () => {
+      const graph = new BipartiteMatching(2, 2)
+      graph.addEdge(0, 0)
+      const json = graph.toJSON() as Record<string, unknown>
+      const adj = json.adj as number[][]
+      expect(adj[0]).toContain(0)
+    })
+  })
+
+  describe('BipartiteMatching clone', () => {
+    it('creates independent copy', () => {
+      const graph = new BipartiteMatching(2, 2)
+      graph.addEdge(0, 0)
+      graph.addEdge(1, 1)
+      const copy = graph.clone()
+      expect(copy.maxMatching()).toBe(2)
+    })
+
+    it('modifications to clone do not affect original', () => {
+      const graph = new BipartiteMatching(3, 3)
+      graph.addEdge(0, 0)
+      const copy = graph.clone()
+      copy.addEdge(1, 1)
+      expect(graph.maxMatching()).toBe(1)
+      expect(copy.maxMatching()).toBe(2)
+    })
+
+    it('clone of empty is empty', () => {
+      const graph = new BipartiteMatching(2, 2)
+      const copy = graph.clone()
+      expect(copy.maxMatching()).toBe(0)
+    })
+  })
+
+  describe('BipartiteMatching equals', () => {
+    it('empty graphs are equal', () => {
+      const a = new BipartiteMatching(2, 2)
+      const b = new BipartiteMatching(2, 2)
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('same edges are equal', () => {
+      const a = new BipartiteMatching(2, 2)
+      const b = new BipartiteMatching(2, 2)
+      a.addEdge(0, 0)
+      b.addEdge(0, 0)
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('different sizes are not equal', () => {
+      const a = new BipartiteMatching(2, 2)
+      const b = new BipartiteMatching(3, 2)
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('different edges are not equal', () => {
+      const a = new BipartiteMatching(2, 2)
+      const b = new BipartiteMatching(2, 2)
+      a.addEdge(0, 0)
+      b.addEdge(1, 1)
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('returns false for non-BipartiteMatching', () => {
+      const graph = new BipartiteMatching(2, 2)
+      expect(graph.equals(null)).toBe(false)
+      expect(graph.equals(undefined)).toBe(false)
+      expect(graph.equals({})).toBe(false)
+    })
+
+    it('self equals self', () => {
+      const graph = new BipartiteMatching(2, 2)
+      graph.addEdge(0, 0)
+      expect(graph.equals(graph)).toBe(true)
+    })
+  })
+
+  it('handles dense bipartite graph', () => {
+    const graph = new BipartiteMatching(5, 5)
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        graph.addEdge(i, j)
+      }
+    }
+    expect(graph.maxMatching()).toBe(5)
+  })
+
+  it('handles unbalanced bipartite graph', () => {
+    const graph = new BipartiteMatching(3, 5)
+    graph.addEdge(0, 0)
+    graph.addEdge(1, 1)
+    graph.addEdge(2, 2)
+    expect(graph.maxMatching()).toBe(3)
+  })
 })

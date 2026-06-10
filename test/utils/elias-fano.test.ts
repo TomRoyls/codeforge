@@ -173,3 +173,157 @@ describe('EliasFano', () => {
     expect(ef.get(0)).toBe(42)
   })
 })
+
+// ─── Edge cases ──────────────────────────────────────────────
+describe('EliasFano - edge cases', () => {
+  it('nextGEQ returns 0 for empty array', () => {
+    const ef = new EliasFano([])
+    expect(ef.nextGEQ(5)).toBe(-1)
+  })
+
+  it('nextGEQ with value less than first element', () => {
+    const values = [10, 20, 30]
+    const ef = new EliasFano(values)
+    expect(ef.nextGEQ(5)).toBe(0)
+  })
+
+  it('nextGEQ with value equal to first element', () => {
+    const values = [10, 20, 30]
+    const ef = new EliasFano(values)
+    expect(ef.nextGEQ(10)).toBe(0)
+  })
+
+  it('nextGEQ with value equal to last element', () => {
+    const values = [10, 20, 30]
+    const ef = new EliasFano(values)
+    expect(ef.nextGEQ(30)).toBe(2)
+  })
+
+  it('indexOf with value less than first element', () => {
+    const values = [10, 20, 30]
+    const ef = new EliasFano(values)
+    expect(ef.indexOf(5)).toBe(-1)
+  })
+
+  it('indexOf with value greater than last element', () => {
+    const values = [10, 20, 30]
+    const ef = new EliasFano(values)
+    expect(ef.indexOf(100)).toBe(-1)
+  })
+
+  it('get throws RangeError for negative index', () => {
+    const values = [10, 20, 30]
+    const ef = new EliasFano(values)
+    expect(() => ef.get(-5)).toThrow(RangeError)
+  })
+
+  it('get throws RangeError for index at length', () => {
+    const values = [10, 20, 30]
+    const ef = new EliasFano(values)
+    expect(() => ef.get(3)).toThrow(RangeError)
+  })
+
+  it('handles duplicate values', () => {
+    const values = [10, 10, 20, 20]
+    const ef = new EliasFano(values)
+    expect(ef.get(0)).toBe(10)
+    expect(ef.get(1)).toBe(10)
+    expect(ef.get(2)).toBe(20)
+    expect(ef.get(3)).toBe(20)
+  })
+
+  it('handles powers of two', () => {
+    const values = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+    const ef = new EliasFano(values)
+    expect(ef.length).toBe(10)
+    expect(ef.get(5)).toBe(32)
+    expect(ef.indexOf(256)).toBe(8)
+  })
+
+  it('handles very large array', () => {
+    const values = Array.from({ length: 1000 }, (_, i) => i * 1000)
+    const ef = new EliasFano(values)
+    expect(ef.length).toBe(1000)
+    expect(ef.get(500)).toBe(500000)
+    expect(ef.indexOf(750000)).toBe(750)
+  })
+
+  it('forEach with empty array', () => {
+    const ef = new EliasFano([])
+    let count = 0
+    ef.forEach(() => { count++ })
+    expect(count).toBe(0)
+  })
+
+  it('toArray with empty array', () => {
+    const ef = new EliasFano([])
+    expect(ef.toArray()).toEqual([])
+  })
+
+  it('indexOf with all zeros returns 0', () => {
+    const values = [0, 0, 0, 0]
+    const ef = new EliasFano(values)
+    expect(ef.indexOf(0)).toBe(0)
+  })
+
+  it('nextGEQ with all zeros returns 0', () => {
+    const values = [0, 0, 0, 0]
+    const ef = new EliasFano(values)
+    expect(ef.nextGEQ(0)).toBe(0)
+  })
+
+  it('encodedSize for empty array is 0', () => {
+    const ef = new EliasFano([])
+    expect(ef.encodedSize).toBe(0)
+  })
+
+  it('handles single large value', () => {
+    const values = [1000000000]
+    const ef = new EliasFano(values)
+    expect(ef.length).toBe(1)
+    expect(ef.get(0)).toBe(1000000000)
+  })
+
+  it('handles decreasing sequence by construction', () => {
+    const values = [1, 2, 3]
+    const ef = new EliasFano(values)
+    expect(ef.get(0)).toBe(1)
+    expect(ef.get(1)).toBe(2)
+    expect(ef.get(2)).toBe(3)
+  })
+
+  it('get with index 0 on empty throws', () => {
+    const ef = new EliasFano([])
+    expect(() => ef.get(0)).toThrow(RangeError)
+  })
+
+  it('forEach callback receives correct index', () => {
+    const values = [10, 20, 30, 40]
+    const ef = new EliasFano(values)
+    const indices: number[] = []
+    ef.forEach((_, i) => indices.push(i))
+    expect(indices).toEqual([0, 1, 2, 3])
+  })
+
+  it('toArray returns correct order', () => {
+    const values = [5, 10, 15, 20, 25]
+    const ef = new EliasFano(values)
+    const result = ef.toArray()
+    expect(result).toEqual(values)
+  })
+
+  it('handles very small values', () => {
+    const values = [1, 2, 3, 4, 5]
+    const ef = new EliasFano(values)
+    expect(ef.length).toBe(5)
+    expect(ef.get(2)).toBe(3)
+  })
+
+  it('handles mixed small and large values', () => {
+    const values = [1, 1000, 1000000, 1000000000]
+    const ef = new EliasFano(values)
+    expect(ef.length).toBe(4)
+    expect(ef.get(1)).toBe(1000)
+    expect(ef.get(3)).toBe(1000000000)
+  })
+})

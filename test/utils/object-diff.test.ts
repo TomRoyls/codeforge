@@ -221,4 +221,220 @@ describe('object-diff', () => {
     expect(result.length).toBe(1)
     expect(result[0]!.path).toBe('[1].b')
   })
+
+  it('handles undefined values', () => {
+    const result = diff({ a: undefined }, { a: 1 })
+    expect(result.length).toBe(1)
+    expect(result[0]!.type).toBe('changed')
+    expect(result[0]!.path).toBe('a')
+  })
+
+  it('handles boolean values', () => {
+    const result = diff({ a: true }, { a: false })
+    expect(result.length).toBe(1)
+    expect(result[0]!.type).toBe('changed')
+    expect(result[0]!.oldValue).toBe(true)
+    expect(result[0]!.newValue).toBe(false)
+  })
+
+  it('handles NaN values', () => {
+    const result = diff({ a: NaN }, { a: NaN })
+    expect(result.length).toBe(1)
+  })
+
+  it('handles Infinity values', () => {
+    const result = diff({ a: Infinity }, { a: -Infinity })
+    expect(result.length).toBe(1)
+    expect(result[0]!.oldValue).toBe(Infinity)
+    expect(result[0]!.newValue).toBe(-Infinity)
+  })
+
+  it('handles empty arrays', () => {
+    const result = diff([], [1])
+    expect(result.length).toBe(1)
+    expect(result[0]!.type).toBe('added')
+  })
+
+  it('handles empty objects', () => {
+    const result = diff({}, { a: 1 })
+    expect(result.length).toBe(1)
+    expect(result[0]!.type).toBe('added')
+  })
+
+  it('handles mixed type arrays', () => {
+    const result = diff([1, 'a', true], [1, 'b', true])
+    expect(result.length).toBe(1)
+    expect(result[0]!.path).toBe('[1]')
+    expect(result[0]!.oldValue).toBe('a')
+    expect(result[0]!.newValue).toBe('b')
+  })
+
+  it('handles sparse arrays', () => {
+    const oldArr: number[] = [1, , 3]
+    const newArr: number[] = [1, 2, 3]
+    const result = diff(oldArr, newArr)
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('handles NaN values', () => {
+    const result = diff({ a: NaN }, { a: NaN })
+    expect(result.length).toBe(1)
+  })
+
+  it('handles Infinity values', () => {
+    const result = diff({ a: Infinity }, { a: -Infinity })
+    expect(result.length).toBe(1)
+    expect(result[0]!.oldValue).toBe(Infinity)
+    expect(result[0]!.newValue).toBe(-Infinity)
+  })
+
+  it('handles object with null prototype', () => {
+    const oldObj = Object.create(null)
+    oldObj.a = 1
+    const newObj = Object.create(null)
+    newObj.a = 2
+    const result = diff(oldObj, newObj)
+    expect(result.length).toBe(1)
+    expect(result[0]!.path).toBe('a')
+  })
+
+  it('handles symbol keys in objects', () => {
+    const sym = Symbol('test')
+    const result = diff({ [sym]: 1 }, { [sym]: 2 })
+    expect(result.length).toBe(0)
+  })
+
+  it('handles circular references gracefully', () => {
+    const oldObj: any = { a: 1 }
+    oldObj.self = oldObj
+    const newObj: any = { a: 1 }
+    newObj.self = newObj
+    const result = diff(oldObj, newObj)
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('handles very deep nested objects', () => {
+    const oldObj: any = { level: 0 }
+    let current = oldObj
+    for (let i = 1; i < 50; i++) {
+      current.next = { level: i }
+      current = current.next
+    }
+    const newObj: any = { level: 0 }
+    current = newObj
+    for (let i = 1; i < 50; i++) {
+      current.next = { level: i }
+      current = current.next
+    }
+    newObj.next.next.level = 999
+    const result = diff(oldObj, newObj)
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('handles very large arrays', () => {
+    const oldArr = Array(1000).fill(1)
+    const newArr = Array(1000).fill(1)
+    newArr[500] = 2
+    const result = diff(oldArr, newArr)
+    expect(result.length).toBe(1)
+    expect(result[0]!.path).toBe('[500]')
+  })
+
+  it('handles objects with many properties', () => {
+    const oldObj: Record<string, number> = {}
+    const newObj: Record<string, number> = {}
+    for (let i = 0; i < 100; i++) {
+      oldObj[`prop${i}`] = i
+      newObj[`prop${i}`] = i
+    }
+    newObj.prop50 = 999
+    const result = diff(oldObj, newObj)
+    expect(result.length).toBe(1)
+    expect(result[0]!.path).toBe('prop50')
+  })
+
+  it('handles numeric string keys', () => {
+    const result = diff({ '0': 'a', '1': 'b' }, { '0': 'a', '1': 'c' })
+    expect(result.length).toBe(1)
+    expect(result[0]!.path).toBe('1')
+  })
+
+  it('diffSummary handles empty array', () => {
+    const summary = diffSummary([])
+    expect(summary.added).toBe(0)
+    expect(summary.changed).toBe(0)
+    expect(summary.removed).toBe(0)
+    expect(summary.unchanged).toBe(0)
+    expect(summary.total).toBe(0)
+  })
+
+  it('diffSummary handles single entry', () => {
+    const entries = [{ path: 'a', type: 'added' as DiffType, oldValue: undefined, newValue: 1 }]
+    const summary = diffSummary(entries)
+    expect(summary.added).toBe(1)
+    expect(summary.total).toBe(1)
+  })
+
+  it('applyPatch handles empty patches', () => {
+    const target = { a: 1 }
+    const result = applyPatch(target, [])
+    expect(result.a).toBe(1)
+  })
+
+  it('applyPatch handles removing non-existent key', () => {
+    const target = { a: 1 }
+    const patches = [{ path: 'b', type: 'removed' as DiffType, oldValue: 2, newValue: undefined }]
+    const result = applyPatch(target, patches)
+    expect(result.a).toBe(1)
+  })
+
+  it('applyPatch handles complex nested path', () => {
+    const target = { a: { b: { c: { d: 1 } } } }
+    const patches = [{ path: 'a.b.c.d', type: 'changed' as DiffType, oldValue: 1, newValue: 2 }]
+    const result = applyPatch(target, patches)
+    expect(result.a.b.c.d).toBe(2)
+  })
+
+  it('handles array order independence with duplicates', () => {
+    const result = diff([1, 2, 2, 3], [3, 2, 1, 2], { arrayOrderMatters: false })
+    expect(result.length).toBe(0)
+  })
+
+  it('handles maxDepth of zero', () => {
+    const result = diff({ a: { b: 1 } }, { a: { b: 2 } }, { maxDepth: 0 })
+    expect(result.length).toBe(1)
+    expect(result[0]!.type).toBe('changed')
+  })
+
+  it('handles undefined vs null', () => {
+    const result = diff({ a: undefined }, { a: null })
+    expect(result.length).toBe(1)
+    expect(result[0]!.type).toBe('added')
+  })
+
+  it('handles arrays of different lengths', () => {
+    const result = diff([1, 2, 3], [1, 2])
+    expect(result.length).toBe(1)
+    expect(result[0]!.type).toBe('removed')
+  })
+
+  it('handles null vs object', () => {
+    const result = diff(null, { a: 1 })
+    expect(result.length).toBe(1)
+    expect(result[0]!.type).toBe('changed')
+  })
+
+  it('handles object with getter/setter', () => {
+    const oldObj: any = { _a: 1 }
+    Object.defineProperty(oldObj, 'a', { get() { return this._a } })
+    const newObj: any = { _a: 2 }
+    Object.defineProperty(newObj, 'a', { get() { return this._a } })
+    const result = diff(oldObj, newObj)
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('handles -0 and 0 as equal', () => {
+    const result = diff({ a: -0 }, { a: 0 })
+    expect(result.length).toBe(0)
+  })
 })

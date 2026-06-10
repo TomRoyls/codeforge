@@ -241,3 +241,174 @@ describe('MinCostFlow', () => {
     expect(result.flow).toBe(0)
   })
 })
+
+describe('MinCostFlow - error handling', () => {
+  it('throws error for negative from node', () => {
+    const mcf = new MinCostFlow(3)
+    expect(() => mcf.addEdge(-1, 0, 5, 1)).toThrow('Node -1 out of bounds')
+  })
+
+  it('throws error for from node >= nodeCount', () => {
+    const mcf = new MinCostFlow(3)
+    expect(() => mcf.addEdge(3, 0, 5, 1)).toThrow('Node 3 out of bounds')
+  })
+
+  it('throws error for negative to node', () => {
+    const mcf = new MinCostFlow(3)
+    expect(() => mcf.addEdge(0, -1, 5, 1)).toThrow('Node -1 out of bounds')
+  })
+
+  it('throws error for to node >= nodeCount', () => {
+    const mcf = new MinCostFlow(3)
+    expect(() => mcf.addEdge(0, 3, 5, 1)).toThrow('Node 3 out of bounds')
+  })
+
+  it('throws error for zero capacity', () => {
+    const mcf = new MinCostFlow(3)
+    expect(() => mcf.addEdge(0, 1, 0, 1)).toThrow('Capacity must be positive, got 0')
+  })
+
+  it('throws error for negative capacity', () => {
+    const mcf = new MinCostFlow(3)
+    expect(() => mcf.addEdge(0, 1, -5, 1)).toThrow('Capacity must be positive, got -5')
+  })
+
+  it('throws error for negative source in solve', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    expect(() => mcf.solve(-1, 1)).toThrow('Source -1 out of bounds')
+  })
+
+  it('throws error for source >= nodeCount in solve', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    expect(() => mcf.solve(3, 1)).toThrow('Source 3 out of bounds')
+  })
+
+  it('throws error for negative sink in solve', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    expect(() => mcf.solve(0, -1)).toThrow('Sink -1 out of bounds')
+  })
+
+  it('throws error for sink >= nodeCount in solve', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    expect(() => mcf.solve(0, 3)).toThrow('Sink 3 out of bounds')
+  })
+
+  it('throws error for negative edge index in getFlow', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    expect(() => mcf.getFlow(-1)).toThrow('Edge index -1 out of bounds')
+  })
+
+  it('throws error for edge index >= edgeCount in getFlow', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    expect(() => mcf.getFlow(1)).toThrow('Edge index 1 out of bounds')
+  })
+})
+
+describe('MinCostFlow - edge cases', () => {
+  it('handles negative costs', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 10, -5)
+    mcf.addEdge(1, 2, 10, -3)
+    const result = mcf.solve(0, 2)
+    expect(result.flow).toBe(10)
+    expect(result.cost).toBe(-80)
+  })
+
+  it('handles floating point capacities', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 5.5, 2)
+    const result = mcf.solve(0, 1)
+    expect(result.flow).toBeCloseTo(5.5)
+  })
+
+  it('handles floating point costs', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 10, 2.5)
+    const result = mcf.solve(0, 1)
+    expect(result.cost).toBe(25)
+  })
+
+  it('handles very large capacities', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 1000000, 1)
+    const result = mcf.solve(0, 1)
+    expect(result.flow).toBe(1000000)
+    expect(result.cost).toBe(1000000)
+  })
+
+  it('handles very small positive costs', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 10, 0.0001)
+    const result = mcf.solve(0, 1)
+    expect(result.cost).toBeCloseTo(0.001)
+  })
+
+  it('handles single node graph', () => {
+    const mcf = new MinCostFlow(1)
+    const result = mcf.solve(0, 0)
+    expect(result.flow).toBe(0)
+    expect(result.cost).toBe(0)
+  })
+
+  it('getFlow returns zero before solve', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 10, 5)
+    expect(mcf.getFlow(0)).toBe(0)
+  })
+
+  it('getFlow returns correct flow after solve', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 10, 5)
+    mcf.addEdge(1, 2, 10, 5)
+    mcf.solve(0, 2)
+    expect(mcf.getFlow(0)).toBe(10)
+    expect(mcf.getFlow(1)).toBe(10)
+  })
+
+  it('edgeCount increments correctly', () => {
+    const mcf = new MinCostFlow(3)
+    expect(mcf.edgeCount).toBe(0)
+    mcf.addEdge(0, 1, 5, 1)
+    expect(mcf.edgeCount).toBe(1)
+    mcf.addEdge(1, 2, 5, 1)
+    expect(mcf.edgeCount).toBe(2)
+  })
+
+  it('nodeCount is read-only', () => {
+    const mcf = new MinCostFlow(5)
+    expect(mcf.nodeCount).toBe(5)
+  })
+
+  it('handles multiple solve calls on same graph', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 10, 5)
+    mcf.addEdge(1, 2, 10, 5)
+    const result1 = mcf.solve(0, 2, 5)
+    expect(result1.flow).toBe(5)
+    const result2 = mcf.solve(0, 2, 5)
+    expect(result2.flow).toBe(5)
+  })
+
+  it('maxFlow of zero returns zero flow', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 10, 5)
+    const result = mcf.solve(0, 1, 0)
+    expect(result.flow).toBe(0)
+    expect(result.cost).toBe(0)
+  })
+
+  it('handles circular dependency without negative cycles', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    mcf.addEdge(1, 2, 5, 1)
+    mcf.addEdge(2, 0, 5, 1)
+    const result = mcf.solve(0, 2)
+    expect(result.flow).toBe(5)
+  })
+})

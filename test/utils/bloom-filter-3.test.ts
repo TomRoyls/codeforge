@@ -239,4 +239,272 @@ describe('BloomFilter3', () => {
     filter.add('hello')
     expect(filter.has('hello')).toBe(true)
   })
+
+  it('throws error for invalid initialCapacity', () => {
+    expect(() => new BloomFilter3({ initialCapacity: 0 })).toThrow(RangeError)
+    expect(() => new BloomFilter3({ initialCapacity: -1 })).toThrow(RangeError)
+  })
+
+  it('throws error for invalid errorRate', () => {
+    expect(() => new BloomFilter3({ errorRate: 0 })).toThrow(RangeError)
+    expect(() => new BloomFilter3({ errorRate: 1 })).toThrow(RangeError)
+    expect(() => new BloomFilter3({ errorRate: -0.1 })).toThrow(RangeError)
+    expect(() => new BloomFilter3({ errorRate: 1.5 })).toThrow(RangeError)
+  })
+
+  it('throws error for invalid maxFillRatio', () => {
+    expect(() => new BloomFilter3({ maxFillRatio: 0 })).toThrow(RangeError)
+    expect(() => new BloomFilter3({ maxFillRatio: 1 })).toThrow(RangeError)
+    expect(() => new BloomFilter3({ maxFillRatio: -0.1 })).toThrow(RangeError)
+    expect(() => new BloomFilter3({ maxFillRatio: 1.5 })).toThrow(RangeError)
+  })
+
+  it('toString returns correct format', () => {
+    const filter = new BloomFilter3({ initialCapacity: 1000 })
+    filter.add('item1')
+    filter.add('item2')
+    const str = filter.toString()
+    expect(str).toContain('BloomFilter3')
+    expect(str).toContain('partitions=')
+    expect(str).toContain('added=')
+    expect(str).toContain('2')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const filter = new BloomFilter3({ initialCapacity: 1000, errorRate: 0.01, maxFillRatio: 0.6 })
+    filter.add('item1')
+    const json = filter.toJSON()
+    expect(json).toHaveProperty('initialCapacity', 1000)
+    expect(json).toHaveProperty('baseErrorRate', 0.01)
+    expect(json).toHaveProperty('maxFillRatio', 0.6)
+    expect(json).toHaveProperty('partitions')
+    expect(json).toHaveProperty('partitionCapacities')
+    expect(json).toHaveProperty('partitionHashCounts')
+    expect(json).toHaveProperty('partitionSizes')
+    expect(json).toHaveProperty('partitionErrorRates')
+    expect(json).toHaveProperty('totalAdded', 1)
+  })
+
+  it('clone creates independent copy', () => {
+    const original = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01 })
+    original.add('item1')
+    original.add('item2')
+
+    const clone = original.clone()
+
+    expect(clone).not.toBe(original)
+    expect(clone.has('item1')).toBe(true)
+    expect(clone.has('item2')).toBe(true)
+
+    original.add('item3')
+    expect(clone.has('item3')).toBe(false)
+  })
+
+  it('equals returns true for identical filters', () => {
+    const filter1 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01 })
+    filter1.add('item1')
+    filter1.add('item2')
+
+    const filter2 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01 })
+    filter2.add('item1')
+    filter2.add('item2')
+
+    expect(filter1.equals(filter2)).toBe(true)
+  })
+
+  it('equals returns false for different filters', () => {
+    const filter1 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01 })
+    filter1.add('item1')
+
+    const filter2 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01 })
+    filter2.add('item2')
+
+    expect(filter1.equals(filter2)).toBe(false)
+  })
+
+  it('equals returns false for non-BloomFilter3 objects', () => {
+    const filter = new BloomFilter3()
+    expect(filter.equals(null)).toBe(false)
+    expect(filter.equals(undefined)).toBe(false)
+    expect(filter.equals({})).toBe(false)
+    expect(filter.equals(123)).toBe(false)
+  })
+
+  it('equals returns false for different configurations', () => {
+    const filter1 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01 })
+    const filter2 = new BloomFilter3({ initialCapacity: 200, errorRate: 0.01 })
+    expect(filter1.equals(filter2)).toBe(false)
+
+    const filter3 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.02 })
+    expect(filter1.equals(filter3)).toBe(false)
+
+    const filter4 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01, maxFillRatio: 0.7 })
+    expect(filter1.equals(filter4)).toBe(false)
+  })
+
+  it('clone preserves all properties', () => {
+    const original = new BloomFilter3({ initialCapacity: 500, errorRate: 0.005, maxFillRatio: 0.7 })
+    original.add('a')
+    original.add('b')
+    original.add('c')
+
+    const clone = original.clone()
+
+    expect(clone.initialCapacity).toBe(original.initialCapacity)
+    expect(clone.baseErrorRate).toBe(original.baseErrorRate)
+    expect(clone.maxFillRatio).toBe(original.maxFillRatio)
+    expect(clone.estimatedSize).toBe(original.estimatedSize)
+    expect(clone.partitionCount).toBe(original.partitionCount)
+    expect(clone.capacity).toBe(original.capacity)
+  })
+
+  it('clone after clear works correctly', () => {
+    const original = new BloomFilter3()
+    original.add('item1')
+    original.add('item2')
+    original.clear()
+
+    const clone = original.clone()
+
+    expect(clone.estimatedSize).toBe(0)
+    expect(clone.has('item1')).toBe(false)
+    expect(clone.has('item2')).toBe(false)
+  })
+
+  it('toJSON partitions are arrays', () => {
+    const filter = new BloomFilter3()
+    const json = filter.toJSON()
+    expect(Array.isArray(json.partitions)).toBe(true)
+    if (json.partitions.length > 0) {
+      expect(Array.isArray(json.partitions[0])).toBe(true)
+    }
+  })
+
+  it('toString shows correct partition count', () => {
+    const filter = new BloomFilter3({ initialCapacity: 10, maxFillRatio: 0.5 })
+
+    for (let i = 0; i < 20; i++) {
+      filter.add(`item${i}`)
+    }
+
+    const str = filter.toString()
+    expect(str).toContain(`partitions=${filter.partitionCount}`)
+  })
+
+  it('toString shows correct added count', () => {
+    const filter = new BloomFilter3()
+    filter.add('a')
+    filter.add('b')
+    filter.add('c')
+
+    const str = filter.toString()
+    expect(str).toContain('added=3')
+  })
+
+  it('handles very small errorRate', () => {
+    const filter = new BloomFilter3({ initialCapacity: 1000, errorRate: 0.0001 })
+    filter.add('item1')
+    expect(filter.has('item1')).toBe(true)
+  })
+
+  it('handles very small maxFillRatio', () => {
+    const filter = new BloomFilter3({ initialCapacity: 100, maxFillRatio: 0.1 })
+
+    for (let i = 0; i < 50; i++) {
+      filter.add(`item${i}`)
+    }
+
+    expect(filter.partitionCount).toBeGreaterThan(1)
+  })
+
+  it('handles very large initialCapacity', () => {
+    const filter = new BloomFilter3({ initialCapacity: 1000000 })
+    expect(filter.capacity).toBeGreaterThan(0)
+  })
+
+  it('empty string item works', () => {
+    const filter = new BloomFilter3()
+    filter.add('')
+    expect(filter.has('')).toBe(true)
+  })
+
+  it('handles special characters in items', () => {
+    const filter = new BloomFilter3()
+    filter.add('item\nwith\nnewlines')
+    filter.add('item\twith\ttabs')
+    filter.add('item with spaces')
+    expect(filter.has('item\nwith\nnewlines')).toBe(true)
+    expect(filter.has('item\twith\ttabs')).toBe(true)
+    expect(filter.has('item with spaces')).toBe(true)
+  })
+
+  it('handles emoji characters', () => {
+    const filter = new BloomFilter3()
+    filter.add('😀')
+    filter.add('🎉')
+    filter.add('🚀')
+    expect(filter.has('😀')).toBe(true)
+    expect(filter.has('🎉')).toBe(true)
+    expect(filter.has('🚀')).toBe(true)
+  })
+
+  it('clone modifications do not affect original', () => {
+    const original = new BloomFilter3()
+    original.add('item1')
+
+    const clone = original.clone()
+    clone.add('item2')
+    clone.clear()
+
+    expect(original.has('item1')).toBe(true)
+    expect(original.has('item2')).toBe(false)
+  })
+
+  it('equals returns true for empty filters with same config', () => {
+    const filter1 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01 })
+    const filter2 = new BloomFilter3({ initialCapacity: 100, errorRate: 0.01 })
+    expect(filter1.equals(filter2)).toBe(true)
+  })
+
+  it('toJSON after multiple partitions works correctly', () => {
+    const filter = new BloomFilter3({ initialCapacity: 10, maxFillRatio: 0.5 })
+
+    for (let i = 0; i < 50; i++) {
+      filter.add(`item${i}`)
+    }
+
+    const json = filter.toJSON()
+    expect(json.partitions.length).toBe(filter.partitionCount)
+    expect(json.totalAdded).toBe(50)
+  })
+
+  it('handles items with only numbers', () => {
+    const filter = new BloomFilter3()
+    filter.add('12345')
+    filter.add('67890')
+    expect(filter.has('12345')).toBe(true)
+    expect(filter.has('67890')).toBe(true)
+  })
+
+  it('handles items with mixed content', () => {
+    const filter = new BloomFilter3()
+    filter.add('user-123@example.com')
+    filter.add('https://example.com/path?query=1')
+    expect(filter.has('user-123@example.com')).toBe(true)
+    expect(filter.has('https://example.com/path?query=1')).toBe(true)
+  })
+
+  it('clear reduces partition count to 1', () => {
+    const filter = new BloomFilter3({ initialCapacity: 10, maxFillRatio: 0.5 })
+
+    for (let i = 0; i < 50; i++) {
+      filter.add(`item${i}`)
+    }
+
+    const partitionsBefore = filter.partitionCount
+    filter.clear()
+
+    expect(filter.partitionCount).toBe(1)
+    expect(filter.partitionCount).toBeLessThan(partitionsBefore)
+  })
 })

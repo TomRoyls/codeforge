@@ -161,4 +161,157 @@ describe('FenwickTree2D', () => {
     const tree = new FenwickTree2D(3, 3);
     expect(tree.query(2, 2)).toBe(0);
   });
+
+  describe('FenwickTree2D toString', () => {
+    it('returns correct format for empty', () => {
+      const tree = new FenwickTree2D(3, 3);
+      expect(tree.toString()).toBe('FenwickTree2D(3x3)');
+    });
+
+    it('returns correct format for non-square', () => {
+      const tree = new FenwickTree2D(2, 5);
+      expect(tree.toString()).toBe('FenwickTree2D(2x5)');
+    });
+
+    it('returns correct format for zero dimensions', () => {
+      const tree = new FenwickTree2D(0, 0);
+      expect(tree.toString()).toBe('FenwickTree2D(0x0)');
+    });
+  });
+
+  describe('FenwickTree2D toJSON', () => {
+    it('returns structure with rows, cols, data', () => {
+      const tree = new FenwickTree2D(2, 2);
+      tree.update(0, 0, 5);
+      const json = tree.toJSON();
+      expect(json.rows).toBe(2);
+      expect(json.cols).toBe(2);
+      expect(json.data[0][0]).toBe(5);
+    });
+
+    it('returns zero-filled data for untouched tree', () => {
+      const tree = new FenwickTree2D(2, 2);
+      const json = tree.toJSON();
+      expect(json.data).toEqual([[0, 0], [0, 0]]);
+    });
+
+    it('includes all updates in data', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(0, 0, 1);
+      tree.update(1, 1, 2);
+      tree.update(2, 2, 3);
+      const json = tree.toJSON();
+      expect(json.data[0][0]).toBe(1);
+      expect(json.data[1][1]).toBe(2);
+      expect(json.data[2][2]).toBe(3);
+    });
+  });
+
+  describe('FenwickTree2D clone', () => {
+    it('creates independent copy', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(1, 1, 10);
+      const copy = tree.clone();
+      expect(copy.get(1, 1)).toBe(10);
+    });
+
+    it('modifications to clone do not affect original', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(0, 0, 5);
+      const copy = tree.clone();
+      copy.update(0, 0, 100);
+      expect(tree.get(0, 0)).toBe(5);
+      expect(copy.get(0, 0)).toBe(105);
+    });
+
+    it('clone preserves dimensions', () => {
+      const tree = new FenwickTree2D(4, 7);
+      const copy = tree.clone();
+      expect(copy.rows).toBe(4);
+      expect(copy.cols).toBe(7);
+    })
+
+    it('clone of empty tree is empty', () => {
+      const tree = new FenwickTree2D(3, 3);
+      const copy = tree.clone()
+      expect(copy.equals(tree)).toBe(true)
+    })
+  });
+
+  describe('FenwickTree2D equals', () => {
+    it('empty trees with same dimensions are equal', () => {
+      const a = new FenwickTree2D(3, 3);
+      const b = new FenwickTree2D(3, 3);
+      expect(a.equals(b)).toBe(true);
+    });
+
+    it('same data are equal', () => {
+      const a = new FenwickTree2D(2, 2);
+      const b = new FenwickTree2D(2, 2);
+      a.update(0, 0, 5);
+      a.update(1, 1, 10);
+      b.update(0, 0, 5);
+      b.update(1, 1, 10);
+      expect(a.equals(b)).toBe(true);
+    });
+
+    it('different dimensions are not equal', () => {
+      const a = new FenwickTree2D(2, 3);
+      const b = new FenwickTree2D(3, 2);
+      expect(a.equals(b)).toBe(false);
+    });
+
+    it('different data are not equal', () => {
+      const a = new FenwickTree2D(2, 2);
+      const b = new FenwickTree2D(2, 2);
+      a.update(0, 0, 5);
+      b.update(0, 0, 99);
+      expect(a.equals(b)).toBe(false);
+    });
+
+    it('returns false for non-FenwickTree2D', () => {
+      const tree = new FenwickTree2D(2, 2);
+      expect(tree.equals(null)).toBe(false);
+      expect(tree.equals(undefined)).toBe(false);
+      expect(tree.equals({})).toBe(false);
+    });
+
+    it('self equals self', () => {
+      const tree = new FenwickTree2D(2, 2);
+      tree.update(0, 0, 42);
+      expect(tree.equals(tree)).toBe(true);
+    });
+  });
+
+  describe('FenwickTree2D edge cases', () => {
+    it('handles many updates at same position', () => {
+      const tree = new FenwickTree2D(3, 3);
+      for (let i = 0; i < 100; i++) {
+        tree.update(1, 1, 1);
+      }
+      expect(tree.get(1, 1)).toBe(100);
+    });
+
+    it('handles alternating positive negative updates', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(0, 0, 10);
+      tree.update(0, 0, -10);
+      expect(tree.get(0, 0)).toBe(0);
+    });
+
+    it('range query on full grid returns total sum', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(0, 0, 1);
+      tree.update(1, 1, 2);
+      tree.update(2, 2, 3);
+      expect(tree.rangeQuery(0, 0, 2, 2)).toBe(6);
+    });
+
+    it('set overwrites previous value', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(1, 1, 10);
+      tree.set(1, 1, 5);
+      expect(tree.get(1, 1)).toBe(5);
+    });
+  });
 });
