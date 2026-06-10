@@ -124,4 +124,10 @@ export class SegmentTree {
   toJSON() {
     return { type: 'SegmentTree', items: this.toArray() }
   }
+
+  clear(): void {
+    this.size = 0
+    this.data.length = 0
+    this.tree.length = 0
+  }
 }

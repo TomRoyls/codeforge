@@ -138,4 +138,9 @@ export class LazySegmentTree {
   isEmpty(): boolean {
     return this.n === 0
   }
+
+  clear(): void {
+    this.n = 0
+    this.tree.length = 0
+  }
 }

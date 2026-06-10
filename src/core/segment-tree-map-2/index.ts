@@ -151,4 +151,5 @@ export class SegmentTreeMap2 {
   toJSON() {
     return { type: 'SegmentTreeMap2', size: this.size, items: this.toArray() }
   }
+
 }
