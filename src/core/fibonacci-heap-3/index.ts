@@ -1258,6 +1258,10 @@ export class FibonacciHeap3<T = number> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

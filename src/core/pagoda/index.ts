@@ -974,6 +974,10 @@ export class Pagoda<T = number> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { PagodaOptions, PagodaNode } from './types.js'

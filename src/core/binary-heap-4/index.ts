@@ -1058,4 +1058,8 @@ export class BinaryHeap<T> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }

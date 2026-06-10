@@ -1159,6 +1159,10 @@ export class BootstrappedHeap<T = number> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

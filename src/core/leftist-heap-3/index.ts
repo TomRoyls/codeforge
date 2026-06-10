@@ -1096,6 +1096,10 @@ export class LeftistHeap3<T = number> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

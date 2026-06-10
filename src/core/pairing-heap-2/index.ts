@@ -1259,6 +1259,10 @@ export class PairingHeap2<T> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { PairingHeap2Options, PairingHeap2Node, Comparator, ForEachCallback } from './types.js'

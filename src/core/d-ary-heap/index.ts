@@ -1108,6 +1108,10 @@ export class DAryHeap<T = number> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { DAryHeapOptions } from './types.js'

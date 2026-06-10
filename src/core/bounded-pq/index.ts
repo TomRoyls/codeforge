@@ -1051,6 +1051,10 @@ export class BoundedPriorityQueue<T> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

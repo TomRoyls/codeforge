@@ -1140,6 +1140,10 @@ export class ChunkedArray<T = unknown> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

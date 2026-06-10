@@ -958,6 +958,10 @@ export class WaveletStack<T = unknown> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { WaveletStackOptions } from './types.js'

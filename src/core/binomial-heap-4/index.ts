@@ -1243,4 +1243,8 @@ export class BinomialHeap4<T = unknown> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }

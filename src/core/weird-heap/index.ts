@@ -1219,6 +1219,10 @@ export class WeirdHeap<T = unknown> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export { DEFAULT_WEIRD_HEAP_OPTIONS } from './types.js'

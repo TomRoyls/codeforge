@@ -1094,6 +1094,10 @@ export class CoverTree<T = number> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

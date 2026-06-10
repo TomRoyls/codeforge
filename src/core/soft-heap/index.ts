@@ -1117,6 +1117,10 @@ export class SoftHeap<T = unknown> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

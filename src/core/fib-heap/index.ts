@@ -1221,6 +1221,10 @@ export class FibHeap<T = number> {
     }
     return result
   }
+
+  enumerate(): [number, T][] {
+    return this.toArray().map((item, i) => [i, item] as [number, T])
+  }
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'
