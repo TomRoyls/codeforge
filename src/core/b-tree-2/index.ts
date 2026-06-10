@@ -660,4 +660,17 @@ export class BTree2<T> {
   pipe<U>(transform: (items: T[]) => U[]): U[] {
     return transform(this.toArray())
   }
+
+  reduceWhile<U>(
+    predicate: (acc: U) => boolean,
+    reducer: (acc: U, item: T) => U,
+    initialValue: U
+  ): U {
+    let acc = initialValue
+    for (const item of this.toArray()) {
+      if (!predicate(acc)) break
+      acc = reducer(acc, item)
+    }
+    return acc
+  }
 }
