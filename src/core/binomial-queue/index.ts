@@ -636,6 +636,12 @@ export class BinomialQueue<T = number> {
   toReversed(): T[] {
     return [...this.toArray()].reverse()
   }
+
+  toSpliced(start: number, deleteCount?: number): T[] {
+    const arr = this.toArray()
+    arr.splice(start, deleteCount ?? arr.length - start)
+    return arr
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

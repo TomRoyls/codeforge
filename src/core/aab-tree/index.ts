@@ -486,4 +486,10 @@ export class AABTree<T> {
   toSorted(compareFn?: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  toSpliced(start: number, deleteCount?: number): T[] {
+    const arr = this.toArray()
+    arr.splice(start, deleteCount ?? arr.length - start)
+    return arr
+  }
 }
