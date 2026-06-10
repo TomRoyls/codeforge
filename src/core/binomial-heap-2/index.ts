@@ -592,6 +592,12 @@ export class BinomialHeap<T = number> {
     const set = new Set(other)
     return this.toArray().some(item => set.has(item))
   }
+
+  difference(other: Iterable<T>): T[] {
+    const exclude = new Set(other)
+    return this.toArray().filter(item => !exclude.has(item))
+  }
+
 }
 
 export type { BinomialHeapOptions 
