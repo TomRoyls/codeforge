@@ -225,4 +225,128 @@ describe('HierarchicalTimer', () => {
     timer.end('a')
     expect(timer.totalTime).toBeGreaterThanOrEqual(0)
   })
+
+  it('toString returns descriptive string', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('test')
+    timer.end('test')
+    expect(timer.toString()).toBe('HierarchicalTimer(1 roots)')
+  })
+
+  it('toString with no results', () => {
+    const timer = new HierarchicalTimer()
+    expect(timer.toString()).toBe('HierarchicalTimer(0 roots)')
+  })
+
+  it('toJSON returns root children', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('test')
+    timer.end('test')
+    const json = timer.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect((json as TimerNode[])[0]!.name).toBe('test')
+  })
+
+  it('clone produces independent copy', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('test')
+    timer.end('test')
+    const c = timer.clone()
+    expect(c.results.length).toBe(1)
+    expect(c.results[0]!.name).toBe('test')
+    timer.clear()
+    expect(c.results.length).toBe(1)
+  })
+
+  it('equals returns true for same timings', () => {
+    const t1 = new HierarchicalTimer()
+    t1.start('test')
+    t1.end('test')
+    const t2 = t1.clone()
+    expect(t1.equals(t2)).toBe(true)
+  })
+
+  it('equals returns false for different timings', () => {
+    const t1 = new HierarchicalTimer()
+    t1.start('a')
+    t1.end('a')
+    const t2 = new HierarchicalTimer()
+    t2.start('b')
+    t2.end('b')
+    expect(t1.equals(t2)).toBe(false)
+  })
+
+  it('equals returns false for non-HierarchicalTimer', () => {
+    const timer = new HierarchicalTimer()
+    expect(timer.equals(null)).toBe(false)
+    expect(timer.equals({})).toBe(false)
+  })
+
+  it('measure returns function result even when null', () => {
+    const timer = new HierarchicalTimer()
+    const result = timer.measure('test', () => null)
+    expect(result).toBeNull()
+    expect(timer.results.length).toBe(1)
+  })
+
+  it('measureAsync returns async result', async () => {
+    const timer = new HierarchicalTimer()
+    const result = await timer.measureAsync('test', async () => 'hello')
+    expect(result).toBe('hello')
+  })
+
+  it('handles deeply nested structure', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('l1')
+    timer.start('l2')
+    timer.start('l3')
+    timer.start('l4')
+    timer.end('l4')
+    timer.end('l3')
+    timer.end('l2')
+    timer.end('l1')
+    const formatted = timer.format()
+    expect(formatted).toContain('l1:')
+    expect(formatted).toContain('l4:')
+  })
+
+  it('flatDurations includes nested children', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('parent')
+    timer.start('child-a')
+    timer.end('child-a')
+    timer.start('child-b')
+    timer.end('child-b')
+    timer.end('parent')
+    const flat = timer.flatDurations
+    expect(flat.has('parent')).toBe(true)
+    expect(flat.has('child-a')).toBe(true)
+    expect(flat.has('child-b')).toBe(true)
+  })
+
+  it('clear resets stack and results', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('test')
+    timer.clear()
+    expect(timer.isEmpty).toBe(true)
+    expect(timer.totalTime).toBe(0)
+  })
+
+  it('disabled timer ignores all operations', () => {
+    const timer = new HierarchicalTimer({ enabled: false })
+    timer.measure('test', () => 42)
+    expect(timer.isEmpty).toBe(true)
+  })
+
+  it('end returns TimerNode with correct properties', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('test')
+    const node = timer.end('test')
+    expect(node).toBeDefined()
+    expect(node!.name).toBe('test')
+    expect(node!.startTime).toBeGreaterThan(0)
+    expect(node!.endTime).toBeGreaterThanOrEqual(node!.startTime)
+    expect(node!.duration).toBeGreaterThanOrEqual(0)
+    expect(node!.children).toEqual([])
+  })
 })
