@@ -686,4 +686,8 @@ export class RingBuffer6<T> {
     if (idx === -1) return [[...arr], []]
     return [arr.slice(0, idx), arr.slice(idx)]
   }
+
+  satisfies<S extends T>(guard: (item: T) => item is S): this is { toArray(): S[] } {
+    return this.every(guard)
+  }
 }

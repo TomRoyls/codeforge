@@ -856,6 +856,10 @@ export class CoverTree<T = number> {
     if (idx === -1) return [[...arr], []]
     return [arr.slice(0, idx), arr.slice(idx)]
   }
+
+  satisfies<S extends T>(guard: (item: T) => item is S): this is { toArray(): S[] } {
+    return this.every(guard)
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'
