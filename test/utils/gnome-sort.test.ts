@@ -74,39 +74,64 @@ describe('GnomeSort', () => {
     expect(GnomeSort.sort([5, 5, 5])).toEqual([5, 5, 5])
   })
 
-  it('handles empty array', () => {
-    expect(GnomeSort.sort([])).toEqual([])
+  it('sortInPlace with empty array does nothing', () => {
+    const arr: number[] = []
+    GnomeSort.sortInPlace(arr)
+    expect(arr).toEqual([])
   })
 
-  it('sorts already sorted array', () => {
-    expect(GnomeSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
+  it('sortInPlace with single element', () => {
+    const arr = [7]
+    GnomeSort.sortInPlace(arr)
+    expect(arr).toEqual([7])
   })
 
-  it('handles empty array', () => {
-    expect(GnomeSort.sort([])).toEqual([])
+  it('sortInPlace with already sorted', () => {
+    const arr = [1, 2, 3]
+    GnomeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
   })
 
-  it('handles single element', () => {
-    expect(GnomeSort.sort([42])).toEqual([42])
+  it('sortInPlace with reverse sorted', () => {
+    const arr = [3, 2, 1]
+    GnomeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
   })
 
-  it('handles already sorted', () => {
-    expect(GnomeSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  it('handles floating point numbers', () => {
+    expect(GnomeSort.sort([1.5, 0.3, 2.1, 0.3])).toEqual([0.3, 0.3, 1.5, 2.1])
   })
 
-  it('handles reverse sorted', () => {
-    expect(GnomeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  it('handles mix of positive and negative', () => {
+    expect(GnomeSort.sort([3, -1, 0, -5, 2])).toEqual([-5, -1, 0, 2, 3])
   })
 
-  it('handles single element', () => {
-    expect(GnomeSort.sort([42])).toEqual([42])
+  it('sortWithComparator does not modify original', () => {
+    const arr = [3, 1, 2]
+    GnomeSort.sortWithComparator(arr, (a, b) => a - b)
+    expect(arr).toEqual([3, 1, 2])
   })
 
-  it('handles reverse sorted', () => {
-    expect(GnomeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  it('sortWithComparator with empty array', () => {
+    expect(GnomeSort.sortWithComparator([], (a, b) => a - b)).toEqual([])
   })
 
-  it('handles empty array', () => {
-    expect(GnomeSort.sort([])).toEqual([])
+  it('sortWithComparator preserves duplicates', () => {
+    const result = GnomeSort.sortWithComparator([2, 1, 2, 1], (a, b) => a - b)
+    expect(result).toEqual([1, 1, 2, 2])
+  })
+
+  it('sortWithComparator with complex objects', () => {
+    const items = [{ name: 'c', v: 3 }, { name: 'a', v: 1 }, { name: 'b', v: 2 }]
+    const result = GnomeSort.sortWithComparator(items, (a, b) => a.v - b.v)
+    expect(result.map(x => x.name)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('handles array with zeros', () => {
+    expect(GnomeSort.sort([0, -1, 0, 1])).toEqual([-1, 0, 0, 1])
+  })
+
+  it('handles very large numbers', () => {
+    expect(GnomeSort.sort([Number.MAX_VALUE, 0, -Number.MAX_VALUE])).toEqual([-Number.MAX_VALUE, 0, Number.MAX_VALUE])
   })
 })
