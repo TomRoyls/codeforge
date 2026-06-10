@@ -462,6 +462,8 @@ export class FibHeap<T = number> {
     this.clear()
     return items
   }
+
+
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'

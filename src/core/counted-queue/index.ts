@@ -284,4 +284,5 @@ export class CountedQueue<T> {
     this.clear()
     return items
   }
+
 }

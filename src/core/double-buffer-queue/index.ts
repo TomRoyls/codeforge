@@ -177,4 +177,5 @@ export class DoubleBufferQueue<T> {
     this.clear()
     return items
   }
+
 }

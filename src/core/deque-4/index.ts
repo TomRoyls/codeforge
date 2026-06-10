@@ -311,4 +311,5 @@ export class Deque4<T> {
     this.clear()
     return items
   }
+
 }

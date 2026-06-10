@@ -243,6 +243,7 @@ export class HalvingHeap<T> {
     this.clear()
     return items
   }
+
 }
 
 export type { HalvingHeapOptions } from './types.js';

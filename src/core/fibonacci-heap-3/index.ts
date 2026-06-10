@@ -500,6 +500,7 @@ export class FibonacciHeap3<T = number> {
     this.clear()
     return items
   }
+
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

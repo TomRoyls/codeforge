@@ -461,6 +461,8 @@ export class FibonacciHeap<T = number> {
     this.clear()
     return items
   }
+
+
 }
 
 export type { FibonacciHeapOptions, FibonacciHeapNode } from './types.js'

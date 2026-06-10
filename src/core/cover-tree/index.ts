@@ -326,6 +326,8 @@ export class CoverTree<T = number> {
     this.clear()
     return items
   }
+
+
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

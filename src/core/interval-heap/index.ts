@@ -363,6 +363,7 @@ export class IntervalHeap<T> {
     this.clear()
     return items
   }
+
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

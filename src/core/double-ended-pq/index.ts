@@ -368,6 +368,8 @@ export class DoubleEndedPQ<T = number> {
     this.clear()
     return items
   }
+
+
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

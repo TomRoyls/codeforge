@@ -369,4 +369,13 @@ export class DoublyLinkedList4<T> {
     this.clear()
     return items
   }
+
+
+  drainN(n: number): T[] {
+    const result: T[] = []
+    for (let i = 0; i < n && this.size > 0; i++) {
+      result.push(this.pop()!)
+    }
+    return result
+  }
 }

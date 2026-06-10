@@ -300,4 +300,5 @@ export class CircularDeque2<T = unknown> {
     this.clear()
     return items
   }
+
 }

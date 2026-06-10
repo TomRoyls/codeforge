@@ -325,6 +325,7 @@ export class GallopingHeap<T> {
     this.clear()
     return items
   }
+
 }
 
 export type { GallopingHeapNode };

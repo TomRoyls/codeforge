@@ -329,6 +329,15 @@ export class ChunkedArray<T = unknown> {
     this.clear()
     return items
   }
+
+
+  drainN(n: number): T[] {
+    const result: T[] = []
+    for (let i = 0; i < n && this.size > 0; i++) {
+      result.push(this.pop()!)
+    }
+    return result
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
