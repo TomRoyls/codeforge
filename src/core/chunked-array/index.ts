@@ -557,6 +557,10 @@ export class ChunkedArray<T = unknown> {
     }
     return counts
   }
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

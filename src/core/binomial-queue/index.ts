@@ -689,6 +689,10 @@ export class BinomialQueue<T = number> {
     return result
   }
 
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

@@ -482,6 +482,10 @@ export class BoundedPriorityQueue<T> {
     return result
   }
 
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

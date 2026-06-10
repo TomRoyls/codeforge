@@ -353,4 +353,8 @@ export class CircularBuffer3<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }

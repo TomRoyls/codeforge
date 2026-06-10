@@ -536,4 +536,8 @@ export class CartesianTree<T> {
     }
     return counts
   }
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }

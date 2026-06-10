@@ -1007,6 +1007,10 @@ export class CatenableDeque<T> {
     }
     return counts
   }
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

@@ -489,4 +489,8 @@ export class BinaryHeap<T> {
     return result
   }
 
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }

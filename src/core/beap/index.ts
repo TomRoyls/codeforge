@@ -513,6 +513,10 @@ toString(): string {
     return result
   }
 
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }
 
 export type { BeapOptions

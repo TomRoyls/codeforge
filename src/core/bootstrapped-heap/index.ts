@@ -576,6 +576,10 @@ export class BootstrappedHeap<T = number> {
     return result
   }
 
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'
