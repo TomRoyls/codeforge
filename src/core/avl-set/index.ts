@@ -631,4 +631,15 @@ export class AVLSet<T = number> {
       callback(arr[i]!, i)
     }
   }
+
+  filterMap<U>(fn: (item: T) => U | undefined): U[] {
+    const result: U[] = []
+    for (const item of this.toArray()) {
+      const mapped = fn(item)
+      if (mapped !== undefined) {
+        result.push(mapped)
+      }
+    }
+    return result
+  }
 }
