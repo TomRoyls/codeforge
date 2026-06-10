@@ -470,6 +470,14 @@ export class PersistentStack2<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    while (this.pop() !== undefined) {
+      // continue until empty
+    }
+    return items
+  }
 }
 
 interface Node<T> {
