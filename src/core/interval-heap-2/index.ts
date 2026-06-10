@@ -785,4 +785,21 @@ export class IntervalHeap<T> {
     }
     return result
   }
+
+  rotate(n: number): T[] {
+    const arr = this.toArray()
+    if (arr.length === 0) return []
+    const k = ((n % arr.length) + arr.length) % arr.length
+    return [...arr.slice(k), ...arr.slice(0, k)]
+  }
+
+  dot(this: { toArray(): number[] }, other: number[]): number {
+    const a = this.toArray()
+    const len = Math.min(a.length, other.length)
+    let sum = 0
+    for (let i = 0; i < len; i++) {
+      sum += a[i]! * other[i]!
+    }
+    return sum
+  }
 }
