@@ -435,6 +435,12 @@ export class BoundedPriorityQueue<T> {
     arr.splice(start, deleteCount ?? arr.length - start)
     return arr
   }
+
+  with(index: number, value: T): T[] {
+    const arr = [...this.toArray()]
+    arr[index] = value
+    return arr
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

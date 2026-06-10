@@ -395,4 +395,10 @@ export class CacheObliviousArray<T> {
     arr.splice(start, deleteCount ?? arr.length - start)
     return arr
   }
+
+  with(index: number, value: T): T[] {
+    const arr = [...this.toArray()]
+    arr[index] = value
+    return arr
+  }
 }
