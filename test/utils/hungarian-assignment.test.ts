@@ -239,4 +239,292 @@ describe('HungarianAssignment', () => {
     const result = ha.solve()
     expect(result.totalCost).toBe(2)
   })
+
+  it('toString returns correct format', () => {
+    const ha = new HungarianAssignment(3, 4)
+    expect(ha.toString()).toBe('HungarianAssignment(3x4)')
+  })
+
+  it('toString works for 1x1', () => {
+    const ha = new HungarianAssignment(1, 1)
+    expect(ha.toString()).toBe('HungarianAssignment(1x1)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 2)
+    ha.setCost(1, 0, 3)
+    ha.setCost(1, 1, 4)
+    const json = ha.toJSON()
+    expect(json).toEqual({
+      n: 2,
+      m: 2,
+      cost: [
+        [1, 2],
+        [3, 4],
+      ],
+    })
+  })
+
+  it('toJSON with zero costs', () => {
+    const ha = new HungarianAssignment(2, 2)
+    const json = ha.toJSON()
+    expect(json.cost).toEqual([
+      [0, 0],
+      [0, 0],
+    ])
+  })
+
+  it('clone creates independent copy', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 100)
+    ha.setCost(1, 0, 100)
+    ha.setCost(1, 1, 1)
+    const cloned = ha.clone()
+    cloned.setCost(0, 0, 100)
+    cloned.setCost(1, 1, 100)
+    const result1 = ha.solve()
+    const result2 = cloned.solve()
+    expect(result1.totalCost).toBe(2)
+    expect(result2.totalCost).toBe(200)
+  })
+
+  it('clone preserves dimensions and costs', () => {
+    const ha = new HungarianAssignment(3, 3)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        ha.setCost(i, j, i * 3 + j + 1)
+      }
+    }
+    const cloned = ha.clone()
+    const result1 = ha.solve()
+    const result2 = cloned.solve()
+    expect(result1.totalCost).toEqual(result2.totalCost)
+  })
+
+  it('equals returns true for identical matrices', () => {
+    const ha1 = new HungarianAssignment(2, 2)
+    const ha2 = new HungarianAssignment(2, 2)
+    ha1.setCost(0, 0, 1)
+    ha1.setCost(0, 1, 2)
+    ha1.setCost(1, 0, 3)
+    ha1.setCost(1, 1, 4)
+    ha2.setCost(0, 0, 1)
+    ha2.setCost(0, 1, 2)
+    ha2.setCost(1, 0, 3)
+    ha2.setCost(1, 1, 4)
+    expect(ha1.equals(ha2)).toBe(true)
+  })
+
+  it('equals returns false for different dimensions', () => {
+    const ha1 = new HungarianAssignment(2, 2)
+    const ha2 = new HungarianAssignment(2, 3)
+    expect(ha1.equals(ha2)).toBe(false)
+  })
+
+  it('equals returns false for different costs', () => {
+    const ha1 = new HungarianAssignment(2, 2)
+    const ha2 = new HungarianAssignment(2, 2)
+    ha1.setCost(0, 0, 1)
+    ha2.setCost(0, 0, 2)
+    expect(ha1.equals(ha2)).toBe(false)
+  })
+
+  it('equals returns false for non-HungarianAssignment', () => {
+    const ha = new HungarianAssignment(2, 2)
+    expect(ha.equals(null)).toBe(false)
+    expect(ha.equals(undefined)).toBe(false)
+    expect(ha.equals({})).toBe(false)
+    expect(ha.equals('string')).toBe(false)
+  })
+
+  it('equals returns true for empty matrices', () => {
+    const ha1 = new HungarianAssignment(2, 2)
+    const ha2 = new HungarianAssignment(2, 2)
+    expect(ha1.equals(ha2)).toBe(true)
+  })
+
+  it('clone equals original', () => {
+    const ha = new HungarianAssignment(3, 3)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        ha.setCost(i, j, i * 3 + j + 1)
+      }
+    }
+    const cloned = ha.clone()
+    expect(ha.equals(cloned)).toBe(true)
+  })
+
+  it('handles 4x4 matrix', () => {
+    const ha = new HungarianAssignment(4, 4)
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        ha.setCost(i, j, Math.abs(i - j) + 1)
+      }
+    }
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBe(4)
+  })
+
+  it('handles 5x5 matrix', () => {
+    const ha = new HungarianAssignment(5, 5)
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        ha.setCost(i, j, Math.abs(i - j) + 1)
+      }
+    }
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBe(5)
+  })
+
+  it('handles negative costs', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, -5)
+    ha.setCost(0, 1, 1)
+    ha.setCost(1, 0, 1)
+    ha.setCost(1, 1, -5)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBe(-10)
+  })
+
+  it('handles floating point costs', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1.5)
+    ha.setCost(0, 1, 2.5)
+    ha.setCost(1, 0, 2.5)
+    ha.setCost(1, 1, 1.5)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBeCloseTo(3.0, 5)
+  })
+
+  it('greedy with 4x4 matrix', () => {
+    const ha = new HungarianAssignment(4, 4)
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        ha.setCost(i, j, i * 4 + j + 1)
+      }
+    }
+    const { totalCost } = ha.solveGreedy()
+    expect(totalCost).toBeLessThanOrEqual(34)
+  })
+
+  it('greedy handles all equal costs', () => {
+    const ha = new HungarianAssignment(3, 3)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        ha.setCost(i, j, 7)
+      }
+    }
+    const { totalCost } = ha.solveGreedy()
+    expect(totalCost).toBe(21)
+  })
+
+  it('assignment has no duplicates', () => {
+    const ha = new HungarianAssignment(3, 3)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        ha.setCost(i, j, i === j ? 1 : 100)
+      }
+    }
+    const { assignment } = ha.solve()
+    const assigned = assignment.filter((a): a is number => a !== null)
+    expect(new Set(assigned).size).toBe(assigned.length)
+  })
+
+  it('handles 2x5 rectangular', () => {
+    const ha = new HungarianAssignment(2, 5)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 2)
+    ha.setCost(0, 2, 3)
+    ha.setCost(0, 3, 4)
+    ha.setCost(0, 4, 5)
+    ha.setCost(1, 0, 5)
+    ha.setCost(1, 1, 4)
+    ha.setCost(1, 2, 3)
+    ha.setCost(1, 3, 2)
+    ha.setCost(1, 4, 1)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBeLessThanOrEqual(4)
+  })
+
+  it('handles 5x2 rectangular', () => {
+    const ha = new HungarianAssignment(5, 2)
+    for (let i = 0; i < 5; i++) {
+      ha.setCost(i, 0, i + 1)
+      ha.setCost(i, 1, 10 - i)
+    }
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBeLessThanOrEqual(7)
+  })
+
+  it('greedy vs optimal for complex case', () => {
+    const ha = new HungarianAssignment(3, 3)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 2)
+    ha.setCost(0, 2, 3)
+    ha.setCost(1, 0, 2)
+    ha.setCost(1, 1, 1)
+    ha.setCost(1, 2, 2)
+    ha.setCost(2, 0, 3)
+    ha.setCost(2, 1, 2)
+    ha.setCost(2, 2, 1)
+    const greedy = ha.solveGreedy()
+    const optimal = ha.solve()
+    expect(greedy.totalCost).toBeGreaterThanOrEqual(optimal.totalCost)
+  })
+
+  it('constructor with single parameter', () => {
+    const ha = new HungarianAssignment(3)
+    const result = ha.solve()
+    expect(result.assignment.length).toBe(3)
+  })
+
+  it('handles very large costs', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1000000)
+    ha.setCost(0, 1, 1)
+    ha.setCost(1, 0, 1)
+    ha.setCost(1, 1, 1000000)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBe(2)
+  })
+
+  it('handles zero matrix', () => {
+    const ha = new HungarianAssignment(3, 3)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBe(0)
+  })
+
+  it('assignment respects n dimension', () => {
+    const ha = new HungarianAssignment(2, 5)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 2)
+    ha.setCost(0, 2, 3)
+    ha.setCost(0, 3, 4)
+    ha.setCost(0, 4, 5)
+    ha.setCost(1, 0, 5)
+    ha.setCost(1, 1, 4)
+    ha.setCost(1, 2, 3)
+    ha.setCost(1, 3, 2)
+    ha.setCost(1, 4, 1)
+    const { assignment } = ha.solve()
+    expect(assignment.length).toBe(2)
+  })
+
+  it('handles asymmetric optimal', () => {
+    const ha = new HungarianAssignment(3, 3)
+    ha.setCost(0, 0, 10)
+    ha.setCost(0, 1, 1)
+    ha.setCost(0, 2, 10)
+    ha.setCost(1, 0, 1)
+    ha.setCost(1, 1, 10)
+    ha.setCost(1, 2, 10)
+    ha.setCost(2, 0, 10)
+    ha.setCost(2, 1, 10)
+    ha.setCost(2, 2, 1)
+    const { totalCost } = ha.solve()
+    expect(totalCost).toBe(3)
+  })
 })

@@ -200,4 +200,197 @@ describe('HyperLogLog', () => {
     hll.add('b')
     expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
+
+  it('merge modifies in place', () => {
+    const hll1 = new HyperLogLog()
+    const hll2 = new HyperLogLog()
+    hll1.add('a')
+    const before = hll1.count()
+    hll2.add('b')
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThan(before)
+  })
+
+  it('merge accepts large precision', () => {
+    const hll1 = new HyperLogLog(16)
+    const hll2 = new HyperLogLog(16)
+    hll1.add('test')
+    hll2.add('value')
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('merge with small precision', () => {
+    const hll1 = new HyperLogLog(4)
+    const hll2 = new HyperLogLog(4)
+    hll1.add('a')
+    hll2.add('b')
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles sequential merges', () => {
+    const hll1 = new HyperLogLog()
+    const hll2 = new HyperLogLog()
+    const hll3 = new HyperLogLog()
+    hll1.add('a')
+    hll2.add('b')
+    hll3.add('c')
+    hll1.merge(hll2)
+    const afterFirst = hll1.count()
+    hll1.merge(hll3)
+    expect(hll1.count()).toBeGreaterThanOrEqual(afterFirst)
+  })
+
+  it('precision 4 has 16 registers', () => {
+    const hll = new HyperLogLog(4)
+    expect(hll.registerCount).toBe(16)
+    expect(hll.precision).toBe(4)
+  })
+
+  it('precision 8 has 256 registers', () => {
+    const hll = new HyperLogLog(8)
+    expect(hll.registerCount).toBe(256)
+    expect(hll.precision).toBe(8)
+  })
+
+  it('precision 12 has 4096 registers', () => {
+    const hll = new HyperLogLog(12)
+    expect(hll.registerCount).toBe(4096)
+    expect(hll.precision).toBe(12)
+  })
+
+  it('precision 14 has 16384 registers', () => {
+    const hll = new HyperLogLog(14)
+    expect(hll.registerCount).toBe(16384)
+    expect(hll.precision).toBe(14)
+  })
+
+  it('precision 16 has 65536 registers', () => {
+    const hll = new HyperLogLog(16)
+    expect(hll.registerCount).toBe(65536)
+    expect(hll.precision).toBe(16)
+  })
+
+  it('default precision is 14', () => {
+    const hll = new HyperLogLog()
+    expect(hll.precision).toBe(14)
+    expect(hll.registerCount).toBe(16384)
+  })
+
+  it('merge with overlapping large sets', () => {
+    const hll1 = new HyperLogLog()
+    const hll2 = new HyperLogLog()
+    const overlapSize = 100
+    const uniqueSize = 200
+    for (let i = 0; i < overlapSize; i++) {
+      hll1.add(`overlap-${i}`)
+      hll2.add(`overlap-${i}`)
+    }
+    for (let i = 0; i < uniqueSize; i++) {
+      hll1.add(`unique1-${i}`)
+      hll2.add(`unique2-${i}`)
+    }
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThan(250)
+    expect(hll1.count()).toBeLessThan(450)
+  })
+
+  it('merge preserves union semantics', () => {
+    const hll1 = new HyperLogLog()
+    const hll2 = new HyperLogLog()
+    hll1.add('x')
+    hll2.add('x')
+    const countBeforeMerge = hll1.count()
+    hll1.merge(hll2)
+    expect(hll1.count()).toBe(countBeforeMerge)
+  })
+
+  it('handles numeric-like strings', () => {
+    const hll = new HyperLogLog()
+    hll.add('123')
+    hll.add('456.789')
+    hll.add('1e10')
+    expect(hll.count()).toBeGreaterThan(1)
+  })
+
+  it('handles emoji and special unicode', () => {
+    const hll = new HyperLogLog()
+    hll.add('🎉')
+    hll.add('🚀')
+    hll.add('✨')
+    expect(hll.count()).toBeGreaterThan(2)
+  })
+
+  it('handles newlines and tabs in strings', () => {
+    const hll = new HyperLogLog()
+    hll.add('test\nvalue')
+    hll.add('test\tvalue')
+    expect(hll.count()).toBeGreaterThan(1)
+  })
+
+  it('count is stable after merge with empty', () => {
+    const hll1 = new HyperLogLog()
+    const hll2 = new HyperLogLog()
+    for (let i = 0; i < 100; i++) hll1.add(`test-${i}`)
+    const before = hll1.count()
+    hll1.merge(hll2)
+    expect(hll1.count()).toBe(before)
+  })
+
+  it('handles many duplicate adds efficiently', () => {
+    const hll = new HyperLogLog()
+    for (let i = 0; i < 10000; i++) hll.add('same')
+    expect(hll.count()).toBeLessThan(10)
+  })
+
+  it('add with very long unicode string', () => {
+    const hll = new HyperLogLog()
+    const longUnicode = '🎉'.repeat(1000)
+    hll.add(longUnicode)
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles mixed case strings', () => {
+    const hll = new HyperLogLog()
+    hll.add('Test')
+    hll.add('test')
+    hll.add('TEST')
+    expect(hll.count()).toBeGreaterThan(2)
+  })
+
+  it('handles strings with backslashes', () => {
+    const hll = new HyperLogLog()
+    hll.add('path\\to\\file')
+    hll.add('C:\\Users\\test')
+    expect(hll.count()).toBeGreaterThan(1)
+  })
+
+  it('merge multiple times accumulates correctly', () => {
+    const hll1 = new HyperLogLog()
+    const hll2 = new HyperLogLog()
+    for (let i = 0; i < 50; i++) hll1.add(`a-${i}`)
+    for (let i = 0; i < 50; i++) hll2.add(`b-${i}`)
+    hll1.merge(hll2)
+    const afterFirst = hll1.count()
+    const hll3 = new HyperLogLog()
+    for (let i = 0; i < 50; i++) hll3.add(`c-${i}`)
+    hll1.merge(hll3)
+    expect(hll1.count()).toBeGreaterThan(afterFirst)
+  })
+
+  it('merge with self changes nothing', () => {
+    const hll = new HyperLogLog()
+    for (let i = 0; i < 100; i++) hll.add(`test-${i}`)
+    const before = hll.count()
+    hll.merge(hll)
+    expect(hll.count()).toBe(before)
+  })
+
+  it('handles empty string with unicode', () => {
+    const hll = new HyperLogLog()
+    hll.add('')
+    hll.add('日本語')
+    expect(hll.count()).toBeGreaterThan(1)
+  })
 })

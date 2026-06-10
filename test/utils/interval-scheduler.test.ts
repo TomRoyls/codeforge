@@ -190,4 +190,245 @@ describe('greedyIntervalSchedule', () => {
   it('single interval returns itself', () => {
     expect(greedyIntervalSchedule([{ start: 0, end: 5 }])).toEqual([{ start: 0, end: 5 }])
   })
+
+  it('weighted handles completely overlapping', () => {
+    const intervals = [
+      { start: 0, end: 10, weight: 5 },
+      { start: 0, end: 10, weight: 10 },
+      { start: 0, end: 10, weight: 7 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(10)
+    expect(result.selected.length).toBe(1)
+  })
+
+  it('weighted handles partial overlap', () => {
+    const intervals = [
+      { start: 0, end: 5, weight: 5 },
+      { start: 3, end: 8, weight: 10 },
+      { start: 6, end: 10, weight: 5 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(10)
+  })
+
+  it('weighted chooses max when equal non-overlapping', () => {
+    const intervals = [
+      { start: 0, end: 2, weight: 5 },
+      { start: 2, end: 4, weight: 10 },
+      { start: 4, end: 6, weight: 5 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(20)
+  })
+
+  it('weighted handles intervals starting at 0', () => {
+    const intervals = [
+      { start: 0, end: 1, weight: 5 },
+      { start: 0, end: 2, weight: 10 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(10)
+  })
+
+  it('weighted handles intervals ending at same point', () => {
+    const intervals = [
+      { start: 0, end: 5, weight: 8 },
+      { start: 3, end: 5, weight: 5 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(8)
+  })
+
+  it('weighted handles chain of non-overlapping', () => {
+    const intervals = [
+      { start: 0, end: 1, weight: 1 },
+      { start: 1, end: 2, weight: 1 },
+      { start: 2, end: 3, weight: 1 },
+      { start: 3, end: 4, weight: 1 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(4)
+  })
+
+  it('weighted handles complex overlap pattern', () => {
+    const intervals = [
+      { start: 1, end: 4, weight: 5 },
+      { start: 2, end: 5, weight: 6 },
+      { start: 6, end: 9, weight: 5 },
+      { start: 4, end: 7, weight: 10 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBeGreaterThanOrEqual(10)
+  })
+
+  it('weighted handles negative weights', () => {
+    const intervals = [
+      { start: 0, end: 2, weight: -5 },
+      { start: 2, end: 4, weight: 5 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBeGreaterThanOrEqual(0)
+  })
+
+  it('weighted selects none when all negative', () => {
+    const intervals = [
+      { start: 0, end: 2, weight: -5 },
+      { start: 2, end: 4, weight: -3 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(0)
+  })
+
+  it('weighted handles large number of intervals', () => {
+    const intervals = Array.from({ length: 100 }, (_, i) => ({
+      start: i,
+      end: i + 1,
+      weight: 1
+    }))
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(100)
+  })
+
+  it('greedy handles completely overlapping', () => {
+    const intervals = [
+      { start: 0, end: 10 },
+      { start: 0, end: 8 },
+      { start: 0, end: 5 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(1)
+    expect(result[0]!.end).toBe(5)
+  })
+
+  it('greedy handles chain of touching intervals', () => {
+    const intervals = [
+      { start: 0, end: 1 },
+      { start: 1, end: 2 },
+      { start: 2, end: 3 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(3)
+  })
+
+  it('greedy selects earliest finishing first', () => {
+    const intervals = [
+      { start: 0, end: 10 },
+      { start: 0, end: 5 },
+      { start: 5, end: 6 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(2)
+  })
+
+  it('greedy handles unsorted input', () => {
+    const intervals = [
+      { start: 5, end: 7 },
+      { start: 0, end: 3 },
+      { start: 2, end: 5 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(2)
+  })
+
+  it('greedy handles intervals with same end', () => {
+    const intervals = [
+      { start: 0, end: 5 },
+      { start: 1, end: 5 },
+      { start: 5, end: 10 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(2)
+  })
+
+  it('greedy handles large gaps', () => {
+    const intervals = [
+      { start: 0, end: 1 },
+      { start: 100, end: 101 },
+      { start: 200, end: 201 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(3)
+  })
+
+  it('greedy handles single long interval', () => {
+    const intervals = [
+      { start: 0, end: 100 },
+      { start: 10, end: 20 },
+      { start: 30, end: 40 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(2)
+  })
+
+  it('greedy selects max non-overlapping from dense set', () => {
+    const intervals = [
+      { start: 0, end: 2 },
+      { start: 1, end: 3 },
+      { start: 2, end: 4 },
+      { start: 3, end: 5 },
+      { start: 4, end: 6 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(3)
+  })
+
+  it('weighted handles fractional weights', () => {
+    const intervals = [
+      { start: 0, end: 2, weight: 1.5 },
+      { start: 2, end: 4, weight: 2.5 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBeCloseTo(4.0)
+  })
+
+  it('weighted handles very large weights', () => {
+    const intervals = [
+      { start: 0, end: 2, weight: Number.MAX_SAFE_INTEGER },
+      { start: 2, end: 4, weight: 1 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBe(Number.MAX_SAFE_INTEGER + 1)
+  })
+
+  it('weighted handles intervals at boundaries', () => {
+    const intervals = [
+      { start: 0, end: 0, weight: 5 },
+      { start: 0, end: 1, weight: 10 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBeGreaterThanOrEqual(5)
+  })
+
+  it('greedy handles intervals in random order', () => {
+    const intervals = [
+      { start: 8, end: 9 },
+      { start: 1, end: 4 },
+      { start: 3, end: 6 },
+      { start: 0, end: 2 },
+      { start: 5, end: 7 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(3)
+  })
+
+  it('weighted handles alternative equal weight selections', () => {
+    const intervals = [
+      { start: 0, end: 3, weight: 10 },
+      { start: 3, end: 6, weight: 10 },
+      { start: 0, end: 6, weight: 15 },
+    ]
+    const result = weightedIntervalSchedule(intervals)
+    expect(result.totalWeight).toBeGreaterThanOrEqual(15)
+  })
+
+  it('greedy handles intervals with zero duration', () => {
+    const intervals = [
+      { start: 0, end: 0 },
+      { start: 1, end: 1 },
+      { start: 2, end: 2 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(3)
+  })
 })

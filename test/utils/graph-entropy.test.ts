@@ -168,4 +168,197 @@ describe('GraphEntropy', () => {
     ge.addEdge(0, 3)
     expect(ge.degreeEntropy()).toBeGreaterThan(0)
   })
+
+  it('toString returns correct format', () => {
+    const ge = new GraphEntropy(5)
+    expect(ge.toString()).toBe('GraphEntropy(5)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const ge = new GraphEntropy(3)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    const json = ge.toJSON()
+    expect(json).toHaveProperty('n', 3)
+    expect(json).toHaveProperty('edges')
+    expect((json as { edges: Array<[number, number]> }).edges).toContainEqual([0, 1])
+    expect((json as { edges: Array<[number, number]> }).edges).toContainEqual([1, 2])
+  })
+
+  it('toJSON empty graph', () => {
+    const ge = new GraphEntropy(3)
+    const json = ge.toJSON()
+    expect(json).toEqual({ n: 3, edges: [] })
+  })
+
+  it('clone creates independent copy', () => {
+    const ge = new GraphEntropy(4)
+    ge.addEdge(0, 1)
+    const copy = ge.clone()
+    copy.addEdge(2, 3)
+    expect(ge.degreeEntropy()).not.toBe(copy.degreeEntropy())
+  })
+
+  it('clone identical graphs are equal', () => {
+    const ge = new GraphEntropy(3)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    const copy = ge.clone()
+    expect(ge.equals(copy)).toBe(true)
+  })
+
+  it('equals returns false for different graphs', () => {
+    const ge1 = new GraphEntropy(3)
+    ge1.addEdge(0, 1)
+    const ge2 = new GraphEntropy(3)
+    ge2.addEdge(0, 1)
+    ge2.addEdge(1, 2)
+    expect(ge1.equals(ge2)).toBe(false)
+  })
+
+  it('equals returns false for non-GraphEntropy', () => {
+    const ge = new GraphEntropy(3)
+    expect(ge.equals({})).toBe(false)
+    expect(ge.equals(null)).toBe(false)
+    expect(ge.equals(undefined)).toBe(false)
+  })
+
+  it('equals handles different node counts', () => {
+    const ge1 = new GraphEntropy(3)
+    const ge2 = new GraphEntropy(4)
+    expect(ge1.equals(ge2)).toBe(false)
+  })
+
+  it('edgeEntropy empty graph', () => {
+    const ge = new GraphEntropy(3)
+    expect(ge.edgeEntropy()).toBe(0)
+  })
+
+  it('edgeEntropy single edge', () => {
+    const ge = new GraphEntropy(3)
+    ge.addEdge(0, 1)
+    expect(ge.edgeEntropy()).toBeGreaterThan(0)
+  })
+
+  it('edgeEntropy complete graph', () => {
+    const ge = new GraphEntropy(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        ge.addEdge(i, j)
+    expect(ge.edgeEntropy()).toBe(0)
+  })
+
+  it('clusteringCoefficient disconnected graph', () => {
+    const ge = new GraphEntropy(4)
+    ge.addEdge(0, 1)
+    expect(ge.clusteringCoefficient()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('degreeEntropy disconnected graph', () => {
+    const ge = new GraphEntropy(6)
+    ge.addEdge(0, 1)
+    ge.addEdge(2, 3)
+    expect(ge.degreeEntropy()).toBeGreaterThan(0)
+  })
+
+  it('multiple edges same degree entropy zero', () => {
+    const ge = new GraphEntropy(4)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    ge.addEdge(2, 3)
+    ge.addEdge(3, 0)
+    expect(ge.degreeEntropy()).toBe(0)
+  })
+
+  it('addEdge creates undirected edge', () => {
+    const ge = new GraphEntropy(2)
+    ge.addEdge(0, 1)
+    const json = ge.toJSON()
+    const edges = (json as { edges: Array<[number, number]> }).edges
+    expect(edges).toContainEqual([0, 1])
+  })
+
+  it('degreeEntropy varies with degree distribution', () => {
+    const ge1 = new GraphEntropy(5)
+    ge1.addEdge(0, 1)
+    ge1.addEdge(0, 2)
+    ge1.addEdge(0, 3)
+    ge1.addEdge(0, 4)
+    const ge2 = new GraphEntropy(5)
+    ge2.addEdge(0, 1)
+    ge2.addEdge(1, 2)
+    ge2.addEdge(2, 3)
+    ge2.addEdge(3, 4)
+    expect(ge1.degreeEntropy()).not.toBe(ge2.degreeEntropy())
+  })
+
+  it('clusteringCoefficient returns number', () => {
+    const ge = new GraphEntropy(3)
+    expect(typeof ge.clusteringCoefficient()).toBe('number')
+  })
+
+  it('toJSON returns number', () => {
+    const ge = new GraphEntropy(3)
+    expect(typeof ge.toJSON()).toBe('object')
+  })
+
+  it('clone returns GraphEntropy instance', () => {
+    const ge = new GraphEntropy(3)
+    const copy = ge.clone()
+    expect(copy).toBeInstanceOf(GraphEntropy)
+  })
+
+  it('equals returns boolean', () => {
+    const ge = new GraphEntropy(3)
+    expect(typeof ge.equals(ge)).toBe('boolean')
+  })
+
+  it('large graph entropy calculation', () => {
+    const ge = new GraphEntropy(10)
+    for (let i = 0; i < 9; i++) ge.addEdge(i, i + 1)
+    expect(ge.degreeEntropy()).toBeGreaterThan(0)
+  })
+
+  it('clusteringCoefficient two triangles connected', () => {
+    const ge = new GraphEntropy(6)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    ge.addEdge(0, 2)
+    ge.addEdge(3, 4)
+    ge.addEdge(4, 5)
+    ge.addEdge(3, 5)
+    expect(ge.clusteringCoefficient()).toBe(1)
+  })
+
+  it('edgeEntropy sparse graph', () => {
+    const ge = new GraphEntropy(10)
+    ge.addEdge(0, 1)
+    expect(ge.edgeEntropy()).toBeGreaterThan(0)
+  })
+
+  it('degreeEntropy all same degree', () => {
+    const ge = new GraphEntropy(6)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    ge.addEdge(2, 3)
+    ge.addEdge(3, 4)
+    ge.addEdge(4, 5)
+    ge.addEdge(5, 0)
+    expect(ge.degreeEntropy()).toBe(0)
+  })
+
+  it('constructor with zero nodes', () => {
+    const ge = new GraphEntropy(0)
+    expect(ge.degreeEntropy()).toBe(0)
+    expect(ge.edgeEntropy()).toBe(0)
+    expect(ge.clusteringCoefficient()).toBe(0)
+  })
+
+  it('multiple components entropy', () => {
+    const ge = new GraphEntropy(6)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    ge.addEdge(3, 4)
+    expect(ge.degreeEntropy()).toBeGreaterThan(0)
+  })
 })

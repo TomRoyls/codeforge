@@ -122,4 +122,148 @@ describe('InterpolationSearch', () => {
   it('returns -1 for missing element', () => {
     expect(InterpolationSearch.search([1, 2, 3, 4, 5], 99)).toBe(-1)
   })
+
+  it('handles array with all same elements', () => {
+    expect(InterpolationSearch.search([7, 7, 7, 7], 7)).toBe(0)
+    expect(InterpolationSearch.search([7, 7, 7, 7], 5)).toBe(-1)
+  })
+
+  it('handles boundary at start', () => {
+    expect(InterpolationSearch.search([10, 20, 30, 40, 50], 10)).toBe(0)
+  })
+
+  it('handles boundary at end', () => {
+    expect(InterpolationSearch.search([10, 20, 30, 40, 50], 50)).toBe(4)
+  })
+
+  it('handles value just below min', () => {
+    expect(InterpolationSearch.search([10, 20, 30], 9)).toBe(-1)
+  })
+
+  it('handles value just above max', () => {
+    expect(InterpolationSearch.search([10, 20, 30], 31)).toBe(-1)
+  })
+
+  it('findFirst returns -1 for missing element', () => {
+    const arr = [1, 2, 2, 3, 4]
+    expect(InterpolationSearch.findFirst(arr, 5)).toBe(-1)
+  })
+
+  it('findFirst handles single duplicate', () => {
+    expect(InterpolationSearch.findFirst([1, 2, 2, 3], 2)).toBe(1)
+  })
+
+  it('findFirst handles all duplicates', () => {
+    expect(InterpolationSearch.findFirst([5, 5, 5], 5)).toBe(0)
+  })
+
+  it('findFirst returns -1 for empty array', () => {
+    expect(InterpolationSearch.findFirst([], 5)).toBe(-1)
+  })
+
+  it('findLast returns -1 for missing element', () => {
+    const arr = [1, 2, 2, 3, 4]
+    expect(InterpolationSearch.findLast(arr, 5)).toBe(-1)
+  })
+
+  it('findLast handles single duplicate', () => {
+    expect(InterpolationSearch.findLast([1, 2, 2, 3], 2)).toBe(2)
+  })
+
+  it('findLast handles all duplicates', () => {
+    expect(InterpolationSearch.findLast([5, 5, 5], 5)).toBe(2)
+  })
+
+  it('findLast returns -1 for empty array', () => {
+    expect(InterpolationSearch.findLast([], 5)).toBe(-1)
+  })
+
+  it('rangeSearch returns null for missing', () => {
+    const arr = [1, 2, 2, 3, 4]
+    expect(InterpolationSearch.rangeSearch(arr, 5)).toBeNull()
+  })
+
+  it('rangeSearch returns null for empty array', () => {
+    expect(InterpolationSearch.rangeSearch([], 5)).toBeNull()
+  })
+
+  it('rangeSearch handles single occurrence', () => {
+    const arr = [1, 2, 3, 4, 5]
+    expect(InterpolationSearch.rangeSearch(arr, 3)).toEqual([2, 2])
+  })
+
+  it('rangeSearch handles all duplicates', () => {
+    const arr = [5, 5, 5, 5]
+    expect(InterpolationSearch.rangeSearch(arr, 5)).toEqual([0, 3])
+  })
+
+  it('contains returns false for empty array', () => {
+    expect(InterpolationSearch.contains([], 5)).toBe(false)
+  })
+
+  it('contains handles positive numbers', () => {
+    expect(InterpolationSearch.contains([1, 3, 5], 3)).toBe(true)
+  })
+
+  it('contains handles negative numbers', () => {
+    expect(InterpolationSearch.contains([-5, 0, 5], 0)).toBe(true)
+  })
+
+  it('closest returns -1 for empty array', () => {
+    expect(InterpolationSearch.closest([], 5)).toBe(-1)
+  })
+
+  it('closest handles exact match at start', () => {
+    const arr = [10, 20, 30, 40, 50]
+    expect(InterpolationSearch.closest(arr, 10)).toBe(0)
+  })
+
+  it('closest handles exact match at end', () => {
+    const arr = [10, 20, 30, 40, 50]
+    expect(InterpolationSearch.closest(arr, 50)).toBe(4)
+  })
+
+  it('closest chooses closer when equidistant', () => {
+    const arr = [0, 10, 20]
+    expect(InterpolationSearch.closest(arr, 5)).toBe(0)
+  })
+
+  it('closest handles negative target', () => {
+    const arr = [0, 5, 10]
+    expect(InterpolationSearch.closest(arr, -10)).toBe(0)
+  })
+
+  it('closest handles large positive target', () => {
+    const arr = [0, 5, 10]
+    expect(InterpolationSearch.closest(arr, 100)).toBe(2)
+  })
+
+  it('closest works with sparse array', () => {
+    const arr = [0, 100, 200, 300]
+    expect(InterpolationSearch.closest(arr, 150)).toBe(1)
+  })
+
+  it('handles three element array', () => {
+    expect(InterpolationSearch.search([1, 5, 10], 5)).toBe(1)
+  })
+
+  it('handles value in middle of range', () => {
+    const arr = [0, 10, 20, 30, 40]
+    expect(InterpolationSearch.search(arr, 20)).toBe(2)
+  })
+
+  it('search handles strictly increasing sequence', () => {
+    const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    expect(InterpolationSearch.search(arr, 5)).toBe(4)
+  })
+
+  it('search handles linear spacing', () => {
+    const arr = [0, 5, 10, 15, 20]
+    expect(InterpolationSearch.search(arr, 15)).toBe(3)
+  })
+
+  it('closest handles boundary case', () => {
+    const arr = [0, 10]
+    expect(InterpolationSearch.closest(arr, 5)).toBe(1)
+  })
 })

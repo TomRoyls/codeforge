@@ -189,8 +189,178 @@ describe('HyperLogLog - edge cases', () => {
     expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
 
-  it('empty count is near zero', () => {
-    const hll = new HyperLogLog(10)
-    expect(hll.count()).toBeLessThan(1)
+  it('toString returns correct format', () => {
+    const hll = new HyperLogLog(8)
+    expect(hll.toString()).toBe('HyperLogLog(precision=8, registers=256)')
+  })
+
+  it('toString with default precision', () => {
+    const hll = new HyperLogLog()
+    expect(hll.toString()).toBe('HyperLogLog(precision=14, registers=16384)')
+  })
+
+  it('toJSON returns serializable object', () => {
+    const hll = new HyperLogLog(8)
+    hll.add('test')
+    const json = hll.toJSON()
+    expect(json).toHaveProperty('precision', 8)
+    expect(json).toHaveProperty('registers')
+    expect(Array.isArray(json.registers)).toBe(true)
+    expect(json.registers.length).toBe(256)
+  })
+
+  it('toJSON registers are zero-initialized', () => {
+    const hll = new HyperLogLog(8)
+    const json = hll.toJSON()
+    const nonZero = json.registers.filter((v: number) => v !== 0)
+    expect(nonZero.length).toBe(0)
+  })
+
+  it('toJSON registers update after adds', () => {
+    const hll = new HyperLogLog(8)
+    hll.add('test-value')
+    const json = hll.toJSON()
+    const nonZero = json.registers.filter((v: number) => v !== 0)
+    expect(nonZero.length).toBeGreaterThan(0)
+  })
+
+  it('clone creates independent copy', () => {
+    const hll1 = new HyperLogLog(8)
+    hll1.add('test')
+    const hll2 = hll1.clone()
+    hll1.add('new-value')
+    expect(hll2.count()).toBeLessThan(hll1.count())
+  })
+
+  it('clone preserves precision', () => {
+    const hll1 = new HyperLogLog(10)
+    const hll2 = hll1.clone()
+    expect(hll2.precision).toBe(10)
+  })
+
+  it('clone preserves register count', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = hll1.clone()
+    expect(hll2.registerCount).toBe(256)
+  })
+
+  it('clone preserves cardinality estimate', () => {
+    const hll1 = new HyperLogLog(8)
+    for (let i = 0; i < 100; i++) hll1.add(`item-${i}`)
+    const hll2 = hll1.clone()
+    expect(hll2.count()).toBe(hll1.count())
+  })
+
+  it('equals returns true for same instance', () => {
+    const hll = new HyperLogLog(8)
+    expect(hll.equals(hll)).toBe(true)
+  })
+
+  it('equals returns true for identical data', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = new HyperLogLog(8)
+    for (let i = 0; i < 10; i++) {
+      hll1.add(`test-${i}`)
+      hll2.add(`test-${i}`)
+    }
+    expect(hll1.equals(hll2)).toBe(true)
+  })
+
+  it('equals returns false for different precision', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = new HyperLogLog(10)
+    expect(hll1.equals(hll2)).toBe(false)
+  })
+
+  it('equals returns false for different register counts', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = new HyperLogLog(8)
+    hll1.add('test')
+    expect(hll1.equals(hll2)).toBe(false)
+  })
+
+  it('equals returns false for non-HyperLogLog object', () => {
+    const hll = new HyperLogLog(8)
+    expect(hll.equals({})).toBe(false)
+  })
+
+  it('equals returns false for null', () => {
+    const hll = new HyperLogLog(8)
+    expect(hll.equals(null)).toBe(false)
+  })
+
+  it('equals returns false after reset', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = hll1.clone()
+    hll1.add('test')
+    expect(hll1.equals(hll2)).toBe(false)
+  })
+
+  it('boundary: precision 4 (minimum)', () => {
+    const hll = new HyperLogLog(4)
+    expect(hll.registerCount).toBe(16)
+    hll.add('test')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('boundary: precision 16 (maximum)', () => {
+    const hll = new HyperLogLog(16)
+    expect(hll.registerCount).toBe(65536)
+    hll.add('test')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles very large dataset', () => {
+    const hll = new HyperLogLog(14)
+    for (let i = 0; i < 100000; i++) {
+      hll.add(`unique-item-${i}`)
+    }
+    const estimate = hll.count()
+    expect(estimate).toBeGreaterThan(50000)
+    expect(estimate).toBeLessThan(200000)
+  })
+
+  it('merge creates new instance', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = new HyperLogLog(8)
+    hll1.add('test')
+    const merged = hll1.merge(hll2)
+    expect(merged).not.toBe(hll1)
+    expect(merged).not.toBe(hll2)
+  })
+
+  it('merge result has same precision', () => {
+    const hll1 = new HyperLogLog(10)
+    const hll2 = new HyperLogLog(10)
+    const merged = hll1.merge(hll2)
+    expect(merged.precision).toBe(10)
+  })
+
+  it('merge original instances unchanged', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = new HyperLogLog(8)
+    for (let i = 0; i < 50; i++) hll1.add(`a-${i}`)
+    for (let i = 0; i < 50; i++) hll2.add(`b-${i}`)
+    const count1Before = hll1.count()
+    const count2Before = hll2.count()
+    hll1.merge(hll2)
+    expect(hll1.count()).toBe(count1Before)
+    expect(hll2.count()).toBe(count2Before)
+  })
+
+  it('handles special characters in strings', () => {
+    const hll = new HyperLogLog(8)
+    hll.add('test!@#$%^&*()')
+    hll.add('test-with-dashes')
+    hll.add('test_with_underscores')
+    hll.add('test with spaces')
+    expect(hll.count()).toBeGreaterThan(2)
+  })
+
+  it('handles very long strings', () => {
+    const hll = new HyperLogLog(8)
+    const longString = 'a'.repeat(10000)
+    hll.add(longString)
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
 })

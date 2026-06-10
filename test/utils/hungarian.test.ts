@@ -161,4 +161,244 @@ describe('Hungarian', () => {
     const { totalCost } = Hungarian.solve([[1, 2], [2, 1]])
     expect(totalCost).toBe(2)
   })
+
+  it('handles 5x5 matrix', () => {
+    const { totalCost } = Hungarian.solve([
+      [90, 75, 75, 80, 100],
+      [35, 85, 55, 65, 120],
+      [125, 95, 90, 105, 45],
+      [45, 110, 95, 115, 130],
+      [50, 100, 90, 100, 60],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(320)
+  })
+
+  it('handles 6x6 matrix', () => {
+    const matrix: number[][] = []
+    for (let i = 0; i < 6; i++) {
+      const row: number[] = []
+      for (let j = 0; j < 6; j++) {
+        row.push(Math.abs(i - j) + 1)
+      }
+      matrix.push(row)
+    }
+    const { totalCost } = Hungarian.solve(matrix)
+    expect(totalCost).toBe(6)
+  })
+
+  it('handles negative costs', () => {
+    const { totalCost } = Hungarian.solve([
+      [-5, 1],
+      [1, -5],
+    ])
+    expect(totalCost).toBe(-10)
+  })
+
+  it('handles floating point costs', () => {
+    const { totalCost } = Hungarian.solve([
+      [1.5, 2.5],
+      [2.5, 1.5],
+    ])
+    expect(totalCost).toBeCloseTo(3.0, 5)
+  })
+
+  it('handles large floating point values', () => {
+    const { totalCost } = Hungarian.solve([
+      [1000.5, 2000.7, 1500.3],
+      [2500.1, 1500.9, 3000.2],
+      [1800.6, 2200.4, 1700.8],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(4500)
+  })
+
+  it('handles single column multiple rows', () => {
+    const { totalCost, assignment } = Hungarian.solve([
+      [3],
+      [1],
+      [2],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(6)
+    expect(assignment.filter(a => a !== -1).length).toBe(1)
+  })
+
+  it('handles 2x1 rectangular', () => {
+    const { totalCost, assignment } = Hungarian.solve([[3], [1]])
+    expect(totalCost).toBeLessThanOrEqual(4)
+    expect(assignment.filter(a => a !== -1).length).toBeLessThanOrEqual(1)
+  })
+
+  it('handles 1x2 rectangular', () => {
+    const { totalCost, assignment } = Hungarian.solve([[3, 1]])
+    expect(totalCost).toBe(1)
+    expect(assignment[0]).not.toBe(-1)
+  })
+
+  it('handles 2x4 rectangular', () => {
+    const { totalCost } = Hungarian.solve([
+      [1, 3, 5, 7],
+      [2, 4, 6, 8],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(1 + 4)
+  })
+
+  it('handles 4x2 rectangular', () => {
+    const { totalCost } = Hungarian.solve([
+      [1, 3],
+      [2, 4],
+      [5, 6],
+      [7, 8],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(1 + 4)
+  })
+
+  it('assignment indices are valid', () => {
+    const matrix = [
+      [9, 2, 7],
+      [6, 4, 3],
+      [5, 8, 1],
+    ]
+    const { assignment } = Hungarian.solve(matrix)
+    for (let i = 0; i < assignment.length; i++) {
+      if (assignment[i] !== -1) {
+        expect(assignment[i]).toBeGreaterThanOrEqual(0)
+        expect(assignment[i]).toBeLessThan(matrix[0]!.length)
+      }
+    }
+  })
+
+  it('assignment respects matrix dimensions', () => {
+    const matrix = [
+      [1, 2, 3],
+      [4, 5, 6],
+    ]
+    const { assignment } = Hungarian.solve(matrix)
+    expect(assignment.length).toBe(matrix.length)
+  })
+
+  it('handles all costs identical', () => {
+    const { totalCost } = Hungarian.solve([
+      [7, 7, 7],
+      [7, 7, 7],
+      [7, 7, 7],
+    ])
+    expect(totalCost).toBe(21)
+  })
+
+  it('handles ascending cost matrix', () => {
+    const matrix: number[][] = []
+    for (let i = 0; i < 3; i++) {
+      matrix.push([i * 3 + 1, i * 3 + 2, i * 3 + 3])
+    }
+    const { totalCost } = Hungarian.solve(matrix)
+    expect(totalCost).toBeLessThanOrEqual(15)
+  })
+
+  it('handles descending cost matrix', () => {
+    const { totalCost } = Hungarian.solve([
+      [9, 8, 7],
+      [6, 5, 4],
+      [3, 2, 1],
+    ])
+    expect(totalCost).toBe(15)
+  })
+
+  it('handles sparse optimal assignment', () => {
+    const { assignment } = Hungarian.solve([
+      [1, 100, 100, 100],
+      [100, 1, 100, 100],
+      [100, 100, 1, 100],
+      [100, 100, 100, 1],
+    ])
+    for (let i = 0; i < 4; i++) {
+      expect(assignment[i]).toBe(i)
+    }
+  })
+
+  it('handles 3x4 rectangular matrix', () => {
+    const { totalCost } = Hungarian.solve([
+      [1, 2, 3, 4],
+      [5, 1, 2, 3],
+      [4, 5, 1, 2],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(4)
+  })
+
+  it('handles 4x3 rectangular matrix', () => {
+    const { totalCost } = Hungarian.solve([
+      [1, 2, 3],
+      [4, 1, 2],
+      [3, 4, 1],
+      [2, 3, 4],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(4)
+  })
+
+  it('finds diagonal for symmetric matrix', () => {
+    const { totalCost } = Hungarian.solve([
+      [1, 2, 3],
+      [2, 1, 4],
+      [3, 4, 1],
+    ])
+    expect(totalCost).toBe(3)
+  })
+
+  it('handles very small costs', () => {
+    const { totalCost } = Hungarian.solve([
+      [0.001, 0.002],
+      [0.002, 0.001],
+    ])
+    expect(totalCost).toBeCloseTo(0.002, 6)
+  })
+
+  it('handles mixed integer and float costs', () => {
+    const { totalCost } = Hungarian.solve([
+      [1, 2.5],
+      [3.7, 1],
+    ])
+    expect(totalCost).toBeCloseTo(2.0, 5)
+  })
+
+  it('assignment is deterministic', () => {
+    const matrix = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]
+    const result1 = Hungarian.solve(matrix)
+    const result2 = Hungarian.solve(matrix)
+    expect(result1.assignment).toEqual(result2.assignment)
+    expect(result1.totalCost).toEqual(result2.totalCost)
+  })
+
+  it('handles zero row', () => {
+    const { totalCost } = Hungarian.solve([
+      [0, 0, 0],
+      [1, 2, 3],
+      [4, 5, 6],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(7)
+  })
+
+  it('handles zero column', () => {
+    const { totalCost } = Hungarian.solve([
+      [0, 1, 4],
+      [0, 2, 5],
+      [0, 3, 6],
+    ])
+    expect(totalCost).toBeLessThanOrEqual(6)
+  })
+
+  it('handles increasing sequence matrix', () => {
+    const matrix: number[][] = []
+    let val = 1
+    for (let i = 0; i < 3; i++) {
+      const row: number[] = []
+      for (let j = 0; j < 3; j++) {
+        row.push(val++)
+      }
+      matrix.push(row)
+    }
+    const { totalCost } = Hungarian.solve(matrix)
+    expect(totalCost).toBeLessThanOrEqual(1 + 6 + 8)
+  })
 })

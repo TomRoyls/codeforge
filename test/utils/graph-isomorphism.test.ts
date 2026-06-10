@@ -188,4 +188,234 @@ describe('GraphIsomorphism', () => {
     const gi = new GraphIsomorphism(1)
     expect(gi.isomorphic()).toBe(true)
   })
+
+  it('toString returns correct format', () => {
+    const gi = new GraphIsomorphism(5)
+    expect(gi.toString()).toBe('GraphIsomorphism(5)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG2(0, 1)
+    const json = gi.toJSON()
+    expect(json).toHaveProperty('n', 3)
+    expect(json).toHaveProperty('adj1')
+    expect(json).toHaveProperty('adj2')
+  })
+
+  it('toJSON empty graphs', () => {
+    const gi = new GraphIsomorphism(3)
+    const json = gi.toJSON()
+    expect((json as { adj1: number[][] }).adj1.every((arr: number[]) => arr.length === 0)).toBe(true)
+    expect((json as { adj2: number[][] }).adj2.every((arr: number[]) => arr.length === 0)).toBe(true)
+  })
+
+  it('clone creates independent copy', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    const copy = gi.clone()
+    copy.addEdgeG1(1, 2)
+    expect(gi.equals(copy)).toBe(false)
+  })
+
+  it('clone identical graphs are equal', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG2(0, 1)
+    const copy = gi.clone()
+    expect(gi.equals(copy)).toBe(true)
+  })
+
+  it('equals returns false for non-GraphIsomorphism', () => {
+    const gi = new GraphIsomorphism(3)
+    expect(gi.equals({})).toBe(false)
+    expect(gi.equals(null)).toBe(false)
+    expect(gi.equals(undefined)).toBe(false)
+  })
+
+  it('equals handles different node counts', () => {
+    const gi1 = new GraphIsomorphism(3)
+    const gi2 = new GraphIsomorphism(4)
+    expect(gi1.equals(gi2)).toBe(false)
+  })
+
+  it('equals different graphs', () => {
+    const gi1 = new GraphIsomorphism(3)
+    gi1.addEdgeG1(0, 1)
+    const gi2 = new GraphIsomorphism(3)
+    gi2.addEdgeG1(0, 1)
+    gi2.addEdgeG2(1, 2)
+    expect(gi1.equals(gi2)).toBe(false)
+  })
+
+  it('degreeSequence sorts descending', () => {
+    const gi = new GraphIsomorphism(4)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(0, 2)
+    gi.addEdgeG1(0, 3)
+    const seq = gi.degreeSequence(gi['adj1'])
+    expect(seq).toEqual([3, 1, 1, 1])
+  })
+
+  it('degreeSequence empty graph', () => {
+    const gi = new GraphIsomorphism(3)
+    const seq = gi.degreeSequence(gi['adj1'])
+    expect(seq).toEqual([0, 0, 0])
+  })
+
+  it('degreeSequence complete graph', () => {
+    const gi = new GraphIsomorphism(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        gi.addEdgeG1(i, j)
+    const seq = gi.degreeSequence(gi['adj1'])
+    expect(seq).toEqual([3, 3, 3, 3])
+  })
+
+  it('addEdgeG1 creates undirected edge', () => {
+    const gi = new GraphIsomorphism(2)
+    gi.addEdgeG1(0, 1)
+    const json = gi.toJSON()
+    const adj1 = (json as { adj1: number[][] }).adj1
+    expect(adj1[0]).toContain(1)
+    expect(adj1[1]).toContain(0)
+  })
+
+  it('addEdgeG2 creates undirected edge', () => {
+    const gi = new GraphIsomorphism(2)
+    gi.addEdgeG2(0, 1)
+    const json = gi.toJSON()
+    const adj2 = (json as { adj2: number[][] }).adj2
+    expect(adj2[0]).toContain(1)
+    expect(adj2[1]).toContain(0)
+  })
+
+  it('isomorphic disconnected graphs', () => {
+    const gi = new GraphIsomorphism(4)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG2(0, 1)
+    expect(gi.isomorphic()).toBe(true)
+  })
+
+  it('non-isomorphic disconnected graphs', () => {
+    const gi = new GraphIsomorphism(5)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG2(0, 1)
+    gi.addEdgeG2(2, 3)
+    expect(gi.isomorphic()).toBe(false)
+  })
+
+  it('isomorphic square cycles', () => {
+    const gi = new GraphIsomorphism(4)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(1, 2)
+    gi.addEdgeG1(2, 3)
+    gi.addEdgeG1(3, 0)
+    gi.addEdgeG2(1, 0)
+    gi.addEdgeG2(0, 3)
+    gi.addEdgeG2(3, 2)
+    gi.addEdgeG2(2, 1)
+    expect(gi.isomorphic()).toBe(true)
+  })
+
+  it('non-isomorphic cycle vs path', () => {
+    const gi = new GraphIsomorphism(4)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(1, 2)
+    gi.addEdgeG1(2, 3)
+    gi.addEdgeG1(3, 0)
+    gi.addEdgeG2(0, 1)
+    gi.addEdgeG2(1, 2)
+    gi.addEdgeG2(2, 3)
+    expect(gi.isomorphic()).toBe(false)
+  })
+
+  it('isomorphic two stars', () => {
+    const gi = new GraphIsomorphism(5)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(0, 2)
+    gi.addEdgeG1(0, 3)
+    gi.addEdgeG1(0, 4)
+    gi.addEdgeG2(1, 0)
+    gi.addEdgeG2(2, 0)
+    gi.addEdgeG2(3, 0)
+    gi.addEdgeG2(4, 0)
+    expect(gi.isomorphic()).toBe(true)
+  })
+
+  it('non-isomorphic star vs disconnected', () => {
+    const gi = new GraphIsomorphism(5)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(0, 2)
+    gi.addEdgeG1(0, 3)
+    gi.addEdgeG1(0, 4)
+    gi.addEdgeG2(0, 1)
+    gi.addEdgeG2(2, 3)
+    expect(gi.isomorphic()).toBe(false)
+  })
+
+  it('clone returns GraphIsomorphism instance', () => {
+    const gi = new GraphIsomorphism(3)
+    const copy = gi.clone()
+    expect(copy).toBeInstanceOf(GraphIsomorphism)
+  })
+
+  it('equals returns boolean', () => {
+    const gi = new GraphIsomorphism(3)
+    expect(typeof gi.equals(gi)).toBe('boolean')
+  })
+
+  it('large isomorphic graphs', () => {
+    const gi = new GraphIsomorphism(6)
+    for (let i = 0; i < 5; i++) {
+      gi.addEdgeG1(i, i + 1)
+      gi.addEdgeG2(5 - i, 4 - i)
+    }
+    expect(gi.isomorphic()).toBe(true)
+  })
+
+  it('constructor with zero nodes', () => {
+    const gi = new GraphIsomorphism(0)
+    expect(gi.isomorphic()).toBe(true)
+    expect(gi.toString()).toBe('GraphIsomorphism(0)')
+  })
+
+  it('degreeSequence returns array', () => {
+    const gi = new GraphIsomorphism(3)
+    const seq = gi.degreeSequence(gi['adj1'])
+    expect(Array.isArray(seq)).toBe(true)
+    expect(seq.length).toBe(3)
+  })
+
+  it('isomorphic after multiple edge additions', () => {
+    const gi = new GraphIsomorphism(4)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(1, 2)
+    gi.addEdgeG1(2, 3)
+    gi.addEdgeG2(3, 2)
+    gi.addEdgeG2(2, 1)
+    gi.addEdgeG2(1, 0)
+    expect(gi.isomorphic()).toBe(true)
+  })
+
+  it('non-isomorphic different degree distributions', () => {
+    const gi = new GraphIsomorphism(4)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(0, 2)
+    gi.addEdgeG2(0, 1)
+    gi.addEdgeG2(1, 2)
+    gi.addEdgeG2(2, 3)
+    expect(gi.isomorphic()).toBe(false)
+  })
+
+  it('equals same graph different instance', () => {
+    const gi1 = new GraphIsomorphism(3)
+    gi1.addEdgeG1(0, 1)
+    gi1.addEdgeG2(0, 1)
+    const gi2 = new GraphIsomorphism(3)
+    gi2.addEdgeG1(0, 1)
+    gi2.addEdgeG2(0, 1)
+    expect(gi1.equals(gi2)).toBe(true)
+  })
 })

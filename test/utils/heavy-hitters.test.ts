@@ -173,4 +173,253 @@ describe('HeavyHitters', () => {
     hh.add('item')
     expect(hh.getCount('item')).toBeGreaterThanOrEqual(1)
   })
+
+  it('toString returns correct format', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a')
+    hh.add('b')
+    expect(hh.toString()).toBe('HeavyHitters(3, 2)')
+  })
+
+  it('toString with empty tracker', () => {
+    const hh = new HeavyHitters<number>(5)
+    expect(hh.toString()).toBe('HeavyHitters(5, 0)')
+  })
+
+  it('toJSON returns entries array', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 10)
+    hh.add('b', 5)
+    const json = hh.toJSON()
+    expect(json).toEqual([['a', 10], ['b', 5]])
+  })
+
+  it('toJSON with empty tracker', () => {
+    const hh = new HeavyHitters<number>(3)
+    expect(hh.toJSON()).toEqual([])
+  })
+
+  it('clone creates independent copy', () => {
+    const hh1 = new HeavyHitters<string>(3)
+    hh1.add('a', 10)
+    const hh2 = hh1.clone()
+    hh2.add('b', 5)
+    expect(hh1.getCount('b')).toBe(0)
+    expect(hh2.getCount('b')).toBe(5)
+  })
+
+  it('clone preserves all state', () => {
+    const hh1 = new HeavyHitters<number>(3)
+    hh1.add(1, 10)
+    hh1.add(2, 5)
+    const hh2 = hh1.clone()
+    expect(hh2.equals(hh1)).toBe(true)
+  })
+
+  it('equals returns true for identical instances', () => {
+    const hh1 = new HeavyHitters<string>(3)
+    const hh2 = new HeavyHitters<string>(3)
+    hh1.add('a', 10)
+    hh2.add('a', 10)
+    expect(hh1.equals(hh2)).toBe(true)
+  })
+
+  it('equals returns false for different k', () => {
+    const hh1 = new HeavyHitters<string>(3)
+    const hh2 = new HeavyHitters<string>(5)
+    hh1.add('a', 10)
+    hh2.add('a', 10)
+    expect(hh1.equals(hh2)).toBe(false)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const hh1 = new HeavyHitters<string>(3)
+    const hh2 = new HeavyHitters<string>(3)
+    hh1.add('a', 10)
+    hh2.add('a', 10)
+    hh2.add('b', 5)
+    expect(hh1.equals(hh2)).toBe(false)
+  })
+
+  it('equals returns false for different counts', () => {
+    const hh1 = new HeavyHitters<string>(3)
+    const hh2 = new HeavyHitters<string>(3)
+    hh1.add('a', 10)
+    hh2.add('a', 5)
+    expect(hh1.equals(hh2)).toBe(false)
+  })
+
+  it('equals returns false for non-HeavyHitters', () => {
+    const hh = new HeavyHitters<string>(3)
+    expect(hh.equals({})).toBe(false)
+    expect(hh.equals(null)).toBe(false)
+    expect(hh.equals(undefined)).toBe(false)
+  })
+
+  it('handles large count values', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', Number.MAX_SAFE_INTEGER)
+    expect(hh.getCount('a')).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles number types', () => {
+    const hh = new HeavyHitters<number>(3)
+    hh.add(1, 10)
+    hh.add(2, 5)
+    expect(hh.getCount(1)).toBe(10)
+    expect(hh.getCount(2)).toBe(5)
+  })
+
+  it('handles object types', () => {
+    const hh = new HeavyHitters<{ id: number }>(3)
+    const obj1 = { id: 1 }
+    const obj2 = { id: 2 }
+    hh.add(obj1, 10)
+    hh.add(obj2, 5)
+    expect(hh.getCount(obj1)).toBe(10)
+    expect(hh.getCount(obj2)).toBe(5)
+  })
+
+  it('eviction reduces counts of existing items', () => {
+    const hh = new HeavyHitters<number>(2)
+    hh.add(1, 10)
+    hh.add(2, 10)
+    hh.add(3, 5)
+    expect(hh.size).toBeLessThanOrEqual(2)
+  })
+
+  it('handles very large k values', () => {
+    const hh = new HeavyHitters<string>(10000)
+    hh.add('a', 10)
+    expect(hh.getCount('a')).toBe(10)
+  })
+
+  it('getHitters returns independent map', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 10)
+    const hitters = hh.getHitters()
+    hitters.clear()
+    expect(hh.getCount('a')).toBe(10)
+  })
+
+  it('getItems returns array copy', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 10)
+    const items = hh.getItems()
+    items.length = 0
+    expect(hh.getItems().length).toBe(1)
+  })
+
+  it('handles adding same item multiple times with different counts', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 5)
+    hh.add('a', 10)
+    expect(hh.getCount('a')).toBe(15)
+  })
+
+  it('handles fractional eviction scenarios', () => {
+    const hh = new HeavyHitters<number>(3)
+    hh.add(1, 5)
+    hh.add(2, 5)
+    hh.add(3, 5)
+    hh.add(4, 5)
+    expect(hh.size).toBeLessThanOrEqual(3)
+  })
+
+  it('clear empties getHitters', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 10)
+    hh.clear()
+    expect(hh.getHitters().size).toBe(0)
+  })
+
+  it('clear empties getItems', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 10)
+    hh.clear()
+    expect(hh.getItems()).toEqual([])
+  })
+
+  it('size getter returns correct count', () => {
+    const hh = new HeavyHitters<string>(5)
+    expect(hh.size).toBe(0)
+    hh.add('a')
+    expect(hh.size).toBe(1)
+    hh.add('b')
+    expect(hh.size).toBe(2)
+  })
+
+  it('handles zero count item (should be ignored)', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 0)
+    expect(hh.size).toBe(0)
+    expect(hh.getCount('a')).toBe(0)
+  })
+
+  it('handles negative count item (should be ignored)', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', -5)
+    expect(hh.size).toBe(0)
+    expect(hh.getCount('a')).toBe(0)
+  })
+
+  it('preserves eviction order', () => {
+    const hh = new HeavyHitters<number>(2)
+    hh.add(1, 100)
+    hh.add(2, 10)
+    hh.add(3, 5)
+    hh.add(4, 5)
+    expect(hh.getCount(1)).toBeGreaterThanOrEqual(90)
+  })
+
+  it('clone has same k', () => {
+    const hh1 = new HeavyHitters<string>(5)
+    const hh2 = hh1.clone()
+    expect(hh2.size).toBe(0)
+    hh1.add('a')
+    expect(hh2.size).toBe(0)
+  })
+
+  it('equals on empty instances with same k', () => {
+    const hh1 = new HeavyHitters<string>(5)
+    const hh2 = new HeavyHitters<string>(5)
+    expect(hh1.equals(hh2)).toBe(true)
+  })
+
+  it('equals on empty instances with different k', () => {
+    const hh1 = new HeavyHitters<string>(3)
+    const hh2 = new HeavyHitters<string>(5)
+    expect(hh1.equals(hh2)).toBe(false)
+  })
+
+  it('toJSON preserves item types', () => {
+    const hh = new HeavyHitters<number>(3)
+    hh.add(1, 10)
+    hh.add(2, 20)
+    const json = hh.toJSON()
+    expect(json).toEqual([[1, 10], [2, 20]])
+  })
+
+  it('handles adding after clear', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 10)
+    hh.clear()
+    hh.add('b', 20)
+    expect(hh.getCount('b')).toBe(20)
+    expect(hh.getCount('a')).toBe(0)
+  })
+
+  it('getCount returns integer', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('a', 10)
+    expect(hh.getCount('a')).toBe(10)
+    expect(typeof hh.getCount('a')).toBe('number')
+  })
+
+  it('handles string items with special characters', () => {
+    const hh = new HeavyHitters<string>(3)
+    hh.add('hello world', 10)
+    hh.add('test@email.com', 5)
+    expect(hh.getCount('hello world')).toBe(10)
+  })
 })
