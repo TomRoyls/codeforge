@@ -1087,4 +1087,40 @@ export class AVLTree<T> {
     })
     return result
   }
+
+  chunkWhen(predicate: (prev: T, curr: T) => boolean): T[][] {
+    const arr = this.toArray()
+    if (arr.length === 0) return []
+    const result: T[][] = [[arr[0]!]]
+    for (let i = 1; i < arr.length; i++) {
+      if (predicate(arr[i - 1]!, arr[i]!)) {
+        result.push([arr[i]!])
+      } else {
+        result[result.length - 1]!.push(arr[i]!)
+      }
+    }
+    return result
+  }
+
+  permute(): T[][] {
+    const arr = this.toArray()
+    if (arr.length === 0) return [[]]
+    if (arr.length > 8) return [arr]
+    const result: T[][] = []
+    const used = new Array(arr.length).fill(false)
+    const permuteHelper = (current: number[]) => {
+      if (current.length === arr.length) {
+        result.push(current.map(i => arr[i]!))
+        return
+      }
+      for (let i = 0; i < arr.length; i++) {
+        if (used[i]) continue
+        used[i] = true
+        permuteHelper([...current, i])
+        used[i] = false
+      }
+    }
+    permuteHelper([])
+    return result
+  }
 }
