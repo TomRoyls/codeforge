@@ -328,6 +328,18 @@ export class CoverTree<T = number> {
   }
 
 
+
+  unique(): T[] {
+    const seen = new Set<T>()
+    const result: T[] = []
+    for (const item of this.toArray()) {
+      if (!seen.has(item)) {
+        seen.add(item)
+        result.push(item)
+      }
+    }
+    return result
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

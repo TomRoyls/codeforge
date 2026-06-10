@@ -225,6 +225,19 @@ toString(): string {
     return items
   }
 
+
+
+  unique(): T[] {
+    const seen = new Set<T>()
+    const result: T[] = []
+    for (const item of this.toArray()) {
+      if (!seen.has(item)) {
+        seen.add(item)
+        result.push(item)
+      }
+    }
+    return result
+  }
 }
 
 export type { ArrayDequeOptions

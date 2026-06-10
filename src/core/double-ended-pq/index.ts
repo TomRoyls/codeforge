@@ -370,6 +370,18 @@ export class DoubleEndedPQ<T = number> {
   }
 
 
+
+  unique(): T[] {
+    const seen = new Set<T>()
+    const result: T[] = []
+    for (const item of this.toArray()) {
+      if (!seen.has(item)) {
+        seen.add(item)
+        result.push(item)
+      }
+    }
+    return result
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

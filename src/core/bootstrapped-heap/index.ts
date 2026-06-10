@@ -350,6 +350,18 @@ export class BootstrappedHeap<T = number> {
   last(): T | undefined {
     return this.at(-1)
   }
+
+  unique(): T[] {
+    const seen = new Set<T>()
+    const result: T[] = []
+    for (const item of this.toArray()) {
+      if (!seen.has(item)) {
+        seen.add(item)
+        result.push(item)
+      }
+    }
+    return result
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'
