@@ -1081,6 +1081,18 @@ export class BinomialHeap<T = number> {
   occurrencesOf(value: T): number {
     return this.toArray().filter(item => item === value).length
   }
+
+
+  unzip<K, V>(this: { toArray(): [K, V][] }): [K[], V[]] {
+    const pairs = this.toArray()
+    const keys: K[] = []
+    const values: V[] = []
+    for (const [k, v] of pairs) {
+      keys.push(k)
+      values.push(v)
+    }
+    return [keys, values]
+  }
 }
 
 export type { BinomialHeapOptions 

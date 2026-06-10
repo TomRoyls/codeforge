@@ -950,6 +950,28 @@ export class DoubleEndedPQ<T = number> {
   occurrencesOf(value: T): number {
     return this.toArray().filter(item => item === value).length
   }
+
+  zip<U>(other: Iterable<U>): [T, U][] {
+    const a = this.toArray()
+    const b = Array.from(other)
+    const len = Math.min(a.length, b.length)
+    const result: [T, U][] = []
+    for (let i = 0; i < len; i++) {
+      result.push([a[i]!, b[i]!])
+    }
+    return result
+  }
+
+  unzip<K, V>(this: { toArray(): [K, V][] }): [K[], V[]] {
+    const pairs = this.toArray()
+    const keys: K[] = []
+    const values: V[] = []
+    for (const [k, v] of pairs) {
+      keys.push(k)
+      values.push(v)
+    }
+    return [keys, values]
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'
