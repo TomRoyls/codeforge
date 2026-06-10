@@ -741,6 +741,10 @@ export class BootstrappedHeap<T = number> {
     }
     return result
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

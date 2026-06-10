@@ -267,6 +267,45 @@ export class Pagoda<T = number> {
     }
     return result
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
+
+  any(predicate: (item: T) => boolean): boolean {
+    return this.some(predicate)
+  }
+
+  all(predicate: (item: T) => boolean): boolean {
+    return this.every(predicate)
+  }
+
+  forEachRight(callback: (item: T, index: number) => void): void {
+    const arr = this.toArray()
+    for (let i = arr.length - 1; i >= 0; i--) {
+      callback(arr[i]!, i)
+    }
+  }
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
+
+  toSpliced(start: number, deleteCount?: number): T[] {
+    const arr = this.toArray()
+    arr.splice(start, deleteCount ?? arr.length - start)
+    return arr
+  }
+
+  with(index: number, value: T): T[] {
+    const arr = [...this.toArray()]
+    arr[index] = value
+    return arr
+  }
 }
 
 export type { PagodaOptions, PagodaNode } from './types.js'

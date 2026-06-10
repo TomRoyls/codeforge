@@ -453,4 +453,15 @@ export class CountedQueue<T> {
   compact(): T[] {
     return this.toArray().filter((item): item is T => item != null)
   }
+
+  forEachRight(callback: (item: T, index: number) => void): void {
+    const arr = this.toArray()
+    for (let i = arr.length - 1; i >= 0; i--) {
+      callback(arr[i]!, i)
+    }
+  }
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

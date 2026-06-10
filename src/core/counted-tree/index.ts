@@ -564,4 +564,39 @@ export class CountedTree<T> {
   compact(): T[] {
     return this.toArray().filter((item): item is T => item != null)
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
+
+  any(predicate: (item: T) => boolean): boolean {
+    return this.some(predicate)
+  }
+
+  all(predicate: (item: T) => boolean): boolean {
+    return this.every(predicate)
+  }
+
+  forEachRight(callback: (item: T, index: number) => void): void {
+    const arr = this.toArray()
+    for (let i = arr.length - 1; i >= 0; i--) {
+      callback(arr[i]!, i)
+    }
+  }
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
+
+  toSpliced(start: number, deleteCount?: number): T[] {
+    const arr = this.toArray()
+    arr.splice(start, deleteCount ?? arr.length - start)
+    return arr
+  }
+
+  with(index: number, value: T): T[] {
+    const arr = [...this.toArray()]
+    arr[index] = value
+    return arr
+  }
 }
