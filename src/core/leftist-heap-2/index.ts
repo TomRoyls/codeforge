@@ -344,4 +344,8 @@ export class LeftistHeap<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  static empty<T>(): LeftistHeap<T> {
+    return new LeftistHeap<T>()
+  }
 }

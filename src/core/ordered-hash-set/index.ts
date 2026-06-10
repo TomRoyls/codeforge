@@ -335,4 +335,8 @@ export class OrderedHashSet<T> {
   toJSON() {
     return { type: 'OrderedHashSet', size: this.size, items: this.toArray() }
   }
+
+  static empty<T>(): OrderedHashSet<T> {
+    return new OrderedHashSet<T>()
+  }
 }

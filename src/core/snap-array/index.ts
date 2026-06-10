@@ -211,4 +211,8 @@ export class SnapArray<T> {
   }
 
 
+
+  static empty<T>(): SnapArray<T> {
+    return new SnapArray<T>()
+  }
 }

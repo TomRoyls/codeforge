@@ -371,4 +371,8 @@ export class IntervalHeap<T> {
   merge(other: IntervalHeap<T>): IntervalHeap<T> {
     return IntervalHeap.from([...this.toArray(), ...other.toArray()])
   }
+
+  static empty<T>(): IntervalHeap<T> {
+    return new IntervalHeap<T>()
+  }
 }

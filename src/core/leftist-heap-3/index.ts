@@ -304,6 +304,10 @@ export class LeftistHeap3<T = number> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  static empty<T>(): LeftistHeap3<T> {
+    return new LeftistHeap3<T>()
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

@@ -377,6 +377,10 @@ export class IntervalHeap<T> {
   static of<T>(...items: T[]): IntervalHeap<T> {
     return IntervalHeap.from(items)
   }
+
+  static empty<T>(): IntervalHeap<T> {
+    return new IntervalHeap<T>()
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

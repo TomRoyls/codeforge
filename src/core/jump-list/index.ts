@@ -357,4 +357,8 @@ export class JumpList<T> {
     return c
   }
 
+
+  static empty<T>(): JumpList<T> {
+    return new JumpList<T>()
+  }
 }

@@ -378,4 +378,8 @@ export class HashSet<T> {
   merge(other: HashSet<T>): HashSet<T> {
     return HashSet.from([...this.toArray(), ...other.toArray()])
   }
+
+  static empty<T>(): HashSet<T> {
+    return new HashSet<T>()
+  }
 }
