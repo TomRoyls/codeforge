@@ -589,4 +589,36 @@ export class AABTree<T> {
   sampleN(n: number): T[] {
     return this.shuffle().slice(0, n)
   }
+
+  minBy<K>(keyFn: (item: T) => K): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    let minItem = arr[0]!
+    let minKey = keyFn(minItem)
+    for (let i = 1; i < arr.length; i++) {
+      const item = arr[i]!
+      const key = keyFn(item)
+      if (key < minKey) {
+        minKey = key
+        minItem = item
+      }
+    }
+    return minItem
+  }
+
+  maxBy<K>(keyFn: (item: T) => K): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    let maxItem = arr[0]!
+    let maxKey = keyFn(maxItem)
+    for (let i = 1; i < arr.length; i++) {
+      const item = arr[i]!
+      const key = keyFn(item)
+      if (key > maxKey) {
+        maxKey = key
+        maxItem = item
+      }
+    }
+    return maxItem
+  }
 }
