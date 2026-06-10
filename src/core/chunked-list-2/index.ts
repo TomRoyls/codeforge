@@ -434,4 +434,18 @@ export class ChunkedList2<T> {
     }
     return maxItem
   }
+
+  groupByMap<K>(keyFn: (item: T) => K): Map<K, T[]> {
+    const groups = new Map<K, T[]>()
+    for (const item of this.toArray()) {
+      const key = keyFn(item)
+      const group = groups.get(key)
+      if (group) {
+        group.push(item)
+      } else {
+        groups.set(key, [item])
+      }
+    }
+    return groups
+  }
 }
