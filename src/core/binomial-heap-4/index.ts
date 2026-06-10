@@ -556,4 +556,8 @@ export class BinomialHeap4<T = unknown> {
     const set = new Set<T>([...this.toArray(), ...other])
     return [...set]
   }
+
+  pluck<K extends keyof T>(key: K): T[K][] {
+    return this.toArray().map(item => item[key])
+  }
 }

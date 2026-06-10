@@ -598,6 +598,10 @@ export class BinomialHeap<T = number> {
     return this.toArray().filter(item => !exclude.has(item))
   }
 
+
+  pluck<K extends keyof T>(key: K): T[K][] {
+    return this.toArray().map(item => item[key])
+  }
 }
 
 export type { BinomialHeapOptions 

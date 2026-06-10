@@ -474,6 +474,10 @@ export class ChunkedArray<T = unknown> {
     const set = new Set<T>([...this.toArray(), ...other])
     return [...set]
   }
+
+  pluck<K extends keyof T>(key: K): T[K][] {
+    return this.toArray().map(item => item[key])
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
