@@ -1018,6 +1018,20 @@ toString(): string {
       return cached as R
     }
   }
+
+  flattenDeep(this: { toArray(): any[] }): any[] {
+    const result: any[] = []
+    const stack = [...this.toArray()].reverse()
+    while (stack.length > 0) {
+      const item = stack.pop()!
+      if (Array.isArray(item)) {
+        stack.push(...item.reverse())
+      } else {
+        result.push(item)
+      }
+    }
+    return result
+  }
 }
 
 class AVLNode<T> {
