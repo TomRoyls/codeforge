@@ -334,4 +334,14 @@ export class AABTree<T> {
     }
     return [pass, fail]
   }
+
+  groupBy<K>(keyFn: (item: T) => K): Map<K, T[]> {
+    const groups = new Map<K, T[]>()
+    for (const item of this.toArray()) {
+      const key = keyFn(item)
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key)!.push(item)
+    }
+    return groups
+  }
 }
