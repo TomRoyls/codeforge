@@ -123,4 +123,60 @@ describe('GoldenRatioSearch', () => {
     const x = GoldenRatioSearch.minimize((t) => (t - 2) * (t - 2), 0, 5)
     expect(x).toBeCloseTo(2, 1)
   })
+
+  it('minimizes quartic function', () => {
+    const x = GoldenRatioSearch.minimize((t) => Math.pow(t - 1, 4), -5, 5)
+    expect(x).toBeCloseTo(1, 2)
+  })
+
+  it('minimizes cosine near pi', () => {
+    const x = GoldenRatioSearch.minimize(Math.cos, 0, Math.PI * 2)
+    expect(x).toBeCloseTo(Math.PI, 1)
+  })
+
+  it('maximizes cosine near zero', () => {
+    const x = GoldenRatioSearch.maximize(Math.cos, -Math.PI, Math.PI)
+    expect(x).toBeCloseTo(0, 1)
+  })
+
+  it('handles very small tolerance', () => {
+    const x = GoldenRatioSearch.minimize((t) => (t - 7) * (t - 7), 0, 15, 1e-12)
+    expect(x).toBeCloseTo(7, 6)
+  })
+
+  it('handles large range', () => {
+    const x = GoldenRatioSearch.minimize((t) => (t - 1000) * (t - 1000), 0, 2000)
+    expect(x).toBeCloseTo(1000, 0)
+  })
+
+  it('minimizes with minimum at right endpoint', () => {
+    const x = GoldenRatioSearch.minimize((t) => -t, -5, 5)
+    expect(x).toBeCloseTo(5, 0)
+  })
+
+  it('minimizes sum of squares', () => {
+    const x = GoldenRatioSearch.minimize((t) => t * t + 2 * t + 1, -10, 10)
+    expect(x).toBeCloseTo(-1, 2)
+  })
+
+  it('maximizes with large range', () => {
+    const x = GoldenRatioSearch.maximize((t) => -(t - 50) * (t - 50), 0, 100)
+    expect(x).toBeCloseTo(50, 1)
+  })
+
+  it('minimizes offset gaussian-like function', () => {
+    const x = GoldenRatioSearch.minimize((t) => Math.pow(t - 0.5, 2) + 3, -1, 2)
+    expect(x).toBeCloseTo(0.5, 2)
+  })
+
+  it('handles range containing exact minimum', () => {
+    const x = GoldenRatioSearch.minimize((t) => Math.pow(t - 4.567, 2), 0, 10)
+    expect(x).toBeCloseTo(4.567, 2)
+  })
+
+  it('minimizes piecewise-linear V shape', () => {
+    const x = GoldenRatioSearch.minimize((t) => Math.abs(t - 3) + Math.abs(t - 5), 0, 10)
+    expect(x).toBeGreaterThanOrEqual(2.9)
+    expect(x).toBeLessThanOrEqual(5.1)
+  })
 })
