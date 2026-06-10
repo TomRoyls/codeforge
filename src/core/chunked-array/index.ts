@@ -492,6 +492,10 @@ export class ChunkedArray<T = unknown> {
   toReversed(): T[] {
     return [...this.toArray()].reverse()
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

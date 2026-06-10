@@ -408,6 +408,10 @@ export class ConcurrentQueue<T = unknown> {
   lastIndexOf(item: T): number {
     return this.toArray().lastIndexOf(item)
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

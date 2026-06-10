@@ -409,4 +409,8 @@ export class ConcTree<T> {
   merge(other: ConcTree<T>): ConcTree<T> {
     return ConcTree.from([...this.toArray(), ...other.toArray()])
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

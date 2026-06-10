@@ -384,4 +384,8 @@ export class CuckooSet2<T> {
   static of<T>(...items: T[]): CuckooSet2<T> {
     return CuckooSet2.from(items)
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

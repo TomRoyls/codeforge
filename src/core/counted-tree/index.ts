@@ -543,4 +543,8 @@ export class CountedTree<T> {
   static empty<T>(): CountedTree<T> {
     return new CountedTree<T>()
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

@@ -400,6 +400,10 @@ export class CoverTree<T = number> {
   static empty<T>(): CoverTree<T> {
     return new CoverTree<T>()
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

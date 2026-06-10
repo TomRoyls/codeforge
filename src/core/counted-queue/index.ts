@@ -383,4 +383,8 @@ export class CountedQueue<T> {
   merge(other: CountedQueue<T>): CountedQueue<T> {
     return CountedQueue.from([...this.toArray(), ...other.toArray()])
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

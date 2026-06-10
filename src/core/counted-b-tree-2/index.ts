@@ -450,4 +450,8 @@ export class CountedBTree2<T> {
     }
     return true
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

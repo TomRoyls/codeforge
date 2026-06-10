@@ -599,4 +599,8 @@ export class BTree2<T> {
   toReversed(): T[] {
     return [...this.toArray()].reverse()
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

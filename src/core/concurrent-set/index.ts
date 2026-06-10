@@ -422,4 +422,8 @@ export class ConcurrentSet<T> {
     }
     return true
   }
+
+  toSorted(compareFn?: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
