@@ -397,6 +397,21 @@ export class Deque<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  partition(predicate: (item: T) => boolean): [T[], T[]] {
+    const pass: T[] = []
+    const fail: T[] = []
+    for (const item of this.toArray()) {
+      if (predicate(item)) pass.push(item)
+      else fail.push(item)
+    }
+    return [pass, fail]
+  }
+
+  tap(callback: (collection: this) => void): this {
+    callback(this)
+    return this
+  }
 }
 
 function nextPow2(n: number): number {

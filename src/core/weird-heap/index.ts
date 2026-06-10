@@ -462,6 +462,25 @@ export class WeirdHeap<T = unknown> {
   last(): T | undefined {
     return this.at(-1)
   }
+
+  unique(): T[] {
+    return [...new Set(this.toArray())]
+  }
+
+  partition(predicate: (item: T) => boolean): [T[], T[]] {
+    const pass: T[] = []
+    const fail: T[] = []
+    for (const item of this.toArray()) {
+      if (predicate(item)) pass.push(item)
+      else fail.push(item)
+    }
+    return [pass, fail]
+  }
+
+  tap(callback: (collection: this) => void): this {
+    callback(this)
+    return this
+  }
 }
 
 export { DEFAULT_WEIRD_HEAP_OPTIONS } from './types.js'

@@ -379,4 +379,19 @@ export class DoublyLinkedList3<T> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+  partition(predicate: (item: T) => boolean): [T[], T[]] {
+    const pass: T[] = []
+    const fail: T[] = []
+    for (const item of this.toArray()) {
+      if (predicate(item)) pass.push(item)
+      else fail.push(item)
+    }
+    return [pass, fail]
+  }
+
+  tap(callback: (collection: this) => void): this {
+    callback(this)
+    return this
+  }
 }

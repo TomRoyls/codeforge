@@ -284,4 +284,9 @@ export class DisjointSet<T> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+  tap(callback: (collection: this) => void): this {
+    callback(this)
+    return this
+  }
 }

@@ -358,4 +358,9 @@ export class Deque4<T> {
     return [...this.toArray()].sort(compareFn)
   }
 
+
+  tap(callback: (collection: this) => void): this {
+    callback(this)
+    return this
+  }
 }

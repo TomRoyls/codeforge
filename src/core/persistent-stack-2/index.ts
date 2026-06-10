@@ -171,6 +171,25 @@ export class PersistentStack2<T> {
     const arr = this.toArray()
     return arr.length > 0 ? arr[arr.length - 1] : undefined
   }
+
+  unique(): T[] {
+    return [...new Set(this.toArray())]
+  }
+
+  partition(predicate: (item: T) => boolean): [T[], T[]] {
+    const pass: T[] = []
+    const fail: T[] = []
+    for (const item of this.toArray()) {
+      if (predicate(item)) pass.push(item)
+      else fail.push(item)
+    }
+    return [pass, fail]
+  }
+
+  tap(callback: (collection: this) => void): this {
+    callback(this)
+    return this
+  }
 }
 
 interface Node<T> {

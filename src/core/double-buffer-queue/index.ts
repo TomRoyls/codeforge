@@ -217,4 +217,9 @@ export class DoubleBufferQueue<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  tap(callback: (collection: this) => void): this {
+    callback(this)
+    return this
+  }
 }

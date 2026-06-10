@@ -400,6 +400,11 @@ export class DoubleEndedPQ<T = number> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  tap(callback: (collection: this) => void): this {
+    callback(this)
+    return this
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'
