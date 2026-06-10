@@ -211,6 +211,10 @@ toString(): string {
   toJSON() {
     return { type: 'AugmentedQueue', items: this.toArray() }
   }
+
+  static empty(): AugmentedQueue {
+    return new AugmentedQueue()
+  }
 }
 
 export type { AugmentedQueueOptions

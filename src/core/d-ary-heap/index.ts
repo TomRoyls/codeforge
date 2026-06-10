@@ -411,6 +411,10 @@ export class DAryHeap<T = number> {
     }
     return true
   }
+
+  static empty<T>(): DAryHeap<T> {
+    return new DAryHeap<T>()
+  }
 }
 
 export type { DAryHeapOptions } from './types.js'

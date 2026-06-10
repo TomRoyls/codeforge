@@ -119,4 +119,8 @@ export class GraphColoring2 {
   toString(): string {
     return `GraphColoring2()`
   }
+
+  static empty(): GraphColoring2 {
+    return new GraphColoring2()
+  }
 }

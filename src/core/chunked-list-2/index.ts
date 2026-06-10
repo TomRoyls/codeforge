@@ -259,4 +259,8 @@ export class ChunkedList2<T> {
     }
     return result
   }
+
+  static empty<T>(): ChunkedList2<T> {
+    return new ChunkedList2<T>()
+  }
 }

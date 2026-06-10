@@ -102,4 +102,8 @@ export class DisjointSet3 {
   toString(): string {
     return `DisjointSet3({ size: ${this.size} })`
   }
+
+  static empty(): DisjointSet3 {
+    return new DisjointSet3()
+  }
 }

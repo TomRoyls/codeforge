@@ -385,4 +385,8 @@ export class EphemeralArray<T> {
   last(): T | undefined {
     return this.at(-1)
   }
+
+  static empty<T>(): EphemeralArray<T> {
+    return new EphemeralArray<T>()
+  }
 }

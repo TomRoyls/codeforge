@@ -445,6 +445,10 @@ export class BootstrappedHeap<T = number> {
     }
     return result
   }
+
+  static empty<T>(): BootstrappedHeap<T> {
+    return new BootstrappedHeap<T>()
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

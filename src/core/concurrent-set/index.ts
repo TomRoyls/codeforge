@@ -410,4 +410,8 @@ export class ConcurrentSet<T> {
     }
     return result
   }
+
+  static empty<T>(): ConcurrentSet<T> {
+    return new ConcurrentSet<T>()
+  }
 }

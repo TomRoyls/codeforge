@@ -432,4 +432,8 @@ export class FibonacciSet<T> {
   toJSON() {
     return { type: 'FibonacciSet', size: this.size, items: this.toArray() }
   }
+
+  static empty<T>(): FibonacciSet<T> {
+    return new FibonacciSet<T>()
+  }
 }

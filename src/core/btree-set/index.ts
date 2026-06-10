@@ -642,4 +642,8 @@ export class BTreeSet<T> {
     }
     return result
   }
+
+  static empty<T>(): BTreeSet<T> {
+    return new BTreeSet<T>()
+  }
 }

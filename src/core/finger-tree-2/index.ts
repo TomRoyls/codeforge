@@ -397,9 +397,6 @@ export class FingerTree2<T> {
     return new FingerTree2(items)
   }
 
-  static empty<T>(): FingerTree2<T> {
-    return new FingerTree2<T>()
-  }
 
   toString(): string {
     return `${FingerTree2}({ size: ${this.size} })`
@@ -446,5 +443,6 @@ export class FingerTree2<T> {
     }
     return c
   }
+
 
 }

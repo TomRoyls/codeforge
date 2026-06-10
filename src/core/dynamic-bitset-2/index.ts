@@ -259,4 +259,8 @@ export class DynamicBitset2 {
   toJSON() {
     return { type: 'DynamicBitset2', size: this.size, items: this.toArray() }
   }
+
+  static empty(): DynamicBitset2 {
+    return new DynamicBitset2()
+  }
 }

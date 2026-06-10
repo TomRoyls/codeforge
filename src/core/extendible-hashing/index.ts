@@ -278,4 +278,8 @@ export class ExtendibleHashTable<K, V> {
   toJSON() {
     return { type: 'ExtendibleHashTable', size: this.size, items: this.toArray() }
   }
+
+  static empty<K, V>(): ExtendibleHashTable<K, V> {
+    return new ExtendibleHashTable<K, V>()
+  }
 }

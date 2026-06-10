@@ -392,6 +392,10 @@ export class ConcurrentQueue<T = unknown> {
     }
     return result
   }
+
+  static empty<T>(): ConcurrentQueue<T> {
+    return new ConcurrentQueue<T>()
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

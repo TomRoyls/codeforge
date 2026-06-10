@@ -151,4 +151,8 @@ export class AmericanFlagSort2 {
   toString(): string {
     return `AmericanFlagSort2()`
   }
+
+  static empty(): AmericanFlagSort2 {
+    return new AmericanFlagSort2()
+  }
 }

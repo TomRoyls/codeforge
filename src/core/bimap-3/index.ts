@@ -111,4 +111,8 @@ export class BiMap3<K, V> {
   toJSON() {
     return { type: 'BiMap3', size: this.size, items: this.toArray() }
   }
+
+  static empty<K, V>(): BiMap3<K, V> {
+    return new BiMap3<K, V>()
+  }
 }

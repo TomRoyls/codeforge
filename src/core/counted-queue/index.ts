@@ -363,4 +363,8 @@ export class CountedQueue<T> {
     }
     return result
   }
+
+  static empty<T>(): CountedQueue<T> {
+    return new CountedQueue<T>()
+  }
 }

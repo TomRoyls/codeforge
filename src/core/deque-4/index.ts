@@ -348,4 +348,8 @@ export class Deque4<T> {
     return arr.reduce((a, b) => a > b ? a : b)
   }
 
+
+  static empty<T>(): Deque4<T> {
+    return new Deque4<T>()
+  }
 }

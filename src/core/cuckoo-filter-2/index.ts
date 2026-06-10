@@ -241,6 +241,10 @@ export class CuckooFilter2 {
   toJSON() {
     return { type: 'CuckooFilter2', size: this.size, items: this.toArray() }
   }
+
+  static empty(): CuckooFilter2 {
+    return new CuckooFilter2()
+  }
 }
 
 export const CuckooFilter = CuckooFilter2;

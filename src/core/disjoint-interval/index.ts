@@ -253,6 +253,10 @@ export class DisjointIntervalSet {
   toJSON() {
     return { type: 'DisjointIntervalSet', size: this.size, items: this.toArray() }
   }
+
+  static empty(): DisjointIntervalSet {
+    return new DisjointIntervalSet()
+  }
 }
 
 export type { Interval, IntervalOptions }

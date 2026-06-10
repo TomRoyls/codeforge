@@ -343,4 +343,8 @@ export class DAryHeap<T> {
     }
     return true
   }
+
+  static empty<T>(): DAryHeap<T> {
+    return new DAryHeap<T>()
+  }
 }

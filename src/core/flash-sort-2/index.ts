@@ -118,4 +118,8 @@ export class FlashSort2<T> {
   toString(): string {
     return `FlashSort2()`
   }
+
+  static empty<T>(): FlashSort2<T> {
+    return new FlashSort2<T>()
+  }
 }

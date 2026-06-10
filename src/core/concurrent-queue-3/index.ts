@@ -87,4 +87,8 @@ export class ConcurrentQueue3<T> {
   toString(): string {
     return `${ConcurrentQueue3}({ size: ${this.size} })`
   }
+
+  static empty<T>(): ConcurrentQueue3<T> {
+    return new ConcurrentQueue3<T>()
+  }
 }

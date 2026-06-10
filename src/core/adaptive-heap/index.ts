@@ -410,4 +410,8 @@ export class AdaptiveHeap<T> {
     }
     return result
   }
+
+  static empty<T>(): AdaptiveHeap<T> {
+    return new AdaptiveHeap<T>()
+  }
 }

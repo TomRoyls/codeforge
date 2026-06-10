@@ -63,4 +63,8 @@ export class CubeSort2 {
   toString(): string {
     return `CubeSort2()`
   }
+
+  static empty(): CubeSort2 {
+    return new CubeSort2()
+  }
 }

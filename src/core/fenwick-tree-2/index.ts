@@ -226,4 +226,8 @@ export class FenwickTree2<T = number> {
     }
     return result
   }
+
+  static empty<T>(): FenwickTree2<T> {
+    return new FenwickTree2<T>()
+  }
 }

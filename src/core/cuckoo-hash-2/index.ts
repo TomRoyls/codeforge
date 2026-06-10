@@ -297,4 +297,8 @@ export class CuckooHash<K, V> {
   toJSON() {
     return { type: 'CuckooHash', size: this.size, items: this.toArray() }
   }
+
+  static empty<K, V>(): CuckooHash<K, V> {
+    return new CuckooHash<K, V>()
+  }
 }

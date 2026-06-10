@@ -178,4 +178,8 @@ export class GraphDijkstra {
   toJSON() {
     return { type: 'GraphDijkstra', items: this.toArray() }
   }
+
+  static empty(): GraphDijkstra {
+    return new GraphDijkstra()
+  }
 }

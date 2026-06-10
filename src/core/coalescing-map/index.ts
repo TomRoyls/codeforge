@@ -189,4 +189,8 @@ export class CoalescingMap<K, V> {
   toJSON() {
     return { type: 'CoalescingMap', size: this.size, items: this.toArray() }
   }
+
+  static empty<K, V>(): CoalescingMap<K, V> {
+    return new CoalescingMap<K, V>()
+  }
 }

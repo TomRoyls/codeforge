@@ -389,4 +389,8 @@ export class DoubleEndedPQ2<T = number> {
     }
     return result
   }
+
+  static empty<T>(): DoubleEndedPQ2<T> {
+    return new DoubleEndedPQ2<T>()
+  }
 }

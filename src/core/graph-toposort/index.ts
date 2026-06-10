@@ -207,4 +207,8 @@ export class GraphTopoSort {
   toJSON() {
     return { type: 'GraphTopoSort', items: this.toArray() }
   }
+
+  static empty(): GraphTopoSort {
+    return new GraphTopoSort()
+  }
 }

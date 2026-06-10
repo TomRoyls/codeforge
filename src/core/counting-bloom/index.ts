@@ -202,6 +202,10 @@ export class CountingBloomFilter<T = string> {
   toString(): string {
     return `${CountingBloomFilter}({ size: ${this.size} })`
   }
+
+  static empty<T>(): CountingBloomFilter<T> {
+    return new CountingBloomFilter<T>()
+  }
 }
 
 export type { CountingBloomFilterOptions } from './types.js'

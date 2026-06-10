@@ -528,4 +528,8 @@ export class AVLSet<T = number> {
     }
     return result
   }
+
+  static empty<T>(): AVLSet<T> {
+    return new AVLSet<T>()
+  }
 }

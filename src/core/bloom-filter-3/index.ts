@@ -279,4 +279,8 @@ export class BloomFilter {
   toJSON() {
     return { type: 'BloomFilter', size: this.size, items: this.toArray() }
   }
+
+  static empty(): BloomFilter {
+    return new BloomFilter()
+  }
 }

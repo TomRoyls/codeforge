@@ -225,6 +225,10 @@ export class CountingSort {
   toString(): string {
     return `CountingSort()`
   }
+
+  static empty(): CountingSort {
+    return new CountingSort()
+  }
 }
 
 export type { CountingSortOptions, DistributionEntry } from './types.js'

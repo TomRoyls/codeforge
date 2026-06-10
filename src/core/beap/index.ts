@@ -382,6 +382,10 @@ toString(): string {
     }
     return result
   }
+
+  static empty<T>(): Beap<T> {
+    return new Beap<T>()
+  }
 }
 
 export type { BeapOptions

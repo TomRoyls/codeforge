@@ -354,4 +354,8 @@ export class HashMap2<K, V> {
   toJSON() {
     return { type: 'HashMap2', size: this.size, items: this.toArray() }
   }
+
+  static empty<K, V>(): HashMap2<K, V> {
+    return new HashMap2<K, V>()
+  }
 }

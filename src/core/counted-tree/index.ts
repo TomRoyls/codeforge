@@ -539,4 +539,8 @@ export class CountedTree<T> {
     }
     return true
   }
+
+  static empty<T>(): CountedTree<T> {
+    return new CountedTree<T>()
+  }
 }

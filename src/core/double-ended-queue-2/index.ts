@@ -381,6 +381,10 @@ export class Deque<T> {
     }
     return result
   }
+
+  static empty<T>(): Deque<T> {
+    return new Deque<T>()
+  }
 }
 
 function nextPow2(n: number): number {

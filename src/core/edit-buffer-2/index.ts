@@ -167,4 +167,8 @@ export class EditBuffer2 {
   toString(): string {
     return `EditBuffer2()`
   }
+
+  static empty(): EditBuffer2 {
+    return new EditBuffer2()
+  }
 }

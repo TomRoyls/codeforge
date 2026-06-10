@@ -361,6 +361,10 @@ export class BitSet2 {
   toJSON() {
     return { type: 'BitSet2', size: this.size, items: this.toArray() }
   }
+
+  static empty(): BitSet2 {
+    return new BitSet2()
+  }
 }
 
 export type { BitSetOptions } from './types.js'

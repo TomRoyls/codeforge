@@ -105,4 +105,8 @@ export class CombSort3<T> {
   toString(): string {
     return `CombSort3()`
   }
+
+  static empty<T>(): CombSort3<T> {
+    return new CombSort3<T>()
+  }
 }

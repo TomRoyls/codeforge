@@ -434,6 +434,10 @@ export class ChunkedArray<T = unknown> {
     }
     return result
   }
+
+  static empty<T>(): ChunkedArray<T> {
+    return new ChunkedArray<T>()
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

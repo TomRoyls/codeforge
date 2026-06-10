@@ -125,4 +125,8 @@ export class BlockSort2 {
   toString(): string {
     return `BlockSort2()`
   }
+
+  static empty(): BlockSort2 {
+    return new BlockSort2()
+  }
 }

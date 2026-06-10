@@ -551,4 +551,8 @@ export class DoubleArrayTrie2 {
   toJSON() {
     return { type: 'DoubleArrayTrie2', size: this.size, items: this.toArray() }
   }
+
+  static empty(): DoubleArrayTrie2 {
+    return new DoubleArrayTrie2()
+  }
 }

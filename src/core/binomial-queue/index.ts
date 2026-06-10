@@ -568,6 +568,10 @@ export class BinomialQueue<T = number> {
     }
     return result
   }
+
+  static empty<T>(): BinomialQueue<T> {
+    return new BinomialQueue<T>()
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

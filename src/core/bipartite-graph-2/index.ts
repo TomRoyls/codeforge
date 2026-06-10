@@ -116,4 +116,8 @@ export class BipartiteGraph2 {
     this.rightVertices = new Set()
     this.edges = new Map()
   }
+
+  static empty(): BipartiteGraph2 {
+    return new BipartiteGraph2()
+  }
 }

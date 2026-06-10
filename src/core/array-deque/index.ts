@@ -322,6 +322,10 @@ toString(): string {
     }
     return result
   }
+
+  static empty<T>(): ArrayDeque<T> {
+    return new ArrayDeque<T>()
+  }
 }
 
 export type { ArrayDequeOptions

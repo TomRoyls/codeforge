@@ -396,6 +396,10 @@ export class CoverTree<T = number> {
     }
     return true
   }
+
+  static empty<T>(): CoverTree<T> {
+    return new CoverTree<T>()
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

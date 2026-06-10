@@ -465,4 +465,8 @@ export class DynamicArray<T> {
     }
     return result
   }
+
+  static empty<T>(): DynamicArray<T> {
+    return new DynamicArray<T>()
+  }
 }

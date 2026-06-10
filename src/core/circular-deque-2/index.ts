@@ -398,4 +398,8 @@ export class CircularDeque2<T = unknown> {
     }
     return result
   }
+
+  static empty<T>(): CircularDeque2<T> {
+    return new CircularDeque2<T>()
+  }
 }

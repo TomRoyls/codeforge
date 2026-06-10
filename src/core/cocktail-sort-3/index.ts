@@ -155,4 +155,8 @@ export class CocktailSort3<T> {
   toString(): string {
     return `CocktailSort3()`
   }
+
+  static empty<T>(): CocktailSort3<T> {
+    return new CocktailSort3<T>()
+  }
 }

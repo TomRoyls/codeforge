@@ -164,6 +164,10 @@ export class GraphTree<T = unknown> {
     }
     return result
   }
+
+  static empty<T>(): GraphTree<T> {
+    return new GraphTree<T>()
+  }
 }
 
 export type { TraversalOrder, GraphTreeNode } from './types.js'

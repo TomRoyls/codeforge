@@ -368,4 +368,8 @@ export class CuckooSet2<T> {
     }
     return true
   }
+
+  static empty<T>(): CuckooSet2<T> {
+    return new CuckooSet2<T>()
+  }
 }

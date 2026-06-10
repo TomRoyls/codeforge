@@ -285,4 +285,8 @@ export class BucketQueue<T> {
 }
 
 
+
+  static empty<T>(): BucketQueue<T> {
+    return new BucketQueue<T>()
+  }
 }

@@ -464,6 +464,10 @@ export class FibHeap<T = number> {
   }
 
 
+
+  static empty<T>(): FibHeap<T> {
+    return new FibHeap<T>()
+  }
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'

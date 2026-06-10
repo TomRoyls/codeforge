@@ -461,6 +461,10 @@ export class Deque2<T = unknown> {
     fn(this)
     return this
   }
+
+  static empty<T>(): Deque2<T> {
+    return new Deque2<T>()
+  }
 }
 
 export type { Deque2Options } from './types.js'

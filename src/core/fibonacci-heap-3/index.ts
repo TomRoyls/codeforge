@@ -501,6 +501,10 @@ export class FibonacciHeap3<T = number> {
     return items
   }
 
+
+  static empty<T>(): FibonacciHeap3<T> {
+    return new FibonacciHeap3<T>()
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

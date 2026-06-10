@@ -106,4 +106,8 @@ export class CascadingBloom2 {
     return `${CascadingBloom2}({ size: ${this.size} })`
   }
 
+
+  static empty(): CascadingBloom2 {
+    return new CascadingBloom2()
+  }
 }

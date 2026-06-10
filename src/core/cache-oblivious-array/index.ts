@@ -320,4 +320,8 @@ export class CacheObliviousArray<T> {
     }
     return result
   }
+
+  static empty<T>(): CacheObliviousArray<T> {
+    return new CacheObliviousArray<T>()
+  }
 }

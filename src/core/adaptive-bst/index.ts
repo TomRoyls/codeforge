@@ -666,6 +666,10 @@ toString(): string {
     }
     return result
   }
+
+  static empty<T>(): AdaptiveBST<T> {
+    return new AdaptiveBST<T>()
+  }
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback

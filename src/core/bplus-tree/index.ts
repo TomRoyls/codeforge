@@ -579,4 +579,8 @@ export class BPlusTree<K, V> {
   toJSON() {
     return { type: 'BPlusTree', size: this.size, items: this.toArray() }
   }
+
+  static empty<K, V>(): BPlusTree<K, V> {
+    return new BPlusTree<K, V>()
+  }
 }

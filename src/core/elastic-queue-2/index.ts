@@ -60,4 +60,8 @@ export class ElasticQueue2<T> {
   toString(): string {
     return `${ElasticQueue2}({ size: ${this.size} })`
   }
+
+  static empty<T>(): ElasticQueue2<T> {
+    return new ElasticQueue2<T>()
+  }
 }

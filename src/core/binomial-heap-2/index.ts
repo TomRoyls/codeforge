@@ -562,6 +562,10 @@ export class BinomialHeap<T = number> {
     }
     return result
   }
+
+  static empty<T>(): BinomialHeap<T> {
+    return new BinomialHeap<T>()
+  }
 }
 
 export type { BinomialHeapOptions 

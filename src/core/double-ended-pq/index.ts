@@ -392,6 +392,10 @@ export class DoubleEndedPQ<T = number> {
     }
     return [pass, fail]
   }
+
+  static empty<T>(): DoubleEndedPQ<T> {
+    return new DoubleEndedPQ<T>()
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

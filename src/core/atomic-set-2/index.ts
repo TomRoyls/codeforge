@@ -293,4 +293,8 @@ export class AtomicSet2<T> {
     }
     return result
   }
+
+  static empty<T>(): AtomicSet2<T> {
+    return new AtomicSet2<T>()
+  }
 }

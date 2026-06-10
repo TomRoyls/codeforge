@@ -516,4 +516,8 @@ export class BinomialHeap4<T = unknown> {
     }
     return result
   }
+
+  static empty<T>(): BinomialHeap4<T> {
+    return new BinomialHeap4<T>()
+  }
 }
