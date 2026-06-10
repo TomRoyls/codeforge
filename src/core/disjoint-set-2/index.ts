@@ -230,4 +230,12 @@ export class DisjointSet<T> {
     }
     return c
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }

@@ -354,6 +354,14 @@ export class DoubleEndedPQ<T = number> {
     }
     return c
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

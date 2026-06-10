@@ -815,6 +815,14 @@ export class CatenableDeque<T> {
     }
     return c
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

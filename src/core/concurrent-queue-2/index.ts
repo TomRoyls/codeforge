@@ -312,6 +312,14 @@ export class ConcurrentQueue<T = unknown> {
     }
     return c
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'
