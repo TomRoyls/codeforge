@@ -788,6 +788,10 @@ export class MinMaxDeque<T> {
     const pad = Array(minLength - arr.length).fill(value) as T[]
     return [...pad, ...arr]
   }
+
+  contains(item: T): boolean {
+    return this.includes(item)
+  }
 }
 
 export type { MinMaxDequeOptions } from './types.js'

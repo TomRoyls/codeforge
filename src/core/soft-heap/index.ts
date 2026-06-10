@@ -875,6 +875,10 @@ export class SoftHeap<T = unknown> {
     const pad = Array(minLength - arr.length).fill(value) as T[]
     return [...pad, ...arr]
   }
+
+  contains(item: T): boolean {
+    return this.includes(item)
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

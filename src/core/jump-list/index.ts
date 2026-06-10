@@ -887,4 +887,8 @@ export class JumpList<T> {
     const pad = Array(minLength - arr.length).fill(value) as T[]
     return [...pad, ...arr]
   }
+
+  contains(value: T): boolean {
+    return this.includes(value)
+  }
 }

@@ -705,4 +705,8 @@ export class TernaryHeap3<T> {
     const pad = Array(minLength - arr.length).fill(value) as T[]
     return [...pad, ...arr]
   }
+
+  contains(item: T): boolean {
+    return this.includes(item)
+  }
 }

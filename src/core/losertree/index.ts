@@ -848,6 +848,10 @@ export class LoserTree<T = number> {
   satisfies<S extends T>(guard: (item: T) => item is S): this is { toArray(): S[] } {
     return this.every(guard)
   }
+
+  contains(item: T): boolean {
+    return this.includes(item)
+  }
 }
 
 export type { Comparator, ForEachCallback, LoserTreeOptions } from './types.js'

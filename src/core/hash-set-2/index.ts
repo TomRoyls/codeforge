@@ -887,4 +887,8 @@ export class HashSet<T> {
   satisfies<S extends T>(guard: (item: T) => item is S): this is { toArray(): S[] } {
     return this.every(guard)
   }
+
+  contains(item: T): boolean {
+    return this.includes(item)
+  }
 }

@@ -393,4 +393,8 @@ export class EphemeralArray<T> {
   get [Symbol.toStringTag](): string {
     return 'EphemeralArray'
   }
+
+  contains(item: T): boolean {
+    return this.includes(item)
+  }
 }

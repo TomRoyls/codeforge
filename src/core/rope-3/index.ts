@@ -370,4 +370,8 @@ export class Rope3 {
   get [Symbol.toStringTag](): string {
     return 'Rope3'
   }
+
+  contains(str: string): boolean {
+    return this.includes(str)
+  }
 }

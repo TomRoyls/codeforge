@@ -756,6 +756,10 @@ export class SlidingWindowMax<T = number> {
     const pad = Array(minLength - arr.length).fill(value) as T[]
     return [...pad, ...arr]
   }
+
+  contains(item: T): boolean {
+    return this.includes(item)
+  }
 }
 
 export { defaultComparator } from './types.js'

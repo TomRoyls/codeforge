@@ -258,4 +258,8 @@ export class CartesianTree3<T> {
   get [Symbol.toStringTag](): string {
     return 'CartesianTree3'
   }
+
+  contains(item: T): boolean {
+    return this.includes(item)
+  }
 }

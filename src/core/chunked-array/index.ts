@@ -916,6 +916,10 @@ export class ChunkedArray<T = unknown> {
     const pad = Array(minLength - arr.length).fill(value) as T[]
     return [...pad, ...arr]
   }
+
+  contains(value: T): boolean {
+    return this.includes(value)
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
