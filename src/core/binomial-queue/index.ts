@@ -688,6 +688,7 @@ export class BinomialQueue<T = number> {
     }
     return result
   }
+
 }
 
 export type { BinomialQueueOptions } from './types.js'

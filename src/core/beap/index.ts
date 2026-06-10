@@ -512,6 +512,7 @@ toString(): string {
     }
     return result
   }
+
 }
 
 export type { BeapOptions

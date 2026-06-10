@@ -481,6 +481,7 @@ export class BoundedPriorityQueue<T> {
     }
     return result
   }
+
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

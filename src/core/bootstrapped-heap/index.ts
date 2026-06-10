@@ -575,6 +575,7 @@ export class BootstrappedHeap<T = number> {
     }
     return result
   }
+
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'
