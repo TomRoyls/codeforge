@@ -361,4 +361,14 @@ export class JumpList<T> {
   static empty<T>(): JumpList<T> {
     return new JumpList<T>()
   }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    const i = index < 0 ? arr.length + index : index
+    return arr[i]
+  }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
 }

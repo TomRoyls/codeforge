@@ -375,4 +375,8 @@ export class DoublyLinkedList3<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  findIndex(predicate: (item: T) => boolean): number {
+    return this.toArray().findIndex(predicate)
+  }
 }

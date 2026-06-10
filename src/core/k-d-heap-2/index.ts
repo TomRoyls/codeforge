@@ -171,4 +171,14 @@ export class KDHeap2<T> {
   static of<T>(...items: T[]): KDHeap2<T> {
     return KDHeap2.from(items)
   }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    const i = index < 0 ? arr.length + index : index
+    return arr[i]
+  }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
 }

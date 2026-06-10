@@ -148,6 +148,18 @@ export class PersistentStack2<T> {
   merge(other: PersistentStack2<T>): PersistentStack2<T> {
     return PersistentStack2.from([...this.toArray(), ...other.toArray()])
   }
+
+  findIndex(predicate: (item: T) => boolean): number {
+    return this.toArray().findIndex(predicate)
+  }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
+
+  slice(start: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }
 
 interface Node<T> {

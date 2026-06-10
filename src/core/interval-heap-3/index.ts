@@ -237,4 +237,10 @@ export class IntervalHeap3<T> {
   static of<T>(...items: T[]): IntervalHeap3<T> {
     return IntervalHeap3.from(items)
   }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    const i = index < 0 ? arr.length + index : index
+    return arr[i]
+  }
 }

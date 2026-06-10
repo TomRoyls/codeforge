@@ -308,6 +308,20 @@ export class LeftistHeap3<T = number> {
   static empty<T>(): LeftistHeap3<T> {
     return new LeftistHeap3<T>()
   }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    const i = index < 0 ? arr.length + index : index
+    return arr[i]
+  }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

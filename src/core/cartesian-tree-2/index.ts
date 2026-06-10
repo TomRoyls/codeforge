@@ -701,4 +701,8 @@ export class CartesianTree<T> {
     }
     return result
   }
+
+  findIndex(predicate: (item: T) => boolean): number {
+    return this.toArray().findIndex(predicate)
+  }
 }

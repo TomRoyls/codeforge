@@ -339,4 +339,20 @@ export class OrderedHashSet<T> {
   static empty<T>(): OrderedHashSet<T> {
     return new OrderedHashSet<T>()
   }
+
+  find(predicate: (item: T) => boolean): T | undefined {
+    return this.toArray().find(predicate)
+  }
+
+  findIndex(predicate: (item: T) => boolean): number {
+    return this.toArray().findIndex(predicate)
+  }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
+
+  slice(start: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }

@@ -110,4 +110,14 @@ export class CartesianProduct2<T> {
 
 
 
+
+
+
+
+
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
+
 }

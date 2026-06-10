@@ -334,4 +334,32 @@ export class ScapegoatTree3<T> {
     this.clear()
     return items
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
+
+  find(predicate: (item: T) => boolean): T | undefined {
+    return this.toArray().find(predicate)
+  }
+
+  findIndex(predicate: (item: T) => boolean): number {
+    return this.toArray().findIndex(predicate)
+  }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
+
+  slice(start: number, end?: number): T[] {
+    return this.toArray().slice(start, end)
+  }
 }

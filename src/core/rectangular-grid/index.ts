@@ -229,4 +229,15 @@ export class RectangularGrid<T> {
   toJSON() {
     return { type: 'RectangularGrid', items: this.toArray() }
   }
+
+
+
+
+
+
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
+
 }

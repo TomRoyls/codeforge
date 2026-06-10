@@ -348,4 +348,34 @@ export class SqrtDecomp2<T> {
   static of<T>(...items: T[]): SqrtDecomp2<T> {
     return SqrtDecomp2.from(items)
   }
+
+  every(predicate: (item: T) => boolean): boolean {
+    return this.toArray().every(predicate)
+  }
+
+  some(predicate: (item: T) => boolean): boolean {
+    return this.toArray().some(predicate)
+  }
+
+  find(predicate: (item: T) => boolean): T | undefined {
+    return this.toArray().find(predicate)
+  }
+
+  findIndex(predicate: (item: T) => boolean): number {
+    return this.toArray().findIndex(predicate)
+  }
+
+  includes(item: T): boolean {
+    return this.toArray().includes(item)
+  }
+
+  at(index: number): T | undefined {
+    const arr = this.toArray()
+    const i = index < 0 ? arr.length + index : index
+    return arr[i]
+  }
+
+  join(separator: string = ', '): string {
+    return this.toArray().join(separator)
+  }
 }
