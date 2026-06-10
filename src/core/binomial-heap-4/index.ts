@@ -812,4 +812,14 @@ export class BinomialHeap4<T = unknown> {
   breakWhen(predicate: (item: T) => boolean): [T[], T[]] {
     return this.span(item => !predicate(item))
   }
+
+  scan<U>(reducer: (acc: U, item: T) => U, initialValue: U): U[] {
+    const result: U[] = []
+    let acc = initialValue
+    for (const item of this.toArray()) {
+      acc = reducer(acc, item)
+      result.push(acc)
+    }
+    return result
+  }
 }
