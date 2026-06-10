@@ -210,3 +210,165 @@ describe('RedBlackTree root & clear', () => {
     expect(tree.find(1)).toBe('a')
   })
 })
+
+describe('RedBlackTree toString', () => {
+  it('returns bracketed entries', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(3, 'c')
+    tree.insert(1, 'a')
+    expect(tree.toString()).toBe('[1=a, 3=c]')
+  })
+
+  it('returns empty brackets for empty tree', () => {
+    const tree = new RedBlackTree<number, string>()
+    expect(tree.toString()).toBe('[]')
+  })
+
+  it('includes all entries in order', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(5, 'e')
+    tree.insert(3, 'c')
+    tree.insert(7, 'g')
+    expect(tree.toString()).toBe('[3=c, 5=e, 7=g]')
+  })
+})
+
+describe('RedBlackTree toJSON', () => {
+  it('returns object with key-value pairs', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    const json = tree.toJSON() as Record<string, string>
+    expect(json['1']).toBe('a')
+    expect(json['2']).toBe('b')
+  })
+
+  it('returns empty object for empty tree', () => {
+    const tree = new RedBlackTree<number, string>()
+    expect(tree.toJSON()).toEqual({})
+  })
+
+  it('produces valid JSON', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    const str = JSON.stringify(tree.toJSON())
+    expect(str).toContain('"1"')
+    expect(str).toContain('"a"')
+  })
+})
+
+describe('RedBlackTree clone', () => {
+  it('creates independent copy', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    const copy = tree.clone()
+    copy.insert(3, 'c')
+    expect(tree.size).toBe(2)
+    expect(copy.size).toBe(3)
+  })
+
+  it('preserves all entries', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.insert(3, 'c')
+    const copy = tree.clone()
+    expect(copy.find(1)).toBe('a')
+    expect(copy.find(2)).toBe('b')
+    expect(copy.find(3)).toBe('c')
+  })
+
+  it('clone of empty tree is empty', () => {
+    const tree = new RedBlackTree<number, string>()
+    const copy = tree.clone()
+    expect(copy.isEmpty()).toBe(true)
+    expect(copy.size).toBe(0)
+  })
+
+  it('preserves comparator', () => {
+    const tree = new RedBlackTree<string, number>((a, b) => a.localeCompare(b))
+    tree.insert('banana', 2)
+    const copy = tree.clone()
+    copy.insert('apple', 1)
+    expect(copy.min).toBe('apple')
+  })
+
+  it('deletions on clone do not affect original', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    const copy = tree.clone()
+    copy.delete(1)
+    expect(tree.find(1)).toBe('a')
+    expect(copy.find(1)).toBeUndefined()
+  })
+})
+
+describe('RedBlackTree equals', () => {
+  it('same tree equals itself', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.equals(tree)).toBe(true)
+  })
+
+  it('trees with same entries are equal', () => {
+    const a = new RedBlackTree<number, string>()
+    a.insert(1, 'a')
+    a.insert(2, 'b')
+    const b = new RedBlackTree<number, string>()
+    b.insert(2, 'b')
+    b.insert(1, 'a')
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('different sizes not equal', () => {
+    const a = new RedBlackTree<number, string>()
+    a.insert(1, 'a')
+    const b = new RedBlackTree<number, string>()
+    b.insert(1, 'a')
+    b.insert(2, 'b')
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('different values not equal', () => {
+    const a = new RedBlackTree<number, string>()
+    a.insert(1, 'a')
+    const b = new RedBlackTree<number, string>()
+    b.insert(1, 'x')
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('non-RedBlackTree returns false', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.equals(null)).toBe(false)
+    expect(tree.equals({})).toBe(false)
+    expect(tree.equals('tree')).toBe(false)
+  })
+
+  it('empty trees are equal', () => {
+    const a = new RedBlackTree<number, string>()
+    const b = new RedBlackTree<number, string>()
+    expect(a.equals(b)).toBe(true)
+  })
+})
+
+describe('RedBlackTree height', () => {
+  it('returns 0 for empty tree', () => {
+    const tree = new RedBlackTree<number, string>()
+    expect(tree.height).toBe(0)
+  })
+
+  it('returns 1 for single node', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.height).toBe(1)
+  })
+
+  it('grows logarithmically', () => {
+    const tree = new RedBlackTree<number, number>()
+    for (let i = 0; i < 1000; i++) tree.insert(i, i)
+    expect(tree.height).toBeLessThanOrEqual(2 * Math.ceil(Math.log2(1001)))
+  })
+})

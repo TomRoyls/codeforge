@@ -1833,3 +1833,30 @@ _Note: adapter was 59 tests in git, not 77 as initially estimated._
 - Tests: **57,704/57,704 (100%)** across **389 test files**
 - Build: ✅ PASSING
 - Lint: 0 errors, 0 warnings
+
+### WAVE 463: Test Expansion + New Module (2026-06-11)
+
+**7 modules expanded + 1 new module created + 1 source enhanced:**
+
+| Module | Before | After | Delta | Type |
+| ------ | ------ | ----- | ----- | ---- |
+| sorted-set | 24 | 54 | +30 | select/ceiling/floor/rangeCount/rangeToArray/fromArray/isEmpty |
+| fibonacci-heap | 24 | 61 | +37 | min/toString/toJSON/clone/equals/insert with value |
+| count-min-sketch | 29 | 81 | +52 | has/totalCount/merge/clone/equals/toJSON/fromJSON/toString |
+| quad-tree | 24 | 45 | +21 | toString/toJSON/clone/equals/depth/queryRadius edges |
+| k-d-tree | 38 | 63 | +25 | toString/toJSON/clone/equals/neg coords/range search edges |
+| debounce/throttle | 17 | 40 | +23 | cancel/flush edges, zero delay, throwing functions |
+| result | 21 | 60 | +39 | falsy values, complex types, chaining, pipelines |
+| rendezvous-hash | 0 | 33 | +33 | **NEW MODULE** - HRW consistent hashing |
+| **TOTAL** | | | **+260** | |
+
+**Source enhancements:**
+- count-min-sketch.ts: Added has(), totalCount, merge(), clone(), equals(), toJSON/fromJSON(), toString()
+- rendezvous-hash.ts: New module with select(), selectN(), clone(), equals(), toString()
+
+**Post-Wave 463 State:**
+
+- Tests: **~57,960+** across **391 test files**
+- Build: ✅ PASSING
+- Lint: 0 errors, 0 warnings
+- TypeScript: 0 errors
