@@ -496,4 +496,13 @@ export class DynamicArray<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  chunk(size: number): T[][] {
+    const arr = this.toArray()
+    const result: T[][] = []
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size))
+    }
+    return result
+  }
 }

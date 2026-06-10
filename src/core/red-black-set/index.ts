@@ -488,4 +488,26 @@ export class RedBlackSet<T> implements Iterable<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  equals(other: T[]): boolean {
+    const a = this.toArray()
+    if (a.length !== other.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== other[i]) return false
+    }
+    return true
+  }
+
+  chunk(size: number): T[][] {
+    const arr = this.toArray()
+    const result: T[][] = []
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size))
+    }
+    return result
+  }
+
+  compact(): T[] {
+    return this.toArray().filter((item): item is T => item != null)
+  }
 }

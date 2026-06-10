@@ -355,4 +355,17 @@ export class DAryHeap<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  chunk(size: number): T[][] {
+    const arr = this.toArray()
+    const result: T[][] = []
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size))
+    }
+    return result
+  }
+
+  compact(): T[] {
+    return this.toArray().filter((item): item is T => item != null)
+  }
 }
