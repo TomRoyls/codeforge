@@ -558,4 +558,33 @@ export class CircularBuffer4<T> {
     }
     return counts
   }
+
+  interleave(other: T[]): T[] {
+    const a = this.toArray()
+    const result: T[] = []
+    const maxLen = Math.max(a.length, other.length)
+    for (let i = 0; i < maxLen; i++) {
+      if (i < a.length) result.push(a[i]!)
+      if (i < other.length) result.push(other[i]!)
+    }
+    return result
+  }
+
+
+
+
+  reduceWhile<U>(
+    predicate: (acc: U) => boolean,
+    reducer: (acc: U, item: T) => U,
+    initialValue: U
+  ): U {
+    let acc = initialValue
+    for (const item of this.toArray()) {
+      if (!predicate(acc)) break
+      acc = reducer(acc, item)
+    }
+    return acc
+  }
+
+
 }

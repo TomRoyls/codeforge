@@ -494,6 +494,103 @@ export class LeftistHeap3<T = number> {
     }
     return count
   }
+
+  interleave(other: T[]): T[] {
+    const a = this.toArray()
+    const result: T[] = []
+    const maxLen = Math.max(a.length, other.length)
+    for (let i = 0; i < maxLen; i++) {
+      if (i < a.length) result.push(a[i]!)
+      if (i < other.length) result.push(other[i]!)
+    }
+    return result
+  }
+
+  toMap<K, V>(keyFn: (item: T) => K, valueFn: (item: T) => V): Map<K, V> {
+    const map = new Map<K, V>()
+    for (const item of this.toArray()) {
+      map.set(keyFn(item), valueFn(item))
+    }
+    return map
+  }
+
+  groupBy<K>(keyFn: (item: T) => K): Record<string, T[]> {
+    const groups: Record<string, T[]> = {}
+    for (const item of this.toArray()) {
+      const key = String(keyFn(item))
+      if (!groups[key]) groups[key] = []
+      groups[key].push(item)
+    }
+    return groups
+  }
+
+  groupByMap<K>(keyFn: (item: T) => K): Map<K, T[]> {
+    const groups = new Map<K, T[]>()
+    for (const item of this.toArray()) {
+      const key = keyFn(item)
+      const group = groups.get(key)
+      if (group) {
+        group.push(item)
+      } else {
+        groups.set(key, [item])
+      }
+    }
+    return groups
+  }
+
+  sum(this: { toArray(): number[] }): number {
+    return this.toArray().reduce((a, b) => a + b, 0)
+  }
+
+  average(this: { toArray(): number[] }): number {
+    const arr = this.toArray()
+    return arr.length === 0 ? 0 : arr.reduce((a, b) => a + b, 0) / arr.length
+  }
+
+  reduceWhile<U>(
+    predicate: (acc: U) => boolean,
+    reducer: (acc: U, item: T) => U,
+    initialValue: U
+  ): U {
+    let acc = initialValue
+    for (const item of this.toArray()) {
+      if (!predicate(acc)) break
+      acc = reducer(acc, item)
+    }
+    return acc
+  }
+
+  minBy<K>(keyFn: (item: T) => K): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    let minItem = arr[0]!
+    let minKey = keyFn(minItem)
+    for (let i = 1; i < arr.length; i++) {
+      const item = arr[i]!
+      const key = keyFn(item)
+      if (key < minKey) {
+        minKey = key
+        minItem = item
+      }
+    }
+    return minItem
+  }
+
+  maxBy<K>(keyFn: (item: T) => K): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    let maxItem = arr[0]!
+    let maxKey = keyFn(maxItem)
+    for (let i = 1; i < arr.length; i++) {
+      const item = arr[i]!
+      const key = keyFn(item)
+      if (key > maxKey) {
+        maxKey = key
+        maxItem = item
+      }
+    }
+    return maxItem
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'
