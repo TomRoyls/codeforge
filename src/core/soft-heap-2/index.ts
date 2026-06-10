@@ -829,4 +829,14 @@ export class SoftHeap2<T> {
     result.splice(toIndex, 0, item)
     return result
   }
+
+  sumBy(fn: (item: T) => number): number {
+    return this.toArray().reduce((acc, item) => acc + fn(item), 0)
+  }
+
+  averageBy(fn: (item: T) => number): number {
+    const arr = this.toArray()
+    if (arr.length === 0) return 0
+    return this.sumBy(fn) / arr.length
+  }
 }

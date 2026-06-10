@@ -916,6 +916,16 @@ export class MinMaxDeque<T> {
     arr[j] = temp
     return arr
   }
+
+  sumBy(fn: (item: T) => number): number {
+    return this.toArray().reduce((acc, item) => acc + fn(item), 0)
+  }
+
+  averageBy(fn: (item: T) => number): number {
+    const arr = this.toArray()
+    if (arr.length === 0) return 0
+    return this.sumBy(fn) / arr.length
+  }
 }
 
 export type { MinMaxDequeOptions } from './types.js'
