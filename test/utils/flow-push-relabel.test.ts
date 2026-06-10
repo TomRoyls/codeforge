@@ -164,4 +164,97 @@ describe('FlowPushRelabel', () => {
     const edges = [{ from: 0, to: 1, capacity: 10 }]
     expect(FlowPushRelabel.maxFlow(edges, 1, 0, 2)).toBe(0)
   })
+
+  it('handles empty edge list', () => {
+    expect(FlowPushRelabel.maxFlow([], 0, 1, 2)).toBe(0)
+  })
+
+  it('handles multiple sources feeding single sink', () => {
+    const edges = [
+      { from: 0, to: 3, capacity: 5 },
+      { from: 1, to: 3, capacity: 3 },
+      { from: 2, to: 3, capacity: 4 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(5)
+  })
+
+  it('handles cycle in graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 0, capacity: 2 },
+      { from: 1, to: 3, capacity: 8 },
+    ]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 3, 4)
+    expect(flow).toBeGreaterThan(0)
+    expect(flow).toBeLessThanOrEqual(8)
+  })
+
+  it('handles large capacity values', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 1000000 },
+      { from: 1, to: 2, capacity: 1000000 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 2, 3)).toBe(1000000)
+  })
+
+  it('handles graph with dead-end branches', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 10 },
+      { from: 2, to: 4, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 5)).toBe(10)
+  })
+
+  it('handles three-path graph with bottleneck', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 0, to: 3, capacity: 10 },
+      { from: 1, to: 4, capacity: 3 },
+      { from: 2, to: 4, capacity: 7 },
+      { from: 3, to: 4, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(15)
+  })
+
+  it('handles complete bipartite flow', () => {
+    const edges = [
+      { from: 0, to: 2, capacity: 1 },
+      { from: 0, to: 3, capacity: 1 },
+      { from: 1, to: 2, capacity: 1 },
+      { from: 1, to: 3, capacity: 1 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(1)
+  })
+
+  it('handles self-loop ignored', () => {
+    const edges = [
+      { from: 0, to: 0, capacity: 5 },
+      { from: 0, to: 1, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
+
+  it('handles bidirectional edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 0, capacity: 3 },
+      { from: 1, to: 2, capacity: 10 },
+    ]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 2, 3)
+    expect(flow).toBeGreaterThanOrEqual(5)
+  })
+
+  it('handles 5-node linear chain', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 3, capacity: 3 },
+      { from: 3, to: 4, capacity: 8 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(3)
+  })
 })
