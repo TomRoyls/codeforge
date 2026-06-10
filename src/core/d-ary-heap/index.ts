@@ -415,6 +415,10 @@ export class DAryHeap<T = number> {
   static empty<T>(): DAryHeap<T> {
     return new DAryHeap<T>()
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { DAryHeapOptions } from './types.js'

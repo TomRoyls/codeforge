@@ -425,4 +425,8 @@ export class ConcTree<T> {
     arr[index] = value
     return arr
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

@@ -275,4 +275,8 @@ export class DHeap<T> {
   static of<T>(...items: T[]): DHeap<T> {
     return DHeap.from(items)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

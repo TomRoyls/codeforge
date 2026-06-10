@@ -297,4 +297,8 @@ export class DAryHeap4<T> {
   static of<T>(...items: T[]): DAryHeap4<T> {
     return DAryHeap4.from(items)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

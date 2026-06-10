@@ -393,6 +393,10 @@ export class Deque<T> {
   merge(other: Deque<T>): Deque<T> {
     return Deque.from([...this.toArray(), ...other.toArray()])
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 function nextPow2(n: number): number {

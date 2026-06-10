@@ -213,4 +213,8 @@ export class DoubleBufferQueue<T> {
     return arr.reduce((a, b) => a > b ? a : b)
   }
 
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

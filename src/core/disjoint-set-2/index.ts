@@ -276,4 +276,8 @@ export class DisjointSet<T> {
   static empty<T>(): DisjointSet<T> {
     return new DisjointSet<T>()
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

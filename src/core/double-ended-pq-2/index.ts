@@ -393,4 +393,8 @@ export class DoubleEndedPQ2<T = number> {
   static empty<T>(): DoubleEndedPQ2<T> {
     return new DoubleEndedPQ2<T>()
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

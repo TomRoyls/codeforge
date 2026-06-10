@@ -469,4 +469,8 @@ export class DynamicArray<T> {
   static empty<T>(): DynamicArray<T> {
     return new DynamicArray<T>()
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

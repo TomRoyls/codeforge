@@ -465,6 +465,10 @@ export class Deque2<T = unknown> {
   static empty<T>(): Deque2<T> {
     return new Deque2<T>()
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { Deque2Options } from './types.js'

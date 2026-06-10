@@ -396,6 +396,10 @@ export class DoubleEndedPQ<T = number> {
   static empty<T>(): DoubleEndedPQ<T> {
     return new DoubleEndedPQ<T>()
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'
