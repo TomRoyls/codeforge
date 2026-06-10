@@ -847,4 +847,12 @@ export class CacheObliviousArray<T> {
     const arr = this.toArray()
     return index >= 0 && index < arr.length ? arr[index]! : defaultValue
   }
+
+  indexedForEach(fn: (item: T, index: number) => void): void {
+    this.toArray().forEach((item, i) => fn(item, i))
+  }
+
+  occurrencesOf(value: T): number {
+    return this.toArray().filter(item => item === value).length
+  }
 }
