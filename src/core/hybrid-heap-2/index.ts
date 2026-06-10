@@ -633,4 +633,8 @@ export class HybridHeap2<T = unknown> {
     }
     return flat(this.toArray(), depth)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

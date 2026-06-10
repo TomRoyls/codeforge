@@ -629,6 +629,10 @@ export class LeftistHeap3<T = number> {
     }
     return flat(this.toArray(), depth)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

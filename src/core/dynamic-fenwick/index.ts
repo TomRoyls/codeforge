@@ -524,6 +524,10 @@ export class DynamicFenwick<T = number> {
     }
     return flat(this.toArray(), depth)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'

@@ -516,4 +516,12 @@ export class MinHeap<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.toArray().some(predicate)
+  }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }

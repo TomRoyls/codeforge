@@ -646,6 +646,10 @@ export class SoftHeap<T = unknown> {
     }
     return flat(this.toArray(), depth)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

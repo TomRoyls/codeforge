@@ -792,6 +792,10 @@ export class PairingHeap2<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { PairingHeap2Options, PairingHeap2Node, Comparator, ForEachCallback } from './types.js'

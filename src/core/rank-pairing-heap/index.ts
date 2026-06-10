@@ -839,6 +839,10 @@ export class RankPairingHeap<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { RankPairingHeapOptions, RankPairingHeapNode, Comparator, ForEachCallback } from './types.js'

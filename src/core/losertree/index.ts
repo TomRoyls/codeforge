@@ -632,6 +632,10 @@ export class LoserTree<T = number> {
     }
     return flat(this.toArray(), depth)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { Comparator, ForEachCallback, LoserTreeOptions } from './types.js'

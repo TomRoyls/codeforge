@@ -548,6 +548,10 @@ export class HalvingHeap<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
 
 export type { HalvingHeapOptions } from './types.js';
