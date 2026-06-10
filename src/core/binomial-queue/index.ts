@@ -666,6 +666,15 @@ export class BinomialQueue<T = number> {
     }
     return result
   }
+
+  sum(this: { toArray(): number[] }): number {
+    return this.toArray().reduce((a, b) => a + b, 0)
+  }
+
+  average(this: { toArray(): number[] }): number {
+    const arr = this.toArray()
+    return arr.length === 0 ? 0 : arr.reduce((a, b) => a + b, 0) / arr.length
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'
