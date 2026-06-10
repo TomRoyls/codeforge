@@ -701,4 +701,6 @@ export class CircularDeque2<T = unknown> {
   reduceRight<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
     return this.toArray().reduceRight(reducer, initialValue)
   }
+
+
 }

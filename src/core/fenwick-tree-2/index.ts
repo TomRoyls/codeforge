@@ -559,4 +559,16 @@ export class FenwickTree2<T = number> {
   reduce<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
     return this.toArray().reduce(reducer, initialValue)
   }
+
+  flatMap<U>(fn: (item: T) => U[]): U[] {
+    const result: U[] = []
+    for (const item of this.toArray()) {
+      result.push(...fn(item))
+    }
+    return result
+  }
+
+  reduceRight<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
+    return this.toArray().reduceRight(reducer, initialValue)
+  }
 }

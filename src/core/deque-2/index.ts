@@ -734,6 +734,18 @@ export class Deque2<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'Deque2'
   }
+
+  flatMap<U>(fn: (item: T) => U[]): U[] {
+    const result: U[] = []
+    for (const item of this.toArray()) {
+      result.push(...fn(item))
+    }
+    return result
+  }
+
+  reduceRight<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
+    return this.toArray().reduceRight(reducer, initialValue)
+  }
 }
 
 export type { Deque2Options } from './types.js'

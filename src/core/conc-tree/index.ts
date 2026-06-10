@@ -682,4 +682,6 @@ export class ConcTree<T> {
   reduceRight<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
     return this.toArray().reduceRight(reducer, initialValue)
   }
+
+
 }
