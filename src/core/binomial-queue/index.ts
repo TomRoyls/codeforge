@@ -858,6 +858,10 @@ export class BinomialQueue<T = number> {
   toSorted(compareFn?: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+
+
+
 }
 
 export type { BinomialQueueOptions } from './types.js'

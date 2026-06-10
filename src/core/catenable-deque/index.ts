@@ -1176,6 +1176,10 @@ export class CatenableDeque<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+
+
+
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

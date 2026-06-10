@@ -652,4 +652,8 @@ export class BeapSet2<T> {
   find(predicate: (item: T) => boolean): T | undefined {
     return this.toArray().find(predicate)
   }
+
+
+
+
 }

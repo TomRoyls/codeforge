@@ -336,4 +336,53 @@ export class RandomizedQueue<T> {
     arr[index] = value
     return arr
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
+
+  filterMap<U>(fn: (item: T) => U | undefined): U[] {
+    const result: U[] = []
+    for (const item of this.toArray()) {
+      const mapped = fn(item)
+      if (mapped !== undefined) {
+        result.push(mapped)
+      }
+    }
+    return result
+  }
+
+  pipe<U>(transform: (items: T[]) => U[]): U[] {
+    return transform(this.toArray())
+  }
+
+  distinctBy<K>(keyFn: (item: T) => K): T[] {
+    const seen = new Set<K>()
+    const result: T[] = []
+    for (const item of this.toArray()) {
+      const key = keyFn(item)
+      if (!seen.has(key)) {
+        seen.add(key)
+        result.push(item)
+      }
+    }
+    return result
+  }
+
+  countBy<K>(keyFn: (item: T) => K): Map<K, number> {
+    const counts = new Map<K, number>()
+    for (const item of this.toArray()) {
+      const key = keyFn(item)
+      counts.set(key, (counts.get(key) ?? 0) + 1)
+    }
+    return counts
+  }
+
+  frequency(item: T): number {
+    let count = 0
+    for (const element of this.toArray()) {
+      if (element === item) count++
+    }
+    return count
+  }
 }

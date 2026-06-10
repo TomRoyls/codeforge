@@ -468,4 +468,16 @@ export class ChunkedList2<T> {
     }
     return map
   }
+
+
+
+
+  countBy<K>(keyFn: (item: T) => K): Map<K, number> {
+    const counts = new Map<K, number>()
+    for (const item of this.toArray()) {
+      const key = keyFn(item)
+      counts.set(key, (counts.get(key) ?? 0) + 1)
+    }
+    return counts
+  }
 }

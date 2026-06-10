@@ -826,4 +826,8 @@ export class BinomialHeap4<T = unknown> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+
+
+
 }

@@ -759,6 +759,10 @@ toString(): string {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
+
+
+
 }
 
 class AVLNode<T> {
