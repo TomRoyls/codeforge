@@ -512,4 +512,11 @@ export class AdaptiveHeap<T> {
     arr[index] = value
     return arr
   }
+
+  forEachRight(callback: (item: T, index: number) => void): void {
+    const arr = this.toArray()
+    for (let i = arr.length - 1; i >= 0; i--) {
+      callback(arr[i]!, i)
+    }
+  }
 }
