@@ -885,4 +885,8 @@ export class ChunkedList2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -245,4 +245,8 @@ export class Treap3<K, V> {
   includes(key: K): boolean {
     return this.contains(key)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

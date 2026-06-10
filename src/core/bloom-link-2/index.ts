@@ -146,4 +146,8 @@ export class BloomLink2 {
   get [Symbol.toStringTag](): string {
     return 'BloomLink2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -110,4 +110,8 @@ export class DisjointSet3 {
   get [Symbol.toStringTag](): string {
     return 'DisjointSet3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

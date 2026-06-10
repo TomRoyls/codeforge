@@ -942,6 +942,10 @@ toString(): string {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { ArrayDequeOptions

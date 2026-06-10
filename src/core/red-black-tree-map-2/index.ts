@@ -350,6 +350,10 @@ export class RedBlackTreeMap2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'RedBlackTreeMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 interface Node<K, V> {

@@ -361,4 +361,8 @@ export class Treap<K, V = undefined> {
   get [Symbol.toStringTag](): string {
     return 'Treap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

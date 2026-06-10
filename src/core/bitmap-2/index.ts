@@ -175,4 +175,8 @@ export class Bitmap2 {
   get [Symbol.toStringTag](): string {
     return 'Bitmap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

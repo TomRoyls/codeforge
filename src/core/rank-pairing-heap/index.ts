@@ -1214,6 +1214,10 @@ export class RankPairingHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { RankPairingHeapOptions, RankPairingHeapNode, Comparator, ForEachCallback } from './types.js'

@@ -909,4 +909,8 @@ export class FenwickTree2<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

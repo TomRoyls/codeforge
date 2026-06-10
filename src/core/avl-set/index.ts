@@ -1150,4 +1150,8 @@ export class AVLSet<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

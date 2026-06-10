@@ -1002,6 +1002,10 @@ export class CoverTree<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

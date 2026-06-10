@@ -943,4 +943,8 @@ export class LeftistTree<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

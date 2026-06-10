@@ -397,4 +397,8 @@ export class QuadTree {
   includes(point: Point): boolean {
     return this.contains(point)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

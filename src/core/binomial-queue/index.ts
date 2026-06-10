@@ -1168,6 +1168,10 @@ export class BinomialQueue<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

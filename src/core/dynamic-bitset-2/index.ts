@@ -267,4 +267,8 @@ export class DynamicBitset2 {
   get [Symbol.toStringTag](): string {
     return 'DynamicBitset2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

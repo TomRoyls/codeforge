@@ -205,4 +205,8 @@ export class JellyHash2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'JellyHash2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

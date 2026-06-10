@@ -198,4 +198,8 @@ export class CollisionMap2<T> {
   get [Symbol.toStringTag](): string {
     return 'CollisionMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -131,4 +131,8 @@ export class LCPArray2 {
   get [Symbol.toStringTag](): string {
     return 'LCPArray2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

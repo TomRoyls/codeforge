@@ -156,4 +156,8 @@ export class SegmentTreeMap2 {
   get [Symbol.toStringTag](): string {
     return 'SegmentTreeMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

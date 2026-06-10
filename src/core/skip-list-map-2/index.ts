@@ -370,4 +370,8 @@ export class SkipListMap2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'SkipListMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

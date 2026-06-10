@@ -286,4 +286,8 @@ export class ExtendibleHashTable<K, V> {
   get [Symbol.toStringTag](): string {
     return 'ExtendibleHashTable'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

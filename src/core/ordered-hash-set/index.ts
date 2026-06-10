@@ -986,4 +986,8 @@ export class OrderedHashSet<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

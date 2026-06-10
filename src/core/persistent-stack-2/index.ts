@@ -830,6 +830,10 @@ export class PersistentStack2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 interface Node<T> {

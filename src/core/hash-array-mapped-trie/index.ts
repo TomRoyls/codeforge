@@ -423,4 +423,8 @@ export class HashArrayMappedTrie<K, V> {
   get [Symbol.toStringTag](): string {
     return 'HashArrayMappedTrie'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -1031,6 +1031,10 @@ export class SortedArraySet<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { Comparator, SortedArraySetOptions, SortedArraySetStats } from './types.js'

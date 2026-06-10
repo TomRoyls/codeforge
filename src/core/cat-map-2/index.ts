@@ -108,4 +108,8 @@ export class CatMap2<T> {
   get [Symbol.toStringTag](): string {
     return 'CatMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

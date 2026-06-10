@@ -1128,6 +1128,10 @@ export class FibonacciHeap<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { FibonacciHeapOptions, FibonacciHeapNode } from './types.js'

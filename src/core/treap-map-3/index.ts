@@ -241,4 +241,8 @@ export class TreapMap3<K, V> {
   get [Symbol.toStringTag](): string {
     return 'TreapMap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

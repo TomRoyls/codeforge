@@ -200,4 +200,8 @@ export class StreamingMedian {
   get [Symbol.toStringTag](): string {
     return 'StreamingMedian'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

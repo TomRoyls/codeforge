@@ -333,4 +333,8 @@ export class PatriciaTrie<V = unknown> {
   includes(key: string): boolean {
     return this.contains(key)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

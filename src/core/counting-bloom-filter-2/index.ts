@@ -209,6 +209,10 @@ export class CountingBloomFilter {
   get [Symbol.toStringTag](): string {
     return 'CountingBloomFilter'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export { DEFAULT_ERROR_RATE } from './types.js'

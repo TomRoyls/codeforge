@@ -228,4 +228,8 @@ export class PolyHash {
   get [Symbol.toStringTag](): string {
     return 'PolyHash'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

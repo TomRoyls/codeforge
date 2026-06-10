@@ -1063,6 +1063,10 @@ export class Deque2<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { Deque2Options } from './types.js'

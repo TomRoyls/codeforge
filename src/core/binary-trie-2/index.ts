@@ -223,4 +223,8 @@ export class BinaryTrie2 {
   get [Symbol.toStringTag](): string {
     return 'BinaryTrie2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

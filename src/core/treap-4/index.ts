@@ -999,4 +999,8 @@ export class Treap4<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

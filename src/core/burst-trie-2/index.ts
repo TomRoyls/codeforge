@@ -183,4 +183,8 @@ export class BurstTrie2 {
   get [Symbol.toStringTag](): string {
     return 'BurstTrie2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -105,4 +105,8 @@ export class LazySegmentTree3 {
   get [Symbol.toStringTag](): string {
     return 'LazySegmentTree3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

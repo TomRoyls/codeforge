@@ -196,6 +196,10 @@ export class SkipListMap3<T> {
   get [Symbol.toStringTag](): string {
     return 'SkipListMap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 class Node<T> {

@@ -179,6 +179,10 @@ export class TrieMap3<T> {
   get [Symbol.toStringTag](): string {
     return 'TrieMap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 class TrieNode<T> {

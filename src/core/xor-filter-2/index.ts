@@ -156,4 +156,8 @@ export class XorFilter2 {
   get [Symbol.toStringTag](): string {
     return 'XorFilter2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

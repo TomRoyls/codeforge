@@ -945,4 +945,8 @@ export class CacheObliviousArray<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

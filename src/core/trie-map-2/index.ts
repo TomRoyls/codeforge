@@ -143,4 +143,8 @@ export class TrieMap2<V> {
   get [Symbol.toStringTag](): string {
     return 'TrieMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

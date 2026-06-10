@@ -993,4 +993,8 @@ export class SqrtDecomposition<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

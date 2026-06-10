@@ -232,4 +232,8 @@ export class Trie3 {
   includes(word: string): boolean {
     return this.contains(word)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

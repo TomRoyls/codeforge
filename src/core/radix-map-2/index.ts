@@ -173,4 +173,8 @@ export class RadixMap2<T> {
   get [Symbol.toStringTag](): string {
     return 'RadixMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

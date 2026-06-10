@@ -290,4 +290,8 @@ export class PersistentBitset {
   get [Symbol.toStringTag](): string {
     return 'PersistentBitset'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

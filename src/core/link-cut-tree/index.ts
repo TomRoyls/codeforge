@@ -347,4 +347,8 @@ export class LinkCutTree {
   get [Symbol.toStringTag](): string {
     return 'LinkCutTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

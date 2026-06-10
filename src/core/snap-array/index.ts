@@ -888,4 +888,8 @@ export class SnapArray<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

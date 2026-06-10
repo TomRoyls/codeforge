@@ -103,4 +103,8 @@ export class BloomierFilter2 {
   get [Symbol.toStringTag](): string {
     return 'BloomierFilter2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

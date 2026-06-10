@@ -238,4 +238,8 @@ export class DoubleMap<K1, K2, V> {
   get [Symbol.toStringTag](): string {
     return 'DoubleMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

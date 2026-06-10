@@ -126,4 +126,8 @@ export class MultiMap3<K, V> {
     return 'MultiMap3'
   }
 
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

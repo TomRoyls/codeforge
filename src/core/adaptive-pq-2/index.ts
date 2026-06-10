@@ -329,4 +329,8 @@ export class AdaptivePQ2<T> {
   includes(value: T): boolean {
     return this.contains(value)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

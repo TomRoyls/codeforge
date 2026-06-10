@@ -440,6 +440,10 @@ export class ThreadedMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'ThreadedMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { ThreadedNode, Comparator, ThreadedMapOptions } from './types.js'

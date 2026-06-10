@@ -210,6 +210,10 @@ export class LRU2Cache<K, V> {
   get [Symbol.toStringTag](): string {
     return 'LRU2Cache'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { LRU2CacheOptions } from './types.js'

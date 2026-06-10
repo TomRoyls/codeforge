@@ -251,4 +251,8 @@ export class GraphAdjMatrix<T extends string | number> {
   get [Symbol.toStringTag](): string {
     return 'GraphAdjMatrix'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

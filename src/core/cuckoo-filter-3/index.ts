@@ -191,4 +191,8 @@ export class CuckooFilter3 {
   includes(item: string): boolean {
     return this.contains(item)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

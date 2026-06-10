@@ -186,4 +186,8 @@ export class ChainedHash2<V> {
   includes(key: string): boolean {
     return this.contains(key)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

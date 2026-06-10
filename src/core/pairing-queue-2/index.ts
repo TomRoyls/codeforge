@@ -914,4 +914,8 @@ export class PairingQueue2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

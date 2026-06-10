@@ -97,4 +97,8 @@ export class RunLengthEncoding3 {
   get size(): number {
     return this.length
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

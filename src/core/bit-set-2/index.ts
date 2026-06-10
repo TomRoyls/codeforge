@@ -369,6 +369,10 @@ export class BitSet2 {
   get [Symbol.toStringTag](): string {
     return 'BitSet2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { BitSetOptions } from './types.js'

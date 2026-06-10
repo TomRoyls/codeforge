@@ -201,4 +201,8 @@ export class HashMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'HashMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

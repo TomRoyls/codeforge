@@ -254,4 +254,8 @@ export class HashTable4<K, V> {
   get [Symbol.toStringTag](): string {
     return 'HashTable4'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

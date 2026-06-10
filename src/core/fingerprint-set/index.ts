@@ -996,4 +996,8 @@ export class FingerprintSet<T> implements Iterable<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

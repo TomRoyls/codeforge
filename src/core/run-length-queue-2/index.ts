@@ -859,4 +859,8 @@ export class RunLengthQueue2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

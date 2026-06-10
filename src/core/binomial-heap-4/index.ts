@@ -1151,4 +1151,8 @@ export class BinomialHeap4<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

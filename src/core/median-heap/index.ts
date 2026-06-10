@@ -1061,6 +1061,10 @@ export class MedianHeap<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { MedianHeapOptions } from './types.js'

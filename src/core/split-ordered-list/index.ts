@@ -165,6 +165,10 @@ export class SplitOrderedList<T> {
   get [Symbol.toStringTag](): string {
     return 'SplitOrderedList'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { SplitOrderedListOptions };

@@ -170,4 +170,8 @@ export class HopscotchSet2 {
   get [Symbol.toStringTag](): string {
     return 'HopscotchSet2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

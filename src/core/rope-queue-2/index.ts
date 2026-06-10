@@ -153,4 +153,8 @@ export class RopeQueue2<T> {
   get [Symbol.toStringTag](): string {
     return 'RopeQueue2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

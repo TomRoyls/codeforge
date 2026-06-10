@@ -1040,6 +1040,10 @@ export class DoubleEndedPQ<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

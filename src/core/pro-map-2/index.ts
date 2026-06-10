@@ -164,4 +164,8 @@ export class ProMap2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'ProMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

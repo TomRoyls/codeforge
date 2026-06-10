@@ -85,4 +85,8 @@ export class FenwickTree3 {
   get [Symbol.toStringTag](): string {
     return 'FenwickTree3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

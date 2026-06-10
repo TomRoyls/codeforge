@@ -105,6 +105,10 @@ export class Octree2<V> {
   includes(x: number, y: number, z: number): boolean {
     return this.contains(x, y, z)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 class OctreeNode<V> {

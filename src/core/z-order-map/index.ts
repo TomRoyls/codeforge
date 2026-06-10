@@ -219,6 +219,10 @@ toArray() {
   get [Symbol.toStringTag](): string {
     return 'ZOrderMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { ZOrderMapOptions, ZOrderEntry, Point2D 

@@ -119,4 +119,8 @@ export class BiMap3<K, V> {
   get [Symbol.toStringTag](): string {
     return 'BiMap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

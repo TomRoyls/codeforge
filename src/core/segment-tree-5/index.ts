@@ -75,4 +75,8 @@ export class SegmentTree5 {
   get [Symbol.toStringTag](): string {
     return 'SegmentTree5'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

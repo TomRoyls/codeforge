@@ -181,4 +181,8 @@ export class SegmentTree {
   get [Symbol.toStringTag](): string {
     return 'SegmentTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

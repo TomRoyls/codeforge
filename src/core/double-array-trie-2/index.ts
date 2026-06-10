@@ -559,4 +559,8 @@ export class DoubleArrayTrie2 {
   get [Symbol.toStringTag](): string {
     return 'DoubleArrayTrie2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -74,4 +74,8 @@ export class UnionFind4 {
   get [Symbol.toStringTag](): string {
     return 'UnionFind4'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

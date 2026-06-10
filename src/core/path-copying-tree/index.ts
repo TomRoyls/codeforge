@@ -221,4 +221,8 @@ export class PathCopyingTree<K, V> {
   get [Symbol.toStringTag](): string {
     return 'PathCopyingTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -173,4 +173,8 @@ export class IntervalSet2 {
   includes(point: number): boolean {
     return this.contains(point)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

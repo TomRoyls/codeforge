@@ -389,6 +389,10 @@ export class ScapegoatMap<K = unknown, V = unknown> {
   get [Symbol.toStringTag](): string {
     return 'ScapegoatMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { ScapegoatMapOptions }

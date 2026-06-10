@@ -1129,6 +1129,10 @@ export class FibHeap<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'

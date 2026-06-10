@@ -274,6 +274,10 @@ export class XorTrie2 {
   includes(value: number): boolean {
     return this.contains(value)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 class XorNode2 {

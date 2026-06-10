@@ -429,4 +429,8 @@ export class WeightBalancedTree<K, V = unknown> {
   get [Symbol.toStringTag](): string {
     return 'WeightBalancedTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

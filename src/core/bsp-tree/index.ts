@@ -355,4 +355,8 @@ export class BSPTree {
   get [Symbol.toStringTag](): string {
     return 'BSPTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

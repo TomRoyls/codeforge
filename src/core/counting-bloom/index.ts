@@ -210,6 +210,10 @@ export class CountingBloomFilter<T = string> {
   get [Symbol.toStringTag](): string {
     return 'CountingBloomFilter'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { CountingBloomFilterOptions } from './types.js'

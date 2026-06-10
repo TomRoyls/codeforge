@@ -1088,6 +1088,10 @@ export class AVLTree4<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 interface Node<T> {

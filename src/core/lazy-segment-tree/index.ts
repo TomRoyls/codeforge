@@ -1004,4 +1004,8 @@ export class LazySegmentTree<T, U = T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

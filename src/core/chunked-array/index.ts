@@ -1048,6 +1048,10 @@ export class ChunkedArray<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

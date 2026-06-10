@@ -280,4 +280,8 @@ export class RecursiveSegTree {
   get [Symbol.toStringTag](): string {
     return 'RecursiveSegTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

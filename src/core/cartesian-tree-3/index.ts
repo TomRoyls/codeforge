@@ -262,4 +262,8 @@ export class CartesianTree3<T> {
   contains(item: T): boolean {
     return this.includes(item)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

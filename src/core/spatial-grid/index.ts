@@ -214,4 +214,8 @@ export class SpatialGrid<T> {
   get [Symbol.toStringTag](): string {
     return 'SpatialGrid'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -379,4 +379,8 @@ export class SuffixTree {
   get [Symbol.toStringTag](): string {
     return 'SuffixTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

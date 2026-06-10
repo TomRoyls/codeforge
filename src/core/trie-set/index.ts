@@ -316,4 +316,8 @@ export class TrieSet implements Iterable<string> {
   get [Symbol.toStringTag](): string {
     return 'TrieSet'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

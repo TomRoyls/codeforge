@@ -431,4 +431,8 @@ export class Hamt3<T> {
   get [Symbol.toStringTag](): string {
     return 'Hamt3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

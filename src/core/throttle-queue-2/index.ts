@@ -74,4 +74,8 @@ export class ThrottleQueue2<T> {
   get [Symbol.toStringTag](): string {
     return 'ThrottleQueue2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

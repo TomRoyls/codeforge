@@ -141,4 +141,8 @@ export class SpatialHash2<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'SpatialHash2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

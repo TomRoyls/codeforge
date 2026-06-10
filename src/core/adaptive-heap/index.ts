@@ -1021,4 +1021,8 @@ export class AdaptiveHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

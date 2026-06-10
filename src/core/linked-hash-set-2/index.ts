@@ -167,4 +167,8 @@ export class LinkedHashSet<T> {
   some(predicate: (item: T, index: number) => boolean): boolean {
     return this.toArray().some(predicate)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

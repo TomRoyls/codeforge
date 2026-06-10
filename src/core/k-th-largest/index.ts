@@ -86,4 +86,8 @@ export class KthLargest {
   get [Symbol.toStringTag](): string {
     return 'KthLargest'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

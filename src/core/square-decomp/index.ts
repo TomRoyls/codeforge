@@ -200,4 +200,8 @@ export class SquareDecomp {
   get [Symbol.toStringTag](): string {
     return 'SquareDecomp'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

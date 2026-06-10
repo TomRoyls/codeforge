@@ -565,6 +565,10 @@ export class PersistentMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'PersistentMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { PersistentMapOptions, HashFunction } from './types.js'

@@ -204,4 +204,8 @@ export class RobinHoodHash2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'RobinHoodHash2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

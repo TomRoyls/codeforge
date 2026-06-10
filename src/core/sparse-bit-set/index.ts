@@ -527,6 +527,10 @@ export class SparseBitSet {
   includes(index: number): boolean {
     return this.contains(index)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 function popcountBlock(block: Uint32Array): number {

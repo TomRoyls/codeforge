@@ -845,4 +845,8 @@ export class SortedLinkedList2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

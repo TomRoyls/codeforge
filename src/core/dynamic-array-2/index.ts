@@ -1097,4 +1097,8 @@ export class DynamicArray<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

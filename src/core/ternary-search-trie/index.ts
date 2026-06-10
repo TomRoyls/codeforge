@@ -279,4 +279,8 @@ export class TernarySearchTrie<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'TernarySearchTrie'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -916,4 +916,8 @@ export class AtomicSet2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -209,6 +209,10 @@ export class WeightedUnion {
   get [Symbol.toStringTag](): string {
     return 'WeightedUnion'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { WeightedUnionOptions, ComponentInfo } from './types.js'

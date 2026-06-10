@@ -254,4 +254,8 @@ export class BitVector2 {
   get [Symbol.toStringTag](): string {
     return 'BitVector2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

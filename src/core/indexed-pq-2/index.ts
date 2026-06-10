@@ -160,4 +160,8 @@ export class IndexedPQ2 {
   includes(id: number): boolean {
     return this.contains(id)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

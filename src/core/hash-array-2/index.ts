@@ -174,4 +174,8 @@ export class HashArray2<T> {
   get [Symbol.toStringTag](): string {
     return 'HashArray2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

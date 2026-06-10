@@ -162,4 +162,8 @@ export class RangeMap2<V> {
   get [Symbol.toStringTag](): string {
     return 'RangeMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

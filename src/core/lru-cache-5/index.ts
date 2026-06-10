@@ -195,6 +195,10 @@ export class LRUCache5<K, V> {
   get [Symbol.toStringTag](): string {
     return 'LRUCache5'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 interface Node<K, V> {

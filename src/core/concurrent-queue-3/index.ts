@@ -95,4 +95,8 @@ export class ConcurrentQueue3<T> {
   get [Symbol.toStringTag](): string {
     return 'ConcurrentQueue3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

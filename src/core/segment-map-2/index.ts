@@ -278,4 +278,8 @@ export class SegmentMap2<V> {
   get [Symbol.toStringTag](): string {
     return 'SegmentMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

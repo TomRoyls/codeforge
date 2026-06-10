@@ -867,4 +867,8 @@ export class DoubleBufferQueue<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

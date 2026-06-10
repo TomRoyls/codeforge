@@ -421,4 +421,8 @@ export class BTrie<V = unknown> {
   get [Symbol.toStringTag](): string {
     return 'BTrie'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

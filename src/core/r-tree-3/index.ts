@@ -427,6 +427,10 @@ export class RTree3<T> {
   get [Symbol.toStringTag](): string {
     return 'RTree3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 type Rect = {minX: number, minY: number, maxX: number, maxY: number}

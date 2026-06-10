@@ -389,4 +389,8 @@ export class YFastTrie {
   get [Symbol.toStringTag](): string {
     return 'YFastTrie'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

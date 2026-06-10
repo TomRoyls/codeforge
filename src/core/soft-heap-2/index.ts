@@ -851,4 +851,8 @@ export class SoftHeap2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

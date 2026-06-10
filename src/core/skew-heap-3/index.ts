@@ -826,6 +826,10 @@ export class SkewHeap3<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 interface SkewNode<T> {

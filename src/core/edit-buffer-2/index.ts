@@ -179,4 +179,8 @@ export class EditBuffer2 {
   get size(): number {
     return this.length
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

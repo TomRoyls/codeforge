@@ -1018,6 +1018,10 @@ export class PairingHeap3<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { PairingHeap3Options, PairingHeap3Node } from './types.js'

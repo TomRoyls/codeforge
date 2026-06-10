@@ -368,6 +368,10 @@ export class PathCompressionTrie<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'PathCompressionTrie'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 function commonPrefixLength(a: string, b: string): number {

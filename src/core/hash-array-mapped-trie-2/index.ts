@@ -440,4 +440,8 @@ export class HashArrayMappedTrie2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'HashArrayMappedTrie2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -237,4 +237,8 @@ export class StreamingQuantile<T = number> {
   get [Symbol.toStringTag](): string {
     return 'StreamingQuantile'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

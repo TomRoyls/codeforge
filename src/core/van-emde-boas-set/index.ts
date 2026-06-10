@@ -426,4 +426,8 @@ export class VanEmdeBoasSet {
   get [Symbol.toStringTag](): string {
     return 'VanEmdeBoasSet'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -853,4 +853,8 @@ export class RingBuffer6<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

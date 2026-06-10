@@ -201,4 +201,8 @@ export class CoalescingMap<K, V> {
   includes(key: K): boolean {
     return this.contains(key)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

@@ -183,6 +183,10 @@ export class LinkedHashMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'LinkedHashMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 interface Node<K> {

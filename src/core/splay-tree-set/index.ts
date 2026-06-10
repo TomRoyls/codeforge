@@ -1155,4 +1155,8 @@ export class SplayTreeSet<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -70,4 +70,8 @@ export class ThreadSafeStack2<T> {
   get [Symbol.toStringTag](): string {
     return 'ThreadSafeStack2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

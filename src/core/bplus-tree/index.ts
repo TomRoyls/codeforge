@@ -587,4 +587,8 @@ export class BPlusTree<K, V> {
   get [Symbol.toStringTag](): string {
     return 'BPlusTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

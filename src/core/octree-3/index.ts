@@ -322,4 +322,8 @@ export class Octree3<T> {
   includes(point: Point3D): boolean {
     return this.contains(point)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

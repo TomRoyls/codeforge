@@ -75,4 +75,8 @@ export class MinHash2 {
   get [Symbol.toStringTag](): string {
     return 'MinHash2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

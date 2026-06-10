@@ -139,4 +139,8 @@ export class AliasMap2<T> {
   get [Symbol.toStringTag](): string {
     return 'AliasMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

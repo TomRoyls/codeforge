@@ -1159,4 +1159,8 @@ export class TreapSet<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

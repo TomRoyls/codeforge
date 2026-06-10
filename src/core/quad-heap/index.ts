@@ -902,4 +902,8 @@ export class QuadHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -1064,4 +1064,8 @@ export class MinMaxHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

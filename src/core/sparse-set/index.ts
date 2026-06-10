@@ -202,6 +202,10 @@ export class SparseSet {
   get [Symbol.toStringTag](): string {
     return 'SparseSet'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { SparseSetOptions } from './types.js'

@@ -293,6 +293,10 @@ export class PrioritySearchTree<K, P = number> {
   get [Symbol.toStringTag](): string {
     return 'PrioritySearchTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { Comparator, PriorityEntry, PrioritySearchTreeOptions } from "./types.js";

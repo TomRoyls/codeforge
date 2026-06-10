@@ -371,6 +371,10 @@ export class SplayMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'SplayMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { SplayNode, CompareFunction, SplayMapOptions } from './types.js'

@@ -890,6 +890,10 @@ export class PairingHeap4<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 class PairingHeapNode<T> {

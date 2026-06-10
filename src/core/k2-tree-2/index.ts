@@ -238,4 +238,8 @@ export class K2Tree2 {
   get [Symbol.toStringTag](): string {
     return 'K2Tree2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

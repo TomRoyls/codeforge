@@ -634,4 +634,8 @@ export class BTreeMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'BTreeMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

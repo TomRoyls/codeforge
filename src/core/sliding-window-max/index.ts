@@ -906,6 +906,10 @@ export class SlidingWindowMax<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export { defaultComparator } from './types.js'

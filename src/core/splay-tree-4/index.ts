@@ -1233,4 +1233,8 @@ export class SplayTree4<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

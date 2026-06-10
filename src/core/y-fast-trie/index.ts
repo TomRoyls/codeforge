@@ -428,6 +428,10 @@ export class YFastTrie {
   includes(value: number): boolean {
     return this.contains(value)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export { DEFAULT_UNIVERSE_SIZE } from './types.js'

@@ -866,6 +866,10 @@ export class WaveletStack<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { WaveletStackOptions } from './types.js'

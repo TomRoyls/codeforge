@@ -228,6 +228,10 @@ export class PartitionTree<T = undefined> {
   includes(x: number, y: number): boolean {
     return this.contains(x, y)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { PartitionPoint, Rectangle } from './types.js'

@@ -1010,6 +1010,10 @@ export class Deque<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 function nextPow2(n: number): number {

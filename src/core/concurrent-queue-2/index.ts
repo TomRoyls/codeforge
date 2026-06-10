@@ -1015,6 +1015,10 @@ export class ConcurrentQueue<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

@@ -895,4 +895,8 @@ export class WeightedReservoir<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

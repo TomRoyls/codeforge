@@ -1047,4 +1047,8 @@ export class DoubleEndedPQ2<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

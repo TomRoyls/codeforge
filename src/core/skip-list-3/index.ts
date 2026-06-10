@@ -385,6 +385,10 @@ export class SkipList3<K = unknown> {
   get [Symbol.toStringTag](): string {
     return 'SkipList3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { SkipList3Options, Comparator }

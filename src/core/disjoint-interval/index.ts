@@ -265,6 +265,10 @@ export class DisjointIntervalSet {
   includes(point: number): boolean {
     return this.contains(point)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { Interval, IntervalOptions }

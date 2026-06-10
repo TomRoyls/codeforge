@@ -970,4 +970,8 @@ export class SkipList4<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -880,4 +880,8 @@ export class TernaryHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

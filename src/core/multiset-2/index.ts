@@ -903,4 +903,8 @@ export class Multiset<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

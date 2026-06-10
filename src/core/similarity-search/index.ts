@@ -128,6 +128,10 @@ export class SimilaritySearch {
   get [Symbol.toStringTag](): string {
     return 'SimilaritySearch'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export { tokenize, computeSignature, estimateSimilarity };

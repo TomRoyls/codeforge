@@ -927,6 +927,10 @@ export class HalvingHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { HalvingHeapOptions } from './types.js';

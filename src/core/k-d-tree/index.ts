@@ -399,6 +399,10 @@ export class KDTree {
   get [Symbol.toStringTag](): string {
     return 'KDTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export { euclideanSquared } from './types.js'

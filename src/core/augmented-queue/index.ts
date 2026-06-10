@@ -219,6 +219,10 @@ toString(): string {
   get [Symbol.toStringTag](): string {
     return 'AugmentedQueue'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { AugmentedQueueOptions

@@ -959,6 +959,10 @@ export class BoundedPriorityQueue<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

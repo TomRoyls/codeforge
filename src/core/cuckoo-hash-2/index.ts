@@ -305,4 +305,8 @@ export class CuckooHash<K, V> {
   get [Symbol.toStringTag](): string {
     return 'CuckooHash'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -1016,6 +1016,10 @@ export class DAryHeap<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { DAryHeapOptions } from './types.js'

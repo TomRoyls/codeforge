@@ -348,6 +348,10 @@ export class KDTree3<T = number[]> {
   includes(point: number[]): boolean {
     return this.contains(point)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 interface KDNode {

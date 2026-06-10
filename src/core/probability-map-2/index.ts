@@ -124,4 +124,8 @@ export class ProbabilityMap2 {
   get [Symbol.toStringTag](): string {
     return 'ProbabilityMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -1054,4 +1054,8 @@ export class IntervalHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

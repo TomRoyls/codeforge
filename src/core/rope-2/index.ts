@@ -273,4 +273,8 @@ export class Rope2 {
   get size(): number {
     return this.length
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

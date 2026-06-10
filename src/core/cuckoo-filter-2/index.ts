@@ -253,6 +253,10 @@ export class CuckooFilter2 {
   includes(item: unknown): boolean {
     return this.contains(item)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export const CuckooFilter = CuckooFilter2;

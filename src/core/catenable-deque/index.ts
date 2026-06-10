@@ -1498,6 +1498,10 @@ export class CatenableDeque<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

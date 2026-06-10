@@ -68,4 +68,8 @@ export class ElasticQueue2<T> {
   get [Symbol.toStringTag](): string {
     return 'ElasticQueue2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

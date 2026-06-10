@@ -95,4 +95,8 @@ export class MergeHeap2<T> {
   get [Symbol.toStringTag](): string {
     return 'MergeHeap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

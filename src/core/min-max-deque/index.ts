@@ -938,6 +938,10 @@ export class MinMaxDeque<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { MinMaxDequeOptions } from './types.js'

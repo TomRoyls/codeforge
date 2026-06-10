@@ -1171,6 +1171,10 @@ export class BinomialHeap<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { BinomialHeapOptions 

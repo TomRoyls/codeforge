@@ -848,4 +848,8 @@ export class TwoThreeHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

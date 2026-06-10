@@ -285,4 +285,8 @@ export class DanceLink {
   get [Symbol.toStringTag](): string {
     return 'DanceLink'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

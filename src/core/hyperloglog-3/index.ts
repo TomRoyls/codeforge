@@ -145,4 +145,8 @@ export class HyperLogLog3 {
   get [Symbol.toStringTag](): string {
     return 'HyperLogLog3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -269,4 +269,8 @@ export class KDTree3 {
   includes(point: Point): boolean {
     return this.contains(point)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

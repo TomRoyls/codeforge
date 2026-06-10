@@ -180,4 +180,8 @@ export class TernarySearchTrie2<V> {
   get [Symbol.toStringTag](): string {
     return 'TernarySearchTrie2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

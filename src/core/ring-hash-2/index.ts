@@ -89,4 +89,8 @@ export class RingHash2 {
   get [Symbol.toStringTag](): string {
     return 'RingHash2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

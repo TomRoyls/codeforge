@@ -198,6 +198,10 @@ export class RankSelectBitvector2 {
   get size(): number {
     return this.length
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 function popcount(n: number): number {

@@ -157,4 +157,8 @@ export class SparseTable3 {
   get [Symbol.toStringTag](): string {
     return 'SparseTable3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -1013,6 +1013,10 @@ export class GallopingHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { GallopingHeapNode };

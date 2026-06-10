@@ -129,4 +129,8 @@ export class CartesianProduct2<T> {
     return new CartesianProduct2(this.toArray())
   }
 
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

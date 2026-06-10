@@ -172,6 +172,10 @@ export class GraphTree<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'GraphTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { TraversalOrder, GraphTreeNode } from './types.js'

@@ -959,4 +959,8 @@ export class ShuffleTree<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

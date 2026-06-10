@@ -92,4 +92,8 @@ export class SkylineSet2<T> {
   get [Symbol.toStringTag](): string {
     return 'SkylineSet2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

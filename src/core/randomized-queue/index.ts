@@ -878,4 +878,8 @@ export class RandomizedQueue<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

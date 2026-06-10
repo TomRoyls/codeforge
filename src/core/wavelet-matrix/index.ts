@@ -546,4 +546,8 @@ export class WaveletMatrix {
   get [Symbol.toStringTag](): string {
     return 'WaveletMatrix'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

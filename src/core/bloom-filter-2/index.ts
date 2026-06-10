@@ -156,4 +156,8 @@ export class BloomFilter2 {
   includes(item: string): boolean {
     return this.contains(item)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

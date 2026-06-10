@@ -242,4 +242,8 @@ export class MergeableMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'MergeableMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

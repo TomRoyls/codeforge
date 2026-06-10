@@ -200,4 +200,8 @@ export class Bitmap3 {
   get [Symbol.toStringTag](): string {
     return 'Bitmap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

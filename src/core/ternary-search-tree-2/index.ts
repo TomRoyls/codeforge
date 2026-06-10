@@ -243,4 +243,8 @@ export class TernarySearchTree2 {
   get [Symbol.toStringTag](): string {
     return 'TernarySearchTree2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

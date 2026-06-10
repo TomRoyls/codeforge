@@ -844,4 +844,8 @@ export class PagodaHeap2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

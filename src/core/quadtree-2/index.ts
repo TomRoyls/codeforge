@@ -446,6 +446,10 @@ export class QuadTree2<T = undefined> {
   includes(point: { x: number; y: number }): boolean {
     return this.contains(point)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { Point2D, Rect2D, QuadTree2Options }

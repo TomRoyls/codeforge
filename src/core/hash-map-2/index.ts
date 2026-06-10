@@ -362,4 +362,8 @@ export class HashMap2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'HashMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

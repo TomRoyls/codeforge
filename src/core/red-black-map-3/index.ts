@@ -395,4 +395,8 @@ export class RedBlackMap3<K, V> {
   get [Symbol.toStringTag](): string {
     return 'RedBlackMap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

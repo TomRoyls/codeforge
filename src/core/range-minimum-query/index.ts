@@ -909,4 +909,8 @@ export class RangeMinimumQuery<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

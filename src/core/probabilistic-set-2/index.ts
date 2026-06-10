@@ -72,4 +72,8 @@ export class ProbabilisticSet2<T> {
   get [Symbol.toStringTag](): string {
     return 'ProbabilisticSet2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

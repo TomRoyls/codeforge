@@ -244,4 +244,12 @@ export class RectangularGrid<T> {
   get [Symbol.toStringTag](): string {
     return 'RectangularGrid'
   }
+
+  isEmpty(): boolean {
+    return this.toArray().length === 0
+  }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

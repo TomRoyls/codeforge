@@ -1049,6 +1049,10 @@ export class PlayTree<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { PlayTreeNode, CompareFunction, PlayTreeOptions } from './types.js'

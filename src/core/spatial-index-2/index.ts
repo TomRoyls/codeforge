@@ -187,4 +187,8 @@ export class SpatialIndex2 {
   get [Symbol.toStringTag](): string {
     return 'SpatialIndex2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

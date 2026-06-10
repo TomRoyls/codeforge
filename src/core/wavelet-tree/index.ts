@@ -326,6 +326,10 @@ export class WaveletTree {
   get [Symbol.toStringTag](): string {
     return 'WaveletTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { WaveletTreeNode, WaveletTreeOptions, RankAllResult, WaveletTreeStats } from './types.js'

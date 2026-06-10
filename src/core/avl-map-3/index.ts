@@ -298,4 +298,8 @@ export class AVLMap3<K, V> {
   get [Symbol.toStringTag](): string {
     return 'AVLMap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

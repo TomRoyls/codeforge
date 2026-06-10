@@ -1015,4 +1015,8 @@ export class SkipListSet<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

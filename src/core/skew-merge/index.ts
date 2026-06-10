@@ -859,4 +859,8 @@ export class SkewMerge<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

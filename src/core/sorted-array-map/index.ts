@@ -196,4 +196,8 @@ export class SortedArrayMap<K = number, V = unknown> {
   get [Symbol.toStringTag](): string {
     return 'SortedArrayMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

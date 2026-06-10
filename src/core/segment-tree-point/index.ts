@@ -945,4 +945,8 @@ export class SegmentTreePoint<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

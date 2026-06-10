@@ -440,4 +440,8 @@ export class ScapegoatTree<K, V = undefined> {
   get [Symbol.toStringTag](): string {
     return 'ScapegoatTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

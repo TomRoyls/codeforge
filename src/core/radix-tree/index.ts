@@ -272,4 +272,8 @@ export class RadixTree {
   get [Symbol.toStringTag](): string {
     return 'RadixTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

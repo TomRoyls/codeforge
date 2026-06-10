@@ -176,4 +176,8 @@ export class DiffArray {
   get [Symbol.toStringTag](): string {
     return 'DiffArray'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

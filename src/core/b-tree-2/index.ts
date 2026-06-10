@@ -1129,4 +1129,8 @@ export class BTree2<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

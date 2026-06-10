@@ -114,4 +114,8 @@ export class WindowHeap2 {
   get [Symbol.toStringTag](): string {
     return 'WindowHeap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

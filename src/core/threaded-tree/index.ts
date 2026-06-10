@@ -1049,4 +1049,8 @@ export class ThreadedTree<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

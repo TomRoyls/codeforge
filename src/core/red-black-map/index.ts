@@ -509,6 +509,10 @@ export class RedBlackMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'RedBlackMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { RBNode, RBColor, CompareFunction, RedBlackMapOptions } from './types.js'

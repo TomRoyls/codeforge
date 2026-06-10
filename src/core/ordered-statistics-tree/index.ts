@@ -1076,4 +1076,8 @@ export class OrderedStatisticsTree<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

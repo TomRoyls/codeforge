@@ -231,4 +231,8 @@ export class FibonacciSearch {
   includes(target: number): boolean {
     return this.contains(target)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

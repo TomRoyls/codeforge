@@ -169,4 +169,8 @@ export class SuffixArray2 {
   includes(pattern: string): boolean {
     return this.contains(pattern)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

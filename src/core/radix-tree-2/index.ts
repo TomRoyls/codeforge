@@ -328,4 +328,8 @@ export class RadixTree2 {
   includes(word: string): boolean {
     return this.contains(word)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

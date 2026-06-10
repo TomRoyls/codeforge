@@ -1007,4 +1007,8 @@ export class CircularDeque2<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

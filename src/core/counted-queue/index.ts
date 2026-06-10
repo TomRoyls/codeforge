@@ -958,4 +958,8 @@ export class CountedQueue<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

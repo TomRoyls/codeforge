@@ -269,4 +269,8 @@ export class IntervalTree3 {
   includes(low: number, high: number): boolean {
     return this.contains(low, high)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

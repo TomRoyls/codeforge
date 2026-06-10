@@ -214,4 +214,8 @@ export class WaveletTree {
   get [Symbol.toStringTag](): string {
     return 'WaveletTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

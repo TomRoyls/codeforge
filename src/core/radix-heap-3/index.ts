@@ -152,4 +152,8 @@ export class RadixHeap3<T> {
   get [Symbol.toStringTag](): string {
     return 'RadixHeap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -1003,4 +1003,8 @@ export class HybridHeap2<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

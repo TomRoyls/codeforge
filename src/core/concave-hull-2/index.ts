@@ -189,4 +189,8 @@ export class ConcaveHull2 {
   get [Symbol.toStringTag](): string {
     return 'ConcaveHull2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

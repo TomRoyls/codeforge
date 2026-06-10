@@ -219,6 +219,10 @@ export class PairingArray<K, V> {
   get [Symbol.toStringTag](): string {
     return 'PairingArray'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { PairingArrayEntry } from './types.js'

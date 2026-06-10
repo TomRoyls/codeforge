@@ -234,4 +234,8 @@ export class QuadTreeMap2<V> {
   includes(x: number, y: number): boolean {
     return this.contains(x, y)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

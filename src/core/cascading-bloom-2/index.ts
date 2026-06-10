@@ -114,4 +114,8 @@ export class CascadingBloom2 {
   get [Symbol.toStringTag](): string {
     return 'CascadingBloom2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

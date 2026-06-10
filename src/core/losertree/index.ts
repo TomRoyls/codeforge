@@ -998,6 +998,10 @@ export class LoserTree<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { Comparator, ForEachCallback, LoserTreeOptions } from './types.js'

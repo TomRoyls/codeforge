@@ -252,4 +252,8 @@ export class SparseBitmap {
   get [Symbol.toStringTag](): string {
     return 'SparseBitmap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

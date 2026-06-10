@@ -352,6 +352,10 @@ export class SigmaSet {
   includes(value: number): boolean {
     return this.contains(value)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 function popcount(value: number): number {

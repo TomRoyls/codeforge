@@ -123,4 +123,8 @@ export class RoaringBitmap3 {
   get [Symbol.toStringTag](): string {
     return 'RoaringBitmap3'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

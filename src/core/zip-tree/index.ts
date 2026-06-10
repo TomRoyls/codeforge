@@ -296,4 +296,8 @@ export class ZipTree<K, V> {
   get [Symbol.toStringTag](): string {
     return 'ZipTree'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

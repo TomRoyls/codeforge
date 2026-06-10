@@ -285,4 +285,8 @@ export class SplayMap2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'SplayMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

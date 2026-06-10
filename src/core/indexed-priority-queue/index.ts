@@ -266,6 +266,10 @@ export class IndexedPriorityQueue<T = number> {
   includes(index: number): boolean {
     return this.contains(index)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { IndexedPriorityQueueOptions, IndexedPriorityQueueEntry, IndexedPriorityQueueStats }

@@ -352,4 +352,8 @@ export class GraphAdjList<T> {
   get [Symbol.toStringTag](): string {
     return 'GraphAdjList'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

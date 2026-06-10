@@ -324,4 +324,8 @@ export class IntervalSet<T = number> {
   includes(start: T, end: T): boolean {
     return this.contains(start, end)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

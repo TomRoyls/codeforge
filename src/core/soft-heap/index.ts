@@ -1025,6 +1025,10 @@ export class SoftHeap<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

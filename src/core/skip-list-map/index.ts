@@ -419,6 +419,10 @@ toArray() {
   get [Symbol.toStringTag](): string {
     return 'SkipListMap'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { SkipListMapOptions 

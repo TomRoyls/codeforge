@@ -1037,4 +1037,8 @@ export class HashSet<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

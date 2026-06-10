@@ -397,4 +397,8 @@ export class EphemeralArray<T> {
   contains(item: T): boolean {
     return this.includes(item)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

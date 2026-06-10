@@ -977,6 +977,10 @@ export class MinDeque<T = unknown> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { MinDequeOptions } from './types.js'

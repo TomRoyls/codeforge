@@ -249,4 +249,8 @@ export class PrioritySearchTree2 {
   includes(point: Point): boolean {
     return this.contains(point)
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

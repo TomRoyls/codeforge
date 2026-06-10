@@ -882,6 +882,10 @@ export class Pagoda<T = number> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }
 
 export type { PagodaOptions, PagodaNode } from './types.js'

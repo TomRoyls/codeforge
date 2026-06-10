@@ -964,6 +964,10 @@ export class HollowHeap<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
 
 export type { HollowHeapOptions } from './types.js';

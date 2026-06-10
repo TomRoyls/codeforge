@@ -315,4 +315,8 @@ export class AdaptiveHash2<K, V> {
   get [Symbol.toStringTag](): string {
     return 'AdaptiveHash2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

@@ -949,4 +949,8 @@ export class CircularBuffer4<T> {
     }
     return result
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty
+  }
 }

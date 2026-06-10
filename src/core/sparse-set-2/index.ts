@@ -173,4 +173,8 @@ export class SparseSet2 {
   get [Symbol.toStringTag](): string {
     return 'SparseSet2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }

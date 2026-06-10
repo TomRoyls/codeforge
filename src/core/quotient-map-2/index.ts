@@ -180,4 +180,8 @@ export class QuotientMap2<T> {
   get [Symbol.toStringTag](): string {
     return 'QuotientMap2'
   }
+
+  nonEmpty(): boolean {
+    return !this.isEmpty()
+  }
 }
