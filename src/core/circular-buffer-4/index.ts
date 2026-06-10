@@ -641,4 +641,13 @@ export class CircularBuffer4<T> {
   }
 
 
+
+  difference(other: T[]): T[] {
+    const set = new Set(other)
+    return this.toArray().filter(item => !set.has(item))
+  }
+
+  union(other: T[]): T[] {
+    return [...new Set([...this.toArray(), ...other])]
+  }
 }

@@ -564,4 +564,13 @@ export class Deque3<T> {
     const set = new Set(other)
     return this.toArray().some(item => set.has(item))
   }
+
+  difference(other: T[]): T[] {
+    const set = new Set(other)
+    return this.toArray().filter(item => !set.has(item))
+  }
+
+  union(other: T[]): T[] {
+    return [...new Set([...this.toArray(), ...other])]
+  }
 }
