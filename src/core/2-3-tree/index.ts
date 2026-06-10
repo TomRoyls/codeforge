@@ -971,4 +971,9 @@ export class TwoThreeTree<T> {
   get [Symbol.toStringTag](): string {
     return 'TwoThreeTree'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }

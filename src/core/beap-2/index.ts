@@ -645,4 +645,9 @@ export class Beap2<T> {
   get [Symbol.toStringTag](): string {
     return 'Beap2'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }

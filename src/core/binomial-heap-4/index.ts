@@ -841,4 +841,9 @@ export class BinomialHeap4<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'BinomialHeap4'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }

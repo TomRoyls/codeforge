@@ -950,4 +950,9 @@ export class BTreeSet<T> {
   get [Symbol.toStringTag](): string {
     return 'BTreeSet'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }

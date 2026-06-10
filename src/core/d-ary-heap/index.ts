@@ -667,6 +667,14 @@ export class DAryHeap<T = number> {
   get [Symbol.toStringTag](): string {
     return 'DAryHeap'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
+  lastIndexOf(item: T, fromIndex?: number): number {
+    return this.toArray().lastIndexOf(item, fromIndex)
+  }
 }
 
 export type { DAryHeapOptions } from './types.js'

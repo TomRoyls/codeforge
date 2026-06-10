@@ -668,6 +668,11 @@ export class ConcurrentQueue<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'ConcurrentQueue'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

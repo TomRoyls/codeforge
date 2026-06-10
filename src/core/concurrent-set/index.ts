@@ -678,4 +678,12 @@ export class ConcurrentSet<T> {
   get [Symbol.toStringTag](): string {
     return 'ConcurrentSet'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
+  lastIndexOf(item: T, fromIndex?: number): number {
+    return this.toArray().lastIndexOf(item, fromIndex)
+  }
 }

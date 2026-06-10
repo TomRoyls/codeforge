@@ -826,4 +826,9 @@ export class AVLTree6<T> {
   get [Symbol.toStringTag](): string {
     return 'AVLTree6'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }

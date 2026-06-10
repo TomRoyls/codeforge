@@ -629,4 +629,9 @@ export class CircularBuffer4<T> {
   get [Symbol.toStringTag](): string {
     return 'CircularBuffer4'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }

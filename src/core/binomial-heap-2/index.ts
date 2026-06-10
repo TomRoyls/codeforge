@@ -867,6 +867,11 @@ export class BinomialHeap<T = number> {
   get [Symbol.toStringTag](): string {
     return 'BinomialHeap'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }
 
 export type { BinomialHeapOptions 

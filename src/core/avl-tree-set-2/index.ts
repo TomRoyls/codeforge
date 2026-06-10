@@ -774,6 +774,11 @@ toString(): string {
   get [Symbol.toStringTag](): string {
     return 'AVLTreeSet2'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }
 
 class AVLNode<T> {

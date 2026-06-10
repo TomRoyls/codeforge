@@ -662,6 +662,11 @@ export class BoundedPriorityQueue<T> {
   get [Symbol.toStringTag](): string {
     return 'BoundedPriorityQueue'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

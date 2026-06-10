@@ -679,4 +679,9 @@ export class CircularDeque2<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'CircularDeque2'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }

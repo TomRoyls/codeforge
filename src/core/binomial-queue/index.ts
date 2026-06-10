@@ -873,6 +873,11 @@ export class BinomialQueue<T = number> {
   get [Symbol.toStringTag](): string {
     return 'BinomialQueue'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }
 
 export type { BinomialQueueOptions } from './types.js'

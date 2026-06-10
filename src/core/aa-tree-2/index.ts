@@ -767,4 +767,9 @@ export class AATree2<T> {
   get [Symbol.toStringTag](): string {
     return 'AATree2'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }

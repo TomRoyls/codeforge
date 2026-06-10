@@ -981,6 +981,11 @@ toString(): string {
   get [Symbol.toStringTag](): string {
     return 'AdaptiveBST'
   }
+
+  indexOf(item: T, fromIndex: number = 0): number {
+    return this.toArray().indexOf(item, fromIndex)
+  }
+
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback
