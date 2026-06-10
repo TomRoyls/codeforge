@@ -1202,6 +1202,23 @@ export class WeirdHeap<T = unknown> {
     combine(0, [])
     return result
   }
+
+  powerSet(): T[][] {
+    const arr = this.toArray()
+    if (arr.length > 16) return [[], [...arr]]
+    const result: T[][] = []
+    const n = 1 << arr.length
+    for (let mask = 0; mask < n; mask++) {
+      const subset: T[] = []
+      for (let i = 0; i < arr.length; i++) {
+        if (mask & (1 << i)) {
+          subset.push(arr[i]!)
+        }
+      }
+      result.push(subset)
+    }
+    return result
+  }
 }
 
 export { DEFAULT_WEIRD_HEAP_OPTIONS } from './types.js'
