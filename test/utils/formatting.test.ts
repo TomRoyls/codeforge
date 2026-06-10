@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatSize, getGrade } from '../../src/utils/formatting.js'
+import { formatSize, getGrade, colorizeSeverity, getScoreColor, getThresholdColor } from '../../src/utils/formatting.js'
 
 // ─── formatSize ───
 
@@ -111,5 +111,82 @@ describe('getGrade edge cases', () => {
 
   it('handles score 90', () => {
     expect(getGrade(90)).toBe('(A)')
+  })
+})
+
+describe('colorizeSeverity', () => {
+  it('colorizes error severity', () => {
+    const result = colorizeSeverity('error')
+    expect(result).toContain('error')
+  })
+
+  it('colorizes warning severity', () => {
+    const result = colorizeSeverity('warning')
+    expect(result).toContain('warning')
+  })
+
+  it('colorizes info severity', () => {
+    const result = colorizeSeverity('info')
+    expect(result).toContain('info')
+  })
+
+  it('returns unknown severity unchanged', () => {
+    const result = colorizeSeverity('debug')
+    expect(result).toBe('debug')
+  })
+
+  it('caches severity results', () => {
+    const r1 = colorizeSeverity('error')
+    const r2 = colorizeSeverity('error')
+    expect(r1).toBe(r2)
+  })
+
+  it('handles empty string', () => {
+    const result = colorizeSeverity('')
+    expect(result).toBe('')
+  })
+})
+
+describe('getScoreColor', () => {
+  it('returns green for high scores', () => {
+    const color = getScoreColor(90)
+    expect(typeof color).toBe('function')
+  })
+
+  it('returns yellow for mid scores', () => {
+    const color = getScoreColor(70)
+    expect(typeof color).toBe('function')
+  })
+
+  it('returns red for low scores', () => {
+    const color = getScoreColor(30)
+    expect(typeof color).toBe('function')
+  })
+})
+
+describe('getThresholdColor', () => {
+  it('returns green when above good threshold', () => {
+    const color = getThresholdColor(90, 80, 60)
+    expect(typeof color).toBe('function')
+  })
+
+  it('returns yellow when between thresholds', () => {
+    const color = getThresholdColor(70, 80, 60)
+    expect(typeof color).toBe('function')
+  })
+
+  it('returns red when below warn threshold', () => {
+    const color = getThresholdColor(50, 80, 60)
+    expect(typeof color).toBe('function')
+  })
+
+  it('returns green at exact good threshold', () => {
+    const color = getThresholdColor(80, 80, 60)
+    expect(typeof color).toBe('function')
+  })
+
+  it('returns yellow at exact warn threshold', () => {
+    const color = getThresholdColor(60, 80, 60)
+    expect(typeof color).toBe('function')
   })
 })

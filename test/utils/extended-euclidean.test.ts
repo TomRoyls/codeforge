@@ -133,4 +133,121 @@ describe('ExtendedEuclidean', () => {
     const { gcd } = ExtendedEuclidean.solve(14n, 15n)
     expect(gcd).toBe(1n)
   })
+
+  it('gcd of consecutive Fibonacci numbers is 1', () => {
+    const { gcd } = ExtendedEuclidean.solve(34n, 21n)
+    expect(gcd).toBe(1n)
+  })
+
+  it('verifies Bezout for large numbers', () => {
+    const { x, y, gcd } = ExtendedEuclidean.solve(1071n, 462n)
+    expect(gcd).toBe(21n)
+    expect(1071n * x + 462n * y).toBe(21n)
+  })
+
+  it('gcd(1, n) = 1', () => {
+    const { gcd, x, y } = ExtendedEuclidean.solve(1n, 100n)
+    expect(gcd).toBe(1n)
+    expect(1n * x + 100n * y).toBe(1n)
+  })
+
+  it('gcd(n, 0) where a != 0', () => {
+    const { gcd } = ExtendedEuclidean.solve(7n, 0n)
+    expect(Math.abs(Number(gcd))).toBe(7)
+  })
+
+  it('solveNumber with small inputs', () => {
+    const { gcd, x, y } = ExtendedEuclidean.solveNumber(48, 18)
+    expect(gcd).toBe(6)
+    expect(48 * x + 18 * y).toBe(6)
+  })
+
+  it('solveNumber with coprime inputs', () => {
+    const { gcd } = ExtendedEuclidean.solveNumber(25, 36)
+    expect(gcd).toBe(1)
+  })
+
+  it('modularInverse for prime modulus', () => {
+    const inv = ExtendedEuclidean.modularInverse(2n, 5n)
+    expect(inv).not.toBeNull()
+    expect((2n * inv!) % 5n).toBe(1n)
+  })
+
+  it('modularInverse of number equal to modulus minus 1', () => {
+    const inv = ExtendedEuclidean.modularInverse(6n, 7n)
+    expect(inv).not.toBeNull()
+    expect((6n * inv!) % 7n).toBe(1n)
+  })
+
+  it('modularInverse(0, 1) returns 0 since gcd(0,1)=1', () => {
+    const inv = ExtendedEuclidean.modularInverse(0n, 1n)
+    expect(inv).toBe(0n)
+  })
+
+  it('modularInverse returns null when gcd > 1', () => {
+    expect(ExtendedEuclidean.modularInverse(6n, 9n)).toBeNull()
+  })
+
+  it('modularInverse handles large modulus', () => {
+    const inv = ExtendedEuclidean.modularInverse(3n, 1000000007n)
+    expect(inv).not.toBeNull()
+    expect((3n * inv!) % 1000000007n).toBe(1n)
+  })
+
+  it('modularInverseNumber returns null for even modulus with even input', () => {
+    expect(ExtendedEuclidean.modularInverseNumber(4, 8)).toBeNull()
+  })
+
+  it('modularInverseNumber finds correct inverse', () => {
+    const inv = ExtendedEuclidean.modularInverseNumber(7, 13)
+    expect(inv).not.toBeNull()
+    expect((7 * inv!) % 13).toBe(1)
+  })
+
+  it('lcm of coprime numbers is their product', () => {
+    expect(ExtendedEuclidean.lcm(3n, 5n)).toBe(15n)
+  })
+
+  it('lcm of equal numbers', () => {
+    expect(ExtendedEuclidean.lcm(6n, 6n)).toBe(6n)
+  })
+
+  it('lcm with negative numbers', () => {
+    expect(ExtendedEuclidean.lcm(-4n, 6n)).toBe(12n)
+  })
+
+  it('lcm both zero returns zero', () => {
+    expect(ExtendedEuclidean.lcm(0n, 0n)).toBe(0n)
+  })
+
+  it('lcm of 1 and any number is that number', () => {
+    expect(ExtendedEuclidean.lcm(1n, 42n)).toBe(42n)
+  })
+
+  it('Bezout identity holds for prime pairs', () => {
+    const { x, y, gcd } = ExtendedEuclidean.solve(13n, 17n)
+    expect(gcd).toBe(1n)
+    expect(13n * x + 17n * y).toBe(1n)
+  })
+
+  it('solve with power of 2 and odd number', () => {
+    const { gcd } = ExtendedEuclidean.solve(16n, 9n)
+    expect(gcd).toBe(1n)
+  })
+
+  it('solve with one being multiple of the other', () => {
+    const { gcd } = ExtendedEuclidean.solve(12n, 48n)
+    expect(gcd).toBe(12n)
+  })
+
+  it('solveNumber returns integer coefficients', () => {
+    const { x, y, gcd } = ExtendedEuclidean.solveNumber(56, 72)
+    expect(gcd).toBe(8)
+    expect(Number.isInteger(x)).toBe(true)
+    expect(Number.isInteger(y)).toBe(true)
+  })
+
+  it('lcm of large numbers', () => {
+    expect(ExtendedEuclidean.lcm(100n, 75n)).toBe(300n)
+  })
 })
