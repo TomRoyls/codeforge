@@ -1019,6 +1019,17 @@ export class ConcurrentQueue<T = unknown> {
   nonEmpty(): boolean {
     return !this.isEmpty
   }
+
+  compactMap<U>(fn: (item: T, index: number) => U | null | undefined): U[] {
+    const result: U[] = []
+    this.toArray().forEach((item, i) => {
+      const mapped = fn(item, i)
+      if (mapped != null) {
+        result.push(mapped)
+      }
+    })
+    return result
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

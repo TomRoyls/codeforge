@@ -1170,6 +1170,21 @@ export class FibonacciHeap3<T = number> {
   nonEmpty(): boolean {
     return !this.isEmpty
   }
+
+  reject(predicate: (item: T, index: number) => boolean): T[] {
+    return this.toArray().filter((item, i) => !predicate(item, i))
+  }
+
+  compactMap<U>(fn: (item: T, index: number) => U | null | undefined): U[] {
+    const result: U[] = []
+    this.toArray().forEach((item, i) => {
+      const mapped = fn(item, i)
+      if (mapped != null) {
+        result.push(mapped)
+      }
+    })
+    return result
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'
