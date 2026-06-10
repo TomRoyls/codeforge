@@ -878,6 +878,9 @@ export class BinomialQueue<T = number> {
     return this.toArray().indexOf(item, fromIndex)
   }
 
+
+
+
 }
 
 export type { BinomialQueueOptions } from './types.js'

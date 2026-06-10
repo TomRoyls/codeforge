@@ -650,4 +650,7 @@ export class Beap2<T> {
     return this.toArray().indexOf(item, fromIndex)
   }
 
+
+
+
 }
