@@ -562,6 +562,7 @@ toString(): string {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback

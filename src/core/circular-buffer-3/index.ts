@@ -146,4 +146,5 @@ export class CircularBuffer3<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
 }

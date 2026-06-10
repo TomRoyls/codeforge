@@ -349,4 +349,5 @@ export class FingerprintSet<T> implements Iterable<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
 }

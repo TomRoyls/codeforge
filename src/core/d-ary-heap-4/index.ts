@@ -193,4 +193,12 @@ export class DAryHeap4<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  count(predicate: (item: T) => boolean): number {
+    let c = 0
+    for (const item of this.toArray()) {
+      if (predicate(item)) c++
+    }
+    return c
+  }
 }

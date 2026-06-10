@@ -807,6 +807,14 @@ export class CatenableDeque<T> {
     const arr = this.toArray()
     return index >= 0 ? arr[index] : arr[arr.length + index]
   }
+
+  count(predicate: (item: T) => boolean): number {
+    let c = 0
+    for (const item of this.toArray()) {
+      if (predicate(item)) c++
+    }
+    return c
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

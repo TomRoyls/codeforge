@@ -304,6 +304,14 @@ export class ConcurrentQueue<T = unknown> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  count(predicate: (item: T) => boolean): number {
+    let c = 0
+    for (const item of this.toArray()) {
+      if (predicate(item)) c++
+    }
+    return c
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

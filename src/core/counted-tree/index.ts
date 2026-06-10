@@ -467,4 +467,5 @@ export class CountedTree<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
 }

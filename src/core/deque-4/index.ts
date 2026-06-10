@@ -296,4 +296,5 @@ export class Deque4<T> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
 }
