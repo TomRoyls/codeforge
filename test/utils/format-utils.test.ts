@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatTime, formatTimeSeconds, formatPercentage, countSeverities, formatNumber } from '../../src/utils/format-utils.js'
+import { formatTime, formatTimeSeconds, formatPercentage, countSeverities, formatNumber, formatBytes, formatBytesCompact, formatDuration, padRight, padLeft } from '../../src/utils/format-utils.js'
 
 // ─── formatTime ───
 
@@ -133,5 +133,127 @@ describe('formatNumber', () => {
 
   it('handles NaN', () => {
     expect(formatNumber(NaN)).toBe('NaN')
+  })
+})
+
+describe('formatBytes', () => {
+  it('formats zero bytes', () => {
+    expect(formatBytes(0)).toBe('0.0 B')
+  })
+
+  it('formats bytes', () => {
+    expect(formatBytes(100)).toBe('100.0 B')
+  })
+
+  it('formats kilobytes', () => {
+    expect(formatBytes(1024)).toBe('1.0 KB')
+  })
+
+  it('formats megabytes', () => {
+    expect(formatBytes(1024 * 1024)).toBe('1.0 MB')
+  })
+
+  it('formats gigabytes', () => {
+    expect(formatBytes(1024 * 1024 * 1024)).toBe('1.0 GB')
+  })
+
+  it('formats terabytes', () => {
+    expect(formatBytes(1024 ** 4)).toBe('1.0 TB')
+  })
+
+  it('respects decimals parameter', () => {
+    expect(formatBytes(1536, 2)).toBe('1.50 KB')
+  })
+
+  it('formats fractional KB', () => {
+    expect(formatBytes(1536)).toBe('1.5 KB')
+  })
+})
+
+describe('formatBytesCompact', () => {
+  it('formats bytes under 1KB', () => {
+    expect(formatBytesCompact(500)).toBe('500B')
+  })
+
+  it('formats 0 bytes', () => {
+    expect(formatBytesCompact(0)).toBe('0B')
+  })
+
+  it('formats kilobytes', () => {
+    expect(formatBytesCompact(2048)).toBe('2.0KB')
+  })
+
+  it('formats megabytes', () => {
+    expect(formatBytesCompact(2 * 1024 * 1024)).toBe('2.0MB')
+  })
+
+  it('formats large MB', () => {
+    expect(formatBytesCompact(100 * 1024 * 1024)).toBe('100.0MB')
+  })
+})
+
+describe('formatDuration', () => {
+  it('formats milliseconds', () => {
+    expect(formatDuration(500)).toBe('500ms')
+  })
+
+  it('formats zero', () => {
+    expect(formatDuration(0)).toBe('0ms')
+  })
+
+  it('formats seconds', () => {
+    expect(formatDuration(2500)).toBe('2.5s')
+  })
+
+  it('formats exactly one second', () => {
+    expect(formatDuration(1000)).toBe('1.0s')
+  })
+
+  it('formats minutes and seconds', () => {
+    expect(formatDuration(125000)).toBe('2m 5s')
+  })
+
+  it('formats exactly one minute', () => {
+    expect(formatDuration(60000)).toBe('1m 0s')
+  })
+
+  it('formats large duration', () => {
+    expect(formatDuration(3661000)).toBe('61m 1s')
+  })
+})
+
+describe('padRight', () => {
+  it('pads string to target length', () => {
+    expect(padRight('hi', 5)).toBe('hi   ')
+  })
+
+  it('returns unchanged if already long enough', () => {
+    expect(padRight('hello', 3)).toBe('hello')
+  })
+
+  it('returns unchanged if exactly target length', () => {
+    expect(padRight('abc', 3)).toBe('abc')
+  })
+
+  it('pads empty string', () => {
+    expect(padRight('', 4)).toBe('    ')
+  })
+})
+
+describe('padLeft', () => {
+  it('pads string to target length', () => {
+    expect(padLeft('hi', 5)).toBe('   hi')
+  })
+
+  it('returns unchanged if already long enough', () => {
+    expect(padLeft('hello', 3)).toBe('hello')
+  })
+
+  it('returns unchanged if exactly target length', () => {
+    expect(padLeft('abc', 3)).toBe('abc')
+  })
+
+  it('pads empty string', () => {
+    expect(padLeft('', 4)).toBe('    ')
   })
 })
