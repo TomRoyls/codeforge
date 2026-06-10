@@ -796,4 +796,23 @@ export class LazySegmentTree<T, U = T> {
     return result
   }
 
+
+  takeWhile(predicate: (item: T, index: number) => boolean): T[] {
+    const arr = this.toArray()
+    const result: T[] = []
+    for (let i = 0; i < arr.length; i++) {
+      if (!predicate(arr[i]!, i)) break
+      result.push(arr[i]!)
+    }
+    return result
+  }
+
+  dropWhile(predicate: (item: T, index: number) => boolean): T[] {
+    const arr = this.toArray()
+    let i = 0
+    while (i < arr.length && predicate(arr[i]!, i)) {
+      i++
+    }
+    return arr.slice(i)
+  }
 }
