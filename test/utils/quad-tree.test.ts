@@ -237,4 +237,221 @@ describe('QuadTree', () => {
     const result = qt.queryRange({ x: 0, y: 0, width: 100, height: 100 });
     expect(result.length).toBe(1);
   });
+
+  // ─── toString ───
+
+  describe('toString', () => {
+    it('returns string representation of empty tree', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      expect(qt.toString()).toBe('[]');
+    });
+
+    it('returns string containing tree info with points', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 20 });
+      qt.insert({ x: 30, y: 40 });
+      const str = qt.toString();
+      expect(str).toContain('(10, 20)');
+      expect(str).toContain('(30, 40)');
+      expect(str).toMatch(/^\[.*\]$/);
+    });
+
+    it('works correctly after insert and remove operations', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 10 });
+      qt.insert({ x: 20, y: 20 });
+      qt.remove({ x: 10, y: 10 });
+      const str = qt.toString();
+      expect(str).toBe('[(20, 20)]');
+    });
+  });
+
+  // ─── toJSON ───
+
+  describe('toJSON', () => {
+    it('returns empty array for empty tree', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      const json = qt.toJSON();
+      expect(json).toEqual([]);
+      expect(Array.isArray(json)).toBe(true);
+    });
+
+    it('returns serializable array of point coordinates', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 20 });
+      qt.insert({ x: 30, y: 40 });
+      const json = qt.toJSON() as number[][];
+      expect(Array.isArray(json)).toBe(true);
+      expect(json).toHaveLength(2);
+      expect(json).toContainEqual([10, 20]);
+      expect(json).toContainEqual([30, 40]);
+    });
+
+    it('round-trip preserves data when parsed back', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 20 });
+      qt.insert({ x: 30, y: 40 });
+      qt.insert({ x: 50, y: 60 });
+      const json = qt.toJSON();
+      const jsonString = JSON.stringify(json);
+      const parsed = JSON.parse(jsonString);
+      expect(parsed).toEqual(json);
+      expect(parsed).toHaveLength(3);
+    });
+  });
+
+  // ─── clone ───
+
+  describe('clone', () => {
+    it('creates independent copy of empty tree', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      const cloned = qt.clone();
+      expect(cloned).not.toBe(qt);
+      expect(cloned.size).toBe(qt.size);
+      expect(cloned.isEmpty()).toBe(true);
+    });
+
+    it('clone has same points as original', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 20 });
+      qt.insert({ x: 30, y: 40 });
+      const cloned = qt.clone();
+      expect(cloned.size).toBe(qt.size);
+      expect(cloned.contains({ x: 10, y: 20 })).toBe(true);
+      expect(cloned.contains({ x: 30, y: 40 })).toBe(true);
+    });
+
+    it('modifying clone does not affect original', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 20 });
+      const cloned = qt.clone();
+      cloned.insert({ x: 50, y: 60 });
+      cloned.remove({ x: 10, y: 20 });
+      expect(qt.size).toBe(1);
+      expect(qt.contains({ x: 10, y: 20 })).toBe(true);
+      expect(qt.contains({ x: 50, y: 60 })).toBe(false);
+      expect(cloned.size).toBe(1);
+      expect(cloned.contains({ x: 10, y: 20 })).toBe(false);
+      expect(cloned.contains({ x: 50, y: 60 })).toBe(true);
+    });
+
+    it('preserves bounds, capacity, and maxDepth', () => {
+      const qt = new QuadTree({ x: 10, y: 20, width: 100, height: 200 }, 5, 10);
+      qt.insert({ x: 50, y: 100 });
+      const cloned = qt.clone();
+      expect(cloned.size).toBe(qt.size);
+      expect(cloned.isEmpty()).toBe(qt.isEmpty());
+    });
+  });
+
+  // ─── equals ───
+
+  describe('equals', () => {
+    it('same tree equals itself', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 20 });
+      expect(qt.equals(qt)).toBe(true);
+    });
+
+    it('trees with same points are equal', () => {
+      const qt1 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      const qt2 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt1.insert({ x: 10, y: 20 });
+      qt1.insert({ x: 30, y: 40 });
+      qt2.insert({ x: 10, y: 20 });
+      qt2.insert({ x: 30, y: 40 });
+      expect(qt1.equals(qt2)).toBe(true);
+    });
+
+    it('trees with different points are not equal', () => {
+      const qt1 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      const qt2 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt1.insert({ x: 10, y: 20 });
+      qt2.insert({ x: 30, y: 40 });
+      expect(qt1.equals(qt2)).toBe(false);
+    });
+
+    it('trees with different number of points are not equal', () => {
+      const qt1 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      const qt2 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt1.insert({ x: 10, y: 20 });
+      qt1.insert({ x: 30, y: 40 });
+      qt2.insert({ x: 10, y: 20 });
+      expect(qt1.equals(qt2)).toBe(false);
+    });
+
+    it('non-QuadTree returns false', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      expect(qt.equals(null)).toBe(false);
+      expect(qt.equals(undefined)).toBe(false);
+      expect(qt.equals({})).toBe(false);
+      expect(qt.equals([])).toBe(false);
+      expect(qt.equals('QuadTree')).toBe(false);
+    });
+
+    it('empty trees are equal', () => {
+      const qt1 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      const qt2 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      expect(qt1.equals(qt2)).toBe(true);
+    });
+
+    it('considers data property in equality', () => {
+      type DataPoint = { x: number; y: number; data?: string };
+      const qt1 = new QuadTree<DataPoint>({ x: 0, y: 0, width: 100, height: 100 });
+      const qt2 = new QuadTree<DataPoint>({ x: 0, y: 0, width: 100, height: 100 });
+      qt1.insert({ x: 10, y: 20, data: 'test' });
+      qt2.insert({ x: 10, y: 20, data: 'test' });
+      expect(qt1.equals(qt2)).toBe(true);
+
+      const qt3 = new QuadTree<DataPoint>({ x: 0, y: 0, width: 100, height: 100 });
+      qt3.insert({ x: 10, y: 20, data: 'different' });
+      expect(qt1.equals(qt3)).toBe(false);
+    });
+  });
+
+  // ─── depth property ───
+
+  describe('depth property', () => {
+    it('depth increases with subdivision', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 }, 2);
+      expect(qt.depth).toBe(0);
+      qt.insert({ x: 10, y: 10 });
+      qt.insert({ x: 20, y: 20 });
+      expect(qt.depth).toBe(0);
+      qt.insert({ x: 30, y: 30 });
+      expect(qt.depth).toBeGreaterThan(0);
+    });
+
+    it('respects maxDepth limiting', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 }, 1, 2);
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 });
+      }
+      expect(qt.depth).toBeLessThanOrEqual(2);
+    });
+  });
+
+  // ─── queryRadius edge cases ───
+
+  describe('queryRadius edge cases', () => {
+    it('zero radius returns points at exact location', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 50, y: 50 });
+      qt.insert({ x: 51, y: 51 });
+      const result = qt.queryRadius({ x: 50, y: 50 }, 0);
+      expect(result).toHaveLength(1);
+      expect(result[0].x).toBe(50);
+      expect(result[0].y).toBe(50);
+    });
+
+    it('finds all points at exact radius', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 50, y: 50 });
+      qt.insert({ x: 60, y: 50 });
+      qt.insert({ x: 40, y: 50 });
+      qt.insert({ x: 50, y: 60 });
+      const result = qt.queryRadius({ x: 50, y: 50 }, 10);
+      expect(result.length).toBeGreaterThanOrEqual(4);
+    });
+  });
 });

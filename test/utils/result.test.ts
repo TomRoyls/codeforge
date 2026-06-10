@@ -18,6 +18,148 @@ describe('ok', () => {
   })
 })
 
+describe('ok - falsy values', () => {
+  it('ok(0) is ok and unwraps to 0', () => {
+    const r = ok(0)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe(0)
+  })
+
+  it('ok("") is ok and unwraps to empty string', () => {
+    const r = ok('')
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe('')
+  })
+
+  it('ok(false) is ok and unwraps to false', () => {
+    const r = ok(false)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe(false)
+  })
+
+  it('ok(null) is ok and unwraps to null', () => {
+    const r = ok(null)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe(null)
+  })
+
+  it('ok(undefined) is ok and unwraps to undefined', () => {
+    const r = ok(undefined)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe(undefined)
+  })
+})
+
+describe('ok - complex values', () => {
+  it('ok with object', () => {
+    const obj = { a: 1, b: 'test' }
+    const r = ok(obj)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toEqual(obj)
+  })
+
+  it('ok with array', () => {
+    const arr = [1, 2, 3]
+    const r = ok(arr)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toEqual(arr)
+  })
+
+  it('ok with Date', () => {
+    const date = new Date('2024-01-01')
+    const r = ok(date)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toEqual(date)
+  })
+})
+
+// ─── err ──────────────────────────────────────────────────
+describe('err', () => {
+  it('creates a failed result', () => {
+    const r = err('fail')
+    expect(r.isErr()).toBe(true)
+    expect(r.isOk()).toBe(false)
+  })
+
+  it('unwrap throws', () => {
+    expect(() => err('fail').unwrap()).toThrow('fail')
+  })
+
+  it('unwrapOr returns default', () => {
+    expect(err('fail').unwrapOr(0)).toBe(0)
+  })
+
+  it('unwrapOrElse calls handler', () => {
+    expect(err('fail').unwrapOrElse((e) => `got ${e}`)).toBe('got fail')
+  })
+})
+
+describe('unwrapOrElse - on ok', () => {
+  it('unwrapOrElse on ok returns the ok value', () => {
+    const r = ok(5).unwrapOrElse(() => 0)
+    expect(r).toBe(5)
+  })
+
+  it('unwrapOrElse on ok does not call handler', () => {
+    let called = false
+    ok(5).unwrapOrElse(() => {
+      called = true
+      return 0
+    })
+    expect(called).toBe(false)
+  })
+})
+
+describe('err - non-Error types', () => {
+  it('err with string', () => {
+    const r = err('error message')
+    expect(r.isErr()).toBe(true)
+    expect(r.isOk()).toBe(false)
+  })
+
+  it('err with number', () => {
+    const r = err(500)
+    expect(r.isErr()).toBe(true)
+    expect(r.isOk()).toBe(false)
+  })
+
+  it('err with object', () => {
+    const r = err({ code: 500, message: 'Internal error' })
+    expect(r.isErr()).toBe(true)
+    expect(r.isOk()).toBe(false)
+  })
+
+  it('err with null', () => {
+    const r = err(null)
+    expect(r.isErr()).toBe(true)
+    expect(r.isOk()).toBe(false)
+  })
+})
+
+describe('unwrap - error handling', () => {
+  it('unwrap on err throws wrapped Error instance', () => {
+    const r = err('string error')
+    expect(() => r.unwrap()).toThrow(Error)
+    expect(() => r.unwrap()).toThrow('string error')
+  })
+
+  it('unwrap on err with number throws wrapped error', () => {
+    const r = err(500)
+    expect(() => r.unwrap()).toThrow('500')
+  })
+
+  it('unwrap on err with object throws wrapped error', () => {
+    const r = err({ code: 500 })
+    expect(() => r.unwrap()).toThrow('[object Object]')
+  })
+
+  it('unwrap on err with Error instance throws original', () => {
+    const errInstance = new Error('original error')
+    const r = err(errInstance)
+    expect(() => r.unwrap()).toThrow(errInstance)
+  })
+})
+
 // ─── err ──────────────────────────────────────────────────
 describe('err', () => {
   it('creates a failed result', () => {
@@ -40,6 +182,50 @@ describe('err', () => {
 })
 
 // ─── map ──────────────────────────────────────────────────
+describe('map - type changes', () => {
+  it('map number to string', () => {
+    const r = ok(42).map((n) => n.toString())
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe('42')
+  })
+
+  it('map to object', () => {
+    const r = ok(42).map((n) => ({ value: n }))
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toEqual({ value: 42 })
+  })
+
+  it('map returning null', () => {
+    const r = ok(42).map(() => null)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe(null)
+  })
+
+  it('map returning undefined', () => {
+    const r = ok(42).map(() => undefined)
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe(undefined)
+  })
+})
+
+describe('map - chaining', () => {
+  it('chain multiple map calls', () => {
+    const r = ok(5)
+      .map((n) => n * 2)
+      .map((n) => n + 1)
+      .map((n) => n.toString())
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe('11')
+  })
+
+  it('chain map with err short-circuits', () => {
+    const r: Result<number, string> = err('fail')
+      .map((n: number) => n * 2)
+      .map((n: number) => n + 1)
+    expect(r.isErr()).toBe(true)
+  })
+})
+
 describe('Result - map', () => {
   it('transforms ok value', () => {
     const r = ok(5).map((n) => n * 2)
@@ -65,8 +251,24 @@ describe('Result - mapErr', () => {
   })
 })
 
-// ─── andThen ──────────────────────────────────────────────
-describe('Result - andThen', () => {
+describe('mapErr - chaining', () => {
+  it('chain multiple mapErr calls', () => {
+    const r = err(500)
+      .mapErr((n) => `HTTP ${n}`)
+      .mapErr((s) => s.toUpperCase())
+    expect(r.isErr()).toBe(true)
+  })
+
+  it('chain mapErr with ok passes through', () => {
+    const r = ok(42)
+      .mapErr((e: any) => `error: ${e}`)
+      .mapErr((e: any) => e.toUpperCase())
+    expect(r.isOk()).toBe(true)
+    expect(r.unwrap()).toBe(42)
+  })
+})
+
+describe('andThen - returning err', () => {
   it('chains ok values', () => {
     const r = ok(5).andThen((n) => ok(n * 2))
     expect(r.unwrap()).toBe(10)
@@ -74,6 +276,14 @@ describe('Result - andThen', () => {
 
   it('short-circuits on err', () => {
     const r: Result<number, string> = err('fail').andThen((n: number) => ok(n * 2))
+    expect(r.isErr()).toBe(true)
+  })
+
+  it('andThen can return err to short-circuit', () => {
+    const r = ok(5).andThen((n) => {
+      if (n > 10) return ok(n)
+      return err('too small')
+    })
     expect(r.isErr()).toBe(true)
   })
 })
@@ -91,6 +301,13 @@ describe('Result - orElse', () => {
   })
 })
 
+describe('orElse - returning err', () => {
+  it('orElse can return a different err', () => {
+    const r = err('e1').orElse(() => err('e2'))
+    expect(r.isErr()).toBe(true)
+  })
+})
+
 // ─── match ────────────────────────────────────────────────
 describe('Result - match', () => {
   it('invokes ok handler', () => {
@@ -99,6 +316,24 @@ describe('Result - match', () => {
 
   it('invokes err handler', () => {
     expect(err('fail').match((v) => `ok:${v}`, (e) => `err:${e}`)).toBe('err:fail')
+  })
+
+  it('match with void return', () => {
+    let sideEffect = 0
+    ok(42).match(
+      (v) => { sideEffect = v },
+      () => { sideEffect = -1 }
+    )
+    expect(sideEffect).toBe(42)
+  })
+
+  it('match with void return on err', () => {
+    let sideEffect = 0
+    err('fail').match(
+      () => { sideEffect = 1 },
+      () => { sideEffect = -1 }
+    )
+    expect(sideEffect).toBe(-1)
   })
 })
 
@@ -128,23 +363,52 @@ describe('fromThrowable', () => {
     expect(r.isErr()).toBe(true)
   })
 
-  it('ok maps value', () => {
-    const r = ok(5)
-    const mapped = r.map((x: number) => x * 2)
-    expect(mapped.isOk()).toBe(true)
+  it('fromThrowable with non-Error throw', () => {
+    const r = fromThrowable(() => {
+      throw 'string error'
+    })
+    expect(r.isErr()).toBe(true)
   })
 
-  it('ok unwrap returns value', () => {
-    const r = ok(42)
-    expect(r.unwrap()).toBe(42)
+  it('fromThrowable with number throw', () => {
+    const r = fromThrowable(() => {
+      throw 500
+    })
+    expect(r.isErr()).toBe(true)
+  })
+})
+
+describe('Integration - ok pipeline', () => {
+  it('full pipeline ok().map().andThen().match()', () => {
+    const result = ok(5)
+      .map((n) => n * 2)
+      .andThen((n) => ok(n + 3))
+      .match(
+        (v) => `success: ${v}`,
+        (e) => `error: ${e}`
+      )
+    expect(result).toBe('success: 13')
+  })
+})
+
+describe('Integration - err pipeline', () => {
+  it('full pipeline err().mapErr().orElse().unwrap()', () => {
+    const result = err('network')
+      .mapErr((e) => `${e} error`)
+      .orElse(() => ok('fallback'))
+      .unwrap()
+    expect(result).toBe('fallback')
   })
 
-  it('err match returns error branch', () => {
-    const r = err('fail')
-    const result = r.match(
-      (v) => v,
-      (e) => e,
-    )
-    expect(result).toBe('fail')
+  it('full pipeline with multiple transformations', () => {
+    const result = ok(10)
+      .map((n) => n * 2)
+      .andThen((n) => n > 15 ? ok(n) : err('too small'))
+      .mapErr((e) => e.toUpperCase())
+      .match(
+        (v) => `Value: ${v}`,
+        (e) => `Error: ${e}`
+      )
+    expect(result).toBe('Value: 20')
   })
 })

@@ -464,3 +464,228 @@ describe('KDTree KNN order', () => {
     }
   })
 })
+
+// ─── toString ───
+
+describe('KDTree toString', () => {
+  it('returns string representation of empty tree', () => {
+    const tree = new KDTree()
+    const str = tree.toString()
+    expect(str).toContain('KDTree')
+    expect(str).toContain('0')
+    expect(str).toContain('k=')
+  })
+
+  it('returns string containing size and dimensions', () => {
+    const tree = new KDTree([[1, 2], [3, 4], [5, 6]])
+    const str = tree.toString()
+    expect(str).toContain('KDTree')
+    expect(str).toContain('3')
+    expect(str).toContain('k=2')
+  })
+
+  it('shows correct dimensions for 3D tree', () => {
+    const tree = new KDTree([[1, 2, 3], [4, 5, 6]])
+    const str = tree.toString()
+    expect(str).toContain('KDTree')
+    expect(str).toContain('2')
+    expect(str).toContain('k=3')
+  })
+})
+
+// ─── toJSON ───
+
+describe('KDTree toJSON', () => {
+  it('returns empty array for empty tree', () => {
+    const tree = new KDTree()
+    const json = tree.toJSON()
+    expect(json).toEqual([])
+    expect(Array.isArray(json)).toBe(true)
+  })
+
+  it('returns serializable array of points', () => {
+    const tree = KDTree.fromPoints([[1, 2], [3, 4], [5, 6]])
+    const json = tree.toJSON() as number[][]
+    expect(Array.isArray(json)).toBe(true)
+    expect(json).toHaveLength(3)
+    expect(json).toContainEqual([1, 2])
+    expect(json).toContainEqual([3, 4])
+    expect(json).toContainEqual([5, 6])
+  })
+
+  it('round-trip preserves data', () => {
+    const tree = KDTree.fromPoints([[1, 2], [3, 4], [5, 6]])
+    const json = tree.toJSON()
+    const jsonString = JSON.stringify(json)
+    const parsed = JSON.parse(jsonString)
+    expect(parsed).toEqual(json)
+    const tree2 = new KDTree(parsed as number[][])
+    expect(tree2.equals(tree)).toBe(true)
+  })
+})
+
+// ─── clone ───
+
+describe('KDTree clone', () => {
+  it('creates independent copy of empty tree', () => {
+    const tree = new KDTree()
+    const cloned = tree.clone()
+    expect(cloned).not.toBe(tree)
+    expect(cloned.size).toBe(tree.size)
+    expect(cloned.isEmpty()).toBe(true)
+  })
+
+  it('clone has same points as original', () => {
+    const tree = KDTree.fromPoints([[1, 2], [3, 4], [5, 6]])
+    const cloned = tree.clone()
+    expect(cloned.size).toBe(tree.size)
+    expect(cloned.contains([1, 2])).toBe(true)
+    expect(cloned.contains([3, 4])).toBe(true)
+    expect(cloned.contains([5, 6])).toBe(true)
+  })
+
+  it('modifying clone does not affect original', () => {
+    const tree = KDTree.fromPoints([[1, 2], [3, 4]])
+    const cloned = tree.clone()
+    cloned.insert([5, 6])
+    cloned.remove([1, 2])
+    expect(tree.size).toBe(2)
+    expect(tree.contains([1, 2])).toBe(true)
+    expect(tree.contains([5, 6])).toBe(false)
+    expect(cloned.size).toBe(2)
+    expect(cloned.contains([1, 2])).toBe(false)
+    expect(cloned.contains([5, 6])).toBe(true)
+  })
+
+  it('preserves dimensions', () => {
+    const tree = new KDTree([[1, 2, 3], [4, 5, 6]])
+    const cloned = tree.clone()
+    expect(cloned.dimensions).toBe(tree.dimensions)
+    expect(cloned.dimensions).toBe(3)
+  })
+})
+
+// ─── equals ───
+
+describe('KDTree equals', () => {
+  it('same tree equals itself', () => {
+    const tree = KDTree.fromPoints([[1, 2], [3, 4]])
+    expect(tree.equals(tree)).toBe(true)
+  })
+
+  it('trees with same points are equal', () => {
+    const tree1 = KDTree.fromPoints([[1, 2], [3, 4]])
+    const tree2 = KDTree.fromPoints([[1, 2], [3, 4]])
+    expect(tree1.equals(tree2)).toBe(true)
+  })
+
+  it('trees with different points are not equal', () => {
+    const tree1 = KDTree.fromPoints([[1, 2], [3, 4]])
+    const tree2 = KDTree.fromPoints([[5, 6], [7, 8]])
+    expect(tree1.equals(tree2)).toBe(false)
+  })
+
+  it('trees with different number of points are not equal', () => {
+    const tree1 = KDTree.fromPoints([[1, 2], [3, 4]])
+    const tree2 = KDTree.fromPoints([[1, 2]])
+    expect(tree1.equals(tree2)).toBe(false)
+  })
+
+  it('non-KDTree returns false', () => {
+    const tree = KDTree.fromPoints([[1, 2]])
+    expect(tree.equals(null)).toBe(false)
+    expect(tree.equals(undefined)).toBe(false)
+    expect(tree.equals({})).toBe(false)
+    expect(tree.equals([])).toBe(false)
+    expect(tree.equals('KDTree')).toBe(false)
+  })
+
+  it('empty trees are equal', () => {
+    const tree1 = new KDTree()
+    const tree2 = new KDTree()
+    expect(tree1.equals(tree2)).toBe(true)
+  })
+
+  it('trees with different dimensions are not equal', () => {
+    const tree1 = new KDTree([[1, 2]])
+    const tree2 = new KDTree([[1, 2, 3]])
+    expect(tree1.equals(tree2)).toBe(false)
+  })
+})
+
+// ─── Negative coordinates ───
+
+describe('KDTree negative coordinates', () => {
+  it('inserts and queries with negative coordinates', () => {
+    const tree = new KDTree()
+    tree.insert([-10, -20])
+    tree.insert([-30, -40])
+    expect(tree.contains([-10, -20])).toBe(true)
+    expect(tree.contains([-30, -40])).toBe(true)
+    expect(tree.size).toBe(2)
+  })
+
+  it('removes points with negative coordinates', () => {
+    const tree = new KDTree()
+    tree.insert([-10, -20])
+    tree.insert([-30, -40])
+    expect(tree.remove([-10, -20])).toBe(true)
+    expect(tree.contains([-10, -20])).toBe(false)
+    expect(tree.size).toBe(1)
+  })
+
+  it('finds nearest neighbor with negative coordinates', () => {
+    const tree = KDTree.fromPoints([
+      [-10, -10],
+      [-5, -5],
+      [0, 0],
+    ])
+    const nn = tree.nearestNeighbor([-3, -3])
+    expect(nn).toEqual([-5, -5])
+  })
+
+  it('range search with negative coordinates', () => {
+    const tree = KDTree.fromPoints([
+      [-20, -20],
+      [-10, -10],
+      [-5, -5],
+      [0, 0],
+    ])
+    const result = tree.rangeSearch([-15, -15], [-5, -5])
+    expect(result.length).toBe(2)
+    expect(result).toContainEqual([-10, -10])
+    expect(result).toContainEqual([-5, -5])
+  })
+})
+
+// ─── Range search edge cases ───
+
+describe('KDTree range search edge cases', () => {
+  it('handles point exactly on boundary', () => {
+    const tree = KDTree.fromPoints([[5, 5], [10, 10], [15, 15]])
+    const result = tree.rangeSearch([5, 5], [10, 10])
+    expect(result.length).toBe(2)
+    expect(result).toContainEqual([5, 5])
+    expect(result).toContainEqual([10, 10])
+  })
+
+  it('inverted range (min > max) returns empty', () => {
+    const tree = KDTree.fromPoints([[5, 5], [10, 10]])
+    const result = tree.rangeSearch([15, 15], [5, 5])
+    expect(result).toEqual([])
+  })
+
+  it('point on boundary included in range', () => {
+    const tree = KDTree.fromPoints([[0, 0], [10, 10], [20, 20]])
+    const result = tree.rangeSearch([0, 0], [10, 10])
+    expect(result.length).toBeGreaterThanOrEqual(2)
+    expect(result).toContainEqual([0, 0])
+    expect(result).toContainEqual([10, 10])
+  })
+
+  it('empty range returns no results', () => {
+    const tree = KDTree.fromPoints([[5, 5], [10, 10]])
+    const result = tree.rangeSearch([7, 7], [7, 7])
+    expect(result).toEqual([])
+  })
+})
