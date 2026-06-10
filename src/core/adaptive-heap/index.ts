@@ -539,4 +539,17 @@ export class AdaptiveHeap<T> {
     const arr = this.toArray()
     return arr.length === 0 ? 0 : arr.reduce((a, b) => a + b, 0) / arr.length
   }
+
+  distinctBy<K>(keyFn: (item: T) => K): T[] {
+    const seen = new Set<K>()
+    const result: T[] = []
+    for (const item of this.toArray()) {
+      const key = keyFn(item)
+      if (!seen.has(key)) {
+        seen.add(key)
+        result.push(item)
+      }
+    }
+    return result
+  }
 }
