@@ -729,4 +729,8 @@ export class CircularBuffer<T> {
   }
 
 
+
+  pluck<K extends keyof T>(key: K): T[K][] {
+    return this.toArray().map(item => item[key])
+  }
 }

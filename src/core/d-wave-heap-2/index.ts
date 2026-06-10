@@ -607,4 +607,8 @@ export class DWaveHeap<T> {
   union(other: T[]): T[] {
     return [...new Set([...this.toArray(), ...other])]
   }
+
+  pluck<K extends keyof T>(key: K): T[K][] {
+    return this.toArray().map(item => item[key])
+  }
 }

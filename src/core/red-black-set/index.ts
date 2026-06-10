@@ -792,4 +792,8 @@ export class RedBlackSet<T> implements Iterable<T> {
     const set = new Set(other)
     return this.toArray().some(item => set.has(item))
   }
+
+  pluck<K extends keyof T>(key: K): T[K][] {
+    return this.toArray().map(item => item[key])
+  }
 }

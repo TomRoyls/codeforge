@@ -603,4 +603,8 @@ export class DisjointSet<T> {
     return this.toArray().filter(item => !set.has(item))
   }
 
+
+  pluck<K extends keyof T>(key: K): T[K][] {
+    return this.toArray().map(item => item[key])
+  }
 }

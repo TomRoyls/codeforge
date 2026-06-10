@@ -695,6 +695,10 @@ export class CoverTree<T = number> {
   union(other: T[]): T[] {
     return [...new Set([...this.toArray(), ...other])]
   }
+
+  pluck<K extends keyof T>(key: K): T[K][] {
+    return this.toArray().map(item => item[key])
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'
