@@ -355,4 +355,8 @@ export class OrderedHashSet<T> {
   slice(start: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  count(predicate: (item: T) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
 }

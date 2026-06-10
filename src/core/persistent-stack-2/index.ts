@@ -160,6 +160,17 @@ export class PersistentStack2<T> {
   slice(start: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+
+  first(): T | undefined {
+    const arr = this.toArray()
+    return arr.length > 0 ? arr[0] : undefined
+  }
+
+  last(): T | undefined {
+    const arr = this.toArray()
+    return arr.length > 0 ? arr[arr.length - 1] : undefined
+  }
 }
 
 interface Node<T> {

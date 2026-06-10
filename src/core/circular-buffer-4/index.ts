@@ -545,4 +545,5 @@ export class CircularBuffer4<T> {
     }
     return map
   }
+
 }

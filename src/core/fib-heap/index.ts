@@ -468,6 +468,14 @@ export class FibHeap<T = number> {
   static empty<T>(): FibHeap<T> {
     return new FibHeap<T>()
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'

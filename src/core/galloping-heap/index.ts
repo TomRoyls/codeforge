@@ -331,6 +331,14 @@ export class GallopingHeap<T> {
   static of<T>(...items: T[]): GallopingHeap<T> {
     return GallopingHeap.from(items)
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }
 
 export type { GallopingHeapNode };

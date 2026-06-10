@@ -449,4 +449,12 @@ export class FingerTree2<T> {
   static empty<T>(): FingerTree2<T> {
     return new FingerTree2<T>()
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }

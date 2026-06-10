@@ -505,6 +505,14 @@ export class FibonacciHeap3<T = number> {
   static empty<T>(): FibonacciHeap3<T> {
     return new FibonacciHeap3<T>()
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

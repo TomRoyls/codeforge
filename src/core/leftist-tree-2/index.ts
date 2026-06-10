@@ -194,4 +194,16 @@ export class LeftistTree2<T> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  count(predicate: (item: T) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }

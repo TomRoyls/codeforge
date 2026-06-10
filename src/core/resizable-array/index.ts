@@ -414,4 +414,8 @@ export class ResizableArray<T> {
     return items
   }
 
+
+  count(predicate: (item: T) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
 }

@@ -243,4 +243,16 @@ export class IntervalHeap3<T> {
     const i = index < 0 ? arr.length + index : index
     return arr[i]
   }
+
+  count(predicate: (item: T) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }

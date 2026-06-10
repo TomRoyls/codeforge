@@ -234,6 +234,10 @@ export class SlidingWindowMax<T = number> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  count(predicate: (item: T) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
 }
 
 export { defaultComparator } from './types.js'

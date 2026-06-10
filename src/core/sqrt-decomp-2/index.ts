@@ -378,4 +378,8 @@ export class SqrtDecomp2<T> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  count(predicate: (item: T) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
 }

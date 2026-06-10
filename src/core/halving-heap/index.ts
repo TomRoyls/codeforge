@@ -245,6 +245,14 @@ export class HalvingHeap<T> {
   }
 
 
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }
 
 export type { HalvingHeapOptions } from './types.js';

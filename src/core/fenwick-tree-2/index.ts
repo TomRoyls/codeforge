@@ -230,4 +230,12 @@ export class FenwickTree2<T = number> {
   static empty<T>(): FenwickTree2<T> {
     return new FenwickTree2<T>()
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }

@@ -340,4 +340,12 @@ export class RangeTree<T> {
   join(separator: string = ', '): string {
     return this.toArray().join(separator)
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }

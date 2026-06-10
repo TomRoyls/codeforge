@@ -252,4 +252,12 @@ export class Multiset<T> {
   slice(start: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }

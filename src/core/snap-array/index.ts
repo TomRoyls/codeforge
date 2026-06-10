@@ -215,4 +215,8 @@ export class SnapArray<T> {
   static empty<T>(): SnapArray<T> {
     return new SnapArray<T>()
   }
+
+  count(predicate: (item: T) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
 }

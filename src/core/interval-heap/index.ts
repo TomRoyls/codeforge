@@ -381,6 +381,18 @@ export class IntervalHeap<T> {
   static empty<T>(): IntervalHeap<T> {
     return new IntervalHeap<T>()
   }
+
+  count(predicate: (item: T) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
+
+  first(): T | undefined {
+    return this.at(0)
+  }
+
+  last(): T | undefined {
+    return this.at(-1)
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'
