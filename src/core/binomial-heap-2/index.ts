@@ -616,6 +616,15 @@ export class BinomialHeap<T = number> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  countBy<K>(keyFn: (item: T) => K): Map<K, number> {
+    const counts = new Map<K, number>()
+    for (const item of this.toArray()) {
+      const key = keyFn(item)
+      counts.set(key, (counts.get(key) ?? 0) + 1)
+    }
+    return counts
+  }
 }
 
 export type { BinomialHeapOptions 
