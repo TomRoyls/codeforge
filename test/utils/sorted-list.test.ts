@@ -198,4 +198,144 @@ describe('SortedList', () => {
     expect(sl.get(0)).toBe(3)
     expect(sl.get(1)).toBe(5)
   })
+
+  it('slice with no arguments returns full copy', () => {
+    const sl = new SortedList<number>()
+    for (let i = 0; i < 5; i++) sl.insert(i)
+    expect(sl.slice()).toEqual([0, 1, 2, 3, 4])
+  })
+
+  it('slice with only start returns elements to end', () => {
+    const sl = new SortedList<number>()
+    for (let i = 0; i < 5; i++) sl.insert(i)
+    expect(sl.slice(2)).toEqual([2, 3, 4])
+  })
+
+  it('slice with negative end returns partial array', () => {
+    const sl = new SortedList<number>()
+    for (let i = 0; i < 5; i++) sl.insert(i)
+    expect(sl.slice(1, -1)).toEqual([1, 2, 3])
+  })
+
+  it('slice returns empty array for invalid range', () => {
+    const sl = new SortedList<number>()
+    sl.insert(1)
+    sl.insert(2)
+    expect(sl.slice(5, 10)).toEqual([])
+  })
+
+  it('entries generator yields all elements', () => {
+    const sl = new SortedList<number>()
+    sl.insert(3)
+    sl.insert(1)
+    sl.insert(2)
+    const result = []
+    for (const item of sl.entries()) {
+      result.push(item)
+    }
+    expect(result).toEqual([1, 2, 3])
+  })
+
+  it('entries generator yields nothing for empty list', () => {
+    const sl = new SortedList<number>()
+    const result = []
+    for (const item of sl.entries()) {
+      result.push(item)
+    }
+    expect(result).toEqual([])
+  })
+
+  it('multiple removes maintain order', () => {
+    const sl = new SortedList<number>()
+    for (let i = 0; i < 10; i++) sl.insert(i)
+    sl.remove(0)
+    sl.remove(2)
+    sl.remove(4)
+    expect([...sl.entries()]).toEqual([1, 2, 4, 5, 7, 8, 9])
+  })
+
+  it('removeItem with duplicates removes first occurrence', () => {
+    const sl = new SortedList<number>()
+    sl.insert(1)
+    sl.insert(2)
+    sl.insert(2)
+    sl.insert(3)
+    sl.removeItem(2)
+    expect([...sl.entries()]).toEqual([1, 2, 3])
+  })
+
+  it('min and max return undefined for empty list', () => {
+    const sl = new SortedList<number>()
+    expect(sl.min()).toBeUndefined()
+    expect(sl.max()).toBeUndefined()
+  })
+
+  it('min and max with single element', () => {
+    const sl = new SortedList<number>()
+    sl.insert(42)
+    expect(sl.min()).toBe(42)
+    expect(sl.max()).toBe(42)
+  })
+
+  it('contains with empty list', () => {
+    const sl = new SortedList<number>()
+    expect(sl.contains(5)).toBe(false)
+  })
+
+  it('indexOf with empty list', () => {
+    const sl = new SortedList<number>()
+    expect(sl.indexOf(5)).toBe(-1)
+  })
+
+  it('lowerBound on empty list returns 0', () => {
+    const sl = new SortedList<number>()
+    expect(sl.lowerBound(5)).toBe(0)
+  })
+
+  it('upperBound on empty list returns 0', () => {
+    const sl = new SortedList<number>()
+    expect(sl.upperBound(5)).toBe(0)
+  })
+
+  it('rangeCount on empty list returns 0', () => {
+    const sl = new SortedList<number>()
+    expect(sl.rangeCount(1, 10)).toBe(0)
+  })
+
+  it('insert preserves sorted order with many elements', () => {
+    const sl = new SortedList<number>()
+    const values = [5, 2, 8, 1, 9, 3, 7, 4, 6, 0]
+    for (const v of values) sl.insert(v)
+    expect([...sl.entries()]).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  })
+
+  it('large dataset maintains performance', () => {
+    const sl = new SortedList<number>()
+    for (let i = 0; i < 1000; i++) sl.insert(Math.random() * 1000)
+    expect(sl.size).toBe(1000)
+    expect(sl.isEmpty).toBe(false)
+  })
+
+  it('clear and rebuild', () => {
+    const sl = new SortedList<number>()
+    for (let i = 0; i < 10; i++) sl.insert(i)
+    sl.clear()
+    expect(sl.size).toBe(0)
+    expect(sl.isEmpty).toBe(true)
+    for (let i = 0; i < 5; i++) sl.insert(i)
+    expect(sl.size).toBe(5)
+    expect([...sl.entries()]).toEqual([0, 1, 2, 3, 4])
+  })
+
+  it('slice on empty list returns empty array', () => {
+    const sl = new SortedList<number>()
+    expect(sl.slice()).toEqual([])
+  })
+
+  it('slice with start beyond size returns empty', () => {
+    const sl = new SortedList<number>()
+    sl.insert(1)
+    sl.insert(2)
+    expect(sl.slice(5)).toEqual([])
+  })
 })

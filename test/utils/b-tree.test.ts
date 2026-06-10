@@ -223,4 +223,258 @@ describe('BTree height', () => {
     tree.insert(5, 50)
     expect(tree.find(5)).toBe(50)
   })
+
+  describe('BTree toString', () => {
+    it('returns correct format for empty tree', () => {
+      const tree = new BTree<number, string>()
+      expect(tree.toString()).toBe('BTree(order=2, size=0)')
+    })
+
+    it('returns correct format with single element', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      expect(tree.toString()).toBe('BTree(order=2, size=1)')
+    })
+
+    it('returns correct format with multiple elements', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      tree.insert(2, 'b')
+      tree.insert(3, 'c')
+      expect(tree.toString()).toBe('BTree(order=2, size=3)')
+    })
+
+    it('reflects current size after deletions', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      tree.insert(2, 'b')
+      tree.delete(1)
+      expect(tree.toString()).toBe('BTree(order=2, size=1)')
+    })
+
+    it('includes custom order in string', () => {
+      const tree = new BTree<number, string>(5)
+      expect(tree.toString()).toBe('BTree(order=5, size=0)')
+    })
+  })
+
+  describe('BTree toJSON', () => {
+    it('returns empty array for empty tree', () => {
+      const tree = new BTree<number, string>()
+      expect(tree.toJSON()).toEqual([])
+    })
+
+    it('returns single entry for single element', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      expect(tree.toJSON()).toEqual([{ key: 1, value: 'a' }])
+    })
+
+    it('returns entries in sorted order', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(3, 'c')
+      tree.insert(1, 'a')
+      tree.insert(2, 'b')
+      expect(tree.toJSON()).toEqual([
+        { key: 1, value: 'a' },
+        { key: 2, value: 'b' },
+        { key: 3, value: 'c' },
+      ])
+    })
+
+    it('handles large dataset', () => {
+      const tree = new BTree<number, number>()
+      for (let i = 0; i < 100; i++) {
+        tree.insert(i, i * 2)
+      }
+      const json = tree.toJSON()
+      expect(json.length).toBe(100)
+      expect(json[0]).toEqual({ key: 0, value: 0 })
+      expect(json[99]).toEqual({ key: 99, value: 198 })
+    })
+
+    it('reflects current state after modifications', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      tree.insert(2, 'b')
+      tree.insert(3, 'c')
+      tree.delete(2)
+      tree.insert(4, 'd')
+      expect(tree.toJSON()).toEqual([
+        { key: 1, value: 'a' },
+        { key: 3, value: 'c' },
+        { key: 4, value: 'd' },
+      ])
+    })
+
+    it('handles duplicate key updates', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'old')
+      tree.insert(1, 'new')
+      expect(tree.toJSON()).toEqual([{ key: 1, value: 'new' }])
+    })
+  })
+
+  describe('BTree clone', () => {
+    it('creates independent copy of empty tree', () => {
+      const tree = new BTree<number, string>()
+      const clone = tree.clone()
+      expect(clone.size).toBe(0)
+      expect(clone.isEmpty()).toBe(true)
+    })
+
+    it('creates independent copy with single element', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      const clone = tree.clone()
+      expect(clone.size).toBe(1)
+      expect(clone.find(1)).toBe('a')
+    })
+
+    it('preserves all data in clone', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      tree.insert(2, 'b')
+      tree.insert(3, 'c')
+      const clone = tree.clone()
+      expect(clone.size).toBe(3)
+      expect(clone.find(1)).toBe('a')
+      expect(clone.find(2)).toBe('b')
+      expect(clone.find(3)).toBe('c')
+    })
+
+    it('clone is independent from original', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      tree.insert(2, 'b')
+      const clone = tree.clone()
+      tree.insert(3, 'c')
+      tree.delete(1)
+      expect(tree.size).toBe(2)
+      expect(clone.size).toBe(2)
+      expect(tree.find(1)).toBeUndefined()
+      expect(clone.find(1)).toBe('a')
+      expect(tree.find(3)).toBe('c')
+      expect(clone.find(3)).toBeUndefined()
+    })
+
+    it('clone modifications do not affect original', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      tree.insert(2, 'b')
+      const clone = tree.clone()
+      clone.insert(3, 'c')
+      clone.delete(1)
+      expect(clone.size).toBe(2)
+      expect(tree.size).toBe(2)
+      expect(tree.find(1)).toBe('a')
+      expect(clone.find(1)).toBeUndefined()
+    })
+
+    it('clone preserves order parameter', () => {
+      const tree = new BTree<number, string>(5)
+      tree.insert(1, 'a')
+      const clone = tree.clone()
+      expect(clone.size).toBe(1)
+      expect(clone.find(1)).toBe('a')
+    })
+
+    it('clone handles large dataset', () => {
+      const tree = new BTree<number, number>()
+      for (let i = 0; i < 100; i++) {
+        tree.insert(i, i * 2)
+      }
+      const clone = tree.clone()
+      expect(clone.size).toBe(100)
+      for (let i = 0; i < 100; i++) {
+        expect(clone.find(i)).toBe(i * 2)
+      }
+    })
+  })
+
+  describe('BTree equals', () => {
+    it('returns true for self-equality', () => {
+      const tree = new BTree<number, string>()
+      tree.insert(1, 'a')
+      tree.insert(2, 'b')
+      expect(tree.equals(tree)).toBe(true)
+    })
+
+    it('returns true for trees with same data', () => {
+      const tree1 = new BTree<number, string>()
+      const tree2 = new BTree<number, string>()
+      tree1.insert(1, 'a')
+      tree1.insert(2, 'b')
+      tree1.insert(3, 'c')
+      tree2.insert(1, 'a')
+      tree2.insert(2, 'b')
+      tree2.insert(3, 'c')
+      expect(tree1.equals(tree2)).toBe(true)
+    })
+
+    it('returns true for both empty trees', () => {
+      const tree1 = new BTree<number, string>()
+      const tree2 = new BTree<number, string>()
+      expect(tree1.equals(tree2)).toBe(true)
+    })
+
+    it('returns false for different sizes', () => {
+      const tree1 = new BTree<number, string>()
+      const tree2 = new BTree<number, string>()
+      tree1.insert(1, 'a')
+      tree1.insert(2, 'b')
+      tree2.insert(1, 'a')
+      expect(tree1.equals(tree2)).toBe(false)
+    })
+
+    it('returns false for different keys', () => {
+      const tree1 = new BTree<number, string>()
+      const tree2 = new BTree<number, string>()
+      tree1.insert(1, 'a')
+      tree1.insert(2, 'b')
+      tree2.insert(1, 'a')
+      tree2.insert(3, 'c')
+      expect(tree1.equals(tree2)).toBe(false)
+    })
+
+    it('returns false for different values', () => {
+      const tree1 = new BTree<number, string>()
+      const tree2 = new BTree<number, string>()
+      tree1.insert(1, 'a')
+      tree1.insert(2, 'b')
+      tree2.insert(1, 'a')
+      tree2.insert(2, 'B')
+      expect(tree1.equals(tree2)).toBe(false)
+    })
+
+  it('returns false for different types', () => {
+    const tree = new BTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.equals(null)).toBe(false)
+    expect(tree.equals(undefined)).toBe(false)
+    expect(tree.equals({})).toBe(false)
+    expect(tree.equals([])).toBe(false)
+  })
+
+  it('handles large dataset comparison', () => {
+    const tree1 = new BTree<number, number>()
+    const tree2 = new BTree<number, number>()
+    for (let i = 0; i < 100; i++) {
+      tree1.insert(i, i * 2)
+      tree2.insert(i, i * 2)
+    }
+    expect(tree1.equals(tree2)).toBe(true)
+  })
+
+    it('returns false for large dataset with one difference', () => {
+      const tree1 = new BTree<number, number>()
+      const tree2 = new BTree<number, number>()
+      for (let i = 0; i < 100; i++) {
+        tree1.insert(i, i * 2)
+        tree2.insert(i, i * 2)
+      }
+      tree2.insert(50, 999)
+      expect(tree1.equals(tree2)).toBe(false)
+    })
+  })
 })

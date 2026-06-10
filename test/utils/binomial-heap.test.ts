@@ -277,3 +277,123 @@ describe('BinomialHeap', () => {
     expect(heap.isEmpty()).toBe(true)
   })
 })
+
+describe('BinomialHeap toString', () => {
+  it('returns string representation', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 5)
+    heap.insert(2, 3)
+    const str = heap.toString()
+    expect(typeof str).toBe('string')
+    expect(str.length).toBeGreaterThan(0)
+  })
+
+  it('works on empty heap', () => {
+    const heap = new BinomialHeap<number>()
+    expect(typeof heap.toString()).toBe('string')
+  })
+})
+
+describe('BinomialHeap toJSON', () => {
+  it('returns array of entries', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 5)
+    heap.insert(2, 3)
+    const json = heap.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect(json.length).toBe(2)
+  })
+
+  it('returns empty array for empty heap', () => {
+    const heap = new BinomialHeap<number>()
+    expect(heap.toJSON()).toEqual([])
+  })
+
+  it('produces valid JSON', () => {
+    const heap = new BinomialHeap<string>()
+    heap.insert('a', 1)
+    const str = JSON.stringify(heap.toJSON())
+    expect(str).toContain('a')
+  })
+})
+
+describe('BinomialHeap clone', () => {
+  it('creates independent copy', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 5)
+    heap.insert(2, 3)
+    const copy = heap.clone()
+    copy.insert(3, 1)
+    expect(heap.size).toBe(2)
+    expect(copy.size).toBe(3)
+  })
+
+  it('preserves all elements', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 3)
+    heap.insert(2, 1)
+    heap.insert(3, 2)
+    const copy = heap.clone()
+    expect(copy.size).toBe(3)
+    const min = copy.extractMin()
+    expect(min!.priority).toBe(1)
+  })
+
+  it('clone of empty heap is empty', () => {
+    const heap = new BinomialHeap<number>()
+    const copy = heap.clone()
+    expect(copy.isEmpty()).toBe(true)
+  })
+
+  it('clone preserves all elements', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 5)
+    heap.insert(2, 3)
+    heap.insert(3, 7)
+    const copy = heap.clone()
+    const originalItems = heap.toJSON().sort((a, b) => a.priority - b.priority)
+    const copyItems = copy.toJSON().sort((a, b) => a.priority - b.priority)
+    expect(copyItems).toEqual(originalItems)
+    expect(copy.size).toBe(heap.size)
+  })
+})
+
+describe('BinomialHeap equals', () => {
+  it('same heap equals itself', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 5)
+    expect(heap.equals(heap)).toBe(true)
+  })
+
+  it('heaps with same elements are equal', () => {
+    const a = new BinomialHeap<number>()
+    a.insert(1, 5)
+    a.insert(2, 3)
+    const b = new BinomialHeap<number>()
+    b.insert(2, 3)
+    b.insert(1, 5)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('different sizes not equal', () => {
+    const a = new BinomialHeap<number>()
+    a.insert(1, 5)
+    const b = new BinomialHeap<number>()
+    b.insert(1, 5)
+    b.insert(2, 3)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('non-BinomialHeap returns false', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 5)
+    expect(heap.equals(null)).toBe(false)
+    expect(heap.equals({})).toBe(false)
+  })
+
+  it('empty heaps are equal', () => {
+    const a = new BinomialHeap<number>()
+    const b = new BinomialHeap<number>()
+    expect(a.equals(b)).toBe(true)
+  })
+})

@@ -278,4 +278,145 @@ describe('IntervalSet', () => {
       expect(result[1]!.low).toBe(10)
     })
   })
+
+  describe('toString', () => {
+    it('returns string representation', () => {
+      const set = new IntervalSet()
+      set.add(ci(0, 5))
+      set.add(ci(10, 20))
+      const str = set.toString()
+      expect(str).toContain('IntervalSet')
+      expect(str).toContain('2')
+    })
+
+    it('returns empty representation for empty set', () => {
+      const set = new IntervalSet()
+      const str = set.toString()
+      expect(str).toContain('IntervalSet')
+      expect(str).toContain('0')
+    })
+  })
+
+  describe('toJSON', () => {
+    it('returns serializable data', () => {
+      const set = new IntervalSet()
+      set.add(ci(1, 5))
+      const json = set.toJSON()
+      expect(json).toBeDefined()
+      const str = JSON.stringify(json)
+      expect(str).toContain('1')
+      expect(str).toContain('5')
+    })
+
+    it('returns empty data for empty set', () => {
+      const set = new IntervalSet()
+      const json = set.toJSON()
+      expect(json).toBeDefined()
+    })
+
+    it('round-trip preserves intervals', () => {
+      const set = new IntervalSet()
+      set.add(ci(0, 10))
+      set.add(ci(20, 30))
+      const json = JSON.stringify(set.toJSON())
+      expect(json).toBeDefined()
+      const parsed = JSON.parse(json)
+      expect(parsed).toBeDefined()
+    })
+  })
+
+  describe('equals', () => {
+    it('same set equals itself', () => {
+      const set = new IntervalSet()
+      set.add(ci(1, 5))
+      expect(set.equals(set)).toBe(true)
+    })
+
+    it('sets with same intervals are equal', () => {
+      const a = new IntervalSet()
+      a.add(ci(1, 5))
+      a.add(ci(10, 20))
+      const b = new IntervalSet()
+      b.add(ci(10, 20))
+      b.add(ci(1, 5))
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('different intervals not equal', () => {
+      const a = new IntervalSet()
+      a.add(ci(1, 5))
+      const b = new IntervalSet()
+      b.add(ci(2, 6))
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('different number of intervals not equal', () => {
+      const a = new IntervalSet()
+      a.add(ci(1, 5))
+      const b = new IntervalSet()
+      b.add(ci(1, 5))
+      b.add(ci(10, 20))
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('non-IntervalSet returns false', () => {
+      const set = new IntervalSet()
+      set.add(ci(1, 5))
+      expect(set.equals(null)).toBe(false)
+      expect(set.equals({})).toBe(false)
+    })
+
+    it('empty sets are equal', () => {
+      const a = new IntervalSet()
+      const b = new IntervalSet()
+      expect(a.equals(b)).toBe(true)
+    })
+  })
+
+  describe('edge cases', () => {
+    it('handles negative intervals', () => {
+      const set = new IntervalSet()
+      set.add(ci(-10, -5))
+      expect(set.contains(-7)).toBe(true)
+      expect(set.contains(0)).toBe(false)
+    })
+
+    it('handles single-point intervals', () => {
+      const set = new IntervalSet()
+      set.add(ci(5, 5))
+      expect(set.contains(5)).toBe(true)
+      expect(set.size).toBe(1)
+    })
+
+    it('overlaps with adjacent intervals', () => {
+      const set = new IntervalSet()
+      set.add(ci(0, 5))
+      expect(set.overlaps(ci(3, 8))).toBe(true)
+      expect(set.overlaps(ci(6, 10))).toBe(false)
+    })
+
+    it('forEach provides index', () => {
+      const set = new IntervalSet()
+      set.add(ci(0, 5))
+      set.add(ci(10, 15))
+      set.add(ci(20, 25))
+      const indices: number[] = []
+      set.forEach((_iv, idx) => indices.push(idx))
+      expect(indices).toEqual([0, 1, 2])
+    })
+
+    it('union of empty sets is empty', () => {
+      const a = new IntervalSet()
+      const b = new IntervalSet()
+      expect(a.union(b).isEmpty).toBe(true)
+    })
+
+    it('intersection of non-overlapping is empty', () => {
+      const a = new IntervalSet()
+      a.add(ci(0, 5))
+      const b = new IntervalSet()
+      b.add(ci(10, 20))
+      expect(a.intersection(b).isEmpty).toBe(true)
+    })
+  })
 })

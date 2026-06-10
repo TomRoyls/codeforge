@@ -441,3 +441,294 @@ describe('ScapegoatTree - edge cases', () => {
     expect(keys[999]).toBe(999)
   })
 })
+
+describe('ScapegoatTree - method interactions', () => {
+  it('clear on empty tree stays empty', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.clear()
+    expect(tree.size).toBe(0)
+    expect(tree.isEmpty()).toBe(true)
+    tree.clear()
+    expect(tree.size).toBe(0)
+    expect(tree.isEmpty()).toBe(true)
+  })
+
+  it('multiple clear operations are idempotent', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.clear()
+    expect(tree.size).toBe(0)
+    tree.clear()
+    tree.clear()
+    expect(tree.size).toBe(0)
+  })
+
+  it('isEmpty returns correct after clear', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.clear()
+    expect(tree.isEmpty()).toBe(true)
+    tree.insert(3, 'c')
+    expect(tree.isEmpty()).toBe(false)
+  })
+
+  it('inOrderTraversal returns empty after clear', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.clear()
+    expect(tree.inOrderTraversal()).toEqual([])
+  })
+
+  it('keys returns empty array after clear', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.clear()
+    expect(tree.keys()).toEqual([])
+  })
+
+  it('values returns empty array after clear', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.clear()
+    expect(tree.values()).toEqual([])
+  })
+
+  it('height returns 0 after clear', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.insert(3, 'c')
+    expect(tree.height()).toBeGreaterThan(0)
+    tree.clear()
+    expect(tree.height()).toBe(0)
+  })
+
+  it('min and max undefined after clear', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(10, 'j')
+    tree.clear()
+    expect(tree.min()).toBeUndefined()
+    expect(tree.max()).toBeUndefined()
+  })
+})
+
+describe('ScapegoatTree - inOrderTraversal edge cases', () => {
+  it('handles single element correctly', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(5, 'five')
+    expect(tree.inOrderTraversal()).toEqual([{ key: 5, value: 'five' }])
+  })
+
+  it('maintains sorted order after many random inserts', () => {
+    const tree = new ScapegoatTree<number, number>()
+    const values = [42, 15, 88, 3, 27, 61, 99, 1, 20, 50, 75, 90]
+    values.forEach(v => tree.insert(v, v * 10))
+    const result = tree.inOrderTraversal()
+    const keys = result.map(e => e.key)
+    expect(keys).toEqual([1, 3, 15, 20, 27, 42, 50, 61, 75, 88, 90, 99])
+  })
+
+  it('handles insert same value multiple times (updates)', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.insert(1, 'A')
+    tree.insert(2, 'B')
+    tree.insert(3, 'c')
+    const result = tree.inOrderTraversal()
+    expect(result).toEqual([
+      { key: 1, value: 'A' },
+      { key: 2, value: 'B' },
+      { key: 3, value: 'c' },
+    ])
+  })
+})
+
+describe('ScapegoatTree - keys edge cases', () => {
+  it('returns empty array for empty tree', () => {
+    const tree = new ScapegoatTree<number, string>()
+    expect(tree.keys()).toEqual([])
+  })
+
+  it('returns single key for single element', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(42, 'answer')
+    expect(tree.keys()).toEqual([42])
+  })
+
+  it('handles string keys correctly', () => {
+    const tree = new ScapegoatTree<string, number>(0.6, (a, b) => a.localeCompare(b))
+    tree.insert('zebra', 26)
+    tree.insert('apple', 1)
+    tree.insert('banana', 2)
+    tree.insert('cherry', 3)
+    expect(tree.keys()).toEqual(['apple', 'banana', 'cherry', 'zebra'])
+  })
+})
+
+describe('ScapegoatTree - values edge cases', () => {
+  it('returns empty array for empty tree', () => {
+    const tree = new ScapegoatTree<number, string>()
+    expect(tree.values()).toEqual([])
+  })
+
+  it('returns single value for single element', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(42, 'answer')
+    expect(tree.values()).toEqual(['answer'])
+  })
+
+  it('values correspond to keys in order', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(3, 'c')
+    tree.insert(1, 'a')
+    tree.insert(4, 'd')
+    tree.insert(2, 'b')
+    expect(tree.values()).toEqual(['a', 'b', 'c', 'd'])
+  })
+})
+
+describe('ScapegoatTree - height edge cases', () => {
+  it('returns 1 for tree with only root', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.height()).toBe(1)
+  })
+
+  it('height increases correctly with balanced inserts', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(2, 'b')
+    tree.insert(1, 'a')
+    tree.insert(3, 'c')
+    expect(tree.height()).toBe(2)
+  })
+
+  it('height decreases after deletions', () => {
+    const tree = new ScapegoatTree<number, string>()
+    for (let i = 1; i <= 10; i++) {
+      tree.insert(i, String(i))
+    }
+    const heightBefore = tree.height()
+    for (let i = 1; i <= 8; i++) {
+      tree.delete(i)
+    }
+    expect(tree.size).toBe(2)
+    expect(tree.height()).toBeLessThanOrEqual(heightBefore)
+  })
+})
+
+describe('ScapegoatTree - mixed operations', () => {
+  it('handles alternating insert and delete', () => {
+    const tree = new ScapegoatTree<number, string>()
+    for (let i = 0; i < 50; i++) {
+      tree.insert(i, String(i))
+      if (i > 0 && i % 10 === 0) {
+        tree.delete(i - 5)
+      }
+    }
+    expect(tree.size).toBeGreaterThan(0)
+    const keys = tree.keys()
+    expect(keys).toEqual(keys.slice().sort((a, b) => a - b))
+  })
+
+  it('maintains integrity after many operations', () => {
+    const tree = new ScapegoatTree<number, number>()
+    for (let i = 0; i < 200; i++) {
+      tree.insert(i, i)
+    }
+    for (let i = 0; i < 100; i++) {
+      tree.delete(i * 2)
+    }
+    expect(tree.size).toBe(100)
+    const keys = tree.keys()
+    for (let i = 0; i < 100; i++) {
+      expect(keys[i]).toBe(2 * i + 1)
+    }
+  })
+
+  it('handles bulk insert then bulk delete', () => {
+    const tree = new ScapegoatTree<number, number>()
+    for (let i = 0; i < 500; i++) {
+      tree.insert(i, i * 10)
+    }
+    expect(tree.size).toBe(500)
+    for (let i = 0; i < 500; i++) {
+      tree.delete(i)
+    }
+    expect(tree.size).toBe(0)
+    expect(tree.isEmpty()).toBe(true)
+  })
+})
+
+describe('ScapegoatTree - custom comparator scenarios', () => {
+  it('handles case-insensitive string comparator', () => {
+    const tree = new ScapegoatTree<string, number>(0.6, (a, b) => 
+      a.toLowerCase().localeCompare(b.toLowerCase())
+    )
+    tree.insert('Apple', 1)
+    tree.insert('banana', 2)
+    tree.insert('Cherry', 3)
+    tree.insert('apple', 4)
+    expect(tree.get('Apple')).toBe(4)
+    expect(tree.keys()).toEqual(['Apple', 'banana', 'Cherry'])
+  })
+
+  it('handles object keys with comparator', () => {
+    const tree = new ScapegoatTree<{id: number}, string>(0.6, (a, b) => a.id - b.id)
+    tree.insert({ id: 2 }, 'two')
+    tree.insert({ id: 1 }, 'one')
+    tree.insert({ id: 3 }, 'three')
+    expect(tree.get({ id: 2 })).toBe('two')
+    expect(tree.keys().map(k => k.id)).toEqual([1, 2, 3])
+  })
+})
+
+describe('ScapegoatTree - boundary values', () => {
+  it('handles very small alpha (0.51)', () => {
+    const tree = new ScapegoatTree<number, number>(0.51)
+    for (let i = 0; i < 100; i++) {
+      tree.insert(i, i)
+    }
+    expect(tree.size).toBe(100)
+    expect(tree.height()).toBeLessThan(20)
+  })
+
+  it('handles very large alpha (0.99)', () => {
+    const tree = new ScapegoatTree<number, number>(0.99)
+    for (let i = 0; i < 100; i++) {
+      tree.insert(i, i)
+    }
+    expect(tree.size).toBe(100)
+  })
+})
+
+describe('ScapegoatTree - duplicate operations', () => {
+  it('delete same key twice returns false second time', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.delete(1)).toBe(true)
+    expect(tree.delete(1)).toBe(false)
+  })
+
+  it('insert duplicate updates value without changing size', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'first')
+    expect(tree.size).toBe(1)
+    tree.insert(1, 'second')
+    expect(tree.size).toBe(1)
+    expect(tree.get(1)).toBe('second')
+  })
+
+  it('has returns correct after duplicate insert', () => {
+    const tree = new ScapegoatTree<number, string>()
+    tree.insert(1, 'first')
+    tree.insert(1, 'second')
+    expect(tree.has(1)).toBe(true)
+  })
+})

@@ -124,8 +124,6 @@ describe('FileWatcher watch', () => {
   })
 })
 
-// ─── EventEmitter ───
-
 describe('FileWatcher events', () => {
   beforeEach(() => {
     mkdirSync(TEMP_DIR, { recursive: true })
@@ -160,35 +158,554 @@ describe('FileWatcher events', () => {
   })
 })
 
-// ─── createWatcher ───
+describe('FileWatcher extension filtering', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
 
-describe('createWatcher', () => {
   afterEach(() => {
-    // Clean up default watcher
+    rmSync(TEMP_DIR, { recursive: true, force: true })
   })
 
-  it('returns a FileWatcher instance', () => {
-    const w = createWatcher()
-    expect(w).toBeInstanceOf(FileWatcher)
-    w.stop()
+  it('ignores files with non-matching extensions', async () => {
+    const w = new FileWatcher({ debounceMs: 50, extensions: ['.ts'] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.js'), 'console.log(1)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).not.toHaveBeenCalled()
+
+    await w.stop()
   })
 
-  it('passes options to the watcher', () => {
-    const w = createWatcher({ debounceMs: 50 })
-    expect(w).toBeInstanceOf(FileWatcher)
-    w.stop()
+  it('works with multiple extensions', async () => {
+    const w = new FileWatcher({ debounceMs: 50, extensions: ['.ts', '.js', '.tsx'] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'console.log(1)', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'test.js'), 'console.log(2)', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'test.tsx'), 'console.log(3)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(3)
+
+    await w.stop()
   })
 
-  it('stops previous default watcher when creating new one', () => {
-    const w1 = createWatcher()
-    const w2 = createWatcher()
-    expect(w2).not.toBe(w1)
-    w2.stop()
+  it('empty extensions array allows all files', async () => {
+    const w = new FileWatcher({ debounceMs: 50, extensions: [] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.any'), 'console.log(1)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalled()
+
+    await w.stop()
   })
 
-  it('watcher has stop method', () => {
-    const w = createWatcher()
-    expect(typeof w.stop).toBe('function')
-    w.stop()
+  it('filters files in subdirectories', async () => {
+    const subDir = join(TEMP_DIR, 'sub')
+    mkdirSync(subDir, { recursive: true })
+
+    const w = new FileWatcher({ debounceMs: 50, extensions: ['.ts'] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(subDir, 'test.ts'), 'console.log(1)', 'utf8')
+    writeFileSync(join(subDir, 'test.js'), 'console.log(2)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    await w.stop()
+  })
+})
+
+describe('FileWatcher ignore pattern filtering', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('filters files matching simple glob pattern', async () => {
+    const w = new FileWatcher({ debounceMs: 50, ignorePatterns: ['*.log'] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'debug.log'), 'log', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).not.toHaveBeenCalled()
+
+    await w.stop()
+  })
+
+  it('filters files matching globstar pattern', async () => {
+    const nodeModules = join(TEMP_DIR, 'node_modules')
+    mkdirSync(nodeModules, { recursive: true })
+
+    const w = new FileWatcher({ debounceMs: 50, ignorePatterns: ['node_modules/**'] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(nodeModules, 'index.js'), 'module', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).not.toHaveBeenCalled()
+
+    await w.stop()
+  })
+
+  it('filters nested paths correctly', async () => {
+    const distDir = join(TEMP_DIR, 'dist')
+    const nestedDir = join(distDir, 'nested')
+    mkdirSync(nestedDir, { recursive: true })
+
+    const w = new FileWatcher({ debounceMs: 50, ignorePatterns: ['dist/**'] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(nestedDir, 'file.js'), 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).not.toHaveBeenCalled()
+
+    await w.stop()
+  })
+
+  it('handles question mark wildcard', async () => {
+    const w = new FileWatcher({ debounceMs: 50, ignorePatterns: ['file?.js'] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'file1.js'), 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).not.toHaveBeenCalled()
+
+    await w.stop()
+  })
+
+  it('filters with multiple ignore patterns', async () => {
+    const w = new FileWatcher({
+      debounceMs: 50,
+      ignorePatterns: ['*.log', '*.tmp', 'node_modules/**'],
+    })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.log'), 'log', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'temp.tmp'), 'temp', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'code.ts'), 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    await w.stop()
+  })
+})
+
+describe('FileWatcher debounce behavior', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('consolidates multiple rapid changes', async () => {
+    const w = new FileWatcher({ debounceMs: 100 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'v1', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'v2', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'v3', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 150))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    await w.stop()
+  })
+
+  it('respects custom debounceMs value', async () => {
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    await w.stop()
+  })
+
+  it('different files have independent debounce timers', async () => {
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'file1.ts'), 'code1', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'file2.ts'), 'code2', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(2)
+
+    await w.stop()
+  })
+})
+
+describe('FileWatcher event types', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('emits change event with correct data', async () => {
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'change',
+      })
+    )
+
+    await w.stop()
+  })
+
+  it('emits change events with correct filePath', async () => {
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    const testFile = join(TEMP_DIR, 'test.ts')
+    writeFileSync(testFile, 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        filePath: expect.stringContaining('test.ts'),
+      })
+    )
+
+    await w.stop()
+  })
+})
+
+describe('FileWatcher stop cleanup', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('clears all debounce timers on stop', async () => {
+    const w = new FileWatcher({ debounceMs: 500 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'code', 'utf8')
+
+    await w.stop()
+
+    await new Promise((r) => setTimeout(r, 700))
+
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('stops watching after stop', async () => {
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    await w.stop()
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).not.toHaveBeenCalled()
+  })
+})
+
+describe('FileWatcher combined functionality', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('combines extensions and ignore patterns correctly', async () => {
+    const w = new FileWatcher({
+      debounceMs: 50,
+      extensions: ['.ts'],
+      ignorePatterns: ['*.d.ts'],
+    })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'code', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'test.d.ts'), 'declarations', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'test.js'), 'javascript', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    await w.stop()
+  })
+
+  it('handles simultaneous extension and ignore filters', async () => {
+    const distDir = join(TEMP_DIR, 'dist')
+    mkdirSync(distDir, { recursive: true })
+
+    const w = new FileWatcher({
+      debounceMs: 50,
+      extensions: ['.ts', '.js'],
+      ignorePatterns: ['dist/**'],
+    })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'code', 'utf8')
+    writeFileSync(join(distDir, 'test.js'), 'bundled', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'test.js'), 'javascript', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(2)
+
+    await w.stop()
+  })
+
+  it('filters correctly with nested directories', async () => {
+    const srcDir = join(TEMP_DIR, 'src')
+    const testDir = join(srcDir, 'test')
+    mkdirSync(testDir, { recursive: true })
+
+    const w = new FileWatcher({
+      debounceMs: 50,
+      extensions: ['.ts'],
+      ignorePatterns: ['test/**'],
+    })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(srcDir, 'app.ts'), 'app', 'utf8')
+    writeFileSync(join(testDir, 'spec.ts'), 'test', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    await w.stop()
+  })
+})
+
+describe('FileWatcher multiple watchers', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('handles multiple independent watchers', async () => {
+    const w1 = new FileWatcher({ debounceMs: 50, extensions: ['.ts'] })
+    const w2 = new FileWatcher({ debounceMs: 50, extensions: ['.js'] })
+
+    const handler1 = vi.fn()
+    const handler2 = vi.fn()
+
+    w1.on('change', handler1)
+    w2.on('change', handler2)
+
+    await w1.watch(TEMP_DIR)
+    await w2.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'console.log(1)', 'utf8')
+    writeFileSync(join(TEMP_DIR, 'test.js'), 'console.log(2)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 150))
+
+    expect(handler1).toHaveBeenCalled()
+    expect(handler2).toHaveBeenCalled()
+
+    await w1.stop()
+    await w2.stop()
+  })
+
+  it('watchers on different paths are independent', async () => {
+    const dir1 = join(TEMP_DIR, 'dir1')
+    const dir2 = join(TEMP_DIR, 'dir2')
+    mkdirSync(dir1, { recursive: true })
+    mkdirSync(dir2, { recursive: true })
+
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+
+    w.on('change', handler)
+
+    await w.watch(dir1)
+    await w.watch(dir2)
+
+    writeFileSync(join(dir1, 'test.ts'), 'console.log(1)', 'utf8')
+    writeFileSync(join(dir2, 'test.ts'), 'console.log(2)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 150))
+
+    expect(handler).toHaveBeenCalled()
+
+    await w.stop()
+  })
+})
+
+describe('FileWatcher configuration', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('uses default debounceMs when not specified', async () => {
+    const w = new FileWatcher()
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'console.log(1)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 350))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    await w.stop()
+  })
+
+  it('accepts zero debounceMs', async () => {
+    const w = new FileWatcher({ debounceMs: 0 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'console.log(1)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalled()
+
+    await w.stop()
+  })
+
+  it('handles undefined extensions option', async () => {
+    const w = new FileWatcher({ extensions: undefined })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.any'), 'console.log(1)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 350))
+
+    expect(handler).toHaveBeenCalled()
+
+    await w.stop()
+  })
+
+  it('handles undefined ignorePatterns option', async () => {
+    const w = new FileWatcher({ ignorePatterns: undefined })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'console.log(1)', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 350))
+
+    expect(handler).toHaveBeenCalled()
+
+    await w.stop()
   })
 })

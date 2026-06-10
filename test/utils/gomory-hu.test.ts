@@ -178,4 +178,126 @@ describe('GomoryHu', () => {
     const gh = new GomoryHu(3)
     expect(gh.minCut(0, 1)).toBe(0)
   })
+
+  it('toString returns correct format', () => {
+    const gh = new GomoryHu(5)
+    expect(gh.toString()).toBe('GomoryHu(5)')
+  })
+
+  it('toString for single node', () => {
+    const gh = new GomoryHu(1)
+    expect(gh.toString()).toBe('GomoryHu(1)')
+  })
+
+  it('toJSON returns structure with n and edges', () => {
+    const gh = new GomoryHu(3)
+    gh.addEdge(0, 1, 5)
+    gh.addEdge(1, 2, 3)
+    const json = gh.toJSON()
+    expect(json).toHaveProperty('n', 3)
+    expect(json).toHaveProperty('edges')
+    expect(Array.isArray(json.edges)).toBe(true)
+    expect(json.edges.length).toBe(3)
+  })
+
+  it('toJSON for empty graph', () => {
+    const gh = new GomoryHu(2)
+    const json = gh.toJSON()
+    expect(json).toEqual({ n: 2, edges: [[], []] })
+  })
+
+  it('clone creates independent copy', () => {
+    const gh1 = new GomoryHu(3)
+    gh1.addEdge(0, 1, 5)
+    gh1.addEdge(1, 2, 3)
+    const gh2 = gh1.clone()
+    gh2.addEdge(0, 2, 7)
+    expect(gh1.minCut(0, 2)).toBe(3)
+    expect(gh2.minCut(0, 2)).toBe(10)
+  })
+
+  it('clone preserves all edges', () => {
+    const gh1 = new GomoryHu(3)
+    gh1.addEdge(0, 1, 5)
+    gh1.addEdge(1, 2, 3)
+    gh1.addEdge(0, 2, 7)
+    const gh2 = gh1.clone()
+    expect(gh2.allPairsMinCut()).toEqual(gh1.allPairsMinCut())
+  })
+
+  it('clone of empty graph', () => {
+    const gh1 = new GomoryHu(2)
+    const gh2 = gh1.clone()
+    expect(gh2.allPairsMinCut()).toEqual(gh1.allPairsMinCut())
+  })
+
+  it('clone of single node', () => {
+    const gh1 = new GomoryHu(1)
+    const gh2 = gh1.clone()
+    expect(gh2.allPairsMinCut()).toEqual(gh1.allPairsMinCut())
+  })
+
+  it('equals returns true for identical graphs', () => {
+    const gh1 = new GomoryHu(3)
+    gh1.addEdge(0, 1, 5)
+    gh1.addEdge(1, 2, 3)
+    const gh2 = new GomoryHu(3)
+    gh2.addEdge(0, 1, 5)
+    gh2.addEdge(1, 2, 3)
+    expect(gh1.equals(gh2)).toBe(true)
+  })
+
+  it('equals returns false for different node count', () => {
+    const gh1 = new GomoryHu(2)
+    gh1.addEdge(0, 1, 5)
+    const gh2 = new GomoryHu(3)
+    gh2.addEdge(0, 1, 5)
+    expect(gh1.equals(gh2)).toBe(false)
+  })
+
+  it('equals returns false for different edge weights', () => {
+    const gh1 = new GomoryHu(2)
+    gh1.addEdge(0, 1, 5)
+    const gh2 = new GomoryHu(2)
+    gh2.addEdge(0, 1, 3)
+    expect(gh1.equals(gh2)).toBe(false)
+  })
+
+  it('equals returns false for missing edges', () => {
+    const gh1 = new GomoryHu(3)
+    gh1.addEdge(0, 1, 5)
+    gh1.addEdge(1, 2, 3)
+    const gh2 = new GomoryHu(3)
+    gh2.addEdge(0, 1, 5)
+    expect(gh1.equals(gh2)).toBe(false)
+  })
+
+  it('equals returns false for non-GomoryHu object', () => {
+    const gh = new GomoryHu(2)
+    expect(gh.equals({})).toBe(false)
+    expect(gh.equals(null)).toBe(false)
+    expect(gh.equals(undefined)).toBe(false)
+  })
+
+  it('equals handles parallel edges', () => {
+    const gh1 = new GomoryHu(2)
+    gh1.addEdge(0, 1, 3)
+    gh1.addEdge(0, 1, 4)
+    const gh2 = new GomoryHu(2)
+    gh2.addEdge(0, 1, 3)
+    gh2.addEdge(0, 1, 4)
+    expect(gh1.equals(gh2)).toBe(true)
+  })
+
+  it('equals is independent of edge insertion order', () => {
+    const gh1 = new GomoryHu(3)
+    gh1.addEdge(0, 1, 5)
+    gh1.addEdge(1, 2, 3)
+    gh1.addEdge(0, 2, 7)
+    const gh2 = new GomoryHu(3)
+    gh2.addEdge(0, 2, 7)
+    gh2.addEdge(0, 1, 5)
+    gh2.addEdge(1, 2, 3)
+    expect(gh1.equals(gh2)).toBe(true)
+  })
 })
