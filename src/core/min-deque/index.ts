@@ -268,6 +268,12 @@ export class MinDeque<T = unknown> {
   toJSON() {
     return { type: 'MinDeque', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { MinDequeOptions } from './types.js'

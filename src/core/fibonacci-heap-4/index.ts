@@ -16,6 +16,7 @@ export class FibonacciHeapNode<T> {
     this.right = this;
     this.marked = false;
   }
+
 }
 
 export class FibonacciHeap4<T> {

@@ -456,6 +456,12 @@ export class FibHeap<T = number> {
     }
     return c
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'

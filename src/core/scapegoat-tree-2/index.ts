@@ -430,4 +430,10 @@ export class ScapegoatTree<K, V = undefined> {
   toJSON() {
     return { type: 'ScapegoatTree', size: this.size, items: this.toArray() }
   }
+
+  drain(): K[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

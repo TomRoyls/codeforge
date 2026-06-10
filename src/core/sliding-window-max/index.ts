@@ -198,6 +198,12 @@ export class SlidingWindowMax<T = number> {
   toJSON() {
     return { type: 'SlidingWindowMax', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export { defaultComparator } from './types.js'

@@ -437,4 +437,10 @@ export class DynamicArray<T> {
     }
     return c
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

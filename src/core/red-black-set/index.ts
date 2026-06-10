@@ -415,4 +415,10 @@ export class RedBlackSet<T> implements Iterable<T> {
   toJSON() {
     return { type: 'RedBlackSet', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

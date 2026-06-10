@@ -462,4 +462,10 @@ export class SplayTreeSet<T = number> {
   toJSON() {
     return { type: 'SplayTreeSet', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

@@ -179,4 +179,10 @@ export class QuadHeap<T> {
   toJSON() {
     return { type: 'QuadHeap', items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

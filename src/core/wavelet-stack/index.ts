@@ -138,6 +138,12 @@ export class WaveletStack<T = unknown> {
   toString(): string {
     return `WaveletStack({ size: ${this.items.length} })`
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { WaveletStackOptions } from './types.js'

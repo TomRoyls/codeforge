@@ -407,4 +407,10 @@ export class ResizableArray<T> {
   toJSON() {
     return { type: 'ResizableArray', items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

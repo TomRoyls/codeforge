@@ -273,4 +273,10 @@ export class SplayTree2<T> {
   toJSON() {
     return { type: 'SplayTree2', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

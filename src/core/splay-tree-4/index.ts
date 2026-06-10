@@ -526,4 +526,10 @@ export class SplayTree4<T> {
   toJSON() {
     return { type: 'SplayTree4', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

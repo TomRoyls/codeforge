@@ -276,4 +276,10 @@ export class SqrtDecomposition<T> {
   toJSON() {
     return { type: 'SqrtDecomposition', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

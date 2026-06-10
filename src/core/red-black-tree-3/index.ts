@@ -496,4 +496,10 @@ export class RedBlackTree3<T> {
   toJSON() {
     return { type: 'RedBlackTree3', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

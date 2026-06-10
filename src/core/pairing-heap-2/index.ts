@@ -439,6 +439,12 @@ export class PairingHeap2<T> {
   toJSON() {
     return { type: 'PairingHeap2', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { PairingHeap2Options, PairingHeap2Node, Comparator, ForEachCallback } from './types.js'

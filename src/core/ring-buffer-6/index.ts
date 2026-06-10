@@ -132,4 +132,10 @@ export class RingBuffer6<T> {
   toJSON() {
     return { type: 'RingBuffer6', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

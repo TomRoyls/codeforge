@@ -104,4 +104,10 @@ export class LRUSet2<T> {
   toJSON() {
     return { type: 'LRUSet2', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

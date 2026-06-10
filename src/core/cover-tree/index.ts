@@ -320,6 +320,12 @@ export class CoverTree<T = number> {
   last(): T | undefined {
     return this.at(-1)
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

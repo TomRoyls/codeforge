@@ -148,4 +148,10 @@ export class TernaryHeap<T> {
   toJSON() {
     return { type: 'TernaryHeap', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

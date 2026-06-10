@@ -98,4 +98,5 @@ export class PersistentArray2<T> {
   toJSON() {
     return { type: 'PersistentArray2', items: this.toArray() }
   }
+
 }

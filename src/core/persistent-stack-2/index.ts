@@ -139,6 +139,7 @@ export class PersistentStack2<T> {
   toJSON() {
     return { type: 'PersistentStack2', size: this.size, items: this.toArray() }
   }
+
 }
 
 interface Node<T> {

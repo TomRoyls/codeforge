@@ -360,4 +360,10 @@ export class OrderedStatisticsTree<T> {
   toJSON() {
     return { type: 'OrderedStatisticsTree', items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

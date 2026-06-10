@@ -358,4 +358,10 @@ export class Treap6<T> {
   toString(): string {
     return `Treap6({ size: ${this.size} })`
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

@@ -419,4 +419,10 @@ export class WeightBalancedTree<K, V = unknown> {
   toString(): string {
     return `WeightBalancedTree({ size: ${this.size} })`
   }
+
+  drain(): K[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

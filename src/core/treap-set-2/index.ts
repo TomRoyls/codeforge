@@ -264,4 +264,10 @@ export class TreapSet2<T> {
   toString(): string {
     return `TreapSet2({ size: ${this.size} })`
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

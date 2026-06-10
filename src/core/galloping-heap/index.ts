@@ -319,6 +319,12 @@ export class GallopingHeap<T> {
     }
     return c
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { GallopingHeapNode };

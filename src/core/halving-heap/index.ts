@@ -237,6 +237,12 @@ export class HalvingHeap<T> {
     }
     return c
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { HalvingHeapOptions } from './types.js';

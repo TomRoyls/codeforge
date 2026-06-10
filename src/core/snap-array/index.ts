@@ -209,4 +209,5 @@ export class SnapArray<T> {
   toJSON() {
     return { type: 'SnapArray', items: this.toArray() }
   }
+
 }

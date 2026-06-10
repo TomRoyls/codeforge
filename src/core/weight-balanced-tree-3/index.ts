@@ -286,4 +286,10 @@ export class WeightBalancedTree3<T> {
   toString(): string {
     return `WeightBalancedTree3({ size: ${this.size} })`
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

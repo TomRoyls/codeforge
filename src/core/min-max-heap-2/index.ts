@@ -354,4 +354,10 @@ export class MinMaxHeap<T> {
   toJSON() {
     return { type: 'MinMaxHeap', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

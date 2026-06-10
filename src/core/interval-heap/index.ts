@@ -357,6 +357,12 @@ export class IntervalHeap<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

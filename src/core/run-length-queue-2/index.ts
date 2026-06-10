@@ -131,4 +131,10 @@ export class RunLengthQueue2<T> {
   toJSON() {
     return { type: 'RunLengthQueue2', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

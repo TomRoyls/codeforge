@@ -304,4 +304,10 @@ export class RangeTree<T> {
   toJSON() {
     return { type: 'RangeTree', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

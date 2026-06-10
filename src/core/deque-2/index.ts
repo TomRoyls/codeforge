@@ -396,6 +396,12 @@ export class Deque2<T = unknown> {
   last(): T | undefined {
     return this.at(-1)
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { Deque2Options } from './types.js'

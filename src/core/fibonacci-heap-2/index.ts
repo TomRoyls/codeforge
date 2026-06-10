@@ -455,6 +455,12 @@ export class FibonacciHeap<T = number> {
     }
     return c
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { FibonacciHeapOptions, FibonacciHeapNode } from './types.js'

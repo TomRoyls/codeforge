@@ -323,6 +323,12 @@ export class ChunkedArray<T = unknown> {
   last(): T | undefined {
     return this.at(-1)
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

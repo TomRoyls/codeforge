@@ -292,4 +292,10 @@ export class Treap<T> {
   toString(): string {
     return `Treap({ size: ${this._size} })`
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

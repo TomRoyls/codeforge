@@ -312,4 +312,10 @@ export class HybridHeap2<T = unknown> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

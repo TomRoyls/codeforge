@@ -351,4 +351,10 @@ export class Treap<K, V = undefined> {
   toString(): string {
     return `Treap({ size: ${this.size} })`
   }
+
+  drain(): K[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

@@ -220,4 +220,10 @@ export class RandomizedQueue<T> {
   toJSON() {
     return { type: 'RandomizedQueue', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

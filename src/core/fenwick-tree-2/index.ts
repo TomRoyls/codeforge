@@ -211,4 +211,10 @@ export class FenwickTree2<T = number> {
     }
     return c
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

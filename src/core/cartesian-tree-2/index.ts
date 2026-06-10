@@ -310,4 +310,5 @@ export class CartesianTree<T> {
   last(): T | undefined {
     return this.at(-1)
   }
+
 }

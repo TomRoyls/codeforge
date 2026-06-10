@@ -328,4 +328,10 @@ export class ScapegoatTree3<T> {
   toJSON() {
     return { type: 'ScapegoatTree3', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }

@@ -354,6 +354,12 @@ export class MedianHeap<T = number> {
   toJSON() {
     return { type: 'MedianHeap', size: this.size, items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
 
 export type { MedianHeapOptions } from './types.js'

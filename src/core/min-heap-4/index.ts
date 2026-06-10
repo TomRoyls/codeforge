@@ -173,4 +173,10 @@ export class MinHeap<T> {
   toJSON() {
     return { type: 'MinHeap', items: this.toArray() }
   }
+
+  drain(): T[] {
+    const items = this.toArray()
+    this.clear()
+    return items
+  }
 }
