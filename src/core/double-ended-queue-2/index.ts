@@ -958,6 +958,18 @@ export class Deque<T> {
     }
     return result
   }
+
+  cartesianProduct<U>(other: Iterable<U>): [T, U][] {
+    const a = this.toArray()
+    const b = Array.from(other)
+    const result: [T, U][] = []
+    for (const x of a) {
+      for (const y of b) {
+        result.push([x, y])
+      }
+    }
+    return result
+  }
 }
 
 function nextPow2(n: number): number {

@@ -1107,6 +1107,18 @@ export class PairingHeap2<T> {
     }
     return result
   }
+
+  cartesianProduct<U>(other: Iterable<U>): [T, U][] {
+    const a = this.toArray()
+    const b = Array.from(other)
+    const result: [T, U][] = []
+    for (const x of a) {
+      for (const y of b) {
+        result.push([x, y])
+      }
+    }
+    return result
+  }
 }
 
 export type { PairingHeap2Options, PairingHeap2Node, Comparator, ForEachCallback } from './types.js'
