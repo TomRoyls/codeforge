@@ -467,4 +467,42 @@ export class LeftistHeap4<T> {
     }
     return maxItem
   }
+
+  span(predicate: (item: T) => boolean): [T[], T[]] {
+    const arr = this.toArray()
+    let i = 0
+    while (i < arr.length && predicate(arr[i]!)) {
+      i++
+    }
+    return [arr.slice(0, i), arr.slice(i)]
+  }
+
+  breakWhen(predicate: (item: T) => boolean): [T[], T[]] {
+    return this.span(item => !predicate(item))
+  }
+
+  scan<U>(reducer: (acc: U, item: T) => U, initialValue: U): U[] {
+    const result: U[] = []
+    let acc = initialValue
+    for (const item of this.toArray()) {
+      acc = reducer(acc, item)
+      result.push(acc)
+    }
+    return result
+  }
+
+  flatten(depth: number = 1): T[] {
+    const flat = (arr: T[], d: number): T[] => {
+      const result: T[] = []
+      for (const item of arr) {
+        if (Array.isArray(item) && d > 0) {
+          result.push(...flat(item as unknown as T[], d - 1))
+        } else {
+          result.push(item)
+        }
+      }
+      return result
+    }
+    return flat(this.toArray(), depth)
+  }
 }
