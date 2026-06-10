@@ -169,4 +169,186 @@ describe('SuffixArray', () => {
     const sa = new SuffixArray('a')
     expect(sa.length).toBe(1)
   })
+
+  it('index returns correct suffix index', () => {
+    const sa = new SuffixArray('banana')
+    expect(sa.index(0)).toBe(5)
+    expect(sa.index(1)).toBe(3)
+    expect(sa.index(2)).toBe(1)
+    expect(sa.index(3)).toBe(0)
+    expect(sa.index(4)).toBe(4)
+    expect(sa.index(5)).toBe(2)
+  })
+
+  it('index throws for out of bounds', () => {
+    const sa = new SuffixArray('hello')
+    expect(() => sa.index(-1)).toThrow(RangeError)
+    expect(() => sa.index(10)).toThrow(RangeError)
+  })
+
+  it('toArray returns copy of indices', () => {
+    const sa = new SuffixArray('hello')
+    const arr = sa.toArray()
+    expect(arr).toEqual(sa.indices)
+    expect(arr).not.toBe(sa.indices)
+  })
+
+  it('lcp returns valid values', () => {
+    const sa = new SuffixArray('banana')
+    expect(sa.lcp(0)).toBeGreaterThanOrEqual(0)
+    expect(sa.lcp(1)).toBeGreaterThanOrEqual(0)
+    expect(sa.lcp(2)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('lcp throws for out of bounds', () => {
+    const sa = new SuffixArray('hello')
+    expect(() => sa.lcp(-1)).toThrow(RangeError)
+    expect(() => sa.lcp(10)).toThrow(RangeError)
+  })
+
+  it('longestRepeatedSubstring finds repeated pattern', () => {
+    const sa = new SuffixArray('banana')
+    expect(sa.longestRepeatedSubstring()).toBe('ana')
+  })
+
+  it('toJSON returns copy of indices', () => {
+    const sa = new SuffixArray('hello')
+    const json = sa.toJSON()
+    expect(json).toEqual(sa.indices)
+    expect(json).not.toBe(sa.indices)
+  })
+
+  it('longestRepeatedSubstring returns empty for no repeats', () => {
+    const sa = new SuffixArray('abcdef')
+    expect(sa.longestRepeatedSubstring()).toBe('')
+  })
+
+  it('longestRepeatedSubstring returns empty for empty string', () => {
+    const sa = new SuffixArray('')
+    expect(sa.longestRepeatedSubstring()).toBe('')
+  })
+
+  it('longestRepeatedSubstring returns empty for single char', () => {
+    const sa = new SuffixArray('a')
+    expect(sa.longestRepeatedSubstring()).toBe('')
+  })
+
+  it('longestRepeatedSubstring finds longest repeat', () => {
+    const sa = new SuffixArray('abababab')
+    expect(sa.longestRepeatedSubstring()).toBe('ababab')
+  })
+
+  it('toString returns JSON representation', () => {
+    const sa = new SuffixArray('banana')
+    const str = sa.toString()
+    expect(str).toBe(JSON.stringify([5, 3, 1, 0, 4, 2]))
+  })
+
+  it('toString works for empty string', () => {
+    const sa = new SuffixArray('')
+    expect(sa.toString()).toBe('[]')
+  })
+
+  it('toJSON returns copy of indices', () => {
+    const sa = new SuffixArray('hello')
+    const json = sa.toJSON()
+    expect(json).toEqual(sa.indices)
+    expect(json).not.toBe(sa.indices)
+  })
+
+  it('toJSON returns empty array for empty string', () => {
+    const sa = new SuffixArray('')
+    expect(sa.toJSON()).toEqual([])
+  })
+
+  it('clone creates independent copy', () => {
+    const sa1 = new SuffixArray('banana')
+    const sa2 = sa1.clone()
+    expect(sa2).not.toBe(sa1)
+    expect(sa2.equals(sa1)).toBe(true)
+    expect(sa2.length).toBe(sa1.length)
+    expect(sa2.indices).toEqual(sa1.indices)
+  })
+
+  it('clone of empty string', () => {
+    const sa1 = new SuffixArray('')
+    const sa2 = sa1.clone()
+    expect(sa2.equals(sa1)).toBe(true)
+    expect(sa2.length).toBe(0)
+  })
+
+  it('equals returns true for identical arrays', () => {
+    const sa1 = new SuffixArray('banana')
+    const sa2 = new SuffixArray('banana')
+    expect(sa1.equals(sa2)).toBe(true)
+  })
+
+  it('equals returns false for different arrays', () => {
+    const sa1 = new SuffixArray('banana')
+    const sa2 = new SuffixArray('apple')
+    expect(sa1.equals(sa2)).toBe(false)
+  })
+
+  it('equals returns false for non-SuffixArray', () => {
+    const sa = new SuffixArray('banana')
+    expect(sa.equals(null)).toBe(false)
+    expect(sa.equals(undefined)).toBe(false)
+    expect(sa.equals('banana')).toBe(false)
+    expect(sa.equals({ indices: [5, 3, 1, 0, 4, 2] })).toBe(false)
+  })
+
+  it('search with empty pattern returns empty', () => {
+    const sa = new SuffixArray('hello')
+    expect(sa.search('')).toEqual([])
+  })
+
+  it('search pattern longer than text returns empty', () => {
+    const sa = new SuffixArray('hi')
+    expect(sa.search('hello')).toEqual([])
+  })
+
+  it('search finds all occurrences in repeated string', () => {
+    const sa = new SuffixArray('aaaa')
+    expect(sa.search('a')).toEqual([0, 1, 2, 3])
+  })
+
+  it('search with spaces in text', () => {
+    const sa = new SuffixArray('hello world')
+    expect(sa.search('wo')).toEqual([6])
+    expect(sa.search(' ')).toEqual([5])
+  })
+
+  it('count with empty pattern returns 0', () => {
+    const sa = new SuffixArray('hello')
+    expect(sa.count('')).toBe(0)
+  })
+
+  it('count pattern longer than text returns 0', () => {
+    const sa = new SuffixArray('hi')
+    expect(sa.count('hello')).toBe(0)
+  })
+
+  it('count returns 0 for empty string', () => {
+    const sa = new SuffixArray('')
+    expect(sa.count('a')).toBe(0)
+  })
+
+  it('indices returns readonly array', () => {
+    const sa = new SuffixArray('hello')
+    const indices = sa.indices
+    expect(Array.isArray(indices)).toBe(true)
+    expect(indices.length).toBe(5)
+  })
+
+  it('handles Unicode characters', () => {
+    const sa = new SuffixArray('café')
+    expect(sa.search('caf')).toEqual([0])
+    expect(sa.search('fé')).toEqual([2])
+  })
+
+  it('longestRepeatedSubstring with multiple same-length repeats', () => {
+    const sa = new SuffixArray('abcabcxyzxyz')
+    const result = sa.longestRepeatedSubstring()
+    expect(['abc', 'xyz'].includes(result)).toBe(true)
+  })
 })

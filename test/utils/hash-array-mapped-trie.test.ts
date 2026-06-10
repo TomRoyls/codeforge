@@ -191,4 +191,265 @@ describe('HashArrayMappedTrie', () => {
     }
     expect(results.length).toBe(3)
   })
+
+  describe('toString()', () => {
+    it('returns string representation', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const str = trie.toString()
+      expect(typeof str).toBe('string')
+      expect(str).toContain('HashArrayMappedTrie')
+    })
+
+    it('works on empty trie', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      expect(trie.toString()).toBe('HashArrayMappedTrie(0)')
+    })
+
+    it('reflects current size', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      expect(trie.toString()).toBe('HashArrayMappedTrie(0)')
+
+      const withOne = trie.set('a', 1)
+      expect(withOne.toString()).toBe('HashArrayMappedTrie(1)')
+
+      const withThree = withOne.set('b', 2).set('c', 3)
+      expect(withThree.toString()).toBe('HashArrayMappedTrie(3)')
+    })
+
+    it('updates after modifications', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const withEntries = trie.set('a', 1).set('b', 2).set('c', 3)
+      expect(withEntries.toString()).toBe('HashArrayMappedTrie(3)')
+
+      const deleted = withEntries.delete('b')
+      expect(deleted.toString()).toBe('HashArrayMappedTrie(2)')
+    })
+  })
+
+  describe('toJSON()', () => {
+    it('returns serializable object', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const json = trie.toJSON()
+      expect(Array.isArray(json)).toBe(true)
+      expect(json).toEqual([])
+    })
+
+    it('contains all entries', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const updated = trie.set('a', 1).set('b', 2).set('c', 3)
+      const json = updated.toJSON() as Array<[string, number]>
+      expect(json.length).toBe(3)
+      expect(json).toContainEqual(['a', 1])
+      expect(json).toContainEqual(['b', 2])
+      expect(json).toContainEqual(['c', 3])
+    })
+
+    it('works on empty trie', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const json = trie.toJSON()
+      expect(json).toEqual([])
+    })
+
+    it('can be parsed with JSON.stringify', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const updated = trie.set('a', 1).set('b', 2)
+      const jsonStr = JSON.stringify(updated.toJSON())
+      expect(jsonStr).toBeTruthy()
+      const parsed = JSON.parse(jsonStr)
+      expect(parsed.length).toBe(2)
+    })
+
+    it('round-trip preserves data', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const updated = trie.set('x', 10).set('y', 20).set('z', 30)
+      const json = updated.toJSON() as Array<[string, number]>
+      const restored = HashArrayMappedTrie.from(json)
+      expect(restored.size).toBe(updated.size)
+      expect(restored.get('x')).toBe(10)
+      expect(restored.get('y')).toBe(20)
+      expect(restored.get('z')).toBe(30)
+    })
+  })
+
+  describe('clone()', () => {
+    it('creates independent copy', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const original = trie.set('a', 1).set('b', 2)
+      const clone = original.clone()
+      expect(clone).not.toBe(original)
+      expect(clone.size).toBe(original.size)
+      expect(clone.get('a')).toBe(1)
+      expect(clone.get('b')).toBe(2)
+    })
+
+    it('clone has same entries', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const original = trie.set('a', 1).set('b', 2).set('c', 3)
+      const clone = original.clone()
+      const originalEntries = original.entries()
+      const cloneEntries = clone.entries()
+      expect(cloneEntries).toEqual(originalEntries)
+    })
+
+    it('modifying clone does not affect original', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const original = trie.set('a', 1).set('b', 2)
+      const clone = original.clone()
+      const modifiedClone = clone.set('c', 3)
+
+      expect(original.size).toBe(2)
+      expect(original.has('c')).toBe(false)
+      expect(modifiedClone.size).toBe(3)
+      expect(modifiedClone.has('c')).toBe(true)
+    })
+
+    it('modifying original does not affect clone', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const original = trie.set('a', 1).set('b', 2)
+      const clone = original.clone()
+      const modifiedOriginal = original.set('c', 3)
+
+      expect(clone.size).toBe(2)
+      expect(clone.has('c')).toBe(false)
+      expect(modifiedOriginal.size).toBe(3)
+      expect(modifiedOriginal.has('c')).toBe(true)
+    })
+
+    it('clone is different instance', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const original = trie.set('a', 1)
+      const clone = original.clone()
+      expect(clone === original).toBe(false)
+    })
+
+    it('clone size matches original', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const original = trie.set('a', 1).set('b', 2).set('c', 3)
+      const clone = original.clone()
+      expect(clone.size).toBe(original.size)
+    })
+  })
+
+  describe('equals()', () => {
+    it('same trie equals itself', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const updated = trie.set('a', 1).set('b', 2)
+      expect(updated.equals(updated)).toBe(true)
+    })
+
+    it('tries with same entries are equal', () => {
+      const trie1 = HashArrayMappedTrie.empty<string, number>().set('a', 1).set('b', 2)
+      const trie2 = HashArrayMappedTrie.empty<string, number>().set('a', 1).set('b', 2)
+      expect(trie1.equals(trie2)).toBe(true)
+    })
+
+    it('different entries not equal', () => {
+      const trie1 = HashArrayMappedTrie.empty<string, number>().set('a', 1).set('b', 2)
+      const trie2 = HashArrayMappedTrie.empty<string, number>().set('a', 1).set('c', 3)
+      expect(trie1.equals(trie2)).toBe(false)
+    })
+
+    it('different values not equal', () => {
+      const trie1 = HashArrayMappedTrie.empty<string, number>().set('a', 1).set('b', 2)
+      const trie2 = HashArrayMappedTrie.empty<string, number>().set('a', 1).set('b', 99)
+      expect(trie1.equals(trie2)).toBe(false)
+    })
+
+    it('non-HAMT returns false', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>().set('a', 1)
+      expect(trie.equals(null)).toBe(false)
+      expect(trie.equals(undefined)).toBe(false)
+      expect(trie.equals({})).toBe(false)
+      expect(trie.equals(new Map())).toBe(false)
+    })
+
+    it('different sizes not equal', () => {
+      const trie1 = HashArrayMappedTrie.empty<string, number>().set('a', 1)
+      const trie2 = HashArrayMappedTrie.empty<string, number>().set('a', 1).set('b', 2)
+      expect(trie1.equals(trie2)).toBe(false)
+    })
+
+    it('order independence', () => {
+      const trie1 = HashArrayMappedTrie.empty<string, number>().set('a', 1).set('b', 2)
+      const trie2 = HashArrayMappedTrie.empty<string, number>().set('b', 2).set('a', 1)
+      expect(trie1.equals(trie2)).toBe(true)
+    })
+
+    it('empty tries are equal', () => {
+      const trie1 = HashArrayMappedTrie.empty<string, number>()
+      const trie2 = HashArrayMappedTrie.empty<string, number>()
+      expect(trie1.equals(trie2)).toBe(true)
+    })
+  })
+
+  describe('edge cases', () => {
+    it('handles unicode keys', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const updated = trie
+        .set('café', 1)
+        .set('naïve', 2)
+        .set('日本語', 3)
+        .set('emoji😀', 4)
+
+      expect(updated.size).toBe(4)
+      expect(updated.get('café')).toBe(1)
+      expect(updated.get('naïve')).toBe(2)
+      expect(updated.get('日本語')).toBe(3)
+      expect(updated.get('emoji😀')).toBe(4)
+
+      const clone = updated.clone()
+      expect(clone.equals(updated)).toBe(true)
+    })
+
+    it('handles empty string keys', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const updated = trie.set('', 42).set('a', 1)
+      expect(updated.size).toBe(2)
+      expect(updated.get('')).toBe(42)
+      expect(updated.get('a')).toBe(1)
+    })
+
+    it('handles very large tries (500+ entries)', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const entries: Array<[string, number]> = []
+      for (let i = 0; i < 500; i++) {
+        entries.push([`key${i}`, i])
+      }
+      const largeTrie = HashArrayMappedTrie.from(entries)
+      expect(largeTrie.size).toBe(500)
+      expect(largeTrie.get('key100')).toBe(100)
+      expect(largeTrie.get('key499')).toBe(499)
+
+      const clone = largeTrie.clone()
+      expect(clone.size).toBe(500)
+      expect(clone.equals(largeTrie)).toBe(true)
+
+      const json = largeTrie.toJSON() as Array<[string, number]>
+      expect(json.length).toBe(500)
+      expect(json).toContainEqual(['key250', 250])
+    })
+
+    it('handles delete then re-add same key', () => {
+      const trie = HashArrayMappedTrie.empty<string, number>()
+      const withEntry = trie.set('key', 10)
+      expect(withEntry.get('key')).toBe(10)
+
+      const deleted = withEntry.delete('key')
+      expect(deleted.get('key')).toBeUndefined()
+      expect(deleted.size).toBe(0)
+
+      const readded = deleted.set('key', 20)
+      expect(readded.get('key')).toBe(20)
+      expect(readded.size).toBe(1)
+
+      const withOther = trie.set('other', 30)
+      expect(withOther.get('key')).toBeUndefined()
+      expect(withOther.get('other')).toBe(30)
+
+      const merged = withOther.merge(readded)
+      expect(merged.size).toBe(2)
+      expect(merged.get('key')).toBe(20)
+      expect(merged.get('other')).toBe(30)
+    })
+  })
 })

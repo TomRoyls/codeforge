@@ -162,4 +162,175 @@ describe('RoaringBitSet', () => {
     expect(bs.has(5)).toBe(true)
     expect(bs.has(6)).toBe(false)
   })
+
+  it('handles boundary value 0', () => {
+    const bs = new RoaringBitSet()
+    bs.add(0)
+    expect(bs.size).toBe(1)
+    expect(bs.has(0)).toBe(true)
+    expect(bs.min).toBe(0)
+    expect(bs.max).toBe(0)
+  })
+
+  it('ignores duplicate additions', () => {
+    const bs = new RoaringBitSet()
+    bs.add(42)
+    bs.add(42)
+    bs.add(42)
+    expect(bs.size).toBe(1)
+    expect(bs.toArray()).toEqual([42])
+  })
+
+  it('AND with empty bitset returns empty', () => {
+    const bs1 = RoaringBitSet.from([1, 2, 3])
+    const bs2 = new RoaringBitSet()
+    const result = bs1.and(bs2)
+    expect(result.size).toBe(0)
+    expect(result.isEmpty).toBe(true)
+  })
+
+  it('OR with empty bitset returns original', () => {
+    const bs1 = RoaringBitSet.from([1, 2, 3])
+    const bs2 = new RoaringBitSet()
+    const result = bs1.or(bs2)
+    expect(result.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('XOR with empty bitset returns original', () => {
+    const bs1 = RoaringBitSet.from([1, 2, 3])
+    const bs2 = new RoaringBitSet()
+    const result = bs1.xor(bs2)
+    expect(result.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('AND NOT with empty bitset returns original', () => {
+    const bs1 = RoaringBitSet.from([1, 2, 3])
+    const bs2 = new RoaringBitSet()
+    const result = bs1.andNot(bs2)
+    expect(result.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('self AND returns original', () => {
+    const bs = RoaringBitSet.from([1, 2, 3])
+    const result = bs.and(bs)
+    expect(result.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('self OR returns original', () => {
+    const bs = RoaringBitSet.from([1, 2, 3])
+    const result = bs.or(bs)
+    expect(result.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('self XOR returns empty', () => {
+    const bs = RoaringBitSet.from([1, 2, 3])
+    const result = bs.xor(bs)
+    expect(result.size).toBe(0)
+    expect(result.isEmpty).toBe(true)
+  })
+
+  it('self AND NOT returns empty', () => {
+    const bs = RoaringBitSet.from([1, 2, 3])
+    const result = bs.andNot(bs)
+    expect(result.size).toBe(0)
+    expect(result.isEmpty).toBe(true)
+  })
+
+  it('chains multiple operations', () => {
+    const bs1 = RoaringBitSet.from([1, 2, 3, 4])
+    const bs2 = RoaringBitSet.from([3, 4, 5, 6])
+    const bs3 = RoaringBitSet.from([5, 6, 7, 8])
+    const result = bs1.and(bs2).or(bs3)
+    expect(result.toArray()).toEqual([3, 4, 5, 6, 7, 8])
+  })
+
+  it('handles mixed values in same bucket', () => {
+    const bs = new RoaringBitSet()
+    bs.add(0)
+    bs.add(15)
+    bs.add(16)
+    bs.add(31)
+    expect(bs.size).toBe(4)
+    expect(bs.has(0)).toBe(true)
+    expect(bs.has(15)).toBe(true)
+    expect(bs.has(16)).toBe(true)
+    expect(bs.has(31)).toBe(true)
+  })
+
+  it('handles large range operations', () => {
+    const bs = new RoaringBitSet()
+    bs.addRange(1000, 2000)
+    expect(bs.size).toBe(1001)
+    expect(bs.has(1000)).toBe(true)
+    expect(bs.has(1500)).toBe(true)
+    expect(bs.has(2000)).toBe(true)
+  })
+
+  it('delete returns false for out of range', () => {
+    const bs = new RoaringBitSet()
+    bs.add(50)
+    expect(bs.delete(-1)).toBe(false)
+    expect(bs.delete(0xFFFFFFFF + 1)).toBe(false)
+  })
+
+  it('delete all values one by one', () => {
+    const bs = RoaringBitSet.from([1, 2, 3])
+    expect(bs.delete(1)).toBe(true)
+    expect(bs.delete(2)).toBe(true)
+    expect(bs.delete(3)).toBe(true)
+    expect(bs.isEmpty).toBe(true)
+  })
+
+  it('OR of disjoint sets combines all values', () => {
+    const bs1 = RoaringBitSet.from([1, 2, 3])
+    const bs2 = RoaringBitSet.from([10, 20, 30])
+    const result = bs1.or(bs2)
+    expect(result.size).toBe(6)
+    expect(result.toArray()).toEqual([1, 2, 3, 10, 20, 30])
+  })
+
+  it('XOR of disjoint sets combines all values', () => {
+    const bs1 = RoaringBitSet.from([1, 2, 3])
+    const bs2 = RoaringBitSet.from([10, 20, 30])
+    const result = bs1.xor(bs2)
+    expect(result.size).toBe(6)
+    expect(result.toArray()).toEqual([1, 2, 3, 10, 20, 30])
+  })
+
+  it('forEach with empty bitset does nothing', () => {
+    const bs = new RoaringBitSet()
+    const values: number[] = []
+    bs.forEach((v) => values.push(v))
+    expect(values).toEqual([])
+  })
+
+  it('forEach iterates in sorted order', () => {
+    const bs = RoaringBitSet.from([50, 10, 30, 20, 40])
+    const values: number[] = []
+    bs.forEach((v) => values.push(v))
+    expect(values).toEqual([10, 20, 30, 40, 50])
+  })
+
+  it('addRange with single value works', () => {
+    const bs = new RoaringBitSet()
+    bs.addRange(5, 5)
+    expect(bs.size).toBe(1)
+    expect(bs.has(5)).toBe(true)
+  })
+
+  it('addRange with invalid range (start > end) adds nothing', () => {
+    const bs = new RoaringBitSet()
+    bs.addRange(10, 5)
+    expect(bs.size).toBe(0)
+  })
+
+  it('from with empty iterable creates empty bitset', () => {
+    const bs = RoaringBitSet.from([])
+    expect(bs.isEmpty).toBe(true)
+  })
+
+  it('fromRange with invalid range creates empty bitset', () => {
+    const bs = RoaringBitSet.fromRange(10, 5)
+    expect(bs.isEmpty).toBe(true)
+  })
 })
