@@ -10,10 +10,10 @@ export class AdaptiveHash2<K, V> {
 
   constructor(initialCapacity: number = 16, loadFactorThreshold: number = 0.75, collisionThreshold: number = 3) {
     this.mode = 'open-addressing';
-    this.oaBuckets = new Array(initialCapacity).fill(null);
+    this.oaBuckets = new Array(Math.max(1, initialCapacity)).fill(null);
     this.chBuckets = [];
     this._size = 0;
-    this.initialCapacity = initialCapacity;
+    this.initialCapacity = Math.max(1, initialCapacity);
     this.loadFactorThreshold = loadFactorThreshold;
     this.collisionThreshold = collisionThreshold;
     this.totalCollisions = 0;

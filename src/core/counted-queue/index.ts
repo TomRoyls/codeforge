@@ -7,10 +7,10 @@ export class CountedQueue<T> {
   private tail: number
 
   constructor(options?: CountedQueueOptions) {
-    const capacity = options?.initialCapacity ?? 16
-    if (capacity < 1) {
+    if (options?.initialCapacity !== undefined && options.initialCapacity < 1) {
       throw new RangeError('capacity must be at least 1')
     }
+    const capacity = options?.initialCapacity ?? 16
     this.queue = new Array(capacity)
     this.frequencies = new Map()
     this.head = 0

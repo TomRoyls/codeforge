@@ -5,7 +5,7 @@ export class RobinHoodHash2<K, V> {
   private _maxProbeLength: number;
 
   constructor(initialCapacity = 16, loadFactorThreshold = 0.75) {
-    const capacity = Math.pow(2, Math.ceil(Math.log2(initialCapacity)));
+    const capacity = Math.max(1, Math.pow(2, Math.ceil(Math.log2(Math.max(1, initialCapacity)))));
     this.entries = new Array(capacity).fill(null);
     this._size = 0;
     this._loadFactorThreshold = loadFactorThreshold;
