@@ -639,4 +639,23 @@ export class Pagoda2<T> {
     }
     return sum
   }
+
+  sliding(size: number, step = 1): T[][] {
+    const arr = this.toArray()
+    if (size <= 0 || step <= 0) return []
+    const result: T[][] = []
+    for (let i = 0; i + size <= arr.length; i += step) {
+      result.push(arr.slice(i, i + size))
+    }
+    return result
+  }
+
+  adjacentPairs(): [T, T][] {
+    const arr = this.toArray()
+    const result: [T, T][] = []
+    for (let i = 0; i + 1 < arr.length; i++) {
+      result.push([arr[i]!, arr[i + 1]!])
+    }
+    return result
+  }
 }
