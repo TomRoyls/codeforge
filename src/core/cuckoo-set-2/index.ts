@@ -345,4 +345,12 @@ export class CuckooSet2<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  clone(): CuckooSet2<T> {
+    const c = new CuckooSet2<T>()
+    for (const item of this.toArray()) {
+      c.add(item)
+    }
+    return c
+  }
 }

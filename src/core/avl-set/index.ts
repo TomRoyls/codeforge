@@ -477,4 +477,12 @@ export class AVLSet<T = number> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  clone(): AVLSet<T> {
+    const c = new AVLSet<T>()
+    for (const item of this.toArray()) {
+      c.add(item)
+    }
+    return c
+  }
 }

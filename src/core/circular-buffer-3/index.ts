@@ -208,4 +208,5 @@ export class CircularBuffer3<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }

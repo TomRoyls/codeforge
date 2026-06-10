@@ -390,6 +390,7 @@ export class ChunkedArray<T = unknown> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

@@ -306,6 +306,7 @@ export class BoundedPriorityQueue<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

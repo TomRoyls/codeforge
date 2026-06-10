@@ -227,4 +227,8 @@ export class DynamicArray3<T> {
 
 
 
+
+  clone(): DynamicArray3<T> {
+    return DynamicArray3.from(this.toArray())
+  }
 }

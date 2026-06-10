@@ -354,4 +354,5 @@ export class CircularDeque2<T = unknown> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }

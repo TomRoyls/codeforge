@@ -289,4 +289,12 @@ export class BeapSet2<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  clone(): BeapSet2<T> {
+    const c = new BeapSet2<T>()
+    for (const item of this.toArray()) {
+      c.add(item)
+    }
+    return c
+  }
 }

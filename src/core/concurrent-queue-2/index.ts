@@ -365,6 +365,7 @@ export class ConcurrentQueue<T = unknown> {
     if (arr.length === 0) return undefined
     return arr.reduce((a, b) => a > b ? a : b)
   }
+
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

@@ -472,4 +472,5 @@ export class BinomialHeap4<T = unknown> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }

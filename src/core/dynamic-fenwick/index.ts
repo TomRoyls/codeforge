@@ -223,6 +223,7 @@ export class DynamicFenwick<T = number> {
     return this.at(-1)
   }
 
+
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'

@@ -408,6 +408,14 @@ toString(): string {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  clone(): AVLTreeSet2<T> {
+    const c = new AVLTreeSet2<T>()
+    for (const item of this.toArray()) {
+      c.add(item)
+    }
+    return c
+  }
 }
 
 class AVLNode<T> {

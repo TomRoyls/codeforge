@@ -390,4 +390,5 @@ export class DoublyLinkedList4<T> {
     }
     return result
   }
+
 }

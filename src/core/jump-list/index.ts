@@ -348,4 +348,12 @@ export class JumpList<T> {
     this.clear()
     return items
   }
+
+  clone(): JumpList<T> {
+    const c = new JumpList<T>()
+    for (const item of this.toArray()) {
+      c.push(item)
+    }
+    return c
+  }
 }

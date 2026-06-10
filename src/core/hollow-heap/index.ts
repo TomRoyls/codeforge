@@ -277,6 +277,7 @@ export class HollowHeap<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
 }
 
 export type { HollowHeapOptions } from './types.js';

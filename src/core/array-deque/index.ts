@@ -278,6 +278,7 @@ toString(): string {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }
 
 export type { ArrayDequeOptions

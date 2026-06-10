@@ -380,6 +380,7 @@ export class CoverTree<T = number> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

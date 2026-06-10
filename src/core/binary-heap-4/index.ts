@@ -302,4 +302,5 @@ export class BinaryHeap<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }

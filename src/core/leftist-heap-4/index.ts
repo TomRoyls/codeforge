@@ -177,4 +177,5 @@ export class LeftistHeap4<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
 }

@@ -469,4 +469,5 @@ export class BTree2<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
 }
