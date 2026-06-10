@@ -1062,4 +1062,13 @@ export class SplayTree3<T> {
   lastIndexOf(item: T): number {
     return this.toArray().lastIndexOf(item)
   }
+
+  swap(i: number, j: number): T[] {
+    const arr = [...this.toArray()]
+    if (i < 0 || i >= arr.length || j < 0 || j >= arr.length || i === j) return arr
+    const temp = arr[i]!
+    arr[i] = arr[j]!
+    arr[j] = temp
+    return arr
+  }
 }

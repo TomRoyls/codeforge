@@ -842,4 +842,22 @@ export class RingBuffer4<T> {
     }
     return result
   }
+
+  move(fromIndex: number, toIndex: number): T[] {
+    const arr = this.toArray()
+    if (fromIndex < 0 || fromIndex >= arr.length || toIndex < 0 || toIndex >= arr.length) return [...arr]
+    const item = arr[fromIndex]!
+    const result = arr.filter((_, i) => i !== fromIndex)
+    result.splice(toIndex, 0, item)
+    return result
+  }
+
+  swap(i: number, j: number): T[] {
+    const arr = [...this.toArray()]
+    if (i < 0 || i >= arr.length || j < 0 || j >= arr.length || i === j) return arr
+    const temp = arr[i]!
+    arr[i] = arr[j]!
+    arr[j] = temp
+    return arr
+  }
 }
