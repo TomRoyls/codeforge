@@ -904,4 +904,12 @@ export class BTreeSet<T> {
     }
     return result
   }
+
+  toMap<K, V>(keyFn: (item: T) => K, valueFn: (item: T) => V): Map<K, V> {
+    const map = new Map<K, V>()
+    for (const item of this.toArray()) {
+      map.set(keyFn(item), valueFn(item))
+    }
+    return map
+  }
 }

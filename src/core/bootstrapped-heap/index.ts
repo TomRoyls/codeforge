@@ -710,6 +710,14 @@ export class BootstrappedHeap<T = number> {
     }
     return result
   }
+
+  toMap<K, V>(keyFn: (item: T) => K, valueFn: (item: T) => V): Map<K, V> {
+    const map = new Map<K, V>()
+    for (const item of this.toArray()) {
+      map.set(keyFn(item), valueFn(item))
+    }
+    return map
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

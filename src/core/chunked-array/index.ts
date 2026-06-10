@@ -691,6 +691,14 @@ export class ChunkedArray<T = unknown> {
     }
     return result
   }
+
+  toMap<K, V>(keyFn: (item: T) => K, valueFn: (item: T) => V): Map<K, V> {
+    const map = new Map<K, V>()
+    for (const item of this.toArray()) {
+      map.set(keyFn(item), valueFn(item))
+    }
+    return map
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
