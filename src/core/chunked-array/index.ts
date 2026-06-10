@@ -406,6 +406,17 @@ export class ChunkedArray<T = unknown> {
     }
     return true
   }
+
+  zip<U>(other: Iterable<U>): [T, U][] {
+    const a = this.toArray()
+    const b = Array.from(other)
+    const len = Math.min(a.length, b.length)
+    const result: [T, U][] = []
+    for (let i = 0; i < len; i++) {
+      result.push([a[i]!, b[i]!])
+    }
+    return result
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
