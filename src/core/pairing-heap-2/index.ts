@@ -1081,6 +1081,18 @@ export class PairingHeap2<T> {
     }
     return [keys, values]
   }
+
+  memoize<R>(fn: (items: T[]) => R): () => R {
+    let cached: R | undefined
+    let computed = false
+    return () => {
+      if (!computed) {
+        cached = fn(this.toArray())
+        computed = true
+      }
+      return cached as R
+    }
+  }
 }
 
 export type { PairingHeap2Options, PairingHeap2Node, Comparator, ForEachCallback } from './types.js'

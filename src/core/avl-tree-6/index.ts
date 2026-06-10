@@ -1054,4 +1054,16 @@ export class AVLTree6<T> {
     }
     return [keys, values]
   }
+
+  memoize<R>(fn: (items: T[]) => R): () => R {
+    let cached: R | undefined
+    let computed = false
+    return () => {
+      if (!computed) {
+        cached = fn(this.toArray())
+        computed = true
+      }
+      return cached as R
+    }
+  }
 }
