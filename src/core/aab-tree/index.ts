@@ -353,4 +353,9 @@ export class AABTree<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: AABTree<T>) => void): AABTree<T> {
+    fn(this)
+    return this
+  }
 }

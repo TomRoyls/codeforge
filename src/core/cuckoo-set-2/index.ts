@@ -353,4 +353,9 @@ export class CuckooSet2<T> {
     }
     return c
   }
+
+  tap(fn: (collection: CuckooSet2<T>) => void): CuckooSet2<T> {
+    fn(this)
+    return this
+  }
 }

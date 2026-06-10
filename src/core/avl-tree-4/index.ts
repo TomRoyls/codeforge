@@ -437,6 +437,11 @@ export class AVLTree4<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: AVLTree4<T>) => void): AVLTree4<T> {
+    fn(this)
+    return this
+  }
 }
 
 interface Node<T> {

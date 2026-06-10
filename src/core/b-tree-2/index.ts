@@ -470,4 +470,9 @@ export class BTree2<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: BTree2<T>) => void): BTree2<T> {
+    fn(this)
+    return this
+  }
 }

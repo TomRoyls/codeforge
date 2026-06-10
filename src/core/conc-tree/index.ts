@@ -363,4 +363,9 @@ export class ConcTree<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: ConcTree<T>) => void): ConcTree<T> {
+    fn(this)
+    return this
+  }
 }

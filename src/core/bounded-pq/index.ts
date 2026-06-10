@@ -307,6 +307,11 @@ export class BoundedPriorityQueue<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: BoundedPriorityQueue<T>) => void): BoundedPriorityQueue<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

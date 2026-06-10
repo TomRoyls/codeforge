@@ -867,6 +867,11 @@ export class CatenableDeque<T> {
     if (arr.length === 0) return undefined
     return arr.reduce((a, b) => a > b ? a : b)
   }
+
+  tap(fn: (collection: CatenableDeque<T>) => void): CatenableDeque<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

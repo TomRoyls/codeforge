@@ -394,4 +394,9 @@ export class ConcurrentSet<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: ConcurrentSet<T>) => void): ConcurrentSet<T> {
+    fn(this)
+    return this
+  }
 }

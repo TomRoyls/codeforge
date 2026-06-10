@@ -216,4 +216,9 @@ export class ChunkedList2<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: ChunkedList2<T>) => void): ChunkedList2<T> {
+    fn(this)
+    return this
+  }
 }

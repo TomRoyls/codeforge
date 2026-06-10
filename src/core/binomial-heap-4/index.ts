@@ -473,4 +473,9 @@ export class BinomialHeap4<T = unknown> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: BinomialHeap4<T>) => void): BinomialHeap4<T> {
+    fn(this)
+    return this
+  }
 }

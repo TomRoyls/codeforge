@@ -485,4 +485,9 @@ export class AVLSet<T = number> {
     }
     return c
   }
+
+  tap(fn: (collection: AVLSet<T>) => void): AVLSet<T> {
+    fn(this)
+    return this
+  }
 }

@@ -339,6 +339,11 @@ toString(): string {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: Beap<T>) => void): Beap<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { BeapOptions

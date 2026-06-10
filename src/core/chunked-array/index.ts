@@ -391,6 +391,11 @@ export class ChunkedArray<T = unknown> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: ChunkedArray<T>) => void): ChunkedArray<T> {
+    fn(this)
+    return this
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

@@ -456,6 +456,11 @@ export class Deque2<T = unknown> {
     if (arr.length === 0) return undefined
     return arr.reduce((a, b) => a > b ? a : b)
   }
+
+  tap(fn: (collection: Deque2<T>) => void): Deque2<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { Deque2Options } from './types.js'

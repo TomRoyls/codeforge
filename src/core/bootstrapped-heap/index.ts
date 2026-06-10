@@ -402,6 +402,11 @@ export class BootstrappedHeap<T = number> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: BootstrappedHeap<T>) => void): BootstrappedHeap<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

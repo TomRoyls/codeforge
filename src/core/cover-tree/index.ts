@@ -381,6 +381,11 @@ export class CoverTree<T = number> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: CoverTree<T>) => void): CoverTree<T> {
+    fn(this)
+    return this
+  }
 }
 
 export { numberDistance, euclideanDistance2D, manhattanDistance2D } from './types.js'

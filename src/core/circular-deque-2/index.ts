@@ -355,4 +355,9 @@ export class CircularDeque2<T = unknown> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: CircularDeque2<T>) => void): CircularDeque2<T> {
+    fn(this)
+    return this
+  }
 }

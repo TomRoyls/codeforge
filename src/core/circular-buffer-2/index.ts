@@ -398,4 +398,9 @@ export class CircularBuffer<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: CircularBuffer<T>) => void): CircularBuffer<T> {
+    fn(this)
+    return this
+  }
 }

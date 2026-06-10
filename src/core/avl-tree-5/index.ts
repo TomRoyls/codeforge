@@ -392,4 +392,9 @@ export class AVLTree<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: AVLTree<T>) => void): AVLTree<T> {
+    fn(this)
+    return this
+  }
 }

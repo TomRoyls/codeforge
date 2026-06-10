@@ -270,4 +270,9 @@ export class DAryHeap4<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: DAryHeap4<T>) => void): DAryHeap4<T> {
+    fn(this)
+    return this
+  }
 }

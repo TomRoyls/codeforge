@@ -525,6 +525,11 @@ export class BinomialQueue<T = number> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: BinomialQueue<T>) => void): BinomialQueue<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

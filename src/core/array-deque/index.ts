@@ -279,6 +279,11 @@ toString(): string {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: ArrayDeque<T>) => void): ArrayDeque<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { ArrayDequeOptions

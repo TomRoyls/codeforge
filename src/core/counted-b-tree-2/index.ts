@@ -416,4 +416,9 @@ export class CountedBTree2<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: CountedBTree2<T>) => void): CountedBTree2<T> {
+    fn(this)
+    return this
+  }
 }

@@ -363,4 +363,9 @@ export class CartesianTree<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: CartesianTree<T>) => void): CartesianTree<T> {
+    fn(this)
+    return this
+  }
 }

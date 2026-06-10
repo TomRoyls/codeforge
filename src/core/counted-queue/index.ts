@@ -337,4 +337,9 @@ export class CountedQueue<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: CountedQueue<T>) => void): CountedQueue<T> {
+    fn(this)
+    return this
+  }
 }

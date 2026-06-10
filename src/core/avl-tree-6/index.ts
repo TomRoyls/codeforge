@@ -460,4 +460,9 @@ export class AVLTree6<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: AVLTree6<T>) => void): AVLTree6<T> {
+    fn(this)
+    return this
+  }
 }

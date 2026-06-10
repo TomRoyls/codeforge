@@ -519,6 +519,11 @@ export class BinomialHeap<T = number> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: BinomialHeap<T>) => void): BinomialHeap<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { BinomialHeapOptions 

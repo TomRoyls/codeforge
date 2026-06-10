@@ -303,4 +303,9 @@ export class BinaryHeap<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: BinaryHeap<T>) => void): BinaryHeap<T> {
+    fn(this)
+    return this
+  }
 }

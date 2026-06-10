@@ -219,4 +219,9 @@ export class BlockQueue<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: BlockQueue<T>) => void): BlockQueue<T> {
+    fn(this)
+    return this
+  }
 }

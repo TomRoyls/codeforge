@@ -297,4 +297,9 @@ export class BeapSet2<T> {
     }
     return c
   }
+
+  tap(fn: (collection: BeapSet2<T>) => void): BeapSet2<T> {
+    fn(this)
+    return this
+  }
 }

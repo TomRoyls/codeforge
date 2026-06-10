@@ -248,4 +248,9 @@ export class DHeap<T> {
     return arr.reduce((a, b) => a > b ? a : b)
   }
 
+
+  tap(fn: (collection: DHeap<T>) => void): DHeap<T> {
+    fn(this)
+    return this
+  }
 }

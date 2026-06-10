@@ -524,4 +524,9 @@ export class CountedTree<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: CountedTree<T>) => void): CountedTree<T> {
+    fn(this)
+    return this
+  }
 }

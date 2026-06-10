@@ -416,6 +416,11 @@ toString(): string {
     }
     return c
   }
+
+  tap(fn: (collection: AVLTreeSet2<T>) => void): AVLTreeSet2<T> {
+    fn(this)
+    return this
+  }
 }
 
 class AVLNode<T> {

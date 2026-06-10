@@ -367,4 +367,9 @@ export class AdaptiveHeap<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: AdaptiveHeap<T>) => void): AdaptiveHeap<T> {
+    fn(this)
+    return this
+  }
 }

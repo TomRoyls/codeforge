@@ -623,6 +623,11 @@ toString(): string {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: AdaptiveBST<T>) => void): AdaptiveBST<T> {
+    fn(this)
+    return this
+  }
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback

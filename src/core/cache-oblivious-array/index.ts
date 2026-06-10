@@ -277,4 +277,9 @@ export class CacheObliviousArray<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: CacheObliviousArray<T>) => void): CacheObliviousArray<T> {
+    fn(this)
+    return this
+  }
 }

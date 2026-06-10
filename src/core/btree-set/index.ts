@@ -599,4 +599,9 @@ export class BTreeSet<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: BTreeSet<T>) => void): BTreeSet<T> {
+    fn(this)
+    return this
+  }
 }

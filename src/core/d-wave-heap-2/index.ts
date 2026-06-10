@@ -278,4 +278,9 @@ export class DWaveHeap<T> {
     return arr.reduce((a, b) => a > b ? a : b)
   }
 
+
+  tap(fn: (collection: DWaveHeap<T>) => void): DWaveHeap<T> {
+    fn(this)
+    return this
+  }
 }

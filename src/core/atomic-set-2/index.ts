@@ -250,4 +250,9 @@ export class AtomicSet2<T> {
     }
     return c
   }
+
+  tap(fn: (collection: AtomicSet2<T>) => void): AtomicSet2<T> {
+    fn(this)
+    return this
+  }
 }

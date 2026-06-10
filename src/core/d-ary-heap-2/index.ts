@@ -328,4 +328,9 @@ export class DAryHeap<T> {
   skip(n: number): T[] {
     return this.toArray().slice(n)
   }
+
+  tap(fn: (collection: DAryHeap<T>) => void): DAryHeap<T> {
+    fn(this)
+    return this
+  }
 }

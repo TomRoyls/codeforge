@@ -605,4 +605,9 @@ export class TwoThreeTree<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: TwoThreeTree<T>) => void): TwoThreeTree<T> {
+    fn(this)
+    return this
+  }
 }

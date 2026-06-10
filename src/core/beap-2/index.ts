@@ -279,4 +279,9 @@ export class Beap2<T> {
     return this.toArray().slice(n)
   }
 
+
+  tap(fn: (collection: Beap2<T>) => void): Beap2<T> {
+    fn(this)
+    return this
+  }
 }
