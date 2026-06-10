@@ -600,4 +600,8 @@ export class BinaryHeap<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

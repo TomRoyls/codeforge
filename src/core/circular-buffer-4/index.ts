@@ -525,4 +525,8 @@ export class CircularBuffer4<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

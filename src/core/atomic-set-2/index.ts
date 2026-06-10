@@ -537,4 +537,8 @@ export class AtomicSet2<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

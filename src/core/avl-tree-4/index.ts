@@ -722,6 +722,10 @@ export class AVLTree4<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }
 
 interface Node<T> {

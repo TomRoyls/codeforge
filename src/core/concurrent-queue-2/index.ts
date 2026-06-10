@@ -461,6 +461,10 @@ export class ConcurrentQueue<T = unknown> {
   sampleN(n: number): T[] {
     return this.shuffle().slice(0, n)
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

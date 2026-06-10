@@ -594,4 +594,8 @@ export class BeapSet2<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

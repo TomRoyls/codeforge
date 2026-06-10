@@ -798,6 +798,10 @@ export class BinomialHeap<T = number> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }
 
 export type { BinomialHeapOptions 

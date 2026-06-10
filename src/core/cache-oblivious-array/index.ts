@@ -561,4 +561,8 @@ export class CacheObliviousArray<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

@@ -768,4 +768,8 @@ export class BinomialHeap4<T = unknown> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

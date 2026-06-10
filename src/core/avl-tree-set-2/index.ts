@@ -701,6 +701,10 @@ toString(): string {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }
 
 class AVLNode<T> {

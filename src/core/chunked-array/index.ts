@@ -668,6 +668,10 @@ export class ChunkedArray<T = unknown> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

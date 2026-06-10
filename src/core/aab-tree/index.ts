@@ -650,4 +650,8 @@ export class AABTree<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

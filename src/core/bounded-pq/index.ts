@@ -593,6 +593,10 @@ export class BoundedPriorityQueue<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

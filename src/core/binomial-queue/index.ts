@@ -800,6 +800,10 @@ export class BinomialQueue<T = number> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

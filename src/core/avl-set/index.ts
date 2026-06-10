@@ -776,4 +776,8 @@ export class AVLSet<T = number> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

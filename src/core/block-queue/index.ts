@@ -507,4 +507,8 @@ export class BlockQueue<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

@@ -757,4 +757,8 @@ export class AVLTree6<T> {
     }
     return groups
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }

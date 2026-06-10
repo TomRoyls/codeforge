@@ -503,4 +503,8 @@ export class CountedBTree2<T> {
   sampleN(n: number): T[] {
     return this.shuffle().slice(0, n)
   }
+
+  toSet(): Set<T> {
+    return new Set(this.toArray())
+  }
 }
