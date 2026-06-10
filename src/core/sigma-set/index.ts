@@ -348,6 +348,10 @@ export class SigmaSet {
   get [Symbol.toStringTag](): string {
     return 'SigmaSet'
   }
+
+  includes(value: number): boolean {
+    return this.contains(value)
+  }
 }
 
 function popcount(value: number): number {

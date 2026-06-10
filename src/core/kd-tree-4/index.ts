@@ -404,6 +404,10 @@ export class KDTree4<T = number[]> {
   static from<T>(items: T[]): KDTree4<T> {
     return new KDTree4(items)
   }
+
+  includes(point: number[]): boolean {
+    return this.contains(point)
+  }
 }
 
 interface KDNode {

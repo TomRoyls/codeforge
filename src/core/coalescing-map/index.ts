@@ -197,4 +197,8 @@ export class CoalescingMap<K, V> {
   get [Symbol.toStringTag](): string {
     return 'CoalescingMap'
   }
+
+  includes(key: K): boolean {
+    return this.contains(key)
+  }
 }

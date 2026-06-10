@@ -424,6 +424,10 @@ export class YFastTrie {
   get [Symbol.toStringTag](): string {
     return 'YFastTrie'
   }
+
+  includes(value: number): boolean {
+    return this.contains(value)
+  }
 }
 
 export { DEFAULT_UNIVERSE_SIZE } from './types.js'

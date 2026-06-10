@@ -329,4 +329,8 @@ export class PatriciaTrie<V = unknown> {
   get [Symbol.toStringTag](): string {
     return 'PatriciaTrie'
   }
+
+  includes(key: string): boolean {
+    return this.contains(key)
+  }
 }

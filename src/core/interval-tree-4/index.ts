@@ -274,4 +274,8 @@ export class IntervalTree4 {
   get [Symbol.toStringTag](): string {
     return 'IntervalTree4'
   }
+
+  includes(low: number, high: number): boolean {
+    return this.contains(low, high)
+  }
 }

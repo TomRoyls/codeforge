@@ -96,4 +96,8 @@ export class KMPSearch {
   get [Symbol.toStringTag](): string {
     return 'KMPSearch'
   }
+
+  includes(text: string): boolean {
+    return this.contains(text)
+  }
 }

@@ -132,4 +132,8 @@ export class GallopingSearch<T> {
   static from<T>(items: T[]): GallopingSearch<T> {
     return new GallopingSearch(items)
   }
+
+  includes(target: T): boolean {
+    return this.contains(target)
+  }
 }

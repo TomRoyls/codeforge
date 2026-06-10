@@ -187,4 +187,8 @@ export class CuckooFilter3 {
   get [Symbol.toStringTag](): string {
     return 'CuckooFilter3'
   }
+
+  includes(item: string): boolean {
+    return this.contains(item)
+  }
 }

@@ -270,6 +270,10 @@ export class XorTrie2 {
   get [Symbol.toStringTag](): string {
     return 'XorTrie2'
   }
+
+  includes(value: number): boolean {
+    return this.contains(value)
+  }
 }
 
 class XorNode2 {

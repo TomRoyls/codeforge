@@ -134,4 +134,8 @@ export class InterpolationSearch {
   get [Symbol.toStringTag](): string {
     return 'InterpolationSearch'
   }
+
+  includes(target: number): boolean {
+    return this.contains(target)
+  }
 }

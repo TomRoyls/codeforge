@@ -215,4 +215,8 @@ export class SparseSet3 {
   get [Symbol.toStringTag](): string {
     return 'SparseSet3'
   }
+
+  includes(value: number): boolean {
+    return this.contains(value)
+  }
 }

@@ -261,6 +261,10 @@ export class DisjointIntervalSet {
   get [Symbol.toStringTag](): string {
     return 'DisjointIntervalSet'
   }
+
+  includes(point: number): boolean {
+    return this.contains(point)
+  }
 }
 
 export type { Interval, IntervalOptions }

@@ -293,4 +293,8 @@ export class BucketQueue<T> {
   get [Symbol.toStringTag](): string {
     return 'BucketQueue'
   }
+
+  includes(value: T): boolean {
+    return this.contains(value)
+  }
 }

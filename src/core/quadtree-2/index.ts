@@ -442,6 +442,10 @@ export class QuadTree2<T = undefined> {
   get [Symbol.toStringTag](): string {
     return 'QuadTree2'
   }
+
+  includes(point: { x: number; y: number }): boolean {
+    return this.contains(point)
+  }
 }
 
 export type { Point2D, Rect2D, QuadTree2Options }

@@ -262,6 +262,10 @@ export class IndexedPriorityQueue<T = number> {
   get [Symbol.toStringTag](): string {
     return 'IndexedPriorityQueue'
   }
+
+  includes(index: number): boolean {
+    return this.contains(index)
+  }
 }
 
 export type { IndexedPriorityQueueOptions, IndexedPriorityQueueEntry, IndexedPriorityQueueStats }

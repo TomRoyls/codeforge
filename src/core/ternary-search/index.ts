@@ -116,4 +116,8 @@ export class TernarySearch {
   get [Symbol.toStringTag](): string {
     return 'TernarySearch'
   }
+
+  includes(target: number): boolean {
+    return this.contains(target)
+  }
 }

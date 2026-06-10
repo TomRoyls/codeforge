@@ -523,6 +523,10 @@ export class SparseBitSet {
   get [Symbol.toStringTag](): string {
     return 'SparseBitSet'
   }
+
+  includes(index: number): boolean {
+    return this.contains(index)
+  }
 }
 
 function popcountBlock(block: Uint32Array): number {

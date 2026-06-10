@@ -182,4 +182,8 @@ export class ChainedHash2<V> {
   get [Symbol.toStringTag](): string {
     return 'ChainedHash2'
   }
+
+  includes(key: string): boolean {
+    return this.contains(key)
+  }
 }

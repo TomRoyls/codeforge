@@ -101,6 +101,10 @@ export class Octree2<V> {
   get [Symbol.toStringTag](): string {
     return 'Octree2'
   }
+
+  includes(x: number, y: number, z: number): boolean {
+    return this.contains(x, y, z)
+  }
 }
 
 class OctreeNode<V> {

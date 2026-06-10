@@ -241,4 +241,8 @@ export class Treap3<K, V> {
   get [Symbol.toStringTag](): string {
     return 'Treap3'
   }
+
+  includes(key: K): boolean {
+    return this.contains(key)
+  }
 }

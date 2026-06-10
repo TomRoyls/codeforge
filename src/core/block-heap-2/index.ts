@@ -210,4 +210,8 @@ export class BlockHeap2 {
   get [Symbol.toStringTag](): string {
     return 'BlockHeap2'
   }
+
+  includes(value: number): boolean {
+    return this.contains(value)
+  }
 }

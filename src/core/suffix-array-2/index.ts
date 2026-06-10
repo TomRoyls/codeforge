@@ -165,4 +165,8 @@ export class SuffixArray2 {
   get [Symbol.toStringTag](): string {
     return 'SuffixArray2'
   }
+
+  includes(pattern: string): boolean {
+    return this.contains(pattern)
+  }
 }

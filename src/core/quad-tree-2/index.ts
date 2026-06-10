@@ -393,4 +393,8 @@ export class QuadTree {
   get [Symbol.toStringTag](): string {
     return 'QuadTree'
   }
+
+  includes(point: Point): boolean {
+    return this.contains(point)
+  }
 }

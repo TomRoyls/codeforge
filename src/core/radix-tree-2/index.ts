@@ -324,4 +324,8 @@ export class RadixTree2 {
   get [Symbol.toStringTag](): string {
     return 'RadixTree2'
   }
+
+  includes(word: string): boolean {
+    return this.contains(word)
+  }
 }

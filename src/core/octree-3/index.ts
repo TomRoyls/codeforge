@@ -318,4 +318,8 @@ export class Octree3<T> {
   get [Symbol.toStringTag](): string {
     return 'Octree3'
   }
+
+  includes(point: Point3D): boolean {
+    return this.contains(point)
+  }
 }

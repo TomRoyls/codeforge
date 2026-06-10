@@ -169,4 +169,8 @@ export class IntervalSet2 {
   get [Symbol.toStringTag](): string {
     return 'IntervalSet2'
   }
+
+  includes(point: number): boolean {
+    return this.contains(point)
+  }
 }

@@ -227,4 +227,8 @@ export class FibonacciSearch {
   get [Symbol.toStringTag](): string {
     return 'FibonacciSearch'
   }
+
+  includes(target: number): boolean {
+    return this.contains(target)
+  }
 }

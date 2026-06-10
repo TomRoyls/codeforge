@@ -415,4 +415,8 @@ export class KDTree {
   get [Symbol.toStringTag](): string {
     return 'KDTree'
   }
+
+  includes(point: KDPoint): boolean {
+    return this.contains(point)
+  }
 }

@@ -224,6 +224,10 @@ export class PartitionTree<T = undefined> {
   get [Symbol.toStringTag](): string {
     return 'PartitionTree'
   }
+
+  includes(x: number, y: number): boolean {
+    return this.contains(x, y)
+  }
 }
 
 export type { PartitionPoint, Rectangle } from './types.js'

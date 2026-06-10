@@ -219,4 +219,8 @@ export class VectorHeap2 {
   get [Symbol.toStringTag](): string {
     return 'VectorHeap2'
   }
+
+  includes(value: number): boolean {
+    return this.contains(value)
+  }
 }

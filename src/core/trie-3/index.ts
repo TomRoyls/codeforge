@@ -228,4 +228,8 @@ export class Trie3 {
   get [Symbol.toStringTag](): string {
     return 'Trie3'
   }
+
+  includes(word: string): boolean {
+    return this.contains(word)
+  }
 }

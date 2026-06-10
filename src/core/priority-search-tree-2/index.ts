@@ -245,4 +245,8 @@ export class PrioritySearchTree2 {
   get [Symbol.toStringTag](): string {
     return 'PrioritySearchTree2'
   }
+
+  includes(point: Point): boolean {
+    return this.contains(point)
+  }
 }

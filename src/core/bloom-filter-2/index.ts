@@ -152,4 +152,8 @@ export class BloomFilter2 {
   get [Symbol.toStringTag](): string {
     return 'BloomFilter2'
   }
+
+  includes(item: string): boolean {
+    return this.contains(item)
+  }
 }

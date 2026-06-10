@@ -230,4 +230,8 @@ export class QuadTreeMap2<V> {
   get [Symbol.toStringTag](): string {
     return 'QuadTreeMap2'
   }
+
+  includes(x: number, y: number): boolean {
+    return this.contains(x, y)
+  }
 }

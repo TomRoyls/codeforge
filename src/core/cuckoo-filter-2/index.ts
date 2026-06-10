@@ -249,6 +249,10 @@ export class CuckooFilter2 {
   get [Symbol.toStringTag](): string {
     return 'CuckooFilter2'
   }
+
+  includes(item: unknown): boolean {
+    return this.contains(item)
+  }
 }
 
 export const CuckooFilter = CuckooFilter2;

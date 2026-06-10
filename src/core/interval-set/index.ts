@@ -320,4 +320,8 @@ export class IntervalSet<T = number> {
   get [Symbol.toStringTag](): string {
     return 'IntervalSet'
   }
+
+  includes(start: T, end: T): boolean {
+    return this.contains(start, end)
+  }
 }

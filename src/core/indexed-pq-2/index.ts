@@ -156,4 +156,8 @@ export class IndexedPQ2 {
   get [Symbol.toStringTag](): string {
     return 'IndexedPQ2'
   }
+
+  includes(id: number): boolean {
+    return this.contains(id)
+  }
 }

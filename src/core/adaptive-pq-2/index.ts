@@ -325,4 +325,8 @@ export class AdaptivePQ2<T> {
   get [Symbol.toStringTag](): string {
     return 'AdaptivePQ2'
   }
+
+  includes(value: T): boolean {
+    return this.contains(value)
+  }
 }
