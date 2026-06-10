@@ -901,6 +901,10 @@ export class CatenableDeque<T> {
     }
     return true
   }
+
+  compact(): T[] {
+    return this.toArray().filter((item): item is T => item != null)
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

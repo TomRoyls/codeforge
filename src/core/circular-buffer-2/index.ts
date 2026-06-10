@@ -443,4 +443,8 @@ export class CircularBuffer<T> {
     }
     return true
   }
+
+  compact(): T[] {
+    return this.toArray().filter((item): item is T => item != null)
+  }
 }

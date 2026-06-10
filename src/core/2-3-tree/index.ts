@@ -660,4 +660,8 @@ export class TwoThreeTree<T> {
   lastIndexOf(item: T): number {
     return this.toArray().lastIndexOf(item)
   }
+
+  compact(): T[] {
+    return this.toArray().filter((item): item is T => item != null)
+  }
 }
