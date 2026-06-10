@@ -404,4 +404,12 @@ export class AATree2<T> {
     }
     return groups
   }
+
+  take(n: number): T[] {
+    return this.toArray().slice(0, n)
+  }
+
+  skip(n: number): T[] {
+    return this.toArray().slice(n)
+  }
 }
