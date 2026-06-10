@@ -572,4 +572,8 @@ export class BlockQueue<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BlockQueue'
+  }
 }

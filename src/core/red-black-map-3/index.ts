@@ -391,4 +391,8 @@ export class RedBlackMap3<K, V> {
   toJSON() {
     return { type: 'RedBlackMap3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RedBlackMap3'
+  }
 }

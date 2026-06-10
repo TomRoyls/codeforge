@@ -261,4 +261,8 @@ export class Rope2 {
   toJSON() {
     return { type: 'Rope2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Rope2'
+  }
 }

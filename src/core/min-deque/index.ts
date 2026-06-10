@@ -613,6 +613,10 @@ export class MinDeque<T = unknown> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'MinDeque'
+  }
 }
 
 export type { MinDequeOptions } from './types.js'

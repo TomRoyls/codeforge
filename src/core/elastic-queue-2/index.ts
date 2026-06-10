@@ -64,4 +64,8 @@ export class ElasticQueue2<T> {
   static empty<T>(): ElasticQueue2<T> {
     return new ElasticQueue2<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ElasticQueue2'
+  }
 }

@@ -423,6 +423,10 @@ export class RTree3<T> {
   toJSON() {
     return { type: 'RTree3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RTree3'
+  }
 }
 
 type Rect = {minX: number, minY: number, maxX: number, maxY: number}

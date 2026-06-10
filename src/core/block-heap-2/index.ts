@@ -206,4 +206,8 @@ export class BlockHeap2 {
   toJSON() {
     return { type: 'BlockHeap2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BlockHeap2'
+  }
 }

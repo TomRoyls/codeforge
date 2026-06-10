@@ -292,4 +292,8 @@ export class BucketSort4<T extends number> {
   toString(): string {
     return `BucketSort4()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BucketSort4'
+  }
 }

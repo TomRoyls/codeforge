@@ -673,6 +673,10 @@ export class Deque<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Deque'
+  }
 }
 
 function nextPow2(n: number): number {

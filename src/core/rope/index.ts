@@ -224,4 +224,8 @@ export class Rope {
   clear(): void {
     this.root = null;
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Rope'
+  }
 }

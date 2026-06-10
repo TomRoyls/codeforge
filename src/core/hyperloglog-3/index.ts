@@ -141,4 +141,8 @@ export class HyperLogLog3 {
   toString(): string {
     return `HyperLogLog3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'HyperLogLog3'
+  }
 }

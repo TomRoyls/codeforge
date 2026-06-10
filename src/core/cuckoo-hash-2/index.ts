@@ -301,4 +301,8 @@ export class CuckooHash<K, V> {
   static empty<K, V>(): CuckooHash<K, V> {
     return new CuckooHash<K, V>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CuckooHash'
+  }
 }

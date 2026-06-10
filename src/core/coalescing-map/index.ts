@@ -193,4 +193,8 @@ export class CoalescingMap<K, V> {
   static empty<K, V>(): CoalescingMap<K, V> {
     return new CoalescingMap<K, V>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CoalescingMap'
+  }
 }

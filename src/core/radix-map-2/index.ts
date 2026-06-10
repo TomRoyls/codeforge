@@ -169,4 +169,8 @@ export class RadixMap2<T> {
   toJSON() {
     return { type: 'RadixMap2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RadixMap2'
+  }
 }

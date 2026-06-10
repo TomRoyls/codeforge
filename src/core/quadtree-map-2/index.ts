@@ -226,4 +226,8 @@ export class QuadTreeMap2<V> {
   toString(): string {
     return `QuadTreeMap2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'QuadTreeMap2'
+  }
 }

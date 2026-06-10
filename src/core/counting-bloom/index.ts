@@ -206,6 +206,10 @@ export class CountingBloomFilter<T = string> {
   static empty<T>(): CountingBloomFilter<T> {
     return new CountingBloomFilter<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CountingBloomFilter'
+  }
 }
 
 export type { CountingBloomFilterOptions } from './types.js'

@@ -294,4 +294,8 @@ export class AVLMap3<K, V> {
   toJSON() {
     return { type: 'AVLMap3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'AVLMap3'
+  }
 }

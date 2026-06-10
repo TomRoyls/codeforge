@@ -478,4 +478,8 @@ export class TernarySearchTree<V = unknown> {
   toJSON() {
     return { type: 'TernarySearchTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TernarySearchTree'
+  }
 }

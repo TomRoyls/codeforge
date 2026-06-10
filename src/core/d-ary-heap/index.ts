@@ -663,6 +663,10 @@ export class DAryHeap<T = number> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DAryHeap'
+  }
 }
 
 export type { DAryHeapOptions } from './types.js'

@@ -505,6 +505,10 @@ export class RedBlackMap<K, V> {
   toJSON() {
     return { type: 'RedBlackMap', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RedBlackMap'
+  }
 }
 
 export type { RBNode, RBColor, CompareFunction, RedBlackMapOptions } from './types.js'

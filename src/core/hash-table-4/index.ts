@@ -250,4 +250,8 @@ export class HashTable4<K, V> {
   toJSON() {
     return { type: 'HashTable4', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'HashTable4'
+  }
 }

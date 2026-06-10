@@ -101,4 +101,8 @@ export class LazySegmentTree3 {
   toString(): string {
     return `LazySegmentTree3({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LazySegmentTree3'
+  }
 }

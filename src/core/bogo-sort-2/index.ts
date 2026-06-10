@@ -76,4 +76,8 @@ export class BogoSort2<T> {
   toString(): string {
     return `BogoSort2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BogoSort2'
+  }
 }

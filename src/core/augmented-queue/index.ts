@@ -215,6 +215,10 @@ toString(): string {
   static empty(): AugmentedQueue {
     return new AugmentedQueue()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'AugmentedQueue'
+  }
 }
 
 export type { AugmentedQueueOptions

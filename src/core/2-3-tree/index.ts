@@ -967,4 +967,8 @@ export class TwoThreeTree<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'TwoThreeTree'
+  }
 }

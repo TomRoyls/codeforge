@@ -178,4 +178,8 @@ export class ChainedHash2<V> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'ChainedHash2'
+  }
 }

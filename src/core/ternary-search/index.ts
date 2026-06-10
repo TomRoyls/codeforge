@@ -112,4 +112,8 @@ export class TernarySearch {
   toString(): string {
     return `TernarySearch()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TernarySearch'
+  }
 }

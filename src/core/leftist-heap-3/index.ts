@@ -633,6 +633,10 @@ export class LeftistHeap3<T = number> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LeftistHeap3'
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

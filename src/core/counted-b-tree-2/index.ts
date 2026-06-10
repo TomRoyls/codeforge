@@ -702,4 +702,8 @@ export class CountedBTree2<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CountedBTree2'
+  }
 }

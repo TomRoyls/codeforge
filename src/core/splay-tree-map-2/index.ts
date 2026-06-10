@@ -315,4 +315,8 @@ export class SplayTreeMap2<K, V> {
   entries(): [K, V][] {
     return this.toArray()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SplayTreeMap2'
+  }
 }

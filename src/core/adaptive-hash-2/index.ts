@@ -311,4 +311,8 @@ export class AdaptiveHash2<K, V> {
   toJSON() {
     return { type: 'AdaptiveHash2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'AdaptiveHash2'
+  }
 }

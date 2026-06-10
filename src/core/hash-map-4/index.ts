@@ -197,4 +197,8 @@ export class HashMap<K, V> {
     return { type: 'HashMap', items: this.toArray() }
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'HashMap'
+  }
 }

@@ -665,4 +665,8 @@ export class BinaryHeap<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BinaryHeap'
+  }
 }

@@ -245,6 +245,10 @@ export class CuckooFilter2 {
   static empty(): CuckooFilter2 {
     return new CuckooFilter2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CuckooFilter2'
+  }
 }
 
 export const CuckooFilter = CuckooFilter2;

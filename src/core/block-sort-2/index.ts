@@ -129,4 +129,8 @@ export class BlockSort2 {
   static empty(): BlockSort2 {
     return new BlockSort2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BlockSort2'
+  }
 }

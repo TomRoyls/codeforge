@@ -185,4 +185,8 @@ export class ConcaveHull2 {
   toString(): string {
     return `${ConcaveHull2}({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ConcaveHull2'
+  }
 }

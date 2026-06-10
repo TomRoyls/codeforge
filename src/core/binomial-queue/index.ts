@@ -869,6 +869,10 @@ export class BinomialQueue<T = number> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BinomialQueue'
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

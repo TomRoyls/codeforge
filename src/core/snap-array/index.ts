@@ -532,4 +532,8 @@ export class SnapArray<T> {
     }
     return items
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SnapArray'
+  }
 }

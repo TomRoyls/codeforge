@@ -415,6 +415,10 @@ toArray() {
   toJSON() {
     return { type: 'SkipListMap', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SkipListMap'
+  }
 }
 
 export type { SkipListMapOptions 

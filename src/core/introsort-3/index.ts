@@ -181,4 +181,8 @@ export class Introsort3 {
   toString(): string {
     return `Introsort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Introsort3'
+  }
 }

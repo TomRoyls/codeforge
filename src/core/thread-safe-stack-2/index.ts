@@ -66,4 +66,8 @@ export class ThreadSafeStack2<T> {
   toString(): string {
     return `ThreadSafeStack2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ThreadSafeStack2'
+  }
 }

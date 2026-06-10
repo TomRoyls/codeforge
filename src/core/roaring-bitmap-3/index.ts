@@ -119,4 +119,8 @@ export class RoaringBitmap3 {
   toJSON() {
     return { type: 'RoaringBitmap3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RoaringBitmap3'
+  }
 }

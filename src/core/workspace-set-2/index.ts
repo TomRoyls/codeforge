@@ -86,4 +86,8 @@ export class WorkspaceSet2<T> {
   toString(): string {
     return `WorkspaceSet2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WorkspaceSet2'
+  }
 }

@@ -796,6 +796,10 @@ export class PairingHeap2<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PairingHeap2'
+  }
 }
 
 export type { PairingHeap2Options, PairingHeap2Node, Comparator, ForEachCallback } from './types.js'

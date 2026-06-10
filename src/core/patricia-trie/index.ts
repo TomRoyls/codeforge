@@ -325,4 +325,8 @@ export class PatriciaTrie<V = unknown> {
   toJSON() {
     return { type: 'PatriciaTrie', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PatriciaTrie'
+  }
 }

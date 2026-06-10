@@ -124,4 +124,8 @@ export class GallopingSearch<T> {
   toString(): string {
     return `GallopingSearch()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GallopingSearch'
+  }
 }

@@ -261,4 +261,8 @@ export class IntervalTree3 {
   toJSON() {
     return { type: 'IntervalTree3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'IntervalTree3'
+  }
 }

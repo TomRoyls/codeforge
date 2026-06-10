@@ -234,4 +234,8 @@ export class DoubleMap<K1, K2, V> {
   static empty<K1, K2, V>(): DoubleMap<K1, K2, V> {
     return new DoubleMap<K1, K2, V>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DoubleMap'
+  }
 }

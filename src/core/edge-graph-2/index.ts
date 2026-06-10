@@ -125,4 +125,8 @@ export class EdgeGraph2 {
   toJSON() {
     return { type: 'EdgeGraph2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'EdgeGraph2'
+  }
 }

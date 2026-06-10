@@ -147,4 +147,8 @@ export class LazySegmentTree {
   get size(): number {
     return this.n
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LazySegmentTree'
+  }
 }

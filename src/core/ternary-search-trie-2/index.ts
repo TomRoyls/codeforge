@@ -176,4 +176,8 @@ export class TernarySearchTrie2<V> {
   toString(): string {
     return `TernarySearchTrie2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TernarySearchTrie2'
+  }
 }

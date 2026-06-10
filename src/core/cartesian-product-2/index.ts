@@ -120,4 +120,8 @@ export class CartesianProduct2<T> {
     return this.toArray().join(separator)
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'CartesianProduct2'
+  }
 }

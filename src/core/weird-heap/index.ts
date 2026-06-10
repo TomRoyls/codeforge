@@ -767,6 +767,10 @@ export class WeirdHeap<T = unknown> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WeirdHeap'
+  }
 }
 
 export { DEFAULT_WEIRD_HEAP_OPTIONS } from './types.js'

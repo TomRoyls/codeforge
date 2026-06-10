@@ -176,4 +176,8 @@ export class QuotientMap2<T> {
   toJSON() {
     return { type: 'QuotientMap2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'QuotientMap2'
+  }
 }

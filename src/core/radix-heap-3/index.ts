@@ -148,4 +148,8 @@ export class RadixHeap3<T> {
   toString(): string {
     return `RadixHeap3({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RadixHeap3'
+  }
 }

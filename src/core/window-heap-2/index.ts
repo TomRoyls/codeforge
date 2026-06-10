@@ -110,4 +110,8 @@ export class WindowHeap2 {
   toString(): string {
     return `WindowHeap2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WindowHeap2'
+  }
 }

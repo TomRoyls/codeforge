@@ -206,6 +206,10 @@ export class LRU2Cache<K, V> {
   toJSON() {
     return { type: 'LRU2Cache', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LRU2Cache'
+  }
 }
 
 export type { LRU2CacheOptions } from './types.js'

@@ -169,4 +169,8 @@ export class SparseSet2 {
   toJSON() {
     return { type: 'SparseSet2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SparseSet2'
+  }
 }

@@ -71,4 +71,8 @@ export class MinHash2 {
   toString(): string {
     return `MinHash2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'MinHash2'
+  }
 }

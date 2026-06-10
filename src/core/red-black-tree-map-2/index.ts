@@ -346,6 +346,10 @@ export class RedBlackTreeMap2<K, V> {
   entries(): [K, V][] {
     return this.toArray()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RedBlackTreeMap2'
+  }
 }
 
 interface Node<K, V> {

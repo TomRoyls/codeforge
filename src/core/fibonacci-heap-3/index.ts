@@ -808,6 +808,10 @@ export class FibonacciHeap3<T = number> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FibonacciHeap3'
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

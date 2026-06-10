@@ -389,4 +389,8 @@ export class EphemeralArray<T> {
   static empty<T>(): EphemeralArray<T> {
     return new EphemeralArray<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'EphemeralArray'
+  }
 }

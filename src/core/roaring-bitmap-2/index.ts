@@ -248,4 +248,8 @@ export class RoaringBitmap2 {
   toString(): string {
     return `RoaringBitmap2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RoaringBitmap2'
+  }
 }

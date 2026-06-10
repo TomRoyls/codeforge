@@ -187,4 +187,8 @@ export class Geohash {
   toString(): string {
     return `Geohash()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Geohash'
+  }
 }

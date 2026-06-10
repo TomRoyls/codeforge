@@ -365,6 +365,10 @@ export class BitSet2 {
   static empty(): BitSet2 {
     return new BitSet2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BitSet2'
+  }
 }
 
 export type { BitSetOptions } from './types.js'

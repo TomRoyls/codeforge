@@ -130,4 +130,8 @@ export class InterpolationSearch {
   toString(): string {
     return `InterpolationSearch()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'InterpolationSearch'
+  }
 }

@@ -672,6 +672,10 @@ export class SortedArraySet<T = unknown> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SortedArraySet'
+  }
 }
 
 export type { Comparator, SortedArraySetOptions, SortedArraySetStats } from './types.js'

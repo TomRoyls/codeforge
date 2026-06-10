@@ -348,4 +348,8 @@ export class GraphAdjList<T> {
   static empty<T>(): GraphAdjList<T> {
     return new GraphAdjList<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphAdjList'
+  }
 }

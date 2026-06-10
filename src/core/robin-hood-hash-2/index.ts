@@ -200,4 +200,8 @@ export class RobinHoodHash2<K, V> {
   toString(): string {
     return `RobinHoodHash2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RobinHoodHash2'
+  }
 }

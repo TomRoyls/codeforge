@@ -275,4 +275,8 @@ export class TernarySearchTrie<T = unknown> {
   toString(): string {
     return `TernarySearchTrie({ size: ${this._size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TernarySearchTrie'
+  }
 }

@@ -281,4 +281,8 @@ export class SplayMap2<K, V> {
   toJSON() {
     return { type: 'SplayMap2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SplayMap2'
+  }
 }

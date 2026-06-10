@@ -237,4 +237,8 @@ increment(vertexCount, edge.v1);
   toString(): string {
     return `WingedEdgeMesh({ size: ${this.vertices.length} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WingedEdgeMesh'
+  }
 }

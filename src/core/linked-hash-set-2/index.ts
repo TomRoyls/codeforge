@@ -147,4 +147,8 @@ export class LinkedHashSet<T> {
   toJSON() {
     return { type: 'LinkedHashSet', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LinkedHashSet'
+  }
 }

@@ -116,4 +116,8 @@ export class SuffixArray3 {
   toJSON() {
     return { type: 'SuffixArray3', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SuffixArray3'
+  }
 }

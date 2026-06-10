@@ -445,4 +445,8 @@ export class HalfEdgeMesh {
   toString(): string {
     return `HalfEdgeMesh()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'HalfEdgeMesh'
+  }
 }

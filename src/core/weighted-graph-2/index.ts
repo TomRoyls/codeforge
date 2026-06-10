@@ -106,4 +106,8 @@ export class WeightedGraph2 {
   toString(): string {
     return `WeightedGraph2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WeightedGraph2'
+  }
 }

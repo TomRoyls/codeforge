@@ -837,4 +837,8 @@ export class BinomialHeap4<T = unknown> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BinomialHeap4'
+  }
 }

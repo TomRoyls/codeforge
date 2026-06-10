@@ -602,4 +602,8 @@ export class AtomicSet2<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'AtomicSet2'
+  }
 }

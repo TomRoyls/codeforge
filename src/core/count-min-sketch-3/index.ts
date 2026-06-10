@@ -67,4 +67,8 @@ export class CountMinSketch3 {
   toString(): string {
     return `CountMinSketch3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CountMinSketch3'
+  }
 }

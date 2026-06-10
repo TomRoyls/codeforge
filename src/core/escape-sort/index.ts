@@ -112,4 +112,8 @@ export class EscapeSort {
   toString(): string {
     return `EscapeSort()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'EscapeSort'
+  }
 }

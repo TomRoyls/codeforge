@@ -771,6 +771,10 @@ export class FibHeap<T = number> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FibHeap'
+  }
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'

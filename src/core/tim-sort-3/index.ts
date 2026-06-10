@@ -334,6 +334,10 @@ export class TimSort3<T> {
   toString(): string {
     return `TimSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TimSort3'
+  }
 }
 
 export type { RunInfo }

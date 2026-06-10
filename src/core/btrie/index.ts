@@ -417,4 +417,8 @@ export class BTrie<V = unknown> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BTrie'
+  }
 }

@@ -101,4 +101,8 @@ export class GnomeSort3<T> {
   toString(): string {
     return `GnomeSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GnomeSort3'
+  }
 }

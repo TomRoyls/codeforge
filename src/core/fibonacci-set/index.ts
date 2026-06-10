@@ -436,4 +436,8 @@ export class FibonacciSet<T> {
   static empty<T>(): FibonacciSet<T> {
     return new FibonacciSet<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FibonacciSet'
+  }
 }

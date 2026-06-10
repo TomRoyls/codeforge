@@ -770,6 +770,10 @@ toString(): string {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'AVLTreeSet2'
+  }
 }
 
 class AVLNode<T> {

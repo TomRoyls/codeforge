@@ -136,4 +136,8 @@ export class SparseArray3<T> {
   toJSON() {
     return { type: 'SparseArray3', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SparseArray3'
+  }
 }

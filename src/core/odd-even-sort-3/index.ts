@@ -116,4 +116,8 @@ export class OddEvenSort3<T> {
   toString(): string {
     return `OddEvenSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'OddEvenSort3'
+  }
 }

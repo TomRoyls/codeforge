@@ -122,4 +122,8 @@ export class FlashSort2<T> {
   static empty<T>(): FlashSort2<T> {
     return new FlashSort2<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FlashSort2'
+  }
 }

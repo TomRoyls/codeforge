@@ -289,6 +289,10 @@ export class PrioritySearchTree<K, P = number> {
   toJSON() {
     return { type: 'PrioritySearchTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PrioritySearchTree'
+  }
 }
 
 export type { Comparator, PriorityEntry, PrioritySearchTreeOptions } from "./types.js";

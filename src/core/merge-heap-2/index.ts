@@ -91,4 +91,8 @@ export class MergeHeap2<T> {
   toString(): string {
     return `MergeHeap2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'MergeHeap2'
+  }
 }

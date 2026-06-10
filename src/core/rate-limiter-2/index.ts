@@ -60,4 +60,8 @@ export class RateLimiter2 {
   toString(): string {
     return `RateLimiter2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RateLimiter2'
+  }
 }

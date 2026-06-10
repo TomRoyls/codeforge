@@ -89,4 +89,8 @@ export class RunLengthEncoding3 {
   toString(): string {
     return this.runs.map((run) => `${run.count}${run.char}`).join("");
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RunLengthEncoding3'
+  }
 }

@@ -177,4 +177,8 @@ export class SegmentTree {
   get size(): number {
     return this.n
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SegmentTree'
+  }
 }

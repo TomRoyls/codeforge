@@ -111,4 +111,8 @@ export class PigeonholeSort3 {
   toString(): string {
     return `PigeonholeSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PigeonholeSort3'
+  }
 }

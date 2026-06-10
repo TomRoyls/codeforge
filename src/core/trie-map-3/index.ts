@@ -175,6 +175,10 @@ export class TrieMap3<T> {
   toString(): string {
     return `TrieMap3({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TrieMap3'
+  }
 }
 
 class TrieNode<T> {

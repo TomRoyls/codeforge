@@ -559,4 +559,8 @@ export class DisjointSet<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DisjointSet'
+  }
 }

@@ -179,4 +179,8 @@ export class BurstTrie2 {
   toJSON() {
     return { type: 'BurstTrie2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BurstTrie2'
+  }
 }

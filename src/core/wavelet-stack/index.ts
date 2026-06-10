@@ -491,6 +491,10 @@ export class WaveletStack<T = unknown> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WaveletStack'
+  }
 }
 
 export type { WaveletStackOptions } from './types.js'

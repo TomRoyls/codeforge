@@ -121,4 +121,8 @@ export class GodelNumber2 {
   toString(): string {
     return `GodelNumber2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GodelNumber2'
+  }
 }

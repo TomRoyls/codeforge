@@ -172,4 +172,8 @@ export class DiffArray {
   toJSON() {
     return { type: 'DiffArray', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DiffArray'
+  }
 }

@@ -104,4 +104,8 @@ export class CatMap2<T> {
   toJSON() {
     return { type: 'CatMap2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CatMap2'
+  }
 }

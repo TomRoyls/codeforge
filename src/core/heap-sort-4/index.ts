@@ -200,4 +200,8 @@ export class HeapSort4<T> {
   toString(): string {
     return `HeapSort4()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'HeapSort4'
+  }
 }

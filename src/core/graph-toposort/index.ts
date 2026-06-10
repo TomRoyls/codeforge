@@ -211,4 +211,8 @@ export class GraphTopoSort {
   static empty(): GraphTopoSort {
     return new GraphTopoSort()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphTopoSort'
+  }
 }

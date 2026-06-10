@@ -627,4 +627,8 @@ export class CountedQueue<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CountedQueue'
+  }
 }

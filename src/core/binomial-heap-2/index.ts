@@ -863,6 +863,10 @@ export class BinomialHeap<T = number> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BinomialHeap'
+  }
 }
 
 export type { BinomialHeapOptions 

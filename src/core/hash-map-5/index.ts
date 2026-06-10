@@ -233,4 +233,8 @@ export class HashMap5<K, V> {
     return { type: 'HashMap5', size: this.size, items: this.toArray() }
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'HashMap5'
+  }
 }

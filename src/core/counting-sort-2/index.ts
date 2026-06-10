@@ -122,4 +122,8 @@ export class CountingSort {
   toJSON() {
     return { type: 'CountingSort', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CountingSort'
+  }
 }

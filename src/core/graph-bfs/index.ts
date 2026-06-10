@@ -320,4 +320,8 @@ export class GraphBFS {
   toJSON() {
     return { type: 'GraphBFS', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphBFS'
+  }
 }

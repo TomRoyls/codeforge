@@ -770,6 +770,10 @@ export class FibonacciHeap<T = number> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FibonacciHeap'
+  }
 }
 
 export type { FibonacciHeapOptions, FibonacciHeapNode } from './types.js'

@@ -630,4 +630,8 @@ export class BTreeMap<K, V> {
   }
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BTreeMap'
+  }
 }

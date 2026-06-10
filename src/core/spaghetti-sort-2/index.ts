@@ -132,4 +132,8 @@ export class SpaghettiSort2 {
   toJSON() {
     return { type: 'SpaghettiSort2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SpaghettiSort2'
+  }
 }

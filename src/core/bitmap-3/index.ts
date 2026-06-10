@@ -196,4 +196,8 @@ export class Bitmap3 {
   toJSON() {
     return { type: 'Bitmap3', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Bitmap3'
+  }
 }

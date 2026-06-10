@@ -215,4 +215,8 @@ export class VectorHeap2 {
   toString(): string {
     return `VectorHeap2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'VectorHeap2'
+  }
 }

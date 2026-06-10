@@ -68,4 +68,8 @@ export class BoyerMooreHorspool2 {
   toString(): string {
     return `BoyerMooreHorspool2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BoyerMooreHorspool2'
+  }
 }

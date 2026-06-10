@@ -272,6 +272,10 @@ export class CuckooFilter<T = string> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'CuckooFilter'
+  }
 }
 
 export { BUCKET_SIZE, DEFAULT_FINGERPRINT_SIZE, DEFAULT_MAX_KICKS, defaultHash } from './types.js'

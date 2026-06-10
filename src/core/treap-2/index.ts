@@ -357,4 +357,8 @@ export class Treap<K, V = undefined> {
     this.clear()
     return items
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Treap'
+  }
 }

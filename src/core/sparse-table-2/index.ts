@@ -109,4 +109,8 @@ export class SparseTable {
   toJSON() {
     return { type: 'SparseTable', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SparseTable'
+  }
 }

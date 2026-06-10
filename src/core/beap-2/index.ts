@@ -641,4 +641,8 @@ export class Beap2<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'Beap2'
+  }
 }

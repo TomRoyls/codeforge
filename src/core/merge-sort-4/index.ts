@@ -439,4 +439,8 @@ export class MergeSort4<T> {
   toString(): string {
     return `MergeSort4()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'MergeSort4'
+  }
 }

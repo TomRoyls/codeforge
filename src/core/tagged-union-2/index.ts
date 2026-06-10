@@ -73,4 +73,8 @@ export class TaggedUnion2<T> {
   toString(): string {
     return `TaggedUnion2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TaggedUnion2'
+  }
 }

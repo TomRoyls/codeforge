@@ -67,4 +67,8 @@ export class CubeSort2 {
   static empty(): CubeSort2 {
     return new CubeSort2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CubeSort2'
+  }
 }

@@ -215,6 +215,10 @@ toArray() {
   toString(): string {
     return `ZOrderMap({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ZOrderMap'
+  }
 }
 
 export type { ZOrderMapOptions, ZOrderEntry, Point2D 

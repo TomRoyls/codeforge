@@ -227,4 +227,8 @@ export class Trie4 {
   toString(): string {
     return `Trie4({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Trie4'
+  }
 }

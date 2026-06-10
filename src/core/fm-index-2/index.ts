@@ -124,4 +124,8 @@ export class FMIndex2 {
   toString(): string {
     return `FMIndex2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FMIndex2'
+  }
 }

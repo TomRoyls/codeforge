@@ -977,6 +977,10 @@ toString(): string {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'AdaptiveBST'
+  }
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback

@@ -946,4 +946,8 @@ export class BTreeSet<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BTreeSet'
+  }
 }

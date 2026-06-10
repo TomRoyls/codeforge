@@ -519,6 +519,10 @@ export class SparseBitSet {
   toJSON() {
     return { type: 'SparseBitSet', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SparseBitSet'
+  }
 }
 
 function popcountBlock(block: Uint32Array): number {

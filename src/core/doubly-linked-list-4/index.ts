@@ -692,4 +692,8 @@ export class DoublyLinkedList4<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DoublyLinkedList4'
+  }
 }

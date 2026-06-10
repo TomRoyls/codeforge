@@ -188,4 +188,8 @@ export class LCPArray {
   toJSON() {
     return { type: 'LCPArray', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LCPArray'
+  }
 }

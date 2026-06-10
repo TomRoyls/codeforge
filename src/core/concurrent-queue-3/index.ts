@@ -91,4 +91,8 @@ export class ConcurrentQueue3<T> {
   static empty<T>(): ConcurrentQueue3<T> {
     return new ConcurrentQueue3<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ConcurrentQueue3'
+  }
 }

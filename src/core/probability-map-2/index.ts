@@ -120,4 +120,8 @@ export class ProbabilityMap2 {
   toJSON() {
     return { type: 'ProbabilityMap2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ProbabilityMap2'
+  }
 }

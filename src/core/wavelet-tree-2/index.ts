@@ -210,4 +210,8 @@ export class WaveletTree {
   toString(): string {
     return `WaveletTree()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WaveletTree'
+  }
 }

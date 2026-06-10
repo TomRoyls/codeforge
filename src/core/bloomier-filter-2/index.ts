@@ -99,4 +99,8 @@ export class BloomierFilter2 {
   toString(): string {
     return `${BloomierFilter2}({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BloomierFilter2'
+  }
 }

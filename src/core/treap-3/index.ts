@@ -237,4 +237,8 @@ export class Treap3<K, V> {
   values(): V[] {
     return this.toArray().map(([, v]) => v)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Treap3'
+  }
 }

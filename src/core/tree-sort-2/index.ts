@@ -87,4 +87,8 @@ export class TreeSort2<T> {
   toString(): string {
     return `TreeSort2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TreeSort2'
+  }
 }

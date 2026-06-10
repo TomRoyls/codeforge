@@ -136,4 +136,8 @@ export class CircularSuffixArray {
   toString(): string {
     return `CircularSuffixArray()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CircularSuffixArray'
+  }
 }

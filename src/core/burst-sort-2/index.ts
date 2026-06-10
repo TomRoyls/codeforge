@@ -165,4 +165,8 @@ export class BurstSort2<T> {
   toString(): string {
     return `BurstSort2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BurstSort2'
+  }
 }

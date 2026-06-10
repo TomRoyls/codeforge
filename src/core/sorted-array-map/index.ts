@@ -192,4 +192,8 @@ export class SortedArrayMap<K = number, V = unknown> {
   toJSON() {
     return { type: 'SortedArrayMap', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SortedArrayMap'
+  }
 }

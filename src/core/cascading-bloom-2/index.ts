@@ -110,4 +110,8 @@ export class CascadingBloom2 {
   static empty(): CascadingBloom2 {
     return new CascadingBloom2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CascadingBloom2'
+  }
 }

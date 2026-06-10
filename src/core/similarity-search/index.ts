@@ -124,6 +124,10 @@ export class SimilaritySearch {
   toString(): string {
     return `SimilaritySearch({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SimilaritySearch'
+  }
 }
 
 export { tokenize, computeSignature, estimateSimilarity };

@@ -137,4 +137,8 @@ export class SpreadSort2 {
   toString(): string {
     return `SpreadSort2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SpreadSort2'
+  }
 }

@@ -470,4 +470,8 @@ export class PersistentArray2<T> {
     }
     return items
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PersistentArray2'
+  }
 }

@@ -57,4 +57,8 @@ export class LindenmayerSystem2 {
   toString(): string {
     return `LindenmayerSystem2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LindenmayerSystem2'
+  }
 }

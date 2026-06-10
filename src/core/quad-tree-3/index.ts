@@ -169,4 +169,8 @@ export class QuadTree {
   toString(): string {
     return `QuadTree()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'QuadTree'
+  }
 }

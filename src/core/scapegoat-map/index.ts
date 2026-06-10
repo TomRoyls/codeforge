@@ -385,6 +385,10 @@ export class ScapegoatMap<K = unknown, V = unknown> {
   entries(): [K, V][] {
     return this.toArray()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ScapegoatMap'
+  }
 }
 
 export type { ScapegoatMapOptions }

@@ -129,4 +129,8 @@ export class InsertionSort4<T> {
   toString(): string {
     return `InsertionSort4()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'InsertionSort4'
+  }
 }

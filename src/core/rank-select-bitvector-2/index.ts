@@ -190,6 +190,10 @@ export class RankSelectBitvector2 {
   toJSON() {
     return { type: 'RankSelectBitvector2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RankSelectBitvector2'
+  }
 }
 
 function popcount(n: number): number {

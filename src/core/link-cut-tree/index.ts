@@ -343,4 +343,8 @@ export class LinkCutTree {
   toString(): string {
     return `LinkCutTree({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LinkCutTree'
+  }
 }

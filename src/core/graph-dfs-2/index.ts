@@ -266,4 +266,8 @@ export class GraphDFS2 {
   clear(): void {
     this.adjacencyList = new Map()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphDFS2'
+  }
 }

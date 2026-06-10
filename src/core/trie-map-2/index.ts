@@ -139,4 +139,8 @@ export class TrieMap2<V> {
   toString(): string {
     return `TrieMap2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TrieMap2'
+  }
 }

@@ -165,4 +165,8 @@ export class IntervalSet2 {
   toString(): string {
     return `${IntervalSet2}({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'IntervalSet2'
+  }
 }

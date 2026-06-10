@@ -420,6 +420,10 @@ export class YFastTrie {
   toString(): string {
     return `YFastTrie({ size: ${this._size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'YFastTrie'
+  }
 }
 
 export { DEFAULT_UNIVERSE_SIZE } from './types.js'

@@ -152,4 +152,8 @@ export class Matrix2 {
   toJSON() {
     return { type: 'Matrix2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Matrix2'
+  }
 }

@@ -166,4 +166,8 @@ export class SuccinctBitvector2 {
   toJSON() {
     return { type: 'SuccinctBitvector2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SuccinctBitvector2'
+  }
 }

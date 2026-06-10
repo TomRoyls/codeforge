@@ -82,4 +82,8 @@ export class KthLargest {
   toString(): string {
     return `${KthLargest}({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'KthLargest'
+  }
 }

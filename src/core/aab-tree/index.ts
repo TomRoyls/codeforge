@@ -715,4 +715,8 @@ export class AABTree<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'AABTree'
+  }
 }

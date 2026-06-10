@@ -179,6 +179,10 @@ export class LinkedHashMap<K, V> {
   toJSON() {
     return { type: 'LinkedHashMap', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LinkedHashMap'
+  }
 }
 
 interface Node<K> {

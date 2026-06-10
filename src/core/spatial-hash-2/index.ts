@@ -137,4 +137,8 @@ export class SpatialHash2<T = unknown> {
   toString(): string {
     return `SpatialHash2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SpatialHash2'
+  }
 }

@@ -320,4 +320,8 @@ export class RadixTree2 {
   toJSON() {
     return { type: 'RadixTree2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RadixTree2'
+  }
 }

@@ -220,6 +220,10 @@ export class PartitionTree<T = undefined> {
   toJSON() {
     return { type: 'PartitionTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PartitionTree'
+  }
 }
 
 export type { PartitionPoint, Rectangle } from './types.js'

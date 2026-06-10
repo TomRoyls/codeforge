@@ -138,4 +138,8 @@ export class AhoCorasick2 {
   clear(): void {
     this.patternList = []
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'AhoCorasick2'
+  }
 }

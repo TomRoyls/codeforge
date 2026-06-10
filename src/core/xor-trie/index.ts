@@ -204,6 +204,10 @@ export class XorTrie {
   toString(): string {
     return `XorTrie({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'XorTrie'
+  }
 }
 
 class XorNode {

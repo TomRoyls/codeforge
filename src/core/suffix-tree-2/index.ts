@@ -375,4 +375,8 @@ export class SuffixTree {
   toString(): string {
     return `SuffixTree({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SuffixTree'
+  }
 }

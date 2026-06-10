@@ -555,4 +555,8 @@ export class DoubleArrayTrie2 {
   static empty(): DoubleArrayTrie2 {
     return new DoubleArrayTrie2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DoubleArrayTrie2'
+  }
 }

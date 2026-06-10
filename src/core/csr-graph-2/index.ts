@@ -102,4 +102,8 @@ export class CSRGraph2 {
   toString(): string {
     return `CSRGraph2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CSRGraph2'
+  }
 }

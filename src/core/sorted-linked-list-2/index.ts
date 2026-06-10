@@ -481,4 +481,8 @@ export class SortedLinkedList2<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SortedLinkedList2'
+  }
 }

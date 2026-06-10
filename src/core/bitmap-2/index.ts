@@ -171,4 +171,8 @@ export class Bitmap2 {
   isEmpty(): boolean {
     return this.size === 0
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Bitmap2'
+  }
 }

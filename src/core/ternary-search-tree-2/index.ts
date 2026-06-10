@@ -239,4 +239,8 @@ export class TernarySearchTree2 {
   toString(): string {
     return `TernarySearchTree2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TernarySearchTree2'
+  }
 }

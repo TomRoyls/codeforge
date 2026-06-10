@@ -729,4 +729,8 @@ export class AdaptiveHeap<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'AdaptiveHeap'
+  }
 }

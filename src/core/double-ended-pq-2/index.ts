@@ -694,4 +694,8 @@ export class DoubleEndedPQ2<T = number> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DoubleEndedPQ2'
+  }
 }

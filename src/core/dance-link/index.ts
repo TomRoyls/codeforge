@@ -281,4 +281,8 @@ export class DanceLink {
   toJSON() {
     return { type: 'DanceLink', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DanceLink'
+  }
 }

@@ -364,6 +364,10 @@ export class PathCompressionTrie<T = unknown> {
   toJSON() {
     return { type: 'PathCompressionTrie', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PathCompressionTrie'
+  }
 }
 
 function commonPrefixLength(a: string, b: string): number {

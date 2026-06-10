@@ -213,4 +213,8 @@ export class WaveletTree3 {
     this.rightChild = null
     this.low = 0
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WaveletTree3'
+  }
 }

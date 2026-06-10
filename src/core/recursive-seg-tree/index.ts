@@ -276,4 +276,8 @@ export class RecursiveSegTree {
   toJSON() {
     return { type: 'RecursiveSegTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RecursiveSegTree'
+  }
 }

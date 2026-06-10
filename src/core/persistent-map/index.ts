@@ -561,6 +561,10 @@ export class PersistentMap<K, V> {
   toJSON() {
     return { type: 'PersistentMap', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PersistentMap'
+  }
 }
 
 export type { PersistentMapOptions, HashFunction } from './types.js'

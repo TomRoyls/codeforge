@@ -70,4 +70,8 @@ export class UnionFind4 {
   toString(): string {
     return `UnionFind4({ size: ${this.parent.length} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'UnionFind4'
+  }
 }

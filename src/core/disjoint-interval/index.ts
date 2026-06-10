@@ -257,6 +257,10 @@ export class DisjointIntervalSet {
   static empty(): DisjointIntervalSet {
     return new DisjointIntervalSet()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DisjointIntervalSet'
+  }
 }
 
 export type { Interval, IntervalOptions }

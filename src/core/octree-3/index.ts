@@ -314,4 +314,8 @@ export class Octree3<T> {
   toJSON() {
     return { type: 'Octree3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Octree3'
+  }
 }

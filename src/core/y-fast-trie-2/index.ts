@@ -385,4 +385,8 @@ export class YFastTrie {
   toString(): string {
     return `YFastTrie({ size: ${this._size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'YFastTrie'
+  }
 }

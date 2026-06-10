@@ -627,6 +627,10 @@ toString(): string {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'ArrayDeque'
+  }
 }
 
 export type { ArrayDequeOptions

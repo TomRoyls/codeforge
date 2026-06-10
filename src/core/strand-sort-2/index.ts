@@ -116,4 +116,8 @@ export class StrandSort2 {
   toString(): string {
     return `StrandSort2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'StrandSort2'
+  }
 }

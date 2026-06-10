@@ -152,4 +152,8 @@ export class IndexedPQ2 {
   toString(): string {
     return `${IndexedPQ2}({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'IndexedPQ2'
+  }
 }

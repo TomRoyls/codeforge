@@ -109,4 +109,8 @@ export class CombSort3<T> {
   static empty<T>(): CombSort3<T> {
     return new CombSort3<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CombSort3'
+  }
 }

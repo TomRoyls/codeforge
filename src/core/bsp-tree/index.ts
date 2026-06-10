@@ -351,4 +351,8 @@ export class BSPTree {
   toJSON() {
     return { type: 'BSPTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BSPTree'
+  }
 }

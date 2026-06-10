@@ -158,4 +158,8 @@ export class RangeMap2<V> {
   toString(): string {
     return `RangeMap2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RangeMap2'
+  }
 }

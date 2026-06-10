@@ -187,4 +187,8 @@ export class AdaptiveSort<T> {
   toString(): string {
     return `AdaptiveSort()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'AdaptiveSort'
+  }
 }

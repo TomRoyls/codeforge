@@ -422,4 +422,8 @@ export class VanEmdeBoasSet {
   toString(): string {
     return `VanEmdeBoasSet({ size: ${this._size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'VanEmdeBoasSet'
+  }
 }

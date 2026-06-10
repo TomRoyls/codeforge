@@ -223,4 +223,8 @@ export class FibonacciSearch {
   get size(): number {
     return this.n
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FibonacciSearch'
+  }
 }

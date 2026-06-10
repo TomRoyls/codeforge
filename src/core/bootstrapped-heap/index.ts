@@ -756,6 +756,10 @@ export class BootstrappedHeap<T = number> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BootstrappedHeap'
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

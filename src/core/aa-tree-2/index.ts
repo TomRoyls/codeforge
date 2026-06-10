@@ -763,4 +763,8 @@ export class AATree2<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'AATree2'
+  }
 }

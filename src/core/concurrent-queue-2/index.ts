@@ -664,6 +664,10 @@ export class ConcurrentQueue<T = unknown> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ConcurrentQueue'
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

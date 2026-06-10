@@ -156,4 +156,8 @@ export class PatienceSort3<T> {
   toString(): string {
     return `PatienceSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PatienceSort3'
+  }
 }

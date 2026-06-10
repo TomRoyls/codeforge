@@ -68,4 +68,8 @@ export class SmoothSort2 {
   toString(): string {
     return `SmoothSort2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SmoothSort2'
+  }
 }

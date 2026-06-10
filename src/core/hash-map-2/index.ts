@@ -358,4 +358,8 @@ export class HashMap2<K, V> {
   static empty<K, V>(): HashMap2<K, V> {
     return new HashMap2<K, V>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'HashMap2'
+  }
 }

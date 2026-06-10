@@ -231,4 +231,8 @@ export class HashTable3<K, V> {
     return { type: 'HashTable3', size: this.size, items: this.toArray() }
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'HashTable3'
+  }
 }

@@ -322,6 +322,10 @@ export class WaveletTree {
   toString(): string {
     return `WaveletTree({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WaveletTree'
+  }
 }
 
 export type { WaveletTreeNode, WaveletTreeOptions, RankAllResult, WaveletTreeStats } from './types.js'

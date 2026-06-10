@@ -110,4 +110,8 @@ export class ShellSort4<T> {
   toString(): string {
     return `ShellSort4()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ShellSort4'
+  }
 }

@@ -381,6 +381,10 @@ export class SkipList3<K = unknown> {
   toJSON() {
     return { type: 'SkipList3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SkipList3'
+  }
 }
 
 export type { SkipList3Options, Comparator }

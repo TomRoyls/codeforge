@@ -436,6 +436,10 @@ export class ThreadedMap<K, V> {
   toString(): string {
     return `ThreadedMap({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ThreadedMap'
+  }
 }
 
 export type { ThreadedNode, Comparator, ThreadedMapOptions } from './types.js'

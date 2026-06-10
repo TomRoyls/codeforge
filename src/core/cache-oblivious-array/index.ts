@@ -626,4 +626,8 @@ export class CacheObliviousArray<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'CacheObliviousArray'
+  }
 }

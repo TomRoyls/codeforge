@@ -625,4 +625,8 @@ export class CircularBuffer4<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CircularBuffer4'
+  }
 }

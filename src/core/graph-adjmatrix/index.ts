@@ -247,4 +247,8 @@ export class GraphAdjMatrix<T extends string | number> {
   toJSON() {
     return { type: 'GraphAdjMatrix', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphAdjMatrix'
+  }
 }

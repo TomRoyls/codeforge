@@ -233,4 +233,8 @@ export class StreamingQuantile<T = number> {
   toString(): string {
     return `StreamingQuantile()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'StreamingQuantile'
+  }
 }

@@ -238,4 +238,8 @@ export class MergeableMap<K, V> {
     return { type: 'MergeableMap', size: this.size, items: this.toArray() }
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'MergeableMap'
+  }
 }

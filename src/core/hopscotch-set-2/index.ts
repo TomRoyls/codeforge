@@ -166,4 +166,8 @@ export class HopscotchSet2 {
   toJSON() {
     return { type: 'HopscotchSet2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'HopscotchSet2'
+  }
 }

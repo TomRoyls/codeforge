@@ -149,4 +149,8 @@ export class RopeQueue2<T> {
   toString(): string {
     return `RopeQueue2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RopeQueue2'
+  }
 }

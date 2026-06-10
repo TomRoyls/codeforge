@@ -145,4 +145,8 @@ export class FibonacciSearch3<T = number> {
   toString(): string {
     return `FibonacciSearch3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FibonacciSearch3'
+  }
 }

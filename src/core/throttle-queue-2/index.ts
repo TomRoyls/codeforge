@@ -70,4 +70,8 @@ export class ThrottleQueue2<T> {
   toString(): string {
     return `ThrottleQueue2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ThrottleQueue2'
+  }
 }

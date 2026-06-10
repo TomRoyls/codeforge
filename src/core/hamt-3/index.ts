@@ -427,4 +427,8 @@ export class Hamt3<T> {
   }
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'Hamt3'
+  }
 }

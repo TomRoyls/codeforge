@@ -196,4 +196,8 @@ export class StreamingMedian {
   toJSON() {
     return { type: 'StreamingMedian', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'StreamingMedian'
+  }
 }

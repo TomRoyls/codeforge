@@ -253,4 +253,8 @@ export class XorFilter {
   toString(): string {
     return `XorFilter({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'XorFilter'
+  }
 }

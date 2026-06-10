@@ -229,6 +229,10 @@ export class CountingSort {
   static empty(): CountingSort {
     return new CountingSort()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CountingSort'
+  }
 }
 
 export type { CountingSortOptions, DistributionEntry } from './types.js'

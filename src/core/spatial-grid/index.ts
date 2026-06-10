@@ -210,4 +210,8 @@ export class SpatialGrid<T> {
   toJSON() {
     return { type: 'SpatialGrid', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SpatialGrid'
+  }
 }

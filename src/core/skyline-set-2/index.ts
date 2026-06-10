@@ -88,4 +88,8 @@ export class SkylineSet2<T> {
   toString(): string {
     return `SkylineSet2({ size: ${this._items.length} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SkylineSet2'
+  }
 }

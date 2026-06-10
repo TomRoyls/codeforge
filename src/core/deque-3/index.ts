@@ -518,4 +518,8 @@ export class Deque3<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Deque3'
+  }
 }

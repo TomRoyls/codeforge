@@ -425,4 +425,8 @@ export class WeightBalancedTree<K, V = unknown> {
     this.clear()
     return items
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WeightBalancedTree'
+  }
 }

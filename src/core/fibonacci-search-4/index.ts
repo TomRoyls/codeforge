@@ -187,4 +187,8 @@ export class FibonacciSearch4 {
   toJSON() {
     return { type: 'FibonacciSearch4', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FibonacciSearch4'
+  }
 }

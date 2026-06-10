@@ -170,4 +170,8 @@ export class HashArray2<T> {
   static empty<T>(): HashArray2<T> {
     return new HashArray2<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'HashArray2'
+  }
 }

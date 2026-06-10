@@ -120,4 +120,8 @@ export class BipartiteGraph2 {
   static empty(): BipartiteGraph2 {
     return new BipartiteGraph2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BipartiteGraph2'
+  }
 }

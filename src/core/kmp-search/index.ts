@@ -92,4 +92,8 @@ export class KMPSearch {
   toString(): string {
     return `KMPSearch()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'KMPSearch'
+  }
 }

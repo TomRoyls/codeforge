@@ -115,4 +115,8 @@ export class BiMap3<K, V> {
   static empty<K, V>(): BiMap3<K, V> {
     return new BiMap3<K, V>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BiMap3'
+  }
 }

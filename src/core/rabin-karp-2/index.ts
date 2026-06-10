@@ -113,4 +113,8 @@ export class RabinKarp2 {
   toString(): string {
     return `RabinKarp2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RabinKarp2'
+  }
 }

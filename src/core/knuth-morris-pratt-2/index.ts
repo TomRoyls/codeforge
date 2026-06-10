@@ -82,4 +82,8 @@ export class KnuthMorrisPratt2 {
   toString(): string {
     return `KnuthMorrisPratt2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'KnuthMorrisPratt2'
+  }
 }

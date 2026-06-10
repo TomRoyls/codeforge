@@ -154,4 +154,8 @@ export class SparseMatrix2 {
   toJSON() {
     return { type: 'SparseMatrix2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SparseMatrix2'
+  }
 }

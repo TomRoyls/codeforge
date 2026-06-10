@@ -155,4 +155,8 @@ export class AmericanFlagSort2 {
   static empty(): AmericanFlagSort2 {
     return new AmericanFlagSort2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'AmericanFlagSort2'
+  }
 }

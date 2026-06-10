@@ -167,4 +167,8 @@ export class StrandSort3<T> {
   toString(): string {
     return `StrandSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'StrandSort3'
+  }
 }

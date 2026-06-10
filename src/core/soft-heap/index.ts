@@ -650,6 +650,10 @@ export class SoftHeap<T = unknown> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SoftHeap'
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

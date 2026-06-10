@@ -137,4 +137,8 @@ export class PancakeSort3<T> {
   toString(): string {
     return `PancakeSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PancakeSort3'
+  }
 }

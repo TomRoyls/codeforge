@@ -160,4 +160,8 @@ export class ProMap2<K, V> {
   toJSON() {
     return { type: 'ProMap2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ProMap2'
+  }
 }

@@ -693,6 +693,10 @@ toString(): string {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'Beap'
+  }
 }
 
 export type { BeapOptions

@@ -258,6 +258,10 @@ export class IndexedPriorityQueue<T = number> {
   }
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'IndexedPriorityQueue'
+  }
 }
 
 export type { IndexedPriorityQueueOptions, IndexedPriorityQueueEntry, IndexedPriorityQueueStats }

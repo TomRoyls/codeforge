@@ -230,4 +230,8 @@ export class BiconnectedComponents {
   toString(): string {
     return `BiconnectedComponents()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BiconnectedComponents'
+  }
 }

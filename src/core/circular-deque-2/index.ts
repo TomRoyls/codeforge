@@ -675,4 +675,8 @@ export class CircularDeque2<T = unknown> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CircularDeque2'
+  }
 }

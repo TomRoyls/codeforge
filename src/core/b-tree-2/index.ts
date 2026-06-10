@@ -832,4 +832,8 @@ export class BTree2<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BTree2'
+  }
 }

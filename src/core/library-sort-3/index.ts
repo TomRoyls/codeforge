@@ -119,4 +119,8 @@ export class LibrarySort3<T> {
   toString(): string {
     return `LibrarySort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LibrarySort3'
+  }
 }

@@ -787,6 +787,10 @@ export class AVLTree4<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'AVLTree4'
+  }
 }
 
 interface Node<T> {

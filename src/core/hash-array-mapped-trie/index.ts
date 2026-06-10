@@ -419,4 +419,8 @@ export class HashArrayMappedTrie<K, V> {
     return { type: 'HashArrayMappedTrie', size: this.size, items: this.toArray() }
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'HashArrayMappedTrie'
+  }
 }

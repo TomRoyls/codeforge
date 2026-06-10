@@ -261,6 +261,10 @@ export class LRUCache4<K, V> {
   toJSON() {
     return { type: 'LRUCache4', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LRUCache4'
+  }
 }
 
 interface Node<K, V> {

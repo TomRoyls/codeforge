@@ -97,6 +97,10 @@ export class Octree2<V> {
   toString(): string {
     return `Octree2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Octree2'
+  }
 }
 
 class OctreeNode<V> {

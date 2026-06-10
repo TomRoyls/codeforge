@@ -316,4 +316,8 @@ export class IntervalSet<T = number> {
   }
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'IntervalSet'
+  }
 }

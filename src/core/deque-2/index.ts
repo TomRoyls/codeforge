@@ -730,6 +730,10 @@ export class Deque2<T = unknown> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'Deque2'
+  }
 }
 
 export type { Deque2Options } from './types.js'

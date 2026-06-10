@@ -171,4 +171,8 @@ export class EditBuffer2 {
   static empty(): EditBuffer2 {
     return new EditBuffer2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'EditBuffer2'
+  }
 }

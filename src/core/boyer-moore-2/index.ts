@@ -63,4 +63,8 @@ export class BoyerMoore2 {
   toString(): string {
     return `BoyerMoore2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BoyerMoore2'
+  }
 }

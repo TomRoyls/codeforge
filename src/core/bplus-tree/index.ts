@@ -583,4 +583,8 @@ export class BPlusTree<K, V> {
   static empty<K, V>(): BPlusTree<K, V> {
     return new BPlusTree<K, V>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BPlusTree'
+  }
 }

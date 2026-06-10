@@ -168,6 +168,10 @@ export class GraphTree<T = unknown> {
   static empty<T>(): GraphTree<T> {
     return new GraphTree<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphTree'
+  }
 }
 
 export type { TraversalOrder, GraphTreeNode } from './types.js'

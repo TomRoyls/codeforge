@@ -81,4 +81,8 @@ export class FenwickTree3 {
   clear(): void {
     this._size = 0
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'FenwickTree3'
+  }
 }

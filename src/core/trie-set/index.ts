@@ -312,4 +312,8 @@ export class TrieSet implements Iterable<string> {
   toString(): string {
     return `TrieSet({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TrieSet'
+  }
 }

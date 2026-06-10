@@ -270,4 +270,8 @@ export class IntervalTree4 {
   toJSON() {
     return { type: 'IntervalTree4', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'IntervalTree4'
+  }
 }

@@ -344,6 +344,10 @@ export class SigmaSet {
   toJSON() {
     return { type: 'SigmaSet', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SigmaSet'
+  }
 }
 
 function popcount(value: number): number {

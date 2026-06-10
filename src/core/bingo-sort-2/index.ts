@@ -99,4 +99,8 @@ export class BingoSort2<T> {
   toString(): string {
     return `BingoSort2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BingoSort2'
+  }
 }

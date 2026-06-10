@@ -130,4 +130,8 @@ export class SegmentTree {
     this.data.length = 0
     this.tree.length = 0
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SegmentTree'
+  }
 }

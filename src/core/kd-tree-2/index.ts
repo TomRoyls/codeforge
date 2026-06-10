@@ -411,4 +411,8 @@ export class KDTree {
   toJSON() {
     return { type: 'KDTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'KDTree'
+  }
 }

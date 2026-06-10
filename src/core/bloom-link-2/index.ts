@@ -142,4 +142,8 @@ export class BloomLink2 {
   toString(): string {
     return `BloomLink2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BloomLink2'
+  }
 }

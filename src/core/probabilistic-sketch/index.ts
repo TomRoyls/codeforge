@@ -86,4 +86,8 @@ export class ProbabilisticSketch {
   clear(): void {
     this._itemCount = 0
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ProbabilisticSketch'
+  }
 }

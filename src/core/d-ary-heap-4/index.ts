@@ -545,4 +545,8 @@ export class DAryHeap4<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DAryHeap4'
+  }
 }

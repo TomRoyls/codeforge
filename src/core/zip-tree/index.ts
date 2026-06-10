@@ -292,4 +292,8 @@ export class ZipTree<K, V> {
   toString(): string {
     return `ZipTree({ size: ${this._size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ZipTree'
+  }
 }

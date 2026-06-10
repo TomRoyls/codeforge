@@ -71,4 +71,8 @@ export class BilinearMap2 {
   toString(): string {
     return `BilinearMap2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BilinearMap2'
+  }
 }

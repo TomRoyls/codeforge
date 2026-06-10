@@ -717,4 +717,8 @@ export class CartesianTree<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'CartesianTree'
+  }
 }

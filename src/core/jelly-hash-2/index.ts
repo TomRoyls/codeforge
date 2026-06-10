@@ -201,4 +201,8 @@ export class JellyHash2<K, V> {
   toJSON() {
     return { type: 'JellyHash2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'JellyHash2'
+  }
 }

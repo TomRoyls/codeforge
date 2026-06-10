@@ -481,4 +481,8 @@ export class TreapMap2<K, V> {
   toString(): string {
     return `TreapMap2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TreapMap2'
+  }
 }

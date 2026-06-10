@@ -822,4 +822,8 @@ export class AVLTree6<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'AVLTree6'
+  }
 }

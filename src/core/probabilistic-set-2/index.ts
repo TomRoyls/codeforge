@@ -68,4 +68,8 @@ export class ProbabilisticSet2<T> {
   toString(): string {
     return `ProbabilisticSet2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ProbabilisticSet2'
+  }
 }

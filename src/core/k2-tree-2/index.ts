@@ -234,4 +234,8 @@ export class K2Tree2 {
   toJSON() {
     return { type: 'K2Tree2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'K2Tree2'
+  }
 }

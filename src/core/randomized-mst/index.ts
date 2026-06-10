@@ -323,4 +323,8 @@ export class RandomizedMST<V> {
   toString(): string {
     return `RandomizedMST({ size: ${this.edges.length} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RandomizedMST'
+  }
 }

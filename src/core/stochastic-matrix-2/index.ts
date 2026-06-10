@@ -202,4 +202,8 @@ export class StochasticMatrix2 {
   clear(): void {
     this.transitions = new Map()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'StochasticMatrix2'
+  }
 }

@@ -71,4 +71,8 @@ export class SegmentTree5 {
   toString(): string {
     return `SegmentTree5()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SegmentTree5'
+  }
 }

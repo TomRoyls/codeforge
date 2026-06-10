@@ -106,4 +106,8 @@ export class DisjointSet3 {
   static empty(): DisjointSet3 {
     return new DisjointSet3()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DisjointSet3'
+  }
 }

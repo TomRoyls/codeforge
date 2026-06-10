@@ -194,4 +194,8 @@ export class CollisionMap2<T> {
   }
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'CollisionMap2'
+  }
 }

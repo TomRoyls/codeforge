@@ -438,6 +438,10 @@ export class QuadTree2<T = undefined> {
   toJSON() {
     return { type: 'QuadTree2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'QuadTree2'
+  }
 }
 
 export type { Point2D, Rect2D, QuadTree2Options }

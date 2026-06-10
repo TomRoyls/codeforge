@@ -278,4 +278,8 @@ export class BipartiteMatcher<L, R> {
 }
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BipartiteMatcher'
+  }
 }

@@ -179,4 +179,8 @@ export class GraphKruskal {
   toJSON() {
     return { type: 'GraphKruskal', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphKruskal'
+  }
 }

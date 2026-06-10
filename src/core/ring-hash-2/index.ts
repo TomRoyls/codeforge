@@ -85,4 +85,8 @@ export class RingHash2 {
   toString(): string {
     return `RingHash2({ size: ${this.ring.length} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RingHash2'
+  }
 }

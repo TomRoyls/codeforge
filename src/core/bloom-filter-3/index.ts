@@ -283,4 +283,8 @@ export class BloomFilter {
   static empty(): BloomFilter {
     return new BloomFilter()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BloomFilter'
+  }
 }

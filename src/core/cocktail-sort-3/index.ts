@@ -159,4 +159,8 @@ export class CocktailSort3<T> {
   static empty<T>(): CocktailSort3<T> {
     return new CocktailSort3<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CocktailSort3'
+  }
 }

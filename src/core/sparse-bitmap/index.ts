@@ -248,4 +248,8 @@ export class SparseBitmap {
   toJSON() {
     return { type: 'SparseBitmap', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SparseBitmap'
+  }
 }

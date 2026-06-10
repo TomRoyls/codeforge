@@ -274,4 +274,8 @@ export class SegmentMap2<V> {
   toString(): string {
     return `SegmentMap2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SegmentMap2'
+  }
 }

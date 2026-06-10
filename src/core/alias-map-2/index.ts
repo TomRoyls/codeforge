@@ -135,4 +135,8 @@ export class AliasMap2<T> {
   static empty<T>(): AliasMap2<T> {
     return new AliasMap2<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'AliasMap2'
+  }
 }

@@ -282,4 +282,8 @@ export class ExtendibleHashTable<K, V> {
   static empty<K, V>(): ExtendibleHashTable<K, V> {
     return new ExtendibleHashTable<K, V>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ExtendibleHashTable'
+  }
 }

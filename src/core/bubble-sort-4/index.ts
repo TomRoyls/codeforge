@@ -215,4 +215,8 @@ export class BubbleSort4<T> {
   toString(): string {
     return `BubbleSort4()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BubbleSort4'
+  }
 }

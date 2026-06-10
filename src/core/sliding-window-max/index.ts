@@ -531,6 +531,10 @@ export class SlidingWindowMax<T = number> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SlidingWindowMax'
+  }
 }
 
 export { defaultComparator } from './types.js'

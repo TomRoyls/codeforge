@@ -250,4 +250,8 @@ export class BitVector2 {
   toJSON() {
     return { type: 'BitVector2', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BitVector2'
+  }
 }

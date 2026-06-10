@@ -542,4 +542,8 @@ export class WaveletMatrix {
   toString(): string {
     return `WaveletMatrix({ size: ${this._size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WaveletMatrix'
+  }
 }

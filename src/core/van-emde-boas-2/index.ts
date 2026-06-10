@@ -318,6 +318,10 @@ export class VanEmdeBoasTree {
   toString(): string {
     return `VanEmdeBoasTree()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'VanEmdeBoasTree'
+  }
 }
 
 export { DEFAULT_UNIVERSE_SIZE } from './types.js'

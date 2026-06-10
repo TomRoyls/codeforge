@@ -320,4 +320,8 @@ export class GraphDFS {
   toJSON() {
     return { type: 'GraphDFS', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphDFS'
+  }
 }

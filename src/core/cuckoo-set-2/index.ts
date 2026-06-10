@@ -632,4 +632,8 @@ export class CuckooSet2<T> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CuckooSet2'
+  }
 }

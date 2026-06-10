@@ -192,6 +192,10 @@ export class SkipListMap3<T> {
   toJSON() {
     return { type: 'SkipListMap3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SkipListMap3'
+  }
 }
 
 class Node<T> {

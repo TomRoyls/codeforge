@@ -109,4 +109,8 @@ export class CycleSort3<T> {
   toString(): string {
     return `CycleSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CycleSort3'
+  }
 }

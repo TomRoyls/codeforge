@@ -436,4 +436,8 @@ export class ScapegoatTree<K, V = undefined> {
     this.clear()
     return items
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'ScapegoatTree'
+  }
 }

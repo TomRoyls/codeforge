@@ -137,4 +137,8 @@ export class TopologicalQueue2 {
   toString(): string {
     return `TopologicalQueue2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TopologicalQueue2'
+  }
 }

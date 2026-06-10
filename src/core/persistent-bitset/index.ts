@@ -286,4 +286,8 @@ export class PersistentBitset {
   toJSON() {
     return { type: 'PersistentBitset', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PersistentBitset'
+  }
 }

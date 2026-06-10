@@ -196,4 +196,8 @@ export class SquareDecomp {
   toJSON() {
     return { type: 'SquareDecomp', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SquareDecomp'
+  }
 }

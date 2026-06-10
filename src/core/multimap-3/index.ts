@@ -121,4 +121,8 @@ export class MultiMap3<K, V> {
   toJSON() {
     return { type: 'MultiMap3', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'MultiMap3'
+  }
 }

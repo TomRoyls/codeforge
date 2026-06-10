@@ -268,4 +268,8 @@ export class RadixTree {
   toJSON() {
     return { type: 'RadixTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'RadixTree'
+  }
 }

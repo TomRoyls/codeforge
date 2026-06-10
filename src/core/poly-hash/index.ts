@@ -224,4 +224,8 @@ export class PolyHash {
   toJSON() {
     return { type: 'PolyHash', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PolyHash'
+  }
 }

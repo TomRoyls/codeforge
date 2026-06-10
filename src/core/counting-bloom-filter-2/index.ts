@@ -205,6 +205,10 @@ export class CountingBloomFilter {
   toString(): string {
     return `${CountingBloomFilter}({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CountingBloomFilter'
+  }
 }
 
 export { DEFAULT_ERROR_RATE } from './types.js'

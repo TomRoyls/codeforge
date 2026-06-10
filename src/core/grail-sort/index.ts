@@ -23,6 +23,10 @@ export class GrailSort {
   toString(): string {
     return `GrailSort()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GrailSort'
+  }
 }
 
 export function isSorted<T>(arr: T[], comparator?: (a: T, b: T) => number): boolean {

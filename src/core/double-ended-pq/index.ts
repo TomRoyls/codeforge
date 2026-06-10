@@ -687,6 +687,10 @@ export class DoubleEndedPQ<T = number> {
     }
     return flat(this.toArray(), depth)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'DoubleEndedPQ'
+  }
 }
 
 export { DEFAULT_COMPARATOR } from './types.js'

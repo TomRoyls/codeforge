@@ -254,4 +254,8 @@ export class CartesianTree3<T> {
   nth(n: number): T | undefined {
     return this.at(n - 1)
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'CartesianTree3'
+  }
 }

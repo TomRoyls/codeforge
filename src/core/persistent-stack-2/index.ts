@@ -478,6 +478,10 @@ export class PersistentStack2<T> {
     }
     return items
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PersistentStack2'
+  }
 }
 
 interface Node<T> {

@@ -321,4 +321,8 @@ export class AdaptivePQ2<T> {
   static empty<T>(): AdaptivePQ2<T> {
     return new AdaptivePQ2<T>()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'AdaptivePQ2'
+  }
 }

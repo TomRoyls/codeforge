@@ -367,6 +367,10 @@ export class SplayMap<K, V> {
   toJSON() {
     return { type: 'SplayMap', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SplayMap'
+  }
 }
 
 export type { SplayNode, CompareFunction, SplayMapOptions } from './types.js'

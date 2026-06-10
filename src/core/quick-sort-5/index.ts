@@ -203,4 +203,8 @@ export class QuickSort5 {
   toString(): string {
     return `QuickSort5()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'QuickSort5'
+  }
 }

@@ -148,4 +148,8 @@ export class BloomFilter2 {
   toString(): string {
     return `${BloomFilter2}({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BloomFilter2'
+  }
 }

@@ -76,4 +76,8 @@ export class GoldenRatioSearch {
   toString(): string {
     return `GoldenRatioSearch()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GoldenRatioSearch'
+  }
 }

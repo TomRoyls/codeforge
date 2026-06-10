@@ -182,4 +182,8 @@ export class GraphDijkstra {
   static empty(): GraphDijkstra {
     return new GraphDijkstra()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphDijkstra'
+  }
 }

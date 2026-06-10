@@ -64,6 +64,10 @@ export class BurrowsWheeler {
   toString(): string {
     return `BurrowsWheeler()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'BurrowsWheeler'
+  }
 }
 
 function getTransforms(input: string): string[] {

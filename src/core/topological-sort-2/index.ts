@@ -110,4 +110,8 @@ export class TopologicalSort2 {
   toString(): string {
     return `TopologicalSort2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'TopologicalSort2'
+  }
 }

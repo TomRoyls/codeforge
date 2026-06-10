@@ -658,6 +658,10 @@ export class BoundedPriorityQueue<T> {
 
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BoundedPriorityQueue'
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

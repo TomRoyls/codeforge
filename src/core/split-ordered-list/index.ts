@@ -161,6 +161,10 @@ export class SplitOrderedList<T> {
   toJSON() {
     return { type: 'SplitOrderedList', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SplitOrderedList'
+  }
 }
 
 export type { SplitOrderedListOptions };

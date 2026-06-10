@@ -205,6 +205,10 @@ export class WeightedUnion {
   toString(): string {
     return `WeightedUnion({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'WeightedUnion'
+  }
 }
 
 export type { WeightedUnionOptions, ComponentInfo } from './types.js'

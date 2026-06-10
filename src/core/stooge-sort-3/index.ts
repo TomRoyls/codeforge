@@ -78,4 +78,8 @@ export class StoogeSort3<T> {
   toString(): string {
     return `StoogeSort3()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'StoogeSort3'
+  }
 }

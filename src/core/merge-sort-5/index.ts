@@ -93,4 +93,8 @@ export class MergeSort5 {
   toString(): string {
     return `MergeSort5()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'MergeSort5'
+  }
 }

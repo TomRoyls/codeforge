@@ -108,4 +108,8 @@ export class PairingFunction2 {
   toString(): string {
     return `PairingFunction2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PairingFunction2'
+  }
 }

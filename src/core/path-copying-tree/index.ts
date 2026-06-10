@@ -217,4 +217,8 @@ export class PathCopyingTree<K, V> {
   toJSON() {
     return { type: 'PathCopyingTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PathCopyingTree'
+  }
 }

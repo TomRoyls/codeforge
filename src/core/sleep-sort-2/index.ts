@@ -244,4 +244,8 @@ export class SleepSort2 {
   toJSON() {
     return { type: 'SleepSort2', items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'SleepSort2'
+  }
 }

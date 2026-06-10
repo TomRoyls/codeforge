@@ -152,4 +152,8 @@ export class SegmentTreeMap2 {
     return { type: 'SegmentTreeMap2', size: this.size, items: this.toArray() }
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'SegmentTreeMap2'
+  }
 }

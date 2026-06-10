@@ -219,4 +219,8 @@ export class BinaryTrie2 {
     return `${BinaryTrie2}({ size: ${this.size} })`
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'BinaryTrie2'
+  }
 }

@@ -289,4 +289,8 @@ export class CuckooHash3<K, V> {
     return { type: 'CuckooHash3', size: this.size, items: this.toArray() }
   }
 
+
+  get [Symbol.toStringTag](): string {
+    return 'CuckooHash3'
+  }
 }

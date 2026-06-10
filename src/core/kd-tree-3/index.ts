@@ -336,6 +336,10 @@ export class KDTree3<T = number[]> {
   }
 
 
+
+  get [Symbol.toStringTag](): string {
+    return 'KDTree3'
+  }
 }
 
 interface KDNode {

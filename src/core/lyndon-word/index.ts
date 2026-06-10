@@ -87,4 +87,8 @@ export class LyndonFactorization {
   toString(): string {
     return `LyndonFactorization()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LyndonFactorization'
+  }
 }

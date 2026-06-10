@@ -241,4 +241,8 @@ export class PrioritySearchTree2 {
   toString(): string {
     return `PrioritySearchTree2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'PrioritySearchTree2'
+  }
 }

@@ -127,4 +127,8 @@ export class LCPArray2 {
   toString(): string {
     return `LCPArray2({ size: ${this.size} })`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'LCPArray2'
+  }
 }

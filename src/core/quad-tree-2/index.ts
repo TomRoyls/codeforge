@@ -389,4 +389,8 @@ export class QuadTree {
   toJSON() {
     return { type: 'QuadTree', size: this.size, items: this.toArray() }
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'QuadTree'
+  }
 }

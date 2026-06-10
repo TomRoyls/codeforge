@@ -303,4 +303,8 @@ export class GraphBFS2 {
   clear(): void {
     this.adjacencyList = new Map()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphBFS2'
+  }
 }

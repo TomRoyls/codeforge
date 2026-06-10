@@ -123,4 +123,8 @@ export class GraphColoring2 {
   static empty(): GraphColoring2 {
     return new GraphColoring2()
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'GraphColoring2'
+  }
 }

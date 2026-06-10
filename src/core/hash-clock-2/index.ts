@@ -70,4 +70,8 @@ export class HashClock2 {
   toString(): string {
     return `HashClock2()`
   }
+
+  get [Symbol.toStringTag](): string {
+    return 'HashClock2'
+  }
 }
