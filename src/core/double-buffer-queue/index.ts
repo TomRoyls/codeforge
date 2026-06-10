@@ -1004,4 +1004,31 @@ export class DoubleBufferQueue<T> {
     }
     return arr
   }
+
+  repeatEach(n: number): T[] {
+    const result: T[] = []
+    for (const item of this.toArray()) {
+      for (let i = 0; i < n; i++) {
+        result.push(item)
+      }
+    }
+    return result
+  }
+
+  removeAt(index: number): T[] {
+    return this.toArray().filter((_, i) => i !== index)
+  }
+
+  insertAt(index: number, value: T): T[] {
+    const arr = this.toArray()
+    return [...arr.slice(0, index), value, ...arr.slice(index)]
+  }
+
+  removeFirst(): T[] {
+    return this.toArray().slice(1)
+  }
+
+  removeLast(): T[] {
+    return this.toArray().slice(0, -1)
+  }
 }

@@ -1196,4 +1196,24 @@ export class ResizableArray<T> {
     }
     return arr
   }
+
+  repeatEach(n: number): T[] {
+    const result: T[] = []
+    for (const item of this.toArray()) {
+      for (let i = 0; i < n; i++) {
+        result.push(item)
+      }
+    }
+    return result
+  }
+
+
+
+  removeFirst(): T[] {
+    return this.toArray().slice(1)
+  }
+
+  removeLast(): T[] {
+    return this.toArray().slice(0, -1)
+  }
 }
