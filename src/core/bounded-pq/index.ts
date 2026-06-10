@@ -605,6 +605,17 @@ export class BoundedPriorityQueue<T> {
     }
     return count
   }
+
+  interleave(other: T[]): T[] {
+    const a = this.toArray()
+    const result: T[] = []
+    const maxLen = Math.max(a.length, other.length)
+    for (let i = 0; i < maxLen; i++) {
+      if (i < a.length) result.push(a[i]!)
+      if (i < other.length) result.push(other[i]!)
+    }
+    return result
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'
