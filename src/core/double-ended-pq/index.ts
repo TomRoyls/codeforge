@@ -315,36 +315,36 @@ export class DoubleEndedPQ<T = number> {
   }
 
   every(predicate: (item: T) => boolean): boolean {
-    return this.toArray().every(predicate)
+    return this.heap.every(predicate)
   }
 
   some(predicate: (item: T) => boolean): boolean {
-    return this.toArray().some(predicate)
+    return this.heap.some(predicate)
   }
 
   find(predicate: (item: T) => boolean): T | undefined {
-    return this.toArray().find(predicate)
+    return this.heap.find(predicate)
   }
 
   findIndex(predicate: (item: T) => boolean): number {
-    return this.toArray().findIndex(predicate)
+    return this.heap.findIndex(predicate)
   }
 
   includes(item: T): boolean {
-    return this.toArray().includes(item)
+    return this.heap.includes(item)
   }
 
   at(index: number): T | undefined {
-    const arr = this.toArray()
+    const arr = this.heap
     return index >= 0 ? arr[index] : arr[arr.length + index]
   }
 
   join(separator: string = ', '): string {
-    return this.toArray().join(separator)
+    return this.heap.join(separator)
   }
 
   slice(start?: number, end?: number): T[] {
-    return this.toArray().slice(start, end)
+    return this.heap.slice(start, end)
   }
 
   count(predicate: (item: T) => boolean): number {

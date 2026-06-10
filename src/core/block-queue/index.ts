@@ -123,32 +123,32 @@ export class BlockQueue<T> {
   }
 
   every(predicate: (item: T) => boolean): boolean {
-    return this.toArray().every(predicate)
+    return this.queue.every(predicate)
   }
 
   some(predicate: (item: T) => boolean): boolean {
-    return this.toArray().some(predicate)
+    return this.queue.some(predicate)
   }
 
   find(predicate: (item: T) => boolean): T | undefined {
-    return this.toArray().find(predicate)
+    return this.queue.find(predicate)
   }
 
   findIndex(predicate: (item: T) => boolean): number {
-    return this.toArray().findIndex(predicate)
+    return this.queue.findIndex(predicate)
   }
 
   includes(item: T): boolean {
-    return this.toArray().includes(item)
+    return this.queue.includes(item)
   }
 
   at(index: number): T | undefined {
-    const arr = this.toArray()
+    const arr = this.queue
     return index >= 0 ? arr[index] : arr[arr.length + index]
   }
 
   join(separator: string = ', '): string {
-    return this.toArray().join(separator)
+    return this.queue.join(separator)
   }
 
   count(predicate: (item: T) => boolean): number {
@@ -200,23 +200,23 @@ export class BlockQueue<T> {
   }
 
   min(): T | undefined {
-    const arr = this.toArray()
+    const arr = this.queue
     if (arr.length === 0) return undefined
     return arr.reduce((a, b) => a < b ? a : b)
   }
 
   max(): T | undefined {
-    const arr = this.toArray()
+    const arr = this.queue
     if (arr.length === 0) return undefined
     return arr.reduce((a, b) => a > b ? a : b)
   }
 
   take(n: number): T[] {
-    return this.toArray().slice(0, n)
+    return this.queue.slice(0, n)
   }
 
   skip(n: number): T[] {
-    return this.toArray().slice(n)
+    return this.queue.slice(n)
   }
 
 
@@ -274,7 +274,7 @@ export class BlockQueue<T> {
   }
 
   lastIndexOf(item: T): number {
-    return this.toArray().lastIndexOf(item)
+    return this.queue.lastIndexOf(item)
   }
 
   compact(): T[] {

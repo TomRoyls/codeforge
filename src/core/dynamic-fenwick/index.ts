@@ -171,23 +171,23 @@ export class DynamicFenwick<T = number> {
   }
 
   every(predicate: (item: T) => boolean): boolean {
-    return this.toArray().every(predicate)
+    return this.values.every(predicate)
   }
 
   some(predicate: (item: T) => boolean): boolean {
-    return this.toArray().some(predicate)
+    return this.values.some(predicate)
   }
 
   find(predicate: (item: T) => boolean): T | undefined {
-    return this.toArray().find(predicate)
+    return this.values.find(predicate)
   }
 
   findIndex(predicate: (item: T) => boolean): number {
-    return this.toArray().findIndex(predicate)
+    return this.values.findIndex(predicate)
   }
 
   includes(item: T): boolean {
-    return this.toArray().includes(item)
+    return this.values.includes(item)
   }
 
   reverse(): T[] {
@@ -195,16 +195,16 @@ export class DynamicFenwick<T = number> {
   }
 
   at(index: number): T | undefined {
-    const arr = this.toArray()
+    const arr = this.values
     return index >= 0 ? arr[index] : arr[arr.length + index]
   }
 
   join(separator: string = ', '): string {
-    return this.toArray().join(separator)
+    return this.values.join(separator)
   }
 
   slice(start?: number, end?: number): T[] {
-    return this.toArray().slice(start, end)
+    return this.values.slice(start, end)
   }
 
   count(predicate: (item: T) => boolean): number {
