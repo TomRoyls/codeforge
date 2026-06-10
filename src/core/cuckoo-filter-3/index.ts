@@ -97,7 +97,7 @@ export class CuckooFilter3 {
     const baseHash = this.hash(item);
     const fingerprint = Math.max(1, baseHash % (this.fingerprintMask + 1));
     const bucket1 = ((baseHash % this.bucketCount) + this.bucketCount) % this.bucketCount;
-    const bucket2 = ((bucket1 + this.hash(fingerprint.toString())) % 2_147_483_647) % this.bucketCount;
+    const bucket2 = (((bucket1 + this.hash(fingerprint.toString())) % 2_147_483_647 + 2_147_483_647) % 2_147_483_647 + this.bucketCount) % this.bucketCount;
 
     return [fingerprint, bucket1, bucket2];
   }
@@ -142,7 +142,7 @@ export class CuckooFilter3 {
       return true;
     }
 
-    const altBucket = ((bucketToKickFrom + this.hash(kickedFingerprint!.toString())) % 2147483647) % this.bucketCount;
+    const altBucket = (((bucketToKickFrom + this.hash(kickedFingerprint!.toString())) % 2147483647 + 2147483647) % 2147483647 + this.bucketCount) % this.bucketCount;
 
     if (this.tryInsert(altBucket, kickedFingerprint!)) {
       return true;
