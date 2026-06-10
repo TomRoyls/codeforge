@@ -351,4 +351,18 @@ export class SqrtDecomposition<T> {
     callback(this)
     return this
   }
+
+  max(): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    return arr.reduce((a, b) => a > b ? a : b)
+  }
+
+  take(n: number): T[] {
+    return this.toArray().slice(0, n)
+  }
+
+  skip(n: number): T[] {
+    return this.toArray().slice(n)
+  }
 }

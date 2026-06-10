@@ -532,6 +532,16 @@ export class FibonacciHeap3<T = number> {
     callback(this)
     return this
   }
+
+
+
+  take(n: number): T[] {
+    return this.toArray().slice(0, n)
+  }
+
+  skip(n: number): T[] {
+    return this.toArray().slice(n)
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

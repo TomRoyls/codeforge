@@ -469,6 +469,14 @@ export class Deque2<T = unknown> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  take(n: number): T[] {
+    return this.toArray().slice(0, n)
+  }
+
+  skip(n: number): T[] {
+    return this.toArray().slice(n)
+  }
 }
 
 export type { Deque2Options } from './types.js'

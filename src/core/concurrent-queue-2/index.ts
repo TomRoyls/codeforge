@@ -465,6 +465,10 @@ export class ConcurrentQueue<T = unknown> {
   toSet(): Set<T> {
     return new Set(this.toArray())
   }
+
+  skip(n: number): T[] {
+    return this.toArray().slice(n)
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

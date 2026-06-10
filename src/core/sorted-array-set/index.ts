@@ -398,6 +398,14 @@ export class SortedArraySet<T = unknown> {
     callback(this)
     return this
   }
+
+  take(n: number): T[] {
+    return this.toArray().slice(0, n)
+  }
+
+  skip(n: number): T[] {
+    return this.toArray().slice(n)
+  }
 }
 
 export type { Comparator, SortedArraySetOptions, SortedArraySetStats } from './types.js'

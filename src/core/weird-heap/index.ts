@@ -481,6 +481,26 @@ export class WeirdHeap<T = unknown> {
     callback(this)
     return this
   }
+
+  min(): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    return arr.reduce((a, b) => a < b ? a : b)
+  }
+
+  max(): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    return arr.reduce((a, b) => a > b ? a : b)
+  }
+
+  take(n: number): T[] {
+    return this.toArray().slice(0, n)
+  }
+
+  skip(n: number): T[] {
+    return this.toArray().slice(n)
+  }
 }
 
 export { DEFAULT_WEIRD_HEAP_OPTIONS } from './types.js'
