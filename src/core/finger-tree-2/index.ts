@@ -917,4 +917,8 @@ export class FingerTree2<T> {
     })
     return result
   }
+
+  clone(): FingerTree2<T> {
+    return new FingerTree2(this.toArray())
+  }
 }

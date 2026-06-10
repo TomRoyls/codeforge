@@ -814,4 +814,8 @@ export class RangeTree<T> {
     })
     return result
   }
+
+  clone(): RangeTree<T> {
+    return new RangeTree(this.toArray())
+  }
 }

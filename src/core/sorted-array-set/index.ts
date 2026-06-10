@@ -830,6 +830,7 @@ export class SortedArraySet<T = unknown> {
     })
     return result
   }
+
 }
 
 export type { Comparator, SortedArraySetOptions, SortedArraySetStats } from './types.js'

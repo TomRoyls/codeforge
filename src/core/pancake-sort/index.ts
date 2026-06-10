@@ -622,4 +622,8 @@ export class PancakeSort<T> {
     })
     return result
   }
+
+  clone(): PancakeSort<T> {
+    return new PancakeSort(this.toArray())
+  }
 }

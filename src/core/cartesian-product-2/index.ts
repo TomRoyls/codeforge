@@ -124,4 +124,8 @@ export class CartesianProduct2<T> {
   get [Symbol.toStringTag](): string {
     return 'CartesianProduct2'
   }
+
+  clone(): CartesianProduct2<T> {
+    return new CartesianProduct2(this.toArray())
+  }
 }

@@ -619,4 +619,8 @@ export class ShellSort<T> {
     })
     return result
   }
+
+  clone(): ShellSort<T> {
+    return new ShellSort(this.toArray())
+  }
 }
