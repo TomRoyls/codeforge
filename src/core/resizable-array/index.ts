@@ -750,4 +750,18 @@ export class ResizableArray<T> {
   pluck<K extends keyof T>(key: K): T[K][] {
     return this.toArray().map(item => item[key])
   }
+
+  nth(n: number): T | undefined {
+    const arr = this.toArray()
+    const i = n - 1
+    return i >= 0 && i < arr.length ? arr[i] : undefined
+  }
+
+  head(): T | undefined {
+    return this.first()
+  }
+
+  tail(): T[] {
+    return this.skip(1)
+  }
 }

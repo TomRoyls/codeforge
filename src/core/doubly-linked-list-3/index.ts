@@ -715,4 +715,10 @@ export class DoublyLinkedList3<T> {
   pluck<K extends keyof T>(key: K): T[K][] {
     return this.toArray().map(item => item[key])
   }
+
+  nth(n: number): T | undefined {
+    return this.at(n - 1)
+  }
+
+
 }

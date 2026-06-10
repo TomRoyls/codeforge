@@ -679,4 +679,16 @@ export class LazySegmentTree<T, U = T> {
   pluck<K extends keyof T>(key: K): T[K][] {
     return this.toArray().map(item => item[key])
   }
+
+  nth(n: number): T | undefined {
+    return this.at(n - 1)
+  }
+
+  head(): T | undefined {
+    return this.first()
+  }
+
+  tail(): T[] {
+    return this.skip(1)
+  }
 }

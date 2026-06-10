@@ -784,4 +784,17 @@ export class DynamicArray<T> {
   pluck<K extends keyof T>(key: K): T[K][] {
     return this.toArray().map(item => item[key])
   }
+
+  nth(n: number): T | undefined {
+    return this.at(n - 1)
+  }
+
+  head(): T | undefined {
+    const arr = this.toArray()
+    return arr.length > 0 ? arr[0] : undefined
+  }
+
+  tail(): T[] {
+    return this.skip(1)
+  }
 }

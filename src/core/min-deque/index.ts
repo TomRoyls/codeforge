@@ -664,6 +664,7 @@ export class MinDeque<T = unknown> {
   pluck<K extends keyof T>(key: K): T[K][] {
     return this.toArray().map(item => item[key])
   }
+
 }
 
 export type { MinDequeOptions } from './types.js'

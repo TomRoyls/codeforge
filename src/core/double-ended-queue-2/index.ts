@@ -712,6 +712,7 @@ export class Deque<T> {
   pluck<K extends keyof T>(key: K): T[K][] {
     return this.toArray().map(item => item[key])
   }
+
 }
 
 function nextPow2(n: number): number {

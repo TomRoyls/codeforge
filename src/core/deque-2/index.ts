@@ -769,6 +769,7 @@ export class Deque2<T = unknown> {
   pluck<K extends keyof T>(key: K): T[K][] {
     return this.toArray().map(item => item[key])
   }
+
 }
 
 export type { Deque2Options } from './types.js'
