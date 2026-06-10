@@ -607,6 +607,10 @@ toString(): string {
     }
     return acc
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }
 
 class AVLNode<T> {

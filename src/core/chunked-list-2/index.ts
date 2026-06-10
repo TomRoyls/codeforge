@@ -369,4 +369,8 @@ export class ChunkedList2<T> {
   pipe<U>(transform: (items: T[]) => U[]): U[] {
     return transform(this.toArray())
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }

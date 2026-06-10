@@ -443,4 +443,8 @@ export class AtomicSet2<T> {
     }
     return acc
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }

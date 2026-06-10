@@ -357,4 +357,8 @@ export class CircularBuffer3<T> {
   pipe<U>(transform: (items: T[]) => U[]): U[] {
     return transform(this.toArray())
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }

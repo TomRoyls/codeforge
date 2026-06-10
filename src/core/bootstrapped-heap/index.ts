@@ -593,6 +593,10 @@ export class BootstrappedHeap<T = number> {
     }
     return acc
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

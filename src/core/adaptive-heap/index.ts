@@ -570,4 +570,8 @@ export class AdaptiveHeap<T> {
     }
     return acc
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }

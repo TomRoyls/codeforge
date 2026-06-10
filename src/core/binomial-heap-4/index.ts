@@ -674,4 +674,8 @@ export class BinomialHeap4<T = unknown> {
     }
     return acc
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }

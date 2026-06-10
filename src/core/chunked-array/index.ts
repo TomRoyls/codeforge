@@ -574,6 +574,10 @@ export class ChunkedArray<T = unknown> {
     }
     return acc
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

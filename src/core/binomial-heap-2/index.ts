@@ -704,6 +704,10 @@ export class BinomialHeap<T = number> {
     }
     return acc
   }
+
+  none(predicate: (item: T) => boolean): boolean {
+    return !this.some(predicate)
+  }
 }
 
 export type { BinomialHeapOptions 
