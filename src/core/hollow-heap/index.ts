@@ -952,6 +952,18 @@ export class HollowHeap<T> {
     if (arr.length === 0) return 0
     return this.sumBy(fn) / arr.length
   }
+
+  distinctUntilChanged(): T[] {
+    const arr = this.toArray()
+    if (arr.length === 0) return []
+    const result: T[] = [arr[0]!]
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] !== arr[i - 1]) {
+        result.push(arr[i]!)
+      }
+    }
+    return result
+  }
 }
 
 export type { HollowHeapOptions } from './types.js';
