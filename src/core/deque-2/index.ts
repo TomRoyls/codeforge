@@ -424,6 +424,16 @@ export class Deque2<T = unknown> {
     }
     return result
   }
+
+  partition(predicate: (item: T) => boolean): [T[], T[]] {
+    const pass: T[] = []
+    const fail: T[] = []
+    for (const item of this.toArray()) {
+      if (predicate(item)) pass.push(item)
+      else fail.push(item)
+    }
+    return [pass, fail]
+  }
 }
 
 export type { Deque2Options } from './types.js'
