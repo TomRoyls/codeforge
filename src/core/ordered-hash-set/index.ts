@@ -848,4 +848,34 @@ export class OrderedHashSet<T> {
     const pad = Array(minLength - arr.length).fill(value) as T[]
     return [...pad, ...arr]
   }
+
+  takeRight(n: number): T[] {
+    const arr = this.toArray()
+    return arr.slice(Math.max(0, arr.length - n))
+  }
+
+  dropRight(n: number): T[] {
+    const arr = this.toArray()
+    return arr.slice(0, Math.max(0, arr.length - n))
+  }
+
+  firstOrDefault(defaultValue: T): T {
+    const arr = this.toArray()
+    return arr.length > 0 ? arr[0]! : defaultValue
+  }
+
+  lastOrDefault(defaultValue: T): T {
+    const arr = this.toArray()
+    return arr.length > 0 ? arr[arr.length - 1]! : defaultValue
+  }
+
+  elementAt(index: number): T | undefined {
+    const arr = this.toArray()
+    return index >= 0 && index < arr.length ? arr[index]! : undefined
+  }
+
+  elementAtOrDefault(index: number, defaultValue: T): T {
+    const arr = this.toArray()
+    return index >= 0 && index < arr.length ? arr[index]! : defaultValue
+  }
 }
