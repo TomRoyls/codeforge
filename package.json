@@ -28,7 +28,7 @@
     "@typescript-eslint/parser": "^8.60.1",
     "@vitest/coverage-v8": "^4.1.8",
     "eslint": "^9.39.4",
-    "eslint-config-oclif": "^6.0.167",
+    "eslint-config-oclif": "^6.0.168",
     "eslint-config-prettier": "^10.1.8",
     "oclif": "^4.23.10",
     "prettier": "^3.8.3",
