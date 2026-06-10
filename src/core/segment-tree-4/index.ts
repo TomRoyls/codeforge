@@ -164,4 +164,8 @@ export class SegmentTree {
   toJSON() {
     return { type: 'SegmentTree', items: this.toArray() }
   }
+
+  isEmpty(): boolean {
+    return this.n === 0
+  }
 }

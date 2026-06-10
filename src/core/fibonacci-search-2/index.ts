@@ -215,4 +215,8 @@ export class FibonacciSearch {
   toString(): string {
     return `FibonacciSearch()`
   }
+
+  isEmpty(): boolean {
+    return this.n === 0
+  }
 }

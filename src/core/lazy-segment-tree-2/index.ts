@@ -134,4 +134,8 @@ export class LazySegmentTree {
   toJSON() {
     return { type: 'LazySegmentTree', items: this.toArray() }
   }
+
+  isEmpty(): boolean {
+    return this.n === 0
+  }
 }
