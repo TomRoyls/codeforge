@@ -528,4 +528,8 @@ export class BinomialHeap4<T = unknown> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }

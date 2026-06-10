@@ -359,4 +359,8 @@ export class CircularBuffer4<T> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }

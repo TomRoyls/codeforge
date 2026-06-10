@@ -580,6 +580,10 @@ export class BinomialQueue<T = number> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

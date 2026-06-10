@@ -446,6 +446,10 @@ export class ChunkedArray<T = unknown> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

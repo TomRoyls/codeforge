@@ -457,6 +457,10 @@ export class BootstrappedHeap<T = number> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

@@ -447,4 +447,8 @@ export class AVLTree<T> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }

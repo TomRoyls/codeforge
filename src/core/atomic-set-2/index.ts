@@ -309,4 +309,8 @@ export class AtomicSet2<T> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }

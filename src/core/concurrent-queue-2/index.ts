@@ -404,6 +404,10 @@ export class ConcurrentQueue<T = unknown> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { ConcurrentQueueOptions } from './types.js'

@@ -488,6 +488,10 @@ export class AVLTree4<T> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 interface Node<T> {

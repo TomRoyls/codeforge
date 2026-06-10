@@ -359,6 +359,10 @@ export class BoundedPriorityQueue<T> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

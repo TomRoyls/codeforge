@@ -656,4 +656,8 @@ export class TwoThreeTree<T> {
     }
     return true
   }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
