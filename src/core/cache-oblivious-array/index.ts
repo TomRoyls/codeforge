@@ -751,4 +751,8 @@ export class CacheObliviousArray<T> {
     })
     return result
   }
+
+  static from<T>(items: T[]): CacheObliviousArray<T> {
+    return new CacheObliviousArray(items)
+  }
 }

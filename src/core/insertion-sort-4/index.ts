@@ -133,4 +133,8 @@ export class InsertionSort4<T> {
   get [Symbol.toStringTag](): string {
     return 'InsertionSort4'
   }
+
+  static from<T>(items: T[]): InsertionSort4<T> {
+    return new InsertionSort4(items)
+  }
 }

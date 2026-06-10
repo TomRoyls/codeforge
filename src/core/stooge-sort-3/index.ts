@@ -82,4 +82,8 @@ export class StoogeSort3<T> {
   get [Symbol.toStringTag](): string {
     return 'StoogeSort3'
   }
+
+  static from<T>(items: T[]): StoogeSort3<T> {
+    return new StoogeSort3(items)
+  }
 }

@@ -128,4 +128,8 @@ export class GallopingSearch<T> {
   get [Symbol.toStringTag](): string {
     return 'GallopingSearch'
   }
+
+  static from<T>(items: T[]): GallopingSearch<T> {
+    return new GallopingSearch(items)
+  }
 }

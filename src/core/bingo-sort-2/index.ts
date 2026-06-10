@@ -103,4 +103,8 @@ export class BingoSort2<T> {
   get [Symbol.toStringTag](): string {
     return 'BingoSort2'
   }
+
+  static from<T>(items: T[]): BingoSort2<T> {
+    return new BingoSort2(items)
+  }
 }

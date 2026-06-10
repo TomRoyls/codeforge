@@ -626,4 +626,8 @@ export class PancakeSort<T> {
   clone(): PancakeSort<T> {
     return new PancakeSort(this.toArray())
   }
+
+  static from<T>(items: T[]): PancakeSort<T> {
+    return new PancakeSort(items)
+  }
 }

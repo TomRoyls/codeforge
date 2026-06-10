@@ -710,4 +710,8 @@ export class FenwickTree2<T = number> {
     })
     return result
   }
+
+  static from<T>(items: T[]): FenwickTree2<T> {
+    return new FenwickTree2(items)
+  }
 }

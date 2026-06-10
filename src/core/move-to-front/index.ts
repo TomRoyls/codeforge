@@ -703,4 +703,8 @@ export class MoveToFront<T> {
     })
     return result
   }
+
+  static from<T>(items: T[]): MoveToFront<T> {
+    return new MoveToFront(items)
+  }
 }

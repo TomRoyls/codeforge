@@ -128,4 +128,5 @@ export class CartesianProduct2<T> {
   clone(): CartesianProduct2<T> {
     return new CartesianProduct2(this.toArray())
   }
+
 }

@@ -689,4 +689,8 @@ export class SnapArray<T> {
     })
     return result
   }
+
+  static from<T>(items: T[]): SnapArray<T> {
+    return new SnapArray(items)
+  }
 }

@@ -80,4 +80,8 @@ export class BogoSort2<T> {
   get [Symbol.toStringTag](): string {
     return 'BogoSort2'
   }
+
+  static from<T>(items: T[]): BogoSort2<T> {
+    return new BogoSort2(items)
+  }
 }

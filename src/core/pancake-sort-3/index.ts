@@ -141,4 +141,8 @@ export class PancakeSort3<T> {
   get [Symbol.toStringTag](): string {
     return 'PancakeSort3'
   }
+
+  static from<T>(items: T[]): PancakeSort3<T> {
+    return new PancakeSort3(items)
+  }
 }

@@ -113,4 +113,8 @@ export class CycleSort3<T> {
   get [Symbol.toStringTag](): string {
     return 'CycleSort3'
   }
+
+  static from<T>(items: T[]): CycleSort3<T> {
+    return new CycleSort3(items)
+  }
 }

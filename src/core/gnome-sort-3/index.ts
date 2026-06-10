@@ -105,4 +105,8 @@ export class GnomeSort3<T> {
   get [Symbol.toStringTag](): string {
     return 'GnomeSort3'
   }
+
+  static from<T>(items: T[]): GnomeSort3<T> {
+    return new GnomeSort3(items)
+  }
 }

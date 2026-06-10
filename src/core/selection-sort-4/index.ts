@@ -175,4 +175,8 @@ export class SelectionSort4<T> {
   get [Symbol.toStringTag](): string {
     return 'SelectionSort4'
   }
+
+  static from<T>(items: T[]): SelectionSort4<T> {
+    return new SelectionSort4(items)
+  }
 }

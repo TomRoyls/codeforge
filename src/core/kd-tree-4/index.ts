@@ -400,6 +400,10 @@ export class KDTree4<T = number[]> {
   get [Symbol.toStringTag](): string {
     return 'KDTree4'
   }
+
+  static from<T>(items: T[]): KDTree4<T> {
+    return new KDTree4(items)
+  }
 }
 
 interface KDNode {

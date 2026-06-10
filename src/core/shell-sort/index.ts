@@ -623,4 +623,8 @@ export class ShellSort<T> {
   clone(): ShellSort<T> {
     return new ShellSort(this.toArray())
   }
+
+  static from<T>(items: T[]): ShellSort<T> {
+    return new ShellSort(items)
+  }
 }

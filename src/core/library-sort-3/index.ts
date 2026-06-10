@@ -123,4 +123,8 @@ export class LibrarySort3<T> {
   get [Symbol.toStringTag](): string {
     return 'LibrarySort3'
   }
+
+  static from<T>(items: T[]): LibrarySort3<T> {
+    return new LibrarySort3(items)
+  }
 }
