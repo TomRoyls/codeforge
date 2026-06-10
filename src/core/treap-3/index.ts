@@ -229,4 +229,12 @@ export class Treap3<K, V> {
   toString(): string {
     return `Treap3({ size: ${this.size} })`
   }
+
+  keys(): K[] {
+    return this.toArray().map(([k]) => k)
+  }
+
+  values(): V[] {
+    return this.toArray().map(([, v]) => v)
+  }
 }
