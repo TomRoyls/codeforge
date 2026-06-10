@@ -997,6 +997,36 @@ toString(): string {
 
 
 
+
+  intersperse(separator: T): T[] {
+    const arr = this.toArray()
+    if (arr.length <= 1) return [...arr]
+    const result: T[] = []
+    for (let i = 0; i < arr.length; i++) {
+      if (i > 0) result.push(separator)
+      result.push(arr[i]!)
+    }
+    return result
+  }
+
+  prepend(item: T): T[] {
+    return [item, ...this.toArray()]
+  }
+
+  append(item: T): T[] {
+    return [...this.toArray(), item]
+  }
+
+  zipWith<U, R>(other: Iterable<U>, fn: (a: T, b: U) => R): R[] {
+    const a = this.toArray()
+    const b = Array.from(other)
+    const len = Math.min(a.length, b.length)
+    const result: R[] = []
+    for (let i = 0; i < len; i++) {
+      result.push(fn(a[i]!, b[i]!))
+    }
+    return result
+  }
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback
