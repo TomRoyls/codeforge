@@ -1119,6 +1119,14 @@ export class PairingHeap2<T> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { PairingHeap2Options, PairingHeap2Node, Comparator, ForEachCallback } from './types.js'

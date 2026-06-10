@@ -1022,6 +1022,14 @@ export class MedianHeap<T = number> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { MedianHeapOptions } from './types.js'

@@ -842,6 +842,14 @@ export class DynamicFenwick<T = number> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'

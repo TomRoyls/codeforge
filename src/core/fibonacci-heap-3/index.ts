@@ -1118,6 +1118,14 @@ export class FibonacciHeap3<T = number> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { FibonacciHeap3Options, FibonacciHeap3Node } from './types.js'

@@ -950,6 +950,14 @@ export class LoserTree<T = number> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { Comparator, ForEachCallback, LoserTreeOptions } from './types.js'

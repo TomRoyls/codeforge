@@ -977,6 +977,14 @@ export class SoftHeap<T = unknown> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export { DEFAULT_SOFT_HEAP_OPTIONS } from './types.js'

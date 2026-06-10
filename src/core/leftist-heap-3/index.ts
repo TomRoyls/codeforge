@@ -956,6 +956,14 @@ export class LeftistHeap3<T = number> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { LeftistHeap3Options, LeftistHeap3Node } from './types.js'

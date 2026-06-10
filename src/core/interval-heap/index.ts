@@ -1021,6 +1021,14 @@ export class IntervalHeap<T> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

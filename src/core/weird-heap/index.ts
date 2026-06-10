@@ -1079,6 +1079,14 @@ export class WeirdHeap<T = unknown> {
     }
     return result
   }
+
+  indexOf(item: T): number {
+    return this.toArray().indexOf(item)
+  }
+
+  lastIndexOf(item: T): number {
+    return this.toArray().lastIndexOf(item)
+  }
 }
 
 export { DEFAULT_WEIRD_HEAP_OPTIONS } from './types.js'
