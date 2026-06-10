@@ -128,4 +128,8 @@ export class FMIndex2 {
   get [Symbol.toStringTag](): string {
     return 'FMIndex2'
   }
+
+  get size(): number {
+    return this.length
+  }
 }

@@ -120,4 +120,8 @@ export class SuffixArray3 {
   get [Symbol.toStringTag](): string {
     return 'SuffixArray3'
   }
+
+  get size(): number {
+    return this.length
+  }
 }

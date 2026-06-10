@@ -140,4 +140,8 @@ export class CircularSuffixArray {
   get [Symbol.toStringTag](): string {
     return 'CircularSuffixArray'
   }
+
+  size(): number {
+    return this.length()
+  }
 }

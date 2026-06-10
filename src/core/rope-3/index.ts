@@ -374,4 +374,8 @@ export class Rope3 {
   contains(str: string): boolean {
     return this.includes(str)
   }
+
+  get size(): number {
+    return this.length
+  }
 }

@@ -217,4 +217,8 @@ export class WaveletTree3 {
   get [Symbol.toStringTag](): string {
     return 'WaveletTree3'
   }
+
+  size(): number {
+    return this.length()
+  }
 }

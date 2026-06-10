@@ -170,4 +170,8 @@ export class SuccinctBitvector2 {
   get [Symbol.toStringTag](): string {
     return 'SuccinctBitvector2'
   }
+
+  get size(): number {
+    return this.length
+  }
 }

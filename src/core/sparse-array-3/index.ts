@@ -140,4 +140,8 @@ export class SparseArray3<T> {
   get [Symbol.toStringTag](): string {
     return 'SparseArray3'
   }
+
+  get size(): number {
+    return this.length
+  }
 }

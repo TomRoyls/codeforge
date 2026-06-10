@@ -194,6 +194,10 @@ export class RankSelectBitvector2 {
   get [Symbol.toStringTag](): string {
     return 'RankSelectBitvector2'
   }
+
+  get size(): number {
+    return this.length
+  }
 }
 
 function popcount(n: number): number {

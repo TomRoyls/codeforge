@@ -175,4 +175,8 @@ export class EditBuffer2 {
   get [Symbol.toStringTag](): string {
     return 'EditBuffer2'
   }
+
+  get size(): number {
+    return this.length
+  }
 }

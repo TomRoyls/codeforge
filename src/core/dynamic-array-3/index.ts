@@ -757,4 +757,8 @@ export class DynamicArray3<T> {
     const pad = Array(minLength - arr.length).fill(value) as T[]
     return [...pad, ...arr]
   }
+
+  get size(): number {
+    return this.length
+  }
 }

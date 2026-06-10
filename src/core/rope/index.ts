@@ -228,4 +228,8 @@ export class Rope {
   get [Symbol.toStringTag](): string {
     return 'Rope'
   }
+
+  get size(): number {
+    return this.length
+  }
 }

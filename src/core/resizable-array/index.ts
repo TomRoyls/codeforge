@@ -917,4 +917,8 @@ export class ResizableArray<T> {
   contains(item: T): boolean {
     return this.includes(item)
   }
+
+  get size(): number {
+    return this.length
+  }
 }

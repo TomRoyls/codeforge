@@ -93,4 +93,8 @@ export class RunLengthEncoding3 {
   get [Symbol.toStringTag](): string {
     return 'RunLengthEncoding3'
   }
+
+  get size(): number {
+    return this.length
+  }
 }

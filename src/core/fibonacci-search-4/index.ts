@@ -195,4 +195,8 @@ export class FibonacciSearch4 {
   includes(target: number): boolean {
     return this.contains(target)
   }
+
+  get size(): number {
+    return this.length
+  }
 }

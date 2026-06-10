@@ -755,4 +755,8 @@ export class SnapArray<T> {
   contains(value: T): boolean {
     return this.includes(value)
   }
+
+  get size(): number {
+    return this.length
+  }
 }
