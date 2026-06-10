@@ -152,3 +152,116 @@ describe('matchGlob edge cases', () => {
     expect(matchGlob('axyzb', 'a*b')).toBe(true)
   })
 })
+
+describe('globToRegex advanced', () => {
+  it('caches identical patterns', () => {
+    const r1 = globToRegex('*.ts')
+    const r2 = globToRegex('*.ts')
+    expect(r1).toBe(r2)
+  })
+
+  it('different patterns produce different regexes', () => {
+    const r1 = globToRegex('*.ts')
+    const r2 = globToRegex('*.js')
+    expect(r1).not.toBe(r2)
+  })
+
+  it('handles escaped wildcard', () => {
+    const re = globToRegex('file\\*.ts')
+    expect(re.test('file*.ts')).toBe(true)
+    expect(re.test('fileX.ts')).toBe(false)
+  })
+
+  it('handles escaped question mark', () => {
+    const re = globToRegex('file\\?.ts')
+    expect(re.test('file?.ts')).toBe(true)
+    expect(re.test('fileX.ts')).toBe(false)
+  })
+
+  it('handles dot in pattern literally', () => {
+    const re = globToRegex('file.ts')
+    expect(re.test('file.ts')).toBe(true)
+    expect(re.test('fileXts')).toBe(false)
+  })
+
+  it('handles plus sign in pattern', () => {
+    const re = globToRegex('a+b')
+    expect(re.test('a+b')).toBe(true)
+    expect(re.test('aab')).toBe(false)
+  })
+
+  it('handles parentheses in pattern', () => {
+    const re = globToRegex('(test)')
+    expect(re.test('(test)')).toBe(true)
+  })
+
+  it('handles caret in pattern', () => {
+    const re = globToRegex('^start')
+    expect(re.test('^start')).toBe(true)
+  })
+
+  it('handles dollar sign in pattern', () => {
+    const re = globToRegex('end$')
+    expect(re.test('end$')).toBe(true)
+  })
+
+  it('double star globstar matches nested paths', () => {
+    const re = globToRegex('src/**/test/*.ts')
+    expect(re.test('src/test/foo.ts')).toBe(true)
+    expect(re.test('src/a/b/c/test/foo.ts')).toBe(true)
+    expect(re.test('src/foo.ts')).toBe(false)
+  })
+
+  it('character class with multiple ranges', () => {
+    const re = globToRegex('[a-c][0-2]')
+    expect(re.test('a0')).toBe(true)
+    expect(re.test('b1')).toBe(true)
+    expect(re.test('c2')).toBe(true)
+    expect(re.test('d0')).toBe(false)
+    expect(re.test('a3')).toBe(false)
+  })
+
+  it('negated character class with range', () => {
+    const re = globToRegex('[!0-9]')
+    expect(re.test('a')).toBe(true)
+    expect(re.test('5')).toBe(false)
+  })
+
+  it('star does not cross directory boundary', () => {
+    const re = globToRegex('*.ts')
+    expect(re.test('foo.ts')).toBe(true)
+    expect(re.test('dir/foo.ts')).toBe(false)
+  })
+
+  it('question mark does not match slash', () => {
+    const re = globToRegex('foo?bar')
+    expect(re.test('foobar')).toBe(false)
+    expect(re.test('foo/bar')).toBe(false)
+    expect(re.test('fooxbar')).toBe(true)
+  })
+})
+
+describe('matchAnyGlob advanced', () => {
+  it('matches first pattern', () => {
+    expect(matchAnyGlob('test.js', ['*.js', '*.ts'])).toBe(true)
+  })
+
+  it('matches second pattern', () => {
+    expect(matchAnyGlob('test.ts', ['*.js', '*.ts'])).toBe(true)
+  })
+
+  it('matches with complex patterns', () => {
+    expect(matchAnyGlob('src/utils/helper.ts', ['src/**/*.ts', 'test/**/*.ts'])).toBe(true)
+    expect(matchAnyGlob('test/utils/helper.ts', ['src/**/*.ts', 'test/**/*.ts'])).toBe(true)
+  })
+
+  it('handles single pattern array', () => {
+    expect(matchAnyGlob('foo.ts', ['*.ts'])).toBe(true)
+    expect(matchAnyGlob('foo.js', ['*.ts'])).toBe(false)
+  })
+
+  it('respects ignoreCase option', () => {
+    expect(matchAnyGlob('FOO.TS', ['*.ts'], { ignoreCase: true })).toBe(true)
+    expect(matchAnyGlob('FOO.TS', ['*.ts'], { ignoreCase: false })).toBe(false)
+  })
+})
