@@ -1065,6 +1065,26 @@ export class Deque<T> {
     permuteHelper([])
     return result
   }
+
+  combinations(k: number): T[][] {
+    const arr = this.toArray()
+    if (k <= 0 || k > arr.length) return []
+    if (k === 1) return arr.map(item => [item])
+    const result: T[][] = []
+    const combine = (start: number, current: T[]) => {
+      if (current.length === k) {
+        result.push([...current])
+        return
+      }
+      for (let i = start; i < arr.length; i++) {
+        current.push(arr[i]!)
+        combine(i + 1, current)
+        current.pop()
+      }
+    }
+    combine(0, [])
+    return result
+  }
 }
 
 function nextPow2(n: number): number {
