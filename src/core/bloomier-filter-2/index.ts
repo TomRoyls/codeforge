@@ -90,7 +90,7 @@ export class BloomierFilter2 {
     }
     const baseHash = (hash >>> 0);
     for (let i = 0; i < this.hashFunctions; i++) {
-      const hashValue = (baseHash * (i + 1) * 31) % this.tableSize;
+      const hashValue = ((baseHash * (i + 1) * 31) % this.tableSize + this.tableSize) % this.tableSize;
       values.push(hashValue);
     }
     return values;
