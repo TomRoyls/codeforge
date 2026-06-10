@@ -214,4 +214,8 @@ export class Multiset<T> {
   static of<T>(...items: T[]): Multiset<T> {
     return Multiset.from(items)
   }
+
+  merge(other: Multiset<T>): Multiset<T> {
+    return Multiset.from([...this.toArray(), ...other.toArray()])
+  }
 }

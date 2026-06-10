@@ -374,4 +374,8 @@ export class HashSet<T> {
   static of<T>(...items: T[]): HashSet<T> {
     return HashSet.from(items)
   }
+
+  merge(other: HashSet<T>): HashSet<T> {
+    return HashSet.from([...this.toArray(), ...other.toArray()])
+  }
 }

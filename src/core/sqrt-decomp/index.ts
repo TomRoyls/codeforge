@@ -286,4 +286,8 @@ export class SqrtDecomposition<T> {
   static of<T>(...items: T[]): SqrtDecomposition<T> {
     return SqrtDecomposition.from(items)
   }
+
+  merge(other: SqrtDecomposition<T>): SqrtDecomposition<T> {
+    return SqrtDecomposition.from([...this.toArray(), ...other.toArray()])
+  }
 }

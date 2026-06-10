@@ -405,4 +405,8 @@ export class ConcTree<T> {
   lastIndexOf(item: T): number {
     return this.toArray().lastIndexOf(item)
   }
+
+  merge(other: ConcTree<T>): ConcTree<T> {
+    return ConcTree.from([...this.toArray(), ...other.toArray()])
+  }
 }

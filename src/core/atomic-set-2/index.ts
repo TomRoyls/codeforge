@@ -343,4 +343,8 @@ export class AtomicSet2<T> {
   tail(): T[] {
     return this.skip(1)
   }
+
+  merge(other: AtomicSet2<T>): AtomicSet2<T> {
+    return AtomicSet2.from([...this.toArray(), ...other.toArray()])
+  }
 }

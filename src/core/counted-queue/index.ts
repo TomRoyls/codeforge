@@ -379,4 +379,8 @@ export class CountedQueue<T> {
     }
     return true
   }
+
+  merge(other: CountedQueue<T>): CountedQueue<T> {
+    return CountedQueue.from([...this.toArray(), ...other.toArray()])
+  }
 }

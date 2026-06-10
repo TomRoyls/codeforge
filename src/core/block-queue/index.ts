@@ -316,4 +316,5 @@ export class BlockQueue<T> {
   tail(): T[] {
     return this.skip(1)
   }
+
 }

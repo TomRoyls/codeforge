@@ -454,4 +454,8 @@ export class CartesianTree<T> {
   nth(n: number): T | undefined {
     return this.at(n - 1)
   }
+
+  merge(other: CartesianTree<T>): CartesianTree<T> {
+    return CartesianTree.from([...this.toArray(), ...other.toArray()])
+  }
 }

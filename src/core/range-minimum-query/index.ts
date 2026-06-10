@@ -179,4 +179,8 @@ export class RangeMinimumQuery<T> {
   static of<T>(...items: T[]): RangeMinimumQuery<T> {
     return RangeMinimumQuery.from(items)
   }
+
+  merge(other: RangeMinimumQuery<T>): RangeMinimumQuery<T> {
+    return RangeMinimumQuery.from([...this.toArray(), ...other.toArray()])
+  }
 }

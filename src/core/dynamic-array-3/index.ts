@@ -235,4 +235,8 @@ export class DynamicArray3<T> {
   static of<T>(...items: T[]): DynamicArray3<T> {
     return DynamicArray3.from(items)
   }
+
+  merge(other: DynamicArray3<T>): DynamicArray3<T> {
+    return DynamicArray3.from([...this.toArray(), ...other.toArray()])
+  }
 }

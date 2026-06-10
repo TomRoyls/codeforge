@@ -467,4 +467,8 @@ export class CircularBuffer<T> {
     const set = new Set<T>([...this.toArray(), ...other])
     return [...set]
   }
+
+  merge(other: CircularBuffer<T>): CircularBuffer<T> {
+    return CircularBuffer.from([...this.toArray(), ...other.toArray()])
+  }
 }

@@ -103,4 +103,8 @@ export class PersistentArray2<T> {
   static of<T>(...items: T[]): PersistentArray2<T> {
     return PersistentArray2.from(items)
   }
+
+  merge(other: PersistentArray2<T>): PersistentArray2<T> {
+    return PersistentArray2.from([...this.toArray(), ...other.toArray()])
+  }
 }

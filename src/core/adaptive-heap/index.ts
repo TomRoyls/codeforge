@@ -470,4 +470,8 @@ export class AdaptiveHeap<T> {
   tail(): T[] {
     return this.skip(1)
   }
+
+  merge(other: AdaptiveHeap<T>): AdaptiveHeap<T> {
+    return AdaptiveHeap.from([...this.toArray(), ...other.toArray()])
+  }
 }

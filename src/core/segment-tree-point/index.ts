@@ -235,4 +235,8 @@ export class SegmentTreePoint<T> {
   static of<T>(...items: T[]): SegmentTreePoint<T> {
     return SegmentTreePoint.from(items)
   }
+
+  merge(other: SegmentTreePoint<T>): SegmentTreePoint<T> {
+    return SegmentTreePoint.from([...this.toArray(), ...other.toArray()])
+  }
 }

@@ -144,6 +144,10 @@ export class PersistentStack2<T> {
   static of<T>(...items: T[]): PersistentStack2<T> {
     return PersistentStack2.from(items)
   }
+
+  merge(other: PersistentStack2<T>): PersistentStack2<T> {
+    return PersistentStack2.from([...this.toArray(), ...other.toArray()])
+  }
 }
 
 interface Node<T> {

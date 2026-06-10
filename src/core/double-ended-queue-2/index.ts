@@ -389,6 +389,10 @@ export class Deque<T> {
   static of<T>(...items: T[]): Deque<T> {
     return Deque.from(items)
   }
+
+  merge(other: Deque<T>): Deque<T> {
+    return Deque.from([...this.toArray(), ...other.toArray()])
+  }
 }
 
 function nextPow2(n: number): number {
