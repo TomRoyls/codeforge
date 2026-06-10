@@ -372,6 +372,10 @@ toString(): string {
   }
 
 
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }
 
 export type { ArrayDequeOptions

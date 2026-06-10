@@ -680,4 +680,8 @@ export class BTreeSet<T> {
   nth(n: number): T | undefined {
     return this.at(n - 1)
   }
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }

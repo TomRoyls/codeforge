@@ -566,4 +566,8 @@ export class BinomialHeap4<T = unknown> {
   }
 
 
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }

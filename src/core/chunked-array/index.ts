@@ -478,6 +478,10 @@ export class ChunkedArray<T = unknown> {
   pluck<K extends keyof T>(key: K): T[K][] {
     return this.toArray().map(item => item[key])
   }
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

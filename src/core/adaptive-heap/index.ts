@@ -474,4 +474,8 @@ export class AdaptiveHeap<T> {
   merge(other: AdaptiveHeap<T>): AdaptiveHeap<T> {
     return AdaptiveHeap.from([...this.toArray(), ...other.toArray()])
   }
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }

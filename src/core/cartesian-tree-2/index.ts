@@ -458,4 +458,8 @@ export class CartesianTree<T> {
   merge(other: CartesianTree<T>): CartesianTree<T> {
     return CartesianTree.from([...this.toArray(), ...other.toArray()])
   }
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }

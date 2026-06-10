@@ -565,4 +565,8 @@ export class BTree2<T> {
   tail(): T[] {
     return this.skip(1)
   }
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }

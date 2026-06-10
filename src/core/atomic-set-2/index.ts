@@ -347,4 +347,8 @@ export class AtomicSet2<T> {
   merge(other: AtomicSet2<T>): AtomicSet2<T> {
     return AtomicSet2.from([...this.toArray(), ...other.toArray()])
   }
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }

@@ -398,4 +398,8 @@ export class BinaryHeap<T> {
   tail(): T[] {
     return this.skip(1)
   }
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }

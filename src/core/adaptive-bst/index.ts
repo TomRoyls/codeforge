@@ -722,6 +722,10 @@ toString(): string {
   tail(): T[] {
     return this.skip(1)
   }
+
+  reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
+    return this.toArray().reduceRight(fn, initial)
+  }
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback
