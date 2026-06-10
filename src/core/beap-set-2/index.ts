@@ -361,4 +361,9 @@ export class BeapSet2<T> {
     const exclude = new Set(items)
     return this.toArray().filter(item => !exclude.has(item))
   }
+
+  intersects(other: Iterable<T>): boolean {
+    const set = new Set(other)
+    return this.toArray().some(item => set.has(item))
+  }
 }
