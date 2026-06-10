@@ -242,3 +242,200 @@ describe('FrequencyMap - statistics', () => {
     expect(stats.minCount).toBe(0)
   })
 })
+
+describe('FrequencyMap - toString', () => {
+  it('returns correct format for empty', () => {
+    const fm = new FrequencyMap<string>()
+    expect(fm.toString()).toBe('FrequencyMap(0 unique, 0 total)')
+  })
+
+  it('returns correct format with entries', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 3)
+    fm.add('b', 2)
+    expect(fm.toString()).toBe('FrequencyMap(2 unique, 5 total)')
+  })
+
+  it('reflects state after clear', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('x', 10)
+    fm.clear()
+    expect(fm.toString()).toBe('FrequencyMap(0 unique, 0 total)')
+  })
+})
+
+describe('FrequencyMap - toJSON', () => {
+  it('returns empty array for empty map', () => {
+    const fm = new FrequencyMap<string>()
+    expect(fm.toJSON()).toEqual([])
+  })
+
+  it('returns entries as key-count pairs', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 3)
+    fm.add('b', 1)
+    const json = fm.toJSON()
+    expect(json.length).toBe(2)
+    expect(json).toContainEqual({ key: 'a', count: 3 })
+    expect(json).toContainEqual({ key: 'b', count: 1 })
+  })
+
+  it('equals toArray output', () => {
+    const fm = new FrequencyMap<number>()
+    fm.add(1, 5)
+    fm.add(2, 3)
+    expect(fm.toJSON()).toEqual(fm.toArray())
+  })
+})
+
+describe('FrequencyMap - equals', () => {
+  it('empty maps are equal', () => {
+    const a = new FrequencyMap<string>()
+    const b = new FrequencyMap<string>()
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('same data are equal', () => {
+    const a = new FrequencyMap<string>()
+    const b = new FrequencyMap<string>()
+    a.add('x', 3)
+    a.add('y', 1)
+    b.add('x', 3)
+    b.add('y', 1)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('different sizes are not equal', () => {
+    const a = new FrequencyMap<string>()
+    const b = new FrequencyMap<string>()
+    a.add('x', 1)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('different counts are not equal', () => {
+    const a = new FrequencyMap<string>()
+    const b = new FrequencyMap<string>()
+    a.add('x', 3)
+    b.add('x', 5)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('different keys are not equal', () => {
+    const a = new FrequencyMap<string>()
+    const b = new FrequencyMap<string>()
+    a.add('x', 1)
+    b.add('y', 1)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('returns false for non-FrequencyMap', () => {
+    const fm = new FrequencyMap<string>()
+    expect(fm.equals(null)).toBe(false)
+    expect(fm.equals(undefined)).toBe(false)
+    expect(fm.equals({})).toBe(false)
+    expect(fm.equals([])).toBe(false)
+  })
+
+  it('self equals self', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 5)
+    expect(fm.equals(fm)).toBe(true)
+  })
+})
+
+describe('FrequencyMap - edge cases', () => {
+  it('handles number keys', () => {
+    const fm = new FrequencyMap<number>()
+    fm.add(1, 10)
+    fm.add(2, 20)
+    expect(fm.get(1)).toBe(10)
+    expect(fm.get(2)).toBe(20)
+  })
+
+  it('handles many unique keys', () => {
+    const fm = new FrequencyMap<number>()
+    for (let i = 0; i < 100; i++) {
+      fm.add(i, 1)
+    }
+    expect(fm.size).toBe(100)
+    expect(fm.total).toBe(100)
+  })
+
+  it('merge combines counts correctly', () => {
+    const a = new FrequencyMap<string>()
+    const b = new FrequencyMap<string>()
+    a.add('x', 3)
+    b.add('x', 2)
+    b.add('y', 1)
+    a.merge(b)
+    expect(a.get('x')).toBe(5)
+    expect(a.get('y')).toBe(1)
+    expect(a.size).toBe(2)
+  })
+
+  it('merge does not affect source', () => {
+    const a = new FrequencyMap<string>()
+    const b = new FrequencyMap<string>()
+    a.add('x', 3)
+    b.add('x', 2)
+    a.merge(b)
+    expect(b.get('x')).toBe(2)
+    expect(b.size).toBe(1)
+  })
+
+  it('top with more k than entries returns all', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 5)
+    fm.add('b', 3)
+    const top = fm.top(10)
+    expect(top.length).toBe(2)
+  })
+
+  it('bottom with more k than entries returns all', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 5)
+    fm.add('b', 3)
+    const bottom = fm.bottom(10)
+    expect(bottom.length).toBe(2)
+  })
+
+  it('above with high threshold returns empty', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 5)
+    expect(fm.above(10)).toEqual([])
+  })
+
+  it('below with zero threshold returns all', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 5)
+    fm.add('b', 1)
+    expect(fm.below(0)).toEqual([])
+  })
+
+  it('decrease below zero removes key', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 2)
+    fm.decrease('a', 5)
+    expect(fm.get('a')).toBe(0)
+    expect(fm.has('a')).toBe(false)
+  })
+
+  it('remove non-existent key is no-op', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 1)
+    fm.remove('z')
+    expect(fm.size).toBe(1)
+    expect(fm.get('a')).toBe(1)
+  })
+
+  it('forEach provides key and count', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 3)
+    fm.add('b', 7)
+    const result: Array<[string, number]> = []
+    fm.forEach((key, count) => result.push([key, count]))
+    expect(result.length).toBe(2)
+    expect(result).toContainEqual(['a', 3])
+    expect(result).toContainEqual(['b', 7])
+  })
+})

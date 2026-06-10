@@ -185,4 +185,201 @@ describe('HeavyKeeper', () => {
     hk.update('item')
     expect(hk.estimate('item')).toBeGreaterThanOrEqual(1)
   })
+
+  describe('HeavyKeeper toString', () => {
+    it('returns correct format for empty', () => {
+      const hk = new HeavyKeeper({ depth: 2, width: 10 })
+      expect(hk.toString()).toBe('HeavyKeeper(2, 10, total=0)')
+    })
+
+    it('reflects total after updates', () => {
+      const hk = new HeavyKeeper({ depth: 2, width: 10, decay: 0.9 })
+      hk.update('a', 5)
+      expect(hk.toString()).toBe('HeavyKeeper(2, 10, total=5)')
+    })
+
+    it('reflects reset', () => {
+      const hk = new HeavyKeeper({ depth: 3, width: 50 })
+      hk.update('x', 10)
+      hk.reset()
+      expect(hk.toString()).toBe('HeavyKeeper(3, 50, total=0)')
+    })
+  })
+
+  describe('HeavyKeeper toJSON', () => {
+    it('returns structure with depth, width, decay, total', () => {
+      const hk = new HeavyKeeper({ depth: 2, width: 10, decay: 0.8 })
+      hk.update('a', 1)
+      const json = hk.toJSON() as Record<string, unknown>
+      expect(json.depth).toBe(2)
+      expect(json.width).toBe(10)
+      expect(json.decay).toBe(0.8)
+      expect(json.total).toBe(1)
+      expect(json.buckets).toBeDefined()
+    })
+
+    it('buckets is a 2D array', () => {
+      const hk = new HeavyKeeper({ depth: 2, width: 5, decay: 0.9 })
+      const json = hk.toJSON() as Record<string, unknown>
+      const buckets = json.buckets as Array<Array<{ key: string; count: number }>>
+      expect(buckets.length).toBe(2)
+      expect(buckets[0]!.length).toBe(5)
+    })
+  })
+
+  describe('HeavyKeeper clone', () => {
+    it('creates independent copy', () => {
+      const hk = new HeavyKeeper({ depth: 2, width: 10, decay: 0.9 })
+      hk.update('a', 10)
+      hk.update('b', 5)
+      const clone = hk.clone()
+      expect(clone.total).toBe(15)
+      expect(clone.estimate('a')).toBe(10)
+      expect(clone.estimate('b')).toBe(5)
+    })
+
+    it('modifications to clone do not affect original', () => {
+      const hk = new HeavyKeeper({ depth: 2, width: 10, decay: 0.9 })
+      hk.update('a', 10)
+      const clone = hk.clone()
+      clone.update('c', 50)
+      expect(hk.estimate('c')).toBe(0)
+      expect(clone.estimate('c')).toBe(50)
+    })
+
+    it('clone of empty is empty', () => {
+      const hk = new HeavyKeeper()
+      const clone = hk.clone()
+      expect(clone.isEmpty()).toBe(true)
+      expect(clone.total).toBe(0)
+    })
+  })
+
+  describe('HeavyKeeper equals', () => {
+    it('empty keepers are equal', () => {
+      const a = new HeavyKeeper({ depth: 2, width: 10, decay: 0.9 })
+      const b = new HeavyKeeper({ depth: 2, width: 10, decay: 0.9 })
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('same data are equal', () => {
+      const a = HeavyKeeper.fromItems(['x', 'y', 'x'], { depth: 2, width: 10, decay: 0.9 })
+      const b = HeavyKeeper.fromItems(['x', 'y', 'x'], { depth: 2, width: 10, decay: 0.9 })
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('different depth is not equal', () => {
+      const a = new HeavyKeeper({ depth: 2, width: 10, decay: 0.9 })
+      const b = new HeavyKeeper({ depth: 3, width: 10, decay: 0.9 })
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('different width is not equal', () => {
+      const a = new HeavyKeeper({ depth: 2, width: 10, decay: 0.9 })
+      const b = new HeavyKeeper({ depth: 2, width: 20, decay: 0.9 })
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('different decay is not equal', () => {
+      const a = new HeavyKeeper({ depth: 2, width: 10, decay: 0.9 })
+      const b = new HeavyKeeper({ depth: 2, width: 10, decay: 0.8 })
+      expect(a.equals(b)).toBe(false)
+    })
+
+    it('returns false for non-HeavyKeeper', () => {
+      const hk = new HeavyKeeper()
+      expect(hk.equals(null)).toBe(false)
+      expect(hk.equals(undefined)).toBe(false)
+      expect(hk.equals({})).toBe(false)
+      expect(hk.equals('string')).toBe(false)
+    })
+
+    it('self equals self', () => {
+      const hk = new HeavyKeeper()
+      expect(hk.equals(hk)).toBe(true)
+    })
+  })
+
+  describe('HeavyKeeper reset', () => {
+    it('reset clears all estimates', () => {
+      const hk = new HeavyKeeper()
+      hk.update('a', 100)
+      hk.update('b', 50)
+      hk.reset()
+      expect(hk.estimate('a')).toBe(0)
+      expect(hk.estimate('b')).toBe(0)
+    })
+
+    it('reset allows new updates', () => {
+      const hk = new HeavyKeeper()
+      hk.update('a', 100)
+      hk.reset()
+      hk.update('b', 50)
+      expect(hk.total).toBe(50)
+      expect(hk.isEmpty()).toBe(false)
+    })
+  })
+
+  describe('HeavyKeeper top', () => {
+    it('top(0) returns empty', () => {
+      const hk = new HeavyKeeper()
+      hk.update('a', 10)
+      expect(hk.top(0)).toEqual([])
+    })
+
+    it('top returns all items when k > unique keys', () => {
+      const hk = new HeavyKeeper()
+      hk.update('a', 10)
+      hk.update('b', 5)
+      const top = hk.top(10)
+      expect(top.length).toBe(2)
+    })
+  })
+
+  it('heavyHitters with threshold 0 returns all keys', () => {
+    const hk = new HeavyKeeper()
+    hk.update('a', 1)
+    hk.update('b', 1)
+    const hitters = hk.heavyHitters(0)
+    expect(hitters.length).toBe(2)
+  })
+
+  it('heavyHitters with threshold 1 returns only keys at 100%', () => {
+    const hk = new HeavyKeeper()
+    hk.update('a', 10)
+    hk.update('b', 5)
+    const hitters = hk.heavyHitters(1)
+    expect(hitters.length).toBe(0)
+  })
+
+  it('update with default count is 1', () => {
+    const hk = new HeavyKeeper()
+    hk.update('key')
+    expect(hk.total).toBe(1)
+    expect(hk.estimate('key')).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles many unique keys', () => {
+    const hk = new HeavyKeeper({ depth: 2, width: 50, decay: 0.9 })
+    for (let i = 0; i < 100; i++) {
+      hk.update(`key${i}`, 1)
+    }
+    expect(hk.total).toBe(100)
+    expect(hk.isEmpty()).toBe(false)
+  })
+
+  it('preserves heavy item after many light items', () => {
+    const hk = new HeavyKeeper({ depth: 2, width: 50, decay: 0.9 })
+    hk.update('heavy', 200)
+    for (let i = 0; i < 100; i++) {
+      hk.update(`light${i}`, 1)
+    }
+    expect(hk.estimate('heavy')).toBeGreaterThan(50)
+  })
+
+  it('fromItems with empty array', () => {
+    const hk = HeavyKeeper.fromItems([])
+    expect(hk.total).toBe(0)
+    expect(hk.isEmpty()).toBe(true)
+  })
 })

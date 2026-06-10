@@ -18,7 +18,7 @@ export class SparseSet {
     return this._universe
   }
 
-  get isEmpty(): boolean {
+  isEmpty(): boolean {
     return this.n === 0
   }
 
@@ -65,33 +65,34 @@ export class SparseSet {
 
   union(other: SparseSet): SparseSet {
     const result = new SparseSet(Math.max(this._universe, other._universe))
-    for (const v of this) result.add(v)
-    for (const v of other) result.add(v)
+    this.forEach((v) => result.add(v))
+    other.forEach((v) => result.add(v))
     return result
   }
 
   intersection(other: SparseSet): SparseSet {
     const result = new SparseSet(Math.min(this._universe, other._universe))
-    for (const v of this) {
+    this.forEach((v) => {
       if (other.has(v)) result.add(v)
-    }
+    })
     return result
   }
 
   difference(other: SparseSet): SparseSet {
     const result = new SparseSet(this._universe)
-    for (const v of this) {
+    this.forEach((v) => {
       if (!other.has(v)) result.add(v)
-    }
+    })
     return result
   }
 
   isSubsetOf(other: SparseSet): boolean {
     if (this._universe > other._universe) return false
-    for (const v of this) {
-      if (!other.has(v)) return false
-    }
-    return true
+    let result = true
+    this.forEach((v) => {
+      if (!other.has(v)) result = false
+    })
+    return result
   }
 
   isSupersetOf(other: SparseSet): boolean {
@@ -100,15 +101,16 @@ export class SparseSet {
 
   equals(other: SparseSet): boolean {
     if (this.n !== other.n) return false
-    for (const v of this) {
-      if (!other.has(v)) return false
-    }
-    return true
+    let result = true
+    this.forEach((v) => {
+      if (!other.has(v)) result = false
+    })
+    return result
   }
 
   clone(): SparseSet {
     const result = new SparseSet(this._universe)
-    for (const v of this) result.add(v)
+    this.forEach((v) => result.add(v))
     return result
   }
 
@@ -116,6 +118,14 @@ export class SparseSet {
     for (let i = 0; i < this.n; i++) {
       callback(this.dense[i]!, i)
     }
+  }
+
+  toString(): string {
+    return `SparseSet(${this.n}) [${this.dense.slice(0, this.n).join(', ')}]`
+  }
+
+  toJSON(): number[] {
+    return this.toArray()
   }
 
   [Symbol.iterator](): Iterator<number> {

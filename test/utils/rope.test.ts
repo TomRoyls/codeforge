@@ -211,3 +211,252 @@ describe('Rope long strings', () => {
     expect(left.toString() + right.toString()).toBe(text)
   })
 })
+
+// ─── toString ───
+
+describe('Rope toString', () => {
+  it('toString after multiple operations', () => {
+    const r = new Rope('hello')
+    r.insert(5, ' world')
+    r.delete(0, 5)
+    r.insert(0, 'hello')
+    expect(r.toString()).toBe('hello world')
+  })
+
+  it('toString with special characters', () => {
+    const r = new Rope('hello\nworld\ttest')
+    expect(r.toString()).toBe('hello\nworld\ttest')
+  })
+
+  it('toString with unicode characters', () => {
+    const r = new Rope('héllo wørld')
+    expect(r.toString()).toBe('héllo wørld')
+  })
+
+  it('toString with emojis', () => {
+    const r = new Rope('hello 🌍 world')
+    expect(r.toString()).toBe('hello 🌍 world')
+  })
+
+  it('toString with long text', () => {
+    const text = 'a'.repeat(200)
+    const r = new Rope(text)
+    expect(r.toString()).toBe(text)
+  })
+})
+
+// ─── Clone Edge Cases ───
+
+describe('Rope clone edge cases', () => {
+  it('clone empty rope', () => {
+    const r = new Rope()
+    const c = r.clone()
+    expect(c.toString()).toBe('')
+    expect(c.length).toBe(0)
+  })
+
+  it('clone rope after operations', () => {
+    const r = new Rope('hello')
+    r.insert(5, ' world')
+    r.delete(0, 6)
+    const c = r.clone()
+    expect(c.toString()).toBe('world')
+    expect(c.length).toBe(5)
+  })
+
+  it('clone deep copy - mutation isolation', () => {
+    const r = new Rope('hello world')
+    const c = r.clone()
+    c.insert(5, ' NEW')
+    c.delete(0, 6)
+    expect(r.toString()).toBe('hello world')
+    expect(c.toString()).toBe('NEW world')
+  })
+
+  it('clone deep copy - delete isolation', () => {
+    const r = new Rope('hello world')
+    const c = r.clone()
+    r.delete(5, 6)
+    c.delete(0, 5)
+    expect(r.toString()).toBe('hello')
+    expect(c.toString()).toBe(' world')
+  })
+
+  it('clone preserves structure on long text', () => {
+    const text = 'a'.repeat(200)
+    const r = new Rope(text)
+    const c = r.clone()
+    expect(c.length).toBe(200)
+    expect(c.toString()).toBe(text)
+  })
+})
+
+// ─── Boundary Conditions ───
+
+describe('Rope boundary conditions', () => {
+  it('index at first position', () => {
+    const r = new Rope('hello')
+    expect(r.index(0)).toBe('h')
+  })
+
+  it('index at last position', () => {
+    const r = new Rope('hello')
+    expect(r.index(4)).toBe('o')
+  })
+
+  it('insert at length boundary', () => {
+    const r = new Rope('hello')
+    r.insert(5, ' world')
+    expect(r.toString()).toBe('hello world')
+    expect(r.length).toBe(11)
+  })
+
+  it('insert just beyond length', () => {
+    const r = new Rope('hello')
+    r.insert(10, ' world')
+    expect(r.toString()).toBe('hello world')
+  })
+
+  it('delete from start boundary', () => {
+    const r = new Rope('hello')
+    r.delete(0, 1)
+    expect(r.toString()).toBe('ello')
+  })
+
+  it('delete to end boundary', () => {
+    const r = new Rope('hello')
+    r.delete(4, 1)
+    expect(r.toString()).toBe('hell')
+  })
+
+  it('split at exact boundaries', () => {
+    const r = new Rope('hello')
+    const [left, right] = r.split(5)
+    expect(left.toString()).toBe('hello')
+    expect(right.toString()).toBe('')
+  })
+
+  it('operations on MAX_LEAF_LENGTH boundary', () => {
+    const text = 'a'.repeat(64)
+    const r = new Rope(text)
+    expect(r.length).toBe(64)
+    r.insert(32, 'x')
+    expect(r.length).toBe(65)
+    r.delete(32, 1)
+    expect(r.length).toBe(64)
+    expect(r.toString()).toBe(text)
+  })
+
+  it('operations just above MAX_LEAF_LENGTH', () => {
+    const text = 'a'.repeat(65)
+    const r = new Rope(text)
+    expect(r.length).toBe(65)
+    expect(r.toString()).toBe(text)
+  })
+
+  it('operations just below MAX_LEAF_LENGTH', () => {
+    const text = 'a'.repeat(63)
+    const r = new Rope(text)
+    expect(r.length).toBe(63)
+    expect(r.toString()).toBe(text)
+  })
+})
+
+// ─── Error Handling ───
+
+describe('Rope error handling', () => {
+  it('throws on index with negative value', () => {
+    const r = new Rope('hello')
+    expect(() => r.index(-1)).toThrow(RangeError)
+    expect(() => r.index(-100)).toThrow(RangeError)
+  })
+
+  it('throws on index beyond length', () => {
+    const r = new Rope('hello')
+    expect(() => r.index(5)).toThrow(RangeError)
+    expect(() => r.index(100)).toThrow(RangeError)
+  })
+
+  it('throws on index on empty rope', () => {
+    const r = new Rope()
+    expect(() => r.index(0)).toThrow(RangeError)
+  })
+
+  it('handles insert with negative position gracefully', () => {
+    const r = new Rope('hello')
+    r.insert(-1, 'x')
+    expect(r.toString()).toBe('xhello')
+  })
+
+  it('handles delete with negative start gracefully', () => {
+    const r = new Rope('hello')
+    r.delete(-5, 3)
+    expect(r.toString()).toBe('hello')
+  })
+
+  it('handles delete with start beyond length', () => {
+    const r = new Rope('hello')
+    r.delete(10, 3)
+    expect(r.toString()).toBe('hello')
+  })
+
+  it('handles delete with negative length gracefully', () => {
+    const r = new Rope('hello')
+    r.delete(2, -1)
+    expect(r.toString()).toBe('hello')
+  })
+
+  it('handles split with negative position', () => {
+    const r = new Rope('hello')
+    const [left, right] = r.split(-1)
+    expect(left.toString()).toBe('')
+    expect(right.toString()).toBe('hello')
+  })
+
+  it('handles split beyond length', () => {
+    const r = new Rope('hello')
+    const [left, right] = r.split(100)
+    expect(left.toString()).toBe('hello')
+    expect(right.toString()).toBe('')
+  })
+})
+
+// ─── Complex Operations ───
+
+describe('Rope complex operations', () => {
+  it('concat multiple ropes', () => {
+    const a = new Rope('hello')
+    const b = new Rope(' ')
+    const c = new Rope('world')
+    const d = new Rope('!')
+    const result = a.concat(b).concat(c).concat(d)
+    expect(result.toString()).toBe('hello world!')
+  })
+
+  it('concat rope with itself', () => {
+    const r = new Rope('hello')
+    const result = r.concat(r)
+    expect(result.toString()).toBe('hellohello')
+  })
+
+  it('delete entire rope', () => {
+    const r = new Rope('hello')
+    r.delete(0, 5)
+    expect(r.toString()).toBe('')
+    expect(r.length).toBe(0)
+  })
+
+  it('multiple insertions at same position', () => {
+    const r = new Rope('hello')
+    r.insert(5, ' world')
+    r.insert(11, '!')
+    expect(r.toString()).toBe('hello world!')
+  })
+
+  it('interleaved insert and delete', () => {
+    const r = new Rope('hello world')
+    r.insert(5, ' NEW')
+    r.delete(6, 4)
+    expect(r.toString()).toBe('hello world')
+  })
+})

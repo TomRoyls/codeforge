@@ -219,3 +219,275 @@ describe('BloomierFilter negative and zero values', () => {
     expect(bf).toBeDefined()
   })
 })
+
+// ─── toString method ─────────────────────────────────────
+describe('BloomierFilter toString', () => {
+  it('returns expected format for non-empty filter', () => {
+    const entries = new Map<string, number>()
+    entries.set('a', 1)
+    entries.set('b', 2)
+    const bf = BloomierFilter.create(entries)
+    const str = bf.toString()
+    expect(str).toContain('BloomierFilter')
+    expect(str).toContain('size=2')
+    expect(str).toMatch(/capacity=\d+/)
+    expect(str).toMatch(/hashCount=\d+/)
+  })
+
+  it('returns format for empty filter', () => {
+    const bf = BloomierFilter.create(new Map<string, number>())
+    const str = bf.toString()
+    expect(str).toBe('BloomierFilter(size=0, capacity=0, hashCount=0)')
+  })
+
+  it('handles large datasets', () => {
+    const entries = new Map<string, number>()
+    for (let i = 0; i < 100; i++) {
+      entries.set(`key${i}`, i)
+    }
+    const bf = BloomierFilter.create(entries)
+    const str = bf.toString()
+    expect(str).toContain('size=100')
+    expect(str).toMatch(/capacity=\d+/)
+  })
+})
+
+// ─── toJSON method ───────────────────────────────────────
+describe('BloomierFilter toJSON', () => {
+  it('returns object with correct structure', () => {
+    const entries = new Map<string, number>()
+    entries.set('x', 10)
+    entries.set('y', 20)
+    const bf = BloomierFilter.create(entries)
+    const json = bf.toJSON()
+    expect(json).toBeInstanceOf(Object)
+    expect(json).toHaveProperty('capacity')
+    expect(json).toHaveProperty('hashCount')
+    expect(json).toHaveProperty('seed')
+    expect(json).toHaveProperty('size')
+    expect(json).toHaveProperty('keys')
+    expect(json).toHaveProperty('table')
+  })
+
+  it('includes correct values for properties', () => {
+    const entries = new Map<string, number>()
+    entries.set('a', 1)
+    entries.set('b', 2)
+    const bf = BloomierFilter.create(entries)
+    const json = bf.toJSON() as { size: number; capacity: number; keys: string[] }
+    expect(json.size).toBe(2)
+    expect(json.capacity).toBeGreaterThan(0)
+    expect(json.keys).toContain('a')
+    expect(json.keys).toContain('b')
+    expect(json.keys.length).toBe(2)
+  })
+
+  it('table is converted to array', () => {
+    const entries = new Map<string, number>()
+    entries.set('test', 42)
+    const bf = BloomierFilter.create(entries)
+    const json = bf.toJSON() as { table: number[] }
+    expect(Array.isArray(json.table)).toBe(true)
+  })
+
+  it('returns expected structure for empty filter', () => {
+    const bf = BloomierFilter.create(new Map<string, number>())
+    const json = bf.toJSON() as { size: number; capacity: number; hashCount: number; keys: string[]; table: number[] }
+    expect(json.size).toBe(0)
+    expect(json.capacity).toBe(0)
+    expect(json.hashCount).toBe(0)
+    expect(json.keys).toEqual([])
+    expect(json.table).toEqual([])
+  })
+})
+
+// ─── clone method ────────────────────────────────────────
+describe('BloomierFilter clone', () => {
+  it('creates independent copy', () => {
+    const entries = new Map<string, number>()
+    entries.set('a', 1)
+    entries.set('b', 2)
+    const bf1 = BloomierFilter.create(entries)
+    const bf2 = bf1.clone()
+    expect(bf1).not.toBe(bf2)
+  })
+
+  it('clone returns same values for keys', () => {
+    const entries = new Map<string, number>()
+    entries.set('x', 10)
+    entries.set('y', 20)
+    entries.set('z', 30)
+    const bf1 = BloomierFilter.create(entries)
+    const bf2 = bf1.clone()
+    expect(bf2.get('x')).toBe(10)
+    expect(bf2.get('y')).toBe(20)
+    expect(bf2.get('z')).toBe(30)
+  })
+
+  it('clone has same properties', () => {
+    const entries = new Map<string, number>()
+    entries.set('test', 99)
+    const bf1 = BloomierFilter.create(entries)
+    const bf2 = bf1.clone()
+    expect(bf2.size).toBe(bf1.size)
+    expect(bf2.capacity).toBe(bf1.capacity)
+    expect(bf2.falsePositiveRate).toBe(bf1.falsePositiveRate)
+    expect(bf2.equals(bf1)).toBe(true)
+  })
+
+  it('clone of empty filter', () => {
+    const bf1 = BloomierFilter.create(new Map<string, number>())
+    const bf2 = bf1.clone()
+    expect(bf2.size).toBe(0)
+    expect(bf2.capacity).toBe(0)
+    expect(bf2.equals(bf1)).toBe(true)
+  })
+})
+
+// ─── equals method ───────────────────────────────────────
+describe('BloomierFilter equals', () => {
+  it('returns true for identical filters', () => {
+    const entries = new Map<string, number>()
+    entries.set('a', 1)
+    entries.set('b', 2)
+    const bf1 = BloomierFilter.create(entries, 42)
+    const bf2 = BloomierFilter.create(entries, 42)
+    expect(bf1.equals(bf2)).toBe(true)
+  })
+
+  it('returns false for filters with different entries', () => {
+    const entries1 = new Map<string, number>()
+    entries1.set('a', 1)
+    const entries2 = new Map<string, number>()
+    entries2.set('b', 2)
+    const bf1 = BloomierFilter.create(entries1)
+    const bf2 = BloomierFilter.create(entries2)
+    expect(bf1.equals(bf2)).toBe(false)
+  })
+
+  it('handles non-BloomierFilter inputs', () => {
+    const entries = new Map<string, number>()
+    entries.set('x', 10)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.equals(null)).toBe(false)
+    expect(bf.equals(undefined)).toBe(false)
+    expect(bf.equals({})).toBe(false)
+    expect(bf.equals('string')).toBe(false)
+    expect(bf.equals(42)).toBe(false)
+  })
+
+  it('returns true for same filter compared to itself', () => {
+    const entries = new Map<string, number>()
+    entries.set('test', 123)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.equals(bf)).toBe(true)
+  })
+
+  it('clone equals original', () => {
+    const entries = new Map<string, number>()
+    entries.set('a', 1)
+    entries.set('b', 2)
+    const bf1 = BloomierFilter.create(entries)
+    const bf2 = bf1.clone()
+    expect(bf1.equals(bf2)).toBe(true)
+  })
+})
+
+// ─── Edge cases and special characters ───────────────────
+describe('BloomierFilter edge cases', () => {
+  it('handles very long key names', () => {
+    const longKey = 'a'.repeat(10000)
+    const entries = new Map<string, number>()
+    entries.set(longKey, 42)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get(longKey)).toBe(42)
+    expect(bf.has(longKey)).toBe(true)
+  })
+
+  it('handles special characters in keys', () => {
+    const entries = new Map<string, number>()
+    entries.set('key-with-dash', 1)
+    entries.set('key_with_underscore', 2)
+    entries.set('key.with.dot', 3)
+    entries.set('key with space', 4)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get('key-with-dash')).toBe(1)
+    expect(bf.get('key_with_underscore')).toBe(2)
+    expect(bf.get('key.with.dot')).toBe(3)
+    expect(bf.get('key with space')).toBe(4)
+  })
+
+  it('handles unicode characters in keys', () => {
+    const entries = new Map<string, number>()
+    entries.set('héllo', 1)
+    entries.set('世界', 2)
+    entries.set('🎉emoji', 3)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get('héllo')).toBe(1)
+    expect(bf.get('世界')).toBe(2)
+    expect(bf.get('🎉emoji')).toBe(3)
+  })
+
+  it('handles empty string key', () => {
+    const entries = new Map<string, number>()
+    entries.set('', 999)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get('')).toBe(999)
+    expect(bf.has('')).toBe(true)
+  })
+})
+
+// ─── Value boundary conditions ───────────────────────────
+describe('BloomierFilter value boundaries', () => {
+  it('handles maximum integer values', () => {
+    const entries = new Map<string, number>()
+    entries.set('max', 2147483647)
+    entries.set('min', -2147483648)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get('max')).toBe(2147483647)
+    expect(bf.get('min')).toBe(-2147483648)
+  })
+
+  it('handles large positive values', () => {
+    const entries = new Map<string, number>()
+    entries.set('big', 1000000)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get('big')).toBe(1000000)
+  })
+
+  it('handles XOR behavior with zero values', () => {
+    const entries = new Map<string, number>()
+    entries.set('zero1', 0)
+    entries.set('zero2', 0)
+    entries.set('nonzero', 42)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get('zero1')).toBe(0)
+    expect(bf.get('zero2')).toBe(0)
+    expect(bf.get('nonzero')).toBe(42)
+  })
+})
+
+// ─── Stats method additional tests ───────────────────────
+describe('BloomierFilter stats additional', () => {
+  it('stats returns consistent values', () => {
+    const entries = new Map<string, number>()
+    for (let i = 0; i < 10; i++) {
+      entries.set(`key${i}`, i)
+    }
+    const bf = BloomierFilter.create(entries)
+    const stats1 = bf.stats()
+    const stats2 = bf.stats()
+    expect(stats1.size).toBe(stats2.size)
+    expect(stats1.capacity).toBe(stats2.capacity)
+    expect(stats1.hashCount).toBe(stats2.hashCount)
+  })
+
+  it('stats on empty filter', () => {
+    const bf = BloomierFilter.create(new Map<string, number>())
+    const stats = bf.stats()
+    expect(stats.size).toBe(0)
+    expect(stats.capacity).toBe(0)
+    expect(stats.hashCount).toBe(0)
+    expect(stats.falsePositiveRate).toBe(0)
+  })
+})
