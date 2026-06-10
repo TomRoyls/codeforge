@@ -80,7 +80,7 @@ export class DHeap<T> {
   }
 
   peek(): T | undefined {
-    return this.heap[0]!;
+    return this.heap[0];
   }
 
   get size(): number {
