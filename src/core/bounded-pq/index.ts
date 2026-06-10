@@ -312,6 +312,16 @@ export class BoundedPriorityQueue<T> {
     fn(this)
     return this
   }
+
+  equals(other: BoundedPriorityQueue<T>): boolean {
+    const a = this.toArray()
+    const b = other.toArray()
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false
+    }
+    return true
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

@@ -396,6 +396,16 @@ export class ChunkedArray<T = unknown> {
     fn(this)
     return this
   }
+
+  equals(other: ChunkedArray<T>): boolean {
+    const a = this.toArray()
+    const b = other.toArray()
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false
+    }
+    return true
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
