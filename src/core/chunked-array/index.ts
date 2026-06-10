@@ -639,6 +639,21 @@ export class ChunkedArray<T = unknown> {
     }
     return maxItem
   }
+
+  flatten(depth: number = 1): T[] {
+    const flat = (arr: T[], d: number): T[] => {
+      const result: T[] = []
+      for (const item of arr) {
+        if (Array.isArray(item) && d > 0) {
+          result.push(...flat(item as unknown as T[], d - 1))
+        } else {
+          result.push(item)
+        }
+      }
+      return result
+    }
+    return flat(this.toArray(), depth)
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'
