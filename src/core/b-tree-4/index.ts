@@ -533,4 +533,12 @@ export class BTree<T> {
     }
     return result
   }
+
+  isSorted(): boolean {
+    const arr = this.toArray()
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i - 1]! > arr[i]!) return false
+    }
+    return true
+  }
 }

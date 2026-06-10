@@ -263,4 +263,12 @@ export class ChunkedList2<T> {
   static empty<T>(): ChunkedList2<T> {
     return new ChunkedList2<T>()
   }
+
+  isSorted(): boolean {
+    const arr = this.toArray()
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i - 1]! > arr[i]!) return false
+    }
+    return true
+  }
 }

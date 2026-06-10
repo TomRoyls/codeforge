@@ -449,6 +449,14 @@ export class BootstrappedHeap<T = number> {
   static empty<T>(): BootstrappedHeap<T> {
     return new BootstrappedHeap<T>()
   }
+
+  isSorted(): boolean {
+    const arr = this.toArray()
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i - 1]! > arr[i]!) return false
+    }
+    return true
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

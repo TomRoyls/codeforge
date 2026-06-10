@@ -438,6 +438,14 @@ export class ChunkedArray<T = unknown> {
   static empty<T>(): ChunkedArray<T> {
     return new ChunkedArray<T>()
   }
+
+  isSorted(): boolean {
+    const arr = this.toArray()
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i - 1]! > arr[i]!) return false
+    }
+    return true
+  }
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

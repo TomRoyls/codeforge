@@ -572,6 +572,14 @@ export class BinomialQueue<T = number> {
   static empty<T>(): BinomialQueue<T> {
     return new BinomialQueue<T>()
   }
+
+  isSorted(): boolean {
+    const arr = this.toArray()
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i - 1]! > arr[i]!) return false
+    }
+    return true
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

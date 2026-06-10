@@ -566,6 +566,14 @@ export class BinomialHeap<T = number> {
   static empty<T>(): BinomialHeap<T> {
     return new BinomialHeap<T>()
   }
+
+  isSorted(): boolean {
+    const arr = this.toArray()
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i - 1]! > arr[i]!) return false
+    }
+    return true
+  }
 }
 
 export type { BinomialHeapOptions 
