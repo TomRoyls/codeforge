@@ -710,6 +710,14 @@ export class BinomialQueue<T = number> {
   none(predicate: (item: T) => boolean): boolean {
     return !this.some(predicate)
   }
+
+  any(predicate: (item: T) => boolean): boolean {
+    return this.some(predicate)
+  }
+
+  all(predicate: (item: T) => boolean): boolean {
+    return this.every(predicate)
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'
