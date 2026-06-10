@@ -535,6 +535,18 @@ export class SlidingWindowMax<T = number> {
   get [Symbol.toStringTag](): string {
     return 'SlidingWindowMax'
   }
+
+  map<U>(fn: (item: T, index: number) => U): U[] {
+    return this.toArray().map(fn)
+  }
+
+  filter(predicate: (item: T) => boolean): T[] {
+    return this.toArray().filter(predicate)
+  }
+
+  reduce<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
+    return this.toArray().reduce(reducer, initialValue)
+  }
 }
 
 export { defaultComparator } from './types.js'

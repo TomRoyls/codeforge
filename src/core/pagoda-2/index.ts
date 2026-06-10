@@ -533,4 +533,16 @@ export class Pagoda2<T> {
   get [Symbol.toStringTag](): string {
     return 'Pagoda2'
   }
+
+  map<U>(fn: (item: T, index: number) => U): U[] {
+    return this.toArray().map(fn)
+  }
+
+  filter(predicate: (item: T) => boolean): T[] {
+    return this.toArray().filter(predicate)
+  }
+
+  reduce<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
+    return this.toArray().reduce(reducer, initialValue)
+  }
 }

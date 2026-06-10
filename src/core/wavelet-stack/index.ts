@@ -495,6 +495,18 @@ export class WaveletStack<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'WaveletStack'
   }
+
+  map<U>(fn: (item: T, index: number) => U): U[] {
+    return this.toArray().map(fn)
+  }
+
+  filter(predicate: (item: T) => boolean): T[] {
+    return this.toArray().filter(predicate)
+  }
+
+  reduce<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
+    return this.toArray().reduce(reducer, initialValue)
+  }
 }
 
 export type { WaveletStackOptions } from './types.js'

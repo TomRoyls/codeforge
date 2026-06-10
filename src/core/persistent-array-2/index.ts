@@ -474,4 +474,10 @@ export class PersistentArray2<T> {
   get [Symbol.toStringTag](): string {
     return 'PersistentArray2'
   }
+
+
+
+  reduce<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
+    return this.toArray().reduce(reducer, initialValue)
+  }
 }

@@ -644,4 +644,10 @@ export class FingerprintSet<T> implements Iterable<T> {
   get [Symbol.toStringTag](): string {
     return 'FingerprintSet'
   }
+
+  map<U>(fn: (item: T, index: number) => U): U[] {
+    return this.toArray().map(fn)
+  }
+
+
 }

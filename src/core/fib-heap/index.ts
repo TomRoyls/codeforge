@@ -775,6 +775,18 @@ export class FibHeap<T = number> {
   get [Symbol.toStringTag](): string {
     return 'FibHeap'
   }
+
+  map<U>(fn: (item: T, index: number) => U): U[] {
+    return this.toArray().map(fn)
+  }
+
+  filter(predicate: (item: T) => boolean): T[] {
+    return this.toArray().filter(predicate)
+  }
+
+  reduce<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
+    return this.toArray().reduce(reducer, initialValue)
+  }
 }
 
 export type { FibHeapOptions, FibHeapNode } from './types.js'
