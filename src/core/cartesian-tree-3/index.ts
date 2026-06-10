@@ -250,4 +250,8 @@ export class CartesianTree3<T> {
   last(): T | undefined {
     return this.at(-1)
   }
+
+  nth(n: number): T | undefined {
+    return this.at(n - 1)
+  }
 }
