@@ -536,4 +536,9 @@ export class BinomialHeap4<T = unknown> {
   compact(): T[] {
     return this.toArray().filter((item): item is T => item != null)
   }
+
+  without(...items: T[]): T[] {
+    const exclude = new Set(items)
+    return this.toArray().filter(item => !exclude.has(item))
+  }
 }
