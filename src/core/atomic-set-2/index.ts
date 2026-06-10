@@ -351,4 +351,8 @@ export class AtomicSet2<T> {
   reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
     return this.toArray().reduceRight(fn, initial)
   }
+
+  sortBy(compareFn: (a: T, b: T) => number): T[] {
+    return [...this.toArray()].sort(compareFn)
+  }
 }
