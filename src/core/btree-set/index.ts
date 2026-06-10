@@ -1115,4 +1115,17 @@ export class BTreeSet<T> {
   satisfies<S extends T>(guard: (item: T) => item is S): this is { toArray(): S[] } {
     return this.every(guard)
   }
+
+  fill(value: T, count: number): T[] {
+    const arr = this.toArray()
+    const pad = Array(Math.max(0, count)).fill(value) as T[]
+    return [...arr, ...pad]
+  }
+
+  padStart(value: T, minLength: number): T[] {
+    const arr = this.toArray()
+    if (arr.length >= minLength) return [...arr]
+    const pad = Array(minLength - arr.length).fill(value) as T[]
+    return [...pad, ...arr]
+  }
 }
