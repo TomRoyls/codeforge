@@ -943,4 +943,21 @@ export class AVLSet<T = number> {
   countWhere(predicate: (item: T, index: number) => boolean): number {
     return this.toArray().filter(predicate).length
   }
+
+  associate<K, V>(fn: (item: T, index: number) => [K, V]): Map<K, V> {
+    const result = new Map<K, V>()
+    this.toArray().forEach((item, i) => {
+      const [k, v] = fn(item, i)
+      result.set(k, v)
+    })
+    return result
+  }
+
+  indexBy<K>(keyFn: (item: T) => K): Map<K, T> {
+    const result = new Map<K, T>()
+    this.toArray().forEach(item => {
+      result.set(keyFn(item), item)
+    })
+    return result
+  }
 }
