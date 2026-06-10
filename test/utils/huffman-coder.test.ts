@@ -181,4 +181,229 @@ describe('HuffmanCoder', () => {
     const result = coder.encode(text)
     expect(result.encoded.length).toBe(0)
   })
+
+  it('toString returns correct format', () => {
+    const coder = new HuffmanCoder()
+    expect(coder.toString()).toBe('HuffmanCoder()')
+  })
+
+  it('toJSON returns empty object', () => {
+    const coder = new HuffmanCoder()
+    expect(coder.toJSON()).toEqual({})
+  })
+
+  it('clone returns new instance', () => {
+    const coder = new HuffmanCoder()
+    const cloned = coder.clone()
+    expect(cloned).not.toBe(coder)
+    expect(cloned).toBeInstanceOf(HuffmanCoder)
+  })
+
+  it('equals returns true for same class', () => {
+    const coder1 = new HuffmanCoder()
+    const coder2 = new HuffmanCoder()
+    expect(coder1.equals(coder2)).toBe(true)
+  })
+
+  it('equals returns false for different types', () => {
+    const coder = new HuffmanCoder()
+    expect(coder.equals(null)).toBe(false)
+    expect(coder.equals(undefined)).toBe(false)
+    expect(coder.equals({})).toBe(false)
+    expect(coder.equals('HuffmanCoder')).toBe(false)
+    expect(coder.equals(42)).toBe(false)
+  })
+
+  it('handles single character decode with all zeros', () => {
+    const coder = new HuffmanCoder()
+    const encoded = coder.encode('a')
+    const decoded = coder.decode('000', encoded.tree)
+    expect(decoded).toBe('aaa')
+  })
+
+  it('handles string with all same characters', () => {
+    const coder = new HuffmanCoder()
+    const text = 'bbbbbb'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles alternating characters', () => {
+    const coder = new HuffmanCoder()
+    const text = 'ababababab'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles character frequency ties', () => {
+    const coder = new HuffmanCoder()
+    const text = 'aabbcc'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles very long string', () => {
+    const coder = new HuffmanCoder()
+    const text = 'a'.repeat(1000) + 'b'.repeat(500) + 'c'.repeat(250)
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles string with unique characters', () => {
+    const coder = new HuffmanCoder()
+    const text = 'abcdefg'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles newlines and tabs', () => {
+    const coder = new HuffmanCoder()
+    const text = 'line1\nline2\ttab'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles mixed case characters', () => {
+    const coder = new HuffmanCoder()
+    const text = 'aAbBcCdD'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles only spaces', () => {
+    const coder = new HuffmanCoder()
+    const text = '     '
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles string ending with space', () => {
+    const coder = new HuffmanCoder()
+    const text = 'hello world '
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles string starting with space', () => {
+    const coder = new HuffmanCoder()
+    const text = ' hello world'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles punctuation', () => {
+    const coder = new HuffmanCoder()
+    const text = 'hello, world! how are you?'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles two character string', () => {
+    const coder = new HuffmanCoder()
+    const text = 'ab'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles three character string with different frequencies', () => {
+    const coder = new HuffmanCoder()
+    const text = 'aaabbbc'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('produces valid tree structure', () => {
+    const coder = new HuffmanCoder()
+    const result = coder.encode('abc')
+    expect(result.tree).not.toBeNull()
+    expect(result.tree).toHaveProperty('char')
+    expect(result.tree).toHaveProperty('freq')
+    expect(result.tree).toHaveProperty('left')
+    expect(result.tree).toHaveProperty('right')
+  })
+
+  it('handles decode with partial encoded string', () => {
+    const coder = new HuffmanCoder()
+    const encoded = coder.encode('hello')
+    const decoded = coder.decode(encoded.encoded.slice(0, -1), encoded.tree)
+    expect(decoded.length).toBeLessThan(5)
+  })
+
+  it('handles string with only one unique character', () => {
+    const coder = new HuffmanCoder()
+    const text = 'aaaaa'
+    const encoded = coder.encode(text)
+    expect(encoded.encoded).toBe('00000')
+  })
+
+  it('handles decode with extra trailing bits', () => {
+    const coder = new HuffmanCoder()
+    const encoded = coder.encode('ab')
+    const decoded = coder.decode(encoded.encoded + '0', encoded.tree)
+    expect(decoded).toContain('ab')
+  })
+
+  it('encodes and decodes JSON-like string', () => {
+    const coder = new HuffmanCoder()
+    const text = '{"key":"value","number":42}'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles repeated encode decode cycles', () => {
+    const coder = new HuffmanCoder()
+    const text = 'roundtrip test'
+    const encoded1 = coder.encode(text)
+    const decoded1 = coder.decode(encoded1.encoded, encoded1.tree)
+    const encoded2 = coder.encode(decoded1)
+    const decoded2 = coder.decode(encoded2.encoded, encoded2.tree)
+    expect(decoded2).toBe(text)
+  })
+
+  it('handles frequency inversion', () => {
+    const coder = new HuffmanCoder()
+    const text = 'aaaaab'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles binary data characters', () => {
+    const coder = new HuffmanCoder()
+    const text = '\x00\x01\x02\x03'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('handles escape sequences', () => {
+    const coder = new HuffmanCoder()
+    const text = 'a\nb\tc\rd'
+    const encoded = coder.encode(text)
+    const decoded = coder.decode(encoded.encoded, encoded.tree)
+    expect(decoded).toBe(text)
+  })
+
+  it('multiple instances produce same result', () => {
+    const coder1 = new HuffmanCoder()
+    const coder2 = new HuffmanCoder()
+    const text = 'consistency'
+    const result1 = coder1.encode(text)
+    const result2 = coder2.encode(text)
+    expect(result1.encoded).toBe(result2.encoded)
+  })
 })

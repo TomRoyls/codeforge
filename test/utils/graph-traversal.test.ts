@@ -171,4 +171,178 @@ describe('GraphTraversal', () => {
     const order = GraphTraversal.dfs(adj, 0)
     expect(order.sort()).toEqual([0, 1, 2])
   })
+
+  it('bfs handles graph with cycle', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [2]], [2, [0]]])
+    const result = GraphTraversal.bfs(adj, 0)
+    expect(result).toEqual([0, 1, 2])
+  })
+
+  it('dfs handles graph with cycle', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [2]], [2, [0]]])
+    const result = GraphTraversal.dfs(adj, 0)
+    expect(result.length).toBe(3)
+    expect(result).toContain(0)
+    expect(result).toContain(1)
+    expect(result).toContain(2)
+  })
+
+  it('dfsIterative handles graph with cycle', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [2]], [2, [0]]])
+    const result = GraphTraversal.dfsIterative(adj, 0)
+    expect(result.length).toBe(3)
+    expect(new Set(result)).toEqual(new Set([0, 1, 2]))
+  })
+
+  it('hasCycle detects self-loop', () => {
+    const adj = new Map<number, number[]>([[0, [0]]])
+    expect(GraphTraversal.hasCycle(adj)).toBe(true)
+  })
+
+  it('hasCycle returns false for graph without cycles', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [2]], [2, [3]], [3, []]])
+    expect(GraphTraversal.hasCycle(adj)).toBe(false)
+  })
+
+  it('hasCycle handles multiple disconnected components', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]], [2, [3]], [3, [4]], [4, [2]]])
+    expect(GraphTraversal.hasCycle(adj)).toBe(true)
+  })
+
+  it('hasCycle handles graph with only self-loops', () => {
+    const adj = new Map<number, number[]>([[0, [0]], [1, [1]]])
+    expect(GraphTraversal.hasCycle(adj)).toBe(true)
+  })
+
+  it('shortestPathBFS finds path in linear graph', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [2]], [2, [3]], [3, []]])
+    const path = GraphTraversal.shortestPathBFS(adj, 0, 3)
+    expect(path).toEqual([0, 1, 2, 3])
+  })
+
+  it('shortestPathBFS handles multiple paths', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [3]], [2, [3]], [3, []]])
+    const path = GraphTraversal.shortestPathBFS(adj, 0, 3)
+    expect(path).not.toBeNull()
+    expect(path!.length).toBeLessThanOrEqual(3)
+    expect(path![0]).toBe(0)
+    expect(path![path!.length - 1]).toBe(3)
+  })
+
+  it('shortestPathBFS returns null when start not in graph', () => {
+    const adj = new Map<number, number[]>([[1, [2]], [2, []]])
+    expect(GraphTraversal.shortestPathBFS(adj, 0, 2)).toBeNull()
+  })
+
+  it('shortestPathBFS returns null when end not in graph', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []]])
+    expect(GraphTraversal.shortestPathBFS(adj, 0, 2)).toBeNull()
+  })
+
+  it('connectedComponents handles empty graph', () => {
+    const adj = new Map<number, number[]>()
+    expect(GraphTraversal.connectedComponents(adj)).toEqual([])
+  })
+
+  it('connectedComponents handles graph with isolated nodes', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, []], [2, []]])
+    const comps = GraphTraversal.connectedComponents(adj)
+    expect(comps.length).toBe(3)
+    expect(comps.flat().sort()).toEqual([0, 1, 2])
+  })
+
+  it('connectedComponents handles large connected component', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0, 2]], [2, [1, 3]], [3, [2, 4]], [4, [3]]
+    ])
+    const comps = GraphTraversal.connectedComponents(adj)
+    expect(comps.length).toBe(1)
+    expect(comps[0]!.sort()).toEqual([0, 1, 2, 3, 4])
+  })
+
+  it('bfs handles graph with multiple branches', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2, 3]], [1, []], [2, []], [3, []]])
+    const result = GraphTraversal.bfs(adj, 0)
+    expect(result[0]).toBe(0)
+    expect(result.slice(1).sort()).toEqual([1, 2, 3])
+  })
+
+  it('dfs handles graph with multiple branches', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2, 3]], [1, []], [2, []], [3, []]])
+    const result = GraphTraversal.dfs(adj, 0)
+    expect(result[0]).toBe(0)
+    expect(result.length).toBe(4)
+  })
+
+  it('bfs visits each node once', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [3]], [2, [3]], [3, []]])
+    const result = GraphTraversal.bfs(adj, 0)
+    expect(result).toEqual([0, 1, 2, 3])
+  })
+
+  it('dfs visits each node once', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [3]], [2, [3]], [3, []]])
+    const result = GraphTraversal.dfs(adj, 0)
+    const unique = new Set(result)
+    expect(unique.size).toBe(result.length)
+  })
+
+  it('dfsIterative visits each node once', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [3]], [2, [3]], [3, []]])
+    const result = GraphTraversal.dfsIterative(adj, 0)
+    const unique = new Set(result)
+    expect(unique.size).toBe(result.length)
+  })
+
+  it('bfs handles start with no neighbors', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, [2]], [2, []]])
+    const result = GraphTraversal.bfs(adj, 1)
+    expect(result).toEqual([1, 2])
+  })
+
+  it('dfs handles start with no neighbors', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, [2]], [2, []]])
+    const result = GraphTraversal.dfs(adj, 1)
+    expect(result).toEqual([1, 2])
+  })
+
+  it('shortestPathBFS handles direct edge', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []]])
+    const path = GraphTraversal.shortestPathBFS(adj, 0, 1)
+    expect(path).toEqual([0, 1])
+  })
+
+  it('shortestPathBFS handles path length 2', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [2]], [2, []]])
+    const path = GraphTraversal.shortestPathBFS(adj, 0, 2)
+    expect(path).toEqual([0, 1, 2])
+  })
+
+  it('hasCycle handles graph with back edge', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]],
+      [1, [2]],
+      [2, [1, 3]],
+      [3, []]
+    ])
+    expect(GraphTraversal.hasCycle(adj)).toBe(true)
+  })
+
+  it('hasCycle returns false for forest', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []], [2, [3]], [3, []]])
+    expect(GraphTraversal.hasCycle(adj)).toBe(false)
+  })
+
+  it('bfs handles bidirectional graph', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0, 2]], [2, [1]]])
+    const result = GraphTraversal.bfs(adj, 0)
+    expect(result).toEqual([0, 1, 2])
+  })
+
+  it('dfs handles bidirectional graph', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0, 2]], [2, [1]]])
+    const result = GraphTraversal.dfs(adj, 0)
+    expect(result.length).toBe(3)
+    expect(new Set(result)).toEqual(new Set([0, 1, 2]))
+  })
 })
