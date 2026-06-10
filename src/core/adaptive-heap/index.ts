@@ -347,4 +347,16 @@ export class AdaptiveHeap<T> {
     }
     return groups
   }
+
+  min(): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    return arr.reduce((a, b) => a < b ? a : b)
+  }
+
+  max(): T | undefined {
+    const arr = this.toArray()
+    if (arr.length === 0) return undefined
+    return arr.reduce((a, b) => a > b ? a : b)
+  }
 }
