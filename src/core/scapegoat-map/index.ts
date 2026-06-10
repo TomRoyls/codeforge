@@ -381,6 +381,10 @@ export class ScapegoatMap<K = unknown, V = unknown> {
   toJSON() {
     return { type: 'ScapegoatMap', items: this.toArray() }
   }
+
+  entries(): [K, V][] {
+    return this.toArray()
+  }
 }
 
 export type { ScapegoatMapOptions }

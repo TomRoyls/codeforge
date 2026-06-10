@@ -342,6 +342,10 @@ export class RedBlackTreeMap2<K, V> {
     return { type: 'RedBlackTreeMap2', size: this.size, items: this.toArray() }
   }
 
+
+  entries(): [K, V][] {
+    return this.toArray()
+  }
 }
 
 interface Node<K, V> {

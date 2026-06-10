@@ -311,4 +311,8 @@ export class SplayTreeMap2<K, V> {
     return { type: 'SplayTreeMap2', size: this.size, items: this.toArray() }
   }
 
+
+  entries(): [K, V][] {
+    return this.toArray()
+  }
 }
