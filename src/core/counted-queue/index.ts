@@ -367,4 +367,8 @@ export class CountedQueue<T> {
   static empty<T>(): CountedQueue<T> {
     return new CountedQueue<T>()
   }
+
+  static of<T>(...items: T[]): CountedQueue<T> {
+    return CountedQueue.from(items)
+  }
 }

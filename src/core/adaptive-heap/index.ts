@@ -414,4 +414,8 @@ export class AdaptiveHeap<T> {
   static empty<T>(): AdaptiveHeap<T> {
     return new AdaptiveHeap<T>()
   }
+
+  static of<T>(...items: T[]): AdaptiveHeap<T> {
+    return AdaptiveHeap.from(items)
+  }
 }

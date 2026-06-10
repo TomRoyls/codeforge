@@ -175,4 +175,8 @@ export class RangeMinimumQuery<T> {
   toJSON() {
     return { type: 'RangeMinimumQuery', items: this.toArray() }
   }
+
+  static of<T>(...items: T[]): RangeMinimumQuery<T> {
+    return RangeMinimumQuery.from(items)
+  }
 }

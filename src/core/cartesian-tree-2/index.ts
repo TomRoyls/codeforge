@@ -406,4 +406,8 @@ export class CartesianTree<T> {
     }
     return result
   }
+
+  static of<T>(...items: T[]): CartesianTree<T> {
+    return CartesianTree.from(items)
+  }
 }

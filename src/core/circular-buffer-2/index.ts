@@ -431,4 +431,8 @@ export class CircularBuffer<T> {
     }
     return result
   }
+
+  static of<T>(...items: T[]): CircularBuffer<T> {
+    return CircularBuffer.from(items)
+  }
 }

@@ -282,4 +282,8 @@ export class SqrtDecomposition<T> {
     this.clear()
     return items
   }
+
+  static of<T>(...items: T[]): SqrtDecomposition<T> {
+    return SqrtDecomposition.from(items)
+  }
 }

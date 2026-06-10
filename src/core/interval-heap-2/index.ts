@@ -363,4 +363,8 @@ export class IntervalHeap<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  static of<T>(...items: T[]): IntervalHeap<T> {
+    return IntervalHeap.from(items)
+  }
 }

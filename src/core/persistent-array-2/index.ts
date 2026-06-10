@@ -99,4 +99,8 @@ export class PersistentArray2<T> {
     return { type: 'PersistentArray2', items: this.toArray() }
   }
 
+
+  static of<T>(...items: T[]): PersistentArray2<T> {
+    return PersistentArray2.from(items)
+  }
 }

@@ -140,6 +140,10 @@ export class PersistentStack2<T> {
     return { type: 'PersistentStack2', size: this.size, items: this.toArray() }
   }
 
+
+  static of<T>(...items: T[]): PersistentStack2<T> {
+    return PersistentStack2.from(items)
+  }
 }
 
 interface Node<T> {

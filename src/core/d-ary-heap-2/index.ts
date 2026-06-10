@@ -347,4 +347,8 @@ export class DAryHeap<T> {
   static empty<T>(): DAryHeap<T> {
     return new DAryHeap<T>()
   }
+
+  static of<T>(...items: T[]): DAryHeap<T> {
+    return DAryHeap.from(items)
+  }
 }

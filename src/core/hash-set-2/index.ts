@@ -370,4 +370,8 @@ export class HashSet<T> {
   slice(start?: number, end?: number): T[] {
     return this.toArray().slice(start, end)
   }
+
+  static of<T>(...items: T[]): HashSet<T> {
+    return HashSet.from(items)
+  }
 }

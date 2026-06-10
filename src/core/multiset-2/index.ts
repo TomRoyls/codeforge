@@ -210,4 +210,8 @@ export class Multiset<T> {
   toJSON() {
     return { type: 'Multiset', size: this.size, items: this.toArray() }
   }
+
+  static of<T>(...items: T[]): Multiset<T> {
+    return Multiset.from(items)
+  }
 }

@@ -231,4 +231,8 @@ export class DynamicArray3<T> {
   clone(): DynamicArray3<T> {
     return DynamicArray3.from(this.toArray())
   }
+
+  static of<T>(...items: T[]): DynamicArray3<T> {
+    return DynamicArray3.from(items)
+  }
 }

@@ -360,4 +360,8 @@ export class MinMaxHeap<T> {
     this.clear()
     return items
   }
+
+  static of<T>(...items: T[]): MinMaxHeap<T> {
+    return MinMaxHeap.from(items)
+  }
 }

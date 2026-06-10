@@ -389,4 +389,8 @@ export class ConcTree<T> {
     }
     return result
   }
+
+  static of<T>(...items: T[]): ConcTree<T> {
+    return ConcTree.from(items)
+  }
 }

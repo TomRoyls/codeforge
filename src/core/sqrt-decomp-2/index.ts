@@ -344,4 +344,8 @@ export class SqrtDecomp2<T> {
     this.clear()
     return items
   }
+
+  static of<T>(...items: T[]): SqrtDecomp2<T> {
+    return SqrtDecomp2.from(items)
+  }
 }

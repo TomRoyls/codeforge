@@ -323,4 +323,8 @@ export class SegmentTree2<T> {
   toJSON() {
     return { type: 'SegmentTree2', size: this.size, items: this.toArray() }
   }
+
+  static of<T>(...items: T[]): SegmentTree2<T> {
+    return SegmentTree2.from(items)
+  }
 }

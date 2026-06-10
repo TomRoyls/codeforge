@@ -231,4 +231,8 @@ export class SegmentTreePoint<T> {
   toJSON() {
     return { type: 'SegmentTreePoint', size: this.size, items: this.toArray() }
   }
+
+  static of<T>(...items: T[]): SegmentTreePoint<T> {
+    return SegmentTreePoint.from(items)
+  }
 }

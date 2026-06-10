@@ -297,4 +297,8 @@ export class AtomicSet2<T> {
   static empty<T>(): AtomicSet2<T> {
     return new AtomicSet2<T>()
   }
+
+  static of<T>(...items: T[]): AtomicSet2<T> {
+    return AtomicSet2.from(items)
+  }
 }

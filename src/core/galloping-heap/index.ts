@@ -327,6 +327,10 @@ export class GallopingHeap<T> {
   }
 
 
+
+  static of<T>(...items: T[]): GallopingHeap<T> {
+    return GallopingHeap.from(items)
+  }
 }
 
 export type { GallopingHeapNode };
