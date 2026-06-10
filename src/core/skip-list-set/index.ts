@@ -700,4 +700,14 @@ export class SkipListSet<T = number> {
   reduceRight<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
     return this.toArray().reduceRight(reducer, initialValue)
   }
+
+  without(...items: T[]): T[] {
+    const exclude = new Set(items)
+    return this.toArray().filter(item => !exclude.has(item))
+  }
+
+  intersects(other: T[]): boolean {
+    const set = new Set(other)
+    return this.toArray().some(item => set.has(item))
+  }
 }
