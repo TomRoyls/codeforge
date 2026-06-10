@@ -111,15 +111,15 @@ export class BlockQueue<T> {
   }
 
   map<R>(fn: (item: T) => R): R[] {
-    return this.toArray().map(fn)
+    return this.queue.map(fn)
   }
 
   filter(fn: (item: T) => boolean): T[] {
-    return this.toArray().filter(fn)
+    return this.queue.filter(fn)
   }
 
   reduce<R>(fn: (acc: R, item: T) => R, initial: R): R {
-    return this.toArray().reduce(fn, initial)
+    return this.queue.reduce(fn, initial)
   }
 
   every(predicate: (item: T) => boolean): boolean {
@@ -278,22 +278,22 @@ export class BlockQueue<T> {
   }
 
   compact(): T[] {
-    return this.toArray().filter((item): item is T => item != null)
+    return this.queue.filter((item): item is T => item != null)
   }
 
   without(...items: T[]): T[] {
     const exclude = new Set(items)
-    return this.toArray().filter(item => !exclude.has(item))
+    return this.queue.filter(item => !exclude.has(item))
   }
 
   intersects(other: Iterable<T>): boolean {
     const set = new Set(other)
-    return this.toArray().some(item => set.has(item))
+    return this.queue.some(item => set.has(item))
   }
 
   difference(other: Iterable<T>): T[] {
     const exclude = new Set(other)
-    return this.toArray().filter(item => !exclude.has(item))
+    return this.queue.filter(item => !exclude.has(item))
   }
 
   union(other: Iterable<T>): T[] {
@@ -302,7 +302,7 @@ export class BlockQueue<T> {
   }
 
   pluck<K extends keyof T>(key: K): T[K][] {
-    return this.toArray().map(item => item[key])
+    return this.queue.map(item => item[key])
   }
 
   nth(n: number): T | undefined {
@@ -319,7 +319,7 @@ export class BlockQueue<T> {
 
 
   reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
-    return this.toArray().reduceRight(fn, initial)
+    return this.queue.reduceRight(fn, initial)
   }
 
   sortBy(compareFn: (a: T, b: T) => number): T[] {

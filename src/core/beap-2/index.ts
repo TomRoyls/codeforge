@@ -158,15 +158,15 @@ export class Beap2<T> {
   }
 
   map<R>(fn: (item: T) => R): R[] {
-    return this.toArray().map(fn)
+    return this.data.map(fn)
   }
 
   filter(fn: (item: T) => boolean): T[] {
-    return this.toArray().filter(fn)
+    return this.data.filter(fn)
   }
 
   reduce<R>(fn: (acc: R, item: T) => R, initial: R): R {
-    return this.toArray().reduce(fn, initial)
+    return this.data.reduce(fn, initial)
   }
 
   every(predicate: (item: T) => boolean): boolean {
@@ -336,22 +336,22 @@ export class Beap2<T> {
   }
 
   compact(): T[] {
-    return this.toArray().filter((item): item is T => item != null)
+    return this.data.filter((item): item is T => item != null)
   }
 
   without(...items: T[]): T[] {
     const exclude = new Set(items)
-    return this.toArray().filter(item => !exclude.has(item))
+    return this.data.filter(item => !exclude.has(item))
   }
 
   intersects(other: Iterable<T>): boolean {
     const set = new Set(other)
-    return this.toArray().some(item => set.has(item))
+    return this.data.some(item => set.has(item))
   }
 
   difference(other: Iterable<T>): T[] {
     const exclude = new Set(other)
-    return this.toArray().filter(item => !exclude.has(item))
+    return this.data.filter(item => !exclude.has(item))
   }
 
   union(other: Iterable<T>): T[] {
@@ -360,7 +360,7 @@ export class Beap2<T> {
   }
 
   pluck<K extends keyof T>(key: K): T[K][] {
-    return this.toArray().map(item => item[key])
+    return this.data.map(item => item[key])
   }
 
   nth(n: number): T | undefined {
@@ -376,7 +376,7 @@ export class Beap2<T> {
   }
 
   reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
-    return this.toArray().reduceRight(fn, initial)
+    return this.data.reduceRight(fn, initial)
   }
 
   sortBy(compareFn: (a: T, b: T) => number): T[] {

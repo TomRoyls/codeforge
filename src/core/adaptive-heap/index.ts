@@ -241,15 +241,15 @@ export class AdaptiveHeap<T> {
   }
 
   map<R>(fn: (item: T) => R): R[] {
-    return this.toArray().map(fn)
+    return this.heap.map(fn)
   }
 
   filter(fn: (item: T) => boolean): T[] {
-    return this.toArray().filter(fn)
+    return this.heap.filter(fn)
   }
 
   reduce<R>(fn: (acc: R, item: T) => R, initial: R): R {
-    return this.toArray().reduce(fn, initial)
+    return this.heap.reduce(fn, initial)
   }
 
   every(predicate: (item: T) => boolean): boolean {
@@ -432,22 +432,22 @@ export class AdaptiveHeap<T> {
   }
 
   compact(): T[] {
-    return this.toArray().filter((item): item is T => item != null)
+    return this.heap.filter((item): item is T => item != null)
   }
 
   without(...items: T[]): T[] {
     const exclude = new Set(items)
-    return this.toArray().filter(item => !exclude.has(item))
+    return this.heap.filter(item => !exclude.has(item))
   }
 
   intersects(other: Iterable<T>): boolean {
     const set = new Set(other)
-    return this.toArray().some(item => set.has(item))
+    return this.heap.some(item => set.has(item))
   }
 
   difference(other: Iterable<T>): T[] {
     const exclude = new Set(other)
-    return this.toArray().filter(item => !exclude.has(item))
+    return this.heap.filter(item => !exclude.has(item))
   }
 
   union(other: Iterable<T>): T[] {
@@ -456,7 +456,7 @@ export class AdaptiveHeap<T> {
   }
 
   pluck<K extends keyof T>(key: K): T[K][] {
-    return this.toArray().map(item => item[key])
+    return this.heap.map(item => item[key])
   }
 
   nth(n: number): T | undefined {
@@ -476,7 +476,7 @@ export class AdaptiveHeap<T> {
   }
 
   reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
-    return this.toArray().reduceRight(fn, initial)
+    return this.heap.reduceRight(fn, initial)
   }
 
   sortBy(compareFn: (a: T, b: T) => number): T[] {

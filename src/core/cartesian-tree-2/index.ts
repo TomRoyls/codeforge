@@ -271,15 +271,15 @@ export class CartesianTree<T> {
   }
 
   every(predicate: (item: T) => boolean): boolean {
-    return this.toArray().every(predicate)
+    return this._values.every(predicate)
   }
 
   some(predicate: (item: T) => boolean): boolean {
-    return this.toArray().some(predicate)
+    return this._values.some(predicate)
   }
 
   includes(item: T): boolean {
-    return this.toArray().includes(item)
+    return this._values.includes(item)
   }
 
   at(index: number): T | undefined {
@@ -288,11 +288,11 @@ export class CartesianTree<T> {
   }
 
   join(separator: string = ', '): string {
-    return this.toArray().join(separator)
+    return this._values.join(separator)
   }
 
   slice(start?: number, end?: number): T[] {
-    return this.toArray().slice(start, end)
+    return this._values.slice(start, end)
   }
 
   count(predicate: (item: T) => boolean): number {
@@ -357,11 +357,11 @@ export class CartesianTree<T> {
   }
 
   take(n: number): T[] {
-    return this.toArray().slice(0, n)
+    return this._values.slice(0, n)
   }
 
   skip(n: number): T[] {
-    return this.toArray().slice(n)
+    return this._values.slice(n)
   }
 
   tap(fn: (collection: CartesianTree<T>) => void): CartesianTree<T> {
@@ -424,22 +424,22 @@ export class CartesianTree<T> {
   }
 
   compact(): T[] {
-    return this.toArray().filter((item): item is T => item != null)
+    return this._values.filter((item): item is T => item != null)
   }
 
   without(...items: T[]): T[] {
     const exclude = new Set(items)
-    return this.toArray().filter(item => !exclude.has(item))
+    return this._values.filter(item => !exclude.has(item))
   }
 
   intersects(other: Iterable<T>): boolean {
     const set = new Set(other)
-    return this.toArray().some(item => set.has(item))
+    return this._values.some(item => set.has(item))
   }
 
   difference(other: Iterable<T>): T[] {
     const exclude = new Set(other)
-    return this.toArray().filter(item => !exclude.has(item))
+    return this._values.filter(item => !exclude.has(item))
   }
 
   union(other: Iterable<T>): T[] {
@@ -448,7 +448,7 @@ export class CartesianTree<T> {
   }
 
   pluck<K extends keyof T>(key: K): T[K][] {
-    return this.toArray().map(item => item[key])
+    return this._values.map(item => item[key])
   }
 
   nth(n: number): T | undefined {
@@ -460,7 +460,7 @@ export class CartesianTree<T> {
   }
 
   reduceRight<R>(fn: (acc: R, item: T) => R, initial: R): R {
-    return this.toArray().reduceRight(fn, initial)
+    return this._values.reduceRight(fn, initial)
   }
 
   sortBy(compareFn: (a: T, b: T) => number): T[] {
