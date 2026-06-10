@@ -343,4 +343,12 @@ export class CircularBuffer4<T> {
     }
     return result
   }
+
+  flatMap<U>(fn: (item: T) => U[]): U[] {
+    const result: U[] = []
+    for (const item of this.toArray()) {
+      result.push(...fn(item))
+    }
+    return result
+  }
 }

@@ -892,6 +892,7 @@ export class CatenableDeque<T> {
     }
     return result
   }
+
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

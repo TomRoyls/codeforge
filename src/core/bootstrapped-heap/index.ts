@@ -437,6 +437,14 @@ export class BootstrappedHeap<T = number> {
     }
     return result
   }
+
+  flatMap<U>(fn: (item: T) => U[]): U[] {
+    const result: U[] = []
+    for (const item of this.toArray()) {
+      result.push(...fn(item))
+    }
+    return result
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'
