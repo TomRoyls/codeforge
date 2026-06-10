@@ -566,4 +566,12 @@ export class AVLSet<T = number> {
   nth(n: number): T | undefined {
     return this.at(n - 1)
   }
+
+  head(): T | undefined {
+    return this.first()
+  }
+
+  tail(): T[] {
+    return this.skip(1)
+  }
 }

@@ -612,6 +612,8 @@ export class BinomialQueue<T = number> {
   nth(n: number): T | undefined {
     return this.at(n - 1)
   }
+
+
 }
 
 export type { BinomialQueueOptions } from './types.js'

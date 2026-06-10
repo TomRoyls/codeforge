@@ -606,6 +606,8 @@ export class BinomialHeap<T = number> {
   nth(n: number): T | undefined {
     return this.at(n - 1)
   }
+
+
 }
 
 export type { BinomialHeapOptions 
