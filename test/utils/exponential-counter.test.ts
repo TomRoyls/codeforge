@@ -172,4 +172,226 @@ describe('ExponentialCounter', () => {
     counter.reset()
     expect(counter.approximate).toBe(0)
   })
+
+  it('toString returns correct format', () => {
+    const counter = new ExponentialCounter()
+    expect(counter.toString()).toBe('ExponentialCounter(0)')
+    counter.add(100)
+    expect(counter.toString()).toBe('ExponentialCounter(100)')
+  })
+
+  it('toString handles large values', () => {
+    const counter = new ExponentialCounter()
+    counter.add(999999)
+    expect(counter.toString()).toBe('ExponentialCounter(999999)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const counter = new ExponentialCounter(512)
+    counter.add(100)
+    const json = counter.toJSON()
+    expect(json).toEqual({ count: 100, threshold: 512 })
+  })
+
+  it('toJSON handles default threshold', () => {
+    const counter = new ExponentialCounter()
+    counter.add(50)
+    const json = counter.toJSON()
+    expect(json).toEqual({ count: 50, threshold: 1024 })
+  })
+
+  it('toJSON handles zero value', () => {
+    const counter = new ExponentialCounter()
+    const json = counter.toJSON()
+    expect(json).toEqual({ count: 0, threshold: 1024 })
+  })
+
+  it('clone creates independent copy', () => {
+    const counter = new ExponentialCounter()
+    counter.add(10)
+    const clone = counter.clone()
+    clone.add(5)
+    expect(counter.value).toBe(10)
+    expect(clone.value).toBe(15)
+  })
+
+  it('clone preserves threshold', () => {
+    const counter = new ExponentialCounter(256)
+    const clone = counter.clone()
+    clone.add(100)
+    expect(clone.isCompressed).toBe(false)
+    clone.add(200)
+    expect(clone.isCompressed).toBe(true)
+  })
+
+  it('clone has same initial value', () => {
+    const counter = new ExponentialCounter()
+    counter.add(42)
+    const clone = counter.clone()
+    expect(clone.value).toBe(42)
+  })
+
+  it('clone approximate matches original', () => {
+    const counter = new ExponentialCounter()
+    counter.add(1500)
+    const clone = counter.clone()
+    expect(clone.approximate).toBe(counter.approximate)
+  })
+
+  it('clone isCompressed matches original', () => {
+    const counter = new ExponentialCounter(100)
+    counter.add(200)
+    const clone = counter.clone()
+    expect(clone.isCompressed).toBe(counter.isCompressed)
+  })
+
+  it('equals returns true for same instance', () => {
+    const counter = new ExponentialCounter()
+    expect(counter.equals(counter)).toBe(true)
+  })
+
+  it('equals returns false for non-ExponentialCounter', () => {
+    const counter = new ExponentialCounter()
+    expect(counter.equals({})).toBe(false)
+    expect(counter.equals(null)).toBe(false)
+    expect(counter.equals(undefined)).toBe(false)
+    expect(counter.equals(42)).toBe(false)
+  })
+
+  it('equals returns true for identical counters', () => {
+    const counter1 = new ExponentialCounter(512)
+    const counter2 = new ExponentialCounter(512)
+    counter1.add(100)
+    counter2.add(100)
+    expect(counter1.equals(counter2)).toBe(true)
+  })
+
+  it('equals returns false for different counts', () => {
+    const counter1 = new ExponentialCounter()
+    const counter2 = new ExponentialCounter()
+    counter1.add(10)
+    counter2.add(20)
+    expect(counter1.equals(counter2)).toBe(false)
+  })
+
+  it('equals returns false for different thresholds', () => {
+    const counter1 = new ExponentialCounter(256)
+    const counter2 = new ExponentialCounter(512)
+    counter1.add(100)
+    counter2.add(100)
+    expect(counter1.equals(counter2)).toBe(false)
+  })
+
+  it('equals handles zero counters with same threshold', () => {
+    const counter1 = new ExponentialCounter()
+    const counter2 = new ExponentialCounter()
+    expect(counter1.equals(counter2)).toBe(true)
+  })
+
+  it('equals returns false for zero counters with different thresholds', () => {
+    const counter1 = new ExponentialCounter(256)
+    const counter2 = new ExponentialCounter(512)
+    expect(counter1.equals(counter2)).toBe(false)
+  })
+
+  it('add zero does not change value', () => {
+    const counter = new ExponentialCounter()
+    counter.add(10)
+    counter.add(0)
+    expect(counter.value).toBe(10)
+  })
+
+  it('add large number', () => {
+    const counter = new ExponentialCounter()
+    counter.add(1000000)
+    expect(counter.value).toBe(1000000)
+  })
+
+  it('merge with zero counter', () => {
+    const a = new ExponentialCounter()
+    const b = new ExponentialCounter()
+    a.add(50)
+    a.merge(b)
+    expect(a.value).toBe(50)
+  })
+
+  it('merge into zero counter', () => {
+    const a = new ExponentialCounter()
+    const b = new ExponentialCounter()
+    b.add(75)
+    a.merge(b)
+    expect(a.value).toBe(75)
+  })
+
+  it('increment after merge', () => {
+    const a = new ExponentialCounter()
+    const b = new ExponentialCounter()
+    a.add(10)
+    b.add(20)
+    a.merge(b)
+    a.increment()
+    expect(a.value).toBe(31)
+  })
+
+  it('merge with different thresholds', () => {
+    const a = new ExponentialCounter(256)
+    const b = new ExponentialCounter(512)
+    a.add(10)
+    b.add(20)
+    a.merge(b)
+    expect(a.value).toBe(30)
+  })
+
+  it('approximate after merge', () => {
+    const a = new ExponentialCounter(1024)
+    const b = new ExponentialCounter(1024)
+    a.add(800)
+    b.add(800)
+    a.merge(b)
+    expect(a.approximate).toBe(1024)
+  })
+
+  it('reset multiple times', () => {
+    const counter = new ExponentialCounter()
+    counter.add(100)
+    counter.reset()
+    counter.add(50)
+    counter.reset()
+    expect(counter.value).toBe(0)
+  })
+
+  it('toString after reset', () => {
+    const counter = new ExponentialCounter()
+    counter.add(100)
+    counter.reset()
+    expect(counter.toString()).toBe('ExponentialCounter(0)')
+  })
+
+  it('toJSON after reset', () => {
+    const counter = new ExponentialCounter()
+    counter.add(100)
+    counter.reset()
+    const json = counter.toJSON()
+    expect(json).toEqual({ count: 0, threshold: 1024 })
+  })
+
+  it('clone of reset counter', () => {
+    const counter = new ExponentialCounter()
+    counter.add(100)
+    counter.reset()
+    const clone = counter.clone()
+    expect(clone.value).toBe(0)
+    expect(clone.equals(counter)).toBe(true)
+  })
+
+  it('equals after reset', () => {
+    const counter1 = new ExponentialCounter()
+    const counter2 = new ExponentialCounter()
+    counter1.add(100)
+    counter2.add(100)
+    counter1.reset()
+    expect(counter1.equals(counter2)).toBe(false)
+    counter2.reset()
+    expect(counter1.equals(counter2)).toBe(true)
+  })
 })

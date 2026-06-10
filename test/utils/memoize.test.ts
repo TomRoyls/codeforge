@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { memoize } from '../../src/utils/memoize.js'
+import { memoize, clearMemoized } from '../../src/utils/memoize.js'
 
 // ─── Basic memoization ────────────────────────────────────
 describe('memoize', () => {
@@ -193,5 +193,235 @@ describe('memoize - edge cases', () => {
     expect(fn(1)).toBe(3)
     expect(fn(2)).toBe(6)
     expect(calls).toBe(2)
+  })
+
+  it('handles array arguments', () => {
+    let calls = 0
+    const fn = memoize((arr: number[]) => { calls++; return arr.reduce((a, b) => a + b, 0) })
+    expect(fn([1, 2, 3])).toBe(6)
+    expect(fn([1, 2, 3])).toBe(6)
+    expect(calls).toBe(1)
+  })
+
+  it('handles nested object arguments', () => {
+    let calls = 0
+    const fn = memoize((obj: { nested: { deep: number } }) => { calls++; return obj.nested.deep * 2 })
+    expect(fn({ nested: { deep: 5 } })).toBe(10)
+    expect(fn({ nested: { deep: 5 } })).toBe(10)
+    expect(calls).toBe(1)
+  })
+
+  it('handles NaN as argument', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x })
+    fn(NaN)
+    fn(NaN)
+    expect(calls).toBe(1)
+  })
+
+  it('handles Infinity as argument', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x })
+    fn(Infinity)
+    fn(Infinity)
+    fn(-Infinity)
+    expect(calls).toBe(2)
+  })
+
+  it('handles very large numbers', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x })
+    fn(Number.MAX_VALUE)
+    fn(Number.MAX_VALUE)
+    expect(calls).toBe(1)
+  })
+
+  it('handles empty object arguments', () => {
+    let calls = 0
+    const fn = memoize((obj: {}) => { calls++; return 42 })
+    fn({})
+    fn({})
+    expect(calls).toBe(1)
+  })
+
+  it('handles empty array arguments', () => {
+    let calls = 0
+    const fn = memoize((arr: unknown[]) => { calls++; return arr.length })
+    fn([])
+    fn([])
+    expect(calls).toBe(1)
+  })
+
+  it('handles symbol as argument', () => {
+    let calls = 0
+    const fn = memoize((sym: symbol) => { calls++; return String(sym) })
+    const sym = Symbol('test')
+    fn(sym)
+    fn(sym)
+    expect(calls).toBe(1)
+  })
+
+  it('handles Date objects as arguments', () => {
+    let calls = 0
+    const fn = memoize((date: Date) => { calls++; return date.getTime() })
+    const date = new Date('2024-01-01')
+    fn(date)
+    fn(date)
+    expect(calls).toBe(1)
+  })
+
+  it('handles RegExp objects as arguments', () => {
+    let calls = 0
+    const fn = memoize((regex: RegExp) => { calls++; return regex.source })
+    fn(/test/g)
+    fn(/test/g)
+    expect(calls).toBe(1)
+  })
+
+  it('clearMemoized clears the cache', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x * 2 })
+    fn(5)
+    fn(5)
+    expect(calls).toBe(1)
+    clearMemoized(fn)
+    fn(5)
+    expect(calls).toBe(2)
+  })
+
+  it('clearMemoized on non-memoized function does nothing', () => {
+    const fn = (x: number) => x * 2
+    expect(() => clearMemoized(fn)).not.toThrow()
+  })
+
+  it('handles objects with circular references', () => {
+    let calls = 0
+    const fn = memoize((obj: { x: number, ref?: unknown }) => { calls++; return obj.x })
+    const obj: { x: number, ref?: unknown } = { x: 1 }
+    obj.ref = obj
+    fn(obj)
+    fn(obj)
+    expect(calls).toBe(1)
+  })
+
+  it('maxSize=0 allows one entry then evicts', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x }, { maxSize: 0 })
+    fn(1)
+    fn(1)
+    expect(calls).toBe(1)
+    fn(2)
+    fn(1)
+    expect(calls).toBe(3)
+  })
+
+  it('very large maxSize works correctly', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x }, { maxSize: 10000 })
+    fn(1)
+    fn(1)
+    expect(calls).toBe(1)
+  })
+
+  it('handles multiple arguments with different types', () => {
+    let calls = 0
+    const fn = memoize((a: number, b: string, c: boolean) => { calls++; return `${a}-${b}-${c}` })
+    fn(1, 'test', true)
+    fn(1, 'test', true)
+    fn(2, 'test', true)
+    expect(calls).toBe(2)
+  })
+
+  it('preserves function prototype', () => {
+    const fn = memoize((x: number) => x * 2)
+    expect(typeof fn).toBe('function')
+  })
+
+  it('handles undefined return value', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return undefined })
+    fn(1)
+    fn(1)
+    expect(calls).toBe(1)
+  })
+
+  it('handles null return value', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return null })
+    fn(1)
+    fn(1)
+    expect(calls).toBe(1)
+  })
+
+  it('throws for non-serializable objects gracefully', () => {
+    const fn = memoize((x: unknown) => x)
+    const nonSerializable = { fn: function () {} }
+    fn(nonSerializable)
+    fn(nonSerializable)
+  })
+
+  it('expires all entries when ttlMs is 0', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x }, { ttlMs: 0 })
+    fn(1)
+    fn(1)
+    expect(calls).toBe(2)
+  })
+
+  it('infinite ttlMs keeps entries forever', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x }, { ttlMs: Infinity })
+    fn(1)
+    fn(1)
+    expect(calls).toBe(1)
+  })
+
+  it('handles mixed arguments with null and undefined', () => {
+    let calls = 0
+    const fn = memoize((a: number | null, b: string | undefined) => { calls++; return String(a) + String(b) })
+    fn(null, undefined)
+    fn(null, undefined)
+    fn(1, 'test')
+    expect(calls).toBe(2)
+  })
+
+  it('evicts oldest entry when multiple evictions needed', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x }, { maxSize: 2 })
+    fn(1)
+    fn(2)
+    fn(3)
+    fn(4)
+    fn(1)
+    expect(calls).toBe(5)
+  })
+
+  it('handles decimal numbers correctly', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x })
+    fn(3.14159)
+    fn(3.14159)
+    expect(calls).toBe(1)
+  })
+
+  it('cache is independent for each memoized function', () => {
+    let calls1 = 0
+    let calls2 = 0
+    const fn1 = memoize((x: number) => { calls1++; return x })
+    const fn2 = memoize((x: number) => { calls2++; return x })
+    fn1(1)
+    fn2(1)
+    fn1(1)
+    fn2(1)
+    expect(calls1).toBe(1)
+    expect(calls2).toBe(1)
+  })
+
+  it('handles objects with same structure but different references', () => {
+    let calls = 0
+    const fn = memoize((obj: { x: number }) => { calls++; return obj.x })
+    fn({ x: 1 })
+    fn({ x: 1 })
+    expect(calls).toBe(1)
   })
 })

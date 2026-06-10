@@ -131,4 +131,158 @@ describe('FibonacciIterator', () => {
   it('nth 1 is 1', () => {
     expect(FibonacciIterator.nth(1)).toBe(1n)
   })
+
+  it('toString shows initial state', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    expect(iter.toString()).toBe('FibonacciIterator(count=0, max=5)')
+  })
+
+  it('toString shows unbounded max', () => {
+    const iter = new FibonacciIterator()
+    expect(iter.toString()).toBe('FibonacciIterator(count=0, max=∞)')
+  })
+
+  it('toString updates after iteration', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    iter.next()
+    iter.next()
+    expect(iter.toString()).toBe('FibonacciIterator(count=2, max=5)')
+  })
+
+  it('toJSON returns initial state', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    const json = iter.toJSON()
+    expect(json).toEqual({ prev: '0', curr: '1', count: 0, maxCount: 5 })
+  })
+
+  it('toJSON returns unbounded max as null', () => {
+    const iter = new FibonacciIterator()
+    const json = iter.toJSON()
+    expect(json.maxCount).toBe(null)
+  })
+
+  it('toJSON updates after iteration', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    iter.next()
+    iter.next()
+    const json = iter.toJSON()
+    expect(json).toEqual({ prev: '0', curr: '1', count: 2, maxCount: 5 })
+  })
+
+  it('toJSON after exhaustion', () => {
+    const iter = new FibonacciIterator({ count: 2 })
+    iter.next()
+    iter.next()
+    const json = iter.toJSON()
+    expect(json).toEqual({ prev: '0', curr: '1', count: 2, maxCount: 2 })
+  })
+
+  it('clone creates independent copy', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    iter.next()
+    iter.next()
+    const cloned = iter.clone()
+    expect(cloned).not.toBe(iter)
+    expect(cloned.equals(iter)).toBe(true)
+  })
+
+  it('clone preserves state', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    iter.next()
+    iter.next()
+    const cloned = iter.clone()
+    expect(cloned.toJSON()).toEqual(iter.toJSON())
+  })
+
+  it('clone produces same next values', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    iter.next()
+    iter.next()
+    const cloned = iter.clone()
+    const next1 = iter.next()
+    const next2 = cloned.next()
+    expect(next1).toEqual(next2)
+  })
+
+  it('clone with different maxCount', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    iter.next()
+    const cloned = iter.clone()
+    const originalResults = [...iter]
+    const clonedResults = [...cloned]
+    expect(originalResults).toEqual(clonedResults)
+  })
+
+  it('equals returns true for identical iterators', () => {
+    const iter1 = new FibonacciIterator({ count: 5 })
+    const iter2 = new FibonacciIterator({ count: 5 })
+    expect(iter1.equals(iter2)).toBe(true)
+  })
+
+  it('equals returns false for different internal state', () => {
+    const iter1 = new FibonacciIterator({ count: 5 })
+    const iter2 = new FibonacciIterator({ count: 5 })
+    iter1.next()
+    expect(iter1.equals(iter2)).toBe(false)
+  })
+
+  it('equals returns false for non-FibonacciIterator', () => {
+    const iter = new FibonacciIterator()
+    expect(iter.equals(null)).toBe(false)
+    expect(iter.equals({})).toBe(false)
+    expect(iter.equals(5)).toBe(false)
+  })
+
+  it('equals after cloning returns true', () => {
+    const iter = new FibonacciIterator({ count: 5 })
+    const cloned = iter.clone()
+    expect(iter.equals(cloned)).toBe(true)
+    expect(cloned.equals(iter)).toBe(true)
+  })
+
+  it('toArray with large count', () => {
+    const result = FibonacciIterator.toArray(20)
+    expect(result.length).toBe(20)
+    expect(result[0]).toBe(0n)
+    expect(result[1]).toBe(1n)
+    expect(result[19]).toBe(4181n)
+  })
+
+  it('isFibonacci with very large numbers', () => {
+    expect(FibonacciIterator.isFibonacci(354224848179261915075n)).toBe(true)
+    expect(FibonacciIterator.isFibonacci(354224848179261915074n)).toBe(false)
+  })
+
+  it('iterator can be reset by creating new instance', () => {
+    const iter1 = new FibonacciIterator({ count: 3 })
+    const results1 = [...iter1]
+    const iter2 = new FibonacciIterator({ count: 3 })
+    const results2 = [...iter2]
+    expect(results1).toEqual(results2)
+  })
+
+  it('multiple iterators are independent', () => {
+    const iter1 = new FibonacciIterator({ count: 5 })
+    const iter2 = new FibonacciIterator({ count: 5 })
+    iter1.next()
+    const val1 = iter1.next().value
+    const val2 = iter2.next().value
+    expect(val1).not.toBe(val2)
+  })
+
+  it('nth handles edge case 0', () => {
+    expect(FibonacciIterator.nth(0)).toBe(0n)
+  })
+
+  it('nth handles edge case 1', () => {
+    expect(FibonacciIterator.nth(1)).toBe(1n)
+  })
+
+  it('nth handles edge case 2', () => {
+    expect(FibonacciIterator.nth(2)).toBe(1n)
+  })
+
+  it('nth handles edge case 3', () => {
+    expect(FibonacciIterator.nth(3)).toBe(2n)
+  })
 })

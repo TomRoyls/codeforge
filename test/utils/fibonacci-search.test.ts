@@ -165,3 +165,175 @@ describe('FibonacciSearch custom comparator', () => {
     expect(result).toBe(2)
   })
 })
+
+describe('FibonacciSearch edge cases', () => {
+  it('search with two elements - first', () => {
+    const arr = [1, 3]
+    const result = FibonacciSearch.search(arr, 1)
+    expect(result).toBe(0)
+  })
+
+  it('search with two elements - second', () => {
+    const arr = [1, 3]
+    const result = FibonacciSearch.search(arr, 3)
+    expect(result).toBe(1)
+  })
+
+  it('search with three elements - middle', () => {
+    const arr = [1, 3, 5]
+    const result = FibonacciSearch.search(arr, 3)
+    expect(result).toBe(1)
+  })
+
+  it('search with power of two size', () => {
+    const arr = [1, 2, 3, 4, 5, 6, 7, 8]
+    const result = FibonacciSearch.search(arr, 5)
+    expect(result).toBe(4)
+  })
+
+  it('search with negative numbers', () => {
+    const arr = [-5, -3, -1, 0, 1, 3, 5]
+    const result = FibonacciSearch.search(arr, -1)
+    expect(result).toBe(2)
+  })
+
+  it('search with floating point numbers', () => {
+    const arr = [1.1, 2.2, 3.3, 4.4, 5.5]
+    const result = FibonacciSearch.search(arr, 3.3)
+    expect(result).toBe(2)
+  })
+
+  it('search with objects using custom comparator', () => {
+    const arr = [{ id: 1 }, { id: 2 }, { id: 3 }]
+    const compare = (a: { id: number }, b: { id: number }) => a.id - b.id
+    const result = FibonacciSearch.search(arr, { id: 2 }, compare)
+    expect(result).toBe(1)
+  })
+
+  it('search returns -1 when target smaller than all', () => {
+    const arr = [5, 10, 15, 20]
+    const result = FibonacciSearch.search(arr, 1)
+    expect(result).toBe(-1)
+  })
+
+  it('search returns -1 when target larger than all', () => {
+    const arr = [5, 10, 15, 20]
+    const result = FibonacciSearch.search(arr, 25)
+    expect(result).toBe(-1)
+  })
+
+  it('firstIndexOf with single duplicate', () => {
+    const arr = [1, 2, 2, 3]
+    const result = FibonacciSearch.firstIndexOf(arr, 2)
+    expect(result).toBe(1)
+  })
+
+  it('firstIndexOf at start of array', () => {
+    const arr = [2, 2, 2, 3, 4]
+    const result = FibonacciSearch.firstIndexOf(arr, 2)
+    expect(result).toBe(0)
+  })
+
+  it('firstIndexOf at end of array', () => {
+    const arr = [1, 2, 3, 4, 4]
+    const result = FibonacciSearch.firstIndexOf(arr, 4)
+    expect(result).toBe(3)
+  })
+
+  it('lastIndexOf with single duplicate', () => {
+    const arr = [1, 2, 2, 3]
+    const result = FibonacciSearch.lastIndexOf(arr, 2)
+    expect(result).toBe(2)
+  })
+
+  it('lastIndexOf at start of array', () => {
+    const arr = [2, 2, 2, 3, 4]
+    const result = FibonacciSearch.lastIndexOf(arr, 2)
+    expect(result).toBe(2)
+  })
+
+  it('lastIndexOf at end of array', () => {
+    const arr = [1, 2, 3, 4, 4]
+    const result = FibonacciSearch.lastIndexOf(arr, 4)
+    expect(result).toBe(4)
+  })
+
+  it('insertIndex before first element', () => {
+    const arr = [5, 10, 15]
+    const result = FibonacciSearch.insertIndex(arr, 3)
+    expect(result).toBe(0)
+  })
+
+  it('insertIndex between middle elements', () => {
+    const arr = [1, 4, 7, 10]
+    const result = FibonacciSearch.insertIndex(arr, 5)
+    expect(result).toBe(2)
+  })
+
+  it('insertIndex with single element array - smaller', () => {
+    const result = FibonacciSearch.insertIndex([10], 5)
+    expect(result).toBe(0)
+  })
+
+  it('lastIndexOf with custom comparator', () => {
+    const arr = [9, 7, 7, 7, 5]
+    const reverseCompare = (a: number, b: number) => {
+      if (a > b) return -1
+      if (a < b) return 1
+      return 0
+    }
+    const result = FibonacciSearch.lastIndexOf(arr, 7, reverseCompare)
+    expect(result).toBe(3)
+  })
+
+  it('search with case-insensitive string comparator', () => {
+    const arr = ['Apple', 'Banana', 'Cherry', 'Date']
+    const caseCompare = (a: string, b: string) => a.toLowerCase().localeCompare(b.toLowerCase())
+    const result = FibonacciSearch.search(arr, 'cherry', caseCompare)
+    expect(result).toBe(2)
+  })
+
+  it('firstIndexOf with case-insensitive comparator', () => {
+    const arr = ['APPLE', 'apple', 'Apple', 'banana']
+    const caseCompare = (a: string, b: string) => a.toLowerCase().localeCompare(b.toLowerCase())
+    const result = FibonacciSearch.firstIndexOf(arr, 'apple', caseCompare)
+    expect(result).toBe(0)
+  })
+
+  it('insertIndex with case-insensitive comparator', () => {
+    const arr = ['Apple', 'Cherry', 'Date']
+    const caseCompare = (a: string, b: string) => a.toLowerCase().localeCompare(b.toLowerCase())
+    const result = FibonacciSearch.insertIndex(arr, 'banana', caseCompare)
+    expect(result).toBe(1)
+  })
+
+  it('search with large array size', () => {
+    const arr = Array.from({ length: 5000 }, (_, i) => i * 2)
+    const result = FibonacciSearch.search(arr, 8000)
+    expect(result).toBe(4000)
+  })
+
+  it('firstIndexOf with consecutive duplicates', () => {
+    const arr = [1, 1, 1, 1, 2, 3]
+    const result = FibonacciSearch.firstIndexOf(arr, 1)
+    expect(result).toBe(0)
+  })
+
+  it('lastIndexOf with consecutive duplicates', () => {
+    const arr = [1, 2, 3, 3, 3, 3]
+    const result = FibonacciSearch.lastIndexOf(arr, 3)
+    expect(result).toBe(5)
+  })
+
+  it('search with two element array - not found', () => {
+    const arr = [1, 3]
+    const result = FibonacciSearch.search(arr, 2)
+    expect(result).toBe(-1)
+  })
+
+  it('insertIndex with negative numbers', () => {
+    const arr = [-10, -5, 0, 5, 10]
+    const result = FibonacciSearch.insertIndex(arr, -3)
+    expect(result).toBe(2)
+  })
+})

@@ -131,3 +131,187 @@ describe('FingerTree', () => {
     expect(ft.size).toBe(1)
   })
 })
+
+describe('FingerTree toString', () => {
+  it('returns string with size', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    expect(ft.toString()).toBe('FingerTree(3)')
+  })
+
+  it('empty tree returns size 0', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.toString()).toBe('FingerTree(0)')
+  })
+})
+
+describe('FingerTree toJSON', () => {
+  it('returns array of elements', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    expect(ft.toJSON()).toEqual([1, 2, 3])
+  })
+
+  it('empty tree returns empty array', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.toJSON()).toEqual([])
+  })
+
+  it('returns independent copy', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    const json = ft.toJSON()
+    json.push(4)
+    json[0] = 99
+    expect(ft.toJSON()).toEqual([1, 2, 3])
+  })
+})
+
+describe('FingerTree clone', () => {
+  it('creates independent copy', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    const clone = ft.clone()
+    expect(clone.toArray()).toEqual([1, 2, 3])
+    expect(clone.toArray()).not.toBe(ft.toArray())
+  })
+
+  it('clone modifications do not affect original', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    const clone = ft.clone()
+    const modifiedClone = clone.pushBack(4)
+    expect(modifiedClone.toArray()).toEqual([1, 2, 3, 4])
+    expect(ft.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('clone empty tree', () => {
+    const ft = FingerTree.empty<number>()
+    const clone = ft.clone()
+    expect(clone.isEmpty).toBe(true)
+    expect(clone.size).toBe(0)
+  })
+
+  it('clone with single element', () => {
+    const ft = FingerTree.from([42])
+    const clone = ft.clone()
+    expect(clone.toArray()).toEqual([42])
+    expect(clone.size).toBe(1)
+  })
+})
+
+describe('FingerTree equals', () => {
+  it('returns true for identical trees', () => {
+    const ft1 = FingerTree.from([1, 2, 3])
+    const ft2 = FingerTree.from([1, 2, 3])
+    expect(ft1.equals(ft2)).toBe(true)
+  })
+
+  it('returns false for different sizes', () => {
+    const ft1 = FingerTree.from([1, 2])
+    const ft2 = FingerTree.from([1, 2, 3])
+    expect(ft1.equals(ft2)).toBe(false)
+  })
+
+  it('returns false for different elements', () => {
+    const ft1 = FingerTree.from([1, 2, 3])
+    const ft2 = FingerTree.from([1, 2, 4])
+    expect(ft1.equals(ft2)).toBe(false)
+  })
+
+  it('returns false for non-FingerTree objects', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    expect(ft.equals(null)).toBe(false)
+    expect(ft.equals(undefined)).toBe(false)
+    expect(ft.equals({})).toBe(false)
+    expect(ft.equals([1, 2, 3])).toBe(false)
+  })
+
+  it('empty trees are equal', () => {
+    const ft1 = FingerTree.empty<number>()
+    const ft2 = FingerTree.empty<number>()
+    expect(ft1.equals(ft2)).toBe(true)
+  })
+
+  it('trees with different order are not equal', () => {
+    const ft1 = FingerTree.from([1, 2, 3])
+    const ft2 = FingerTree.from([3, 2, 1])
+    expect(ft1.equals(ft2)).toBe(false)
+  })
+})
+
+describe('FingerTree get edge cases', () => {
+  it('returns undefined for negative index', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    expect(ft.get(-1)).toBeUndefined()
+  })
+
+  it('returns undefined for out of bounds index', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    expect(ft.get(3)).toBeUndefined()
+    expect(ft.get(10)).toBeUndefined()
+  })
+
+  it('returns element at last valid index', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    expect(ft.get(2)).toBe(3)
+  })
+
+  it('handles get on empty tree', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.get(0)).toBeUndefined()
+  })
+})
+
+describe('FingerTree concat edge cases', () => {
+  it('concat with empty tree', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    const empty = FingerTree.empty<number>()
+    expect(ft.concat(empty).toArray()).toEqual([1, 2, 3])
+    expect(empty.concat(ft).toArray()).toEqual([1, 2, 3])
+  })
+
+  it('concat two empty trees', () => {
+    const empty1 = FingerTree.empty<number>()
+    const empty2 = FingerTree.empty<number>()
+    expect(empty1.concat(empty2).isEmpty).toBe(true)
+  })
+
+  it('concat preserves order', () => {
+    const ft1 = FingerTree.from([1, 2])
+    const ft2 = FingerTree.from([3, 4])
+    expect(ft1.concat(ft2).toArray()).toEqual([1, 2, 3, 4])
+  })
+
+  it('concat with large trees', () => {
+    const arr1 = Array.from({ length: 50 }, (_, i) => i)
+    const arr2 = Array.from({ length: 50 }, (_, i) => i + 50)
+    const ft1 = FingerTree.from(arr1)
+    const ft2 = FingerTree.from(arr2)
+    expect(ft1.concat(ft2).toArray()).toEqual([...arr1, ...arr2])
+  })
+})
+
+describe('FingerTree toArray edge cases', () => {
+  it('returns independent copy', () => {
+    const ft = FingerTree.from([1, 2, 3])
+    const arr = ft.toArray()
+    arr.push(4)
+    arr[0] = 99
+    expect(ft.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('empty tree returns empty array', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.toArray()).toEqual([])
+  })
+})
+
+describe('FingerTree with strings', () => {
+  it('handles string elements', () => {
+    const ft = FingerTree.from(['a', 'b', 'c'])
+    expect(ft.peekFront()).toBe('a')
+    expect(ft.peekBack()).toBe('c')
+  })
+
+  it('concat string trees', () => {
+    const ft1 = FingerTree.from(['a', 'b'])
+    const ft2 = FingerTree.from(['c', 'd'])
+    expect(ft1.concat(ft2).toArray()).toEqual(['a', 'b', 'c', 'd'])
+  })
+})

@@ -214,4 +214,221 @@ describe('EventSink', () => {
     sink.emit('msg', 'hello')
     expect(received).toBe('hello')
   })
+
+  it('toString returns empty string for no listeners', () => {
+    const sink = new EventSink<Events>()
+    expect(sink.toString()).toBe('EventSink(0 events, 0 listeners)')
+  })
+
+  it('toString returns correct string with listeners', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    sink.on('click', () => {})
+    sink.on('change', () => {})
+    expect(sink.toString()).toBe('EventSink(2 events, 3 listeners)')
+  })
+
+  it('toString updates after removing listeners', () => {
+    const sink = new EventSink<Events>()
+    const handler = () => {}
+    sink.on('click', handler)
+    sink.on('change', () => {})
+    sink.off('click', handler)
+    expect(sink.toString()).toBe('EventSink(2 events, 1 listeners)')
+  })
+
+  it('toJSON returns empty object for no listeners', () => {
+    const sink = new EventSink<Events>()
+    expect(sink.toJSON()).toEqual({})
+  })
+
+  it('toJSON returns correct object with listeners', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    sink.on('click', () => {})
+    sink.on('change', () => {})
+    const json = sink.toJSON()
+    expect(json).toEqual({ click: 2, change: 1 })
+  })
+
+  it('toJSON updates after removing listeners', () => {
+    const sink = new EventSink<Events>()
+    const handler = () => {}
+    sink.on('click', handler)
+    sink.on('click', () => {})
+    sink.on('change', () => {})
+    sink.off('click', handler)
+    const json = sink.toJSON()
+    expect(json.click).toBe(1)
+    expect(json.change).toBe(1)
+  })
+
+  it('clone creates independent copy', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    const clone = sink.clone()
+    clone.on('change', () => {})
+    expect(sink.eventNames).toContain('click')
+    expect(sink.eventNames).not.toContain('change')
+    expect(clone.eventNames).toContain('change')
+  })
+
+  it('clone copies all listeners', () => {
+    const sink = new EventSink<Events>()
+    const handler = vi.fn()
+    sink.on('click', handler)
+    sink.on('change', () => {})
+    const clone = sink.clone()
+    clone.emit('click', { x: 10, y: 20 })
+    expect(handler).toHaveBeenCalledTimes(1)
+  })
+
+  it('clone maintains listener counts', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    sink.on('click', () => {})
+    const clone = sink.clone()
+    expect(clone.listenerCount('click')).toBe(2)
+  })
+
+  it('clone with multiple event types', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    sink.on('change', () => {})
+    sink.on('error', () => {})
+    const clone = sink.clone()
+    expect(clone.eventNames.length).toBe(3)
+    expect(clone.eventNames).toContain('click')
+    expect(clone.eventNames).toContain('change')
+    expect(clone.eventNames).toContain('error')
+  })
+
+  it('equals returns true for same instance', () => {
+    const sink = new EventSink<Events>()
+    expect(sink.equals(sink)).toBe(true)
+  })
+
+  it('equals returns false for non-EventSink object', () => {
+    const sink = new EventSink<Events>()
+    expect(sink.equals({})).toBe(false)
+    expect(sink.equals(null)).toBe(false)
+    expect(sink.equals(undefined)).toBe(false)
+  })
+
+  it('equals returns true for identical sinks', () => {
+    const sink1 = new EventSink<Events>()
+    const sink2 = new EventSink<Events>()
+    sink1.on('click', () => {})
+    sink1.on('click', () => {})
+    sink2.on('click', () => {})
+    sink2.on('click', () => {})
+    expect(sink1.equals(sink2)).toBe(true)
+  })
+
+  it('equals returns false for different event names', () => {
+    const sink1 = new EventSink<Events>()
+    const sink2 = new EventSink<Events>()
+    sink1.on('click', () => {})
+    sink2.on('change', () => {})
+    expect(sink1.equals(sink2)).toBe(false)
+  })
+
+  it('equals returns false for different listener counts', () => {
+    const sink1 = new EventSink<Events>()
+    const sink2 = new EventSink<Events>()
+    sink1.on('click', () => {})
+    sink2.on('click', () => {})
+    sink2.on('click', () => {})
+    expect(sink1.equals(sink2)).toBe(false)
+  })
+
+  it('equals handles empty sinks', () => {
+    const sink1 = new EventSink<Events>()
+    const sink2 = new EventSink<Events>()
+    expect(sink1.equals(sink2)).toBe(true)
+  })
+
+  it('listenerCount after removeAllListeners', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    sink.on('click', () => {})
+    sink.removeAllListeners('click')
+    expect(sink.listenerCount('click')).toBe(0)
+  })
+
+  it('eventNames after removeAllListeners for specific event', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    sink.on('change', () => {})
+    sink.removeAllListeners('click')
+    expect(sink.eventNames).not.toContain('click')
+    expect(sink.eventNames).toContain('change')
+  })
+
+  it('eventNames after removeAllAllListeners', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    sink.on('change', () => {})
+    sink.on('error', () => {})
+    sink.removeAllListeners()
+    expect(sink.eventNames.length).toBe(0)
+  })
+
+  it('unsubscribe function is idempotent', () => {
+    const sink = new EventSink<Events>()
+    const handler = vi.fn()
+    const unsubscribe = sink.on('click', handler)
+    unsubscribe()
+    unsubscribe()
+    sink.emit('click', { x: 10, y: 20 })
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('off is idempotent', () => {
+    const sink = new EventSink<Events>()
+    const handler = vi.fn()
+    sink.on('click', handler)
+    sink.off('click', handler)
+    sink.off('click', handler)
+    sink.emit('click', { x: 10, y: 20 })
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('emit handles null data', () => {
+    const sink = new EventSink<Events>()
+    const handler = vi.fn()
+    sink.on('click', handler)
+    sink.emit('click', null as any)
+    expect(handler).toHaveBeenCalledWith(null)
+  })
+
+  it('emit handles undefined data', () => {
+    const sink = new EventSink<Events>()
+    const handler = vi.fn()
+    sink.on('click', handler)
+    sink.emit('click', undefined as any)
+    expect(handler).toHaveBeenCalledWith(undefined)
+  })
+
+  it('emit does not throw when listener throws', () => {
+    const sink = new EventSink<Events>()
+    const handler = () => { throw new Error('test') }
+    sink.on('click', handler)
+    expect(() => sink.emit('click', { x: 10, y: 20 })).toThrow()
+  })
+
+  it('clone preserves toString behavior', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    const clone = sink.clone()
+    expect(clone.toString()).toBe(sink.toString())
+  })
+
+  it('clone preserves toJSON behavior', () => {
+    const sink = new EventSink<Events>()
+    sink.on('click', () => {})
+    sink.on('change', () => {})
+    const clone = sink.clone()
+    expect(clone.toJSON()).toEqual(sink.toJSON())
+  })
 })

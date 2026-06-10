@@ -216,3 +216,209 @@ describe('BinaryHeap stress', () => {
     expect(heap.pop()).toBeUndefined()
   })
 })
+
+describe('BinaryHeap toString', () => {
+  it('returns JSON string representation', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    heap.push(3)
+    const result = heap.toString()
+    expect(JSON.parse(result)).toEqual([1, 2, 3])
+  })
+
+  it('empty heap returns empty array string', () => {
+    const heap = new BinaryHeap<number>()
+    const result = heap.toString()
+    expect(result).toBe('[]')
+  })
+})
+
+describe('BinaryHeap toJSON', () => {
+  it('returns array copy of elements', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    heap.push(3)
+    const json = heap.toJSON()
+    expect(json).toEqual([1, 2, 3])
+    expect(json).not.toBe(heap.toArray())
+  })
+
+  it('empty heap returns empty array', () => {
+    const heap = new BinaryHeap<number>()
+    expect(heap.toJSON()).toEqual([])
+  })
+
+  it('preserves order for max heap', () => {
+    const heap = new BinaryHeap<number>({ type: 'max' })
+    heap.push(1)
+    heap.push(3)
+    heap.push(2)
+    const json = heap.toJSON()
+    expect(json.length).toBe(3)
+    expect(json).toContain(1)
+    expect(json).toContain(2)
+    expect(json).toContain(3)
+  })
+})
+
+describe('BinaryHeap clone', () => {
+  it('creates independent copy', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    heap.push(3)
+    const clone = heap.clone()
+    expect(clone.size).toBe(3)
+    expect(clone.pop()).toBe(1)
+    expect(heap.pop()).toBe(1)
+  })
+
+  it('clone modifications do not affect original', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    const clone = heap.clone()
+    clone.push(0)
+    clone.push(10)
+    expect(clone.size).toBe(4)
+    expect(heap.size).toBe(2)
+    expect(clone.pop()).toBe(0)
+    expect(heap.pop()).toBe(1)
+  })
+
+  it('clone with max heap type', () => {
+    const heap = new BinaryHeap<number>({ type: 'max' })
+    heap.push(1)
+    heap.push(3)
+    heap.push(2)
+    const clone = heap.clone()
+    expect(clone.pop()).toBe(3)
+    expect(heap.pop()).toBe(3)
+  })
+
+  it('clone empty heap', () => {
+    const heap = new BinaryHeap<number>()
+    const clone = heap.clone()
+    expect(clone.isEmpty()).toBe(true)
+    expect(clone.size).toBe(0)
+  })
+})
+
+describe('BinaryHeap equals', () => {
+  it('returns true for identical heaps', () => {
+    const heap1 = new BinaryHeap<number>()
+    const heap2 = new BinaryHeap<number>()
+    heap1.push(1)
+    heap1.push(2)
+    heap1.push(3)
+    heap2.push(1)
+    heap2.push(2)
+    heap2.push(3)
+    expect(heap1.equals(heap2)).toBe(true)
+  })
+
+  it('returns false for different sizes', () => {
+    const heap1 = new BinaryHeap<number>()
+    const heap2 = new BinaryHeap<number>()
+    heap1.push(1)
+    heap2.push(1)
+    heap2.push(2)
+    expect(heap1.equals(heap2)).toBe(false)
+  })
+
+  it('returns false for different elements', () => {
+    const heap1 = new BinaryHeap<number>()
+    const heap2 = new BinaryHeap<number>()
+    heap1.push(1)
+    heap1.push(2)
+    heap2.push(1)
+    heap2.push(3)
+    expect(heap1.equals(heap2)).toBe(false)
+  })
+
+  it('returns false for non-BinaryHeap objects', () => {
+    const heap = new BinaryHeap<number>()
+    expect(heap.equals(null)).toBe(false)
+    expect(heap.equals(undefined)).toBe(false)
+    expect(heap.equals({})).toBe(false)
+    expect(heap.equals([1, 2, 3])).toBe(false)
+  })
+
+  it('empty heaps are equal', () => {
+    const heap1 = new BinaryHeap<number>()
+    const heap2 = new BinaryHeap<number>()
+    expect(heap1.equals(heap2)).toBe(true)
+  })
+})
+
+describe('BinaryHeap edge cases', () => {
+  it('handles negative numbers', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(-1)
+    heap.push(-3)
+    heap.push(-2)
+    expect(heap.pop()).toBe(-3)
+    expect(heap.pop()).toBe(-2)
+    expect(heap.pop()).toBe(-1)
+  })
+
+  it('handles mixed positive and negative numbers', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(5)
+    heap.push(-2)
+    heap.push(0)
+    heap.push(-10)
+    heap.push(3)
+    expect(heap.pop()).toBe(-10)
+    expect(heap.pop()).toBe(-2)
+  })
+
+  it('handles zero values', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(0)
+    heap.push(0)
+    heap.push(1)
+    expect(heap.pop()).toBe(0)
+    expect(heap.pop()).toBe(0)
+    expect(heap.pop()).toBe(1)
+  })
+
+  it('clear on empty heap', () => {
+    const heap = new BinaryHeap<number>()
+    heap.clear()
+    expect(heap.isEmpty()).toBe(true)
+    expect(heap.size).toBe(0)
+  })
+
+  it('toArray returns independent copy', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    const arr = heap.toArray()
+    arr.push(3)
+    arr[0] = 99
+    expect(heap.toArray()).toEqual([1, 2])
+  })
+
+  it('fromArray with custom comparator', () => {
+    const heap = BinaryHeap.fromArray(
+      [{ val: 3 }, { val: 1 }, { val: 2 }],
+      { comparator: (a, b) => a.val - b.val }
+    )
+    expect(heap.pop()!.val).toBe(1)
+    expect(heap.pop()!.val).toBe(2)
+    expect(heap.pop()!.val).toBe(3)
+  })
+
+  it('handles very large numbers', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(Number.MAX_SAFE_INTEGER)
+    heap.push(0)
+    heap.push(Number.MIN_SAFE_INTEGER)
+    expect(heap.pop()).toBe(Number.MIN_SAFE_INTEGER)
+    expect(heap.pop()).toBe(0)
+    expect(heap.pop()).toBe(Number.MAX_SAFE_INTEGER)
+  })
+})

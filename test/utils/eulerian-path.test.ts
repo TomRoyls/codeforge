@@ -170,4 +170,190 @@ describe('EulerianPath', () => {
     const ep = new EulerianPath(adj)
     expect(ep.isEulerian).toBe(true)
   })
+
+  it('toString shows circuit type', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    expect(ep.toString()).toBe('EulerianPath(type=circuit, length=4)')
+  })
+
+  it('toString shows path type', () => {
+    const adj = [[1], [0, 2], [1]]
+    const ep = new EulerianPath(adj)
+    expect(ep.toString()).toBe('EulerianPath(type=path, length=3)')
+  })
+
+  it('toString shows none type', () => {
+    const adj = [[1], [0, 2, 3], [1], [1]]
+    const ep = new EulerianPath(adj)
+    expect(ep.toString()).toBe('EulerianPath(type=none, length=0)')
+  })
+
+  it('toString shows empty length', () => {
+    const adj: number[][] = []
+    const ep = new EulerianPath(adj)
+    expect(ep.toString()).toBe('EulerianPath(type=circuit, length=0)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    const json = ep.toJSON()
+    expect(json).toHaveProperty('path')
+    expect(json).toHaveProperty('type')
+    expect(json).toHaveProperty('isEulerian')
+    expect(json.type).toBe('circuit')
+    expect(json.isEulerian).toBe(true)
+    expect(Array.isArray(json.path)).toBe(true)
+  })
+
+  it('toJSON path is array', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    const json = ep.toJSON()
+    expect(json.path.length).toBe(4)
+    expect(json.path).toBeInstanceOf(Array)
+  })
+
+  it('toJSON with none type', () => {
+    const adj = [[1], [0, 2, 3], [1], [1]]
+    const ep = new EulerianPath(adj)
+    const json = ep.toJSON()
+    expect(json.type).toBe('none')
+    expect(json.isEulerian).toBe(false)
+    expect(json.path).toEqual([])
+  })
+
+  it('toJSON with empty graph', () => {
+    const adj: number[][] = []
+    const ep = new EulerianPath(adj)
+    const json = ep.toJSON()
+    expect(json.type).toBe('circuit')
+    expect(json.isEulerian).toBe(true)
+    expect(json.path).toEqual([])
+  })
+
+  it('clone creates independent copy', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    const cloned = ep.clone()
+    expect(cloned).not.toBe(ep)
+    expect(cloned.equals(ep)).toBe(true)
+  })
+
+  it('clone preserves path', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    const cloned = ep.clone()
+    expect(cloned.path).toEqual(ep.path)
+  })
+
+  it('clone preserves type', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    const cloned = ep.clone()
+    expect(cloned.type).toBe(ep.type)
+  })
+
+  it('clone preserves isEulerian', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    const cloned = ep.clone()
+    expect(cloned.isEulerian).toBe(ep.isEulerian)
+  })
+
+  it('clone of none type', () => {
+    const adj = [[1], [0, 2, 3], [1], [1]]
+    const ep = new EulerianPath(adj)
+    const cloned = ep.clone()
+    expect(cloned.type).toBe('none')
+    expect(cloned.isEulerian).toBe(false)
+  })
+
+  it('equals returns true for identical paths', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep1 = new EulerianPath(adj)
+    const ep2 = new EulerianPath(adj)
+    expect(ep1.equals(ep2)).toBe(true)
+  })
+
+  it('equals returns true for cloned path', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    const cloned = ep.clone()
+    expect(ep.equals(cloned)).toBe(true)
+  })
+
+  it('equals returns false for different paths', () => {
+    const adj1 = [[1, 2], [0, 2], [0, 1]]
+    const adj2 = [[1], [0, 2], [1]]
+    const ep1 = new EulerianPath(adj1)
+    const ep2 = new EulerianPath(adj2)
+    expect(ep1.equals(ep2)).toBe(false)
+  })
+
+  it('equals returns false for different types', () => {
+    const adj1 = [[1, 2], [0, 2], [0, 1]]
+    const adj2 = [[1], [0, 2], [1]]
+    const ep1 = new EulerianPath(adj1)
+    const ep2 = new EulerianPath(adj2)
+    expect(ep1.equals(ep2)).toBe(false)
+  })
+
+  it('equals returns false for non-EulerianPath', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    expect(ep.equals(null)).toBe(false)
+    expect(ep.equals({})).toBe(false)
+    expect(ep.equals(5)).toBe(false)
+  })
+
+  it('equals returns false for different isEulerian', () => {
+    const adj1 = [[1, 2], [0, 2], [0, 1]]
+    const adj2 = [[1], [0, 2, 3], [1], [1]]
+    const ep1 = new EulerianPath(adj1)
+    const ep2 = new EulerianPath(adj2)
+    expect(ep1.equals(ep2)).toBe(false)
+  })
+
+  it('handles graph with self-loops', () => {
+    const adj = [[0], [1]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
+  })
+
+  it('handles multiple edges between nodes', () => {
+    const adj = [[1, 2, 3], [0, 2], [0, 1], [0]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
+  })
+
+  it('handles complete graph K3', () => {
+    const adj = [[1, 2], [0, 2], [0, 1]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(true)
+    expect(ep.type).toBe('circuit')
+  })
+
+  it('handles wheel graph W4', () => {
+    const adj = [[1, 3, 4], [0, 2, 4], [1, 3, 4], [0, 2, 4], [0, 1, 2, 3]]
+    const ep = new EulerianPath(adj)
+    expect(ep.isEulerian).toBe(false)
+  })
+
+  it('hasEulerianCircuit with empty graph', () => {
+    expect(EulerianPath.hasEulerianCircuit([])).toBe(true)
+  })
+
+  it('hasEulerianPath with empty graph', () => {
+    expect(EulerianPath.hasEulerianPath([])).toBe(true)
+  })
+
+  it('hasEulerianPath with single node', () => {
+    expect(EulerianPath.hasEulerianPath([[]])).toBe(true)
+  })
+
+  it('hasEulerianCircuit with single node', () => {
+    expect(EulerianPath.hasEulerianCircuit([[]])).toBe(true)
+  })
 })
