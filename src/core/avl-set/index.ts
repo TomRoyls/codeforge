@@ -591,4 +591,12 @@ export class AVLSet<T = number> {
     }
     return counts
   }
+
+  static from<T>(items: T[]): AVLSet<T> {
+    const instance = new AVLSet<T>()
+    for (const item of items) {
+      instance.add(item)
+    }
+    return instance
+  }
 }

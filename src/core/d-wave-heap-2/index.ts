@@ -283,4 +283,12 @@ export class DWaveHeap<T> {
     fn(this)
     return this
   }
+
+  static from<T>(items: T[]): DWaveHeap<T> {
+    const instance = new DWaveHeap<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

@@ -582,4 +582,12 @@ export class BTree2<T> {
     }
     return counts
   }
+
+  static from<T>(items: T[]): BTree2<T> {
+    const instance = new BTree2<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

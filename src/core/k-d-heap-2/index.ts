@@ -159,4 +159,12 @@ export class KDHeap2<T> {
     return items
   }
 
+
+  static from<T>(items: T[]): KDHeap2<T> {
+    const instance = new KDHeap2<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

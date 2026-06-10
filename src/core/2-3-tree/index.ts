@@ -717,4 +717,12 @@ export class TwoThreeTree<T> {
     }
     return counts
   }
+
+  static from<T>(items: T[]): TwoThreeTree<T> {
+    const instance = new TwoThreeTree<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

@@ -228,6 +228,7 @@ export class DynamicFenwick<T = number> {
   static empty<T>(): DynamicFenwick<T> {
     return new DynamicFenwick<T>()
   }
+
 }
 
 export { DEFAULT_DYNAMIC_FENWICK_OPTIONS } from './types.js'

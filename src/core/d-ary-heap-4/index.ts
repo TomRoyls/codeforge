@@ -285,4 +285,12 @@ export class DAryHeap4<T> {
     }
     return true
   }
+
+  static from<T>(items: T[]): DAryHeap4<T> {
+    const instance = new DAryHeap4<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

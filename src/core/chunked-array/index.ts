@@ -486,6 +486,7 @@ export class ChunkedArray<T = unknown> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

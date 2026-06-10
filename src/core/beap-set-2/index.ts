@@ -409,4 +409,12 @@ export class BeapSet2<T> {
     }
     return counts
   }
+
+  static from<T>(items: T[]): BeapSet2<T> {
+    const instance = new BeapSet2<T>()
+    for (const item of items) {
+      instance.add(item)
+    }
+    return instance
+  }
 }

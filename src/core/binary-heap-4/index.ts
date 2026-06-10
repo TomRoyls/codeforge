@@ -415,4 +415,12 @@ export class BinaryHeap<T> {
     }
     return counts
   }
+
+  static from<T>(items: T[]): BinaryHeap<T> {
+    const instance = new BinaryHeap<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

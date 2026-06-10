@@ -365,6 +365,14 @@ export class IntervalHeap<T> {
   }
 
 
+
+  static from<T>(items: T[]): IntervalHeap<T> {
+    const instance = new IntervalHeap<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }
 
 export type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'

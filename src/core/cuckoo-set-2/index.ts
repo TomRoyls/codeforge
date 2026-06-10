@@ -372,4 +372,12 @@ export class CuckooSet2<T> {
   static empty<T>(): CuckooSet2<T> {
     return new CuckooSet2<T>()
   }
+
+  static from<T>(items: T[]): CuckooSet2<T> {
+    const instance = new CuckooSet2<T>()
+    for (const item of items) {
+      instance.add(item)
+    }
+    return instance
+  }
 }

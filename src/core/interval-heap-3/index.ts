@@ -225,4 +225,12 @@ export class IntervalHeap3<T> {
   }
 
 
+
+  static from<T>(items: T[]): IntervalHeap3<T> {
+    const instance = new IntervalHeap3<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

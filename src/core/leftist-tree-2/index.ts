@@ -164,4 +164,12 @@ export class LeftistTree2<T> {
     return this.toArray().slice(start, end)
   }
 
+
+  static from<T>(items: T[]): LeftistTree2<T> {
+    const instance = new LeftistTree2<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

@@ -465,4 +465,12 @@ export class AABTree<T> {
     }
     return counts
   }
+
+  static from<T>(items: T[]): AABTree<T> {
+    const instance = new AABTree<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

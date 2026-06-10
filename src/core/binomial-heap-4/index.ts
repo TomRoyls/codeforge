@@ -583,4 +583,12 @@ export class BinomialHeap4<T = unknown> {
     }
     return counts
   }
+
+  static from<T>(items: T[]): BinomialHeap4<T> {
+    const instance = new BinomialHeap4<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

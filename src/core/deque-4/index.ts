@@ -352,4 +352,5 @@ export class Deque4<T> {
   static empty<T>(): Deque4<T> {
     return new Deque4<T>()
   }
+
 }

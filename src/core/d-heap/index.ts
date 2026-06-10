@@ -263,4 +263,12 @@ export class DHeap<T> {
     }
     return true
   }
+
+  static from<T>(items: T[]): DHeap<T> {
+    const instance = new DHeap<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

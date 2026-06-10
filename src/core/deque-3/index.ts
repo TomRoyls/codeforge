@@ -237,4 +237,5 @@ export class Deque3<T> {
   static empty<T>(): Deque3<T> {
     return new Deque3<T>()
   }
+
 }

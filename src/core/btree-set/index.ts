@@ -688,4 +688,12 @@ export class BTreeSet<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+  static from<T>(items: T[]): BTreeSet<T> {
+    const instance = new BTreeSet<T>()
+    for (const item of items) {
+      instance.add(item)
+    }
+    return instance
+  }
 }

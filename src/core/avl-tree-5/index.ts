@@ -508,4 +508,12 @@ export class AVLTree<T> {
     }
     return counts
   }
+
+  static from<T>(items: T[]): AVLTree<T> {
+    const instance = new AVLTree<T>()
+    for (const item of items) {
+      instance.insert(item)
+    }
+    return instance
+  }
 }

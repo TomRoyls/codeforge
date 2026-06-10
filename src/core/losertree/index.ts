@@ -310,6 +310,7 @@ export class LoserTree<T = number> {
   findIndex(predicate: (item: T) => boolean): number {
     return this.toArray().findIndex(predicate)
   }
+
 }
 
 export type { Comparator, ForEachCallback, LoserTreeOptions } from './types.js'
