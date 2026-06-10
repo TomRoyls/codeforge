@@ -1191,6 +1191,8 @@ export class CatenableDeque<T> {
   get [Symbol.toStringTag](): string {
     return 'CatenableDeque'
   }
+
+
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

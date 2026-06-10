@@ -634,4 +634,9 @@ export class CircularBuffer4<T> {
     return this.toArray().indexOf(item, fromIndex)
   }
 
+
+
+  reduceRight<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
+    return this.toArray().reduceRight(reducer, initialValue)
+  }
 }

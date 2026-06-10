@@ -737,6 +737,8 @@ export class ChunkedArray<T = unknown> {
   get [Symbol.toStringTag](): string {
     return 'ChunkedArray'
   }
+
+
 }
 
 export { DEFAULT_CHUNK_SIZE } from './types.js'

@@ -772,6 +772,8 @@ export class BootstrappedHeap<T = number> {
   reduce<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
     return this.toArray().reduce(reducer, initialValue)
   }
+
+
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

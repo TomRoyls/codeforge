@@ -738,4 +738,6 @@ export class CartesianTree<T> {
   reduce<U>(reducer: (acc: U, item: T) => U, initialValue: U): U {
     return this.toArray().reduce(reducer, initialValue)
   }
+
+
 }
