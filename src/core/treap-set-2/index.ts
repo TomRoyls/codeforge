@@ -735,4 +735,25 @@ export class TreapSet2<T> {
     }
     return result
   }
+
+  transpose<U>(this: { toArray(): U[][] }): U[][] {
+    const matrix = this.toArray()
+    if (matrix.length === 0) return []
+    const cols = Math.max(...matrix.map(r => r.length))
+    const result: U[][] = []
+    for (let c = 0; c < cols; c++) {
+      const row: U[] = []
+      for (let r = 0; r < matrix.length; r++) {
+        if (c < matrix[r]!.length) {
+          row.push(matrix[r]![c]!)
+        }
+      }
+      result.push(row)
+    }
+    return result
+  }
+
+  countWhere(predicate: (item: T, index: number) => boolean): number {
+    return this.toArray().filter(predicate).length
+  }
 }
