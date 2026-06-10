@@ -603,4 +603,9 @@ export class AVLSet<T = number> {
   static of<T>(...items: T[]): AVLSet<T> {
     return AVLSet.from(items)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

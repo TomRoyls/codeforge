@@ -477,4 +477,9 @@ export class AABTree<T> {
   static of<T>(...items: T[]): AABTree<T> {
     return AABTree.from(items)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

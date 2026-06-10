@@ -525,4 +525,9 @@ export class AATree2<T> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

@@ -549,6 +549,11 @@ export class AVLTree4<T> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
 
 interface Node<T> {

@@ -427,4 +427,9 @@ export class BinaryHeap<T> {
   static of<T>(...items: T[]): BinaryHeap<T> {
     return BinaryHeap.from(items)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

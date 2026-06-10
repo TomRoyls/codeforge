@@ -334,4 +334,9 @@ export class BlockQueue<T> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

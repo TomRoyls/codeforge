@@ -288,4 +288,9 @@ export class CircularBuffer3<T> {
     const set = new Set<T>([...this.toArray(), ...other])
     return [...set]
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

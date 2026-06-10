@@ -631,6 +631,11 @@ export class BinomialQueue<T = number> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
 
 export type { BinomialQueueOptions } from './types.js'

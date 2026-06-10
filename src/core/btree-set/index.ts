@@ -700,4 +700,9 @@ export class BTreeSet<T> {
   static of<T>(...items: T[]): BTreeSet<T> {
     return BTreeSet.from(items)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

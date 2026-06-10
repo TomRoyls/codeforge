@@ -937,6 +937,11 @@ export class CatenableDeque<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
 
 export type { CatenableDequeNode, CatenableDequeStats } from './types.js'

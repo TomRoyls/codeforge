@@ -421,4 +421,9 @@ export class BeapSet2<T> {
   static of<T>(...items: T[]): BeapSet2<T> {
     return BeapSet2.from(items)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

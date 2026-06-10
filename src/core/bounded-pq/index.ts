@@ -420,6 +420,11 @@ export class BoundedPriorityQueue<T> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
 
 export type { BoundedPriorityQueueOptions, Comparator } from './types.js'

@@ -518,6 +518,11 @@ export class BootstrappedHeap<T = number> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
 
 export type { BootstrappedHeapOptions, BootstrappedHeapNode } from './types.js'

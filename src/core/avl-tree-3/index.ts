@@ -491,4 +491,9 @@ export class AVLTree3<T> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

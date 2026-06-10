@@ -528,6 +528,11 @@ toString(): string {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
 
 class AVLNode<T> {

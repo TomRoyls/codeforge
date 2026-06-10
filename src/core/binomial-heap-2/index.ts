@@ -625,6 +625,11 @@ export class BinomialHeap<T = number> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
 
 export type { BinomialHeapOptions 

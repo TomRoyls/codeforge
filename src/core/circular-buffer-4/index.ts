@@ -377,4 +377,9 @@ export class CircularBuffer4<T> {
     const set = new Set(other)
     return this.toArray().some(item => set.has(item))
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

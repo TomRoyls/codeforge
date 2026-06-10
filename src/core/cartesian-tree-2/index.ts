@@ -466,4 +466,9 @@ export class CartesianTree<T> {
   sortBy(compareFn: (a: T, b: T) => number): T[] {
     return [...this.toArray()].sort(compareFn)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

@@ -739,6 +739,11 @@ toString(): string {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
 
 export type { AdaptiveBSTOptions, AdaptiveBSTNode, Comparator, ForEachCallback

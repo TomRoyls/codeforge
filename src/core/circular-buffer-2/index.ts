@@ -471,4 +471,9 @@ export class CircularBuffer<T> {
   merge(other: CircularBuffer<T>): CircularBuffer<T> {
     return CircularBuffer.from([...this.toArray(), ...other.toArray()])
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

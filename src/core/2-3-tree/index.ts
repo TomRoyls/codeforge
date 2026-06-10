@@ -729,4 +729,9 @@ export class TwoThreeTree<T> {
   static of<T>(...items: T[]): TwoThreeTree<T> {
     return TwoThreeTree.from(items)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

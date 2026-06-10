@@ -594,4 +594,9 @@ export class BTree2<T> {
   static of<T>(...items: T[]): BTree2<T> {
     return BTree2.from(items)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

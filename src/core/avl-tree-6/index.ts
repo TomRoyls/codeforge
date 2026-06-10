@@ -584,4 +584,9 @@ export class AVLTree6<T> {
   static of<T>(...items: T[]): AVLTree6<T> {
     return AVLTree6.from(items)
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

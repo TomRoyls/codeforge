@@ -364,4 +364,9 @@ export class AtomicSet2<T> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

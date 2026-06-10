@@ -491,4 +491,9 @@ export class AdaptiveHeap<T> {
     }
     return counts
   }
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }

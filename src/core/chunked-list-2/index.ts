@@ -300,4 +300,9 @@ export class ChunkedList2<T> {
     return [...set]
   }
 
+
+
+  toReversed(): T[] {
+    return [...this.toArray()].reverse()
+  }
 }
