@@ -14,8 +14,11 @@ describe('SubsetSum', () => {
     expect(SubsetSum.hasSubset([1, 2, 3], 0)).toBe(true)
   })
 
-  it('handles empty array', () => {
+  it('handles empty array with target 0', () => {
     expect(SubsetSum.hasSubset([], 0)).toBe(true)
+  })
+
+  it('handles empty array with positive target', () => {
     expect(SubsetSum.hasSubset([], 1)).toBe(false)
   })
 
@@ -73,41 +76,140 @@ describe('SubsetSum', () => {
     expect(result!.reduce((a, b) => a + b, 0)).toBe(11)
   })
 
-  it('countSubsets counts all ways', () => {
+  it('countSubsets counts all ways with duplicates', () => {
     expect(SubsetSum.countSubsets([1, 1, 1], 2)).toBe(3)
   })
 
-  it('empty set sums to 0', () => {
-    expect(SubsetSum.hasSubset([], 0)).toBe(true)
-    expect(SubsetSum.hasSubset([], 1)).toBe(false)
+  it('findSubset for target 0 returns empty array', () => {
+    expect(SubsetSum.findSubset([1, 2, 3], 0)).toEqual([])
   })
 
-  it('single element matches target', () => {
-    expect(SubsetSum.hasSubset([5], 5)).toBe(true)
-    expect(SubsetSum.hasSubset([5], 3)).toBe(false)
+  it('findSubset for single element match', () => {
+    expect(SubsetSum.findSubset([7], 7)).toEqual([7])
   })
 
-  it('empty set cannot match non-zero target', () => {
-    expect(SubsetSum.hasSubset([], 1)).toBe(false)
+  it('findSubset for single element mismatch', () => {
+    expect(SubsetSum.findSubset([7], 10)).toBeNull()
   })
 
-  it('empty set matches zero target', () => {
-    expect(SubsetSum.hasSubset([], 0)).toBe(true)
+  it('findAllSubsets for single match', () => {
+    const result = SubsetSum.findAllSubsets([5], 5)
+    expect(result).toEqual([[5]])
   })
 
-  it('single element matches itself', () => {
-    expect(SubsetSum.hasSubset([5], 5)).toBe(true)
+  it('findAllSubsets for no match', () => {
+    expect(SubsetSum.findAllSubsets([5], 3)).toEqual([])
   })
 
-  it('no subset for impossible target', () => {
-    expect(SubsetSum.hasSubset([1, 2, 3], 10)).toBe(false)
+  it('countSubsets for empty array target 0', () => {
+    expect(SubsetSum.countSubsets([], 0)).toBe(1)
   })
 
-  it('empty set cannot sum to positive', () => {
-    expect(SubsetSum.hasSubset([], 1)).toBe(false)
+  it('countSubsets for empty array positive target', () => {
+    expect(SubsetSum.countSubsets([], 5)).toBe(0)
   })
 
-  it('empty set can sum to 0', () => {
-    expect(SubsetSum.hasSubset([], 0)).toBe(true)
+  it('hasSubset with all elements needed', () => {
+    expect(SubsetSum.hasSubset([1, 2, 3], 6)).toBe(true)
+  })
+
+  it('findSubset with all elements needed', () => {
+    const result = SubsetSum.findSubset([1, 2, 3], 6)
+    expect(result).not.toBeNull()
+    expect(result!.reduce((a, b) => a + b, 0)).toBe(6)
+  })
+
+  it('findAllSubsets finds multiple solutions', () => {
+    const result = SubsetSum.findAllSubsets([1, 2, 3], 3)
+    expect(result.length).toBe(2)
+    const sums = result.map((s) => s.reduce((a, b) => a + b, 0))
+    expect(sums.every((s) => s === 3)).toBe(true)
+  })
+
+  it('hasSubset with repeated values', () => {
+    expect(SubsetSum.hasSubset([2, 2, 2], 4)).toBe(true)
+    expect(SubsetSum.hasSubset([2, 2, 2], 6)).toBe(true)
+  })
+
+  it('findSubset with consecutive numbers', () => {
+    const result = SubsetSum.findSubset([1, 2, 3, 4, 5], 9)
+    expect(result).not.toBeNull()
+    expect(result!.reduce((a, b) => a + b, 0)).toBe(9)
+  })
+
+  it('countSubsets with distinct values', () => {
+    expect(SubsetSum.countSubsets([1, 2, 3, 4], 5)).toBe(2)
+  })
+
+  it('hasSubset negative target', () => {
+    expect(SubsetSum.hasSubset([1, 2, 3], -1)).toBe(false)
+  })
+
+  it('findAllSubsets for target sum 1', () => {
+    const result = SubsetSum.findAllSubsets([1, 2, 3], 1)
+    expect(result).toEqual([[1]])
+  })
+
+  it('countSubsets for sum 1', () => {
+    expect(SubsetSum.countSubsets([1, 2, 3], 1)).toBe(1)
+  })
+
+  it('findSubset picks valid subset from larger array', () => {
+    const result = SubsetSum.findSubset([10, 20, 30, 40, 50], 60)
+    expect(result).not.toBeNull()
+    expect(result!.reduce((a, b) => a + b, 0)).toBe(60)
+  })
+
+  it('hasSubset with exact target equals element', () => {
+    expect(SubsetSum.hasSubset([3, 7, 11], 11)).toBe(true)
+  })
+
+  it('findAllSubsets with all same elements', () => {
+    const result = SubsetSum.findAllSubsets([2, 2, 2], 4)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+    for (const sub of result) {
+      expect(sub.reduce((a, b) => a + b, 0)).toBe(4)
+    }
+  })
+
+  it('countSubsets with large numbers', () => {
+    expect(SubsetSum.countSubsets([100, 200, 300], 300)).toBe(2)
+  })
+
+  it('findSubset handles two element sum', () => {
+    const result = SubsetSum.findSubset([3, 5], 8)
+    expect(result).not.toBeNull()
+    expect(result!.sort()).toEqual([3, 5])
+  })
+
+  it('findAllSubsets empty array target 0', () => {
+    expect(SubsetSum.findAllSubsets([], 0)).toEqual([[]])
+  })
+
+  it('hasSubset with sum of first two', () => {
+    expect(SubsetSum.hasSubset([4, 6, 8, 10], 10)).toBe(true)
+  })
+
+  it('findSubset returns null for target too large', () => {
+    expect(SubsetSum.findSubset([1, 2, 3], 100)).toBeNull()
+  })
+
+  it('countSubsets with many ones', () => {
+    expect(SubsetSum.countSubsets([1, 1, 1, 1], 2)).toBe(6)
+  })
+
+  it('findAllSubsets handles zeros gracefully', () => {
+    const result = SubsetSum.findAllSubsets([1, 2], 3)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('hasSubset with target equal to sum of all', () => {
+    expect(SubsetSum.hasSubset([1, 2, 4, 8], 15)).toBe(true)
+  })
+
+  it('findSubset with sum of subset from middle', () => {
+    const result = SubsetSum.findSubset([5, 10, 15, 20], 25)
+    expect(result).not.toBeNull()
+    expect(result!.reduce((a, b) => a + b, 0)).toBe(25)
   })
 })

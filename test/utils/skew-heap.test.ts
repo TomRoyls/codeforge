@@ -23,9 +23,15 @@ describe('SkewHeap', () => {
     expect(heap.peek()).toBe(2)
   })
 
+  it('peek returns undefined for empty heap', () => {
+    const heap = new SkewHeap<number>()
+    expect(heap.peek()).toBeUndefined()
+  })
+
   it('size and isEmpty', () => {
     const heap = new SkewHeap<number>()
     expect(heap.isEmpty).toBe(true)
+    expect(heap.size).toBe(0)
     heap.push(1)
     expect(heap.size).toBe(1)
     expect(heap.isEmpty).toBe(false)
@@ -42,6 +48,8 @@ describe('SkewHeap', () => {
     expect(merged.size).toBe(4)
     expect(merged.pop()).toBe(1)
     expect(merged.pop()).toBe(2)
+    expect(merged.pop()).toBe(3)
+    expect(merged.pop()).toBe(4)
   })
 
   it('toArray returns sorted', () => {
@@ -59,6 +67,7 @@ describe('SkewHeap', () => {
     heap.push(2)
     expect(heap.pop()).toBe(3)
     expect(heap.pop()).toBe(2)
+    expect(heap.pop()).toBe(1)
   })
 
   it('handles single element', () => {
@@ -81,6 +90,7 @@ describe('SkewHeap', () => {
     h2.push(2)
     h1.merge(h2)
     expect(h1.size).toBe(1)
+    expect(h2.size).toBe(1)
   })
 
   it('handles duplicate values', () => {
@@ -90,19 +100,8 @@ describe('SkewHeap', () => {
     h.push(5)
     expect(h.pop()).toBe(5)
     expect(h.size).toBe(2)
-  })
-
-  it('toArray returns sorted order', () => {
-    const h = new SkewHeap<number>()
-    h.push(3)
-    h.push(1)
-    h.push(2)
-    expect(h.toArray().sort()).toEqual([1, 2, 3])
-  })
-
-  it('pop empty returns undefined', () => {
-    const h = new SkewHeap<number>()
-    expect(h.pop()).toBeUndefined()
+    expect(h.pop()).toBe(5)
+    expect(h.pop()).toBe(5)
   })
 
   it('push after pop preserves order', () => {
@@ -112,6 +111,7 @@ describe('SkewHeap', () => {
     h.pop()
     h.push(2)
     expect(h.pop()).toBe(2)
+    expect(h.pop()).toBe(3)
   })
 
   it('handles strings with comparator', () => {
@@ -121,6 +121,7 @@ describe('SkewHeap', () => {
     h.push('banana')
     expect(h.pop()).toBe('apple')
     expect(h.pop()).toBe('banana')
+    expect(h.pop()).toBe('cherry')
   })
 
   it('merge empty into non-empty', () => {
@@ -132,63 +133,300 @@ describe('SkewHeap', () => {
     expect(h1.pop()).toBe(1)
   })
 
-  it('pop returns elements in order', () => {
-    const h = new SkewHeap<number>()
-    h.push(5)
-    h.push(1)
-    h.push(3)
-    expect(h.pop()).toBe(1)
-    expect(h.pop()).toBe(3)
-    expect(h.pop()).toBe(5)
-  })
-
-  it('handles empty heap pop', () => {
-    const h = new SkewHeap<number>()
-    expect(h.pop()).toBeUndefined()
-  })
-
-  it('merge two heaps', () => {
+  it('merge non-empty into empty', () => {
     const h1 = new SkewHeap<number>()
-    h1.push(1)
-    h1.push(3)
     const h2 = new SkewHeap<number>()
-    h2.push(2)
-    h2.push(4)
-    const merged = h1.merge(h2)
-    expect(merged.size).toBe(4)
-    expect(merged.pop()).toBe(1)
-  })
-
-  it('empty heap merge with non-empty', () => {
-    const h1 = new SkewHeap()
-    const h2 = new SkewHeap()
     h2.push(5)
     const merged = h1.merge(h2)
+    expect(merged.size).toBe(1)
     expect(merged.pop()).toBe(5)
   })
 
-  it('empty heap pop returns undefined', () => {
-    const h = new SkewHeap<number>()
-    expect(h.pop()).toBeUndefined()
+  it('merge with same values', () => {
+    const h1 = new SkewHeap<number>()
+    h1.push(1)
+    h1.push(2)
+    const h2 = new SkewHeap<number>()
+    h2.push(1)
+    h2.push(2)
+    const merged = h1.merge(h2)
+    expect(merged.size).toBe(4)
+    expect(merged.pop()).toBe(1)
+    expect(merged.pop()).toBe(1)
+    expect(merged.pop()).toBe(2)
+    expect(merged.pop()).toBe(2)
   })
 
-  it('push and pop returns min', () => {
-    const h = new SkewHeap<number>()
-    h.push(3)
-    h.push(1)
-    h.push(2)
-    expect(h.pop()).toBe(1)
+  it('toArray on empty heap', () => {
+    const heap = new SkewHeap<number>()
+    expect(heap.toArray()).toEqual([])
   })
 
-  it('pop from empty returns undefined', () => {
-    const h = new SkewHeap<number>()
-    expect(h.pop()).toBeUndefined()
+  it('toArray after pops', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    heap.push(2)
+    heap.pop()
+    expect(heap.toArray()).toEqual([2, 3])
   })
 
-  it('push and pop returns min', () => {
-    const h = new SkewHeap<number>()
-    h.push(5)
-    h.push(3)
-    expect(h.pop()).toBe(3)
+  it('toArray does not modify heap', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    heap.push(2)
+    heap.toArray()
+    expect(heap.size).toBe(3)
+    expect(heap.pop()).toBe(1)
+  })
+
+  it('peek after push', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(5)
+    expect(heap.peek()).toBe(5)
+    heap.push(3)
+    expect(heap.peek()).toBe(3)
+    heap.push(7)
+    expect(heap.peek()).toBe(3)
+  })
+
+  it('peek after pop', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(5)
+    heap.push(3)
+    heap.push(7)
+    heap.pop()
+    expect(heap.peek()).toBe(5)
+    heap.pop()
+    expect(heap.peek()).toBe(7)
+  })
+
+  it('handles negative numbers', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(-1)
+    heap.push(-3)
+    heap.push(-2)
+    expect(heap.pop()).toBe(-3)
+    expect(heap.pop()).toBe(-2)
+    expect(heap.pop()).toBe(-1)
+  })
+
+  it('handles mixed positive and negative numbers', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(-1)
+    heap.push(5)
+    heap.push(-3)
+    heap.push(2)
+    expect(heap.pop()).toBe(-3)
+    expect(heap.pop()).toBe(-1)
+    expect(heap.pop()).toBe(2)
+    expect(heap.pop()).toBe(5)
+  })
+
+  it('handles zero', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(0)
+    heap.push(1)
+    heap.push(-1)
+    expect(heap.pop()).toBe(-1)
+    expect(heap.pop()).toBe(0)
+    expect(heap.pop()).toBe(1)
+  })
+
+  it('handles floating point numbers', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(1.5)
+    heap.push(1.2)
+    heap.push(1.8)
+    expect(heap.pop()).toBe(1.2)
+    expect(heap.pop()).toBe(1.5)
+    expect(heap.pop()).toBe(1.8)
+  })
+
+  it('handles very large numbers', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(Number.MAX_SAFE_INTEGER)
+    heap.push(Number.MAX_SAFE_INTEGER - 1)
+    heap.push(Number.MAX_SAFE_INTEGER - 2)
+    expect(heap.pop()).toBe(Number.MAX_SAFE_INTEGER - 2)
+    expect(heap.pop()).toBe(Number.MAX_SAFE_INTEGER - 1)
+    expect(heap.pop()).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles very small numbers', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(Number.MIN_SAFE_INTEGER)
+    heap.push(Number.MIN_SAFE_INTEGER + 1)
+    heap.push(Number.MIN_SAFE_INTEGER + 2)
+    expect(heap.pop()).toBe(Number.MIN_SAFE_INTEGER)
+    expect(heap.pop()).toBe(Number.MIN_SAFE_INTEGER + 1)
+    expect(heap.pop()).toBe(Number.MIN_SAFE_INTEGER + 2)
+  })
+
+  it('custom comparator with objects', () => {
+    interface Item { priority: number; value: string }
+    const heap = new SkewHeap<Item>((a, b) => a.priority - b.priority)
+    heap.push({ priority: 2, value: 'second' })
+    heap.push({ priority: 1, value: 'first' })
+    heap.push({ priority: 3, value: 'third' })
+    expect(heap.pop()).toEqual({ priority: 1, value: 'first' })
+    expect(heap.pop()).toEqual({ priority: 2, value: 'second' })
+    expect(heap.pop()).toEqual({ priority: 3, value: 'third' })
+  })
+
+  it('merge with different comparators', () => {
+    const h1 = new SkewHeap<number>((a, b) => a - b)
+    h1.push(1)
+    h1.push(3)
+    const h2 = new SkewHeap<number>((a, b) => a - b)
+    h2.push(2)
+    h2.push(4)
+    const merged = h1.merge(h2)
+    expect(merged.toArray()).toEqual([1, 2, 3, 4])
+  })
+
+  it('push identical values in sequence', () => {
+    const heap = new SkewHeap<number>()
+    for (let i = 0; i < 10; i++) heap.push(42)
+    for (let i = 0; i < 10; i++) expect(heap.pop()).toBe(42)
+    expect(heap.isEmpty).toBe(true)
+  })
+
+  it('pop all elements', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    heap.push(3)
+    heap.pop()
+    heap.pop()
+    heap.pop()
+    expect(heap.isEmpty).toBe(true)
+    expect(heap.size).toBe(0)
+  })
+
+  it('pop more than available', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(1)
+    heap.pop()
+    expect(heap.pop()).toBeUndefined()
+    expect(heap.pop()).toBeUndefined()
+  })
+
+  it('size after multiple operations', () => {
+    const heap = new SkewHeap<number>()
+    expect(heap.size).toBe(0)
+    heap.push(1)
+    expect(heap.size).toBe(1)
+    heap.push(2)
+    expect(heap.size).toBe(2)
+    heap.push(3)
+    expect(heap.size).toBe(3)
+    heap.pop()
+    expect(heap.size).toBe(2)
+    heap.pop()
+    expect(heap.size).toBe(1)
+    heap.pop()
+    expect(heap.size).toBe(0)
+  })
+
+  it('isEmpty changes with operations', () => {
+    const heap = new SkewHeap<number>()
+    expect(heap.isEmpty).toBe(true)
+    heap.push(1)
+    expect(heap.isEmpty).toBe(false)
+    heap.pop()
+    expect(heap.isEmpty).toBe(true)
+  })
+
+  it('interleave pushes and pops', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    expect(heap.pop()).toBe(1)
+    heap.push(2)
+    heap.push(0)
+    expect(heap.pop()).toBe(0)
+    expect(heap.pop()).toBe(2)
+    expect(heap.pop()).toBe(3)
+  })
+
+  it('reverse order insertion', () => {
+    const heap = new SkewHeap<number>()
+    for (let i = 100; i >= 1; i--) heap.push(i)
+    for (let i = 1; i <= 100; i++) expect(heap.pop()).toBe(i)
+  })
+
+  it('already sorted insertion', () => {
+    const heap = new SkewHeap<number>()
+    for (let i = 1; i <= 100; i++) heap.push(i)
+    for (let i = 1; i <= 100; i++) expect(heap.pop()).toBe(i)
+  })
+
+  it('random order insertion', () => {
+    const heap = new SkewHeap<number>()
+    const values = [5, 2, 8, 1, 9, 3, 7, 4, 6, 0]
+    for (const v of values) heap.push(v)
+    const sorted = [...values].sort((a, b) => a - b)
+    for (const v of sorted) expect(heap.pop()).toBe(v)
+  })
+
+  it('merge large heaps', () => {
+    const h1 = new SkewHeap<number>()
+    const h2 = new SkewHeap<number>()
+    for (let i = 1; i <= 50; i++) h1.push(i)
+    for (let i = 51; i <= 100; i++) h2.push(i)
+    const merged = h1.merge(h2)
+    expect(merged.size).toBe(100)
+    for (let i = 1; i <= 100; i++) expect(merged.pop()).toBe(i)
+  })
+
+  it('merge with overlapping values', () => {
+    const h1 = new SkewHeap<number>()
+    const h2 = new SkewHeap<number>()
+    h1.push(1)
+    h1.push(3)
+    h1.push(5)
+    h2.push(2)
+    h2.push(3)
+    h2.push(4)
+    const merged = h1.merge(h2)
+    expect(merged.size).toBe(6)
+    expect(merged.toArray()).toEqual([1, 2, 3, 3, 4, 5])
+  })
+
+  it('empty heap toArray', () => {
+    const heap = new SkewHeap<number>()
+    expect(heap.toArray()).toEqual([])
+  })
+
+  it('heap with one element toArray', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(42)
+    expect(heap.toArray()).toEqual([42])
+    expect(heap.size).toBe(1)
+  })
+
+  it('descending order string comparator', () => {
+    const heap = new SkewHeap<string>((a, b) => b.localeCompare(a))
+    heap.push('apple')
+    heap.push('banana')
+    heap.push('cherry')
+    expect(heap.pop()).toBe('cherry')
+    expect(heap.pop()).toBe('banana')
+    expect(heap.pop()).toBe('apple')
+  })
+
+  it('peek returns first element without removing', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    heap.push(3)
+    expect(heap.peek()).toBe(1)
+    expect(heap.size).toBe(3)
+    expect(heap.peek()).toBe(1)
+    heap.pop()
+    expect(heap.peek()).toBe(2)
+    expect(heap.size).toBe(2)
   })
 })

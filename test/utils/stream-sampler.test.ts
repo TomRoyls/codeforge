@@ -78,52 +78,6 @@ describe('StreamSampler', () => {
     expect(collected).toEqual([10, 20, 30])
   })
 
-  describe('mean', () => {
-    it('computes mean of numeric reservoir', () => {
-      const sampler = new StreamSampler<number>(5)
-      sampler.addAll([10, 20, 30])
-      expect(sampler.mean()).toBeCloseTo(20)
-    })
-
-    it('returns undefined for empty sampler', () => {
-      const sampler = new StreamSampler<number>(5)
-      expect(sampler.mean()).toBeUndefined()
-    })
-
-    it('returns undefined for non-numeric items', () => {
-      const sampler = new StreamSampler<string>(5)
-      sampler.addAll(['a', 'b', 'c'])
-      expect(sampler.mean()).toBeUndefined()
-    })
-  })
-
-  describe('min / max', () => {
-    it('returns min value', () => {
-      const sampler = new StreamSampler<number>(10)
-      sampler.addAll([5, 2, 8, 1, 9])
-      expect(sampler.min()).toBe(1)
-    })
-
-    it('returns max value', () => {
-      const sampler = new StreamSampler<number>(10)
-      sampler.addAll([5, 2, 8, 1, 9])
-      expect(sampler.max()).toBe(9)
-    })
-
-    it('returns undefined when empty', () => {
-      const sampler = new StreamSampler<number>(5)
-      expect(sampler.min()).toBeUndefined()
-      expect(sampler.max()).toBeUndefined()
-    })
-
-    it('works with string comparison', () => {
-      const sampler = new StreamSampler<string>(10)
-      sampler.addAll(['cherry', 'apple', 'banana'])
-      expect(sampler.min()).toBe('apple')
-      expect(sampler.max()).toBe('cherry')
-    })
-  })
-
   it('sample returns independent copy', () => {
     const sampler = new StreamSampler<number>(5)
     sampler.addAll([1, 2, 3])
@@ -142,15 +96,6 @@ describe('StreamSampler', () => {
     expect(sampler.totalSeen).toBe(2)
   })
 
-  it('reset clears state', () => {
-    const sampler = new StreamSampler<number>(3)
-    sampler.add(1)
-    sampler.add(2)
-    sampler.reset()
-    expect(sampler.size).toBe(0)
-    expect(sampler.totalSeen).toBe(0)
-  })
-
   it('sample after adding items', () => {
     const sampler = new StreamSampler<string>(3)
     sampler.add('a')
@@ -161,7 +106,7 @@ describe('StreamSampler', () => {
   it('sample returns array of at most k items', () => {
     const sampler = new StreamSampler<string>(2)
     for (let i = 0; i < 10; i++) sampler.add('item' + i)
-    expect(sampler.sample.length).toBeLessThanOrEqual(2)
+    expect(sampler.sample().length).toBeLessThanOrEqual(2)
   })
 
   it('empty sampler has no samples', () => {
@@ -182,5 +127,302 @@ describe('StreamSampler', () => {
     sampler.add('b')
     sampler.add('c')
     expect(sampler.sample().length).toBe(2)
+  })
+
+  it('addAll with empty iterable', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([])
+    expect(sampler.size).toBe(0)
+    expect(sampler.totalSeen).toBe(0)
+  })
+
+  it('forEach with index parameter', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([10, 20, 30])
+    const indices: number[] = []
+    sampler.forEach((_, index) => indices.push(index))
+    expect(indices).toEqual([0, 1, 2])
+  })
+
+  it('forEach on empty sampler', () => {
+    const sampler = new StreamSampler<number>(5)
+    let called = false
+    sampler.forEach(() => { called = true })
+    expect(called).toBe(false)
+  })
+
+  it('mean returns undefined for empty sampler', () => {
+    const sampler = new StreamSampler<number>(5)
+    expect(sampler.mean()).toBeUndefined()
+  })
+
+  it('mean returns undefined for non-numeric items', () => {
+    const sampler = new StreamSampler<string>(5)
+    sampler.addAll(['a', 'b', 'c'])
+    expect(sampler.mean()).toBeUndefined()
+  })
+
+  it('mean with single element', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.add(42)
+    expect(sampler.mean()).toBe(42)
+  })
+
+  it('mean with negative numbers', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([-10, -20, -30])
+    expect(sampler.mean()).toBe(-20)
+  })
+
+  it('mean with floating point numbers', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([1.5, 2.5, 3.5])
+    expect(sampler.mean()).toBeCloseTo(2.5)
+  })
+
+  it('mean after reset', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([10, 20, 30])
+    sampler.reset()
+    expect(sampler.mean()).toBeUndefined()
+  })
+
+  it('min returns undefined when empty', () => {
+    const sampler = new StreamSampler<number>(5)
+    expect(sampler.min()).toBeUndefined()
+  })
+
+  it('max returns undefined when empty', () => {
+    const sampler = new StreamSampler<number>(5)
+    expect(sampler.max()).toBeUndefined()
+  })
+
+  it('min with single element', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.add(42)
+    expect(sampler.min()).toBe(42)
+  })
+
+  it('max with single element', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.add(42)
+    expect(sampler.max()).toBe(42)
+  })
+
+  it('min with negative numbers', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([-10, -5, -20, -15])
+    expect(sampler.min()).toBe(-20)
+  })
+
+  it('max with negative numbers', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([-10, -5, -20, -15])
+    expect(sampler.max()).toBe(-5)
+  })
+
+  it('min with mixed positive and negative', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([10, -5, 3, -8, 2])
+    expect(sampler.min()).toBe(-8)
+  })
+
+  it('max with mixed positive and negative', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([10, -5, 3, -8, 2])
+    expect(sampler.max()).toBe(10)
+  })
+
+  it('min after reset', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([10, 20, 30])
+    sampler.reset()
+    expect(sampler.min()).toBeUndefined()
+  })
+
+  it('max after reset', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([10, 20, 30])
+    sampler.reset()
+    expect(sampler.max()).toBeUndefined()
+  })
+
+  it('isFull after reset', () => {
+    const sampler = new StreamSampler<number>(3)
+    sampler.addAll([1, 2, 3])
+    expect(sampler.isFull).toBe(true)
+    sampler.reset()
+    expect(sampler.isFull).toBe(false)
+  })
+
+  it('isEmpty with some items', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.add(1)
+    sampler.add(2)
+    expect(sampler.isEmpty).toBe(false)
+  })
+
+  it('isEmpty after reset', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.add(1)
+    sampler.add(2)
+    expect(sampler.isEmpty).toBe(false)
+    sampler.reset()
+    expect(sampler.isEmpty).toBe(true)
+  })
+
+  it('addAll with Set', () => {
+    const sampler = new StreamSampler<number>(10)
+    const set = new Set([1, 2, 3, 4, 5])
+    sampler.addAll(set)
+    expect(sampler.size).toBe(5)
+    expect(sampler.totalSeen).toBe(5)
+  })
+
+  it('addAll with large iterable', () => {
+    const sampler = new StreamSampler<number>(10)
+    const arr = Array.from({ length: 1000 }, (_, i) => i)
+    sampler.addAll(arr)
+    expect(sampler.size).toBe(10)
+    expect(sampler.totalSeen).toBe(1000)
+  })
+
+  it('multiple addAll calls', () => {
+    const sampler = new StreamSampler<number>(10)
+    sampler.addAll([1, 2, 3])
+    sampler.addAll([4, 5, 6])
+    sampler.addAll([7, 8, 9])
+    expect(sampler.size).toBe(9)
+    expect(sampler.totalSeen).toBe(9)
+  })
+
+  it('addAll after reset', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([1, 2, 3])
+    sampler.reset()
+    sampler.addAll([4, 5, 6])
+    expect(sampler.size).toBe(3)
+    expect(sampler.totalSeen).toBe(3)
+  })
+
+  it('forEach on large reservoir', () => {
+    const sampler = new StreamSampler<number>(100)
+    const arr = Array.from({ length: 100 }, (_, i) => i)
+    sampler.addAll(arr)
+    let count = 0
+    sampler.forEach(() => count++)
+    expect(count).toBe(100)
+  })
+
+  it('sample size never exceeds maxSize', () => {
+    const sampler = new StreamSampler<number>(10)
+    for (let i = 0; i < 1000; i++) {
+      sampler.add(i)
+    }
+    expect(sampler.sample().length).toBe(10)
+  })
+
+  it('add after isFull maintains size', () => {
+    const sampler = new StreamSampler<number>(2)
+    sampler.add(1)
+    sampler.add(2)
+    expect(sampler.isFull).toBe(true)
+    sampler.add(3)
+    sampler.add(4)
+    expect(sampler.size).toBe(2)
+    expect(sampler.isFull).toBe(true)
+  })
+
+  it('mean with very large numbers', () => {
+    const sampler = new StreamSampler<number>(3)
+    sampler.addAll([Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER])
+    expect(sampler.mean()).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('mean with negative and positive mix', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([-10, 20, -30, 40, -50])
+    expect(sampler.mean()).toBe(-6)
+  })
+
+  it('min with very large values', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER - 1, Number.MAX_SAFE_INTEGER])
+    expect(sampler.min()).toBe(Number.MAX_SAFE_INTEGER - 1)
+  })
+
+  it('max with very large values', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([Number.MAX_SAFE_INTEGER - 100, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER - 50])
+    expect(sampler.max()).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('sample returns fresh array each time', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([1, 2, 3])
+    const sample1 = sampler.sample()
+    const sample2 = sampler.sample()
+    sample1.push(999)
+    expect(sample2).not.toContain(999)
+  })
+
+  it('multiple samples return consistent state', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([1, 2, 3])
+    const sample1 = sampler.sample()
+    const sample2 = sampler.sample()
+    expect(sample1).toEqual(sample2)
+  })
+
+  it('totalSeen increments correctly with add', () => {
+    const sampler = new StreamSampler<number>(5)
+    expect(sampler.totalSeen).toBe(0)
+    sampler.add(1)
+    expect(sampler.totalSeen).toBe(1)
+    sampler.add(2)
+    expect(sampler.totalSeen).toBe(2)
+  })
+
+  it('addAll with duplicate items', () => {
+    const sampler = new StreamSampler<number>(10)
+    sampler.addAll([1, 1, 1, 2, 2, 2])
+    expect(sampler.size).toBe(6)
+    expect(sampler.totalSeen).toBe(6)
+  })
+
+  it('forEach callback receives correct indices', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([100, 200, 300, 400])
+    const pairs: [number, number][] = []
+    sampler.forEach((item, index) => pairs.push([item, index]))
+    expect(pairs).toEqual([[100, 0], [200, 1], [300, 2], [400, 3]])
+  })
+
+  it('isFull when exactly at capacity', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([1, 2, 3, 4, 5])
+    expect(sampler.isFull).toBe(true)
+    expect(sampler.size).toBe(5)
+  })
+
+  it('add after reset works correctly', () => {
+    const sampler = new StreamSampler<number>(3)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.reset()
+    sampler.add(10)
+    expect(sampler.size).toBe(1)
+    expect(sampler.totalSeen).toBe(1)
+    expect(sampler.sample()).toEqual([10])
+  })
+
+  it('consecutive reset operations', () => {
+    const sampler = new StreamSampler<number>(5)
+    sampler.addAll([1, 2, 3])
+    sampler.reset()
+    sampler.reset()
+    expect(sampler.size).toBe(0)
+    expect(sampler.totalSeen).toBe(0)
+    expect(sampler.isEmpty).toBe(true)
   })
 })

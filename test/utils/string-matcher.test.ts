@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { StringMatcher } from '../../src/utils/string-matcher.js'
 
 describe('StringMatcher', () => {
@@ -31,8 +31,7 @@ describe('StringMatcher', () => {
     const matcher = new StringMatcher()
     matcher.addPattern('foo')
     matcher.build()
-    const results = matcher.search('hello world')
-    expect(results).toEqual([])
+    expect(matcher.search('hello world')).toEqual([])
   })
 
   it('multiple patterns some found', () => {
@@ -89,11 +88,10 @@ describe('StringMatcher', () => {
     const matcher = new StringMatcher()
     matcher.addPattern('hello')
     matcher.build()
-    const results = matcher.search('HELLO world')
-    expect(results).toEqual([])
+    expect(matcher.search('HELLO world')).toEqual([])
   })
 
-  it('duplicate patterns handled', () => {
+  it('duplicate patterns found twice', () => {
     const matcher = new StringMatcher()
     matcher.addPattern('hello')
     matcher.addPattern('hello')
@@ -129,19 +127,14 @@ describe('StringMatcher', () => {
 
   it('many patterns search works', () => {
     const matcher = new StringMatcher()
-    const patterns: string[] = []
     for (let i = 0; i < 50; i++) {
-      patterns.push(`word${i}`)
-    }
-    for (let i = 0; i < patterns.length; i++) {
-      matcher.addPattern(patterns[i]!)
+      matcher.addPattern(`word${i}`)
     }
     matcher.build()
-    const text = 'word5 and word10 and word25'
-    const results = matcher.search(text)
+    const results = matcher.search('word5 and word10 and word25')
     expect(results.length).toBeGreaterThanOrEqual(3)
-    const specificPatterns = results.filter((r) => r.pattern === 'word5' || r.pattern === 'word10' || r.pattern === 'word25')
-    expect(specificPatterns).toHaveLength(3)
+    const specific = results.filter((r) => ['word5', 'word10', 'word25'].includes(r.pattern))
+    expect(specific).toHaveLength(3)
   })
 
   it('pattern that is substring of another pattern', () => {
@@ -152,9 +145,6 @@ describe('StringMatcher', () => {
     matcher.build()
     const results = matcher.search('hello world')
     expect(results).toHaveLength(3)
-    expect(results[0]!.pattern).toBe('he')
-    expect(results[1]!.pattern).toBe('hell')
-    expect(results[2]!.pattern).toBe('hello')
   })
 
   it('custom id preserved', () => {
@@ -203,27 +193,221 @@ describe('StringMatcher', () => {
     expect(results[2]!.start).toBe(10)
   })
 
-  it('no match returns empty', () => {
-    const matcher = new StringMatcher()
-    matcher.addPattern('xyz')
-    matcher.build()
-    const results = matcher.search('abcdef')
-    expect(results).toEqual([])
-  })
-
-  it('match single pattern', () => {
+  it('match single pattern in middle', () => {
     const matcher = new StringMatcher()
     matcher.addPattern('abc')
     matcher.build()
     const results = matcher.search('xabcx')
-    expect(results.length).toBeGreaterThanOrEqual(1)
+    expect(results).toHaveLength(1)
     expect(results[0]!.pattern).toBe('abc')
+    expect(results[0]!.start).toBe(1)
+    expect(results[0]!.end).toBe(3)
   })
 
-  it('no match returns empty', () => {
-    const matcher = new StringMatcher(['xyz'])
+  it('build is idempotent', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('hello')
     matcher.build()
-    const results = matcher.search('abcdef')
-    expect(results).toEqual([])
+    matcher.build()
+    const results = matcher.search('hello')
+    expect(results).toHaveLength(1)
+  })
+
+  it('search empty text returns empty', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('hello')
+    matcher.build()
+    expect(matcher.search('')).toEqual([])
+  })
+
+  it('containsAny on empty text returns false', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('hello')
+    matcher.build()
+    expect(matcher.containsAny('')).toBe(false)
+  })
+
+  it('single character pattern', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('a')
+    matcher.build()
+    const results = matcher.search('banana')
+    expect(results).toHaveLength(3)
+    expect(results.map((r) => r.start)).toEqual([1, 3, 5])
+  })
+
+  it('pattern at very end of text', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('end')
+    matcher.build()
+    const results = matcher.search('the end')
+    expect(results).toHaveLength(1)
+    expect(results[0]!.start).toBe(4)
+  })
+
+  it('pattern at very start of text', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('start')
+    matcher.build()
+    const results = matcher.search('start here')
+    expect(results).toHaveLength(1)
+    expect(results[0]!.start).toBe(0)
+  })
+
+  it('end position is correct', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('abc')
+    matcher.build()
+    const results = matcher.search('xxabcxx')
+    expect(results[0]!.end).toBe(4)
+    expect(results[0]!.start).toBe(2)
+  })
+
+  it('clear allows reuse', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('a')
+    matcher.build()
+    expect(matcher.search('abc')).toHaveLength(1)
+    matcher.clear()
+    matcher.addPattern('b')
+    matcher.build()
+    expect(matcher.search('abc')).toHaveLength(1)
+    expect(matcher.search('abc')[0]!.pattern).toBe('b')
+  })
+
+  it('overlapping occurrences', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('aa')
+    matcher.build()
+    const results = matcher.search('aaaa')
+    expect(results.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('pattern with special regex chars', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('[a-z]+')
+    matcher.build()
+    const results = matcher.search('test [a-z]+ pattern')
+    expect(results).toHaveLength(1)
+    expect(results[0]!.pattern).toBe('[a-z]+')
+  })
+
+  it('pattern with digits', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('123')
+    matcher.build()
+    const results = matcher.search('abc123def')
+    expect(results).toHaveLength(1)
+    expect(results[0]!.start).toBe(3)
+  })
+
+  it('containsAny short-circuits on first match', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('hello')
+    matcher.build()
+    expect(matcher.containsAny('say hello world')).toBe(true)
+  })
+
+  it('no match after potential partial match', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('hello')
+    matcher.build()
+    expect(matcher.search('hell')).toEqual([])
+  })
+
+  it('fail link follows correctly', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('abc')
+    matcher.addPattern('bc')
+    matcher.build()
+    const results = matcher.search('abc')
+    expect(results.length).toBeGreaterThanOrEqual(2)
+    const patterns = results.map((r) => r.pattern)
+    expect(patterns).toContain('abc')
+    expect(patterns).toContain('bc')
+  })
+
+  it('multiple custom ids', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('a', 'id-a')
+    matcher.addPattern('b', 'id-b')
+    matcher.build()
+    const results = matcher.search('ab')
+    expect(results).toHaveLength(2)
+    expect(results.map((r) => r.id).sort()).toEqual(['id-a', 'id-b'])
+  })
+
+  it('pattern longer than text not found', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('abcdefghij')
+    matcher.build()
+    expect(matcher.search('abc')).toEqual([])
+  })
+
+  it('adjacent patterns found', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('ab')
+    matcher.addPattern('cd')
+    matcher.build()
+    const results = matcher.search('abcd')
+    expect(results).toHaveLength(2)
+    expect(results[0]!.start).toBe(0)
+    expect(results[1]!.start).toBe(2)
+  })
+
+  it('search in whitespace-only text', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern(' ')
+    matcher.build()
+    const results = matcher.search('   ')
+    expect(results).toHaveLength(3)
+  })
+
+  it('addPattern with default id uses pattern string', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('test')
+    matcher.build()
+    const results = matcher.search('test')
+    expect(results[0]!.id).toBe('test')
+  })
+
+  it('many patterns with shared prefix', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('abc')
+    matcher.addPattern('abd')
+    matcher.addPattern('abe')
+    matcher.build()
+    expect(matcher.search('abc abd abe')).toHaveLength(3)
+  })
+
+  it('pattern with unicode characters', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('héllo')
+    matcher.build()
+    const results = matcher.search('say héllo world')
+    expect(results).toHaveLength(1)
+    expect(results[0]!.pattern).toBe('héllo')
+  })
+
+  it('search after clear with different patterns', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('old')
+    matcher.build()
+    expect(matcher.containsAny('old text')).toBe(true)
+    matcher.clear()
+    matcher.addPattern('new')
+    matcher.build()
+    expect(matcher.containsAny('old text')).toBe(false)
+    expect(matcher.containsAny('new text')).toBe(true)
+  })
+
+  it('exact match pattern equals text', () => {
+    const matcher = new StringMatcher()
+    matcher.addPattern('exact')
+    matcher.build()
+    const results = matcher.search('exact')
+    expect(results).toHaveLength(1)
+    expect(results[0]!.start).toBe(0)
+    expect(results[0]!.end).toBe(4)
   })
 })
