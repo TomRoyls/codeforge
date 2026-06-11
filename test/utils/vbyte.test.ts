@@ -14,11 +14,59 @@ describe('VByte', () => {
     expect(encoded[0]).toBe(127)
   })
 
-  it('encodes values requiring multiple bytes', () => {
-    const encoded = VByte.encode(128)
+  it('encodes boundary at 0x7F', () => {
+    const encoded = VByte.encode(0x7F)
+    expect(encoded.length).toBe(1)
+    expect(encoded[0]).toBe(0x7F)
+  })
+
+  it('encodes boundary at 0x80', () => {
+    const encoded = VByte.encode(0x80)
     expect(encoded.length).toBe(2)
     expect(encoded[0]! & 0x80).not.toBe(0)
     expect(encoded[1]! & 0x80).toBe(0)
+  })
+
+  it('encodes boundary at 0x3FFF', () => {
+    const encoded = VByte.encode(0x3FFF)
+    expect(encoded.length).toBe(2)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(0x3FFF)
+  })
+
+  it('encodes boundary at 0x4000', () => {
+    const encoded = VByte.encode(0x4000)
+    expect(encoded.length).toBe(3)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(0x4000)
+  })
+
+  it('encodes boundary at 0x1FFFFF', () => {
+    const encoded = VByte.encode(0x1FFFFF)
+    expect(encoded.length).toBe(3)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(0x1FFFFF)
+  })
+
+  it('encodes boundary at 0x200000', () => {
+    const encoded = VByte.encode(0x200000)
+    expect(encoded.length).toBe(4)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(0x200000)
+  })
+
+  it('encodes boundary at 0xFFFFFFF', () => {
+    const encoded = VByte.encode(0xFFFFFFF)
+    expect(encoded.length).toBe(4)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(0xFFFFFFF)
+  })
+
+  it('encodes boundary at 0x10000000', () => {
+    const encoded = VByte.encode(0x10000000)
+    expect(encoded.length).toBe(5)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(0x10000000)
   })
 
   it('encodes large values', () => {
@@ -26,6 +74,12 @@ describe('VByte', () => {
     expect(encoded.length).toBe(2)
     const decoded = VByte.decode(encoded)
     expect(decoded.value).toBe(300)
+  })
+
+  it('encodes large multi-byte value', () => {
+    const encoded = VByte.encode(10000000)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(10000000)
   })
 
   it('decodes encoded value correctly', () => {
@@ -38,6 +92,9 @@ describe('VByte', () => {
     expect(VByte.decode(VByte.encode(0)).bytesRead).toBe(1)
     expect(VByte.decode(VByte.encode(127)).bytesRead).toBe(1)
     expect(VByte.decode(VByte.encode(128)).bytesRead).toBe(2)
+    expect(VByte.decode(VByte.encode(16384)).bytesRead).toBe(3)
+    expect(VByte.decode(VByte.encode(0x200000)).bytesRead).toBe(4)
+    expect(VByte.decode(VByte.encode(0x10000000)).bytesRead).toBe(5)
   })
 
   it('decode respects offset parameter', () => {
@@ -47,10 +104,40 @@ describe('VByte', () => {
     expect(result.bytesRead).toBe(1)
   })
 
+  it('decode respects offset with multi-byte value', () => {
+    const buf = new Uint8Array([0xFF, 0xAA, ...VByte.encode(1000)])
+    const result = VByte.decode(buf, 2)
+    expect(result.value).toBe(1000)
+    expect(result.bytesRead).toBe(2)
+  })
+
+  it('decode with offset at boundary', () => {
+    const buf = VByte.encodeMany([100, 200, 300])
+    const result = VByte.decode(buf, 2)
+    expect(result.bytesRead).toBeGreaterThan(0)
+  })
+
   it('encodeMany encodes multiple values', () => {
     const encoded = VByte.encodeMany([1, 2, 3])
     const { values } = VByte.decodeMany(encoded)
     expect(values).toEqual([1, 2, 3])
+  })
+
+  it('encodeMany handles empty array', () => {
+    const encoded = VByte.encodeMany([])
+    expect(encoded.length).toBe(0)
+  })
+
+  it('encodeMany handles single value', () => {
+    const encoded = VByte.encodeMany([42])
+    const { values } = VByte.decodeMany(encoded)
+    expect(values).toEqual([42])
+  })
+
+  it('encodeMany handles large values', () => {
+    const encoded = VByte.encodeMany([0x7F, 0x80, 0x3FFF, 0x4000, 0x10000000])
+    const { values } = VByte.decodeMany(encoded)
+    expect(values).toEqual([0x7F, 0x80, 0x3FFF, 0x4000, 0x10000000])
   })
 
   it('decodeMany respects count limit', () => {
@@ -59,12 +146,49 @@ describe('VByte', () => {
     expect(values).toEqual([10, 20])
   })
 
+  it('decodeMany with count of zero', () => {
+    const encoded = VByte.encodeMany([10, 20, 30])
+    const { values } = VByte.decodeMany(encoded, 0)
+    expect(values).toEqual([])
+  })
+
+  it('decodeMany with count greater than available', () => {
+    const encoded = VByte.encodeMany([10, 20, 30])
+    const { values } = VByte.decodeMany(encoded, 10)
+    expect(values).toEqual([10, 20, 30])
+  })
+
+  it('decodeMany returns correct bytesRead', () => {
+    const encoded = VByte.encodeMany([100, 200, 300])
+    const { bytesRead } = VByte.decodeMany(encoded)
+    expect(bytesRead).toBe(encoded.length)
+  })
+
+  it('decodeMany with count returns correct bytesRead', () => {
+    const encoded = VByte.encodeMany([100, 200, 300, 400])
+    const { bytesRead, values } = VByte.decodeMany(encoded, 2)
+    expect(values.length).toBe(2)
+    expect(bytesRead).toBeGreaterThan(0)
+  })
+
   it('encodedSize returns correct sizes', () => {
     expect(VByte.encodedSize(0)).toBe(1)
     expect(VByte.encodedSize(127)).toBe(1)
     expect(VByte.encodedSize(128)).toBe(2)
     expect(VByte.encodedSize(16383)).toBe(2)
     expect(VByte.encodedSize(16384)).toBe(3)
+  })
+
+  it('encodedSize at boundaries', () => {
+    expect(VByte.encodedSize(0)).toBe(1)
+    expect(VByte.encodedSize(0x7F)).toBe(1)
+    expect(VByte.encodedSize(0x80)).toBe(2)
+    expect(VByte.encodedSize(0x3FFF)).toBe(2)
+    expect(VByte.encodedSize(0x4000)).toBe(3)
+    expect(VByte.encodedSize(0x1FFFFF)).toBe(3)
+    expect(VByte.encodedSize(0x200000)).toBe(4)
+    expect(VByte.encodedSize(0xFFFFFFF)).toBe(4)
+    expect(VByte.encodedSize(0x10000000)).toBe(5)
   })
 
   it('encodeDelta encodes delta values', () => {
@@ -84,12 +208,44 @@ describe('VByte', () => {
     expect(encoded.length).toBe(0)
   })
 
+  it('encodeDelta handles equal values', () => {
+    const encoded = VByte.encodeDelta([10, 10, 10])
+    const { values } = VByte.decodeDelta(encoded)
+    expect(values).toEqual([10, 10, 10])
+  })
+
+  it('encodeDelta handles large deltas', () => {
+    const encoded = VByte.encodeDelta([0, 1000, 2000, 3000])
+    const { values } = VByte.decodeDelta(encoded)
+    expect(values).toEqual([0, 1000, 2000, 3000])
+  })
+
+  it('decodeDelta handles single value', () => {
+    const encoded = VByte.encodeDelta([42])
+    const { values, bytesRead } = VByte.decodeDelta(encoded)
+    expect(values).toEqual([42])
+    expect(bytesRead).toBeGreaterThan(0)
+  })
+
+  it('decodeDelta handles empty buffer', () => {
+    const { values, bytesRead } = VByte.decodeDelta(new Uint8Array(0))
+    expect(values).toEqual([])
+    expect(bytesRead).toBe(0)
+  })
+
   it('encode throws on negative values', () => {
     expect(() => VByte.encode(-1)).toThrow(RangeError)
+    expect(() => VByte.encode(-100)).toThrow(RangeError)
+  })
+
+  it('encodedSize throws on negative values', () => {
+    expect(() => VByte.encodedSize(-1)).toThrow(RangeError)
+    expect(() => VByte.encodedSize(-100)).toThrow(RangeError)
   })
 
   it('encodeDelta throws on decreasing values', () => {
     expect(() => VByte.encodeDelta([5, 3])).toThrow(RangeError)
+    expect(() => VByte.encodeDelta([10, 20, 15])).toThrow(RangeError)
   })
 
   it('roundtrips many values correctly', () => {
@@ -99,51 +255,52 @@ describe('VByte', () => {
     expect(decoded).toEqual(values)
   })
 
-  it('encode and decode zero', () => {
-    const encoded = VByte.encodeMany([0])
-    const { values: decoded } = VByte.decodeMany(encoded)
-    expect(decoded).toEqual([0])
-  })
-
-  it('encode and decode single large number', () => {
-    const encoded = VByte.encodeMany([300])
-    const { values: decoded } = VByte.decodeMany(encoded)
-    expect(decoded).toEqual([300])
-  })
-
-  it('encode and decode 0', () => {
-    const encoded = VByte.encodeMany([0])
-    const { values: decoded } = VByte.decodeMany(encoded)
-    expect(decoded).toEqual([0])
-  })
-
   it('roundtrip for multiple values', () => {
     const encoded = VByte.encodeMany([1, 128, 300])
     const { values: decoded } = VByte.decodeMany(encoded)
     expect(decoded).toEqual([1, 128, 300])
   })
 
-  it('encode decode single value', () => {
-    const encoded = VByte.encode(42)
-    const decoded = VByte.decode(encoded)
-    expect(decoded.value).toBe(42)
+  it('roundtrip for boundary values', () => {
+    const values = [0, 0x7F, 0x80, 0x3FFF, 0x4000, 0x1FFFFF, 0x200000]
+    const encoded = VByte.encodeMany(values)
+    const { values: decoded } = VByte.decodeMany(encoded)
+    expect(decoded).toEqual(values)
   })
 
-  it('encode decode zero', () => {
-    const encoded = VByte.encode(0)
-    const decoded = VByte.decode(encoded)
-    expect(decoded.value).toBe(0)
+  it('decode single value at offset', () => {
+    const buf = new Uint8Array([0x80, 0x01, 0x42])
+    const result = VByte.decode(buf, 2)
+    expect(result.value).toBe(0x42)
+    expect(result.bytesRead).toBe(1)
   })
 
-  it('encode and decode 1', () => {
-    const encoded = VByte.encode(1)
-    const decoded = VByte.decode(encoded)
-    expect(decoded.value).toBe(1)
+  it('encode size matches actual encoded length', () => {
+    for (const v of [0, 1, 127, 128, 16383, 16384, 0x1FFFFF, 0x200000, 0xFFFFFFF, 0x10000000]) {
+      expect(VByte.encodedSize(v)).toBe(VByte.encode(v).length)
+    }
   })
 
-  it('encode decode 300', () => {
-    const encoded = VByte.encode(300)
-    const decoded = VByte.decode(encoded)
-    expect(decoded.value).toBe(300)
+  it('decodeMany with empty buffer', () => {
+    const { values, bytesRead } = VByte.decodeMany(new Uint8Array(0))
+    expect(values).toEqual([])
+    expect(bytesRead).toBe(0)
+  })
+
+  it('encodeMany produces correct byte length', () => {
+    const values = [1, 127, 128, 16384, 0x200000]
+    const encoded = VByte.encodeMany(values)
+    let expectedLength = 0
+    for (const v of values) {
+      expectedLength += VByte.encodedSize(v)
+    }
+    expect(encoded.length).toBe(expectedLength)
+  })
+
+  it('decodeDelta returns correct bytesRead', () => {
+    const values = [10, 20, 30]
+    const encoded = VByte.encodeDelta(values)
+    const { bytesRead } = VByte.decodeDelta(encoded)
+    expect(bytesRead).toBe(encoded.length)
   })
 })

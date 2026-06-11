@@ -178,8 +178,215 @@ describe('WaveletTree', () => {
     expect(wt.access(1)).toBe(20);
   });
 
+
   it('access first element', () => {
     const wt = new WaveletTree([10, 20, 30]);
     expect(wt.access(0)).toBe(10);
+  });
+
+  it('access last element', () => {
+    const wt = new WaveletTree([10, 20, 30]);
+    expect(wt.access(2)).toBe(30);
+  });
+
+  it('access with negative index returns undefined', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.access(-1)).toBeUndefined();
+  });
+
+  it('access with out of bounds index returns undefined', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.access(10)).toBeUndefined();
+  });
+
+  it('rank with endIndex 0 returns 0', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.rank(1, 0)).toBe(0);
+  });
+
+  it('rank with negative endIndex returns 0', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.rank(1, -5)).toBe(0);
+  });
+
+  it('rank with endIndex larger than length', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.rank(1, 100)).toBe(2);
+  });
+
+  it('rank with string value on number tree', () => {
+    const wt = new WaveletTree([65, 66, 67]);
+    expect(wt.rank('A', 3)).toBe(1);
+  });
+
+  it('select with k=0 returns -1', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.select(1, 0)).toBe(-1);
+  });
+
+  it('select with negative k returns -1', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.select(1, -5)).toBe(-1);
+  });
+
+  it('select for non-existent symbol returns -1', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.select(99, 1)).toBe(-1);
+  });
+
+  it('rankRange with start >= end returns 0', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.rankRange(1, 5, 1)).toBe(0);
+  });
+
+  it('rankRange with negative start', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.rankRange(1, -1, 2)).toBe(1);
+  });
+
+  it('rankRange with end larger than length', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.rankRange(1, 0, 100)).toBe(2);
+  });
+
+  it('rankRange for non-existent symbol returns 0', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.rankRange(0, 4, 99)).toBe(0);
+  });
+
+  it('quantile with k=0 returns minimum', () => {
+    const wt = new WaveletTree([5, 3, 1, 4, 2]);
+    expect(wt.quantile(0, 0, 5)).toBe(1);
+  });
+
+  it('quantile with k at end returns maximum', () => {
+    const wt = new WaveletTree([5, 3, 1, 4, 2]);
+    expect(wt.quantile(4, 0, 5)).toBe(5);
+  });
+
+  it('quantile with negative k returns undefined', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.quantile(-1, 0, 3)).toBeUndefined();
+  });
+
+  it('quantile with negative start returns undefined', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.quantile(0, -1, 3)).toBeUndefined();
+  });
+
+  it('quantile with end larger than length returns undefined', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.quantile(0, 0, 10)).toBeUndefined();
+  });
+
+  it('quantile with start >= end returns undefined', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.quantile(0, 3, 3)).toBeUndefined();
+  });
+
+  it('quantile on empty range returns undefined', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.quantile(0, 1, 1)).toBeUndefined();
+  });
+
+  it('rangeCount with start >= end returns 0', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    expect(wt.rangeCount(5, 3, 0, 4)).toBe(0);
+  });
+
+  it('rangeCount with empty data returns 0', () => {
+    const wt = new WaveletTree([]);
+    expect(wt.rangeCount(0, 10, 0, 0)).toBe(0);
+  });
+
+  it('rangeCount with negative lo and hi', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.rangeCount(-5, 5, 0, 3)).toBe(3);
+  });
+
+  it('rangeCountAll on empty data returns empty map', () => {
+    const wt = new WaveletTree([]);
+    expect(wt.rangeCountAll(0, 0)).toEqual(new Map());
+  });
+
+  it('rangeCountAll with negative start', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    const result = wt.rangeCountAll(-1, 2);
+    expect(result.get(1)).toBe(1);
+  });
+
+  it('rangeCountAll with end larger than length', () => {
+    const wt = new WaveletTree([1, 2, 1, 3]);
+    const result = wt.rangeCountAll(0, 100);
+    expect(result.get(1)).toBe(2);
+    expect(result.get(2)).toBe(1);
+    expect(result.get(3)).toBe(1);
+  });
+
+  it('handles string input', () => {
+    const wt = new WaveletTree('hello');
+    expect(wt.length).toBe(5);
+    expect(wt.text).toBe('hello');
+  });
+
+  it('access on string tree returns string', () => {
+    const wt = new WaveletTree('abc');
+    expect(wt.access(0)).toBe('a');
+    expect(wt.access(1)).toBe('b');
+    expect(wt.access(2)).toBe('c');
+  });
+
+  it('rank on string tree with string value', () => {
+    const wt = new WaveletTree('hello world');
+    expect(wt.rank('l', 11)).toBe(3);
+  });
+
+  it('select on string tree with string value', () => {
+    const wt = new WaveletTree('hello');
+    expect(wt.select('l', 1)).toBe(2);
+    expect(wt.select('l', 2)).toBe(3);
+  });
+
+  it('toArray returns copy of data', () => {
+    const data = [1, 2, 3];
+    const wt = new WaveletTree(data);
+    const result = wt.toArray();
+    expect(result).toEqual(data);
+    result.push(4);
+    expect(wt.toArray()).toEqual(data);
+  });
+
+  it('fromArray creates WaveletTree', () => {
+    const data = [1, 2, 3];
+    const wt = WaveletTree.fromArray(data);
+    expect(wt.length).toBe(3);
+    expect(wt.access(0)).toBe(1);
+  });
+
+  it('getAlphabet returns sorted unique values', () => {
+    const wt = new WaveletTree([5, 3, 1, 5, 3]);
+    expect(wt.getAlphabet()).toEqual([1, 3, 5]);
+  });
+
+  it('alphabetSize returns correct count', () => {
+    const wt = new WaveletTree([1, 2, 3, 1, 2]);
+    expect(wt.alphabetSize).toBe(3);
+  });
+
+  it('text getter returns string representation', () => {
+    const wt = new WaveletTree([65, 66, 67]);
+    expect(wt.text).toBe('ABC');
+  });
+
+  it('alphabet getter is same as getAlphabet', () => {
+    const wt = new WaveletTree([1, 2, 3]);
+    expect(wt.alphabet).toEqual(wt.getAlphabet());
+  });
+
+  it('rank with partial range', () => {
+    const wt = new WaveletTree([1, 2, 1, 2, 1, 2]);
+    expect(wt.rank(1, 3)).toBe(2);
+    expect(wt.rank(1, 4)).toBe(2);
+    expect(wt.rank(1, 5)).toBe(3);
   });
 });

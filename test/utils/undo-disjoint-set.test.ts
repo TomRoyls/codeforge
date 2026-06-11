@@ -169,42 +169,262 @@ describe('UndoDisjointSet', () => {
     expect(dsu.find(1)).toBe(1)
   })
 
-  it('undo reverts union', () => {
+  it('union of element with itself returns false', () => {
+    const dsu = new UndoDisjointSet(3)
+    expect(dsu.union(0, 0)).toBe(false)
+  })
+
+  it('union of already connected elements returns false', () => {
     const dsu = new UndoDisjointSet(3)
     dsu.union(0, 1)
-    expect(dsu.components).toBe(2)
+    expect(dsu.union(1, 0)).toBe(false)
+  })
+
+  it('union in chain connects all elements', () => {
+    const dsu = new UndoDisjointSet(4)
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    dsu.union(2, 3)
+    expect(dsu.connected(0, 3)).toBe(true)
+  })
+
+  it('undo restores parent correctly', () => {
+    const dsu = new UndoDisjointSet(3)
+    const root0 = dsu.find(0)
+    const root1 = dsu.find(1)
+    dsu.union(0, 1)
     dsu.undo()
+    expect(dsu.find(0)).toBe(root0)
+    expect(dsu.find(1)).toBe(root1)
+  })
+
+  it('undo after re-union works correctly', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    dsu.undo()
+    dsu.union(0, 2)
+    dsu.undo()
+    expect(dsu.connected(0, 2)).toBe(false)
     expect(dsu.components).toBe(3)
   })
 
-  it('find returns root after union', () => {
-    const dsu = new UndoDisjointSet(3)
-    dsu.union(0, 1)
-    expect(dsu.find(0)).toBe(dsu.find(1))
+  it('snapshot at initial state is zero', () => {
+    const dsu = new UndoDisjointSet(5)
+    expect(dsu.snapshot()).toBe(0)
   })
 
-  it('undo reverts last union', () => {
-    const dsu = new UndoDisjointSet(3)
+  it('rollback after multiple undos works', () => {
+    const dsu = new UndoDisjointSet(5)
     dsu.union(0, 1)
+    const snap1 = dsu.snapshot()
+    dsu.union(1, 2)
     dsu.undo()
-    expect(dsu.find(0)).not.toBe(dsu.find(1))
-  })
-
-  it('size reports correct count', () => {
-    const dsu = new UndoDisjointSet(3)
-    expect(dsu.size).toBe(3)
-  })
-
-  it('connected returns false for separate sets', () => {
-    const dsu = new UndoDisjointSet(3)
-    expect(dsu.connected(0, 1)).toBe(false)
-  })
-
-  it('undo reverts last union', () => {
-    const dsu = new UndoDisjointSet(3)
-    dsu.union(0, 1)
+    dsu.union(2, 3)
+    dsu.rollback(snap1)
     expect(dsu.connected(0, 1)).toBe(true)
+    expect(dsu.connected(1, 2)).toBe(false)
+  })
+
+  it('find on single element returns itself', () => {
+    const dsu = new UndoDisjointSet(5)
+    expect(dsu.find(2)).toBe(2)
+  })
+
+  it('connected on same element returns true', () => {
+    const dsu = new UndoDisjointSet(3)
+    expect(dsu.connected(1, 1)).toBe(true)
+  })
+
+  it('connected after chain unions', () => {
+    const dsu = new UndoDisjointSet(5)
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    dsu.union(2, 3)
+    dsu.union(3, 4)
+    expect(dsu.connected(0, 4)).toBe(true)
+  })
+
+  it('connected after undo', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    dsu.union(1, 2)
     dsu.undo()
-    expect(dsu.connected(0, 1)).toBe(false)
+    expect(dsu.connected(0, 2)).toBe(false)
+    expect(dsu.connected(0, 1)).toBe(true)
+  })
+
+  it('component count after chain unions', () => {
+    const dsu = new UndoDisjointSet(5)
+    dsu.union(0, 1)
+    expect(dsu.components).toBe(4)
+    dsu.union(1, 2)
+    expect(dsu.components).toBe(3)
+    dsu.union(2, 3)
+    expect(dsu.components).toBe(2)
+    dsu.union(3, 4)
+    expect(dsu.components).toBe(1)
+  })
+
+  it('component count increases with undo', () => {
+    const dsu = new UndoDisjointSet(4)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    expect(dsu.components).toBe(2)
+    dsu.undo()
+    expect(dsu.components).toBe(3)
+    dsu.undo()
+    expect(dsu.components).toBe(4)
+  })
+
+  it('component count after rollback', () => {
+    const dsu = new UndoDisjointSet(5)
+    const snap = dsu.snapshot()
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    expect(dsu.components).toBe(3)
+    dsu.rollback(snap)
+    expect(dsu.components).toBe(5)
+  })
+
+  it('snapshot after undo decreases', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    const snap1 = dsu.snapshot()
+    dsu.union(1, 2)
+    const snap2 = dsu.snapshot()
+    dsu.undo()
+    const snap3 = dsu.snapshot()
+    expect(snap1).toBeLessThan(snap2)
+    expect(snap3).toBeLessThan(snap2)
+  })
+
+  it('find after undo returns original root', () => {
+    const dsu = new UndoDisjointSet(4)
+    const initialRoot = dsu.find(1)
+    dsu.union(0, 1)
+    dsu.union(2, 1)
+    dsu.undo()
+    dsu.undo()
+    expect(dsu.find(1)).toBe(initialRoot)
+  })
+
+  it('connected after rollback', () => {
+    const dsu = new UndoDisjointSet(5)
+    dsu.union(0, 1)
+    const snap = dsu.snapshot()
+    dsu.union(0, 2)
+    expect(dsu.connected(0, 2)).toBe(true)
+    dsu.rollback(snap)
+    expect(dsu.connected(0, 2)).toBe(false)
+    expect(dsu.connected(0, 1)).toBe(true)
+  })
+
+  it('multiple snapshots can be taken', () => {
+    const dsu = new UndoDisjointSet(4)
+    const snap0 = dsu.snapshot()
+    dsu.union(0, 1)
+    const snap1 = dsu.snapshot()
+    dsu.union(2, 3)
+    const snap2 = dsu.snapshot()
+    expect(snap0).toBeLessThan(snap1)
+    expect(snap1).toBeLessThan(snap2)
+    dsu.rollback(snap1)
+    expect(dsu.components).toBe(3)
+  })
+
+  it('union creates correct component structure', () => {
+    const dsu = new UndoDisjointSet(6)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    dsu.union(4, 5)
+    expect(dsu.components).toBe(3)
+    expect(dsu.find(0)).toBe(dsu.find(1))
+    expect(dsu.find(2)).toBe(dsu.find(3))
+    expect(dsu.find(4)).toBe(dsu.find(5))
+    expect(dsu.find(0)).not.toBe(dsu.find(2))
+  })
+
+  it('undo after complex union structure', () => {
+    const dsu = new UndoDisjointSet(6)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    dsu.union(0, 2)
+    dsu.union(4, 5)
+    expect(dsu.components).toBe(2)
+    dsu.undo()
+    expect(dsu.components).toBe(3)
+    expect(dsu.connected(4, 5)).toBe(false)
+    expect(dsu.connected(0, 2)).toBe(true)
+  })
+
+  it('find works correctly after path compression', () => {
+    const dsu = new UndoDisjointSet(5)
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    dsu.union(2, 3)
+    dsu.find(0)
+    dsu.find(1)
+    expect(dsu.connected(0, 3)).toBe(true)
+  })
+
+  it('rollback to earlier snapshot works', () => {
+    const dsu = new UndoDisjointSet(5)
+    const snap0 = dsu.snapshot()
+    dsu.union(0, 1)
+    const snap1 = dsu.snapshot()
+    dsu.union(1, 2)
+    const snap2 = dsu.snapshot()
+    dsu.union(2, 3)
+    dsu.rollback(snap1)
+    expect(dsu.components).toBe(4)
+    expect(dsu.connected(1, 2)).toBe(false)
+    dsu.rollback(snap0)
+    expect(dsu.components).toBe(5)
+  })
+
+  it('union preserves component count when already connected', () => {
+    const dsu = new UndoDisjointSet(4)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    const compCount = dsu.components
+    expect(dsu.union(0, 1)).toBe(false)
+    expect(dsu.components).toBe(compCount)
+  })
+
+  it('undo does not affect unrelated components', () => {
+    const dsu = new UndoDisjointSet(6)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    dsu.union(4, 5)
+    dsu.undo()
+    expect(dsu.connected(2, 3)).toBe(true)
+    expect(dsu.connected(0, 1)).toBe(true)
+    expect(dsu.connected(4, 5)).toBe(false)
+  })
+
+  it('connected returns false for unconnected elements', () => {
+    const dsu = new UndoDisjointSet(5)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    expect(dsu.connected(0, 2)).toBe(false)
+    expect(dsu.connected(1, 3)).toBe(false)
+    expect(dsu.connected(0, 4)).toBe(false)
+  })
+
+  it('snapshot before any unions has length zero', () => {
+    const dsu = new UndoDisjointSet(10)
+    const snap = dsu.snapshot()
+    expect(snap).toBe(0)
+    dsu.rollback(snap)
+    expect(dsu.components).toBe(10)
+  })
+
+  it('union direction affects which element becomes root', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    const root0 = dsu.find(0)
+    const root1 = dsu.find(1)
+    expect(root0).toBe(root1)
+    expect(root0).toBe(0)
   })
 })

@@ -307,4 +307,261 @@ describe('UnionFindUndo', () => {
     dsu.undo()
     expect(dsu.connected(0, 1)).toBe(false)
   })
+
+  it('throws error for invalid index in constructor with zero', () => {
+    expect(() => new UnionFindUndo(0)).not.toThrow()
+  })
+
+  it('union in reverse order', () => {
+    const dsu = new UnionFindUndo(5)
+    dsu.union(4, 3)
+    dsu.union(3, 2)
+    dsu.union(2, 1)
+    dsu.union(1, 0)
+    expect(dsu.connected(0, 4)).toBe(true)
+    expect(dsu.componentCount).toBe(1)
+  })
+
+  it('snapshot returns 0 for initial state', () => {
+    const dsu = new UnionFindUndo(5)
+    expect(dsu.snapshot()).toBe(0)
+  })
+
+  it('snapshot increments with each union', () => {
+    const dsu = new UnionFindUndo(5)
+    expect(dsu.snapshot()).toBe(0)
+    dsu.union(0, 1)
+    expect(dsu.snapshot()).toBe(1)
+    dsu.union(2, 3)
+    expect(dsu.snapshot()).toBe(2)
+    dsu.union(0, 2)
+    expect(dsu.snapshot()).toBe(3)
+  })
+
+  it('rollback to 0 restores initial state', () => {
+    const dsu = new UnionFindUndo(5)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    dsu.union(0, 2)
+    expect(dsu.componentCount).toBe(2)
+    dsu.rollback(0)
+    expect(dsu.componentCount).toBe(5)
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
+
+  it('union after undo works correctly', () => {
+    const dsu = new UnionFindUndo(5)
+    dsu.union(0, 1)
+    expect(dsu.componentCount).toBe(4)
+    dsu.undo()
+    expect(dsu.componentCount).toBe(5)
+    dsu.union(1, 2)
+    expect(dsu.componentCount).toBe(4)
+    expect(dsu.connected(1, 2)).toBe(true)
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
+
+  it('undo after snapshot', () => {
+    const dsu = new UnionFindUndo(5)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    const snap = dsu.snapshot()
+    expect(snap).toBe(2)
+    dsu.union(0, 2)
+    expect(dsu.componentCount).toBe(2)
+    dsu.undo()
+    expect(dsu.componentCount).toBe(3)
+    expect(dsu.connected(0, 2)).toBe(false)
+    expect(dsu.connected(0, 1)).toBe(true)
+  })
+
+  it('multiple undos', () => {
+    const dsu = new UnionFindUndo(10)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    dsu.union(4, 5)
+    expect(dsu.componentCount).toBe(7)
+    dsu.undo()
+    expect(dsu.componentCount).toBe(8)
+    dsu.undo()
+    expect(dsu.componentCount).toBe(9)
+    dsu.undo()
+    expect(dsu.componentCount).toBe(10)
+  })
+
+  it('union with non-adjacent elements', () => {
+    const dsu = new UnionFindUndo(100)
+    dsu.union(0, 99)
+    expect(dsu.connected(0, 99)).toBe(true)
+    expect(dsu.getSize(0)).toBe(2)
+    dsu.union(50, 0)
+    expect(dsu.connected(50, 99)).toBe(true)
+    expect(dsu.getSize(0)).toBe(3)
+  })
+
+  it('find after multiple unions', () => {
+    const dsu = new UnionFindUndo(10)
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    dsu.union(2, 3)
+    const root0 = dsu.find(0)
+    const root3 = dsu.find(3)
+    expect(root0).toBe(root3)
+    expect(dsu.getSize(0)).toBe(4)
+  })
+
+  it('connected returns true for same element', () => {
+    const dsu = new UnionFindUndo(5)
+    expect(dsu.connected(0, 0)).toBe(true)
+    expect(dsu.connected(4, 4)).toBe(true)
+  })
+
+  it('getSize after undo restores correct size', () => {
+    const dsu = new UnionFindUndo(10)
+    dsu.union(0, 1)
+    dsu.union(0, 2)
+    dsu.union(0, 3)
+    expect(dsu.getSize(0)).toBe(4)
+    dsu.undo()
+    expect(dsu.getSize(0)).toBe(3)
+    dsu.undo()
+    expect(dsu.getSize(0)).toBe(2)
+  })
+
+  it('rollback to intermediate state', () => {
+    const dsu = new UnionFindUndo(8)
+    dsu.union(0, 1)
+    const snap1 = dsu.snapshot()
+    expect(dsu.componentCount).toBe(7)
+    dsu.union(2, 3)
+    dsu.union(0, 2)
+    const snap2 = dsu.snapshot()
+    expect(dsu.componentCount).toBe(5)
+    dsu.union(4, 5)
+    dsu.union(6, 7)
+    expect(dsu.componentCount).toBe(3)
+    dsu.rollback(snap2)
+    expect(dsu.componentCount).toBe(5)
+    dsu.rollback(snap1)
+    expect(dsu.componentCount).toBe(7)
+  })
+
+  it('complex undo/rollback sequence', () => {
+    const dsu = new UnionFindUndo(10)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    const snap1 = dsu.snapshot()
+    dsu.union(0, 2)
+    dsu.undo()
+    expect(dsu.componentCount).toBe(8)
+    dsu.union(4, 5)
+    dsu.union(0, 4)
+    const snap2 = dsu.snapshot()
+    dsu.rollback(snap1)
+    expect(dsu.connected(0, 1)).toBe(true)
+    expect(dsu.connected(0, 2)).toBe(false)
+  })
+
+  it('union order affects component structure', () => {
+    const dsu1 = new UnionFindUndo(6)
+    dsu1.union(0, 1)
+    dsu1.union(0, 2)
+    dsu1.union(0, 3)
+    dsu1.union(0, 4)
+
+    const dsu2 = new UnionFindUndo(6)
+    dsu2.union(4, 3)
+    dsu2.union(2, 1)
+    dsu2.union(0, 1)
+    dsu2.union(0, 4)
+
+    expect(dsu1.connected(0, 4)).toBe(true)
+    expect(dsu2.connected(0, 4)).toBe(true)
+    expect(dsu1.componentCount).toBe(2)
+    expect(dsu2.componentCount).toBe(2)
+  })
+
+  it('find on empty union-find throws', () => {
+    const dsu = new UnionFindUndo(0)
+    expect(() => dsu.find(0)).toThrow(RangeError)
+  })
+
+  it('union on empty union-find throws', () => {
+    const dsu = new UnionFindUndo(0)
+    expect(() => dsu.union(0, 1)).toThrow(RangeError)
+  })
+
+  it('connected on empty union-find throws', () => {
+    const dsu = new UnionFindUndo(0)
+    expect(() => dsu.connected(0, 1)).toThrow(RangeError)
+  })
+
+  it('getSize on empty union-find throws', () => {
+    const dsu = new UnionFindUndo(0)
+    expect(() => dsu.getSize(0)).toThrow(RangeError)
+  })
+
+  it('snapshot on empty union-find returns 0', () => {
+    const dsu = new UnionFindUndo(0)
+    expect(dsu.snapshot()).toBe(0)
+  })
+
+  it('rollback on empty union-find with version 0 works', () => {
+    const dsu = new UnionFindUndo(0)
+    expect(() => dsu.rollback(0)).not.toThrow()
+  })
+
+  it('large number of unions', () => {
+    const dsu = new UnionFindUndo(100)
+    for (let i = 0; i < 99; i++) {
+      dsu.union(i, i + 1)
+    }
+    expect(dsu.componentCount).toBe(1)
+    expect(dsu.connected(0, 99)).toBe(true)
+    expect(dsu.getSize(0)).toBe(100)
+  })
+
+  it('undo all unions returns to initial state', () => {
+    const dsu = new UnionFindUndo(10)
+    for (let i = 0; i < 9; i++) {
+      dsu.union(i, i + 1)
+    }
+    expect(dsu.componentCount).toBe(1)
+    for (let i = 0; i < 9; i++) {
+      dsu.undo()
+    }
+    expect(dsu.componentCount).toBe(10)
+    expect(dsu.connected(0, 9)).toBe(false)
+  })
+
+  it('find performance with path compression', () => {
+    const dsu = new UnionFindUndo(1000)
+    for (let i = 1; i < 1000; i++) {
+      dsu.union(0, i)
+    }
+    const root1 = dsu.find(0)
+    const root2 = dsu.find(500)
+    expect(root1).toBe(root2)
+  })
+
+  it('interleaved unions and undos', () => {
+    const dsu = new UnionFindUndo(10)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    dsu.undo()
+    dsu.union(4, 5)
+    dsu.undo()
+    expect(dsu.componentCount).toBe(9)
+    expect(dsu.connected(0, 1)).toBe(true)
+    expect(dsu.connected(2, 3)).toBe(false)
+    expect(dsu.connected(4, 5)).toBe(false)
+  })
+
+  it('snapshot/rollback with single element', () => {
+    const dsu = new UnionFindUndo(1)
+    const snap = dsu.snapshot()
+    expect(snap).toBe(0)
+    dsu.rollback(snap)
+    expect(dsu.componentCount).toBe(1)
+  })
 })

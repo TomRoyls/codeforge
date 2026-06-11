@@ -170,4 +170,171 @@ describe('VPTrie', () => {
     vp.addPoint([5, 5])
     expect(vp.nearest([4, 4])).not.toBeNull()
   })
+
+  it('handles 4D points', () => {
+    const vp = new VPTrie(4)
+    vp.addPoint([0, 0, 0, 0])
+    vp.addPoint([5, 5, 5, 5])
+    expect(vp.nearest([1, 1, 1, 1])).toEqual([0, 0, 0, 0])
+  })
+
+  it('handles 5D points', () => {
+    const vp = new VPTrie(5)
+    vp.addPoint([0, 0, 0, 0, 0])
+    vp.addPoint([10, 10, 10, 10, 10])
+    expect(vp.nearest([1, 1, 1, 1, 1])).toEqual([0, 0, 0, 0, 0])
+  })
+
+  it('kNearest with k=0 returns empty array', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([10, 10])
+    const result = vp.kNearest([0, 0], 0)
+    expect(result.length).toBe(0)
+  })
+
+  it('kNearest with k=1 returns single point', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([10, 10])
+    const result = vp.kNearest([0, 0], 1)
+    expect(result.length).toBe(1)
+    expect(result[0]).toEqual([0, 0])
+  })
+
+  it('kNearest on empty trie returns empty array', () => {
+    const vp = new VPTrie(2)
+    const result = vp.kNearest([0, 0], 5)
+    expect(result.length).toBe(0)
+  })
+
+  it('findAllWithin with zero radius', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([0.5, 0.5])
+    const result = vp.findAllWithin([0, 0], 0)
+    expect(result.length).toBe(1)
+  })
+
+  it('findAllWithin with large radius returns all points', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([100, 100])
+    vp.addPoint([200, 200])
+    const result = vp.findAllWithin([0, 0], 1000)
+    expect(result.length).toBe(3)
+  })
+
+  it('handles negative coordinates', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([-5, -5])
+    vp.addPoint([5, 5])
+    expect(vp.nearest([-1, -1])).toEqual([-5, -5])
+  })
+
+  it('handles zero coordinates', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([10, 10])
+    expect(vp.nearest([0, 0])).toEqual([0, 0])
+  })
+
+  it('handles large coordinates', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([1000000, 1000000])
+    vp.addPoint([2000000, 2000000])
+    expect(vp.nearest([1500000, 1500000])).toEqual([1000000, 1000000])
+  })
+
+  it('handles fractional coordinates', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0.5, 0.5])
+    vp.addPoint([1.5, 1.5])
+    expect(vp.nearest([0.6, 0.6])).toEqual([0.5, 0.5])
+  })
+
+  it('kNearest maintains order for equal distances', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([1, 0])
+    vp.addPoint([0, 1])
+    vp.addPoint([-1, 0])
+    const result = vp.kNearest([0, 0], 3)
+    expect(result.length).toBe(3)
+  })
+
+  it('handles query matching existing point', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([5, 5])
+    expect(vp.nearest([5, 5])).toEqual([5, 5])
+  })
+
+  it('findAllWithin with boundary matches', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([3, 4])
+    vp.addPoint([6, 8])
+    const result = vp.findAllWithin([0, 0], 5)
+    expect(result.length).toBe(1)
+  })
+
+  it('kNearest with exact size', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([1, 1])
+    vp.addPoint([2, 2])
+    const result = vp.kNearest([0, 0], 3)
+    expect(result.length).toBe(3)
+  })
+
+  it('handles points with mixed signs', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([-5, 5])
+    vp.addPoint([5, -5])
+    expect(vp.nearest([-4, 4])).toEqual([-5, 5])
+  })
+
+  it('size is zero after construction', () => {
+    const vp = new VPTrie(2)
+    expect(vp.size).toBe(0)
+  })
+
+  it('size increments with each addPoint', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([1, 1])
+    expect(vp.size).toBe(1)
+    vp.addPoint([2, 2])
+    expect(vp.size).toBe(2)
+    vp.addPoint([3, 3])
+    expect(vp.size).toBe(3)
+  })
+
+  it('handles many kNearest queries', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([1, 1])
+    vp.addPoint([2, 2])
+    vp.addPoint([3, 3])
+    const result1 = vp.kNearest([0, 0], 2)
+    const result2 = vp.kNearest([3, 3], 2)
+    expect(result1.length).toBe(2)
+    expect(result2.length).toBe(2)
+  })
+
+  it('findAllWithin on empty trie', () => {
+    const vp = new VPTrie(2)
+    const result = vp.findAllWithin([0, 0], 10)
+    expect(result).toEqual([])
+  })
+
+  it('handles single point findAllWithin', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    const result = vp.findAllWithin([0, 0], 0.1)
+    expect(result.length).toBe(1)
+  })
+
+  it('nearest with exactly matching point', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([7, 7])
+    expect(vp.nearest([7, 7])).toEqual([7, 7])
+  })
 })

@@ -11,9 +11,7 @@ describe('Welford', () => {
 
   it('computes mean of multiple values', () => {
     const w = new Welford()
-    w.update(2)
-    w.update(4)
-    w.update(6)
+    w.update(2); w.update(4); w.update(6)
     expect(w.meanValue).toBe(4)
   })
 
@@ -48,8 +46,7 @@ describe('Welford', () => {
   })
 
   it('meanValue returns 0 for empty', () => {
-    const w = new Welford()
-    expect(w.meanValue).toBe(0)
+    expect(new Welford().meanValue).toBe(0)
   })
 
   it('addBatch processes iterable', () => {
@@ -69,8 +66,7 @@ describe('Welford', () => {
 
   it('merge with empty does nothing', () => {
     const w1 = Welford.fromArray([1, 2, 3])
-    const w2 = new Welford()
-    w1.merge(w2)
+    w1.merge(new Welford())
     expect(w1.meanValue).toBe(2)
     expect(w1.n).toBe(3)
   })
@@ -84,8 +80,7 @@ describe('Welford', () => {
   })
 
   it('handles negative values', () => {
-    const w = Welford.fromArray([-3, -1, 1, 3])
-    expect(w.meanValue).toBe(0)
+    expect(Welford.fromArray([-3, -1, 1, 3]).meanValue).toBe(0)
   })
 
   it('handles large numbers', () => {
@@ -102,49 +97,173 @@ describe('Welford', () => {
   })
 
   it('variance is 0 for identical values', () => {
-    const w = Welford.fromArray([5, 5, 5, 5])
+    expect(Welford.fromArray([5, 5, 5, 5]).variance).toBe(0)
+  })
+
+  it('n tracks count correctly', () => {
+    const w = new Welford()
+    expect(w.n).toBe(0)
+    w.update(1); expect(w.n).toBe(1)
+    w.update(2); expect(w.n).toBe(2)
+    w.update(3); expect(w.n).toBe(3)
+  })
+
+  it('sampleVariance is 0 for empty', () => {
+    expect(new Welford().sampleVariance).toBe(0)
+  })
+
+  it('sampleStdDev is 0 for empty', () => {
+    expect(new Welford().sampleStdDev).toBe(0)
+  })
+
+  it('stdDev is 0 for empty', () => {
+    expect(new Welford().stdDev).toBe(0)
+  })
+
+  it('sampleStdDev equals sqrt of sampleVariance', () => {
+    const w = Welford.fromArray([1, 2, 3, 4, 5])
+    expect(w.sampleStdDev).toBeCloseTo(Math.sqrt(w.sampleVariance), 10)
+  })
+
+  it('variance of [1,2,3] is 2/3', () => {
+    expect(Welford.fromArray([1, 2, 3]).variance).toBeCloseTo(2 / 3, 5)
+  })
+
+  it('merge preserves combined mean', () => {
+    const w1 = Welford.fromArray([1, 2])
+    const w2 = Welford.fromArray([3, 4])
+    w1.merge(w2)
+    expect(w1.meanValue).toBe(2.5)
+    expect(w1.n).toBe(4)
+  })
+
+  it('reset then update works', () => {
+    const w = Welford.fromArray([100, 200])
+    w.reset()
+    w.update(5)
+    expect(w.meanValue).toBe(5)
+    expect(w.n).toBe(1)
+  })
+
+  it('fromArray with empty array', () => {
+    const w = Welford.fromArray([])
+    expect(w.n).toBe(0)
+    expect(w.isEmpty).toBe(true)
+  })
+
+  it('addBatch with generator', () => {
+    function* gen() { yield 10; yield 20; yield 30 }
+    const w = new Welford()
+    w.addBatch(gen())
+    expect(w.meanValue).toBe(20)
+    expect(w.n).toBe(3)
+  })
+
+  it('merge then update', () => {
+    const w1 = Welford.fromArray([1, 2])
+    const w2 = Welford.fromArray([3])
+    w1.merge(w2)
+    w1.update(4)
+    expect(w1.meanValue).toBeCloseTo(2.5, 5)
+    expect(w1.n).toBe(4)
+  })
+
+  it('handles all zeros', () => {
+    const w = Welford.fromArray([0, 0, 0, 0])
+    expect(w.meanValue).toBe(0)
     expect(w.variance).toBe(0)
   })
 
-  it('single value has zero variance', () => {
-    const w = Welford.fromArray([42])
-    expect(w.mean).toBe(42)
-    expect(w.variance).toBe(0)
+  it('handles alternating values', () => {
+    const w = Welford.fromArray([1, -1, 1, -1])
+    expect(w.meanValue).toBe(0)
+    expect(w.variance).toBeCloseTo(1, 5)
   })
 
-  it('fromArray with two elements has correct mean', () => {
-    const w = Welford.fromArray([10, 20])
-    expect(w.mean).toBe(15)
-  })
-
-  it('fromArray with single element has variance 0', () => {
-    const w = Welford.fromArray([42])
-    expect(w.mean).toBe(42)
-    expect(w.variance).toBe(0)
-  })
-
-  it('variance of [1, 2, 3] is 2/3', () => {
-    const w = Welford.fromArray([1, 2, 3])
-    expect(w.variance).toBeCloseTo(2 / 3, 5)
-  })
-
-  it('mean of [10, 20, 30] is 20', () => {
-    const w = Welford.fromArray([10, 20, 30])
-    expect(w.mean).toBeCloseTo(20, 5)
+  it('large dataset mean', () => {
+    const arr = Array.from({ length: 1000 }, (_, i) => i + 1)
+    const w = Welford.fromArray(arr)
+    expect(w.meanValue).toBeCloseTo(500.5, 5)
+    expect(w.n).toBe(1000)
   })
 
   it('variance of single value is 0', () => {
+    expect(Welford.fromArray([42]).variance).toBe(0)
+  })
+
+  it('sampleVariance of two equal values is 0', () => {
+    expect(Welford.fromArray([7, 7]).sampleVariance).toBe(0)
+  })
+
+  it('merge with itself doubles n', () => {
+    const w = Welford.fromArray([1, 2, 3])
+    const w2 = Welford.fromArray([1, 2, 3])
+    w.merge(w2)
+    expect(w.n).toBe(6)
+    expect(w.meanValue).toBe(2)
+  })
+
+  it('stdDev of uniform values is 0', () => {
+    expect(Welford.fromArray([10, 10, 10]).stdDev).toBe(0)
+  })
+
+  it('incremental mean matches batch mean', () => {
+    const w = new Welford()
+    const values = [3, 7, 2, 9, 4, 6, 1, 8, 5]
+    for (const v of values) w.update(v)
+    const batchW = Welford.fromArray(values)
+    expect(w.meanValue).toBeCloseTo(batchW.meanValue, 10)
+    expect(w.variance).toBeCloseTo(batchW.variance, 10)
+  })
+
+  it('mean of [1,2,3,4,5] is 3', () => {
+    expect(Welford.fromArray([1, 2, 3, 4, 5]).meanValue).toBe(3)
+  })
+
+  it('handles very large values', () => {
+    const w = Welford.fromArray([1e15, 2e15, 3e15])
+    expect(w.meanValue).toBeCloseTo(2e15, 0)
+  })
+
+  it('handles very small values', () => {
+    const w = Welford.fromArray([1e-15, 2e-15, 3e-15])
+    expect(w.meanValue).toBeCloseTo(2e-15, 20)
+  })
+
+  it('sampleVariance larger than population variance', () => {
+    const w = Welford.fromArray([1, 2, 3, 4, 5])
+    expect(w.sampleVariance).toBeGreaterThan(w.variance)
+  })
+
+  it('n updates correctly after reset and re-add', () => {
+    const w = Welford.fromArray([1, 2, 3, 4, 5])
+    w.reset()
+    expect(w.n).toBe(0)
+    w.update(10); w.update(20)
+    expect(w.n).toBe(2)
+    expect(w.meanValue).toBe(15)
+  })
+
+  it('merge with empty preserves variance', () => {
+    const w = Welford.fromArray([1, 2, 3])
+    const originalVar = w.variance
+    w.merge(new Welford())
+    expect(w.variance).toBeCloseTo(originalVar, 10)
+  })
+
+  it('fromArray with single element', () => {
     const w = Welford.fromArray([42])
+    expect(w.meanValue).toBe(42)
     expect(w.variance).toBe(0)
+    expect(w.n).toBe(1)
   })
 
-  it('mean of identical values is that value', () => {
-    const w = Welford.fromArray([5, 5, 5])
-    expect(w.mean).toBe(5)
-  })
-
-  it('variance of identical values is 0', () => {
-    const w = Welford.fromArray([5, 5, 5])
-    expect(w.variance).toBe(0)
+  it('merge after reset', () => {
+    const w = Welford.fromArray([1, 2, 3])
+    w.reset()
+    const w2 = Welford.fromArray([10, 20])
+    w.merge(w2)
+    expect(w.meanValue).toBe(15)
+    expect(w.n).toBe(2)
   })
 })

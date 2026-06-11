@@ -1,31 +1,104 @@
 import { describe, it, expect } from 'vitest'
 import { VersionVector } from '../../src/utils/version-vector.js'
 
-// ─── Constructor ──────────────────────────────────────────
 describe('VersionVector - constructor', () => {
   it('creates with nodeId', () => {
     const vv = new VersionVector({ nodeId: 'node-1' })
     expect(vv.getNodeId()).toBe('node-1')
     expect(vv.size).toBe(0)
   })
+
+  it('creates with empty nodeId', () => {
+    const vv = new VersionVector({ nodeId: '' })
+    expect(vv.getNodeId()).toBe('')
+    expect(vv.size).toBe(0)
+  })
+
+  it('creates with numeric string nodeId', () => {
+    const vv = new VersionVector({ nodeId: '123' })
+    expect(vv.getNodeId()).toBe('123')
+  })
+
+  it('creates with special characters in nodeId', () => {
+    const vv = new VersionVector({ nodeId: 'node-1_special' })
+    expect(vv.getNodeId()).toBe('node-1_special')
+  })
 })
 
-// ─── Increment ────────────────────────────────────────────
 describe('VersionVector - increment', () => {
-  it('increments own version', () => {
+  it('increments own version from 0 to 1', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    expect(vv.increment()).toBe(1)
+  })
+
+  it('increments multiple times', () => {
     const vv = new VersionVector({ nodeId: 'a' })
     expect(vv.increment()).toBe(1)
     expect(vv.increment()).toBe(2)
-    expect(vv.get('a')).toBe(2)
+    expect(vv.increment()).toBe(3)
   })
 
+  it('increment reflects in get', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    expect(vv.get('a')).toBe(1)
+  })
+
+  it('multiple increments tracked correctly', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    vv.increment()
+    vv.increment()
+    expect(vv.get('a')).toBe(3)
+  })
+
+  it('size increases after first increment', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    expect(vv.size).toBe(0)
+    vv.increment()
+    expect(vv.size).toBe(1)
+  })
+
+  it('size stays same after subsequent increments', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    expect(vv.size).toBe(1)
+    vv.increment()
+    expect(vv.size).toBe(1)
+  })
+})
+
+describe('VersionVector - get', () => {
   it('returns 0 for unknown node', () => {
     const vv = new VersionVector({ nodeId: 'a' })
     expect(vv.get('b')).toBe(0)
   })
+
+  it('returns 0 for empty string node id', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    expect(vv.get('')).toBe(0)
+  })
+
+  it('returns correct value after increment', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    expect(vv.get('a')).toBe(1)
+  })
+
+  it('returns correct value after multiple increments', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    vv.increment()
+    vv.increment()
+    expect(vv.get('a')).toBe(3)
+  })
+
+  it('returns 0 for own node before increment', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    expect(vv.get('a')).toBe(0)
+  })
 })
 
-// ─── Merge ────────────────────────────────────────────────
 describe('VersionVector - merge', () => {
   it('takes max version per node', () => {
     const vv1 = new VersionVector({ nodeId: 'a' })
@@ -37,13 +110,100 @@ describe('VersionVector - merge', () => {
     expect(vv1.get('a')).toBe(1)
     expect(vv1.get('b')).toBe(2)
   })
+
+  it('merge with empty vector is no-op', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv1.merge(vv2)
+    expect(vv1.get('a')).toBe(2)
+    expect(vv1.get('b')).toBe(0)
+  })
+
+  it('merge does not lower versions', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    vv1.increment()
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    vv2.increment()
+    vv1.merge(vv2)
+    expect(vv1.get('a')).toBe(3)
+  })
+
+  it('merge combines vectors', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv1.merge(vv2)
+    expect(vv1.get('a')).toBe(1)
+    expect(vv1.get('b')).toBe(1)
+  })
+
+  it('merge with higher version updates', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    vv2.increment()
+    vv2.increment()
+    vv2.increment()
+    vv1.merge(vv2)
+    expect(vv1.get('a')).toBe(3)
+  })
+
+  it('multiple nodes tracked correctly', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv2.increment()
+    const vv3 = new VersionVector({ nodeId: 'c' })
+    vv3.increment()
+    vv3.increment()
+    vv3.increment()
+    vv1.merge(vv2)
+    vv1.merge(vv3)
+    expect(vv1.get('a')).toBe(1)
+    expect(vv1.get('b')).toBe(2)
+    expect(vv1.get('c')).toBe(3)
+  })
+
+  it('merge preserves original nodeId', () => {
+    const vv1 = new VersionVector({ nodeId: 'node-1' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'node-2' })
+    vv2.increment()
+    vv1.merge(vv2)
+    expect(vv1.getNodeId()).toBe('node-1')
+  })
+
+  it('merge does not modify source vector', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    const originalVv1Size = vv1.size
+    vv2.merge(vv1)
+    expect(vv1.size).toBe(originalVv1Size)
+  })
 })
 
-// ─── Compare ──────────────────────────────────────────────
 describe('VersionVector - compare', () => {
-  it('returns equal for identical vectors', () => {
+  it('returns equal for identical empty vectors', () => {
     const vv1 = new VersionVector({ nodeId: 'a' })
     const vv2 = new VersionVector({ nodeId: 'a' })
+    expect(vv1.compare(vv2)).toBe('equal')
+  })
+
+  it('returns equal for identical vectors with data', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    vv2.increment()
+    vv2.increment()
     expect(vv1.compare(vv2)).toBe('equal')
   })
 
@@ -68,68 +228,6 @@ describe('VersionVector - compare', () => {
     vv2.increment()
     expect(vv1.compare(vv2)).toBe('concurrent')
   })
-})
-
-// ─── Clone ────────────────────────────────────────────────
-describe('VersionVector - clone', () => {
-  it('creates independent copy', () => {
-    const vv = new VersionVector({ nodeId: 'a' })
-    vv.increment()
-    const copy = vv.clone()
-    vv.increment()
-    expect(vv.get('a')).toBe(2)
-    expect(copy.get('a')).toBe(1)
-  })
-})
-
-// ─── toArray ───────────────────────────────────────────────
-describe('VersionVector - toArray', () => {
-  it('returns entries', () => {
-    const vv = new VersionVector({ nodeId: 'a' })
-    vv.increment()
-    const arr = vv.toArray()
-    expect(arr).toContainEqual(['a', 1])
-  })
-})
-
-describe('VersionVector - edge cases', () => {
-  it('merge with empty vector is no-op', () => {
-    const vv1 = new VersionVector({ nodeId: 'a' })
-    vv1.increment()
-    vv1.increment()
-    const vv2 = new VersionVector({ nodeId: 'b' })
-    vv1.merge(vv2)
-    expect(vv1.get('a')).toBe(2)
-    expect(vv1.get('b')).toBe(0)
-  })
-
-  it('merge does not lower versions', () => {
-    const vv1 = new VersionVector({ nodeId: 'a' })
-    vv1.increment()
-    vv1.increment()
-    vv1.increment()
-    const vv2 = new VersionVector({ nodeId: 'a' })
-    vv2.increment()
-    vv1.merge(vv2)
-    expect(vv1.get('a')).toBe(3)
-  })
-
-  it('multiple nodes tracked correctly', () => {
-    const vv1 = new VersionVector({ nodeId: 'a' })
-    vv1.increment()
-    const vv2 = new VersionVector({ nodeId: 'b' })
-    vv2.increment()
-    vv2.increment()
-    const vv3 = new VersionVector({ nodeId: 'c' })
-    vv3.increment()
-    vv3.increment()
-    vv3.increment()
-    vv1.merge(vv2)
-    vv1.merge(vv3)
-    expect(vv1.get('a')).toBe(1)
-    expect(vv1.get('b')).toBe(2)
-    expect(vv1.get('c')).toBe(3)
-  })
 
   it('compare is reflexive (equal)', () => {
     const vv1 = new VersionVector({ nodeId: 'a' })
@@ -145,62 +243,305 @@ describe('VersionVector - edge cases', () => {
     expect(vv2.compare(vv1)).toBe('after')
   })
 
-  it('size reflects number of tracked nodes', () => {
+  it('concurrent with different versions on different nodes', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv2.increment()
+    expect(vv1.compare(vv2)).toBe('concurrent')
+  })
+
+  it('after for vector ahead on all nodes', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    expect(vv1.compare(vv2)).toBe('after')
+  })
+})
+
+describe('VersionVector - clone', () => {
+  it('creates independent copy', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    const copy = vv.clone()
+    vv.increment()
+    expect(vv.get('a')).toBe(2)
+    expect(copy.get('a')).toBe(1)
+  })
+
+  it('clone preserves nodeId', () => {
+    const vv = new VersionVector({ nodeId: 'test-node' })
+    vv.increment()
+    const copy = vv.clone()
+    expect(copy.getNodeId()).toBe('test-node')
+  })
+
+  it('clone copies all entries', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    vv.increment()
+    const copy = vv.clone()
+    expect(copy.get('a')).toBe(2)
+  })
+
+  it('clone is independent after merge', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    const copy = vv1.clone()
+    vv1.merge(vv2)
+    expect(vv1.get('b')).toBe(1)
+    expect(copy.get('b')).toBe(0)
+  })
+})
+
+describe('VersionVector - toArray', () => {
+  it('returns empty array for new vector', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    const arr = vv.toArray()
+    expect(arr).toEqual([])
+  })
+
+  it('returns entries after increment', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    const arr = vv.toArray()
+    expect(arr).toContainEqual(['a', 1])
+  })
+
+  it('returns multiple entries', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv2.increment()
+    vv.merge(vv2)
+    const arr = vv.toArray()
+    expect(arr.length).toBe(2)
+    expect(arr).toContainEqual(['a', 1])
+    expect(arr).toContainEqual(['b', 2])
+  })
+
+  it('toArray returns array of tuples', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    const arr = vv.toArray()
+    expect(Array.isArray(arr)).toBe(true)
+    if (arr.length > 0) {
+      expect(Array.isArray(arr[0])).toBe(true)
+      expect(arr[0]).toHaveLength(2)
+    }
+  })
+})
+
+describe('VersionVector - size', () => {
+  it('size is 0 for new vector', () => {
     const vv = new VersionVector({ nodeId: 'a' })
     expect(vv.size).toBe(0)
+  })
+
+  it('size increases after first increment', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
     vv.increment()
     expect(vv.size).toBe(1)
   })
 
-  it('toArray returns entries', () => {
-    const vv = new VersionVector('a')
+  it('size reflects number of tracked nodes', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
     vv.increment()
-    const arr = vv.toArray()
-    expect(arr.length).toBeGreaterThanOrEqual(0)
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv.merge(vv2)
+    expect(vv.size).toBe(2)
   })
 
-  it('merge combines vectors', () => {
+  it('size stays constant after multiple increments on same node', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    vv.increment()
+    vv.increment()
+    expect(vv.size).toBe(1)
+  })
+
+  it('size updates after merge with new node', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    expect(vv1.size).toBe(1)
+    vv1.merge(vv2)
+    expect(vv1.size).toBe(2)
+  })
+})
+
+describe('VersionVector - getNodeId', () => {
+  it('returns correct nodeId', () => {
+    const vv = new VersionVector({ nodeId: 'test-node' })
+    expect(vv.getNodeId()).toBe('test-node')
+  })
+
+  it('returns empty string for empty nodeId', () => {
+    const vv = new VersionVector({ nodeId: '' })
+    expect(vv.getNodeId()).toBe('')
+  })
+
+  it('preserves nodeId after increment', () => {
+    const vv = new VersionVector({ nodeId: 'node-1' })
+    vv.increment()
+    expect(vv.getNodeId()).toBe('node-1')
+  })
+
+  it('preserves nodeId after merge', () => {
+    const vv1 = new VersionVector({ nodeId: 'node-1' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'node-2' })
+    vv2.increment()
+    vv1.merge(vv2)
+    expect(vv1.getNodeId()).toBe('node-1')
+  })
+
+  it('clone preserves nodeId', () => {
+    const vv = new VersionVector({ nodeId: 'original' })
+    const copy = vv.clone()
+    expect(copy.getNodeId()).toBe('original')
+  })
+})
+
+describe('VersionVector - edge cases', () => {
+  it('handles large version numbers', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    for (let i = 0; i < 1000; i++) {
+      vv.increment()
+    }
+    expect(vv.get('a')).toBe(1000)
+  })
+
+  it('handles many unique nodes', () => {
+    const vv = new VersionVector({ nodeId: 'master' })
+    for (let i = 0; i < 50; i++) {
+      const other = new VersionVector({ nodeId: `node-${i}` })
+      other.increment()
+      vv.merge(other)
+    }
+    expect(vv.size).toBe(50)
+  })
+
+  it('compare with empty vectors returns equal', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    expect(vv1.compare(vv2)).toBe('equal')
+  })
+
+  it('self-compare after merge returns equal', () => {
     const vv1 = new VersionVector({ nodeId: 'a' })
     vv1.increment()
     const vv2 = new VersionVector({ nodeId: 'b' })
     vv2.increment()
     vv1.merge(vv2)
-    expect(vv1.get('a')).toBe(1)
-    expect(vv1.get('b')).toBe(1)
+    expect(vv1.compare(vv1)).toBe('equal')
   })
 
-  it('increment returns new version', () => {
-    const vv = new VersionVector({ nodeId: 'node1' })
-    vv.increment('node1')
-    expect(vv.get('node1')).toBe(1)
-    vv.increment('node1')
-    expect(vv.get('node1')).toBe(2)
-  })
-
-  it('get unset node returns 0', () => {
-    const vv = new VersionVector({ nodeId: 'test' })
-    expect(vv.get('unknown')).toBe(0)
-  })
-
-  it('increment increases version', () => {
-    const vv = new VersionVector({ nodeId: 'test' })
-    vv.increment()
-    expect(vv.get('test')).toBe(1)
-  })
-
-  it('get returns 0 for unknown node', () => {
-    const vv = new VersionVector({ nodeId: 'a' })
-    expect(vv.get('b')).toBe(0)
-  })
-
-  it('increment updates own counter', () => {
+  it('clone and original compare equal', () => {
     const vv = new VersionVector({ nodeId: 'a' })
     vv.increment()
+    vv.increment()
+    const copy = vv.clone()
+    expect(vv.compare(copy)).toBe('equal')
+    expect(copy.compare(vv)).toBe('equal')
+  })
+
+  it('merge preserves max of same node from multiple sources', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    vv2.increment()
+    vv2.increment()
+    const vv3 = new VersionVector({ nodeId: 'a' })
+    vv3.increment()
+    vv3.increment()
+    vv3.increment()
+    vv1.merge(vv2)
+    vv1.merge(vv3)
+    expect(vv1.get('a')).toBe(3)
+  })
+
+  it('toArray returns all tracked nodes', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv2.increment()
+    const vv3 = new VersionVector({ nodeId: 'c' })
+    vv3.increment()
+    vv.merge(vv2)
+    vv.merge(vv3)
+    const arr = vv.toArray()
+    expect(arr.length).toBe(3)
+  })
+
+  it('get returns 0 for non-existent node after merge', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv1.merge(vv2)
+    expect(vv1.get('c')).toBe(0)
+  })
+
+  it('compare equal after mutual merge', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'b' })
+    vv2.increment()
+    vv1.merge(vv2)
+    vv2.merge(vv1)
+    expect(vv1.compare(vv2)).toBe('equal')
+  })
+
+  it('clone independent modification', () => {
+    const vv = new VersionVector({ nodeId: 'a' })
+    vv.increment()
+    const copy = vv.clone()
+    copy.increment()
     expect(vv.get('a')).toBe(1)
+    expect(copy.get('a')).toBe(2)
   })
 
-  it('get unknown node returns 0', () => {
-    const vv = new VersionVector({ nodeId: 'a' })
-    expect(vv.get('unknown')).toBe(0)
+  it('merge does not affect size if no new nodes', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    vv2.increment()
+    const beforeSize = vv1.size
+    vv1.merge(vv2)
+    expect(vv1.size).toBe(beforeSize)
+  })
+
+  it('getNodeId consistent across operations', () => {
+    const vv = new VersionVector({ nodeId: 'consistent' })
+    vv.increment()
+    const vv2 = new VersionVector({ nodeId: 'other' })
+    vv2.increment()
+    vv.merge(vv2)
+    const clone = vv.clone()
+    expect(vv.getNodeId()).toBe('consistent')
+    expect(clone.getNodeId()).toBe('consistent')
+  })
+
+  it('handles special characters in node IDs', () => {
+    const vv = new VersionVector({ nodeId: 'node_1-test' })
+    vv.increment()
+    expect(vv.get('node_1-test')).toBe(1)
+  })
+
+  it('compare with one node ahead returns correct result', () => {
+    const vv1 = new VersionVector({ nodeId: 'a' })
+    vv1.increment()
+    vv1.increment()
+    const vv2 = new VersionVector({ nodeId: 'a' })
+    vv2.increment()
+    expect(vv1.compare(vv2)).toBe('after')
   })
 })
