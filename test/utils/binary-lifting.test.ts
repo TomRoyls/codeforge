@@ -194,4 +194,209 @@ describe('BinaryLifting', () => {
     const bl = new BinaryLifting(adj, 0)
     expect(bl.kthAncestor(0, 1)).toBe(-1)
   })
+
+  it('toString returns correct string representation', () => {
+    const adj = [[1, 2], [], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.toString()).toBe('BinaryLifting(n=3, log=3)')
+  })
+
+  it('toJSON returns serializable object', () => {
+    const adj = [[1], [2], []]
+    const bl = new BinaryLifting(adj, 0)
+    const json = bl.toJSON()
+    expect(json).toHaveProperty('n', 3)
+    expect(json).toHaveProperty('log')
+    expect(json).toHaveProperty('up')
+    expect(json).toHaveProperty('depth')
+    expect(Array.isArray(json.up)).toBe(true)
+    expect(Array.isArray(json.depth)).toBe(true)
+  })
+
+  it('clone creates independent copy', () => {
+    const adj = [[1], [2], []]
+    const bl = new BinaryLifting(adj, 0)
+    const clone = bl.clone()
+    expect(clone.lca(0, 2)).toBe(0)
+    expect(clone.distance(0, 2)).toBe(2)
+  })
+
+  it('equals returns true for identical structures', () => {
+    const adj = [[1], [2], []]
+    const bl1 = new BinaryLifting(adj, 0)
+    const bl2 = new BinaryLifting(adj, 0)
+    expect(bl1.equals(bl2)).toBe(true)
+  })
+
+  it('equals returns false for different n', () => {
+    const bl1 = new BinaryLifting([[1], []], 0)
+    const bl2 = new BinaryLifting([[1], [2], []], 0)
+    expect(bl1.equals(bl2)).toBe(false)
+  })
+
+  it('equals returns false for non-BinaryLifting object', () => {
+    const bl = new BinaryLifting([[1], []], 0)
+    expect(bl.equals({})).toBe(false)
+  })
+
+  it('handles tree with different root', () => {
+    const adj = [[1], [0, 2], [1]]
+    const bl = new BinaryLifting(adj, 1)
+    expect(bl.getDepth(1)).toBe(0)
+    expect(bl.getParent(1)).toBe(-1)
+    expect(bl.getDepth(0)).toBe(1)
+    expect(bl.getParent(0)).toBe(1)
+  })
+
+  it('handles asymmetric tree', () => {
+    const adj: number[][] = Array.from({ length: 6 }, () => [])
+    adj[0] = [1, 2]
+    adj[1] = [3, 4, 5]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(3, 5)).toBe(1)
+    expect(bl.lca(3, 2)).toBe(0)
+    expect(bl.distance(3, 5)).toBe(2)
+  })
+
+  it('distance from node to itself is 0', () => {
+    const adj = [[1], [2], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.distance(0, 0)).toBe(0)
+    expect(bl.distance(1, 1)).toBe(0)
+    expect(bl.distance(2, 2)).toBe(0)
+  })
+
+  it('isAncestor returns false for siblings', () => {
+    const adj = [[1, 2], [3], [4], [], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.isAncestor(1, 2)).toBe(false)
+    expect(bl.isAncestor(2, 1)).toBe(false)
+    expect(bl.isAncestor(3, 4)).toBe(false)
+  })
+
+  it('isAncestor handles same node', () => {
+    const adj = [[1], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.isAncestor(0, 0)).toBe(true)
+    expect(bl.isAncestor(1, 1)).toBe(true)
+  })
+
+  it('handles very deep tree', () => {
+    const n = 50
+    const adj: number[][] = Array.from({ length: n }, () => [])
+    for (let i = 0; i < n - 1; i++) {
+      adj[i]!.push(i + 1)
+    }
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(0, n - 1)).toBe(0)
+    expect(bl.distance(0, n - 1)).toBe(n - 1)
+    expect(bl.kthAncestor(n - 1, n - 1)).toBe(0)
+  })
+
+  it('kthAncestor handles 0 distance', () => {
+    const adj = [[1], [2], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(2, 0)).toBe(2)
+    expect(bl.kthAncestor(1, 0)).toBe(1)
+    expect(bl.kthAncestor(0, 0)).toBe(0)
+  })
+
+  it('kthAncestor returns -1 for impossible ancestor', () => {
+    const adj = [[1], [2], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(0, 10)).toBe(-1)
+    expect(bl.kthAncestor(1, 100)).toBe(-1)
+  })
+
+  it('lca works with nodes at different depths', () => {
+    const adj: number[][] = Array.from({ length: 5 }, () => [])
+    adj[0] = [1]
+    adj[1] = [2, 3]
+    adj[2] = [4]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(4, 3)).toBe(1)
+    expect(bl.lca(4, 0)).toBe(0)
+  })
+
+  it('distance calculation is symmetric', () => {
+    const adj = [[1, 2], [3], [], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.distance(0, 3)).toBe(bl.distance(3, 0))
+    expect(bl.distance(1, 2)).toBe(bl.distance(2, 1))
+  })
+
+  it('handles tree with single branch', () => {
+    const adj = [[1], [2], [3], [4], []]
+    const bl = new BinaryLifting(adj, 0)
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        expect(bl.lca(i, j)).toBe(Math.min(i, j))
+      }
+    }
+  })
+
+  it('clone preserves all properties', () => {
+    const adj = [[1, 2], [3, 4], [5, 6], [], [], [], []]
+    const bl = new BinaryLifting(adj, 0)
+    const clone = bl.clone()
+    expect(clone.equals(bl)).toBe(true)
+    expect(clone.n).toBe(bl.n)
+    expect(clone.log).toBe(bl.log)
+  })
+
+  it('getDepth handles all nodes in tree', () => {
+    const adj: number[][] = Array.from({ length: 8 }, () => [])
+    adj[0] = [1, 2]
+    adj[1] = [3, 4]
+    adj[2] = [5, 6]
+    adj[3] = [7]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.getDepth(0)).toBe(0)
+    expect(bl.getDepth(1)).toBe(1)
+    expect(bl.getDepth(2)).toBe(1)
+    expect(bl.getDepth(3)).toBe(2)
+    expect(bl.getDepth(4)).toBe(2)
+    expect(bl.getDepth(5)).toBe(2)
+    expect(bl.getDepth(6)).toBe(2)
+    expect(bl.getDepth(7)).toBe(3)
+  })
+
+  it('handles tree with many leaf nodes', () => {
+    const adj: number[][] = Array.from({ length: 11 }, () => [])
+    adj[0] = [1, 2, 3, 4, 5]
+    adj[1] = [6]
+    adj[2] = [7]
+    adj[3] = [8]
+    adj[4] = [9]
+    adj[5] = [10]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(6, 10)).toBe(0)
+    expect(bl.distance(6, 10)).toBe(4)
+    expect(bl.isAncestor(0, 10)).toBe(true)
+  })
+
+  it('kthAncestor with exact depth returns root', () => {
+    const adj = [[1], [2], [3], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(3, 3)).toBe(0)
+  })
+
+  it('lca of descendant nodes returns ancestor', () => {
+    const adj = [[1, 2], [3, 4], [5, 6], [], [], [], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(3, 4)).toBe(1)
+    expect(bl.lca(5, 6)).toBe(2)
+  })
+
+  it('distance between nodes with deep common ancestor', () => {
+    const adj: number[][] = Array.from({ length: 7 }, () => [])
+    adj[0] = [1]
+    adj[1] = [2]
+    adj[2] = [3, 4]
+    adj[3] = [5]
+    adj[4] = [6]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.distance(5, 6)).toBe(4)
+    expect(bl.lca(5, 6)).toBe(2)
+  })
 })

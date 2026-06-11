@@ -14,6 +14,12 @@ describe('BinaryIndexedTree2D', () => {
     expect(bit.colCount).toBe(0)
   })
 
+  it('constructor handles single cell', () => {
+    const bit = new BinaryIndexedTree2D(1, 1)
+    expect(bit.rowCount).toBe(1)
+    expect(bit.colCount).toBe(1)
+  })
+
   it('update adds delta to cell', () => {
     const bit = new BinaryIndexedTree2D(3, 3)
     bit.update(0, 0, 5)
@@ -36,6 +42,33 @@ describe('BinaryIndexedTree2D', () => {
     expect(bit.query(0, 0)).toBe(0)
   })
 
+  it('update handles large positive delta', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(0, 0, 1000000)
+    expect(bit.query(0, 0)).toBe(1000000)
+  })
+
+  it('update handles negative delta', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(0, 0, 10)
+    bit.update(0, 0, -3)
+    expect(bit.query(0, 0)).toBe(7)
+  })
+
+  it('update handles delta of zero', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(1, 1, 5)
+    bit.update(1, 1, 0)
+    expect(bit.query(1, 1)).toBe(5)
+  })
+
+  it('update affects prefix queries', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(0, 0, 5)
+    bit.update(1, 1, 3)
+    expect(bit.query(1, 1)).toBe(8)
+  })
+
   it('query returns sum from origin', () => {
     const bit = new BinaryIndexedTree2D(3, 3)
     bit.update(0, 0, 1)
@@ -48,6 +81,8 @@ describe('BinaryIndexedTree2D', () => {
     const bit = new BinaryIndexedTree2D(3, 3)
     bit.update(0, 0, 5)
     expect(bit.query(-1, -1)).toBe(0)
+    expect(bit.query(-1, 0)).toBe(0)
+    expect(bit.query(0, -1)).toBe(0)
   })
 
   it('query handles coordinates beyond bounds', () => {
@@ -55,6 +90,24 @@ describe('BinaryIndexedTree2D', () => {
     bit.update(0, 0, 1)
     bit.update(1, 1, 2)
     expect(bit.query(5, 5)).toBe(3)
+  })
+
+  it('query on empty tree returns 0', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    expect(bit.query(2, 2)).toBe(0)
+  })
+
+  it('query single cell returns its value', () => {
+    const bit = new BinaryIndexedTree2D(2, 2)
+    bit.update(0, 0, 5)
+    expect(bit.query(0, 0)).toBe(5)
+  })
+
+  it('query handles large grid', () => {
+    const bit = new BinaryIndexedTree2D(100, 100)
+    bit.update(50, 50, 100)
+    expect(bit.query(50, 50)).toBe(100)
+    expect(bit.query(49, 50)).toBe(0)
   })
 
   it('rangeQuery calculates submatrix sum correctly', () => {
@@ -81,6 +134,31 @@ describe('BinaryIndexedTree2D', () => {
     expect(bit.rangeQuery(0, 0, 1, 1)).toBe(6)
   })
 
+  it('rangeQuery single cell', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(1, 1, 7)
+    expect(bit.rangeQuery(1, 1, 1, 1)).toBe(7)
+  })
+
+  it('rangeQuery handles complex submatrix', () => {
+    const bit = new BinaryIndexedTree2D(5, 5)
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        bit.update(i, j, 1)
+      }
+    }
+    expect(bit.rangeQuery(1, 1, 3, 3)).toBe(9)
+  })
+
+  it('rangeQuery handles negative values', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(0, 0, 5)
+    bit.update(0, 1, -2)
+    bit.update(1, 0, 3)
+    bit.update(1, 1, -1)
+    expect(bit.rangeQuery(0, 0, 1, 1)).toBe(5)
+  })
+
   it('fromGrid creates BIT from 2D array', () => {
     const grid = [
       [1, 2, 3],
@@ -98,6 +176,22 @@ describe('BinaryIndexedTree2D', () => {
     expect(bit.colCount).toBe(0)
   })
 
+  it('fromGrid handles single element grid', () => {
+    const grid = [[5]]
+    const bit = BinaryIndexedTree2D.fromGrid(grid)
+    expect(bit.rowCount).toBe(1)
+    expect(bit.colCount).toBe(1)
+    expect(bit.query(0, 0)).toBe(5)
+  })
+
+  it('fromGrid handles large grid', () => {
+    const grid = Array.from({ length: 10 }, () => Array.from({ length: 10 }, (_, j) => 1))
+    const bit = BinaryIndexedTree2D.fromGrid(grid)
+    expect(bit.rowCount).toBe(10)
+    expect(bit.colCount).toBe(10)
+    expect(bit.query(9, 9)).toBe(100)
+  })
+
   it('complex update and query operations', () => {
     const bit = new BinaryIndexedTree2D(4, 4)
     for (let i = 0; i < 4; i++) {
@@ -107,19 +201,6 @@ describe('BinaryIndexedTree2D', () => {
     }
     expect(bit.query(2, 2)).toBe(18)
     expect(bit.rangeQuery(1, 1, 2, 2)).toBe(12)
-  })
-
-  it('query single cell via rangeQuery', () => {
-    const bit = new BinaryIndexedTree2D(3, 3)
-    bit.update(1, 1, 7)
-    expect(bit.rangeQuery(1, 1, 1, 1)).toBe(7)
-  })
-
-  it('handles negative deltas', () => {
-    const bit = new BinaryIndexedTree2D(3, 3)
-    bit.update(0, 0, 10)
-    bit.update(0, 0, -3)
-    expect(bit.query(0, 0)).toBe(7)
   })
 
   it('handles large grid', () => {
@@ -146,11 +227,6 @@ describe('BinaryIndexedTree2D', () => {
     expect(bit.query(1, 1)).toBe(8)
   })
 
-  it('query on empty tree returns 0', () => {
-    const bit = new BinaryIndexedTree2D(3, 3)
-    expect(bit.query(2, 2)).toBe(0)
-  })
-
   it('update then query returns updated value', () => {
     const bit = new BinaryIndexedTree2D(3, 3)
     bit.update(1, 1, 5)
@@ -166,20 +242,107 @@ describe('BinaryIndexedTree2D', () => {
     expect(bit.query(1, 1)).toBe(10)
   })
 
-  it('query single cell returns its value', () => {
-    const bit = new BinaryIndexedTree2D(2, 2)
-    bit.update(0, 0, 5)
-    expect(bit.query(0, 0)).toBe(5)
+  it('toString returns correct format', () => {
+    const bit = new BinaryIndexedTree2D(3, 4)
+    expect(bit.toString()).toBe('BinaryIndexedTree2D(rows=3, cols=4)')
   })
 
-  it('query on empty tree returns 0', () => {
+  it('toJSON returns tree structure', () => {
     const bit = new BinaryIndexedTree2D(2, 2)
+    bit.update(0, 0, 5)
+    const json = bit.toJSON()
+    expect(json.length).toBe(3)
+    expect(json[0]![0]).toBe(0)
+  })
+
+  it('clone creates independent copy', () => {
+    const bit = new BinaryIndexedTree2D(2, 2)
+    bit.update(0, 0, 5)
+    const clone = bit.clone()
+    clone.update(0, 0, 3)
+    expect(bit.query(0, 0)).toBe(5)
+    expect(clone.query(0, 0)).toBe(8)
+  })
+
+  it('equals returns true for identical BITs', () => {
+    const bit1 = new BinaryIndexedTree2D(2, 2)
+    const bit2 = new BinaryIndexedTree2D(2, 2)
+    bit1.update(0, 0, 5)
+    bit2.update(0, 0, 5)
+    expect(bit1.equals(bit2)).toBe(true)
+  })
+
+  it('equals returns false for different BITs', () => {
+    const bit1 = new BinaryIndexedTree2D(2, 2)
+    const bit2 = new BinaryIndexedTree2D(2, 2)
+    bit1.update(0, 0, 5)
+    bit2.update(0, 0, 3)
+    expect(bit1.equals(bit2)).toBe(false)
+  })
+
+  it('equals returns false for different dimensions', () => {
+    const bit1 = new BinaryIndexedTree2D(2, 2)
+    const bit2 = new BinaryIndexedTree2D(3, 3)
+    expect(bit1.equals(bit2)).toBe(false)
+  })
+
+  it('equals returns false for non-BIT objects', () => {
+    const bit = new BinaryIndexedTree2D(2, 2)
+    expect(bit.equals(null)).toBe(false)
+    expect(bit.equals({})).toBe(false)
+    expect(bit.equals(undefined)).toBe(false)
+  })
+
+  it('handles rectangular grid', () => {
+    const bit = new BinaryIndexedTree2D(2, 4)
+    bit.update(0, 0, 1)
+    bit.update(0, 3, 4)
+    expect(bit.query(0, 3)).toBe(5)
+  })
+
+  it('rangeQuery handles first row only', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(0, 0, 1)
+    bit.update(0, 1, 2)
+    bit.update(1, 1, 3)
+    expect(bit.rangeQuery(0, 0, 0, 1)).toBe(3)
+  })
+
+  it('rangeQuery handles first column only', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(0, 0, 1)
+    bit.update(1, 0, 2)
+    bit.update(1, 1, 3)
+    expect(bit.rangeQuery(0, 0, 1, 0)).toBe(3)
+  })
+
+  it('update on zero dimension BIT does nothing', () => {
+    const bit = new BinaryIndexedTree2D(0, 0)
+    bit.update(0, 0, 5)
     expect(bit.query(0, 0)).toBe(0)
   })
 
-  it('update and query', () => {
-    const bit = new BinaryIndexedTree2D(2, 2)
-    bit.update(0, 0, 5)
-    expect(bit.query(0, 0)).toBe(5)
+  it('query on zero dimension BIT returns 0', () => {
+    const bit = new BinaryIndexedTree2D(0, 0)
+    expect(bit.query(0, 0)).toBe(0)
+    expect(bit.query(-1, -1)).toBe(0)
+  })
+
+  it('rangeQuery on zero dimension BIT returns 0', () => {
+    const bit = new BinaryIndexedTree2D(0, 0)
+    expect(bit.rangeQuery(0, 0, 0, 0)).toBe(0)
+  })
+
+  it('clone preserves dimensions', () => {
+    const bit = new BinaryIndexedTree2D(5, 7)
+    const clone = bit.clone()
+    expect(clone.rowCount).toBe(5)
+    expect(clone.colCount).toBe(7)
+  })
+
+  it('clone empty BIT creates empty clone', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    const clone = bit.clone()
+    expect(clone.query(2, 2)).toBe(0)
   })
 })
