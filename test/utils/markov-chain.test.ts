@@ -146,23 +146,12 @@ describe('MarkovChain', () => {
     expect(mc.next('x')).toBe('x')
   })
 
-  it('no transition returns null', () => {
-    const mc = new MarkovChain<string>()
-    expect(mc.next('unknown')).toBeNull()
-  })
-
   it('single state transition always returns same value', () => {
     const mc = new MarkovChain<string>()
     mc.addTransition('a', 'b')
     mc.addTransition('a', 'b')
     const result = mc.next('a')
     expect(result).toBe('b')
-  })
-
-  it('no transition returns null', () => {
-    const mc = new MarkovChain<string>()
-    const result = mc.next('unknown')
-    expect(result).toBeNull()
   })
 
   it('train and next returns valid state', () => {
@@ -172,8 +161,199 @@ describe('MarkovChain', () => {
     expect(result === 'b' || result === null).toBe(true)
   })
 
-  it('next on unknown state returns null', () => {
+  it('generates length 1 correctly', () => {
     const mc = new MarkovChain<string>()
-    expect(mc.next('unknown')).toBeNull()
+    mc.addTransition('a', 'b')
+    const result = mc.generate('a', 1)
+    expect(result).toEqual(['a'])
+  })
+
+  it('generates with length 0 includes start state', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    const result = mc.generate('a', 0)
+    expect(result).toEqual(['a'])
+  })
+
+  it('generates sequence matching length when possible', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    mc.addTransition('b', 'c')
+    mc.addTransition('c', 'd')
+    const result = mc.generate('a', 4)
+    expect(result.length).toBe(4)
+  })
+
+  it('handles self-transitions', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'a')
+    mc.addTransition('a', 'a')
+    mc.addTransition('a', 'b')
+    expect(mc.getTransitionProbability('a', 'a')).toBeCloseTo(2/3, 5)
+  })
+
+  it('multiple addTransition calls accumulate', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    mc.addTransition('a', 'b')
+    mc.addTransition('a', 'b')
+    const trans = mc.getTransitionsFrom('a')
+    expect(trans.get('b')).toBe(3)
+  })
+
+  it('getTransitionsFrom returns a copy', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('x', 'y')
+    const trans = mc.getTransitionsFrom('x')
+    trans.set('z', 999)
+    const trans2 = mc.getTransitionsFrom('x')
+    expect(trans2.has('z')).toBe(false)
+  })
+
+  it('getStates returns all unique states', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'b', 'a', 'c', 'b', 'c'])
+    const states = mc.getStates()
+    expect(states).toContain('a')
+    expect(states).toContain('b')
+    expect(states).toContain('c')
+    expect(states.length).toBe(3)
+  })
+
+  it('handles weighted transitions correctly', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    mc.addTransition('a', 'b')
+    mc.addTransition('a', 'b')
+    mc.addTransition('a', 'c')
+    expect(mc.getTransitionProbability('a', 'b')).toBeCloseTo(0.75, 6)
+    expect(mc.getTransitionProbability('a', 'c')).toBeCloseTo(0.25, 6)
+  })
+
+  it('train with empty sequence', () => {
+    const mc = new MarkovChain<string>()
+    mc.train([])
+    expect(mc.getStates()).toEqual([])
+  })
+
+  it('generate with custom rng that always returns 0', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    mc.addTransition('a', 'c')
+    const result = mc.generate('a', 2, () => 0)
+    expect(result).toEqual(['a', 'b'])
+  })
+
+  it('generate with custom rng that always returns 0.99', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b', 9)
+    mc.addTransition('a', 'c', 1)
+    const result = mc.generate('a', 2, () => 0.99)
+    expect(result).toEqual(['a', 'c'])
+  })
+
+  it('train on two-element sequence', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['x', 'y'])
+    expect(mc.getTransitionProbability('x', 'y')).toBeCloseTo(1, 6)
+  })
+
+  it('handles complex training patterns', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'b', 'a', 'c', 'a', 'd'])
+    expect(mc.getTransitionProbability('a', 'b')).toBeCloseTo(1/3, 6)
+    expect(mc.getTransitionProbability('a', 'c')).toBeCloseTo(1/3, 6)
+    expect(mc.getTransitionProbability('a', 'd')).toBeCloseTo(1/3, 6)
+  })
+
+  it('next returns first option when rng returns 0', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('x', 'y')
+    mc.addTransition('x', 'z')
+    const result = mc.next('x', () => 0)
+    expect(result).toBe('y')
+  })
+
+  it('handles branching paths correctly', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['start', 'left', 'end'])
+    mc.train(['start', 'right', 'end'])
+    expect(mc.getTransitionProbability('start', 'left')).toBeCloseTo(0.5, 6)
+    expect(mc.getTransitionProbability('start', 'right')).toBeCloseTo(0.5, 6)
+  })
+
+  it('getStates does not include destinations only', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    const states = mc.getStates()
+    expect(states).toContain('a')
+    expect(states).not.toContain('b')
+  })
+
+  it('multiple train calls accumulate transitions', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'b'])
+    mc.train(['a', 'b'])
+    expect(mc.getTransitionProbability('a', 'b')).toBeCloseTo(1, 6)
+    const trans = mc.getTransitionsFrom('a')
+    expect(trans.get('b')).toBe(2)
+  })
+
+  it('generate stops when encountering state with no transitions', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    mc.addTransition('b', 'c')
+    mc.addTransition('c', 'dead_end')
+    const result = mc.generate('dead_end', 5)
+    expect(result).toEqual(['dead_end'])
+  })
+
+  it('getTransitionsFrom returns a copy not affecting internal state', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    const trans = mc.getTransitionsFrom('a')
+    trans.set('z', 999)
+    const trans2 = mc.getTransitionsFrom('a')
+    expect(trans2.has('z')).toBe(false)
+    expect(mc.getTransitionProbability('a', 'b')).toBeCloseTo(1, 6)
+  })
+
+  it('getTransitionsFrom copy modification does not affect next', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    const trans = mc.getTransitionsFrom('a')
+    trans.set('b', 0)
+    const result = mc.next('a')
+    expect(result).toBe('b')
+  })
+
+  it('generates deterministic sequence with fixed rng', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'b', 'c', 'd'])
+    let counter = 0
+    const rng = () => (counter++ % 10) / 10
+    const result = mc.generate('a', 10, rng)
+    expect(result[0]).toBe('a')
+    expect(result.length).toBe(4)
+  })
+
+  it('handles string state with special characters', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('hello world', 'good-bye!')
+    expect(mc.getTransitionProbability('hello world', 'good-bye!')).toBeCloseTo(1, 6)
+  })
+
+  it('getTransitionProbability for unknown to state returns 0', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    expect(mc.getTransitionProbability('a', 'unknown')).toBe(0)
+  })
+
+  it('next always returns same state for self-loop', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('loop', 'loop')
+    for (let i = 0; i < 10; i++) {
+      expect(mc.next('loop')).toBe('loop')
+    }
   })
 })

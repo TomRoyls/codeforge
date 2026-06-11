@@ -277,4 +277,39 @@ describe('MillerRabin', () => {
     expect(MillerRabin.prevPrime(0)).toBe(-1)
     expect(MillerRabin.prevPrime(1)).toBe(-1)
   })
+
+  it('identifies prime gaps correctly', () => {
+    expect(MillerRabin.prevPrime(114)).toBe(113)
+    expect(MillerRabin.nextPrime(114)).toBe(127)
+  })
+
+  it('handles consecutive composite numbers', () => {
+    expect(MillerRabin.isPrime(24)).toBe(false)
+    expect(MillerRabin.isPrime(25)).toBe(false)
+    expect(MillerRabin.isPrime(26)).toBe(false)
+    expect(MillerRabin.isPrime(27)).toBe(false)
+    expect(MillerRabin.isPrime(28)).toBe(false)
+  })
+
+  it('primeCount for prime ranges', () => {
+    expect(MillerRabin.primeCount(2)).toBe(0)
+    expect(MillerRabin.primeCount(3)).toBe(1)
+    expect(MillerRabin.primeCount(5)).toBe(2)
+    expect(MillerRabin.primeCount(7)).toBe(3)
+    expect(MillerRabin.primeCount(11)).toBe(4)
+  })
+
+  it('nextPrime handles consecutive primes', () => {
+    expect(MillerRabin.nextPrime(2)).toBe(3)
+    expect(MillerRabin.nextPrime(3)).toBe(5)
+    expect(MillerRabin.nextPrime(5)).toBe(7)
+    expect(MillerRabin.nextPrime(7)).toBe(11)
+  })
+
+  it('prevPrime handles consecutive primes', () => {
+    expect(MillerRabin.prevPrime(5)).toBe(3)
+    expect(MillerRabin.prevPrime(7)).toBe(5)
+    expect(MillerRabin.prevPrime(11)).toBe(7)
+    expect(MillerRabin.prevPrime(13)).toBe(11)
+  })
 })

@@ -191,7 +191,7 @@ describe('MatrixChainMultiply', () => {
     expect(result.length).toBe(3)
     expect(result[0]!.length).toBe(3)
     expect(result[0]![0]).toBe(27)
-    expect(result[2]![2]).toBe(122)
+    expect(result[2]![2]).toBe(117)
   })
 
   it('minCost with dimension 1', () => {
@@ -209,8 +209,8 @@ describe('MatrixChainMultiply', () => {
     const a = [[1.5, 2.5], [3.5, 4.5]]
     const b = [[5.5, 6.5], [7.5, 8.5]]
     const result = MatrixChainMultiply.matrixMultiply(a, b)
-    expect(result[0]![0]!.toFixed(2)).toBe('27.50')
-    expect(result[1]![1]!.toFixed(2)).toBe('62.00')
+    expect(result[0]![0]!.toFixed(2)).toBe('27.00')
+    expect(result[1]![1]!.toFixed(2)).toBe('61.00')
   })
 
   it('minCost returns splits for each subproblem', () => {
@@ -242,5 +242,39 @@ describe('MatrixChainMultiply', () => {
     const ab = MatrixChainMultiply.matrixMultiply(a, b)
     const ba = MatrixChainMultiply.matrixMultiply(b, a)
     expect(ab).not.toEqual(ba)
+  })
+
+  it('matrixMultiply with large values', () => {
+    const a = [[1000, 2000], [3000, 4000]]
+    const b = [[5000, 6000], [7000, 8000]]
+    const result = MatrixChainMultiply.matrixMultiply(a, b)
+    expect(result[0]![0]).toBe(19000000)
+    expect(result[1]![1]).toBe(50000000)
+  })
+
+  it('optimalOrder for 4 matrices', () => {
+    const order = MatrixChainMultiply.optimalOrder([10, 20, 30, 40, 50])
+    expect(order.length).toBeGreaterThan(0)
+    expect(order).toContain('A0')
+    expect(order).toContain('A3')
+  })
+
+  it('minCost for 3 matrices with optimal split', () => {
+    const result = MatrixChainMultiply.minCost([10, 20, 30, 40])
+    expect(result.splits[0]![2]).toBeGreaterThan(-1)
+    expect(result.cost).toBeGreaterThan(0)
+  })
+
+  it('matrixMultiply with zero rows or columns', () => {
+    const a = [[0, 0], [0, 0]]
+    const b = [[0, 0], [0, 0]]
+    expect(MatrixChainMultiply.matrixMultiply(a, b)).toEqual([[0, 0], [0, 0]])
+  })
+
+  it('matrixMultiply diagonal matrices', () => {
+    const a = [[2, 0, 0], [0, 3, 0], [0, 0, 4]]
+    const b = [[5, 0, 0], [0, 6, 0], [0, 0, 7]]
+    const result = MatrixChainMultiply.matrixMultiply(a, b)
+    expect(result).toEqual([[10, 0, 0], [0, 18, 0], [0, 0, 28]])
   })
 })

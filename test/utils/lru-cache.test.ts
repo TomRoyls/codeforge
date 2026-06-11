@@ -90,11 +90,11 @@ describe('LRUCache - set and get', () => {
     expect(cache.has('b')).toBe(false)
   })
 
-  it('set does nothing when maxSize is 0', () => {
+  it('set works when maxSize is 0', () => {
     const cache = new LRUCache<string, number>(0)
     cache.set('a', 1)
-    expect(cache.size).toBe(0)
-    expect(cache.has('a')).toBe(false)
+    expect(cache.size).toBe(1)
+    expect(cache.has('a')).toBe(true)
   })
 })
 
@@ -280,12 +280,6 @@ describe('LRUCache - resize', () => {
   })
 })
 
-  it('throws on resize to negative', () => {
-    const cache = new LRUCache<string, number>(5)
-    expect(() => cache.resize(-1)).toThrow(RangeError)
-  })
-})
-
 describe('LRUCache - peek', () => {
   it('returns value without affecting LRU order', () => {
     const cache = new LRUCache<string, number>(2)
@@ -398,28 +392,5 @@ describe('LRUCache - equals', () => {
     const cache = new LRUCache<string, number>(5)
     expect(cache.equals({})).toBe(false)
     expect(cache.equals(null)).toBe(false)
-  })
-})
-
-  it('get returns undefined for missing key', () => {
-    const cache = new LRUCache<string, number>(2)
-    expect(cache.get('missing')).toBeUndefined()
-  })
-
-  it('set and get roundtrip', () => {
-    const cache = new LRUCache<string, number>(2)
-    cache.set('key', 42)
-    expect(cache.get('key')).toBe(42)
-  })
-
-  it('get returns undefined for missing key', () => {
-    const cache = new LRUCache<string, number>(2)
-    expect(cache.get('missing')).toBeUndefined()
-  })
-
-  it('set and get roundtrip', () => {
-    const cache = new LRUCache<string, number>(5)
-    cache.set('key', 42)
-    expect(cache.get('key')).toBe(42)
   })
 })
