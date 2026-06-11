@@ -177,4 +177,232 @@ describe('RollbackDSU', () => {
     dsu.union(0, 1)
     expect(dsu.find(0)).toBe(dsu.find(1))
   })
+
+  it('creates DSU with size zero', () => {
+    const dsu = new RollbackDSU(0)
+    expect(dsu.size).toBe(0)
+    expect(dsu.components).toBe(0)
+  })
+
+  it('find returns -1 on empty DSU', () => {
+    const dsu = new RollbackDSU(0)
+    expect(dsu.find(0)).toBe(-1)
+  })
+
+  it('union returns false on empty DSU', () => {
+    const dsu = new RollbackDSU(0)
+    expect(dsu.union(0, 0)).toBe(false)
+  })
+
+  it('fromPairs with empty pairs array', () => {
+    const dsu = RollbackDSU.fromPairs(5, [])
+    expect(dsu.components).toBe(5)
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
+
+  it('fromPairs handles duplicate pairs', () => {
+    const dsu = RollbackDSU.fromPairs(5, [
+      [0, 1],
+      [0, 1],
+      [1, 2],
+    ])
+    expect(dsu.connected(0, 2)).toBe(true)
+    expect(dsu.componentSize(0)).toBe(3)
+  })
+
+  it('component size after single element', () => {
+    const dsu = new RollbackDSU(5)
+    expect(dsu.componentSize(0)).toBe(1)
+  })
+
+  it('getComponentMembers for single element', () => {
+    const dsu = new RollbackDSU(3)
+    const members = dsu.getComponentMembers(1)
+    expect(members).toEqual([1])
+  })
+
+  it('getComponentMembers returns sorted array', () => {
+    const dsu = new RollbackDSU(5)
+    dsu.union(3, 1)
+    dsu.union(4, 2)
+    const members = dsu.getComponentMembers(3)
+    expect(members).toEqual(expect.arrayContaining([1, 3]))
+  })
+
+  it('snapshot returns 0 on empty stack', () => {
+    const dsu = new RollbackDSU(5)
+    expect(dsu.snapshot()).toBe(0)
+  })
+
+  it('rollback to current snapshot does nothing', () => {
+    const dsu = new RollbackDSU(5)
+    const snap = dsu.snapshot()
+    dsu.rollback(snap)
+    expect(dsu.components).toBe(5)
+  })
+
+  it('rollback to earlier snapshot clears stack', () => {
+    const dsu = new RollbackDSU(5)
+    dsu.union(0, 1)
+    const snap1 = dsu.snapshot()
+    dsu.union(2, 3)
+    dsu.union(1, 2)
+    dsu.rollback(snap1)
+    expect(dsu.components).toBe(4)
+  })
+
+  it('connected returns true for same element', () => {
+    const dsu = new RollbackDSU(5)
+    expect(dsu.connected(0, 0)).toBe(true)
+  })
+
+  it('connected returns false for invalid elements', () => {
+    const dsu = new RollbackDSU(5)
+    expect(dsu.connected(-1, -1)).toBe(false)
+    expect(dsu.connected(10, 10)).toBe(false)
+  })
+
+  it('union decreases components count', () => {
+    const dsu = new RollbackDSU(5)
+    expect(dsu.components).toBe(5)
+    dsu.union(0, 1)
+    expect(dsu.components).toBe(4)
+    dsu.union(2, 3)
+    expect(dsu.components).toBe(3)
+  })
+
+  it('union of already connected elements does not decrease components', () => {
+    const dsu = new RollbackDSU(5)
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    expect(dsu.components).toBe(3)
+    dsu.union(0, 2)
+    expect(dsu.components).toBe(3)
+  })
+
+  it('reset clears snapshot stack', () => {
+    const dsu = new RollbackDSU(5)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    expect(dsu.snapshot()).toBe(2)
+    dsu.reset()
+    expect(dsu.snapshot()).toBe(0)
+  })
+
+  it('fromPairs creates disconnected components', () => {
+    const dsu = RollbackDSU.fromPairs(6, [
+      [0, 1],
+      [2, 3],
+    ])
+    expect(dsu.connected(0, 1)).toBe(true)
+    expect(dsu.connected(2, 3)).toBe(true)
+    expect(dsu.connected(0, 2)).toBe(false)
+    expect(dsu.components).toBe(4)
+  })
+
+  it('find after rollback returns original root', () => {
+    const dsu = new RollbackDSU(5)
+    const snap = dsu.snapshot()
+    dsu.union(0, 1)
+    const rootAfterUnion = dsu.find(0)
+    expect(rootAfterUnion).toBe(dsu.find(1))
+    dsu.rollback(snap)
+    expect(dsu.find(0)).toBe(0)
+  })
+
+  it('componentSize after rollback returns original size', () => {
+    const dsu = new RollbackDSU(5)
+    const snap = dsu.snapshot()
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    expect(dsu.componentSize(0)).toBe(3)
+    dsu.rollback(snap)
+    expect(dsu.componentSize(0)).toBe(1)
+  })
+
+  it('getComponentMembers after rollback returns original members', () => {
+    const dsu = new RollbackDSU(5)
+    const snap = dsu.snapshot()
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    expect(dsu.getComponentMembers(0).length).toBe(3)
+    dsu.rollback(snap)
+    const members0 = dsu.getComponentMembers(0)
+    const members1 = dsu.getComponentMembers(1)
+    const members2 = dsu.getComponentMembers(2)
+    expect(members0).toContain(0)
+    expect(members1).toContain(1)
+    expect(members2).toContain(2)
+  })
+
+  it('handles chain of unions', () => {
+    const dsu = new RollbackDSU(5)
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    dsu.union(2, 3)
+    dsu.union(3, 4)
+    expect(dsu.connected(0, 4)).toBe(true)
+    expect(dsu.componentSize(0)).toBe(5)
+  })
+
+  it('rollback to initial state after chain of unions', () => {
+    const dsu = new RollbackDSU(5)
+    const snap = dsu.snapshot()
+    dsu.union(0, 1)
+    dsu.union(1, 2)
+    dsu.union(2, 3)
+    dsu.union(3, 4)
+    dsu.rollback(snap)
+    expect(dsu.components).toBe(5)
+  })
+
+  it('union order affects root assignment', () => {
+    const dsu1 = new RollbackDSU(3)
+    dsu1.union(0, 1)
+    expect(dsu1.find(1)).toBe(dsu1.find(0))
+
+    const dsu2 = new RollbackDSU(3)
+    dsu2.union(1, 0)
+    expect(dsu2.find(0)).toBe(dsu2.find(1))
+  })
+
+  it('reset preserves DSU size', () => {
+    const dsu = new RollbackDSU(10)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    expect(dsu.size).toBe(10)
+    dsu.reset()
+    expect(dsu.size).toBe(10)
+  })
+
+  it('multiple snapshots in sequence', () => {
+    const dsu = new RollbackDSU(5)
+    const snap0 = dsu.snapshot()
+    dsu.union(0, 1)
+    const snap1 = dsu.snapshot()
+    dsu.union(2, 3)
+    const snap2 = dsu.snapshot()
+    dsu.union(0, 2)
+
+    dsu.rollback(snap2)
+    expect(dsu.components).toBe(3)
+
+    dsu.rollback(snap1)
+    expect(dsu.components).toBe(4)
+
+    dsu.rollback(snap0)
+    expect(dsu.components).toBe(5)
+  })
+
+  it('snapshot returns increasing numbers', () => {
+    const dsu = new RollbackDSU(5)
+    const s0 = dsu.snapshot()
+    dsu.union(0, 1)
+    const s1 = dsu.snapshot()
+    dsu.union(2, 3)
+    const s2 = dsu.snapshot()
+    expect(s0).toBe(0)
+    expect(s1).toBe(1)
+    expect(s2).toBe(2)
+  })
 })

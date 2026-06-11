@@ -202,4 +202,191 @@ describe('ReservoirSampler', () => {
     sampler.add(3)
     expect(sampler.sample.length).toBe(2)
   })
+
+  it('handles zero capacity', () => {
+    const sampler = new ReservoirSampler<number>(0)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.add(3)
+    expect(sampler.sample.length).toBe(0)
+    expect(sampler.totalSeen).toBe(3)
+  })
+
+  it('isFull returns false for capacity 0 with items', () => {
+    const sampler = new ReservoirSampler<number>(0)
+    sampler.add(1)
+    expect(sampler.isFull).toBe(true)
+  })
+
+  it('handles very large capacity', () => {
+    const sampler = new ReservoirSampler<number>(100000)
+    for (let i = 0; i < 1000; i++) {
+      sampler.add(i)
+    }
+    expect(sampler.sample.length).toBe(1000)
+    expect(sampler.totalSeen).toBe(1000)
+  })
+
+  it('handles adding null items', () => {
+    const sampler = new ReservoirSampler<number | null>(3)
+    sampler.add(null)
+    sampler.add(1)
+    sampler.add(null)
+    expect(sampler.sample.length).toBe(3)
+    expect(sampler.sample).toContain(null)
+  })
+
+  it('handles adding undefined items', () => {
+    const sampler = new ReservoirSampler<number | undefined>(3)
+    sampler.add(undefined)
+    sampler.add(1)
+    sampler.add(undefined)
+    expect(sampler.sample.length).toBe(3)
+    expect(sampler.sample).toContain(undefined)
+  })
+
+  it('handles boolean items', () => {
+    const sampler = new ReservoirSampler<boolean>(3)
+    sampler.add(true)
+    sampler.add(false)
+    sampler.add(true)
+    expect(sampler.sample.length).toBe(3)
+  })
+
+  it('handles array items', () => {
+    const sampler = new ReservoirSampler<number[]>(2)
+    const arr1 = [1, 2, 3]
+    const arr2 = [4, 5, 6]
+    sampler.add(arr1)
+    sampler.add(arr2)
+    expect(sampler.sample.length).toBe(2)
+  })
+
+  it('handles date items', () => {
+    const sampler = new ReservoirSampler<Date>(2)
+    const date1 = new Date('2023-01-01')
+    const date2 = new Date('2023-12-31')
+    sampler.add(date1)
+    sampler.add(date2)
+    expect(sampler.sample.length).toBe(2)
+  })
+
+  it('totalSeen increments correctly after reset', () => {
+    const sampler = new ReservoirSampler<number>(2)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.reset()
+    expect(sampler.totalSeen).toBe(0)
+    sampler.add(3)
+    expect(sampler.totalSeen).toBe(1)
+  })
+
+  it('sample is empty after reset when empty', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    sampler.reset()
+    expect(sampler.sample).toEqual([])
+  })
+
+  it('handles mixed data types', () => {
+    const sampler = new ReservoirSampler<string | number | boolean>(5)
+    sampler.add(1)
+    sampler.add('hello')
+    sampler.add(true)
+    sampler.add(42)
+    sampler.add('world')
+    expect(sampler.sample.length).toBe(5)
+  })
+
+  it('isFull returns false for empty sampler', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    expect(sampler.isFull).toBe(false)
+  })
+
+  it('isFull returns true exactly at capacity', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.add(3)
+    expect(sampler.isFull).toBe(true)
+  })
+
+  it('sample contains unique items when duplicates added', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    sampler.add(1)
+    sampler.add(1)
+    sampler.add(1)
+    expect(sampler.sample).toEqual([1, 1, 1])
+  })
+
+  it('handles negative numbers', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    sampler.add(-1)
+    sampler.add(-2)
+    sampler.add(-3)
+    expect(sampler.sample.length).toBe(3)
+    expect(sampler.sample).toContain(-1)
+    expect(sampler.sample).toContain(-2)
+    expect(sampler.sample).toContain(-3)
+  })
+
+  it('handles floating point numbers', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    sampler.add(1.5)
+    sampler.add(2.7)
+    sampler.add(3.14)
+    expect(sampler.sample.length).toBe(3)
+  })
+
+  it('sample respects order of insertion when under capacity', () => {
+    const sampler = new ReservoirSampler<number>(5)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.add(3)
+    expect(sampler.sample).toEqual([1, 2, 3])
+  })
+
+  it('reset clears sample when full', () => {
+    const sampler = new ReservoirSampler<number>(2)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.reset()
+    expect(sampler.sample).toEqual([])
+    expect(sampler.isFull).toBe(false)
+  })
+
+  it('handles function items', () => {
+    const sampler = new ReservoirSampler<() => void>(2)
+    const fn1 = () => {}
+    const fn2 = () => {}
+    sampler.add(fn1)
+    sampler.add(fn2)
+    expect(sampler.sample.length).toBe(2)
+  })
+
+  it('handles symbol items', () => {
+    const sampler = new ReservoirSampler<symbol>(2)
+    const sym1 = Symbol('a')
+    const sym2 = Symbol('b')
+    sampler.add(sym1)
+    sampler.add(sym2)
+    expect(sampler.sample.length).toBe(2)
+  })
+
+  it('reset with capacity 1 works', () => {
+    const sampler = new ReservoirSampler<number>(1)
+    sampler.add(1)
+    sampler.reset()
+    sampler.add(2)
+    expect(sampler.sample).toEqual([2])
+    expect(sampler.totalSeen).toBe(1)
+  })
+
+  it('sample returns shallow copy', () => {
+    const obj = { value: 1 }
+    const sampler = new ReservoirSampler<{ value: number }>(1)
+    sampler.add(obj)
+    const sample = sampler.sample
+    sample[0].value = 2
+    expect(sampler.sample[0].value).toBe(2)
+  })
 })

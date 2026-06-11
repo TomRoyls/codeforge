@@ -2,197 +2,490 @@ import { describe, expect, it } from 'vitest'
 import { SCCTarjan } from '../../src/utils/scc-tarjan.js'
 
 describe('SCCTarjan', () => {
-  it('finds SCCs in simple cycle', () => {
-    const scc = new SCCTarjan(3)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 2)
-    scc.addEdge(2, 0)
-    const comps = scc.solve()
-    expect(comps.length).toBe(1)
-    expect(comps[0]!.sort()).toEqual([0, 1, 2])
+  describe('basic SCC detection', () => {
+    it('finds SCCs in simple cycle', () => {
+      const scc = new SCCTarjan(3)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 0)
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+      expect(comps[0]!.sort()).toEqual([0, 1, 2])
+    })
+
+    it('finds SCCs in DAG', () => {
+      const scc = new SCCTarjan(3)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
+
+    it('finds two SCCs', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
+
+    it('finds SCC in complex graph', () => {
+      const scc = new SCCTarjan(5)
+      scc.addEdge(0, 2)
+      scc.addEdge(2, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(0, 3)
+      scc.addEdge(3, 4)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
+
+    it('handles complete graph', () => {
+      const scc = new SCCTarjan(3)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 1)
+      scc.addEdge(0, 2)
+      scc.addEdge(2, 0)
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+    })
+
+    it('finds SCC in figure-eight graph', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 5)
+      scc.addEdge(5, 3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
   })
 
-  it('finds SCCs in DAG', () => {
-    const scc = new SCCTarjan(3)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 2)
-    const comps = scc.solve()
-    expect(comps.length).toBe(3)
+  describe('single node graphs', () => {
+    it('handles single node', () => {
+      const scc = new SCCTarjan(1)
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+      expect(comps[0]).toEqual([0])
+    })
+
+    it('self loop forms single component', () => {
+      const scc = new SCCTarjan(1)
+      scc.addEdge(0, 0)
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+    })
+
+    it('single node graph has one SCC', () => {
+      const scc = new SCCTarjan(1)
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+      expect(comps[0]![0]).toBe(0)
+    })
   })
 
-  it('handles single node', () => {
-    const scc = new SCCTarjan(1)
-    const comps = scc.solve()
-    expect(comps.length).toBe(1)
-    expect(comps[0]).toEqual([0])
+  describe('edge cases', () => {
+    it('handles disconnected graph', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 1)
+      scc.addEdge(2, 3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
+
+    it('handles self loop', () => {
+      const scc = new SCCTarjan(2)
+      scc.addEdge(0, 0)
+      scc.addEdge(0, 1)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
+
+    it('handles empty graph', () => {
+      const scc = new SCCTarjan(3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
+
+    it('handles linear chain', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
+
+    it('handles two separate cycles', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
+
+    it('handles cycle with tail', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 1)
+      scc.addEdge(2, 3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
+
+    it('two nodes no edges gives two components', () => {
+      const scc = new SCCTarjan(2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
+
+    it('two separate nodes have two SCCs', () => {
+      const scc = new SCCTarjan(2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
+
+    it('no edges each node is own SCC', () => {
+      const scc = new SCCTarjan(3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
+
+    it('two disconnected nodes are two SCCs', () => {
+      const scc = new SCCTarjan(2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
   })
 
-  it('handles disconnected graph', () => {
-    const scc = new SCCTarjan(4)
-    scc.addEdge(0, 1)
-    scc.addEdge(2, 3)
-    const comps = scc.solve()
-    expect(comps.length).toBe(4)
-  })
+  describe('larger graphs', () => {
+    it('handles large DAG', () => {
+      const scc = new SCCTarjan(10)
+      for (let i = 0; i < 9; i++) scc.addEdge(i, i + 1)
+      const comps = scc.solve()
+      expect(comps.length).toBe(10)
+    })
 
-  it('finds two SCCs', () => {
-    const scc = new SCCTarjan(4)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 0)
-    scc.addEdge(2, 3)
-    scc.addEdge(3, 2)
-    const comps = scc.solve()
-    expect(comps.length).toBe(2)
-  })
+    it('handles large graph with single SCC', () => {
+      const scc = new SCCTarjan(10)
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+          scc.addEdge(i, j)
+        }
+      }
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+    })
 
-  it('handles self loop', () => {
-    const scc = new SCCTarjan(1)
-    scc.addEdge(0, 0)
-    const comps = scc.solve()
-    expect(comps.length).toBe(1)
-  })
+    it('handles binary tree structure', () => {
+      const scc = new SCCTarjan(7)
+      scc.addEdge(0, 1)
+      scc.addEdge(0, 2)
+      scc.addEdge(1, 3)
+      scc.addEdge(1, 4)
+      scc.addEdge(2, 5)
+      scc.addEdge(2, 6)
+      const comps = scc.solve()
+      expect(comps.length).toBe(7)
+    })
 
-  it('handles empty graph', () => {
-    const scc = new SCCTarjan(3)
-    const comps = scc.solve()
-    expect(comps.length).toBe(3)
-  })
+    it('handles star graph', () => {
+      const scc = new SCCTarjan(5)
+      for (let i = 1; i < 5; i++) {
+        scc.addEdge(0, i)
+      }
+      const comps = scc.solve()
+      expect(comps.length).toBe(5)
+    })
 
-  it('finds SCC in complex graph', () => {
-    const scc = new SCCTarjan(5)
-    scc.addEdge(0, 2)
-    scc.addEdge(2, 1)
-    scc.addEdge(1, 0)
-    scc.addEdge(0, 3)
-    scc.addEdge(3, 4)
-    const comps = scc.solve()
-    expect(comps.length).toBe(3)
-  })
+    it('handles graph with multiple cycles', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 2)
+      scc.addEdge(5, 5)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('handles linear chain', () => {
-    const scc = new SCCTarjan(4)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 2)
-    scc.addEdge(2, 3)
-    const comps = scc.solve()
-    expect(comps.length).toBe(4)
-  })
+    it('handles graph with bidirectional edges', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 2)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 1)
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+    })
 
-  it('handles complete graph', () => {
-    const scc = new SCCTarjan(3)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 0)
-    scc.addEdge(1, 2)
-    scc.addEdge(2, 1)
-    scc.addEdge(0, 2)
-    scc.addEdge(2, 0)
-    const comps = scc.solve()
-    expect(comps.length).toBe(1)
-  })
+    it('handles graph with isolated components', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
 
-  it('finds SCC in figure-eight graph', () => {
-    const scc = new SCCTarjan(6)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 2)
-    scc.addEdge(2, 0)
-    scc.addEdge(2, 3)
-    scc.addEdge(3, 4)
-    scc.addEdge(4, 5)
-    scc.addEdge(5, 3)
-    const comps = scc.solve()
-    expect(comps.length).toBe(2)
-  })
+    it('handles complex nested cycles', () => {
+      const scc = new SCCTarjan(8)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 2)
+      scc.addEdge(5, 6)
+      scc.addEdge(6, 7)
+      scc.addEdge(7, 5)
+      scc.addEdge(1, 2)
+      scc.addEdge(4, 5)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('handles large DAG', () => {
-    const scc = new SCCTarjan(10)
-    for (let i = 0; i < 9; i++) scc.addEdge(i, i + 1)
-    const comps = scc.solve()
-    expect(comps.length).toBe(10)
-  })
+    it('handles graph with self-loop on multiple nodes', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 0)
+      scc.addEdge(1, 1)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('handles single node', () => {
-    const scc = new SCCTarjan(1)
-    const comps = scc.solve()
-    expect(comps.length).toBe(1)
-  })
+    it('handles triangle with outgoing edges', () => {
+      const scc = new SCCTarjan(5)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 0)
+      scc.addEdge(0, 3)
+      scc.addEdge(1, 4)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('handles two separate cycles', () => {
-    const scc = new SCCTarjan(4)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 0)
-    scc.addEdge(2, 3)
-    scc.addEdge(3, 2)
-    const comps = scc.solve()
-    expect(comps.length).toBe(2)
-  })
+    it('handles graph with single edge between cycles', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 2)
+      scc.addEdge(1, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('handles cycle with tail', () => {
-    const scc = new SCCTarjan(4)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 2)
-    scc.addEdge(2, 1)
-    scc.addEdge(2, 3)
-    const comps = scc.solve()
-    expect(comps.length).toBe(3)
-  })
+    it('handles graph with multiple incoming edges to cycle', () => {
+      const scc = new SCCTarjan(5)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 0)
+      scc.addEdge(3, 1)
+      scc.addEdge(4, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('handles self loop', () => {
-    const scc = new SCCTarjan(2)
-    scc.addEdge(0, 0)
-    scc.addEdge(0, 1)
-    const comps = scc.solve()
-    expect(comps.length).toBe(2)
-  })
+    it('handles graph with cycle and multiple tails', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 0)
+      scc.addEdge(0, 3)
+      scc.addEdge(0, 4)
+      scc.addEdge(0, 5)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
 
-  it('self-loop forms SCC', () => {
-    const scc = new SCCTarjan(2)
-    scc.addEdge(0, 0)
-    scc.addEdge(0, 1)
-    const comps = scc.solve()
-    expect(comps.length).toBeGreaterThanOrEqual(1)
-  })
+    it('handles graph with three interconnected cycles', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 2)
+      scc.addEdge(4, 5)
+      scc.addEdge(5, 4)
+      scc.addEdge(1, 2)
+      scc.addEdge(3, 4)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('two nodes no edges gives two components', () => {
-    const scc = new SCCTarjan(2)
-    const comps = scc.solve()
-    expect(comps.length).toBe(2)
-  })
+    it('handles graph with diamond structure', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 1)
+      scc.addEdge(0, 2)
+      scc.addEdge(1, 3)
+      scc.addEdge(2, 3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
 
-  it('single node has one component', () => {
-    const scc = new SCCTarjan(1)
-    const comps = scc.solve()
-    expect(comps.length).toBe(1)
-    expect(comps[0]).toEqual([0])
-  })
+    it('handles graph with cycle returning to middle', () => {
+      const scc = new SCCTarjan(5)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('two separate nodes have two SCCs', () => {
-    const scc = new SCCTarjan(2)
-    const comps = scc.solve()
-    expect(comps.length).toBe(2)
-  })
+    it('handles graph with parallel paths to cycle', () => {
+      const scc = new SCCTarjan(5)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 2)
+      scc.addEdge(0, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
 
-  it('self loop forms single component', () => {
-    const scc = new SCCTarjan(1)
-    scc.addEdge(0, 0)
-    const comps = scc.solve()
-    expect(comps.length).toBe(1)
-  })
+    it('handles graph with isolated cycle', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 0)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 5)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
 
-  it('no edges each node is own SCC', () => {
-    const scc = new SCCTarjan(3)
-    const comps = scc.solve()
-    expect(comps.length).toBe(3)
-  })
+    it('handles graph with self-loop plus cycle', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 0)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 1)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
 
-  it('single node graph has one SCC', () => {
-    const scc = new SCCTarjan(1)
-    const comps = scc.solve()
-    expect(comps.length).toBe(1)
-  })
+    it('handles graph with multiple self-loops on same node', () => {
+      const scc = new SCCTarjan(2)
+      scc.addEdge(0, 0)
+      scc.addEdge(0, 0)
+      scc.addEdge(0, 1)
+      const comps = scc.solve()
+      expect(comps.length).toBe(2)
+    })
 
-  it('two disconnected nodes are two SCCs', () => {
-    const scc = new SCCTarjan(2)
-    const comps = scc.solve()
-    expect(comps.length).toBe(2)
+    it('handles graph with cycle at end of chain', () => {
+      const scc = new SCCTarjan(5)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
+
+    it('handles graph with cycle at start of chain', () => {
+      const scc = new SCCTarjan(5)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
+
+    it('handles graph with multiple disconnected self-loops', () => {
+      const scc = new SCCTarjan(5)
+      scc.addEdge(0, 0)
+      scc.addEdge(2, 2)
+      scc.addEdge(4, 4)
+      const comps = scc.solve()
+      expect(comps.length).toBe(5)
+    })
+
+    it('handles graph with four-node cycle', () => {
+      const scc = new SCCTarjan(4)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 0)
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+    })
+
+    it('handles graph with cycle and isolated nodes', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      const comps = scc.solve()
+      expect(comps.length).toBe(5)
+    })
+
+    it('handles graph with two cycles connected by single edge', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 0)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 2)
+      scc.addEdge(0, 2)
+      const comps = scc.solve()
+      expect(comps.length).toBe(3)
+    })
+
+    it('handles graph with three-node triangle', () => {
+      const scc = new SCCTarjan(3)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 0)
+      scc.addEdge(0, 2)
+      scc.addEdge(2, 1)
+      scc.addEdge(1, 0)
+      const comps = scc.solve()
+      expect(comps.length).toBe(1)
+    })
+
+    it('handles graph with chain leading to cycle', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 3)
+      scc.addEdge(3, 4)
+      scc.addEdge(4, 5)
+      scc.addEdge(5, 3)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
+
+    it('handles graph with multiple chains from cycle', () => {
+      const scc = new SCCTarjan(6)
+      scc.addEdge(0, 1)
+      scc.addEdge(1, 2)
+      scc.addEdge(2, 0)
+      scc.addEdge(0, 3)
+      scc.addEdge(0, 4)
+      scc.addEdge(0, 5)
+      const comps = scc.solve()
+      expect(comps.length).toBe(4)
+    })
   })
 })

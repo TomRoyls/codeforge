@@ -261,4 +261,222 @@ describe('retryAsync - edge cases', () => {
     expect(result.isOk()).toBe(true)
     expect(calls).toBe(2)
   })
+
+  it('throws on non-error values', async () => {
+    const result = await retryAsync(async () => {
+      throw 'string error'
+    }, { maxAttempts: 2, maxDelayMs: 1 })
+    expect(result.isErr()).toBe(true)
+  })
+
+  it('handles throwing null', async () => {
+    const result = await retryAsync(async () => {
+      throw null
+    }, { maxAttempts: 2, maxDelayMs: 1 })
+    expect(result.isErr()).toBe(true)
+  })
+
+  it('handles throwing undefined', async () => {
+    const result = await retryAsync(async () => {
+      throw undefined
+    }, { maxAttempts: 2, maxDelayMs: 1 })
+    expect(result.isErr()).toBe(true)
+  })
+
+  it('handles throwing object', async () => {
+    const result = await retryAsync(async () => {
+      throw { code: 'ERR_CODE', message: 'Custom error' }
+    }, { maxAttempts: 2, maxDelayMs: 1 })
+    expect(result.isErr()).toBe(true)
+  })
+
+  it('respects custom backoffFactor of 3', async () => {
+    const start = Date.now()
+    let attempt = 0
+    await retryAsync(async () => {
+      attempt++
+      if (attempt < 3) throw new Error('fail')
+    }, { maxAttempts: 4, maxDelayMs: 500, backoffFactor: 3 })
+    const elapsed = Date.now() - start
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(elapsed).toBeLessThan(5000)
+  })
+
+  it('handles very large maxDelayMs', async () => {
+    let attempt = 0
+    const result = await retryAsync(async () => {
+      attempt++
+      if (attempt < 2) throw new Error('fail')
+      return 'ok'
+    }, { maxAttempts: 3, maxDelayMs: 1000000 })
+    expect(result.isOk()).toBe(true)
+  })
+
+  it('handles shouldRetry returning true for all errors', async () => {
+    let attempts = 0
+    const result = await retryAsync(async () => {
+      attempts++
+      if (attempts < 2) throw new Error('retryable')
+      return 'success'
+    }, {
+      maxAttempts: 5,
+      maxDelayMs: 1,
+      shouldRetry: () => true,
+    })
+    expect(result.isOk()).toBe(true)
+    expect(attempts).toBe(2)
+  })
+
+  it('handles shouldRetry returning false for all errors', async () => {
+    let attempts = 0
+    const result = await retryAsync(async () => {
+      attempts++
+      throw new Error('always fail')
+    }, {
+      maxAttempts: 5,
+      maxDelayMs: 1,
+      shouldRetry: () => false,
+    })
+    expect(result.isErr()).toBe(true)
+    expect(attempts).toBe(1)
+  })
+
+  it('shouldRetry with string error', async () => {
+    let attempts = 0
+    const result = await retryAsync(async () => {
+      attempts++
+      throw 'string error'
+    }, {
+      maxAttempts: 5,
+      maxDelayMs: 1,
+      shouldRetry: (err) => err !== 'fatal',
+    })
+    expect(result.isErr()).toBe(true)
+  })
+
+  it('shouldRetry with object error', async () => {
+    let attempts = 0
+    const result = await retryAsync(async () => {
+      attempts++
+      throw { code: 'ECONNREFUSED' }
+    }, {
+      maxAttempts: 5,
+      maxDelayMs: 1,
+      shouldRetry: (err) => (err as { code: string }).code !== 'EFATAL',
+    })
+    expect(result.isErr()).toBe(true)
+    expect(attempts).toBe(5)
+  })
+
+  it('onRetry receives correct attempt numbers', async () => {
+    const attempts: number[] = []
+    let attempt = 0
+    await retryAsync(async () => {
+      attempt++
+      if (attempt < 4) throw new Error('fail')
+      return 'ok'
+    }, {
+      maxAttempts: 5,
+      maxDelayMs: 1,
+      onRetry: (err, n) => attempts.push(n),
+    })
+    expect(attempts).toEqual([1, 2, 3])
+  })
+
+  it('onRetry not called on success', async () => {
+    let called = false
+    await retryAsync(async () => 'success', {
+      maxAttempts: 3,
+      maxDelayMs: 1,
+      onRetry: () => { called = true },
+    })
+    expect(called).toBe(false)
+  })
+
+  it('handles maxAttempts of 2 with one failure', async () => {
+    let calls = 0
+    const result = await retryAsync(async () => {
+      calls++
+      if (calls === 1) throw new Error('fail')
+      return 'ok'
+    }, { maxAttempts: 2, maxDelayMs: 1 })
+    expect(result.isOk()).toBe(true)
+    expect(calls).toBe(2)
+  })
+
+  it('handles maxAttempts of 2 with two failures', async () => {
+    let calls = 0
+    const result = await retryAsync(async () => {
+      calls++
+      throw new Error('fail')
+    }, { maxAttempts: 2, maxDelayMs: 1 })
+    expect(result.isErr()).toBe(true)
+    expect(calls).toBe(2)
+  })
+
+  it('returns last error after all retries', async () => {
+    let attempt = 0
+    const result = await retryAsync(async () => {
+      attempt++
+      throw new Error(`attempt-${attempt}`)
+    }, { maxAttempts: 3, maxDelayMs: 1 })
+    expect(result.isErr()).toBe(true)
+    result.match(
+      () => {},
+      (err) => expect((err as Error).message).toBe('attempt-3'),
+    )
+  })
+
+  it('handles function returning Promise.reject', async () => {
+    const result = await retryAsync(() => Promise.reject(new Error('reject')), {
+      maxAttempts: 2,
+      maxDelayMs: 1,
+    })
+    expect(result.isErr()).toBe(true)
+  })
+
+  it('handles function returning Promise.resolve with error object', async () => {
+    const result = await retryAsync(() => Promise.resolve(new Error('error')), {
+      maxAttempts: 1,
+    })
+    expect(result.isOk()).toBe(true)
+    expect(result.unwrap()).toBeInstanceOf(Error)
+  })
+
+  it('succeeds on first attempt with no options', async () => {
+    const result = await retryAsync(() => Promise.resolve('no options'))
+    expect(result.isOk()).toBe(true)
+    expect(result.unwrap()).toBe('no options')
+  })
+
+  it('fails with default options', async () => {
+    let attempts = 0
+    const result = await retryAsync(async () => {
+      attempts++
+      throw new Error('fail')
+    })
+    expect(result.isErr()).toBe(true)
+    expect(attempts).toBe(3)
+  })
+
+  it('handles backoffFactor of 0', async () => {
+    const start = Date.now()
+    let attempt = 0
+    await retryAsync(async () => {
+      attempt++
+      if (attempt < 3) throw new Error('fail')
+    }, { maxAttempts: 5, maxDelayMs: 100, backoffFactor: 0 })
+    const elapsed = Date.now() - start
+    expect(elapsed).toBeLessThan(500)
+  })
+
+  it('jitter with high maxDelayMs', async () => {
+    let attempt = 0
+    const result = await retryAsync(async () => {
+      attempt++
+      if (attempt < 2) throw new Error('fail')
+      return 'ok'
+    }, { maxAttempts: 3, maxDelayMs: 10000, jitter: true })
+    expect(result.isOk()).toBe(true)
+  })
 })

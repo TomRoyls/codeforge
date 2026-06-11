@@ -8,7 +8,7 @@ describe('SegmentTree2D', () => {
     expect(st.query(1, 1, 1, 1)).toBe(5)
   })
 
-  it('queries full grid', () => {
+  it('queries full grid sum', () => {
     const st = new SegmentTree2D(2, 2)
     st.update(0, 0, 1)
     st.update(0, 1, 2)
@@ -25,14 +25,14 @@ describe('SegmentTree2D', () => {
     expect(st.query(0, 0, 1, 1)).toBe(6)
   })
 
-  it('handles single row', () => {
+  it('handles single row grid', () => {
     const st = new SegmentTree2D(1, 5)
     st.update(0, 2, 7)
     expect(st.query(0, 0, 0, 4)).toBe(7)
     expect(st.query(0, 2, 0, 2)).toBe(7)
   })
 
-  it('handles single column', () => {
+  it('handles single column grid', () => {
     const st = new SegmentTree2D(5, 1)
     st.update(3, 0, 9)
     expect(st.query(0, 0, 4, 0)).toBe(9)
@@ -55,14 +55,6 @@ describe('SegmentTree2D', () => {
     const st = new SegmentTree2D(1, 1)
     st.update(0, 0, 42)
     expect(st.query(0, 0, 0, 0)).toBe(42)
-  })
-
-  it('multiple updates accumulate', () => {
-    const st = new SegmentTree2D(2, 2)
-    st.update(0, 0, 1)
-    st.update(0, 0, 2)
-    st.update(0, 0, 3)
-    expect(st.query(0, 0, 0, 0)).toBe(3)
   })
 
   it('query empty grid returns 0', () => {
@@ -107,59 +99,267 @@ describe('SegmentTree2D', () => {
     expect(st.query(0, 0, 0, 2)).toBe(6)
   })
 
-  it('query single cell', () => {
+  it('query subrange excludes outside cells', () => {
     const st = new SegmentTree2D(3, 3)
-    st.update(1, 1, 42)
-    expect(st.query(1, 1, 1, 1)).toBe(42)
+    st.update(0, 0, 1)
+    st.update(1, 1, 2)
+    st.update(2, 2, 3)
+    expect(st.query(0, 0, 1, 1)).toBe(3)
+    expect(st.query(1, 1, 2, 2)).toBe(5)
   })
 
-  it('query full range returns sum', () => {
+  it('multiple updates to same cell overwrite', () => {
     const st = new SegmentTree2D(2, 2)
-    st.update(0, 0, 10)
-    st.update(1, 1, 20)
-    expect(st.query(0, 0, 1, 1)).toBe(30)
+    st.update(0, 0, 1)
+    st.update(0, 0, 2)
+    st.update(0, 0, 3)
+    expect(st.query(0, 0, 0, 0)).toBe(3)
   })
 
-  it('single cell update and query', () => {
-    const st = new SegmentTree2D(1, 1)
-    st.update(0, 0, 42)
-    expect(st.query(0, 0, 0, 0)).toBe(42)
-  })
-
-  it('query default is 0', () => {
+  it('handles negative values', () => {
     const st = new SegmentTree2D(2, 2)
-    expect(st.query(0, 0, 1, 1)).toBe(0)
-  })
-
-  it('update and query single cell', () => {
-    const st = new SegmentTree2D(3, 3)
+    st.update(0, 0, -5)
     st.update(1, 1, 10)
-    expect(st.query(1, 1, 1, 1)).toBe(10)
+    expect(st.query(0, 0, 1, 1)).toBe(5)
   })
 
-  it('query full range returns sum', () => {
+  it('handles max combine function', () => {
+    const st = new SegmentTree2D(3, 3, Math.max)
+    st.update(0, 0, 1)
+    st.update(1, 1, 5)
+    st.update(2, 2, 3)
+    expect(st.query(0, 0, 2, 2)).toBe(5)
+  })
+
+  it('handles min combine function', () => {
+    const st = new SegmentTree2D(3, 3, Math.min)
+    st.update(0, 0, 10)
+    st.update(1, 1, 2)
+    st.update(2, 2, 7)
+    expect(st.query(0, 0, 2, 2)).toBe(0)
+  })
+
+  it('handles 5x5 grid', () => {
+    const st = new SegmentTree2D(5, 5)
+    for (let i = 0; i < 5; i++)
+      for (let j = 0; j < 5; j++) st.update(i, j, i * 5 + j + 1)
+    expect(st.query(0, 0, 4, 4)).toBe(325)
+    expect(st.query(0, 0, 2, 2)).toBe(1 + 2 + 3 + 6 + 7 + 8 + 11 + 12 + 13)
+  })
+
+  it('query single element from populated grid', () => {
+    const st = new SegmentTree2D(3, 3)
+    for (let i = 0; i < 3; i++)
+      for (let j = 0; j < 3; j++) st.update(i, j, i * 3 + j)
+    expect(st.query(1, 1, 1, 1)).toBe(4)
+    expect(st.query(2, 0, 2, 0)).toBe(6)
+  })
+
+  it('handles update to 0', () => {
+    const st = new SegmentTree2D(2, 2)
+    st.update(0, 0, 5)
+    st.update(0, 0, 0)
+    expect(st.query(0, 0, 0, 0)).toBe(0)
+  })
+
+  it('handles all zeros', () => {
+    const st = new SegmentTree2D(3, 3)
+    for (let i = 0; i < 3; i++)
+      for (let j = 0; j < 3; j++) st.update(i, j, 0)
+    expect(st.query(0, 0, 2, 2)).toBe(0)
+  })
+
+  it('query column range', () => {
+    const st = new SegmentTree2D(3, 3)
+    st.update(0, 0, 1)
+    st.update(1, 0, 2)
+    st.update(2, 0, 3)
+    expect(st.query(0, 0, 2, 0)).toBe(6)
+  })
+
+  it('query row range', () => {
+    const st = new SegmentTree2D(3, 3)
+    st.update(0, 0, 1)
+    st.update(0, 1, 2)
+    st.update(0, 2, 3)
+    expect(st.query(0, 0, 0, 2)).toBe(6)
+  })
+
+  it('handles 8x8 grid', () => {
+    const st = new SegmentTree2D(8, 8)
+    st.update(0, 0, 1)
+    st.update(7, 7, 1)
+    st.update(3, 4, 1)
+    expect(st.query(0, 0, 7, 7)).toBe(3)
+  })
+
+  it('query corner subregion', () => {
+    const st = new SegmentTree2D(4, 4)
+    st.update(0, 0, 1)
+    st.update(0, 1, 2)
+    st.update(1, 0, 3)
+    st.update(1, 1, 4)
+    st.update(2, 2, 5)
+    st.update(3, 3, 6)
+    expect(st.query(0, 0, 1, 1)).toBe(10)
+    expect(st.query(2, 2, 3, 3)).toBe(11)
+  })
+
+  it('update then query different cells', () => {
+    const st = new SegmentTree2D(3, 3)
+    st.update(0, 0, 10)
+    st.update(2, 2, 20)
+    expect(st.query(0, 0, 0, 0)).toBe(10)
+    expect(st.query(2, 2, 2, 2)).toBe(20)
+    expect(st.query(1, 1, 1, 1)).toBe(0)
+  })
+
+  it('handles large values', () => {
+    const st = new SegmentTree2D(2, 2)
+    st.update(0, 0, Number.MAX_SAFE_INTEGER)
+    expect(st.query(0, 0, 0, 0)).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('query with same start and end coordinates', () => {
+    const st = new SegmentTree2D(4, 4)
+    st.update(2, 3, 15)
+    expect(st.query(2, 3, 2, 3)).toBe(15)
+  })
+
+  it('handles 1x1 with multiple overwrites', () => {
+    const st = new SegmentTree2D(1, 1)
+    st.update(0, 0, 1)
+    st.update(0, 0, 2)
+    st.update(0, 0, 3)
+    st.update(0, 0, 4)
+    expect(st.query(0, 0, 0, 0)).toBe(4)
+  })
+
+  it('sum of diagonal elements', () => {
+    const st = new SegmentTree2D(4, 4)
+    for (let i = 0; i < 4; i++) st.update(i, i, i + 1)
+    expect(st.query(0, 0, 3, 3)).toBe(10)
+  })
+
+  it('handles 3x1 grid', () => {
+    const st = new SegmentTree2D(3, 1)
+    st.update(0, 0, 1)
+    st.update(1, 0, 2)
+    st.update(2, 0, 3)
+    expect(st.query(0, 0, 2, 0)).toBe(6)
+  })
+
+  it('handles 1x2 grid', () => {
+    const st = new SegmentTree2D(1, 2)
+    st.update(0, 0, 5)
+    st.update(0, 1, 7)
+    expect(st.query(0, 0, 0, 1)).toBe(12)
+  })
+
+  it('query after updating all cells', () => {
     const st = new SegmentTree2D(2, 2)
     st.update(0, 0, 1)
     st.update(0, 1, 2)
     st.update(1, 0, 3)
     st.update(1, 1, 4)
+    expect(st.query(0, 0, 0, 1)).toBe(3)
+    expect(st.query(1, 0, 1, 1)).toBe(7)
+  })
+
+  it('handles 6x6 grid', () => {
+    const st = new SegmentTree2D(6, 6)
+    let total = 0
+    for (let i = 0; i < 6; i++)
+      for (let j = 0; j < 6; j++) {
+        st.update(i, j, i * 6 + j + 1)
+        total += i * 6 + j + 1
+      }
+    expect(st.query(0, 0, 5, 5)).toBe(total)
+  })
+
+  it('max query on subrange', () => {
+    const st = new SegmentTree2D(3, 3, Math.max)
+    st.update(0, 0, 1)
+    st.update(1, 1, 10)
+    st.update(2, 2, 5)
+    expect(st.query(0, 0, 1, 1)).toBe(10)
+    expect(st.query(1, 1, 2, 2)).toBe(10)
+  })
+
+  it('handles 2x3 grid', () => {
+    const st = new SegmentTree2D(2, 3)
+    st.update(0, 0, 1)
+    st.update(0, 1, 2)
+    st.update(0, 2, 3)
+    st.update(1, 0, 4)
+    st.update(1, 1, 5)
+    st.update(1, 2, 6)
+    expect(st.query(0, 0, 1, 2)).toBe(21)
+  })
+
+  it('handles 3x2 grid', () => {
+    const st = new SegmentTree2D(3, 2)
+    st.update(0, 0, 1)
+    st.update(1, 0, 2)
+    st.update(2, 0, 3)
+    st.update(0, 1, 4)
+    st.update(1, 1, 5)
+    st.update(2, 1, 6)
+    expect(st.query(0, 0, 2, 1)).toBe(21)
+  })
+
+  it('query top-left corner', () => {
+    const st = new SegmentTree2D(4, 4)
+    st.update(0, 0, 1)
+    st.update(0, 1, 2)
+    st.update(1, 0, 3)
+    st.update(1, 1, 4)
+    st.update(3, 3, 100)
     expect(st.query(0, 0, 1, 1)).toBe(10)
   })
 
-  it('single cell query returns value', () => {
-    const st = new SegmentTree2D(2, 2)
-    st.update(0, 0, 7)
-    expect(st.query(0, 0, 0, 0)).toBe(7)
+  it('query bottom-right corner', () => {
+    const st = new SegmentTree2D(4, 4)
+    st.update(0, 0, 100)
+    st.update(2, 2, 1)
+    st.update(2, 3, 2)
+    st.update(3, 2, 3)
+    st.update(3, 3, 4)
+    expect(st.query(2, 2, 3, 3)).toBe(10)
   })
 
-  it('default values are 0', () => {
+  it('multiple independent updates', () => {
+    const st = new SegmentTree2D(3, 3)
+    st.update(0, 0, 5)
+    st.update(1, 1, 10)
+    st.update(2, 2, 15)
+    expect(st.query(0, 0, 0, 0)).toBe(5)
+    expect(st.query(1, 1, 1, 1)).toBe(10)
+    expect(st.query(2, 2, 2, 2)).toBe(15)
+  })
+
+  it('handles zero initial state', () => {
     const st = new SegmentTree2D(2, 2)
     expect(st.query(0, 0, 1, 1)).toBe(0)
+    expect(st.query(0, 0, 0, 0)).toBe(0)
   })
 
-  it('update and query roundtrip', () => {
+  it('overwrites propagate correctly to range queries', () => {
     const st = new SegmentTree2D(2, 2)
+    st.update(0, 0, 10)
+    st.update(0, 1, 20)
+    expect(st.query(0, 0, 0, 1)).toBe(30)
     st.update(0, 0, 5)
-    expect(st.query(0, 0, 0, 0)).toBeGreaterThanOrEqual(5)
+    expect(st.query(0, 0, 0, 1)).toBe(25)
+  })
+
+  it('sum query with all cells populated', () => {
+    const st = new SegmentTree2D(2, 2)
+    st.update(0, 0, 1)
+    st.update(0, 1, 2)
+    st.update(1, 0, 3)
+    st.update(1, 1, 4)
+    expect(st.query(0, 0, 1, 0)).toBe(4)
+    expect(st.query(0, 1, 1, 1)).toBe(6)
   })
 })

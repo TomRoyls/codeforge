@@ -72,39 +72,157 @@ describe('ShellSort', () => {
     expect(ShellSort.sort([3.14, 1.41, 2.72])).toEqual([1.41, 2.72, 3.14])
   })
 
-  it('handles single element', () => {
-    expect(ShellSort.sort([42])).toEqual([42])
+  it('sortInPlace with empty array', () => {
+    const arr: number[] = []
+    ShellSort.sortInPlace(arr)
+    expect(arr).toEqual([])
   })
 
-  it('handles already sorted', () => {
-    expect(ShellSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
+  it('sortInPlace with single element', () => {
+    const arr = [5]
+    ShellSort.sortInPlace(arr)
+    expect(arr).toEqual([5])
   })
 
-  it('handles empty array', () => {
-    expect(ShellSort.sort([])).toEqual([])
+  it('sortInPlace with reverse sorted', () => {
+    const arr = [5, 4, 3, 2, 1]
+    ShellSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
   })
 
-  it('handles single element', () => {
-    expect(ShellSort.sort([1])).toEqual([1])
+  it('sortInPlace with duplicates', () => {
+    const arr = [3, 1, 3, 2, 1]
+    ShellSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 1, 2, 3, 3])
   })
 
-  it('handles already sorted', () => {
-    expect(ShellSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  it('sort returns new array', () => {
+    const arr = [3, 1, 2]
+    const result = ShellSort.sort(arr)
+    expect(result).not.toBe(arr)
   })
 
-  it('handles reverse sorted', () => {
-    expect(ShellSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  it('sortWithComparator does not modify original', () => {
+    const arr = [3, 1, 2]
+    ShellSort.sortWithComparator(arr, (a, b) => a - b)
+    expect(arr).toEqual([3, 1, 2])
   })
 
-  it('handles single element', () => {
-    expect(ShellSort.sort([42])).toEqual([42])
+  it('handles mixed positive negative', () => {
+    expect(ShellSort.sort([3, -1, 0, -5, 2])).toEqual([-5, -1, 0, 2, 3])
   })
 
-  it('handles empty array', () => {
-    expect(ShellSort.sort([])).toEqual([])
+  it('handles zeros', () => {
+    expect(ShellSort.sort([0, 0, 0])).toEqual([0, 0, 0])
   })
 
-  it('handles single element', () => {
-    expect(ShellSort.sort([42])).toEqual([42])
+  it('handles two same elements', () => {
+    expect(ShellSort.sort([5, 5])).toEqual([5, 5])
+  })
+
+  it('handles 10 elements', () => {
+    const arr = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+    expect(ShellSort.sort(arr)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  })
+
+  it('handles 20 elements', () => {
+    const arr = Array.from({ length: 20 }, (_, i) => 20 - i)
+    const result = ShellSort.sort(arr)
+    for (let i = 0; i < 20; i++) expect(result[i]).toBe(i + 1)
+  })
+
+  it('sortWithComparator with objects', () => {
+    const arr = [{ v: 3 }, { v: 1 }, { v: 2 }]
+    const result = ShellSort.sortWithComparator(arr, (a, b) => a.v - b.v)
+    expect(result.map(o => o.v)).toEqual([1, 2, 3])
+  })
+
+  it('handles very large values', () => {
+    expect(ShellSort.sort([Number.MAX_SAFE_INTEGER, 0, -Number.MAX_SAFE_INTEGER]))
+      .toEqual([-Number.MAX_SAFE_INTEGER, 0, Number.MAX_SAFE_INTEGER])
+  })
+
+  it('handles 1000 elements', () => {
+    const arr = Array.from({ length: 1000 }, (_, i) => 1000 - i)
+    const result = ShellSort.sort(arr)
+    expect(result[0]).toBe(1)
+    expect(result[999]).toBe(1000)
+  })
+
+  it('sortInPlace with large array', () => {
+    const arr = Array.from({ length: 200 }, (_, i) => 200 - i)
+    ShellSort.sortInPlace(arr)
+    for (let i = 1; i < arr.length; i++) {
+      expect(arr[i]).toBeGreaterThanOrEqual(arr[i - 1]!)
+    }
+  })
+
+  it('handles array with one swap needed', () => {
+    expect(ShellSort.sort([1, 2, 4, 3, 5])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles array with min at end', () => {
+    expect(ShellSort.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles array with max at start', () => {
+    expect(ShellSort.sort([5, 1, 2, 3, 4])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('sortWithComparator with reverse strings', () => {
+    const result = ShellSort.sortWithComparator(['a', 'c', 'b'], (a, b) => b.localeCompare(a))
+    expect(result).toEqual(['c', 'b', 'a'])
+  })
+
+  it('handles negative floats', () => {
+    expect(ShellSort.sort([-1.5, -3.2, -0.1])).toEqual([-3.2, -1.5, -0.1])
+  })
+
+  it('handles array with all same except one', () => {
+    expect(ShellSort.sort([5, 5, 1, 5, 5])).toEqual([1, 5, 5, 5, 5])
+  })
+
+  it('handles 4 elements', () => {
+    expect(ShellSort.sort([4, 3, 2, 1])).toEqual([1, 2, 3, 4])
+  })
+
+  it('handles 8 elements', () => {
+    expect(ShellSort.sort([8, 7, 6, 5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
+  })
+
+  it('handles 16 elements', () => {
+    const arr = Array.from({ length: 16 }, (_, i) => 16 - i)
+    const result = ShellSort.sort(arr)
+    for (let i = 0; i < 16; i++) expect(result[i]).toBe(i + 1)
+  })
+
+  it('sortInPlace returns void', () => {
+    const arr = [3, 1, 2]
+    const result = ShellSort.sortInPlace(arr)
+    expect(result).toBeUndefined()
+  })
+
+  it('sortWithComparator handles empty array', () => {
+    expect(ShellSort.sortWithComparator([], (a, b) => a - b)).toEqual([])
+  })
+
+  it('sortWithComparator handles single element', () => {
+    expect(ShellSort.sortWithComparator([5], (a, b) => a - b)).toEqual([5])
+  })
+
+  it('handles 32 elements', () => {
+    const arr = Array.from({ length: 32 }, (_, i) => 32 - i)
+    const result = ShellSort.sort(arr)
+    for (let i = 0; i < 32; i++) expect(result[i]).toBe(i + 1)
+  })
+
+  it('handles 64 elements', () => {
+    const arr = Array.from({ length: 64 }, (_, i) => 64 - i)
+    const result = ShellSort.sort(arr)
+    for (let i = 0; i < 64; i++) expect(result[i]).toBe(i + 1)
+  })
+
+  it('handles alternating high low pattern', () => {
+    expect(ShellSort.sort([10, 1, 9, 2, 8, 3])).toEqual([1, 2, 3, 8, 9, 10])
   })
 })
