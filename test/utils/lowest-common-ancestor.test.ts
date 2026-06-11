@@ -196,4 +196,86 @@ describe('LowestCommonAncestor', () => {
     const lca = new LowestCommonAncestor(adj, 0)
     expect(lca.query(0, 1)).toBe(0)
   })
+
+  it('toString returns descriptive string', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(typeof lca.toString()).toBe('string')
+    expect(lca.toString().length).toBeGreaterThan(0)
+  })
+
+  it('toJSON returns serializable object', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    const json = lca.toJSON()
+    expect(json).toBeDefined()
+  })
+
+  it('clone creates independent copy', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, []], [2, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    const c = lca.clone()
+    expect(c.query(1, 2)).toBe(0)
+    expect(c.getDepth(1)).toBe(1)
+  })
+
+  it('clone is independent instance', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    const c = lca.clone()
+    expect(c).not.toBe(lca)
+  })
+
+  it('equals returns true for same tree', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, []]])
+    const l1 = new LowestCommonAncestor(adj, 0)
+    const l2 = new LowestCommonAncestor(adj, 0)
+    expect(l1.equals(l2)).toBe(true)
+  })
+
+  it('equals returns false for different tree', () => {
+    const adj1 = new Map<number, number[]>([[0, [1]], [1, []]])
+    const adj2 = new Map<number, number[]>([[0, [1, 2]], [1, []], [2, []]])
+    const l1 = new LowestCommonAncestor(adj1, 0)
+    const l2 = new LowestCommonAncestor(adj2, 0)
+    expect(l1.equals(l2)).toBe(false)
+  })
+
+  it('equals returns false for non-LCA', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.equals(null)).toBe(false)
+    expect(lca.equals({})).toBe(false)
+  })
+
+  it('handles binary tree of depth 4', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3, 4]], [2, [5, 6]], [3, [7, 8]],
+      [4, []], [5, []], [6, []], [7, []], [8, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(7, 8)).toBe(3)
+    expect(lca.query(7, 4)).toBe(1)
+    expect(lca.query(5, 8)).toBe(0)
+    expect(lca.distance(7, 8)).toBe(2)
+    expect(lca.distance(7, 4)).toBe(3)
+  })
+
+  it('getDepth on deep chain', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, [5]], [5, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.getDepth(0)).toBe(0)
+    expect(lca.getDepth(3)).toBe(3)
+    expect(lca.getDepth(5)).toBe(5)
+  })
+
+  it('distance of node to itself is 0', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, []], [2, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.distance(0, 0)).toBe(0)
+    expect(lca.distance(1, 1)).toBe(0)
+    expect(lca.distance(2, 2)).toBe(0)
+  })
 })

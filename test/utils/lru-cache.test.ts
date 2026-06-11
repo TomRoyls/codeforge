@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { LRUCache } from '../../src/utils/lru-cache.js'
 
-// ─── Constructor ──────────────────────────────────────────
 describe('LRUCache - constructor', () => {
   it('creates cache with given maxSize', () => {
     const cache = new LRUCache<string, number>(5)
@@ -9,12 +8,23 @@ describe('LRUCache - constructor', () => {
     expect(cache.size).toBe(0)
   })
 
+  it('creates cache with maxSize 0', () => {
+    const cache = new LRUCache<string, number>(0)
+    expect(cache.maxSize).toBe(0)
+    expect(cache.size).toBe(0)
+  })
+
   it('throws on maxSize < 0', () => {
     expect(() => new LRUCache(-1)).toThrow(RangeError)
   })
+
+  it('creates cache with options object', () => {
+    const cache = new LRUCache<string, number>({ maxSize: 10 })
+    expect(cache.maxSize).toBe(10)
+    expect(cache.size).toBe(0)
+  })
 })
 
-// ─── Set and Get ──────────────────────────────────────────
 describe('LRUCache - set and get', () => {
   it('stores and retrieves values', () => {
     const cache = new LRUCache<string, number>(5)
@@ -58,9 +68,36 @@ describe('LRUCache - set and get', () => {
     expect(cache.has('a')).toBe(true)
     expect(cache.has('b')).toBe(false)
   })
+
+  it('getOrDefault returns value for existing key', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    expect(cache.getOrDefault('a', 42)).toBe(1)
+  })
+
+  it('getOrDefault returns default for missing key', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(cache.getOrDefault('missing', 42)).toBe(42)
+  })
+
+  it('getOrDefault promotes key on hit', () => {
+    const cache = new LRUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.getOrDefault('a', 42)
+    cache.set('c', 3)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.has('b')).toBe(false)
+  })
+
+  it('set does nothing when maxSize is 0', () => {
+    const cache = new LRUCache<string, number>(0)
+    cache.set('a', 1)
+    expect(cache.size).toBe(0)
+    expect(cache.has('a')).toBe(false)
+  })
 })
 
-// ─── Has, Delete, Clear ───────────────────────────────────
 describe('LRUCache - has, delete, clear', () => {
   it('has returns true for existing key', () => {
     const cache = new LRUCache<string, number>(5)
@@ -76,6 +113,11 @@ describe('LRUCache - has, delete, clear', () => {
     expect(cache.has('a')).toBe(false)
   })
 
+  it('delete returns false for missing key', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(cache.delete('missing')).toBe(false)
+  })
+
   it('clear empties the cache', () => {
     const cache = new LRUCache<string, number>(5)
     cache.set('a', 1)
@@ -84,9 +126,19 @@ describe('LRUCache - has, delete, clear', () => {
     expect(cache.size).toBe(0)
     expect(cache.isEmpty).toBe(true)
   })
+
+  it('isEmpty returns true for empty cache', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(cache.isEmpty).toBe(true)
+  })
+
+  it('isEmpty returns false for non-empty cache', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    expect(cache.isEmpty).toBe(false)
+  })
 })
 
-// ─── Iteration ────────────────────────────────────────────
 describe('LRUCache - iteration', () => {
   it('returns keys in LRU order', () => {
     const cache = new LRUCache<string, number>(5)
@@ -118,9 +170,23 @@ describe('LRUCache - iteration', () => {
     cache.forEach((v, k) => entries.push([k, v]))
     expect(entries).toEqual([['a', 1], ['b', 2]])
   })
+
+  it('keys returns empty for empty cache', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(Array.from(cache.keys())).toEqual([])
+  })
+
+  it('values returns empty for empty cache', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(Array.from(cache.values())).toEqual([])
+  })
+
+  it('entries returns empty for empty cache', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(Array.from(cache.entries())).toEqual([])
+  })
 })
 
-// ─── Stats ────────────────────────────────────────────────
 describe('LRUCache - stats', () => {
   it('tracks hits and misses', () => {
     const cache = new LRUCache<string, number>(5)
@@ -150,10 +216,24 @@ describe('LRUCache - stats', () => {
     const stats = cache.stats()
     expect(stats.hits).toBe(0)
     expect(stats.misses).toBe(0)
+    expect(stats.evictions).toBe(0)
+  })
+
+  it('hitRate is 0 when no accesses', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(cache.stats().hitRate).toBe(0)
+  })
+
+  it('stats returns correct size and maxSize', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    const stats = cache.stats()
+    expect(stats.size).toBe(2)
+    expect(stats.maxSize).toBe(5)
   })
 })
 
-// ─── Resize ───────────────────────────────────────────────
 describe('LRUCache - resize', () => {
   it('evicts items when shrinking', () => {
     const cache = new LRUCache<string, number>(5)
@@ -170,9 +250,42 @@ describe('LRUCache - resize', () => {
     const cache = new LRUCache<string, number>(5)
     expect(() => cache.resize(-1)).toThrow(RangeError)
   })
+
+  it('allows growing cache', () => {
+    const cache = new LRUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.resize(5)
+    expect(cache.maxSize).toBe(5)
+    expect(cache.size).toBe(2)
+  })
+
+  it('resize to same size', () => {
+    const cache = new LRUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.resize(3)
+    expect(cache.maxSize).toBe(3)
+    expect(cache.size).toBe(2)
+  })
+
+  it('resize to zero empties cache', () => {
+    const cache = new LRUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.set('c', 3)
+    cache.resize(0)
+    expect(cache.size).toBe(0)
+    expect(cache.maxSize).toBe(0)
+  })
 })
 
-// ─── Peek ─────────────────────────────────────────────────
+  it('throws on resize to negative', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(() => cache.resize(-1)).toThrow(RangeError)
+  })
+})
+
 describe('LRUCache - peek', () => {
   it('returns value without affecting LRU order', () => {
     const cache = new LRUCache<string, number>(2)
@@ -182,6 +295,111 @@ describe('LRUCache - peek', () => {
     cache.set('c', 3)
     expect(cache.has('a')).toBe(false)
   })
+
+  it('peek returns undefined for missing key', () => {
+    const cache = new LRUCache<string, number>(2)
+    expect(cache.peek('missing')).toBeUndefined()
+  })
+
+  it('peek does not increment hit count', () => {
+    const cache = new LRUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.peek('a')
+    expect(cache.stats().hits).toBe(0)
+  })
+})
+
+describe('LRUCache - toString', () => {
+  it('returns string representation', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.toString()).toBe('LRUCache(2/5)')
+  })
+
+  it('toString works for empty cache', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(cache.toString()).toBe('LRUCache(0/5)')
+  })
+})
+
+describe('LRUCache - toJSON', () => {
+  it('returns array of entries', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    const json = cache.toJSON()
+    expect(json).toEqual([['a', 1], ['b', 2]])
+  })
+
+  it('toJSON returns empty array for empty cache', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(cache.toJSON()).toEqual([])
+  })
+})
+
+describe('LRUCache - clone', () => {
+  it('creates independent copy', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    const clone = cache.clone()
+    expect(clone.size).toBe(2)
+    expect(clone.maxSize).toBe(5)
+    expect(clone.get('a')).toBe(1)
+  })
+
+  it('clone is independent of original', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    const clone = cache.clone()
+    cache.set('b', 2)
+    cache.delete('a')
+    expect(clone.has('a')).toBe(true)
+    expect(clone.has('b')).toBe(false)
+  })
+})
+
+describe('LRUCache - equals', () => {
+  it('returns true for identical caches', () => {
+    const cache1 = new LRUCache<string, number>(5)
+    const cache2 = new LRUCache<string, number>(5)
+    cache1.set('a', 1)
+    cache1.set('b', 2)
+    cache2.set('a', 1)
+    cache2.set('b', 2)
+    expect(cache1.equals(cache2)).toBe(true)
+  })
+
+  it('returns false for different maxSize', () => {
+    const cache1 = new LRUCache<string, number>(3)
+    const cache2 = new LRUCache<string, number>(5)
+    expect(cache1.equals(cache2)).toBe(false)
+  })
+
+  it('returns false for different sizes', () => {
+    const cache1 = new LRUCache<string, number>(5)
+    const cache2 = new LRUCache<string, number>(5)
+    cache1.set('a', 1)
+    cache2.set('a', 1)
+    cache2.set('b', 2)
+    expect(cache1.equals(cache2)).toBe(false)
+  })
+
+  it('returns false for different values', () => {
+    const cache1 = new LRUCache<string, number>(5)
+    const cache2 = new LRUCache<string, number>(5)
+    cache1.set('a', 1)
+    cache2.set('a', 2)
+    expect(cache1.equals(cache2)).toBe(false)
+  })
+
+  it('returns false for non-LRUCache object', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(cache.equals({})).toBe(false)
+    expect(cache.equals(null)).toBe(false)
+  })
+})
 
   it('get returns undefined for missing key', () => {
     const cache = new LRUCache<string, number>(2)

@@ -48,6 +48,98 @@ describe('increment', () => {
     expect(map.get('a')).toBe(2)
     expect(map.get('b')).toBe(1)
   })
+
+  it('handles negative results', () => {
+    const map = new Map<string, number>([['x', 5]])
+    increment(map, 'x', -10)
+    expect(map.get('x')).toBe(-5)
+  })
+
+  it('handles floating point deltas', () => {
+    const map = new Map<string, number>([['a', 1.5]])
+    increment(map, 'a', 2.5)
+    expect(map.get('a')).toBe(4.0)
+  })
+
+  it('handles zero initial value with custom delta', () => {
+    const map = new Map<string, number>([['a', 0]])
+    increment(map, 'a', 5)
+    expect(map.get('a')).toBe(5)
+  })
+
+  it('preserves map size for existing key', () => {
+    const map = new Map<string, number>([['a', 1]])
+    const sizeBefore = map.size
+    increment(map, 'a')
+    expect(map.size).toBe(sizeBefore)
+  })
+
+  it('increases map size for new key', () => {
+    const map = new Map<string, number>()
+    const sizeBefore = map.size
+    increment(map, 'a')
+    expect(map.size).toBe(sizeBefore + 1)
+  })
+
+  it('works with symbol keys', () => {
+    const map = new Map<symbol, number>()
+    const sym = Symbol('test')
+    increment(map, sym, 10)
+    expect(map.get(sym)).toBe(10)
+  })
+
+  it('handles very large delta', () => {
+    const map = new Map<string, number>()
+    increment(map, 'a', Number.MAX_SAFE_INTEGER)
+    expect(map.get('a')).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles negative large delta', () => {
+    const map = new Map<string, number>([['a', Number.MAX_SAFE_INTEGER]])
+    increment(map, 'a', -Number.MAX_SAFE_INTEGER)
+    expect(map.get('a')).toBe(0)
+  })
+
+  it('works with null key', () => {
+    const map = new Map<null, number>()
+    increment(map, null, 5)
+    expect(map.get(null)).toBe(5)
+  })
+
+  it('works with undefined key', () => {
+    const map = new Map<undefined, number>()
+    increment(map, undefined, 7)
+    expect(map.get(undefined)).toBe(7)
+  })
+
+  it('multiple increments on same key accumulate', () => {
+    const map = new Map<string, number>()
+    increment(map, 'a', 3)
+    increment(map, 'a', 4)
+    increment(map, 'a', 5)
+    expect(map.get('a')).toBe(12)
+  })
+
+  it('works with large number of keys', () => {
+    const map = new Map<string, number>()
+    for (let i = 0; i < 1000; i++) {
+      increment(map, `key${i}`, 1)
+    }
+    expect(map.size).toBe(1000)
+    expect(map.get('key500')).toBe(1)
+  })
+
+  it('handles decrement to zero', () => {
+    const map = new Map<string, number>([['a', 5]])
+    increment(map, 'a', -5)
+    expect(map.get('a')).toBe(0)
+  })
+
+  it('increment with delta of -1', () => {
+    const map = new Map<string, number>([['a', 10]])
+    increment(map, 'a', -1)
+    expect(map.get('a')).toBe(9)
+  })
 })
 
 // ─── append ───
@@ -171,5 +263,67 @@ describe('append', () => {
     map.set('key', 5)
     increment(map, 'key')
     expect(map.get('key')).toBe(6)
+  })
+
+  it('handles null values in array', () => {
+    const map = new Map<string, (number | null)[]>()
+    append(map, 'a', null)
+    append(map, 'a', 1)
+    expect(map.get('a')).toEqual([null, 1])
+  })
+
+  it('handles undefined values in array', () => {
+    const map = new Map<string, (number | undefined)[]>()
+    append(map, 'a', undefined)
+    append(map, 'a', 1)
+    expect(map.get('a')).toEqual([undefined, 1])
+  })
+
+  it('appends boolean values', () => {
+    const map = new Map<string, boolean[]>()
+    append(map, 'flags', true)
+    append(map, 'flags', false)
+    expect(map.get('flags')).toEqual([true, false])
+  })
+
+  it('appends mixed type values', () => {
+    const map = new Map<string, (string | number)[]>()
+    append(map, 'mixed', 'hello')
+    append(map, 'mixed', 42)
+    expect(map.get('mixed')).toEqual(['hello', 42])
+  })
+
+  it('works with symbol keys', () => {
+    const map = new Map<symbol, string[]>()
+    const sym = Symbol('test')
+    append(map, sym, 'value')
+    expect(map.get(sym)).toEqual(['value'])
+  })
+
+  it('preserves array reference on multiple appends', () => {
+    const map = new Map<string, number[]>()
+    append(map, 'a', 1)
+    const arr1 = map.get('a')!
+    append(map, 'a', 2)
+    const arr2 = map.get('a')!
+    expect(arr1).toBe(arr2)
+  })
+
+  it('handles appending to array with existing elements', () => {
+    const map = new Map<string, string[]>()
+    map.set('a', ['x', 'y'])
+    append(map, 'a', 'z')
+    expect(map.get('a')).toEqual(['x', 'y', 'z'])
+  })
+
+  it('creates new array each time for different keys', () => {
+    const map = new Map<string, number[]>()
+    append(map, 'a', 1)
+    append(map, 'b', 2)
+    const arr1 = map.get('a')!
+    const arr2 = map.get('b')!
+    expect(arr1).not.toBe(arr2)
+    expect(arr1).toEqual([1])
+    expect(arr2).toEqual([2])
   })
 })

@@ -22,16 +22,20 @@ describe('MillerRabin', () => {
     expect(MillerRabin.isPrime(0)).toBe(false)
     expect(MillerRabin.isPrime(1)).toBe(false)
     expect(MillerRabin.isPrime(-1)).toBe(false)
+    expect(MillerRabin.isPrime(-10)).toBe(false)
   })
 
   it('identifies known large primes', () => {
     expect(MillerRabin.isPrime(999983)).toBe(true)
     expect(MillerRabin.isPrime(1000003)).toBe(true)
+    expect(MillerRabin.isPrime(104729)).toBe(true)
+    expect(MillerRabin.isPrime(1299709)).toBe(true)
   })
 
   it('identifies known large composites', () => {
     expect(MillerRabin.isPrime(999981)).toBe(false)
     expect(MillerRabin.isPrime(1000001)).toBe(false)
+    expect(MillerRabin.isPrime(104727)).toBe(false)
   })
 
   it('finds next prime', () => {
@@ -39,6 +43,7 @@ describe('MillerRabin', () => {
     expect(MillerRabin.nextPrime(10)).toBe(11)
     expect(MillerRabin.nextPrime(14)).toBe(17)
     expect(MillerRabin.nextPrime(0)).toBe(2)
+    expect(MillerRabin.nextPrime(100)).toBe(101)
   })
 
   it('finds previous prime', () => {
@@ -46,12 +51,14 @@ describe('MillerRabin', () => {
     expect(MillerRabin.prevPrime(12)).toBe(11)
     expect(MillerRabin.prevPrime(3)).toBe(2)
     expect(MillerRabin.prevPrime(2)).toBe(-1)
+    expect(MillerRabin.prevPrime(100)).toBe(97)
   })
 
   it('handles Carmichael numbers', () => {
     expect(MillerRabin.isPrime(561)).toBe(false)
     expect(MillerRabin.isPrime(1105)).toBe(false)
     expect(MillerRabin.isPrime(1729)).toBe(false)
+    expect(MillerRabin.isPrime(2465)).toBe(false)
   })
 
   it('identifies twin primes', () => {
@@ -65,6 +72,8 @@ describe('MillerRabin', () => {
     expect(MillerRabin.primeCount(10)).toBe(4)
     expect(MillerRabin.primeCount(20)).toBe(8)
     expect(MillerRabin.primeCount(2)).toBe(0)
+    expect(MillerRabin.primeCount(3)).toBe(1)
+    expect(MillerRabin.primeCount(5)).toBe(2)
   })
 
   it('nextPrime after large number', () => {
@@ -99,40 +108,173 @@ describe('MillerRabin', () => {
   it('prevPrime returns -1 for n <= 2', () => {
     expect(MillerRabin.prevPrime(2)).toBe(-1)
     expect(MillerRabin.prevPrime(1)).toBe(-1)
+    expect(MillerRabin.prevPrime(0)).toBe(-1)
+    expect(MillerRabin.prevPrime(-10)).toBe(-1)
   })
 
   it('nextPrime returns next prime after n', () => {
     expect(MillerRabin.nextPrime(2)).toBe(3)
     expect(MillerRabin.nextPrime(10)).toBe(11)
     expect(MillerRabin.nextPrime(100)).toBe(101)
+    expect(MillerRabin.nextPrime(1000)).toBe(1009)
   })
 
   it('primeCount matches known values', () => {
     expect(MillerRabin.primeCount(10)).toBe(4)
     expect(MillerRabin.primeCount(1000)).toBe(168)
-  })
-
-  it('identifies 2 as prime', () => {
-    expect(MillerRabin.isPrime(2n)).toBe(true)
-  })
-
-  it('identifies 4 as not prime', () => {
-    expect(MillerRabin.isPrime(4)).toBe(false)
-  })
-
-  it('identifies 7 as prime', () => {
-    expect(MillerRabin.isPrime(7)).toBe(true)
-  })
-
-  it('identifies 4 as not prime', () => {
-    expect(MillerRabin.isPrime(4)).toBe(false)
+    expect(MillerRabin.primeCount(10000)).toBe(1229)
   })
 
   it('identifies 2 as prime', () => {
     expect(MillerRabin.isPrime(2)).toBe(true)
   })
 
-  it('identifies 4 as not prime', () => {
+  it('identifies 7 as prime', () => {
+    expect(MillerRabin.isPrime(7)).toBe(true)
+  })
+
+  it('identifies multiples of 3 as composite', () => {
+    expect(MillerRabin.isPrime(9)).toBe(false)
+    expect(MillerRabin.isPrime(15)).toBe(false)
+    expect(MillerRabin.isPrime(21)).toBe(false)
+    expect(MillerRabin.isPrime(27)).toBe(false)
+  })
+
+  it('identifies multiples of 5 as composite', () => {
+    expect(MillerRabin.isPrime(25)).toBe(false)
+    expect(MillerRabin.isPrime(35)).toBe(false)
+    expect(MillerRabin.isPrime(45)).toBe(false)
+  })
+
+  it('identifies perfect squares as composite', () => {
     expect(MillerRabin.isPrime(4)).toBe(false)
+    expect(MillerRabin.isPrime(9)).toBe(false)
+    expect(MillerRabin.isPrime(25)).toBe(false)
+    expect(MillerRabin.isPrime(49)).toBe(false)
+  })
+
+  it('identifies squares of primes as composite', () => {
+    expect(MillerRabin.isPrime(4)).toBe(false)
+    expect(MillerRabin.isPrime(9)).toBe(false)
+    expect(MillerRabin.isPrime(25)).toBe(false)
+    expect(MillerRabin.isPrime(121)).toBe(false)
+  })
+
+  it('identifies cubes of primes as composite', () => {
+    expect(MillerRabin.isPrime(8)).toBe(false)
+    expect(MillerRabin.isPrime(27)).toBe(false)
+    expect(MillerRabin.isPrime(125)).toBe(false)
+    expect(MillerRabin.isPrime(343)).toBe(false)
+  })
+
+  it('identifies Fibonacci primes', () => {
+    expect(MillerRabin.isPrime(2)).toBe(true)
+    expect(MillerRabin.isPrime(3)).toBe(true)
+    expect(MillerRabin.isPrime(5)).toBe(true)
+    expect(MillerRabin.isPrime(13)).toBe(true)
+    expect(MillerRabin.isPrime(89)).toBe(true)
+  })
+
+  it('identifies Mersenne primes', () => {
+    expect(MillerRabin.isPrime(3)).toBe(true)
+    expect(MillerRabin.isPrime(7)).toBe(true)
+    expect(MillerRabin.isPrime(31)).toBe(true)
+    expect(MillerRabin.isPrime(127)).toBe(true)
+    expect(MillerRabin.isPrime(8191)).toBe(true)
+  })
+
+  it('identifies Fermat numbers as composite (except first few)', () => {
+    expect(MillerRabin.isPrime(5)).toBe(true)
+    expect(MillerRabin.isPrime(17)).toBe(true)
+    expect(MillerRabin.isPrime(257)).toBe(true)
+    expect(MillerRabin.isPrime(65537)).toBe(true)
+  })
+
+  it('nextPrime skips composite numbers', () => {
+    expect(MillerRabin.nextPrime(90)).toBe(97)
+    expect(MillerRabin.nextPrime(1000)).toBe(1009)
+    expect(MillerRabin.nextPrime(10000)).toBe(10007)
+  })
+
+  it('prevPrime skips composite numbers', () => {
+    expect(MillerRabin.prevPrime(100)).toBe(97)
+    expect(MillerRabin.prevPrime(1000)).toBe(997)
+    expect(MillerRabin.prevPrime(10000)).toBe(9973)
+  })
+
+  it('nextPrime returns prime itself if given prime', () => {
+    expect(MillerRabin.nextPrime(7)).toBe(11)
+    expect(MillerRabin.nextPrime(13)).toBe(17)
+    expect(MillerRabin.nextPrime(97)).toBe(101)
+  })
+
+  it('prevPrime returns previous prime', () => {
+    expect(MillerRabin.prevPrime(11)).toBe(7)
+    expect(MillerRabin.prevPrime(17)).toBe(13)
+    expect(MillerRabin.prevPrime(101)).toBe(97)
+  })
+
+  it('identifies primes ending with 1, 3, 7, 9', () => {
+    expect(MillerRabin.isPrime(11)).toBe(true)
+    expect(MillerRabin.isPrime(13)).toBe(true)
+    expect(MillerRabin.isPrime(17)).toBe(true)
+    expect(MillerRabin.isPrime(19)).toBe(true)
+  })
+
+  it('primeCount for single ranges', () => {
+    expect(MillerRabin.primeCount(11)).toBe(4)
+    expect(MillerRabin.primeCount(12)).toBe(5)
+    expect(MillerRabin.primeCount(13)).toBe(5)
+    expect(MillerRabin.primeCount(14)).toBe(6)
+  })
+
+  it('primeCount for boundary values', () => {
+    expect(MillerRabin.primeCount(1)).toBe(0)
+    expect(MillerRabin.primeCount(2)).toBe(0)
+    expect(MillerRabin.primeCount(3)).toBe(1)
+    expect(MillerRabin.primeCount(4)).toBe(2)
+  })
+
+  it('handles even numbers correctly', () => {
+    expect(MillerRabin.isPrime(2)).toBe(true)
+    expect(MillerRabin.isPrime(4)).toBe(false)
+    expect(MillerRabin.isPrime(6)).toBe(false)
+    expect(MillerRabin.isPrime(8)).toBe(false)
+    expect(MillerRabin.isPrime(10)).toBe(false)
+  })
+
+  it('handles odd numbers correctly', () => {
+    expect(MillerRabin.isPrime(3)).toBe(true)
+    expect(MillerRabin.isPrime(5)).toBe(true)
+    expect(MillerRabin.isPrime(7)).toBe(true)
+    expect(MillerRabin.isPrime(9)).toBe(false)
+    expect(MillerRabin.isPrime(15)).toBe(false)
+  })
+
+  it('identifies semiprimes as composite', () => {
+    expect(MillerRabin.isPrime(6)).toBe(false)
+    expect(MillerRabin.isPrime(15)).toBe(false)
+    expect(MillerRabin.isPrime(21)).toBe(false)
+    expect(MillerRabin.isPrime(35)).toBe(false)
+  })
+
+  it('primeCount for larger ranges', () => {
+    expect(MillerRabin.primeCount(50)).toBe(15)
+    expect(MillerRabin.primeCount(75)).toBe(21)
+    expect(MillerRabin.primeCount(150)).toBe(35)
+  })
+
+  it('nextPrime for very small values', () => {
+    expect(MillerRabin.nextPrime(-100)).toBe(2)
+    expect(MillerRabin.nextPrime(-1)).toBe(2)
+    expect(MillerRabin.nextPrime(0)).toBe(2)
+    expect(MillerRabin.nextPrime(1)).toBe(2)
+  })
+
+  it('prevPrime for very small values', () => {
+    expect(MillerRabin.prevPrime(-100)).toBe(-1)
+    expect(MillerRabin.prevPrime(-1)).toBe(-1)
+    expect(MillerRabin.prevPrime(0)).toBe(-1)
+    expect(MillerRabin.prevPrime(1)).toBe(-1)
   })
 })

@@ -76,31 +76,150 @@ describe('LongestIncreasingSubsequence', () => {
     expect(lis.length).toBe(5)
   })
 
-  it('handles empty array', () => {
-    expect(LongestIncreasingSubsequence.find([])).toEqual([])
+  it('handles strictly decreasing', () => {
+    const lis = LongestIncreasingSubsequence.find([5, 4, 3, 2, 1])
+    expect(lis).toEqual([1])
   })
 
-  it('handles single element', () => {
-    expect(LongestIncreasingSubsequence.find([42])).toEqual([42])
+  it('length for strictly decreasing', () => {
+    expect(LongestIncreasingSubsequence.length([5, 4, 3, 2, 1])).toBe(1)
   })
 
-  it('handles already sorted', () => {
-    expect(LongestIncreasingSubsequence.find([1, 2, 3])).toEqual([1, 2, 3])
+  it('handles negative numbers', () => {
+    const lis = LongestIncreasingSubsequence.find([-5, -1, -3, -2, -4])
+    expect(lis.length).toBe(3)
   })
 
-  it('handles single element', () => {
-    expect(LongestIncreasingSubsequence.find([42])).toEqual([42])
+  it('length for negative numbers', () => {
+    expect(LongestIncreasingSubsequence.length([-5, -1, -3, -2, -4])).toBe(3)
   })
 
-  it('handles empty array', () => {
-    expect(LongestIncreasingSubsequence.find([])).toEqual([])
+  it('handles mixed positive and negative', () => {
+    const lis = LongestIncreasingSubsequence.find([-5, 0, 5, -3, 2])
+    expect(lis.length).toBe(3)
   })
 
-  it('handles single element', () => {
-    expect(LongestIncreasingSubsequence.find([5])).toEqual([5])
+  it('find for alternating sequence', () => {
+    const lis = LongestIncreasingSubsequence.find([1, 3, 2, 4, 3, 5])
+    expect(lis.length).toBe(4)
   })
 
-  it('handles empty array', () => {
-    expect(LongestIncreasingSubsequence.find([])).toEqual([])
+  it('length for alternating sequence', () => {
+    expect(LongestIncreasingSubsequence.length([1, 3, 2, 4, 3, 5])).toBe(4)
+  })
+
+  it('handles large numbers', () => {
+    const lis = LongestIncreasingSubsequence.find([1000000, 999999, 1000001, 999998])
+    expect(lis.length).toBe(2)
+  })
+
+  it('length for large numbers', () => {
+    expect(LongestIncreasingSubsequence.length([1000000, 999999, 1000001, 999998])).toBe(2)
+  })
+
+  it('handles array with zeros', () => {
+    const lis = LongestIncreasingSubsequence.find([0, 1, 0, 2, 0, 3])
+    expect(lis.length).toBe(4)
+  })
+
+  it('length for array with zeros', () => {
+    expect(LongestIncreasingSubsequence.length([0, 1, 0, 2, 0, 3])).toBe(4)
+  })
+
+  it('lengthNonDecreasing for all equal elements', () => {
+    expect(LongestIncreasingSubsequence.lengthNonDecreasing([5, 5, 5, 5])).toBe(4)
+  })
+
+  it('lengthNonDecreasing for mixed sequence', () => {
+    expect(LongestIncreasingSubsequence.lengthNonDecreasing([1, 2, 2, 3, 1, 4])).toBe(5)
+  })
+
+  it('lengthNonDecreasing for strictly increasing', () => {
+    expect(LongestIncreasingSubsequence.lengthNonDecreasing([1, 2, 3, 4])).toBe(4)
+  })
+
+  it('lengthNonDecreasing for single element', () => {
+    expect(LongestIncreasingSubsequence.lengthNonDecreasing([42])).toBe(1)
+  })
+
+  it('countLIS for multiple LIS', () => {
+    expect(LongestIncreasingSubsequence.countLIS([1, 2, 4, 3, 5, 4, 7, 2])).toBe(3)
+  })
+
+  it('countLIS for no LIS (empty)', () => {
+    expect(LongestIncreasingSubsequence.countLIS([])).toBe(0)
+  })
+
+  it('countLIS for all same elements', () => {
+    expect(LongestIncreasingSubsequence.countLIS([5, 5, 5, 5])).toBe(4)
+  })
+
+  it('countLIS for decreasing sequence', () => {
+    expect(LongestIncreasingSubsequence.countLIS([5, 4, 3, 2, 1])).toBe(5)
+  })
+
+  it('find returns valid increasing sequence', () => {
+    const lis = LongestIncreasingSubsequence.find([10, 9, 2, 5, 3, 7, 101, 18])
+    for (let i = 1; i < lis.length; i++) {
+      expect(lis[i]).toBeGreaterThan(lis[i - 1])
+    }
+  })
+
+  it('find preserves relative order', () => {
+    const arr = [3, 1, 4, 1, 5, 9, 2, 6]
+    const lis = LongestIncreasingSubsequence.find(arr)
+    let lastIndex = -1
+    for (const val of lis) {
+      const index = arr.indexOf(val, lastIndex + 1)
+      expect(index).toBeGreaterThan(lastIndex)
+      lastIndex = index
+    }
+  })
+
+  it('handles array with two elements', () => {
+    const lis = LongestIncreasingSubsequence.find([1, 2])
+    expect(lis).toEqual([1, 2])
+  })
+
+  it('handles array with two decreasing elements', () => {
+    const lis = LongestIncreasingSubsequence.find([2, 1])
+    expect(lis).toEqual([1])
+  })
+
+  it('length for two elements', () => {
+    expect(LongestIncreasingSubsequence.length([1, 2])).toBe(2)
+  })
+
+  it('length for two decreasing elements', () => {
+    expect(LongestIncreasingSubsequence.length([2, 1])).toBe(1)
+  })
+
+  it('handles very large array', () => {
+    const arr = Array.from({ length: 1000 }, (_, i) => 1000 - i)
+    expect(LongestIncreasingSubsequence.length(arr)).toBe(1)
+  })
+
+  it('find for very large array', () => {
+    const arr = Array.from({ length: 100 }, (_, i) => i)
+    const lis = LongestIncreasingSubsequence.find(arr)
+    expect(lis.length).toBe(100)
+  })
+
+  it('handles array with floating point numbers', () => {
+    const lis = LongestIncreasingSubsequence.find([1.1, 2.2, 1.5, 3.3])
+    expect(lis.length).toBe(3)
+  })
+
+  it('length for floating point numbers', () => {
+    expect(LongestIncreasingSubsequence.length([1.1, 2.2, 1.5, 3.3])).toBe(3)
+  })
+
+  it('find handles array with single negative number', () => {
+    const lis = LongestIncreasingSubsequence.find([-42])
+    expect(lis).toEqual([-42])
+  })
+
+  it('length handles array with single negative number', () => {
+    expect(LongestIncreasingSubsequence.length([-42])).toBe(1)
   })
 })

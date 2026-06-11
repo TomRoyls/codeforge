@@ -70,15 +70,6 @@ describe('Manacher2D', () => {
     expect(result.len).toBe(1)
   })
 
-  it('2x2 all same', () => {
-    const grid = [
-      ['a', 'a'],
-      ['a', 'a'],
-    ]
-    const result = Manacher2D.longestPalindromicSubgrid(grid)
-    expect(result.len).toBeGreaterThanOrEqual(1)
-  })
-
   it('finds 5x5 palindrome', () => {
     const grid = [
       ['x', 'x', 'x', 'x', 'x'],
@@ -131,12 +122,6 @@ describe('Manacher2D', () => {
     expect(result.len).toBeGreaterThanOrEqual(1)
   })
 
-  it('handles 1x1 grid', () => {
-    const grid = [['x']]
-    const result = Manacher2D.longestPalindromicSubgrid(grid)
-    expect(result.len).toBeGreaterThanOrEqual(1)
-  })
-
   it('2x2 uniform grid has palindrome of length at least 1', () => {
     const grid = [['a', 'a'], ['a', 'a']]
     const result = Manacher2D.longestPalindromicSubgrid(grid)
@@ -175,6 +160,222 @@ describe('Manacher2D', () => {
 
   it('all same chars in 2x2 has palindrome', () => {
     const grid = [['a', 'a'], ['a', 'a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('returns object with correct properties', () => {
+    const grid = [['a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result).toHaveProperty('len')
+    expect(result).toHaveProperty('r')
+    expect(result).toHaveProperty('c')
+  })
+
+  it('row coordinate is non-negative', () => {
+    const grid = [['a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.r).toBeGreaterThanOrEqual(0)
+  })
+
+  it('column coordinate is non-negative', () => {
+    const grid = [['a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.c).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles 3x1 grid', () => {
+    const grid = [['a'], ['b'], ['c']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(1)
+  })
+
+  it('handles 1x3 grid', () => {
+    const grid = [['a', 'b', 'c']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(1)
+  })
+
+  it('handles 4x4 all same', () => {
+    const grid = [
+      ['a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('finds palindrome at corner', () => {
+    const grid = [
+      ['a', 'b', 'c'],
+      ['d', 'e', 'f'],
+      ['g', 'h', 'i'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles 2x2 different chars', () => {
+    const grid = [
+      ['a', 'b'],
+      ['c', 'd'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(1)
+  })
+
+  it('handles grid with special characters', () => {
+    const grid = [
+      ['@', '#'],
+      ['#', '@'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles 5x5 all same', () => {
+    const grid = [
+      ['x', 'x', 'x', 'x', 'x'],
+      ['x', 'x', 'x', 'x', 'x'],
+      ['x', 'x', 'x', 'x', 'x'],
+      ['x', 'x', 'x', 'x', 'x'],
+      ['x', 'x', 'x', 'x', 'x'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles 3x4 grid', () => {
+    const grid = [
+      ['a', 'b', 'c', 'd'],
+      ['e', 'f', 'g', 'h'],
+      ['i', 'j', 'k', 'l'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles 4x3 grid', () => {
+    const grid = [
+      ['a', 'b', 'c'],
+      ['d', 'e', 'f'],
+      ['g', 'h', 'i'],
+      ['j', 'k', 'l'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('finds palindrome in 7x7 grid', () => {
+    const grid = [
+      ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+      ['x', 'a', 'b', 'c', 'b', 'a', 'x'],
+      ['x', 'b', 'd', 'e', 'd', 'b', 'x'],
+      ['x', 'c', 'e', 'f', 'e', 'c', 'x'],
+      ['x', 'b', 'd', 'e', 'd', 'b', 'x'],
+      ['x', 'a', 'b', 'c', 'b', 'a', 'x'],
+      ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(7)
+  })
+
+  it('handles grid with numbers as strings', () => {
+    const grid = [
+      ['1', '2'],
+      ['2', '1'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles 6x6 all same', () => {
+    const grid = [
+      ['a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles grid with single row and multiple columns', () => {
+    const grid = [['a', 'a', 'a', 'a', 'a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles grid with single column and multiple rows', () => {
+    const grid = [['a'], ['a'], ['a'], ['a'], ['a']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles grid with alternating pattern', () => {
+    const grid = [
+      ['a', 'b', 'a'],
+      ['b', 'a', 'b'],
+      ['a', 'b', 'a'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('finds palindrome with center at edge', () => {
+    const grid = [
+      ['a', 'b'],
+      ['c', 'a'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles 8x8 all same', () => {
+    const grid = [
+      ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
+      ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles 2x5 grid', () => {
+    const grid = [
+      ['a', 'b', 'c', 'd', 'e'],
+      ['a', 'b', 'c', 'd', 'e'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles 5x2 grid', () => {
+    const grid = [
+      ['a', 'b'],
+      ['c', 'd'],
+      ['e', 'f'],
+      ['g', 'h'],
+      ['i', 'j'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles grid with unicode characters', () => {
+    const grid = [
+      ['α', 'β'],
+      ['β', 'α'],
+    ]
     const result = Manacher2D.longestPalindromicSubgrid(grid)
     expect(result.len).toBeGreaterThanOrEqual(1)
   })

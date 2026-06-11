@@ -156,4 +156,119 @@ describe('KahnTopologicalSort', () => {
     const sort = new KahnTopologicalSort([[]])
     expect(sort.order).toEqual([0])
   })
+
+  it('toString returns descriptive string', () => {
+    const sort = new KahnTopologicalSort([[1], []])
+    expect(sort.toString()).toContain('order.length=2')
+    expect(sort.toString()).toContain('hasCycle=false')
+  })
+
+  it('toString with cycle', () => {
+    const sort = new KahnTopologicalSort([[0]])
+    expect(sort.toString()).toContain('hasCycle=true')
+  })
+
+  it('toJSON returns order and cycle info', () => {
+    const sort = new KahnTopologicalSort([[1], []])
+    const json = sort.toJSON() as Record<string, unknown>
+    expect(json.order).toEqual([0, 1])
+    expect(json.hasCycle).toBe(false)
+    expect(json.cycleNodes).toEqual([])
+  })
+
+  it('toJSON with cycle', () => {
+    const sort = new KahnTopologicalSort([[1], [0]])
+    const json = sort.toJSON() as Record<string, unknown>
+    expect(json.hasCycle).toBe(true)
+    expect(json.cycleNodes).toEqual([0, 1])
+  })
+
+  it('clone creates independent copy', () => {
+    const sort = new KahnTopologicalSort([[1], []])
+    const c = sort.clone()
+    expect(c.order).toEqual(sort.order)
+    expect(c.hasCycle).toBe(sort.hasCycle)
+    expect(c.equals(sort)).toBe(true)
+  })
+
+  it('clone is independent', () => {
+    const sort = new KahnTopologicalSort([[1], []])
+    const c = sort.clone()
+    expect(c).not.toBe(sort)
+  })
+
+  it('equals returns true for same sort', () => {
+    const s1 = new KahnTopologicalSort([[1], []])
+    const s2 = new KahnTopologicalSort([[1], []])
+    expect(s1.equals(s2)).toBe(true)
+  })
+
+  it('equals returns false for different order', () => {
+    const s1 = new KahnTopologicalSort([[1], []])
+    const s2 = new KahnTopologicalSort([[], [0]])
+    expect(s1.equals(s2)).toBe(false)
+  })
+
+  it('equals returns false for cycle vs no cycle', () => {
+    const s1 = new KahnTopologicalSort([[1], []])
+    const s2 = new KahnTopologicalSort([[1], [0]])
+    expect(s1.equals(s2)).toBe(false)
+  })
+
+  it('equals returns false for non-KahnTopologicalSort', () => {
+    const sort = new KahnTopologicalSort([[]])
+    expect(sort.equals(null)).toBe(false)
+    expect(sort.equals({})).toBe(false)
+  })
+
+  it('longestPath with branching', () => {
+    const adj = [[1, 2], [3], [3], []]
+    const weights = [1, 5, 2, 3]
+    const result = KahnTopologicalSort.longestPath(adj, weights)
+    expect(result).toBeGreaterThan(0)
+  })
+
+  it('longestPath with zero weights', () => {
+    const adj = [[1], []]
+    expect(KahnTopologicalSort.longestPath(adj, [0, 0])).toBe(0)
+  })
+
+  it('longestPath single node', () => {
+    expect(KahnTopologicalSort.longestPath([[]], [5])).toBe(5)
+  })
+
+  it('handles multiple valid orderings', () => {
+    const adj = [[2], [2], []]
+    const sort = new KahnTopologicalSort(adj)
+    expect(sort.hasCycle).toBe(false)
+    expect(sort.order.length).toBe(3)
+    expect(sort.order.indexOf(2)).toBeGreaterThan(sort.order.indexOf(0))
+    expect(sort.order.indexOf(2)).toBeGreaterThan(sort.order.indexOf(1))
+  })
+
+  it('handles large star', () => {
+    const n = 50
+    const adj: number[][] = Array.from({ length: n }, () => [])
+    for (let i = 1; i < n; i++) adj[0]!.push(i)
+    const sort = new KahnTopologicalSort(adj)
+    expect(sort.hasCycle).toBe(false)
+    expect(sort.order[0]).toBe(0)
+  })
+
+  it('cycleNodes for partial cycle', () => {
+    const adj = [[1], [2], [1]]
+    const sort = new KahnTopologicalSort(adj)
+    expect(sort.hasCycle).toBe(true)
+    expect(sort.cycleNodes).toContain(1)
+    expect(sort.cycleNodes).toContain(2)
+  })
+
+  it('handles two independent chains', () => {
+    const adj = [[1], [], [3], []]
+    const sort = new KahnTopologicalSort(adj)
+    expect(sort.hasCycle).toBe(false)
+    expect(sort.order.length).toBe(4)
+    expect(sort.order.indexOf(0)).toBeLessThan(sort.order.indexOf(1))
+    expect(sort.order.indexOf(2)).toBeLessThan(sort.order.indexOf(3))
+  })
 })

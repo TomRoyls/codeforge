@@ -69,35 +69,138 @@ describe('LongestCommonSubstring', () => {
     expect(LongestCommonSubstring.find('xyzabc', 'abc')).toBe('abc')
   })
 
-  it('handles identical strings', () => {
-    expect(LongestCommonSubstring.find('hello', 'hello')).toBe('hello')
+  it('handles single character in both strings', () => {
+    expect(LongestCommonSubstring.find('a', 'a')).toBe('a')
   })
 
-  it('handles no common substring', () => {
-    expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
+  it('handles single character no match', () => {
+    expect(LongestCommonSubstring.find('a', 'b')).toBe('')
   })
 
-  it('finds common substring at start', () => {
-    expect(LongestCommonSubstring.find('abcdef', 'abcxyz')).toBe('abc')
+  it('findLength with identical strings', () => {
+    expect(LongestCommonSubstring.findLength('hello', 'hello')).toBe(5)
   })
 
-  it('no common returns empty', () => {
-    expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
+  it('findLength with empty strings', () => {
+    expect(LongestCommonSubstring.findLength('', 'abc')).toBe(0)
+    expect(LongestCommonSubstring.findLength('abc', '')).toBe(0)
   })
 
-  it('identical strings returns the string', () => {
-    expect(LongestCommonSubstring.find('abc', 'abc')).toBe('abc')
+  it('findLength with both empty', () => {
+    expect(LongestCommonSubstring.findLength('', '')).toBe(0)
   })
 
-  it('no common returns empty', () => {
-    expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
+  it('findLength with single char match', () => {
+    expect(LongestCommonSubstring.findLength('abc', 'cde')).toBe(1)
   })
 
-  it('identical strings return full string', () => {
-    expect(LongestCommonSubstring.find('abc', 'abc')).toBe('abc')
+  it('findAll with identical strings', () => {
+    const results = LongestCommonSubstring.findAll('hello', 'hello')
+    expect(results).toEqual(['hello'])
   })
 
-  it('no common substring returns empty', () => {
-    expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
+  it('findAll with empty strings', () => {
+    expect(LongestCommonSubstring.findAll('', 'abc')).toEqual([])
+    expect(LongestCommonSubstring.findAll('abc', '')).toEqual([])
+  })
+
+  it('findAll with both empty', () => {
+    expect(LongestCommonSubstring.findAll('', '')).toEqual([])
+  })
+
+  it('findAll with single char match', () => {
+    const results = LongestCommonSubstring.findAll('abc', 'c')
+    expect(results).toEqual(['c'])
+  })
+
+  it('findAll with multiple occurrences', () => {
+    const results = LongestCommonSubstring.findAll('ABCABC', 'ABC')
+    expect(results).toContain('ABC')
+    expect(results.length).toBe(1)
+  })
+
+  it('ofMany with no common substring', () => {
+    expect(LongestCommonSubstring.ofMany(['abc', 'xyz', '123'])).toBe('')
+  })
+
+  it('ofMany with two strings', () => {
+    expect(LongestCommonSubstring.ofMany(['abcdef', 'cdefgh'])).toBe('cdef')
+  })
+
+  it('ofMany with repeated pattern', () => {
+    expect(LongestCommonSubstring.ofMany(['ABABAB', 'BABABA', 'ABAB'])).toBe('ABAB')
+  })
+
+  it('handles strings with spaces', () => {
+    expect(LongestCommonSubstring.find('hello world', 'world peace')).toBe('world')
+  })
+
+  it('handles strings with special characters', () => {
+    expect(LongestCommonSubstring.find('hello!@#', '!@#world')).toBe('!@#')
+  })
+
+  it('handles strings with numbers', () => {
+    expect(LongestCommonSubstring.find('abc123', '123xyz')).toBe('123')
+  })
+
+  it('handles case sensitivity', () => {
+    expect(LongestCommonSubstring.find('Hello', 'hello')).toBe('ello')
+  })
+
+  it('handles mixed case with match', () => {
+    expect(LongestCommonSubstring.find('HelloWorld', 'WorldPeace')).toBe('World')
+  })
+
+  it('finds longest when multiple matches exist', () => {
+    expect(LongestCommonSubstring.find('abcxyzdef', 'xyz123')).toBe('xyz')
+  })
+
+  it('handles very long strings', () => {
+    const a = 'a'.repeat(1000) + 'match' + 'b'.repeat(1000)
+    const b = 'c'.repeat(1000) + 'match' + 'd'.repeat(1000)
+    expect(LongestCommonSubstring.find(a, b)).toBe('match')
+  })
+
+  it('handles one character longer than the other', () => {
+    expect(LongestCommonSubstring.find('a', 'ab')).toBe('a')
+    expect(LongestCommonSubstring.find('ab', 'a')).toBe('a')
+  })
+
+  it('findLength for strings with spaces', () => {
+    expect(LongestCommonSubstring.findLength('hello world', 'world peace')).toBe(5)
+  })
+
+  it('findAll finds all distinct longest substrings', () => {
+    const results = LongestCommonSubstring.findAll('ABCDEFG', 'DEFGABC')
+    expect(results.length).toBeGreaterThan(0)
+  })
+
+  it('ofMany handles case where common substring shrinks', () => {
+    expect(LongestCommonSubstring.ofMany(['abcde', 'bcdef', 'cdefg', 'defgh'])).toBe('de')
+  })
+
+  it('handles overlapping matches', () => {
+    expect(LongestCommonSubstring.find('aaaa', 'aa')).toBe('aa')
+  })
+
+  it('findLength with overlapping matches', () => {
+    expect(LongestCommonSubstring.findLength('aaaa', 'aa')).toBe(2)
+  })
+
+  it('findAll with overlapping matches', () => {
+    const results = LongestCommonSubstring.findAll('aaaa', 'aa')
+    expect(results).toEqual(['aa'])
+  })
+
+  it('handles strings with only one common character at different positions', () => {
+    expect(LongestCommonSubstring.find('abc', 'defghij')).toBe('')
+  })
+
+  it('finds common substring in middle of both strings', () => {
+    expect(LongestCommonSubstring.find('startMIDDLEend', 'finishMIDDLEdone')).toBe('MIDDLE')
+  })
+
+  it('handles strings with consecutive repeated substrings', () => {
+    expect(LongestCommonSubstring.find('abcabcabc', 'abc')).toBe('abc')
   })
 })
