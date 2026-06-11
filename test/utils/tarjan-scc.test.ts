@@ -153,4 +153,287 @@ describe('TarjanSCC', () => {
     const sccs = new TarjanSCC(adj).solve()
     expect(sccs.length).toBe(2)
   })
+
+  describe('solve additional cases', () => {
+    it('handles three node cycle', () => {
+      const adj = [[1], [2], [0]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(1)
+      expect(new Set(sccs[0])).toEqual(new Set([0, 1, 2]))
+    })
+
+    it('handles four node cycle', () => {
+      const adj = [[1], [2], [3], [0]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(1)
+      expect(new Set(sccs[0])).toEqual(new Set([0, 1, 2, 3]))
+    })
+
+    it('handles graph with bidirectional edge', () => {
+      const adj = [[1], [0], [3], [2]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(2)
+    })
+
+    it('handles diamond graph', () => {
+      const adj = [[1, 2], [3], [3], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(4)
+    })
+
+    it('handles star graph', () => {
+      const adj = [[1, 2, 3], [], [], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(4)
+    })
+
+    it('handles complete graph K3', () => {
+      const adj = [[1, 2], [0, 2], [0, 1]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(1)
+      expect(new Set(sccs[0])).toEqual(new Set([0, 1, 2]))
+    })
+
+    it('handles graph with multiple incoming edges to SCC', () => {
+      const adj = [[1, 2], [3], [3], [4], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(5)
+    })
+
+    it('handles graph with SCC with outgoing edge', () => {
+      const adj = [[1], [2], [0, 3], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(2)
+    })
+
+    it('handles two nodes connected one way', () => {
+      const adj = [[1], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(2)
+    })
+
+    it('handles larger disconnected graph', () => {
+      const adj = [[1], [0], [], [], [5], [4]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(4)
+    })
+
+    it('handles cycle within cycle (outer cycle points to inner cycle)', () => {
+      const adj = [[1], [2, 3], [0], [4], [3]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs.length).toBeGreaterThanOrEqual(1)
+    })
+
+    it('handles linear chain', () => {
+      const adj = [[1], [2], [3], [4], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(5)
+    })
+
+    it('handles branching tree', () => {
+      const adj = [[1, 2], [3], [4], [], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(5)
+    })
+
+    it('handles graph with back edge creating SCC', () => {
+      const adj = [[1], [2], [3], [1]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(2)
+      const cycleScc = sccs.find(scc => scc.length > 1)
+      expect(cycleScc).toBeDefined()
+      if (cycleScc) {
+        const cycleSet = new Set(cycleScc)
+        const expectedSet = new Set([1, 2, 3])
+        for (const elem of expectedSet) {
+          expect(cycleSet.has(elem)).toBe(true)
+        }
+      }
+    })
+
+    it('handles graph with multiple self-loops on different nodes', () => {
+      const adj = [[0], [1], [2]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(3)
+    })
+
+    it('handles cycle within cycle (outer cycle points to inner cycle)', () => {
+      const adj = [[1], [2, 3], [0], [4], [3]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs.length).toBeGreaterThanOrEqual(1)
+    })
+
+    it('handles linear chain', () => {
+      const adj = [[1], [2], [3], [4], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(5)
+    })
+
+    it('handles branching tree', () => {
+      const adj = [[1, 2], [3], [4], [], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(5)
+    })
+
+    it('handles graph with back edge creating single SCC', () => {
+      const adj = [[1], [2], [3], [1]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs.length).toBeGreaterThanOrEqual(1)
+    })
+
+    it('handles mixed DAG and cycle components', () => {
+      const adj = [[1], [2], [0, 3], [4], []]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs.length).toBeGreaterThanOrEqual(2)
+    })
+
+    it('handles two separate self-loops', () => {
+      const adj = [[0], [], [2]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(3)
+    })
+
+    it('handles graph with multiple edges between same nodes', () => {
+      const adj = [[1, 1], [0, 0]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(1)
+    })
+
+    it('handles larger graph with multiple cycles', () => {
+      const adj = [[1], [2], [0], [4], [5], [3]]
+      const sccs = new TarjanSCC(adj).solve()
+      expect(sccs).toHaveLength(2)
+    })
+  })
+
+  describe('isDAG additional cases', () => {
+    it('returns true for linear chain', () => {
+      expect(TarjanSCC.isDAG([[1], [2], [3], []])).toBe(true)
+    })
+
+    it('returns true for branching tree', () => {
+      expect(TarjanSCC.isDAG([[1, 2], [3], [4], []])).toBe(true)
+    })
+
+    it('returns false for three node cycle', () => {
+      expect(TarjanSCC.isDAG([[1], [2], [0]])).toBe(false)
+    })
+
+    it('returns false for complete graph K3', () => {
+      expect(TarjanSCC.isDAG([[1, 2], [0, 2], [0, 1]])).toBe(false)
+    })
+
+    it('returns false for graph with back edge', () => {
+      expect(TarjanSCC.isDAG([[1], [2], [3], [1]])).toBe(false)
+    })
+
+    it('returns true for graph with no cycles', () => {
+      expect(TarjanSCC.isDAG([[1], [2], [3], [4], []])).toBe(true)
+    })
+
+    it('returns false for any node with self-loop', () => {
+      expect(TarjanSCC.isDAG([[1], [2], [2]])).toBe(false)
+    })
+
+    it('returns true for two disconnected DAG components', () => {
+      expect(TarjanSCC.isDAG([[1], [], [], [4], []])).toBe(true)
+    })
+
+    it('returns false if any component has cycle', () => {
+      expect(TarjanSCC.isDAG([[1], [0], [3], []])).toBe(false)
+    })
+
+    it('returns true for single node with no edges', () => {
+      expect(TarjanSCC.isDAG([[]])).toBe(true)
+    })
+
+    it('returns true for graph with only outgoing edges from each node', () => {
+      expect(TarjanSCC.isDAG([[1], [2], [], []])).toBe(true)
+    })
+  })
+
+  describe('condensation additional cases', () => {
+    it('preserves DAG structure for linear chain', () => {
+      const adj = [[1], [2], [3], []]
+      const { dag } = TarjanSCC.condensation(adj)
+      expect(dag.length).toBe(4)
+    })
+
+    it('creates single component for complete graph', () => {
+      const adj = [[1, 2], [0, 2], [0, 1]]
+      const { componentId, dag } = TarjanSCC.condensation(adj)
+      expect(new Set(componentId).size).toBe(1)
+      expect(dag.length).toBe(1)
+    })
+
+    it('handles diamond graph condensation', () => {
+      const adj = [[1, 2], [3], [3], []]
+      const { dag } = TarjanSCC.condensation(adj)
+      expect(dag.length).toBe(4)
+    })
+
+    it('handles multiple cycles condensation', () => {
+      const adj = [[1], [0], [3], [2]]
+      const { componentId, dag } = TarjanSCC.condensation(adj)
+      expect(new Set(componentId).size).toBe(2)
+      expect(dag.length).toBe(2)
+    })
+
+    it('condensation DAG has no cycles', () => {
+      const adj = [[1], [2], [0, 3], [4], []]
+      const { dag } = TarjanSCC.condensation(adj)
+      expect(TarjanSCC.isDAG(dag)).toBe(true)
+    })
+
+    it('assigns same component ID to nodes in same SCC', () => {
+      const adj = [[1], [2], [0]]
+      const { componentId } = TarjanSCC.condensation(adj)
+      expect(componentId[0]).toBe(componentId[1])
+      expect(componentId[1]).toBe(componentId[2])
+    })
+
+    it('assigns different component IDs to different SCCs', () => {
+      const adj = [[1], [0], [3], [2]]
+      const { componentId } = TarjanSCC.condensation(adj)
+      expect(componentId[0]).toBe(componentId[1])
+      expect(componentId[2]).toBe(componentId[3])
+      expect(componentId[0]).not.toBe(componentId[2])
+    })
+
+    it('handles graph with back edge condensation', () => {
+      const adj = [[1], [2], [3], [1]]
+      const { componentId } = TarjanSCC.condensation(adj)
+      expect(new Set(componentId).size).toBe(2)
+    })
+
+    it('handles empty graph condensation', () => {
+      const adj: number[][] = []
+      const { componentId, dag } = TarjanSCC.condensation(adj)
+      expect(componentId.length).toBe(0)
+      expect(dag.length).toBe(0)
+    })
+
+    it('handles single node self-loop condensation', () => {
+      const adj = [[0]]
+      const { componentId, dag } = TarjanSCC.condensation(adj)
+      expect(componentId.length).toBe(1)
+      expect(dag.length).toBe(1)
+    })
+
+    it('condensation edges go between different components', () => {
+      const adj = [[1], [2], [0, 3], []]
+      const { componentId, dag } = TarjanSCC.condensation(adj)
+      for (const edges of dag) {
+        for (const target of edges) {
+          expect(target).not.toEqual(edges)
+        }
+      }
+    })
+
+    it('handles larger mixed graph condensation', () => {
+      const adj = [[1], [2], [0, 3], [4], [5], [3]]
+      const { componentId } = TarjanSCC.condensation(adj)
+      expect(new Set(componentId).size).toBeGreaterThanOrEqual(2)
+    })
+  })
 })

@@ -100,11 +100,6 @@ describe('PairHeap', () => {
     expect(h.pop()?.val).toBe(1)
   })
 
-  it('pop empty returns undefined', () => {
-    const h = new PairHeap<number>()
-    expect(h.pop()).toBeUndefined()
-  })
-
   it('handles push after pop to empty', () => {
     const h = new PairHeap<number>()
     h.push(1)
@@ -155,37 +150,282 @@ describe('PairHeap', () => {
     expect(h.size).toBe(0)
   })
 
-  it('push and pop in order', () => {
+  it('isEmpty on new heap is true', () => {
+    const h = new PairHeap<number>()
+    expect(h.isEmpty).toBe(true)
+  })
+
+  it('isEmpty becomes false after push', () => {
+    const h = new PairHeap<number>()
+    h.push(1)
+    expect(h.isEmpty).toBe(false)
+  })
+
+  it('isEmpty becomes true after clearing', () => {
+    const h = new PairHeap<number>()
+    h.push(1)
+    h.push(2)
+    h.pop()
+    h.pop()
+    expect(h.isEmpty).toBe(true)
+  })
+
+  it('isEmpty on new heap is true', () => {
+    const h = new PairHeap<number>()
+    expect(h.isEmpty).toBe(true)
+  })
+
+  it('handles negative numbers', () => {
+    const h = new PairHeap<number>()
+    h.push(-5)
+    h.push(10)
+    h.push(-3)
+    h.push(7)
+    expect(h.pop()).toBe(-5)
+    expect(h.pop()).toBe(-3)
+    expect(h.pop()).toBe(7)
+    expect(h.pop()).toBe(10)
+  })
+
+  it('handles floating point numbers', () => {
+    const h = new PairHeap<number>()
+    h.push(3.14)
+    h.push(2.71)
+    h.push(1.41)
+    expect(h.pop()).toBe(1.41)
+    expect(h.pop()).toBe(2.71)
+    expect(h.pop()).toBe(3.14)
+  })
+
+  it('handles zero values', () => {
+    const h = new PairHeap<number>()
+    h.push(0)
+    h.push(-1)
+    h.push(1)
+    expect(h.pop()).toBe(-1)
+    expect(h.pop()).toBe(0)
+    expect(h.pop()).toBe(1)
+  })
+
+  it('handles large number of elements', () => {
+    const h = new PairHeap<number>()
+    for (let i = 0; i < 1000; i++) {
+      h.push(Math.random() * 1000)
+    }
+    let prev = -Infinity
+    let count = 0
+    while (!h.isEmpty) {
+      const val = h.pop()!
+      expect(val).toBeGreaterThanOrEqual(prev)
+      prev = val
+      count++
+    }
+    expect(count).toBe(1000)
+  })
+
+  it('handles reverse sorted input', () => {
+    const h = new PairHeap<number>()
+    for (let i = 50; i >= 1; i--) {
+      h.push(i)
+    }
+    for (let i = 1; i <= 50; i++) {
+      expect(h.pop()).toBe(i)
+    }
+  })
+
+  it('handles already sorted input', () => {
+    const h = new PairHeap<number>()
+    for (let i = 1; i <= 50; i++) {
+      h.push(i)
+    }
+    for (let i = 1; i <= 50; i++) {
+      expect(h.pop()).toBe(i)
+    }
+  })
+
+  it('handles alternating min max pattern', () => {
+    const h = new PairHeap<number>()
+    for (let i = 0; i < 20; i++) {
+      h.push(i % 2 === 0 ? 100 - i : i)
+    }
+    expect(h.pop()).toBe(1)
+  })
+
+  it('peek returns same value multiple times', () => {
     const h = new PairHeap<number>()
     h.push(5)
+    h.push(1)
     h.push(3)
-    h.push(7)
-    expect(h.pop()).toBe(3)
+    expect(h.peek()).toBe(1)
+    expect(h.peek()).toBe(1)
+    expect(h.peek()).toBe(1)
   })
 
-  it('empty heap pop returns undefined', () => {
+  it('peek on empty returns undefined', () => {
     const h = new PairHeap<number>()
-    expect(h.pop()).toBeUndefined()
+    expect(h.peek()).toBeUndefined()
   })
 
-  it('push and pop returns min', () => {
+  it('handles array of equal values', () => {
+    const h = new PairHeap<number>()
+    for (let i = 0; i < 10; i++) {
+      h.push(42)
+    }
+    for (let i = 0; i < 10; i++) {
+      expect(h.pop()).toBe(42)
+    }
+  })
+
+  it('custom comparator for date objects', () => {
+    const h = new PairHeap<Date>((a, b) => a.getTime() - b.getTime())
+    const dates = [
+      new Date('2023-01-01'),
+      new Date('2023-03-01'),
+      new Date('2023-02-01'),
+    ]
+    for (const d of dates) h.push(d)
+    expect(h.pop()?.toISOString()).toBe('2023-01-01T00:00:00.000Z')
+  })
+
+  it('handles very large numbers', () => {
+    const h = new PairHeap<number>()
+    h.push(Number.MAX_SAFE_INTEGER)
+    h.push(Number.MIN_SAFE_INTEGER)
+    h.push(0)
+    expect(h.pop()).toBe(Number.MIN_SAFE_INTEGER)
+    expect(h.pop()).toBe(0)
+    expect(h.pop()).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles Infinity and -Infinity', () => {
+    const h = new PairHeap<number>()
+    h.push(Infinity)
+    h.push(-Infinity)
+    h.push(0)
+    expect(h.pop()).toBe(-Infinity)
+    expect(h.pop()).toBe(0)
+    expect(h.pop()).toBe(Infinity)
+  })
+
+  it('handles mixed positive and negative', () => {
+    const h = new PairHeap<number>()
+    const values = [5, -3, 7, -1, 0, 4, -2]
+    for (const v of values) h.push(v)
+    const sorted = [-3, -2, -1, 0, 4, 5, 7]
+    for (const expected of sorted) {
+      expect(h.pop()).toBe(expected)
+    }
+  })
+
+  it('multiple consecutive peeks', () => {
     const h = new PairHeap<number>()
     h.push(3)
     h.push(1)
     h.push(2)
-    expect(h.pop()).toBe(1)
+    for (let i = 0; i < 10; i++) {
+      expect(h.peek()).toBe(1)
+    }
   })
 
-  it('pop returns undefined for empty heap', () => {
-    const h = new PairHeap<number>()
-    expect(h.pop()).toBeUndefined()
-  })
-
-  it('push and pop returns min', () => {
+  it('interleaved push and peek', () => {
     const h = new PairHeap<number>()
     h.push(5)
-    h.push(3)
+    expect(h.peek()).toBe(5)
+    h.push(2)
+    expect(h.peek()).toBe(2)
     h.push(7)
-    expect(h.pop()).toBe(3)
+    expect(h.peek()).toBe(2)
+  })
+
+  it('size remains accurate after operations', () => {
+    const h = new PairHeap<number>()
+    for (let i = 0; i < 10; i++) {
+      h.push(i)
+      expect(h.size).toBe(i + 1)
+    }
+    for (let i = 9; i >= 0; i--) {
+      h.pop()
+      expect(h.size).toBe(i)
+    }
+  })
+
+  it('handles string comparison with different cases', () => {
+    const h = new PairHeap<string>((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    h.push('Zebra')
+    h.push('apple')
+    h.push('Banana')
+    expect(h.pop()).toBe('apple')
+    expect(h.pop()).toBe('Banana')
+    expect(h.pop()).toBe('Zebra')
+  })
+
+  it('handles empty strings', () => {
+    const h = new PairHeap<string>((a, b) => a.localeCompare(b))
+    h.push('')
+    h.push('a')
+    h.push('')
+    expect(h.pop()).toBe('')
+    expect(h.pop()).toBe('')
+    expect(h.pop()).toBe('a')
+  })
+
+  it('custom comparator for object with multiple properties', () => {
+    type Item = { priority: number; name: string }
+    const h = new PairHeap<Item>((a, b) => a.priority - b.priority)
+    h.push({ priority: 3, name: 'third' })
+    h.push({ priority: 1, name: 'first' })
+    h.push({ priority: 2, name: 'second' })
+    expect(h.pop()?.name).toBe('first')
+    expect(h.pop()?.name).toBe('second')
+    expect(h.pop()?.name).toBe('third')
+  })
+
+  it('handles reverse string order', () => {
+    const h = new PairHeap<string>((a, b) => b.localeCompare(a))
+    h.push('a')
+    h.push('b')
+    h.push('c')
+    expect(h.pop()).toBe('c')
+    expect(h.pop()).toBe('b')
+    expect(h.pop()).toBe('a')
+  })
+
+  it('peek after all pops returns undefined', () => {
+    const h = new PairHeap<number>()
+    h.push(1)
+    h.push(2)
+    h.pop()
+    h.pop()
+    expect(h.peek()).toBeUndefined()
+  })
+
+  it('push same value multiple times', () => {
+    const h = new PairHeap<number>()
+    for (let i = 0; i < 5; i++) {
+      h.push(100)
+    }
+    for (let i = 0; i < 5; i++) {
+      expect(h.pop()).toBe(100)
+    }
+  })
+
+  it('handles monotonic decreasing sequence', () => {
+    const h = new PairHeap<number>()
+    for (let i = 1000; i >= 1; i--) {
+      h.push(i)
+    }
+    for (let i = 1; i <= 1000; i++) {
+      expect(h.pop()).toBe(i)
+    }
+  })
+
+  it('handles monotonic increasing sequence', () => {
+    const h = new PairHeap<number>()
+    for (let i = 1; i <= 1000; i++) {
+      h.push(i)
+    }
+    for (let i = 1; i <= 1000; i++) {
+      expect(h.pop()).toBe(i)
+    }
   })
 })

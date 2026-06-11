@@ -14,7 +14,7 @@ describe('PersistentArray', () => {
     expect(arr.get(0)).toBe(0)
   })
 
-  it('set returns new version', () => {
+  it('set returns new version without mutating original', () => {
     const v0 = PersistentArray.from([1, 2, 3])
     const v1 = v0.set(1, 99)
     expect(v0.get(1)).toBe(2)
@@ -52,9 +52,10 @@ describe('PersistentArray', () => {
   it('get out of bounds returns undefined', () => {
     const arr = PersistentArray.from([1])
     expect(arr.get(5)).toBeUndefined()
+    expect(arr.get(-1)).toBeUndefined()
   })
 
-  it('multiple sets preserve history', () => {
+  it('multiple sets create version chain', () => {
     const v0 = PersistentArray.from([1, 2, 3])
     const v1 = v0.set(0, 10)
     const v2 = v1.set(1, 20)
@@ -64,47 +65,7 @@ describe('PersistentArray', () => {
     expect(v2.get(1)).toBe(20)
   })
 
-  it('reduce with index checks all values', () => {
-    const arr = PersistentArray.from([10, 20, 30])
-    const indices: number[] = []
-    arr.reduce<number[]>((acc, v, i) => { indices.push(i); acc.push(v); return acc }, [])
-    expect(indices).toEqual([0, 1, 2])
-  })
-
-  it('empty array has length 0', () => {
-    const arr = PersistentArray.from([])
-    expect(arr.length).toBe(0)
-  })
-
-  it('set beyond length returns new version', () => {
-    const v0 = PersistentArray.from([1, 2])
-    const v1 = v0.set(0, 99)
-    expect(v0.get(0)).toBe(1)
-    expect(v1.get(0)).toBe(99)
-    expect(v1.get(1)).toBe(2)
-  })
-
-  it('set and get single element', () => {
-    const v0 = PersistentArray.from([0])
-    const v1 = v0.set(0, 99)
-    expect(v0.get(0)).toBe(0)
-    expect(v1.get(0)).toBe(99)
-  })
-
-  it('map transforms all values', () => {
-    const v0 = PersistentArray.from([1, 2, 3])
-    const v1 = v0.map((x) => x * 2)
-    expect(v1.get(0)).toBe(2)
-    expect(v1.get(1)).toBe(4)
-    expect(v1.get(2)).toBe(6)
-  })
-
-  it('handles empty array', () => {
-    const v0 = PersistentArray.from([])
-    expect(v0.get(0)).toBeUndefined()
-  })
-
-  it('handles set multiple versions', () => {
+  it('branching versions from same parent', () => {
     const v0 = PersistentArray.from([1, 2, 3])
     const v1 = v0.set(0, 10)
     const v2 = v0.set(0, 20)
@@ -113,47 +74,208 @@ describe('PersistentArray', () => {
     expect(v2.get(0)).toBe(20)
   })
 
-  it('get returns default for unset indices', () => {
-    const pa = PersistentArray.create(3, 0)
-    expect(pa.get(0)).toBe(0)
-    expect(pa.get(1)).toBe(0)
+  it('empty array has length 0', () => {
+    const arr = PersistentArray.from([])
+    expect(arr.length).toBe(0)
+    expect(arr.toArray()).toEqual([])
   })
 
-  it('set returns new version', () => {
-    const pa = PersistentArray.create(3, 0)
-    const v1 = pa.set(1, 99)
-    expect(pa.get(1)).toBe(0)
-    expect(v1.get(1)).toBe(99)
+  it('map on empty array returns empty', () => {
+    const arr = PersistentArray.from([])
+    const mapped = arr.map(x => x * 2)
+    expect(mapped.toArray()).toEqual([])
   })
 
-  it('get returns default for unset index', () => {
-    const pa = PersistentArray.create(5, 0)
-    expect(pa.get(3)).toBe(0)
+  it('filter on empty array returns empty', () => {
+    const arr = PersistentArray.from([])
+    const filtered = arr.filter(() => true)
+    expect(filtered.toArray()).toEqual([])
   })
 
-  it('set creates new version without mutating original', () => {
-    const pa = PersistentArray.create(3, 0)
-    const pb = pa.set(1, 99)
-    expect(pa.get(1)).toBe(0)
-    expect(pb.get(1)).toBe(99)
+  it('reduce on empty array returns initial', () => {
+    const arr = PersistentArray.from([])
+    expect(arr.reduce((s, v) => s + v, 0)).toBe(0)
   })
 
-  it('get returns default for unset index', () => {
-    const pa = PersistentArray.create(5, 0)
-    expect(pa.get(0)).toBe(0)
+  it('push on empty array creates single element', () => {
+    const arr = PersistentArray.from([]).push(42)
+    expect(arr.length).toBe(1)
+    expect(arr.get(0)).toBe(42)
   })
 
-  it('set returns new version', () => {
-    const pa = PersistentArray.create(3, 0)
-    const pa2 = pa.set(1, 99)
-    expect(pa.get(1)).toBe(0)
-    expect(pa2.get(1)).toBe(99)
+  it('create with size 0', () => {
+    const arr = PersistentArray.create(0, 'x')
+    expect(arr.length).toBe(0)
   })
 
-  it('original version is unchanged after set', () => {
-    const pa = PersistentArray.create(3, 0)
-    const pa2 = pa.set(0, 42)
-    expect(pa.get(0)).toBe(0)
-    expect(pa2.get(0)).toBe(42)
+  it('create with default null', () => {
+    const arr = PersistentArray.create<string | null>(3, null)
+    expect(arr.get(0)).toBe(null)
+    expect(arr.get(2)).toBe(null)
+  })
+
+  it('set preserves other values', () => {
+    const v0 = PersistentArray.from([1, 2, 3, 4, 5])
+    const v1 = v0.set(2, 99)
+    expect(v1.get(0)).toBe(1)
+    expect(v1.get(1)).toBe(2)
+    expect(v1.get(2)).toBe(99)
+    expect(v1.get(3)).toBe(4)
+    expect(v1.get(4)).toBe(5)
+  })
+
+  it('multiple pushes', () => {
+    const arr = PersistentArray.from([1]).push(2).push(3).push(4)
+    expect(arr.toArray()).toEqual([1, 2, 3, 4])
+  })
+
+  it('map with index', () => {
+    const arr = PersistentArray.from([10, 20, 30])
+    const mapped = arr.map((v, i) => v + i)
+    expect(mapped.toArray()).toEqual([10, 21, 32])
+  })
+
+  it('filter with index', () => {
+    const arr = PersistentArray.from([10, 20, 30, 40])
+    const filtered = arr.filter((_, i) => i % 2 === 0)
+    expect(filtered.toArray()).toEqual([10, 30])
+  })
+
+  it('reduce with index', () => {
+    const arr = PersistentArray.from([10, 20, 30])
+    const result = arr.reduce((acc, v, i) => acc + v * i, 0)
+    expect(result).toBe(0 + 20 + 60)
+  })
+
+  it('chained map and filter', () => {
+    const arr = PersistentArray.from([1, 2, 3, 4, 5])
+    const result = arr.map(x => x * 2).filter(x => x > 4)
+    expect(result.toArray()).toEqual([6, 8, 10])
+  })
+
+  it('set then map', () => {
+    const v0 = PersistentArray.from([1, 2, 3])
+    const v1 = v0.set(1, 10)
+    const v2 = v1.map(x => x + 1)
+    expect(v2.toArray()).toEqual([2, 11, 4])
+  })
+
+  it('from with string array', () => {
+    const arr = PersistentArray.from(['a', 'b', 'c'])
+    expect(arr.get(0)).toBe('a')
+    expect(arr.length).toBe(3)
+  })
+
+  it('from with object elements', () => {
+    const obj = { x: 1 }
+    const arr = PersistentArray.from([obj])
+    expect(arr.get(0)).toBe(obj)
+  })
+
+  it('set with objects', () => {
+    const v0 = PersistentArray.from([{ x: 1 }, { x: 2 }])
+    const v1 = v0.set(0, { x: 99 })
+    expect(v0.get(0)!.x).toBe(1)
+    expect(v1.get(0)!.x).toBe(99)
+  })
+
+  it('length after set is unchanged', () => {
+    const v0 = PersistentArray.from([1, 2, 3])
+    const v1 = v0.set(0, 99)
+    expect(v0.length).toBe(3)
+    expect(v1.length).toBe(3)
+  })
+
+  it('length after push increases', () => {
+    const v0 = PersistentArray.from([1, 2])
+    const v1 = v0.push(3)
+    expect(v0.length).toBe(2)
+    expect(v1.length).toBe(3)
+  })
+
+  it('filter returns all when all match', () => {
+    const arr = PersistentArray.from([1, 2, 3])
+    const result = arr.filter(() => true)
+    expect(result.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('filter returns empty when none match', () => {
+    const arr = PersistentArray.from([1, 2, 3])
+    const result = arr.filter(() => false)
+    expect(result.toArray()).toEqual([])
+  })
+
+  it('reduce computes product', () => {
+    const arr = PersistentArray.from([2, 3, 4])
+    expect(arr.reduce((acc, v) => acc * v, 1)).toBe(24)
+  })
+
+  it('create large array', () => {
+    const arr = PersistentArray.create(100, 0)
+    expect(arr.length).toBe(100)
+    expect(arr.get(99)).toBe(0)
+  })
+
+  it('set at end of array', () => {
+    const v0 = PersistentArray.from([1, 2, 3])
+    const v1 = v0.set(2, 99)
+    expect(v1.get(2)).toBe(99)
+    expect(v1.toArray()).toEqual([1, 2, 99])
+  })
+
+  it('map then toArray', () => {
+    const arr = PersistentArray.from([1, 2, 3]).map(x => String(x))
+    expect(arr.toArray()).toEqual(['1', '2', '3'])
+  })
+
+  it('push preserves existing elements', () => {
+    const v0 = PersistentArray.from([1, 2])
+    const v1 = v0.push(3)
+    expect(v1.get(0)).toBe(1)
+    expect(v1.get(1)).toBe(2)
+    expect(v1.get(2)).toBe(3)
+  })
+
+  it('multiple versions share structure', () => {
+    const v0 = PersistentArray.from([1, 2, 3, 4, 5])
+    const v1 = v0.set(0, 10)
+    const v2 = v1.set(4, 50)
+    expect(v0.toArray()).toEqual([1, 2, 3, 4, 5])
+    expect(v1.toArray()).toEqual([10, 2, 3, 4, 5])
+    expect(v2.toArray()).toEqual([10, 2, 3, 4, 50])
+  })
+
+  it('set then push', () => {
+    const v0 = PersistentArray.from([1, 2])
+    const v1 = v0.set(0, 10).push(3)
+    expect(v1.toArray()).toEqual([10, 2, 3])
+  })
+
+  it('from with single element', () => {
+    const arr = PersistentArray.from([42])
+    expect(arr.length).toBe(1)
+    expect(arr.get(0)).toBe(42)
+    expect(arr.toArray()).toEqual([42])
+  })
+
+  it('create with boolean default', () => {
+    const arr = PersistentArray.create(5, false)
+    expect(arr.get(0)).toBe(false)
+    const v1 = arr.set(2, true)
+    expect(v1.get(2)).toBe(true)
+    expect(arr.get(2)).toBe(false)
+  })
+
+  it('map changes type', () => {
+    const arr = PersistentArray.from([1, 2, 3])
+    const strs = arr.map(x => `val:${x}`)
+    expect(strs.get(0)).toBe('val:1')
+    expect(strs.get(2)).toBe('val:3')
+  })
+
+  it('push multiple then set', () => {
+    const arr = PersistentArray.from([]).push(1).push(2).push(3)
+    const v1 = arr.set(1, 99)
+    expect(v1.toArray()).toEqual([1, 99, 3])
   })
 })

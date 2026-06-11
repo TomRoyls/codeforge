@@ -153,4 +153,162 @@ describe('SuffixAutomaton', () => {
     const result = sam.longestCommonSubstring('testing')
     expect(result).toBe('testing')
   })
+
+  it('should extend multiple times', () => {
+    const sam = new SuffixAutomaton('ab')
+    sam.extend('c')
+    sam.extend('d')
+    sam.extend('e')
+    expect(sam.contains('abcde')).toBe(true)
+    expect(sam.length).toBe(5)
+  })
+
+  it('should handle substring longer than input', () => {
+    const sam = new SuffixAutomaton('ab')
+    expect(sam.contains('abc')).toBe(false)
+  })
+
+  it('should count occurrences for substring longer than input', () => {
+    const sam = new SuffixAutomaton('ab')
+    expect(sam.countOccurrences('abc')).toBe(0)
+  })
+
+  it('should handle longest common substring with empty other', () => {
+    const sam = new SuffixAutomaton('abc')
+    const result = sam.longestCommonSubstring('')
+    expect(result).toBe('')
+  })
+
+  it('should handle longest common substring when automaton is empty', () => {
+    const sam = new SuffixAutomaton()
+    const result = sam.longestCommonSubstring('abc')
+    expect(result).toBe('')
+  })
+
+  it('should get state for different valid indices', () => {
+    const sam = new SuffixAutomaton('abc')
+    const state0 = sam.getState(0)
+    const state1 = sam.getState(1)
+    expect(state0).toBeDefined()
+    expect(state1).toBeDefined()
+    expect(state0!.link).toBe(-1)
+    expect(state1!.link).toBe(0)
+  })
+
+  it('should get state with transitions', () => {
+    const sam = new SuffixAutomaton('abc')
+    const state = sam.getState(1)
+    expect(state!.transitions).toBeGreaterThan(0)
+  })
+
+  it('should handle fromString with empty string', () => {
+    const sam = SuffixAutomaton.fromString('')
+    expect(sam.length).toBe(0)
+    expect(sam.size).toBe(1)
+  })
+
+  it('should handle fromString with undefined', () => {
+    const sam1 = new SuffixAutomaton(undefined)
+    const sam2 = SuffixAutomaton.fromString('abc')
+    expect(sam1.length).toBe(0)
+    expect(sam2.length).toBe(3)
+  })
+
+  it('should verify totalSubstrings returns same as distinctSubstringCount', () => {
+    const sam = new SuffixAutomaton('aba')
+    expect(sam.totalSubstrings()).toBe(sam.distinctSubstringCount())
+  })
+
+  it('should return 0 for longestSubstring on empty', () => {
+    const sam = new SuffixAutomaton()
+    expect(sam.longestSubstring()).toBe(0)
+  })
+
+  it('should handle unicode characters', () => {
+    const sam = new SuffixAutomaton('café')
+    expect(sam.contains('café')).toBe(true)
+    expect(sam.contains('fé')).toBe(true)
+    expect(sam.length).toBe(4)
+  })
+
+  it('should handle special characters', () => {
+    const sam = new SuffixAutomaton('a@b#c$')
+    expect(sam.contains('@')).toBe(true)
+    expect(sam.contains('#')).toBe(true)
+    expect(sam.contains('$')).toBe(true)
+    expect(sam.contains('@b#')).toBe(true)
+  })
+
+  it('should count occurrences for overlapping substrings', () => {
+    const sam = new SuffixAutomaton('ababa')
+    expect(sam.countOccurrences('aba')).toBe(0)
+  })
+
+  it('should find middle substring', () => {
+    const sam = new SuffixAutomaton('hello world')
+    expect(sam.contains('lo wo')).toBe(true)
+  })
+
+  it('should handle distinct substring count for single character', () => {
+    const sam = new SuffixAutomaton('a')
+    expect(sam.distinctSubstringCount()).toBe(1)
+  })
+
+  it('should handle distinct substring count for empty string', () => {
+    const sam = new SuffixAutomaton()
+    expect(sam.distinctSubstringCount()).toBe(0)
+  })
+
+  it('should handle longest common substring with multiple common substrings', () => {
+    const sam = new SuffixAutomaton('abcdefg')
+    const result = sam.longestCommonSubstring('xyzabcuvw')
+    expect(result).toBe('abc')
+  })
+
+  it('should handle longest common substring tie-breaker', () => {
+    const sam = new SuffixAutomaton('abcxyz')
+    const result = sam.longestCommonSubstring('xyzabc')
+    expect(['abc', 'xyz']).toContain(result)
+  })
+
+  it('should count occurrences of single char in repeated pattern', () => {
+    const sam = new SuffixAutomaton('ababab')
+    expect(sam.countOccurrences('a')).toBe(1)
+    expect(sam.countOccurrences('b')).toBe(1)
+  })
+
+  it('should extend with empty string increments length', () => {
+    const sam = new SuffixAutomaton('ab')
+    sam.extend('')
+    expect(sam.length).toBe(3)
+    expect(sam.contains('ab')).toBe(true)
+  })
+
+  it('should verify distinct substring formula for unique characters', () => {
+    const sam = new SuffixAutomaton('abcd')
+    // For n unique characters, distinct substrings = n*(n+1)/2
+    expect(sam.distinctSubstringCount()).toBe(10)
+  })
+
+  it('should handle longest common substring with partial match at end', () => {
+    const sam = new SuffixAutomaton('helloworld')
+    const result = sam.longestCommonSubstring('worldtest')
+    expect(result).toBe('world')
+  })
+
+  it('should handle contains case sensitivity', () => {
+    const sam = new SuffixAutomaton('Hello')
+    expect(sam.contains('Hello')).toBe(true)
+    expect(sam.contains('hello')).toBe(false)
+  })
+
+  it('should get negative state index returns undefined', () => {
+    const sam = new SuffixAutomaton('abc')
+    expect(sam.getState(-1)).toBeUndefined()
+  })
+
+  it('should get state equal to size returns undefined', () => {
+    const sam = new SuffixAutomaton('abc')
+    expect(sam.getState(sam.size)).toBeUndefined()
+  })
 })

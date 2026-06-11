@@ -2,185 +2,425 @@ import { describe, expect, it } from 'vitest'
 import { RadixHeap } from '../../src/utils/radix-heap.js'
 
 describe('RadixHeap', () => {
-  it('push and pop in order', () => {
-    const h = new RadixHeap()
-    h.push(5)
-    h.push(3)
-    h.push(7)
-    h.push(1)
-    expect(h.pop()).toBe(1)
-    expect(h.pop()).toBe(3)
-    expect(h.pop()).toBe(5)
-    expect(h.pop()).toBe(7)
+  describe('constructor', () => {
+    it('creates heap with default maxVal', () => {
+      const h = new RadixHeap()
+      expect(h.size).toBe(0)
+      expect(h.isEmpty).toBe(true)
+    })
+
+    it('creates heap with custom maxVal', () => {
+      const h = new RadixHeap(1000)
+      expect(h.size).toBe(0)
+      expect(h.isEmpty).toBe(true)
+    })
+
+    it('creates heap with small maxVal', () => {
+      const h = new RadixHeap(10)
+      expect(h.size).toBe(0)
+    })
+
+    it('creates heap with large maxVal', () => {
+      const h = new RadixHeap(Number.MAX_SAFE_INTEGER)
+      expect(h.size).toBe(0)
+    })
+
+    it('creates multiple independent heaps', () => {
+      const h1 = new RadixHeap()
+      const h2 = new RadixHeap()
+      h1.push(5)
+      expect(h1.size).toBe(1)
+      expect(h2.size).toBe(0)
+    })
   })
 
-  it('handles duplicate values', () => {
-    const h = new RadixHeap()
-    h.push(3)
-    h.push(3)
-    expect(h.pop()).toBe(3)
-    expect(h.pop()).toBe(3)
+  describe('push and pop - basic functionality', () => {
+    it('push and pop returns in order', () => {
+      const h = new RadixHeap()
+      h.push(5)
+      h.push(3)
+      h.push(7)
+      expect(h.pop()).toBe(3)
+      expect(h.pop()).toBe(5)
+      expect(h.pop()).toBe(7)
+    })
+
+    it('handles already sorted input', () => {
+      const h = new RadixHeap()
+      for (let i = 0; i < 10; i++) h.push(i)
+      for (let i = 0; i < 10; i++) expect(h.pop()).toBe(i)
+    })
+
+    it('handles reverse sorted input', () => {
+      const h = new RadixHeap()
+      for (let i = 9; i >= 0; i--) h.push(i)
+      for (let i = 0; i < 10; i++) expect(h.pop()).toBe(i)
+    })
+
+    it('handles sequential pushes', () => {
+      const h = new RadixHeap()
+      for (let i = 0; i < 50; i++) h.push(i)
+      for (let i = 0; i < 50; i++) {
+        expect(h.pop()).toBe(i)
+      }
+    })
+
+    it('handles decreasing push order', () => {
+      const h = new RadixHeap()
+      h.push(10)
+      h.push(5)
+      h.push(1)
+      expect(h.pop()).toBe(1)
+      expect(h.pop()).toBe(5)
+      expect(h.pop()).toBe(10)
+    })
+
+    it('handles interleaved push pop', () => {
+      const h = new RadixHeap()
+      h.push(5)
+      h.push(1)
+      expect(h.pop()).toBe(1)
+      h.push(3)
+      expect(h.pop()).toBe(3)
+      expect(h.pop()).toBe(5)
+    })
+
+    it('handles random order input', () => {
+      const h = new RadixHeap()
+      const values = [3, 7, 1, 9, 2, 8, 4, 6, 5]
+      values.forEach(v => h.push(v))
+      values.sort((a, b) => a - b)
+      values.forEach(v => expect(h.pop()).toBe(v))
+    })
   })
 
-  it('tracks size', () => {
-    const h = new RadixHeap()
-    expect(h.size).toBe(0)
-    expect(h.isEmpty).toBe(true)
-    h.push(1)
-    expect(h.size).toBe(1)
+  describe('size property', () => {
+    it('tracks size', () => {
+      const h = new RadixHeap()
+      expect(h.size).toBe(0)
+      h.push(1)
+      expect(h.size).toBe(1)
+      h.push(2)
+      expect(h.size).toBe(2)
+    })
+
+    it('size decreases after pop', () => {
+      const h = new RadixHeap()
+      h.push(1)
+      h.push(2)
+      h.pop()
+      expect(h.size).toBe(1)
+    })
+
+    it('size on new heap is 0', () => {
+      const h = new RadixHeap()
+      expect(h.size).toBe(0)
+    })
+
+    it('size returns correct after multiple operations', () => {
+      const h = new RadixHeap()
+      h.push(1)
+      h.push(2)
+      h.push(3)
+      expect(h.size).toBe(3)
+      h.pop()
+      h.pop()
+      expect(h.size).toBe(1)
+    })
+
+    it('size is correct after draining', () => {
+      const h = new RadixHeap()
+      h.push(1)
+      h.push(2)
+      h.pop()
+      h.pop()
+      expect(h.size).toBe(0)
+    })
   })
 
-  it('pop empty returns undefined', () => {
-    const h = new RadixHeap()
-    expect(h.pop()).toBeUndefined()
+  describe('isEmpty property', () => {
+    it('isEmpty is true on new heap', () => {
+      const h = new RadixHeap()
+      expect(h.isEmpty).toBe(true)
+    })
+
+    it('isEmpty after draining', () => {
+      const h = new RadixHeap()
+      h.push(1)
+      h.pop()
+      expect(h.isEmpty).toBe(true)
+    })
+
+    it('isEmpty is false when elements present', () => {
+      const h = new RadixHeap()
+      h.push(1)
+      expect(h.isEmpty).toBe(false)
+    })
+
+    it('isEmpty becomes false after push', () => {
+      const h = new RadixHeap()
+      h.push(5)
+      expect(h.isEmpty).toBe(false)
+    })
+
+    it('isEmpty becomes true after final pop', () => {
+      const h = new RadixHeap()
+      h.push(5)
+      h.pop()
+      expect(h.isEmpty).toBe(true)
+    })
   })
 
-  it('handles single element', () => {
-    const h = new RadixHeap()
-    h.push(42)
-    expect(h.pop()).toBe(42)
+  describe('pop - edge cases', () => {
+    it('pop empty returns undefined', () => {
+      const h = new RadixHeap()
+      expect(h.pop()).toBeUndefined()
+    })
+
+    it('pop from empty after draining returns undefined', () => {
+      const h = new RadixHeap()
+      h.push(1)
+      h.pop()
+      expect(h.pop()).toBeUndefined()
+    })
+
+    it('multiple pops from empty return undefined', () => {
+      const h = new RadixHeap()
+      expect(h.pop()).toBeUndefined()
+      expect(h.pop()).toBeUndefined()
+      expect(h.pop()).toBeUndefined()
+    })
   })
 
-  it('handles large range', () => {
-    const h = new RadixHeap()
-    h.push(1000000)
-    h.push(1)
-    h.push(500000)
-    expect(h.pop()).toBe(1)
-    expect(h.pop()).toBe(500000)
-    expect(h.pop()).toBe(1000000)
+  describe('duplicate values', () => {
+    it('handles duplicate values', () => {
+      const h = new RadixHeap()
+      h.push(3)
+      h.push(3)
+      expect(h.pop()).toBe(3)
+      expect(h.pop()).toBe(3)
+    })
+
+    it('handles many duplicate values', () => {
+      const h = new RadixHeap()
+      for (let i = 0; i < 10; i++) h.push(5)
+      for (let i = 0; i < 10; i++) expect(h.pop()).toBe(5)
+    })
+
+    it('handles mixed duplicates', () => {
+      const h = new RadixHeap()
+      h.push(3)
+      h.push(3)
+      h.push(1)
+      expect(h.pop()).toBe(1)
+      expect(h.pop()).toBe(3)
+      expect(h.pop()).toBe(3)
+    })
+
+    it('handles all same values', () => {
+      const h = new RadixHeap()
+      h.push(7)
+      h.push(7)
+      h.push(7)
+      h.push(7)
+      h.push(7)
+      for (let i = 0; i < 5; i++) expect(h.pop()).toBe(7)
+    })
   })
 
-  it('handles already sorted input', () => {
-    const h = new RadixHeap()
-    for (let i = 0; i < 10; i++) h.push(i)
-    for (let i = 0; i < 10; i++) expect(h.pop()).toBe(i)
+  describe('single element', () => {
+    it('handles single element', () => {
+      const h = new RadixHeap()
+      h.push(42)
+      expect(h.pop()).toBe(42)
+    })
+
+    it('handles single element with size check', () => {
+      const h = new RadixHeap()
+      h.push(5)
+      expect(h.size).toBe(1)
+      expect(h.pop()).toBe(5)
+      expect(h.isEmpty).toBe(true)
+    })
+
+    it('handles single element with empty check', () => {
+      const h = new RadixHeap()
+      h.push(42)
+      expect(h.isEmpty).toBe(false)
+      h.pop()
+      expect(h.isEmpty).toBe(true)
+    })
   })
 
-  it('handles reverse sorted input', () => {
-    const h = new RadixHeap()
-    for (let i = 9; i >= 0; i--) h.push(i)
-    for (let i = 0; i < 10; i++) expect(h.pop()).toBe(i)
+  describe('zero values', () => {
+    it('handles zeros', () => {
+      const h = new RadixHeap()
+      h.push(0)
+      h.push(0)
+      expect(h.pop()).toBe(0)
+    })
+
+    it('handles zero with positive values', () => {
+      const h = new RadixHeap()
+      h.push(5)
+      h.push(0)
+      h.push(3)
+      expect(h.pop()).toBe(0)
+      expect(h.pop()).toBe(3)
+      expect(h.pop()).toBe(5)
+    })
+
+    it('handles only zero', () => {
+      const h = new RadixHeap()
+      h.push(0)
+      expect(h.pop()).toBe(0)
+    })
+
+    it('handles many zeros', () => {
+      const h = new RadixHeap()
+      for (let i = 0; i < 10; i++) h.push(0)
+      for (let i = 0; i < 10; i++) expect(h.pop()).toBe(0)
+    })
   })
 
-  it('size decreases after pop', () => {
-    const h = new RadixHeap()
-    h.push(1)
-    h.push(2)
-    h.pop()
-    expect(h.size).toBe(1)
+  describe('large values', () => {
+    it('handles large range', () => {
+      const h = new RadixHeap()
+      h.push(1000000)
+      h.push(1)
+      h.push(500000)
+      expect(h.pop()).toBe(1)
+      expect(h.pop()).toBe(500000)
+      expect(h.pop()).toBe(1000000)
+    })
+
+    it('handles large values', () => {
+      const h = new RadixHeap()
+      h.push(1000000)
+      h.push(1000001)
+      expect(h.pop()).toBe(1000000)
+      expect(h.pop()).toBe(1000001)
+    })
+
+    it('handles very large values', () => {
+      const h = new RadixHeap(Number.MAX_SAFE_INTEGER)
+      h.push(Number.MAX_SAFE_INTEGER - 1000)
+      h.push(Number.MAX_SAFE_INTEGER)
+      h.push(Number.MAX_SAFE_INTEGER - 500)
+      expect(h.pop()).toBe(Number.MAX_SAFE_INTEGER - 1000)
+      expect(h.pop()).toBe(Number.MAX_SAFE_INTEGER - 500)
+      expect(h.pop()).toBe(Number.MAX_SAFE_INTEGER)
+    })
   })
 
-  it('handles zeros', () => {
-    const h = new RadixHeap()
-    h.push(0)
-    h.push(0)
-    expect(h.pop()).toBe(0)
+  describe('boundary values', () => {
+    it('handles boundary between buckets', () => {
+      const h = new RadixHeap()
+      h.push(7)
+      h.push(8)
+      h.push(15)
+      h.push(16)
+      expect(h.pop()).toBe(7)
+      expect(h.pop()).toBe(8)
+      expect(h.pop()).toBe(15)
+      expect(h.pop()).toBe(16)
+    })
+
+    it('handles powers of two', () => {
+      const h = new RadixHeap()
+      h.push(1)
+      h.push(2)
+      h.push(4)
+      h.push(8)
+      h.push(16)
+      expect(h.pop()).toBe(1)
+      expect(h.pop()).toBe(2)
+      expect(h.pop()).toBe(4)
+      expect(h.pop()).toBe(8)
+      expect(h.pop()).toBe(16)
+    })
+
+    it('handles consecutive values', () => {
+      const h = new RadixHeap()
+      for (let i = 0; i < 20; i++) h.push(i)
+      for (let i = 0; i < 20; i++) expect(h.pop()).toBe(i)
+    })
   })
 
-  it('handles sequential pushes', () => {
-    const h = new RadixHeap()
-    for (let i = 0; i < 50; i++) h.push(i)
-    for (let i = 0; i < 50; i++) {
-      expect(h.pop()).toBe(i)
-    }
+  describe('complex scenarios', () => {
+    it('handles many interleaved operations', () => {
+      const h = new RadixHeap()
+      h.push(10)
+      h.push(5)
+      expect(h.pop()).toBe(5)
+      h.push(8)
+      h.push(3)
+      expect(h.pop()).toBe(3)
+      expect(h.pop()).toBe(8)
+      expect(h.pop()).toBe(10)
+    })
+
+    it('handles repeated pattern', () => {
+      const h = new RadixHeap()
+      for (let i = 0; i < 10; i++) {
+        h.push(5)
+        h.push(10)
+        h.push(1)
+      }
+      for (let i = 0; i < 10; i++) expect(h.pop()).toBe(1)
+      for (let i = 0; i < 10; i++) expect(h.pop()).toBe(5)
+      for (let i = 0; i < 10; i++) expect(h.pop()).toBe(10)
+    })
+
+    it('handles alternating high low', () => {
+      const h = new RadixHeap()
+      for (let i = 0; i < 20; i++) {
+        if (i % 2 === 0) h.push(100 - i)
+        else h.push(i)
+      }
+      const popped: number[] = []
+      while (!h.isEmpty) {
+        popped.push(h.pop()!)
+      }
+      expect(popped).toEqual([...popped].sort((a, b) => a - b))
+    })
+
+    it('handles push after many pops', () => {
+      const h = new RadixHeap()
+      h.push(5)
+      h.push(1)
+      h.push(3)
+      h.pop()
+      h.push(2)
+      expect(h.pop()).toBe(2)
+      expect(h.pop()).toBe(3)
+      expect(h.pop()).toBe(5)
+    })
   })
 
-  it('isEmpty after draining', () => {
-    const h = new RadixHeap()
-    h.push(1)
-    h.pop()
-    expect(h.isEmpty).toBe(true)
-  })
+  describe('stress testing', () => {
+    it('handles large number of elements', () => {
+      const h = new RadixHeap()
+      const count = 1000
+      for (let i = 0; i < count; i++) h.push(count - i)
+      expect(h.size).toBe(count)
+      for (let i = 1; i <= count; i++) expect(h.pop()).toBe(i)
+    })
 
-  it('handles large values', () => {
-    const h = new RadixHeap()
-    h.push(1000000)
-    h.push(1000001)
-    expect(h.pop()).toBe(1000000)
-    expect(h.pop()).toBe(1000001)
-  })
+    it('handles large range with many elements', () => {
+      const h = new RadixHeap()
+      const values = Array.from({ length: 500 }, (_, i) => i * 1000)
+      values.forEach(v => h.push(v))
+      values.sort((a, b) => a - b)
+      values.forEach(v => expect(h.pop()).toBe(v))
+    })
 
-  it('handles single element', () => {
-    const h = new RadixHeap()
-    h.push(42)
-    expect(h.pop()).toBe(42)
-    expect(h.isEmpty).toBe(true)
-  })
-
-  it('handles interleaved push pop', () => {
-    const h = new RadixHeap()
-    h.push(5)
-    h.push(1)
-    expect(h.pop()).toBe(1)
-    h.push(3)
-    expect(h.pop()).toBe(3)
-    expect(h.pop()).toBe(5)
-  })
-
-  it('handles duplicate values', () => {
-    const h = new RadixHeap()
-    h.push(3)
-    h.push(3)
-    h.push(1)
-    expect(h.pop()).toBe(1)
-    expect(h.pop()).toBe(3)
-    expect(h.pop()).toBe(3)
-  })
-
-  it('handles single element', () => {
-    const h = new RadixHeap()
-    h.push(5)
-    expect(h.size).toBe(1)
-    expect(h.pop()).toBe(5)
-    expect(h.isEmpty).toBe(true)
-  })
-
-  it('handles decreasing push order', () => {
-    const h = new RadixHeap()
-    h.push(10)
-    h.push(5)
-    h.push(1)
-    expect(h.pop()).toBe(1)
-    expect(h.pop()).toBe(5)
-    expect(h.pop()).toBe(10)
-  })
-
-  it('size on new heap is 0', () => {
-    const h = new RadixHeap()
-    expect(h.size).toBe(0)
-  })
-
-  it('push and pop returns in order', () => {
-    const h = new RadixHeap()
-    h.push(5)
-    h.push(3)
-    h.push(7)
-    expect(h.pop()).toBe(3)
-  })
-
-  it('empty heap pop returns undefined', () => {
-    const h = new RadixHeap()
-    expect(h.pop()).toBeUndefined()
-  })
-
-  it('push and pop returns min', () => {
-    const h = new RadixHeap()
-    h.push(3)
-    h.push(1)
-    h.push(2)
-    expect(h.pop()).toBe(1)
-  })
-
-  it('pop from empty returns undefined', () => {
-    const h = new RadixHeap()
-    expect(h.pop()).toBeUndefined()
-  })
-
-  it('push and pop returns min', () => {
-    const h = new RadixHeap()
-    h.push(5)
-    h.push(3)
-    expect(h.pop()).toBe(3)
+    it('handles many small values', () => {
+      const h = new RadixHeap()
+      for (let i = 0; i < 100; i++) h.push(i % 10)
+      const result: number[] = []
+      while (!h.isEmpty) result.push(h.pop()!)
+      expect(result.every((v, i) => i === 0 || result[i - 1]! <= v)).toBe(true)
+    })
   })
 })

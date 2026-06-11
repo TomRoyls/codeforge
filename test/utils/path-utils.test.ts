@@ -21,9 +21,7 @@ describe('path-utils', () => {
   })
 
   it('resolves absolute path unchanged', () => {
-    const absolute = '/usr/bin'
-    const result = resolvePath(absolute)
-    expect(result).toBe(absolute)
+    expect(resolvePath('/usr/bin')).toBe('/usr/bin')
   })
 
   it('handles paths with multiple segments', () => {
@@ -35,11 +33,6 @@ describe('path-utils', () => {
   it('handles paths with trailing slash', () => {
     const result = resolvePath('./test/')
     expect(result.startsWith('/')).toBe(true)
-  })
-
-  it('handles paths with leading slash', () => {
-    const result = resolvePath('/tmp')
-    expect(result).toBe('/tmp')
   })
 
   it('handles empty string path', () => {
@@ -57,6 +50,11 @@ describe('path-utils', () => {
     const result = resolvePath('./src/./utils')
     expect(result).toContain('src')
     expect(result).toContain('utils')
+  })
+
+  it('resolvePath normalizes double dots', () => {
+    const result = resolvePath('./src/../test')
+    expect(result).toContain('test')
   })
 
   it('resolves and validates existing path', () => {
@@ -106,32 +104,12 @@ describe('path-utils', () => {
     expect(result.startsWith('/')).toBe(true)
   })
 
-  it('resolveAndValidatePath throws for non-existent', () => {
-    expect(() => resolveAndValidatePath('/no/such/path/ever')).toThrow()
-  })
-
-  it('resolveAndValidatePath returns absolute for valid cwd', () => {
-    const result = resolveAndValidatePath('.')
-    expect(result).toBeDefined()
-  })
-
-  it('resolvePath normalizes path', () => {
-    const result = resolvePath('.')
-    expect(result).toBeDefined()
-    expect(typeof result).toBe('string')
-  })
-
-  it('resolveAndValidatePath returns string', () => {
-    expect(typeof resolveAndValidatePath('.')).toBe('string')
-  })
-
-  it('resolvePath returns string', () => {
+  it('resolvePath returns string type', () => {
     expect(typeof resolvePath('.')).toBe('string')
   })
 
-  it('resolvePath with absolute stays absolute', () => {
-    const result = resolvePath('/foo/bar')
-    expect(result).toBe('/foo/bar')
+  it('resolveAndValidatePath returns string type', () => {
+    expect(typeof resolveAndValidatePath('.')).toBe('string')
   })
 
   it('resolvePath with relative joins cwd', () => {
@@ -139,8 +117,140 @@ describe('path-utils', () => {
     expect(result).toContain('baz')
   })
 
-  it('resolvePath with absolute returns as-is', () => {
-    const result = resolvePath('/absolute/path')
-    expect(result).toBe('/absolute/path')
+  it('resolves deeply nested path', () => {
+    const result = resolvePath('./a/b/c/d/e')
+    expect(result).toContain('a')
+    expect(result).toContain('e')
+  })
+
+  it('resolves path with only dots', () => {
+    const result = resolvePath('.')
+    expect(result.split('/').length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('resolvePath handles multiple parent refs', () => {
+    const result = resolvePath('../../test')
+    expect(result).toContain('test')
+  })
+
+  it('resolveAndValidatePath accepts tmpdir', () => {
+    const result = resolveAndValidatePath(tmpdir())
+    expect(result).toBe(tmpdir())
+  })
+
+  it('resolvePath preserves absolute path exactly', () => {
+    expect(resolvePath('/foo/bar')).toBe('/foo/bar')
+    expect(resolvePath('/')).toBe('/')
+  })
+
+  it('resolveAndValidatePath with package.json', () => {
+    const result = resolveAndValidatePath('./package.json')
+    expect(result).toContain('package.json')
+  })
+
+  it('resolvePath with hidden directory', () => {
+    const result = resolvePath('./.git')
+    expect(result).toContain('.git')
+  })
+
+  it('resolvePath with spaces in path', () => {
+    const result = resolvePath('./path with spaces')
+    expect(result).toContain('path with spaces')
+  })
+
+  it('resolveAndValidatePath on empty resolves to cwd', () => {
+    const result = resolvePath('')
+    expect(typeof result).toBe('string')
+  })
+
+  it('resolveAndValidatePath resolves src directory', () => {
+    const result = resolveAndValidatePath('./src')
+    expect(result).toContain('src')
+  })
+
+  it('resolvePath handles tilde as literal', () => {
+    const result = resolvePath('~/test')
+    expect(typeof result).toBe('string')
+  })
+
+  it('resolveAndValidatePath resolves test directory', () => {
+    const result = resolveAndValidatePath('./test')
+    expect(result).toContain('test')
+  })
+
+  it('resolvePath with back-to-back parent refs', () => {
+    const result = resolvePath('../../../')
+    expect(result.startsWith('/')).toBe(true)
+  })
+
+  it('creates temp file and validates', () => {
+    const tmpDir = mkdtempSync(join(tmpdir(), 'path-test-'))
+    const file = join(tmpDir, 'a.txt')
+    writeFileSync(file, 'hi')
+    try {
+      expect(resolveAndValidatePath(file)).toBe(file)
+    } finally {
+      rmSync(tmpDir, { recursive: true, force: true })
+    }
+  })
+
+  it('resolvePath returns cwd-like path for dot', () => {
+    const result = resolvePath('.')
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('resolveAndValidatePath with nested existing dir', () => {
+    const result = resolveAndValidatePath('./src/utils')
+    expect(result).toContain('utils')
+  })
+
+  it('resolveAndValidatePath throws for file in non-existent dir', () => {
+    expect(() => resolveAndValidatePath('/no/such/dir/file.txt')).toThrow()
+  })
+
+  it('resolvePath with unicode path', () => {
+    const result = resolvePath('./日本語')
+    expect(typeof result).toBe('string')
+  })
+
+  it('resolvePath returns absolute for relative input', () => {
+    const result = resolvePath('relative')
+    expect(result.startsWith('/')).toBe(true)
+  })
+
+  it('resolveAndValidatePath throws Path not found', () => {
+    expect(() => resolveAndValidatePath('/zzz/does/not/exist')).toThrow(/Path not found/)
+  })
+
+  it('resolvePath handles dot-dot from root', () => {
+    const result = resolvePath('/foo/../bar')
+    expect(result).toBe('/bar')
+  })
+
+  it('multiple resolves give consistent results', () => {
+    const a = resolvePath('./src')
+    const b = resolvePath('./src')
+    expect(a).toBe(b)
+  })
+
+  it('resolveAndValidatePath resolves cwd', () => {
+    const result = resolveAndValidatePath('.')
+    expect(resolvePath('.')).toBe(result)
+  })
+
+  it('resolvePath with very long path', () => {
+    const longSegment = 'a'.repeat(100)
+    const result = resolvePath(`./${longSegment}`)
+    expect(result).toContain(longSegment)
+  })
+
+  it('resolvePath strips trailing slash from file-like path', () => {
+    const result = resolvePath('./src/')
+    expect(result.startsWith('/')).toBe(true)
+  })
+
+  it('resolvePath with mixed separators normalized', () => {
+    const result = resolvePath('./src/.')
+    expect(result).toContain('src')
   })
 })

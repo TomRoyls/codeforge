@@ -30,6 +30,7 @@ describe('PersistentQueue', () => {
   it('size and isEmpty work', () => {
     const q = PersistentQueue.create<string>()
     expect(q.isEmpty).toBe(true)
+    expect(q.size).toBe(0)
     const q1 = q.enqueue('a')
     expect(q1.isEmpty).toBe(false)
     expect(q1.size).toBe(1)
@@ -37,14 +38,16 @@ describe('PersistentQueue', () => {
 
   it('peek returns front element', () => {
     const q = PersistentQueue.create<number>()
-    const q1 = q.enqueue(1)
-    const q2 = q1.enqueue(2)
-    expect(q2.peek()).toBe(1)
+    const q1 = q.enqueue(1).enqueue(2)
+    expect(q1.peek()).toBe(1)
+  })
+
+  it('peek on empty returns undefined', () => {
+    expect(PersistentQueue.create<number>().peek()).toBeUndefined()
   })
 
   it('toArray returns elements in order', () => {
-    const q = PersistentQueue.create<number>()
-      .enqueue(1).enqueue(2).enqueue(3)
+    const q = PersistentQueue.create<number>().enqueue(1).enqueue(2).enqueue(3)
     expect(q.toArray()).toEqual([1, 2, 3])
   })
 
@@ -62,10 +65,6 @@ describe('PersistentQueue', () => {
     expect(arr).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
   })
 
-  it('peek on empty returns undefined', () => {
-    expect(PersistentQueue.create<number>().peek()).toBeUndefined()
-  })
-
   it('handles string elements', () => {
     const q = PersistentQueue.create<string>().enqueue('x').enqueue('y')
     expect(q.toArray()).toEqual(['x', 'y'])
@@ -80,7 +79,7 @@ describe('PersistentQueue', () => {
     expect(q2.toArray()).toEqual([2])
   })
 
-  it('dequeue all returns elements in FIFO order', () => {
+  it('dequeue all returns FIFO order', () => {
     let q = PersistentQueue.create<number>()
     for (let i = 0; i < 5; i++) q = q.enqueue(i * 10)
     const result: number[] = []
@@ -92,7 +91,7 @@ describe('PersistentQueue', () => {
     expect(result).toEqual([0, 10, 20, 30, 40])
   })
 
-  it('persists old version after enqueue', () => {
+  it('old version unchanged after enqueue', () => {
     const q0 = PersistentQueue.create<number>()
     const q1 = q0.enqueue(1)
     const q2 = q1.enqueue(2)
@@ -101,84 +100,202 @@ describe('PersistentQueue', () => {
     expect(q2.toArray()).toEqual([1, 2])
   })
 
-  it('dequeue empty returns null', () => {
-    const q = PersistentQueue.create<number>()
-    expect(q.dequeue()).toBeNull()
-  })
-
-  it('size tracks correctly after dequeue', () => {
+  it('size decreases after dequeue', () => {
     const q = PersistentQueue.create<number>().enqueue(1).enqueue(2)
     const r = q.dequeue()!
     expect(r.queue.size).toBe(1)
   })
 
-  it('toArray preserves FIFO order after many ops', () => {
-    let q = PersistentQueue.create<number>()
-    for (let i = 0; i < 5; i++) q = q.enqueue(i)
-    expect(q.toArray()).toEqual([0, 1, 2, 3, 4])
+  it('toArray after dequeue', () => {
+    const q = PersistentQueue.create<number>().enqueue(0).enqueue(1).enqueue(2)
     const r = q.dequeue()!
-    expect(r.queue.toArray()).toEqual([1, 2, 3, 4])
+    expect(r.queue.toArray()).toEqual([1, 2])
   })
 
-  it('handles enqueue dequeue single element', () => {
+  it('enqueue dequeue single element', () => {
     const q = PersistentQueue.create<number>().enqueue(42)
     const r = q.dequeue()!
     expect(r.value).toBe(42)
     expect(r.queue.isEmpty).toBe(true)
   })
 
-  it('handles multiple enqueues', () => {
+  it('dequeue empty queue again returns null', () => {
+    const q = PersistentQueue.create<number>().enqueue(1)
+    const r = q.dequeue()!
+    expect(r.queue.dequeue()).toBeNull()
+  })
+
+  it('branching versions from enqueue', () => {
+    const q0 = PersistentQueue.create<number>()
+    const q1 = q0.enqueue(1)
+    const q2 = q0.enqueue(99)
+    expect(q1.toArray()).toEqual([1])
+    expect(q2.toArray()).toEqual([99])
+  })
+
+  it('branching from non-empty queue', () => {
+    const q0 = PersistentQueue.create<number>().enqueue(1)
+    const q1 = q0.enqueue(2)
+    const q2 = q0.enqueue(3)
+    expect(q1.toArray()).toEqual([1, 2])
+    expect(q2.toArray()).toEqual([1, 3])
+  })
+
+  it('peek does not modify queue', () => {
+    const q = PersistentQueue.create<number>().enqueue(1).enqueue(2)
+    expect(q.peek()).toBe(1)
+    expect(q.peek()).toBe(1)
+    expect(q.size).toBe(2)
+  })
+
+  it('toArray does not modify queue', () => {
+    const q = PersistentQueue.create<number>().enqueue(1).enqueue(2)
+    const arr = q.toArray()
+    expect(arr).toEqual([1, 2])
+    expect(q.toArray()).toEqual([1, 2])
+  })
+
+  it('handles object elements', () => {
+    const obj = { x: 1 }
+    const q = PersistentQueue.create<object>().enqueue(obj)
+    expect(q.peek()).toBe(obj)
+  })
+
+  it('handles null elements', () => {
+    const q = PersistentQueue.create<number | null>().enqueue(null).enqueue(1)
+    expect(q.peek()).toBeNull()
+    const r = q.dequeue()!
+    expect(r.value).toBeNull()
+    expect(r.queue.peek()).toBe(1)
+  })
+
+  it('large queue', () => {
     let q = PersistentQueue.create<number>()
-    q = q.enqueue(1).enqueue(2).enqueue(3)
-    expect(q.size).toBe(3)
+    for (let i = 0; i < 100; i++) q = q.enqueue(i)
+    expect(q.size).toBe(100)
+    const r = q.dequeue()!
+    expect(r.value).toBe(0)
+    expect(r.queue.size).toBe(99)
   })
 
-  it('dequeue returns first element', () => {
+  it('create returns empty queue', () => {
+    const q = PersistentQueue.create<number>()
+    expect(q.size).toBe(0)
+    expect(q.isEmpty).toBe(true)
+    expect(q.toArray()).toEqual([])
+  })
+
+  it('enqueue many dequeue many', () => {
     let q = PersistentQueue.create<number>()
-    q = q.enqueue(10).enqueue(20)
-    const result = q.dequeue()
-    expect(result).not.toBeNull()
-    expect(result!.value).toBe(10)
-    expect(result!.queue.size).toBe(1)
+    for (let i = 0; i < 20; i++) q = q.enqueue(i)
+    const result: number[] = []
+    while (!q.isEmpty) {
+      const r = q.dequeue()!
+      result.push(r.value)
+      q = r.queue
+    }
+    expect(result.length).toBe(20)
+    expect(result[0]).toBe(0)
+    expect(result[19]).toBe(19)
   })
 
-  it('enqueue and dequeue roundtrip', () => {
-    const q0 = new PersistentQueue<number>([], [])
-    const q1 = q0.enqueue(10)
-    const result = q1.dequeue()
-    expect(result).not.toBeNull()
-    expect(result!.value).toBe(10)
+  it('boolean elements', () => {
+    const q = PersistentQueue.create<boolean>().enqueue(true).enqueue(false)
+    expect(q.toArray()).toEqual([true, false])
+    const r = q.dequeue()!
+    expect(r.value).toBe(true)
   })
 
-  it('empty queue dequeue returns null', () => {
-    const q = PersistentQueue.create<number>()
-    const result = q.dequeue()
-    expect(result).toBeNull()
+  it('dequeue returns queue property', () => {
+    const q = PersistentQueue.create<number>().enqueue(1).enqueue(2).enqueue(3)
+    const r = q.dequeue()!
+    expect(r.queue).toBeDefined()
+    expect(r.queue.size).toBe(2)
   })
 
-  it('size tracks elements', () => {
-    const q = PersistentQueue.create<number>()
-    const q2 = q.enqueue(1).enqueue(2)
-    expect(q2.size).toBe(2)
+  it('old version intact after dequeue', () => {
+    const q = PersistentQueue.create<number>().enqueue(1).enqueue(2)
+    const r = q.dequeue()!
+    expect(q.size).toBe(2)
+    expect(q.peek()).toBe(1)
   })
 
-  it('dequeue returns result', () => {
-    const q = PersistentQueue.create<number>()
-    const q2 = q.enqueue(1).enqueue(2)
-    const result = q2.dequeue()
-    expect(result).not.toBeNull()
-    expect(result!.value).toBe(1)
+  it('enqueue after dequeue', () => {
+    const q0 = PersistentQueue.create<number>().enqueue(1)
+    const r = q0.dequeue()!
+    const q2 = r.queue.enqueue(2)
+    expect(q2.toArray()).toEqual([2])
   })
 
-  it('dequeue from empty returns null', () => {
-    const q = PersistentQueue.create<number>()
-    expect(q.dequeue()).toBeNull()
-  })
-
-  it('enqueue and dequeue roundtrip', () => {
+  it('multiple peeks return same value', () => {
     const q = PersistentQueue.create<number>().enqueue(42)
-    const r = q.dequeue()
-    expect(r).not.toBeNull()
-    expect(r!.value).toBe(42)
+    expect(q.peek()).toBe(42)
+    expect(q.peek()).toBe(42)
+    expect(q.peek()).toBe(42)
+  })
+
+  it('toArray on empty returns empty', () => {
+    const q = PersistentQueue.create<number>()
+    expect(q.toArray()).toEqual([])
+  })
+
+  it('dequeue result has correct shape', () => {
+    const q = PersistentQueue.create<number>().enqueue(5)
+    const r = q.dequeue()!
+    expect(r).toHaveProperty('value')
+    expect(r).toHaveProperty('queue')
+    expect(r.value).toBe(5)
+  })
+
+  it('enqueue returns new queue', () => {
+    const q0 = PersistentQueue.create<number>()
+    const q1 = q0.enqueue(1)
+    expect(q0).not.toBe(q1)
+  })
+
+  it('dequeue returns new queue', () => {
+    const q0 = PersistentQueue.create<number>().enqueue(1).enqueue(2)
+    const r = q0.dequeue()!
+    expect(r.queue).not.toBe(q0)
+  })
+
+  it('persistent branching scenario', () => {
+    const base = PersistentQueue.create<number>().enqueue(1).enqueue(2)
+    const branchA = base.enqueue(3)
+    const branchB = base.enqueue(99)
+    expect(branchA.toArray()).toEqual([1, 2, 3])
+    expect(branchB.toArray()).toEqual([1, 2, 99])
+    expect(base.toArray()).toEqual([1, 2])
+  })
+
+  it('enqueue negative numbers', () => {
+    const q = PersistentQueue.create<number>().enqueue(-1).enqueue(-5)
+    expect(q.toArray()).toEqual([-1, -5])
+  })
+
+  it('dequeue from size 1 gives empty', () => {
+    const q = PersistentQueue.create<number>().enqueue(42)
+    const r = q.dequeue()!
+    expect(r.value).toBe(42)
+    expect(r.queue.size).toBe(0)
+    expect(r.queue.isEmpty).toBe(true)
+  })
+
+  it('create is static method', () => {
+    expect(typeof PersistentQueue.create).toBe('function')
+  })
+
+  it('enqueue chain of 50 elements', () => {
+    let q = PersistentQueue.create<number>()
+    for (let i = 0; i < 50; i++) q = q.enqueue(i)
+    expect(q.size).toBe(50)
+  })
+
+  it('peek after partial dequeue', () => {
+    const q = PersistentQueue.create<number>().enqueue(10).enqueue(20).enqueue(30)
+    const r1 = q.dequeue()!
+    expect(r1.queue.peek()).toBe(20)
+    const r2 = r1.queue.dequeue()!
+    expect(r2.queue.peek()).toBe(30)
   })
 })

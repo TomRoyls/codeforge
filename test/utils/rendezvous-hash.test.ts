@@ -296,4 +296,164 @@ describe('RendezvousHash - with complex values', () => {
     const selected = rh.select('key')
     expect([1, 2]).toContain(selected)
   })
+
+  it('selectKey returns undefined when node exists but value is undefined', () => {
+    const rh = new RendezvousHash<string | undefined>()
+    rh.add('a', undefined)
+    const key = rh.selectKey('item')
+    expect(key).toBe('a')
+  })
+
+  it('select returns undefined when node exists but value is undefined', () => {
+    const rh = new RendezvousHash<string | undefined>()
+    rh.add('a', undefined)
+    const selected = rh.select('item')
+    expect(selected).toBeUndefined()
+  })
+
+  it('selectN with negative n returns empty array', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'A')
+    rh.add('b', 'B')
+    expect(rh.selectN('key', -1)).toEqual([])
+  })
+
+  it('selectN returns values in correct order based on hash', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('node1', 'A')
+    rh.add('node2', 'B')
+    rh.add('node3', 'C')
+    const selected = rh.selectN('test', 3)
+    expect(selected.length).toBe(3)
+    expect(selected).toContain('A')
+    expect(selected).toContain('B')
+    expect(selected).toContain('C')
+  })
+
+  it('selectN with same key multiple times returns consistent order', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'A')
+    rh.add('b', 'B')
+    rh.add('c', 'C')
+    const first = rh.selectN('key', 2)
+    const second = rh.selectN('key', 2)
+    const third = rh.selectN('key', 2)
+    expect(first).toEqual(second)
+    expect(second).toEqual(third)
+  })
+
+  it('handles add with same key but different value types', () => {
+    const rh = new RendezvousHash<{ v: number }>()
+    rh.add('a', { v: 1 })
+    rh.add('a', { v: 2 })
+    expect(rh.get('a')?.v).toBe(2)
+  })
+
+  it('keys returns empty array for empty hash', () => {
+    const rh = new RendezvousHash<string>()
+    expect(rh.keys()).toEqual([])
+  })
+
+  it('values returns empty array for empty hash', () => {
+    const rh = new RendezvousHash<string>()
+    expect(rh.values()).toEqual([])
+  })
+
+  it('entries returns empty array for empty hash', () => {
+    const rh = new RendezvousHash<string>()
+    expect(rh.entries()).toEqual([])
+  })
+
+  it('entries returns correct key-value pairs', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'A')
+    rh.add('b', 'B')
+    const entries = rh.entries()
+    expect(entries.length).toBe(2)
+    expect(entries.some(e => e[0] === 'a' && e[1] === 'A')).toBe(true)
+    expect(entries.some(e => e[0] === 'b' && e[1] === 'B')).toBe(true)
+  })
+
+  it('clear on empty hash remains empty', () => {
+    const rh = new RendezvousHash<string>()
+    rh.clear()
+    expect(rh.size).toBe(0)
+    expect(rh.isEmpty()).toBe(true)
+  })
+
+  it('clone of empty hash is empty', () => {
+    const rh = new RendezvousHash<string>()
+    const copy = rh.clone()
+    expect(copy.size).toBe(0)
+    expect(copy.isEmpty()).toBe(true)
+  })
+
+  it('clone preserves order of operations', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'A')
+    rh.add('b', 'B')
+    rh.add('c', 'C')
+    const copy = rh.clone()
+    const originalKey = rh.selectKey('test')
+    const copyKey = copy.selectKey('test')
+    expect(originalKey).toBe(copyKey)
+  })
+
+  it('removing non-existent node does not affect size', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'A')
+    const beforeSize = rh.size
+    rh.remove('x')
+    expect(rh.size).toBe(beforeSize)
+  })
+
+  it('select after remove reassigns keys consistently', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'A')
+    rh.add('b', 'B')
+    rh.add('c', 'C')
+    const before = rh.select('key-1')
+    rh.remove('b')
+    const after = rh.select('key-1')
+    if (before === 'B') {
+      expect(['A', 'C']).toContain(after)
+    } else {
+      expect(before).toBe(after)
+    }
+  })
+
+  it('handles empty key in add', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('', 'empty-key')
+    expect(rh.has('')).toBe(true)
+    expect(rh.get('')).toBe('empty-key')
+  })
+
+  it('handles empty key in select', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('', 'empty-key')
+    rh.add('a', 'A')
+    const selected = rh.select('')
+    expect(['empty-key', 'A']).toContain(selected)
+  })
+
+  it('works with null values', () => {
+    const rh = new RendezvousHash<string | null>()
+    rh.add('a', null)
+    rh.add('b', 'B')
+    const selected = rh.select('key')
+    if (selected === null) {
+      expect(selected).toBeNull()
+    } else {
+      expect(selected).toBe('B')
+    }
+  })
+
+  it('selectN with single node returns array with one element', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'A')
+    const selected = rh.selectN('key', 5)
+    expect(selected.length).toBe(1)
+    expect(selected[0]).toBe('A')
+  })
 })

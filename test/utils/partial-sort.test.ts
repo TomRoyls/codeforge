@@ -2,110 +2,257 @@ import { describe, expect, it } from 'vitest'
 import { PartialSort } from '../../src/utils/partial-sort.js'
 
 describe('PartialSort', () => {
-  it('smallestK returns k smallest sorted', () => {
-    expect(PartialSort.smallestK([5, 3, 1, 4, 2], 3)).toEqual([1, 2, 3])
+  describe('smallestK', () => {
+    it('returns k smallest sorted', () => {
+      expect(PartialSort.smallestK([5, 3, 1, 4, 2], 3)).toEqual([1, 2, 3])
+    })
+
+    it('with k=1', () => {
+      expect(PartialSort.smallestK([5, 3, 1, 4, 2], 1)).toEqual([1])
+    })
+
+    it('with k=0', () => {
+      expect(PartialSort.smallestK([1, 2, 3], 0)).toEqual([])
+    })
+
+    it('with k >= length', () => {
+      expect(PartialSort.smallestK([3, 1, 2], 5)).toEqual([1, 2, 3])
+    })
+
+    it('with k equals length', () => {
+      expect(PartialSort.smallestK([3, 1, 2], 3)).toEqual([1, 2, 3])
+    })
+
+    it('with single element array and k=1', () => {
+      expect(PartialSort.smallestK([42], 1)).toEqual([42])
+    })
+
+    it('with single element array and k > length', () => {
+      expect(PartialSort.smallestK([42], 5)).toEqual([42])
+    })
+
+    it('with empty array', () => {
+      expect(PartialSort.smallestK([], 3)).toEqual([])
+    })
+
+    it('with empty array and k=0', () => {
+      expect(PartialSort.smallestK([], 0)).toEqual([])
+    })
+
+    it('handles duplicates', () => {
+      expect(PartialSort.smallestK([3, 1, 1, 2], 2)).toEqual([1, 1])
+    })
+
+    it('handles negative numbers', () => {
+      expect(PartialSort.smallestK([-1, -3, -2], 2)).toEqual([-3, -2])
+    })
+
+    it('handles mixed positive and negative', () => {
+      expect(PartialSort.smallestK([-5, 3, -1, 4, 2], 3)).toEqual([-5, -1, 2])
+    })
+
+    it('handles zero', () => {
+      expect(PartialSort.smallestK([0, 5, -1, 3, 0], 3)).toEqual([-1, 0, 0])
+    })
+
+    it('handles large array', () => {
+      const arr = Array.from({ length: 1000 }, (_, i) => 1000 - i)
+      const result = PartialSort.smallestK(arr, 10)
+      expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    })
+
+    it('preserves order of selected elements', () => {
+      const result = PartialSort.smallestK([5, 1, 5, 2, 5, 3], 3)
+      expect(result).toEqual([1, 2, 3])
+    })
+
+    it('with all identical elements', () => {
+      expect(PartialSort.smallestK([5, 5, 5, 5, 5], 3)).toEqual([5, 5, 5])
+    })
+
+    it('with floating point numbers', () => {
+      const result = PartialSort.smallestK([1.5, 3.7, 0.3, 2.1, 1.8], 3)
+      expect(result).toEqual([0.3, 1.5, 1.8])
+    })
+
+    it('does not modify original array', () => {
+      const arr = [3, 1, 2]
+      PartialSort.smallestK(arr, 2)
+      expect(arr).toEqual([3, 1, 2])
+    })
+
+    it('with k=2 finds second smallest', () => {
+      const result = PartialSort.smallestK([5, 2, 8, 1, 9, 3], 2)
+      expect(result).toEqual([1, 2])
+    })
+
+    it('with k=3 returns three smallest sorted', () => {
+      const result = PartialSort.smallestK([9, 5, 2, 7, 1, 8], 3)
+      expect(result).toEqual([1, 2, 5])
+    })
+
+    it('handles already sorted array', () => {
+      expect(PartialSort.smallestK([1, 2, 3, 4, 5], 3)).toEqual([1, 2, 3])
+    })
+
+    it('handles reverse sorted array', () => {
+      expect(PartialSort.smallestK([5, 4, 3, 2, 1], 3)).toEqual([1, 2, 3])
+    })
   })
 
-  it('smallestK with k=1', () => {
-    expect(PartialSort.smallestK([5, 3, 1, 4, 2], 1)).toEqual([1])
+  describe('largestK', () => {
+    it('returns k largest sorted descending', () => {
+      expect(PartialSort.largestK([5, 3, 1, 4, 2], 3)).toEqual([5, 4, 3])
+    })
+
+    it('with k=1', () => {
+      expect(PartialSort.largestK([5, 3, 1, 4, 2], 1)).toEqual([5])
+    })
+
+    it('with k=0', () => {
+      expect(PartialSort.largestK([1, 2, 3], 0)).toEqual([])
+    })
+
+    it('with k >= length', () => {
+      expect(PartialSort.largestK([3, 1, 2], 5)).toEqual([3, 2, 1])
+    })
+
+    it('with k equals length', () => {
+      expect(PartialSort.largestK([3, 1, 2], 3)).toEqual([3, 2, 1])
+    })
+
+    it('with single element array and k=1', () => {
+      expect(PartialSort.largestK([42], 1)).toEqual([42])
+    })
+
+    it('with single element array and k > length', () => {
+      expect(PartialSort.largestK([42], 5)).toEqual([42])
+    })
+
+    it('with empty array', () => {
+      expect(PartialSort.largestK([], 3)).toEqual([])
+    })
+
+    it('with empty array and k=0', () => {
+      expect(PartialSort.largestK([], 0)).toEqual([])
+    })
+
+    it('handles duplicates', () => {
+      expect(PartialSort.largestK([3, 5, 5, 2], 2)).toEqual([5, 5])
+    })
+
+    it('handles negative numbers', () => {
+      expect(PartialSort.largestK([-1, -3, -2], 2)).toEqual([-1, -2])
+    })
+
+    it('handles mixed positive and negative', () => {
+      expect(PartialSort.largestK([-5, 3, -1, 4, 2], 3)).toEqual([4, 3, 2])
+    })
+
+    it('handles zero', () => {
+      expect(PartialSort.largestK([0, 5, -1, 3, 0], 3)).toEqual([5, 3, 0])
+    })
+
+    it('with large array', () => {
+      const arr = Array.from({ length: 1000 }, (_, i) => 1000 - i)
+      const result = PartialSort.largestK(arr, 10)
+      expect(result).toEqual([1000, 999, 998, 997, 996, 995, 994, 993, 992, 991])
+    })
+
+    it('with all identical elements', () => {
+      expect(PartialSort.largestK([5, 5, 5, 5, 5], 3)).toEqual([5, 5, 5])
+    })
+
+    it('with floating point numbers', () => {
+      const result = PartialSort.largestK([1.5, 3.7, 0.3, 2.1, 1.8], 3)
+      expect(result).toEqual([3.7, 2.1, 1.8])
+    })
+
+    it('does not modify original array', () => {
+      const arr = [3, 1, 2]
+      PartialSort.largestK(arr, 2)
+      expect(arr).toEqual([3, 1, 2])
+    })
+
+    it('with k=2 finds second largest', () => {
+      const result = PartialSort.largestK([5, 2, 8, 1, 9, 3], 2)
+      expect(result).toEqual([9, 8])
+    })
+
+    it('with k=3 returns three largest sorted descending', () => {
+      const result = PartialSort.largestK([9, 5, 2, 7, 1, 8], 3)
+      expect(result).toEqual([9, 8, 7])
+    })
+
+    it('handles already sorted array', () => {
+      expect(PartialSort.largestK([1, 2, 3, 4, 5], 3)).toEqual([5, 4, 3])
+    })
+
+    it('handles reverse sorted array', () => {
+      expect(PartialSort.largestK([5, 4, 3, 2, 1], 3)).toEqual([5, 4, 3])
+    })
   })
 
-  it('smallestK with k=0', () => {
-    expect(PartialSort.smallestK([1, 2, 3], 0)).toEqual([])
-  })
+  describe('partitionPoint', () => {
+    it('finds partition point', () => {
+      const arr = [1, 2, 3, 4, 5]
+      expect(PartialSort.partitionPoint(arr, x => x < 3)).toBe(2)
+    })
 
-  it('smallestK with k >= length', () => {
-    expect(PartialSort.smallestK([3, 1, 2], 5)).toEqual([1, 2, 3])
-  })
+    it('with all true predicate', () => {
+      expect(PartialSort.partitionPoint([1, 2, 3], () => true)).toBe(3)
+    })
 
-  it('largestK returns k largest sorted descending', () => {
-    expect(PartialSort.largestK([5, 3, 1, 4, 2], 3)).toEqual([5, 4, 3])
-  })
+    it('with all false predicate', () => {
+      expect(PartialSort.partitionPoint([1, 2, 3], () => false)).toBe(0)
+    })
 
-  it('largestK with k=1', () => {
-    expect(PartialSort.largestK([5, 3, 1, 4, 2], 1)).toEqual([5])
-  })
+    it('with empty array', () => {
+      expect(PartialSort.partitionPoint([], () => true)).toBe(0)
+    })
 
-  it('largestK with k=0', () => {
-    expect(PartialSort.largestK([1, 2, 3], 0)).toEqual([])
-  })
+    it('finds first false at start', () => {
+      expect(PartialSort.partitionPoint([1, 2, 3, 4, 5], x => x < 1)).toBe(0)
+    })
 
-  it('largestK with k >= length', () => {
-    expect(PartialSort.largestK([3, 1, 2], 5)).toEqual([3, 2, 1])
-  })
+    it('finds first false at end', () => {
+      expect(PartialSort.partitionPoint([1, 2, 3, 4, 5], x => x < 6)).toBe(5)
+    })
 
-  it('does not modify original', () => {
-    const arr = [3, 1, 2]
-    PartialSort.smallestK(arr, 2)
-    expect(arr).toEqual([3, 1, 2])
-  })
+    it('with equals predicate', () => {
+      expect(PartialSort.partitionPoint([1, 2, 3, 4, 5], x => x <= 3)).toBe(3)
+    })
 
-  it('handles duplicates', () => {
-    expect(PartialSort.smallestK([3, 1, 1, 2], 2)).toEqual([1, 1])
-  })
+    it('with odd numbers predicate', () => {
+      expect(PartialSort.partitionPoint([1, 3, 5, 2, 4], x => x % 2 !== 0)).toBe(3)
+    })
 
-  it('handles negative numbers', () => {
-    expect(PartialSort.smallestK([-1, -3, -2], 2)).toEqual([-3, -2])
-  })
+    it('with single element true', () => {
+      expect(PartialSort.partitionPoint([5], x => x < 10)).toBe(1)
+    })
 
-  it('partitionPoint works', () => {
-    const arr = [1, 2, 3, 4, 5]
-    expect(PartialSort.partitionPoint(arr, x => x < 3)).toBe(2)
-  })
+    it('with single element false', () => {
+      expect(PartialSort.partitionPoint([5], x => x < 1)).toBe(0)
+    })
 
-  it('partitionPoint with all true', () => {
-    expect(PartialSort.partitionPoint([1, 2, 3], () => true)).toBe(3)
-  })
+    it('with two elements both true', () => {
+      expect(PartialSort.partitionPoint([1, 2], x => x < 10)).toBe(2)
+    })
 
-  it('partitionPoint with all false', () => {
-    expect(PartialSort.partitionPoint([1, 2, 3], () => false)).toBe(0)
-  })
+    it('with two elements both false', () => {
+      expect(PartialSort.partitionPoint([10, 20], x => x < 1)).toBe(0)
+    })
 
-  it('partitionPoint with empty array', () => {
-    expect(PartialSort.partitionPoint([], () => true)).toBe(0)
-  })
+    it('with two elements first true second false', () => {
+      expect(PartialSort.partitionPoint([1, 10], x => x < 5)).toBe(1)
+    })
 
-  it('partitionPoint finds first false', () => {
-    expect(PartialSort.partitionPoint([1, 2, 3, 4, 5], (x) => x < 3)).toBe(2)
-  })
+    it('with negative numbers', () => {
+      expect(PartialSort.partitionPoint([-5, -3, -1, 2, 4], x => x < 0)).toBe(3)
+    })
 
-  it('smallestK returns correct elements', () => {
-    const result = PartialSort.smallestK([5, 3, 1, 4, 2], 3)
-    expect(result.sort()).toEqual([1, 2, 3])
-  })
-
-  it('smallestK with k=0 returns empty', () => {
-    const result = PartialSort.smallestK([5, 3, 1], 0)
-    expect(result).toEqual([])
-  })
-
-  it('smallestK with k=1 returns minimum', () => {
-    const result = PartialSort.smallestK([5, 3, 1, 4], 1)
-    expect(result).toEqual([1])
-  })
-
-  it('smallestK with k=0 returns empty', () => {
-    const result = PartialSort.smallestK([5, 3, 1], 0)
-    expect(result).toEqual([])
-  })
-
-  it('smallestK with k equals length returns sorted', () => {
-    const result = PartialSort.smallestK([3, 1, 2], 3)
-    expect(result).toEqual([1, 2, 3])
-  })
-
-  it('smallestK with k=1 returns min', () => {
-    const result = PartialSort.smallestK([5, 1, 3, 2, 4], 1)
-    expect(result).toEqual([1])
-  })
-
-  it('smallestK with k=0 returns empty', () => {
-    const result = PartialSort.smallestK([5, 1, 3], 0)
-    expect(result).toEqual([])
-  })
-
-  it('smallestK with k=1 returns min', () => {
-    const result = PartialSort.smallestK([5, 1, 3], 1)
-    expect(result).toEqual([1])
+    it('with floating point numbers', () => {
+      expect(PartialSort.partitionPoint([1.1, 2.2, 3.3, 4.4], x => x < 3.0)).toBe(2)
+    })
   })
 })

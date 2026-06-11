@@ -66,44 +66,154 @@ describe('PigeonholeSort', () => {
     expect(PigeonholeSort.isStable()).toBe(true)
   })
 
-  it('handles single distinct value range', () => {
-    expect(PigeonholeSort.sort([5, 5, 5])).toEqual([5, 5, 5])
+  it('sortInPlace empty array', () => {
+    const arr: number[] = []
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([])
   })
 
-  it('handles large range efficiently', () => {
-    const arr = [0, 100, 50, 25, 75]
-    expect(PigeonholeSort.sort(arr)).toEqual([0, 25, 50, 75, 100])
+  it('sortInPlace single element', () => {
+    const arr = [5]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([5])
   })
 
-  it('handles all same elements', () => {
-    expect(PigeonholeSort.sort([5, 5, 5])).toEqual([5, 5, 5])
+  it('sortInPlace already sorted', () => {
+    const arr = [1, 2, 3, 4]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4])
   })
 
-  it('handles empty array', () => {
-    expect(PigeonholeSort.sort([])).toEqual([])
+  it('sortInPlace reverse sorted', () => {
+    const arr = [4, 3, 2, 1]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4])
   })
 
-  it('handles single element', () => {
-    expect(PigeonholeSort.sort([42])).toEqual([42])
+  it('sortInPlace with duplicates', () => {
+    const arr = [3, 1, 3, 2, 1]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 1, 2, 3, 3])
   })
 
-  it('handles already sorted', () => {
-    expect(PigeonholeSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  it('sortInPlace with negatives', () => {
+    const arr = [-3, 1, -2, 0]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([-3, -2, 0, 1])
   })
 
-  it('handles reverse sorted', () => {
+  it('sort returns new array', () => {
+    const arr = [3, 1, 2]
+    const sorted = PigeonholeSort.sort(arr)
+    expect(sorted).not.toBe(arr)
+  })
+
+  it('sort result length matches input', () => {
+    expect(PigeonholeSort.sort([5, 3, 1, 4, 2]).length).toBe(5)
+  })
+
+  it('handles zeros', () => {
+    expect(PigeonholeSort.sort([0, 0, 1, 0])).toEqual([0, 0, 0, 1])
+  })
+
+  it('handles consecutive integers', () => {
+    expect(PigeonholeSort.sort([5, 3, 1, 4, 2])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles range with gaps', () => {
+    expect(PigeonholeSort.sort([0, 100, 50, 25, 75])).toEqual([0, 25, 50, 75, 100])
+  })
+
+  it('single distinct value repeated', () => {
+    expect(PigeonholeSort.sort([5, 5, 5, 5])).toEqual([5, 5, 5, 5])
+  })
+
+  it('two equal elements', () => {
+    expect(PigeonholeSort.sort([5, 5])).toEqual([5, 5])
+  })
+
+  it('handles min at end max at start', () => {
+    expect(PigeonholeSort.sort([100, 50, 0])).toEqual([0, 50, 100])
+  })
+
+  it('handles alternating high low', () => {
+    expect(PigeonholeSort.sort([10, 1, 9, 2, 8, 3])).toEqual([1, 2, 3, 8, 9, 10])
+  })
+
+  it('sortInPlace large array', () => {
+    const arr = Array.from({ length: 200 }, (_, i) => 200 - i)
+    PigeonholeSort.sortInPlace(arr)
+    for (let i = 1; i < arr.length; i++) {
+      expect(arr[i]!).toBeGreaterThanOrEqual(arr[i - 1]!)
+    }
+  })
+
+  it('sort with all negative', () => {
+    expect(PigeonholeSort.sort([-5, -1, -3, -2, -4])).toEqual([-5, -4, -3, -2, -1])
+  })
+
+  it('sortInPlace returns void', () => {
+    const arr = [3, 1, 2]
+    expect(PigeonholeSort.sortInPlace(arr)).toBeUndefined()
+  })
+
+  it('handles large positive range', () => {
+    const arr = [1000, 500, 0, 750, 250]
+    expect(PigeonholeSort.sort(arr)).toEqual([0, 250, 500, 750, 1000])
+  })
+
+  it('three elements unsorted', () => {
+    expect(PigeonholeSort.sort([2, 3, 1])).toEqual([1, 2, 3])
+  })
+
+  it('four elements', () => {
+    expect(PigeonholeSort.sort([4, 3, 2, 1])).toEqual([1, 2, 3, 4])
+  })
+
+  it('isStable returns boolean', () => {
+    expect(typeof PigeonholeSort.isStable()).toBe('boolean')
+  })
+
+  it('sortInPlace with all same', () => {
+    const arr = [7, 7, 7, 7]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([7, 7, 7, 7])
+  })
+
+  it('large duplicate-heavy array', () => {
+    const arr = Array.from({ length: 100 }, () => 5)
+    expect(PigeonholeSort.sort(arr)).toEqual(arr)
+  })
+
+  it('min value at end', () => {
     expect(PigeonholeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
   })
 
-  it('handles single element', () => {
-    expect(PigeonholeSort.sort([42])).toEqual([42])
+  it('max value at start', () => {
+    expect(PigeonholeSort.sort([3, 1, 2])).toEqual([1, 2, 3])
   })
 
-  it('handles empty array', () => {
-    expect(PigeonholeSort.sort([])).toEqual([])
+  it('handles array of length 5 all unique', () => {
+    expect(PigeonholeSort.sort([5, 2, 4, 1, 3])).toEqual([1, 2, 3, 4, 5])
   })
 
-  it('handles single element', () => {
-    expect(PigeonholeSort.sort([42])).toEqual([42])
+  it('sortInPlace two elements reversed', () => {
+    const arr = [2, 1]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2])
+  })
+
+  it('handles single zero', () => {
+    expect(PigeonholeSort.sort([0])).toEqual([0])
+  })
+
+  it('handles only negative', () => {
+    expect(PigeonholeSort.sort([-10, -5, -20])).toEqual([-20, -10, -5])
+  })
+
+  it('sortInPlace preserves length', () => {
+    const arr = [3, 1, 2, 4]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr.length).toBe(4)
   })
 })

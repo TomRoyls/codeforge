@@ -65,12 +65,6 @@ describe('PalindromeManacher', () => {
     expect(m.countAllPalindromes()).toBe(6)
   })
 
-  it('handles single character', () => {
-    const m = new PalindromeManacher('a')
-    expect(m.isPalindrome(0, 0)).toBe(true)
-    expect(m.countAllPalindromes()).toBe(1)
-  })
-
   it('handles two same characters', () => {
     const m = new PalindromeManacher('aa')
     expect(m.longestPalindrome().length).toBe(2)
@@ -90,25 +84,14 @@ describe('PalindromeManacher', () => {
     expect(m.isPalindrome(1, 3)).toBe(true)
   })
 
-  it('handles single character', () => {
-    const m = new PalindromeManacher('a')
-    expect(m.longestPalindrome().length).toBe(1)
-    expect(m.isPalindrome(0, 0)).toBe(true)
+  it('full string palindrome', () => {
+    const m = new PalindromeManacher('aba')
+    expect(m.isPalindrome(0, 2)).toBe(true)
   })
 
-  it('detects non-palindrome substring', () => {
-    const m = new PalindromeManacher('abc')
-    expect(m.isPalindrome(0, 2)).toBe(false)
-  })
-
-  it('single character is palindrome', () => {
+  it('handles single character isPalindrome', () => {
     const m = new PalindromeManacher('a')
     expect(m.isPalindrome(0, 0)).toBe(true)
-  })
-
-  it('non-palindrome segment', () => {
-    const m = new PalindromeManacher('abc')
-    expect(m.isPalindrome(0, 2)).toBe(false)
   })
 
   it('single char is always palindrome', () => {
@@ -127,8 +110,153 @@ describe('PalindromeManacher', () => {
     expect(m.isPalindrome(0, 1)).toBe(false)
   })
 
-  it('full string palindrome', () => {
+  it('handles mixed case', () => {
+    const m = new PalindromeManacher('Aba')
+    expect(m.longestPalindrome()).toBe('A')
+  })
+
+  it('finds multiple palindromes', () => {
+    const m = new PalindromeManacher('ababa')
+    expect(m.longestPalindrome()).toBe('ababa')
+  })
+
+  it('handles spaces in string', () => {
+    const m = new PalindromeManacher('a ba')
+    expect(m.longestPalindrome()).toBe('a')
+  })
+
+  it('empty string count is 0', () => {
+    const m = new PalindromeManacher('')
+    expect(m.countAllPalindromes()).toBe(0)
+  })
+
+  it('single char count is 1', () => {
+    const m = new PalindromeManacher('a')
+    expect(m.countAllPalindromes()).toBe(1)
+  })
+
+  it('longest palindrome in string with multiple', () => {
+    const m = new PalindromeManacher('abccbaabc')
+    expect(m.longestPalindrome()).toBe('abccba')
+  })
+
+  it('handles very long palindrome', () => {
+    const s = 'a'.repeat(100)
+    const m = new PalindromeManacher(s)
+    expect(m.longestPalindrome()).toBe(s)
+  })
+
+  it('counts palindromes in all same characters', () => {
+    const m = new PalindromeManacher('aaaaa')
+    expect(m.countAllPalindromes()).toBe(15)
+  })
+
+  it('handles alternating characters', () => {
+    const m = new PalindromeManacher('ababab')
+    expect(m.longestPalindrome().length).toBe(5)
+  })
+
+  it('isPalindrome at boundaries', () => {
     const m = new PalindromeManacher('aba')
-    expect(m.isPalindrome(0, 2)).toBe(true)
+    expect(m.isPalindrome(0, 0)).toBe(true)
+    expect(m.isPalindrome(2, 2)).toBe(true)
+  })
+
+  it('finds even palindrome in mixed', () => {
+    const m = new PalindromeManacher('cabbac')
+    expect(m.longestPalindrome()).toBe('cabbac')
+  })
+
+  it('handles string with numbers', () => {
+    const m = new PalindromeManacher('12321')
+    expect(m.longestPalindrome()).toBe('12321')
+  })
+
+  it('longest in complex string', () => {
+    const m = new PalindromeManacher('xyzabcbaxyz')
+    expect(m.longestPalindrome()).toBe('abcba')
+  })
+
+  it('counts correctly for aaaa', () => {
+    const m = new PalindromeManacher('aaaa')
+    expect(m.countAllPalindromes()).toBe(10)
+  })
+
+  it('overlapping palindromes', () => {
+    const m = new PalindromeManacher('ababa')
+    expect(m.countAllPalindromes()).toBe(9)
+  })
+
+  it('no palindrome found in random string', () => {
+    const m = new PalindromeManacher('abcdefghijklmnopqrstuvwxyz')
+    expect(m.longestPalindrome().length).toBe(1)
+  })
+
+  it('handles unicode characters', () => {
+    const m = new PalindromeManacher('ñoñ')
+    expect(m.longestPalindrome()).toBe('ñoñ')
+  })
+
+  it('isPalindrome for nested palindromes', () => {
+    const m = new PalindromeManacher('abacabacaba')
+    expect(m.isPalindrome(0, 10)).toBe(true)
+    expect(m.isPalindrome(2, 8)).toBe(true)
+  })
+
+  it('longest palindrome at start', () => {
+    const m = new PalindromeManacher('abcbaxyz')
+    expect(m.longestPalindrome()).toBe('abcba')
+  })
+
+  it('longest palindrome at end', () => {
+    const m = new PalindromeManacher('xyzabcba')
+    expect(m.longestPalindrome()).toBe('abcba')
+  })
+
+  it('handles multiple longest palindromes', () => {
+    const m = new PalindromeManacher('abcbaabcba')
+    expect(m.longestPalindrome().length).toBe(10)
+  })
+
+  it('counts in palindrome with length 4', () => {
+    const m = new PalindromeManacher('abba')
+    expect(m.countAllPalindromes()).toBe(6)
+  })
+
+  it('handles special characters', () => {
+    const m = new PalindromeManacher('a!a')
+    expect(m.longestPalindrome()).toBe('a!a')
+  })
+
+  it('finds palindrome in repeated pattern', () => {
+    const m = new PalindromeManacher('abcabcabc')
+    expect(m.longestPalindrome().length).toBe(1)
+  })
+
+  it('isPalindrome for adjacent even palindromes', () => {
+    const m = new PalindromeManacher('abbaabba')
+    expect(m.isPalindrome(0, 3)).toBe(true)
+    expect(m.isPalindrome(4, 7)).toBe(true)
+  })
+
+  it('handles very long string', () => {
+    const s = 'a'.repeat(10000)
+    const m = new PalindromeManacher(s)
+    expect(m.countAllPalindromes()).toBe(s.length * (s.length + 1) / 2)
+  })
+
+  it('empty substring check', () => {
+    const m = new PalindromeManacher('abc')
+    expect(m.longestPalindrome().length).toBeGreaterThan(0)
+  })
+
+  it('handles mirrored substring', () => {
+    const m = new PalindromeManacher('madamimadam')
+    expect(m.longestPalindrome()).toBe('madamimadam')
+  })
+
+  it('counts in string with isolated palindromes', () => {
+    const m = new PalindromeManacher('abcbaxyzabccba')
+    expect(m.countAllPalindromes()).toBeGreaterThan(10)
   })
 })

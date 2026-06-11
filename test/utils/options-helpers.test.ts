@@ -120,18 +120,245 @@ describe('extractRuleOptions', () => {
     expect(result.y).toBe(2)
   })
 
-  it('extractRuleOptions uses defaults for empty rules', () => {
-    const result = extractRuleOptions([], { a: 10 })
-    expect(result.a).toBe(10)
+  it('array with null object returns defaults', () => {
+    const defaults = { max: 10 }
+    expect(extractRuleOptions([null], defaults)).toEqual(defaults)
   })
 
-  it('extractRuleOptions merges with provided values', () => {
-    const result = extractRuleOptions([{ a: 5 }], { a: 10 })
-    expect(result.a).toBe(5)
+  it('array with array inside spreads array properties', () => {
+    const defaults = { max: 10 }
+    expect(extractRuleOptions([[1, 2]], defaults)).toEqual({ max: 10, '0': 1, '1': 2 })
   })
 
-  it('extractRuleOptions with empty rules uses defaults', () => {
-    const result = extractRuleOptions([], { a: 10 })
-    expect(result.a).toBe(10)
+  it('array with function returns defaults', () => {
+    const defaults = { max: 10 }
+    expect(extractRuleOptions([() => {}], defaults)).toEqual(defaults)
+  })
+
+  it('handles Date object as value', () => {
+    const date = new Date('2024-01-01')
+    const result = extractRuleOptions([{ date }], { max: 10 })
+    expect(result.date).toBe(date)
+  })
+
+  it('handles RegExp object as value', () => {
+    const regex = /test/g
+    const result = extractRuleOptions([{ regex }], { max: 10 })
+    expect(result.regex).toBe(regex)
+  })
+
+  it('handles array as value in options', () => {
+    const result = extractRuleOptions([{ items: [1, 2, 3] }], { max: 10 })
+    expect(result.items).toEqual([1, 2, 3])
+  })
+
+  it('handles object with nested array value', () => {
+    const result = extractRuleOptions([{ config: { items: [1, 2, 3] } }], {})
+    expect(result.config).toEqual({ items: [1, 2, 3] })
+  })
+
+  it('handles very long key name', () => {
+    const longKey = 'a'.repeat(1000)
+    const result = extractRuleOptions([{ [longKey]: 'value' }], {})
+    expect(result[longKey]).toBe('value')
+  })
+
+  it('handles key with special characters', () => {
+    const result = extractRuleOptions([{ 'key-with-special.chars!@#': 'value' }], {})
+    expect(result['key-with-special.chars!@#']).toBe('value')
+  })
+
+  it('handles Unicode key', () => {
+    const result = extractRuleOptions([{ 'こんにちは': 'value' }], {})
+    expect(result['こんにちは']).toBe('value')
+  })
+
+  it('handles empty string key', () => {
+    const result = extractRuleOptions([{ '': 'empty' }], {})
+    expect(result['']).toBe('empty')
+  })
+
+  it('handles numeric string key', () => {
+    const result = extractRuleOptions([{ '123': 'value' }], {})
+    expect(result['123']).toBe('value')
+  })
+
+  it('handles number 0 as value', () => {
+    const result = extractRuleOptions([{ value: 0 }], { value: 10 })
+    expect(result.value).toBe(0)
+  })
+
+  it('handles negative number as value', () => {
+    const result = extractRuleOptions([{ value: -10 }], { value: 10 })
+    expect(result.value).toBe(-10)
+  })
+
+  it('handles NaN as value', () => {
+    const result = extractRuleOptions([{ value: NaN }], {})
+    expect(result.value).toBeNaN()
+  })
+
+  it('handles Infinity as value', () => {
+    const result = extractRuleOptions([{ value: Infinity }], {})
+    expect(result.value).toBe(Infinity)
+  })
+
+  it('handles null as value in options', () => {
+    const result = extractRuleOptions([{ value: null }], { value: 10 })
+    expect(result.value).toBe(null)
+  })
+
+  it('handles empty array as value in options', () => {
+    const result = extractRuleOptions([{ items: [] }], {})
+    expect(result.items).toEqual([])
+  })
+
+  it('handles object with no own properties', () => {
+    const obj = Object.create(null)
+    const result = extractRuleOptions([obj], { max: 10 })
+    expect(result).toEqual({ max: 10 })
+  })
+
+  it('handles boolean false as value', () => {
+    const result = extractRuleOptions([{ enabled: false }], { enabled: true })
+    expect(result.enabled).toBe(false)
+  })
+
+  it('handles empty string as value', () => {
+    const result = extractRuleOptions([{ name: '' }], { name: 'default' })
+    expect(result.name).toBe('')
+  })
+
+  it('handles large number of properties', () => {
+    const options = {}
+    for (let i = 0; i < 100; i++) {
+      options[`key${i}`] = i
+    }
+    const result = extractRuleOptions([options], {})
+    expect(Object.keys(result).length).toBe(100)
+    expect(result.key0).toBe(0)
+    expect(result.key99).toBe(99)
+  })
+
+  it('handles BigInt value', () => {
+    const result = extractRuleOptions([{ value: 9007199254740993n }], {})
+    expect(result.value).toBe(9007199254740993n)
+  })
+
+  it('handles Int8Array as value', () => {
+    const arr = new Int8Array([1, 2, 3])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles Uint8Array as value', () => {
+    const arr = new Uint8Array([1, 2, 3])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles Float32Array as value', () => {
+    const arr = new Float32Array([1.5, 2.5, 3.5])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles Map as value', () => {
+    const map = new Map([['key', 'value']])
+    const result = extractRuleOptions([{ map }], {})
+    expect(result.map).toBe(map)
+  })
+
+  it('handles Set as value', () => {
+    const set = new Set([1, 2, 3])
+    const result = extractRuleOptions([{ set }], {})
+    expect(result.set).toBe(set)
+  })
+
+  it('handles Symbol.for as key', () => {
+    const sym = Symbol.for('test')
+    const result = extractRuleOptions([{ [sym]: 'value' }], {})
+    expect(result[sym]).toBe('value')
+  })
+
+  it('handles deep object merging (shallow merge)', () => {
+    const result = extractRuleOptions(
+      [{ config: { nested: { deep: 'value' } } }],
+      { config: { other: 'default' } }
+    )
+    expect(result.config).toEqual({ nested: { deep: 'value' } })
+  })
+
+  it('handles array with Date objects', () => {
+    const dates = [new Date('2024-01-01'), new Date('2024-01-02')]
+    const result = extractRuleOptions([{ dates }], {})
+    expect(result.dates).toBe(dates)
+  })
+
+  it('handles array with multiple valid objects (uses first)', () => {
+    const result = extractRuleOptions([{ a: 1 }, { b: 2 }], { c: 3 })
+    expect(result).toEqual({ a: 1, c: 3 })
+  })
+
+  it('handles array with undefined first element', () => {
+    const result = extractRuleOptions([undefined, { a: 1 }], { b: 2 })
+    expect(result).toEqual({ b: 2 })
+  })
+
+  it('handles buffer as value', () => {
+    const buffer = Buffer.from('hello')
+    const result = extractRuleOptions([{ buffer }], {})
+    expect(result.buffer).toBe(buffer)
+  })
+
+  it('handles typed array with negative values', () => {
+    const arr = new Int8Array([-1, -2, -3])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles Float64Array as value', () => {
+    const arr = new Float64Array([1.1, 2.2, 3.3])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles Uint16Array as value', () => {
+    const arr = new Uint16Array([1, 2, 3])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles Uint32Array as value', () => {
+    const arr = new Uint32Array([1, 2, 3])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles Int16Array as value', () => {
+    const arr = new Int16Array([1, 2, 3])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles Int32Array as value', () => {
+    const arr = new Int32Array([1, 2, 3])
+    const result = extractRuleOptions([{ data: arr }], {})
+    expect(result.data).toBe(arr)
+  })
+
+  it('handles DataView as value', () => {
+    const buffer = new ArrayBuffer(8)
+    const view = new DataView(buffer)
+    const result = extractRuleOptions([{ view }], {})
+    expect(result.view).toBe(view)
+  })
+
+  it('handles object with mixed typed arrays', () => {
+    const arr1 = new Uint8Array([1, 2, 3])
+    const arr2 = new Float32Array([1.5, 2.5])
+    const result = extractRuleOptions([{ data1: arr1, data2: arr2 }], {})
+    expect(result.data1).toBe(arr1)
+    expect(result.data2).toBe(arr2)
   })
 })

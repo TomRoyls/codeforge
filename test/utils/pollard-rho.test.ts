@@ -8,8 +8,8 @@ describe('PollardRho', () => {
   })
 
   it('factorizes prime numbers', () => {
-    const factors = PollardRho.factorize(17)
-    expect(factors).toEqual([17n])
+    expect(PollardRho.factorize(17)).toEqual([17n])
+    expect(PollardRho.factorize(7)).toEqual([7n])
   })
 
   it('factorizes 1 returns empty', () => {
@@ -29,23 +29,28 @@ describe('PollardRho', () => {
     expect(PollardRho.factorize(64)).toEqual([2n, 2n, 2n, 2n, 2n, 2n])
   })
 
-  it('factorizes large number', () => {
+  it('factorizes product of small primes', () => {
     const n = 2 * 3 * 5 * 7 * 11 * 13
-    const factors = PollardRho.factorize(n)
-    expect(factors).toEqual([2n, 3n, 5n, 7n, 11n, 13n])
+    expect(PollardRho.factorize(n)).toEqual([2n, 3n, 5n, 7n, 11n, 13n])
   })
 
   it('isPrime detects primes', () => {
     expect(PollardRho.isPrime(2n)).toBe(true)
     expect(PollardRho.isPrime(3n)).toBe(true)
-    expect(PollardRho.isPrime(4n)).toBe(false)
     expect(PollardRho.isPrime(97n)).toBe(true)
+    expect(PollardRho.isPrime(4n)).toBe(false)
+    expect(PollardRho.isPrime(100n)).toBe(false)
   })
 
   it('isPrime handles edge cases', () => {
     expect(PollardRho.isPrime(0n)).toBe(false)
     expect(PollardRho.isPrime(1n)).toBe(false)
     expect(PollardRho.isPrime(-5n)).toBe(false)
+  })
+
+  it('isPrime detects large prime', () => {
+    expect(PollardRho.isPrime(10007n)).toBe(true)
+    expect(PollardRho.isPrime(10009n)).toBe(true)
   })
 
   it('factorizes product of two primes', () => {
@@ -73,50 +78,138 @@ describe('PollardRho', () => {
     expect(PollardRho.factorize(4)).toEqual([2n, 2n])
   })
 
-  it('factorizes 1 returns empty', () => {
-    expect(PollardRho.factorize(1)).toEqual([])
+  it('factorizes 6', () => {
+    expect(PollardRho.factorize(6)).toEqual([2n, 3n])
   })
 
-  it('factorizes 12', () => {
-    const factors = PollardRho.factorize(12)
-    const sorted = factors.map(Number).sort()
-    expect(sorted).toEqual([2, 2, 3])
+  it('factorizes 8', () => {
+    expect(PollardRho.factorize(8)).toEqual([2n, 2n, 2n])
   })
 
-  it('factorize prime returns itself', () => {
-    const factors = PollardRho.factorize(7n)
-    expect(factors).toEqual([7n])
+  it('factorizes 9', () => {
+    expect(PollardRho.factorize(9)).toEqual([3n, 3n])
   })
 
-  it('factorize 12 returns prime factors', () => {
-    const factors = PollardRho.factorize(12n)
-    expect(factors.sort((a, b) => (a < b ? -1 : 1))).toEqual([2n, 2n, 3n])
+  it('factorizes 10', () => {
+    expect(PollardRho.factorize(10)).toEqual([2n, 5n])
   })
 
-  it('factorize prime returns itself', () => {
-    const factors = PollardRho.factorize(7n)
-    expect(factors).toEqual([7n])
-  })
-
-  it('factorize 4 returns two 2s', () => {
-    const factors = PollardRho.factorize(4n)
-    expect(factors.sort()).toEqual([2n, 2n])
-  })
-
-  it('factorize prime returns itself', () => {
-    const factors = PollardRho.factorize(7n)
-    expect(factors).toEqual([7n])
-  })
-
-  it('factorize 12 returns correct factors', () => {
-    const factors = PollardRho.factorize(12n)
+  it('factors multiply back to original', () => {
+    const n = 360
+    const factors = PollardRho.factorize(n)
     const product = factors.reduce((a, b) => a * b, 1n)
-    expect(product).toBe(12n)
+    expect(product).toBe(BigInt(n))
   })
 
-  it('prime number factorizes to itself', () => {
-    const factors = PollardRho.factorize(7n)
-    expect(factors.length).toBe(1)
-    expect(factors[0]).toBe(7n)
+  it('factorizes 100', () => {
+    expect(PollardRho.factorize(100)).toEqual([2n, 2n, 5n, 5n])
+  })
+
+  it('factorizes 120', () => {
+    expect(PollardRho.factorize(120)).toEqual([2n, 2n, 2n, 3n, 5n])
+  })
+
+  it('factorizes 5040', () => {
+    const factors = PollardRho.factorize(5040)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(5040n)
+  })
+
+  it('isPrime for 5 is true', () => {
+    expect(PollardRho.isPrime(5n)).toBe(true)
+  })
+
+  it('isPrime for 6 is false', () => {
+    expect(PollardRho.isPrime(6n)).toBe(false)
+  })
+
+  it('isPrime for 25 is false', () => {
+    expect(PollardRho.isPrime(25n)).toBe(false)
+  })
+
+  it('isPrime for 29 is true', () => {
+    expect(PollardRho.isPrime(29n)).toBe(true)
+  })
+
+  it('factorizes negative number returns empty', () => {
+    expect(PollardRho.factorize(-5)).toEqual([])
+  })
+
+  it('factorizes 30 with all distinct primes', () => {
+    expect(PollardRho.factorize(30)).toEqual([2n, 3n, 5n])
+  })
+
+  it('factorizes 2^10 = 1024', () => {
+    const factors = PollardRho.factorize(1024)
+    expect(factors.length).toBe(10)
+    expect(factors.every(f => f === 2n)).toBe(true)
+  })
+
+  it('factorizes 3^5 = 243', () => {
+    const factors = PollardRho.factorize(243)
+    expect(factors.length).toBe(5)
+    expect(factors.every(f => f === 3n)).toBe(true)
+  })
+
+  it('factorizes large number correctly', () => {
+    const n = 2n * 3n * 5n * 7n * 11n * 13n * 17n
+    const factors = PollardRho.factorize(n)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(n)
+  })
+
+  it('isPrime for 997 (large prime)', () => {
+    expect(PollardRho.isPrime(997n)).toBe(true)
+  })
+
+  it('isPrime for 999 (composite)', () => {
+    expect(PollardRho.isPrime(999n)).toBe(false)
+  })
+
+  it('factorize returns bigint array', () => {
+    const factors = PollardRho.factorize(10)
+    for (const f of factors) {
+      expect(typeof f).toBe('bigint')
+    }
+  })
+
+  it('factorizes 720', () => {
+    const factors = PollardRho.factorize(720)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(720n)
+  })
+
+  it('factorize 27 = 3^3', () => {
+    expect(PollardRho.factorize(27)).toEqual([3n, 3n, 3n])
+  })
+
+  it('factorize 125 = 5^3', () => {
+    expect(PollardRho.factorize(125)).toEqual([5n, 5n, 5n])
+  })
+
+  it('factorize 121 = 11^2', () => {
+    expect(PollardRho.factorize(121)).toEqual([11n, 11n])
+  })
+
+  it('isPrime for 2 is true', () => {
+    expect(PollardRho.isPrime(2n)).toBe(true)
+  })
+
+  it('isPrime for 3 is true', () => {
+    expect(PollardRho.isPrime(3n)).toBe(true)
+  })
+
+  it('factorize 77 = 7*11', () => {
+    expect(PollardRho.factorize(77).sort()).toEqual([7n, 11n].sort())
+  })
+
+  it('factorize 169 = 13^2', () => {
+    expect(PollardRho.factorize(169)).toEqual([13n, 13n])
+  })
+
+  it('factorize 256 = 2^8', () => {
+    const factors = PollardRho.factorize(256)
+    expect(factors.length).toBe(8)
+    expect(factors.every(f => f === 2n)).toBe(true)
   })
 })

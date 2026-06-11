@@ -20,6 +20,12 @@ describe('PersistentStack', () => {
     expect(stack.isEmpty()).toBe(false)
   })
 
+  it('creates stack from zero items via of()', () => {
+    const stack = PersistentStack.of<number>()
+    expect(stack.size).toBe(0)
+    expect(stack.isEmpty()).toBe(true)
+  })
+
   it('pushes values onto empty stack', () => {
     const stack1 = PersistentStack.empty<number>()
     const stack2 = stack1.push(1)
@@ -35,6 +41,14 @@ describe('PersistentStack', () => {
     const stack3 = stack2.push(3)
     expect(stack3.size).toBe(3)
     expect(stack3.peek()).toBe(3)
+  })
+
+  it('pushes objects', () => {
+    const obj1 = { name: 'first' }
+    const obj2 = { name: 'second' }
+    const stack = PersistentStack.of(obj1).push(obj2)
+    expect(stack.size).toBe(2)
+    expect(stack.peek()).toBe(obj2)
   })
 
   it('pops from empty stack returns empty', () => {
@@ -56,6 +70,16 @@ describe('PersistentStack', () => {
     expect(popped.peek()).toBe(2)
   })
 
+  it('pops multiple times', () => {
+    const stack = PersistentStack.of(1, 2, 3, 4, 5)
+    const popped1 = stack.pop()
+    const popped2 = popped1.pop()
+    const popped3 = popped2.pop()
+    expect(popped1.size).toBe(4)
+    expect(popped2.size).toBe(3)
+    expect(popped3.size).toBe(2)
+  })
+
   it('peek returns top element', () => {
     const stack = PersistentStack.of(1, 2, 3)
     expect(stack.peek()).toBe(3)
@@ -64,6 +88,12 @@ describe('PersistentStack', () => {
   it('peek on empty stack returns undefined', () => {
     const stack = PersistentStack.empty<number>()
     expect(stack.peek()).toBeUndefined()
+  })
+
+  it('peek after pop returns new top', () => {
+    const stack = PersistentStack.of(1, 2, 3)
+    const popped = stack.pop()
+    expect(popped.peek()).toBe(2)
   })
 
   it('toArray converts stack to array', () => {
@@ -78,10 +108,34 @@ describe('PersistentStack', () => {
     expect(arr).toEqual([])
   })
 
+  it('toArray preserves order for single element', () => {
+    const stack = PersistentStack.of(42)
+    expect(stack.toArray()).toEqual([42])
+  })
+
   it('reverse reverses stack order', () => {
     const stack = PersistentStack.of(1, 2, 3)
     const reversed = stack.reverse()
     expect(reversed.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('reverse empty stack returns empty', () => {
+    const stack = PersistentStack.empty<number>()
+    const reversed = stack.reverse()
+    expect(reversed.size).toBe(0)
+    expect(reversed.toArray()).toEqual([])
+  })
+
+  it('reverse single element returns same', () => {
+    const stack = PersistentStack.of(42)
+    const reversed = stack.reverse()
+    expect(reversed.toArray()).toEqual([42])
+  })
+
+  it('reverse twice returns original order', () => {
+    const stack = PersistentStack.of(1, 2, 3)
+    const reversedTwice = stack.reverse().reverse()
+    expect(reversedTwice.toArray()).toEqual([3, 2, 1])
   })
 
   it('concat combines two stacks', () => {
@@ -105,53 +159,177 @@ describe('PersistentStack', () => {
     expect(combined.toArray()).toEqual([2, 1])
   })
 
+  it('concat both empty returns empty', () => {
+    const stack1 = PersistentStack.empty<number>()
+    const stack2 = PersistentStack.empty<number>()
+    const combined = stack1.concat(stack2)
+    expect(combined.size).toBe(0)
+    expect(combined.toArray()).toEqual([])
+  })
+
+  it('concat three stacks', () => {
+    const stack1 = PersistentStack.of(1)
+    const stack2 = PersistentStack.of(2)
+    const stack3 = PersistentStack.of(3)
+    const combined = stack1.concat(stack2).concat(stack3)
+    expect(combined.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('concat order matters', () => {
+    const stack1 = PersistentStack.of(1, 2)
+    const stack2 = PersistentStack.of(3, 4)
+    const combined1 = stack1.concat(stack2)
+    const combined2 = stack2.concat(stack1)
+    expect(combined1.toArray()).toEqual([2, 1, 4, 3])
+    expect(combined2.toArray()).toEqual([4, 3, 2, 1])
+  })
+
   it('handles string type', () => {
     const stack = PersistentStack.of('a', 'b', 'c')
     expect(stack.size).toBe(3)
     expect(stack.peek()).toBe('c')
   })
 
-  it('multiple pops work correctly', () => {
+  it('handles negative numbers', () => {
+    const stack = PersistentStack.of(-1, -2, -3)
+    expect(stack.size).toBe(3)
+    expect(stack.peek()).toBe(-3)
+  })
+
+  it('handles mixed types if type allows', () => {
+    const stack = PersistentStack.of(1, 'two', true)
+    expect(stack.size).toBe(3)
+  })
+
+  it('handles boolean type', () => {
+    const stack = PersistentStack.of(true, false, true)
+    expect(stack.size).toBe(3)
+    expect(stack.peek()).toBe(true)
+  })
+
+  it('push preserves original stack immutability', () => {
+    const stack1 = PersistentStack.of(1, 2)
+    const stack2 = stack1.push(3)
+    expect(stack1.size).toBe(2)
+    expect(stack1.peek()).toBe(2)
+    expect(stack2.size).toBe(3)
+    expect(stack2.peek()).toBe(3)
+  })
+
+  it('pop preserves original stack immutability', () => {
     const stack = PersistentStack.of(1, 2, 3)
-    const popped1 = stack.pop()
-    const popped2 = popped1.pop()
-    const popped3 = popped2.pop()
-    expect(popped1.size).toBe(2)
-    expect(popped2.size).toBe(1)
-    expect(popped3.size).toBe(0)
+    const popped = stack.pop()
+    expect(stack.size).toBe(3)
+    expect(stack.peek()).toBe(3)
+    expect(popped.size).toBe(2)
+    expect(popped.peek()).toBe(2)
   })
 
-  it('push and peek', () => {
-    const s0 = new PersistentStack<number>()
-    const s1 = s0.push(42)
-    expect(s1.peek()).toBe(42)
+  it('concat preserves original stacks immutability', () => {
+    const stack1 = PersistentStack.of(1, 2)
+    const stack2 = PersistentStack.of(3, 4)
+    const combined = stack1.concat(stack2)
+    expect(stack1.size).toBe(2)
+    expect(stack2.size).toBe(2)
+    expect(combined.size).toBe(4)
   })
 
-  it('empty stack via empty() factory', () => {
-    const s = PersistentStack.empty<number>()
-    expect(s.isEmpty()).toBe(true)
-    expect(s.size).toBe(0)
+  it('handles large stacks', () => {
+    let stack = PersistentStack.empty<number>()
+    for (let i = 0; i < 1000; i++) {
+      stack = stack.push(i)
+    }
+    expect(stack.size).toBe(1000)
+    expect(stack.peek()).toBe(999)
   })
 
-  it('push and peek round trip', () => {
-    const s = PersistentStack.empty<number>().push(42).push(7)
-    expect(s.peek()).toBe(7)
-    const popped = s.pop()
-    expect(popped.peek()).toBe(42)
+  it('push and peek chain', () => {
+    const stack = PersistentStack.empty<number>()
+      .push(1)
+      .push(2)
+      .push(3)
+    expect(stack.peek()).toBe(3)
   })
 
-  it('empty stack pop returns same stack', () => {
-    const s = PersistentStack.empty<number>()
-    expect(s.pop()).toBe(s)
+  it('pop and peek chain', () => {
+    const stack = PersistentStack.of(1, 2, 3, 4, 5)
+    const popped = stack.pop().pop().pop()
+    expect(popped.size).toBe(2)
+    expect(popped.peek()).toBe(2)
   })
 
-  it('push and peek roundtrip', () => {
-    const s = PersistentStack.empty<number>().push(42)
-    expect(s.peek()).toBe(42)
+  it('empty stack pop returns same reference', () => {
+    const stack = PersistentStack.empty<number>()
+    const popped = stack.pop()
+    expect(popped).toBe(stack)
   })
 
-  it('empty stack peek returns undefined', () => {
-    const s = PersistentStack.empty<number>()
-    expect(s.peek()).toBeUndefined()
+  it('of() creates stack with LIFO order', () => {
+    const stack = PersistentStack.of(1, 2, 3)
+    expect(stack.peek()).toBe(3)
+    expect(stack.pop().peek()).toBe(2)
+    expect(stack.pop().pop().peek()).toBe(1)
+  })
+
+  it('reverse after concat works correctly', () => {
+    const stack1 = PersistentStack.of(1, 2)
+    const stack2 = PersistentStack.of(3, 4)
+    const combined = stack1.concat(stack2)
+    const reversed = combined.reverse()
+    expect(reversed.toArray()).toEqual([3, 4, 1, 2])
+  })
+
+  it('toArray on large stack', () => {
+    let stack = PersistentStack.empty<number>()
+    const items = []
+    for (let i = 0; i < 100; i++) {
+      stack = stack.push(i)
+      items.unshift(i)
+    }
+    expect(stack.toArray()).toEqual(items)
+  })
+
+  it('concat with reversed order', () => {
+    const stack1 = PersistentStack.of(1, 2, 3)
+    const stack2 = PersistentStack.of(4, 5, 6)
+    const combined = stack1.concat(stack2).reverse()
+    expect(combined.toArray()).toEqual([4, 5, 6, 1, 2, 3])
+  })
+
+  it('handles stack with null values', () => {
+    const stack = PersistentStack.of<number | null>(null, 1, null)
+    expect(stack.size).toBe(3)
+    expect(stack.peek()).toBe(null)
+  })
+
+  it('handles stack with undefined values', () => {
+    const stack = PersistentStack.of<number | undefined>(undefined, 1, undefined)
+    expect(stack.size).toBe(3)
+    expect(stack.peek()).toBe(undefined)
+  })
+
+  it('push and pop balance', () => {
+    let stack = PersistentStack.empty<number>()
+    const items = [1, 2, 3, 4, 5]
+    for (const item of items) {
+      stack = stack.push(item)
+    }
+    for (let i = 0; i < items.length; i++) {
+      stack = stack.pop()
+    }
+    expect(stack.size).toBe(0)
+  })
+
+  it('reverse preserves size', () => {
+    const stack = PersistentStack.of(1, 2, 3, 4, 5)
+    const reversed = stack.reverse()
+    expect(reversed.size).toBe(stack.size)
+  })
+
+  it('concat preserves total size', () => {
+    const stack1 = PersistentStack.of(1, 2, 3)
+    const stack2 = PersistentStack.of(4, 5)
+    const combined = stack1.concat(stack2)
+    expect(combined.size).toBe(stack1.size + stack2.size)
   })
 })

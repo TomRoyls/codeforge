@@ -126,57 +126,250 @@ describe('ParallelBinarySearch', () => {
     expect(results).toEqual([25, 25])
   })
 
-  it('handles empty queries array', () => {
-    const results = ParallelBinarySearch.search([])
-    expect(results).toEqual([])
-  })
-
-  it('handles single query', () => {
-    const results = ParallelBinarySearch.search([
-      { lo: 0, hi: 10, check: (x: number) => x >= 5 },
-    ])
-    expect(results.length).toBe(1)
-    expect(results[0]).toBeGreaterThanOrEqual(0)
-  })
-
-  it('handles empty queries', () => {
-    const results = ParallelBinarySearch.search([])
-    expect(results).toEqual([])
-  })
-
-  it('finds value in sorted array', () => {
-    const results = ParallelBinarySearch.search([
-      { lo: 0, hi: 9, check: (mid) => mid >= 5 },
-    ])
-    expect(results.length).toBe(1)
-  })
-
-  it('empty queries returns empty', () => {
-    const results = ParallelBinarySearch.search([])
-    expect(results).toEqual([])
-  })
-
-  it('constructor accepts queries', () => {
-    expect(ParallelBinarySearch).toBeDefined()
-  })
-
-  it('search with check queries', () => {
-    const results = ParallelBinarySearch.search([
-      { lo: 0, hi: 4, check: (mid: number) => [1, 3, 5, 7, 9][mid]! >= 5 },
-    ])
-    expect(results[0]).toBeGreaterThanOrEqual(0)
-  })
-
-  it('empty queries returns empty', () => {
-    const results = ParallelBinarySearch.search([])
-    expect(results).toEqual([])
-  })
-
-  it('single query returns result', () => {
+  it('handles never satisfied multiple queries', () => {
     const queries = [
-      { lo: 0, hi: 10, check: (mid: number) => mid >= 5 },
+      { lo: 0, hi: 10, check: (_mid: number) => false },
+      { lo: 0, hi: 20, check: (_mid: number) => false },
     ]
     const results = ParallelBinarySearch.search(queries)
-    expect(results.length).toBe(1)
+    expect(results).toEqual([-1, -1])
+  })
+
+  it('handles always satisfied multiple queries', () => {
+    const queries = [
+      { lo: 0, hi: 10, check: (_mid: number) => true },
+      { lo: 0, hi: 20, check: (_mid: number) => true },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results).toEqual([0, 0])
+  })
+
+  it('handles complex check function', () => {
+    const queries = [
+      { lo: 0, hi: 1000, check: (mid: number) => mid >= 687 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(687)
+  })
+
+  it('handles modulo check', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= 49 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(49)
+  })
+
+  it('handles array index check', () => {
+    const arr = [1, 3, 5, 7, 9]
+    const queries = [
+      { lo: 0, hi: 4, check: (mid) => arr[mid]! >= 5 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(2)
+  })
+
+  it('handles check returning true at hi', () => {
+    const queries = [
+      { lo: 0, hi: 5, check: (mid: number) => mid === 5 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(5)
+  })
+
+  it('handles check returning true at lo', () => {
+    const queries = [
+      { lo: 5, hi: 10, check: (mid: number) => mid >= 5 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(5)
+  })
+
+  it('handles negative thresholds', () => {
+    const queries = [
+      { lo: -100, hi: 100, check: (mid: number) => mid >= -50 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(-50)
+  })
+
+  it('handles range with negative numbers', () => {
+    const queries = [
+      { lo: -50, hi: -10, check: (mid: number) => mid >= -30 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(-30)
+  })
+
+  it('handles check with even numbers', () => {
+    const queries = [
+      { lo: 0, hi: 20, check: (mid: number) => mid >= 2 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(2)
+  })
+
+  it('handles check with odd numbers', () => {
+    const queries = [
+      { lo: 0, hi: 20, check: (mid: number) => mid >= 13 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(13)
+  })
+
+  it('handles power of two check', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= 64 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(64)
+  })
+
+  it('handles fibonacci threshold', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= 55 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(55)
+  })
+
+  it('handles prime threshold', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= 97 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(97)
+  })
+
+  it('handles small range boundary', () => {
+    const queries = [
+      { lo: 0, hi: 1, check: (mid: number) => mid >= 1 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(1)
+  })
+
+  it('handles very small range', () => {
+    const queries = [
+      { lo: 0, hi: 2, check: (mid: number) => mid >= 1 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(1)
+  })
+
+  it('handles check with multiplication', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid * 2 >= 50 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(25)
+  })
+
+  it('handles check with division', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid / 2 >= 25 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(50)
+  })
+
+  it('handles check with addition', () => {
+    const queries = [
+      { lo: 0, hi: 50, check: (mid: number) => mid + 10 >= 40 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(30)
+  })
+
+  it('handles check with subtraction', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid - 10 >= 40 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(50)
+  })
+
+  it('handles check with absolute value', () => {
+    const queries = [
+      { lo: -50, hi: 50, check: (mid: number) => Math.abs(mid) >= 25 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(25)
+  })
+
+  it('handles very large single query', () => {
+    const queries = [
+      { lo: 0, hi: 1000000000, check: (mid: number) => mid >= 500000000 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(500000000)
+  })
+
+  it('handles check with max int', () => {
+    const maxInt = 2147483647
+    const queries = [
+      { lo: 0, hi: maxInt, check: (mid: number) => mid >= maxInt },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(maxInt)
+  })
+
+  it('handles multiple parallel searches', () => {
+    const queries = [
+      { lo: 0, hi: 1000, check: (mid: number) => mid >= 333 },
+      { lo: 0, hi: 1000, check: (mid: number) => mid >= 666 },
+      { lo: 0, hi: 1000, check: (mid: number) => mid >= 999 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results).toEqual([333, 666, 999])
+  })
+
+  it('handles check with string length', () => {
+    const str = 'hello world'
+    const queries = [
+      { lo: 0, hi: 11, check: (mid) => str.slice(0, mid).length >= 5 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(5)
+  })
+
+  it('handles check that is always false with small range', () => {
+    const queries = [
+      { lo: 0, hi: 3, check: (_mid: number) => false },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(-1)
+  })
+
+  it('handles check with negated condition', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => !(mid < 50) },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(50)
+  })
+
+  it('handles check with multiple conditions', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= 50 && mid % 2 === 0 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(50)
+  })
+
+  it('handles check with bit operation', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= 18 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(18)
+  })
+
+  it('handles check with ternary result', () => {
+    const queries = [
+      { lo: 0, hi: 50, check: (mid: number) => mid > 25 ? true : false },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(26)
   })
 })

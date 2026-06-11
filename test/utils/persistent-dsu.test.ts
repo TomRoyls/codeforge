@@ -187,4 +187,117 @@ describe('PersistentDSU', () => {
     const dsu = new PersistentDSU(1);
     expect(dsu.connected(0, 0)).toBe(true);
   });
+
+  it('find returns root after path compression', () => {
+    const dsu = new PersistentDSU(5);
+    dsu.union(0, 1);
+    dsu.union(1, 2);
+    dsu.union(2, 3);
+    expect(dsu.connected(0, 3)).toBe(true)
+    expect(dsu.find(3)).toBe(dsu.find(0))
+  });
+
+  it('getSize after rollback', () => {
+    const dsu = new PersistentDSU(5);
+    const snap = dsu.snapshot();
+    dsu.union(0, 1);
+    dsu.union(1, 2);
+    expect(dsu.getSize(0)).toBe(3);
+    dsu.rollback(snap);
+    expect(dsu.getSize(0)).toBe(1);
+  });
+
+  it('components after rollback', () => {
+    const dsu = new PersistentDSU(5);
+    const snap = dsu.snapshot();
+    dsu.union(0, 1);
+    dsu.union(2, 3);
+    expect(dsu.components).toBe(3);
+    dsu.rollback(snap);
+    expect(dsu.components).toBe(5);
+  });
+
+  it('snapshot id increments', () => {
+    const dsu = new PersistentDSU(3);
+    expect(dsu.snapshot()).toBe(0);
+    expect(dsu.snapshot()).toBe(1);
+    expect(dsu.snapshot()).toBe(2);
+  });
+
+  it('rollback to initial empty snapshot', () => {
+    const dsu = new PersistentDSU(3);
+    const snap = dsu.snapshot();
+    dsu.union(0, 1);
+    dsu.union(1, 2);
+    dsu.rollback(snap);
+    expect(dsu.components).toBe(3);
+    expect(dsu.connected(0, 1)).toBe(false);
+    expect(dsu.connected(1, 2)).toBe(false);
+  });
+
+  it('unionBatch with empty array returns 0', () => {
+    const dsu = new PersistentDSU(3);
+    expect(dsu.unionBatch([])).toBe(0);
+  });
+
+  it('unionBatch all already connected returns 0', () => {
+    const dsu = new PersistentDSU(3);
+    dsu.union(0, 1);
+    dsu.union(1, 2);
+    expect(dsu.unionBatch([[0, 1], [1, 2], [0, 2]])).toBe(0);
+  });
+
+  it('getComponent for isolated node returns single element', () => {
+    const dsu = new PersistentDSU(5);
+    dsu.union(0, 1);
+    expect(dsu.getComponent(3)).toEqual([3]);
+  });
+
+  it('getComponent after union returns all connected', () => {
+    const dsu = new PersistentDSU(4);
+    dsu.union(0, 1);
+    dsu.union(2, 3);
+    dsu.union(1, 2);
+    expect(dsu.getComponent(0).sort()).toEqual([0, 1, 2, 3]);
+  });
+
+  it('union is transitive', () => {
+    const dsu = new PersistentDSU(4);
+    dsu.union(0, 1);
+    dsu.union(2, 3);
+    dsu.union(1, 2);
+    expect(dsu.connected(0, 3)).toBe(true);
+  });
+
+  it('rollback invalidates old snapshots', () => {
+    const dsu = new PersistentDSU(3);
+    dsu.union(0, 1);
+    const snap = dsu.snapshot();
+    dsu.union(1, 2);
+    dsu.rollback(snap);
+    expect(dsu.connected(0, 1)).toBe(true);
+    expect(dsu.connected(1, 2)).toBe(false);
+    dsu.union(1, 2);
+    expect(() => dsu.rollback(snap)).toThrow();
+  });
+
+  it('large DSU', () => {
+    const dsu = new PersistentDSU(100);
+    for (let i = 0; i < 99; i++) dsu.union(i, i + 1);
+    expect(dsu.components).toBe(1);
+    expect(dsu.connected(0, 99)).toBe(true);
+    expect(dsu.getSize(0)).toBe(100);
+  });
+
+  it('snapshot after multiple unions', () => {
+    const dsu = new PersistentDSU(6);
+    dsu.union(0, 1);
+    dsu.union(2, 3);
+    const snap = dsu.snapshot();
+    dsu.union(4, 5);
+    dsu.union(1, 2);
+    expect(dsu.components).toBe(2);
+    dsu.rollback(snap);
+    expect(dsu.components).toBe(4);
+  });
 });

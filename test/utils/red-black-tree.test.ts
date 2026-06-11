@@ -371,4 +371,14 @@ describe('RedBlackTree height', () => {
     for (let i = 0; i < 1000; i++) tree.insert(i, i)
     expect(tree.height).toBeLessThanOrEqual(2 * Math.ceil(Math.log2(1001)))
   })
+
+  it('insert negative keys', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(-5, 'neg')
+    tree.insert(5, 'pos')
+    tree.insert(0, 'zero')
+    expect(tree.find(-5)).toBe('neg')
+    expect(tree.find(0)).toBe('zero')
+    expect(tree.find(5)).toBe('pos')
+  })
 })
