@@ -76,39 +76,174 @@ describe('CocktailSort', () => {
     expect(CocktailSort.sort([1, 2, 5, 3, 4])).toEqual([1, 2, 3, 4, 5])
   })
 
-  it('handles single element', () => {
-    expect(CocktailSort.sort([42])).toEqual([42])
+  it('handles zero values', () => {
+    expect(CocktailSort.sort([0, 5, 0, -3, 2])).toEqual([-3, 0, 0, 2, 5])
   })
 
-  it('handles already sorted', () => {
-    expect(CocktailSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
+  it('handles mixed positive and negative', () => {
+    expect(CocktailSort.sort([5, -2, 0, -7, 3])).toEqual([-7, -2, 0, 3, 5])
   })
 
-  it('handles single element', () => {
-    expect(CocktailSort.sort([42])).toEqual([42])
+  it('sortInPlace with empty array', () => {
+    const arr: number[] = []
+    CocktailSort.sortInPlace(arr)
+    expect(arr).toEqual([])
   })
 
-  it('handles already sorted', () => {
-    expect(CocktailSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  it('sortInPlace with single element', () => {
+    const arr = [42]
+    CocktailSort.sortInPlace(arr)
+    expect(arr).toEqual([42])
   })
 
-  it('handles reverse sorted', () => {
-    expect(CocktailSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  it('sortInPlace with already sorted', () => {
+    const arr = [1, 2, 3, 4, 5]
+    CocktailSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
   })
 
-  it('handles already sorted', () => {
-    expect(CocktailSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  it('sortWithComparator with objects', () => {
+    const result = CocktailSort.sortWithComparator(
+      [{ id: 2 }, { id: 1 }, { id: 3 }],
+      (a, b) => a.id - b.id
+    )
+    expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }])
   })
 
-  it('handles single element', () => {
-    expect(CocktailSort.sort([42])).toEqual([42])
+  it('sortWithComparator with empty array', () => {
+    const result = CocktailSort.sortWithComparator([], (a, b) => a - b)
+    expect(result).toEqual([])
   })
 
-  it('handles empty array', () => {
-    expect(CocktailSort.sort([])).toEqual([])
+  it('sortWithComparator with single element', () => {
+    const result = CocktailSort.sortWithComparator([5], (a, b) => a - b)
+    expect(result).toEqual([5])
   })
 
-  it('handles single element', () => {
-    expect(CocktailSort.sort([1])).toEqual([1])
+  it('sortWithComparator with all same', () => {
+    const result = CocktailSort.sortWithComparator([3, 3, 3], (a, b) => a - b)
+    expect(result).toEqual([3, 3, 3])
+  })
+
+  it('handles very large numbers', () => {
+    expect(CocktailSort.sort([1e10, 1e9, 1e11])).toEqual([1e9, 1e10, 1e11])
+  })
+
+  it('handles very small numbers', () => {
+    expect(CocktailSort.sort([1e-10, 1e-11, 1e-9])).toEqual([1e-11, 1e-10, 1e-9])
+  })
+
+  it('handles alternating pattern', () => {
+    expect(CocktailSort.sort([1, 5, 2, 4, 3])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles single duplicate at start', () => {
+    expect(CocktailSort.sort([1, 1, 3, 2])).toEqual([1, 1, 2, 3])
+  })
+
+  it('handles single duplicate at end', () => {
+    expect(CocktailSort.sort([3, 1, 2, 2])).toEqual([1, 2, 2, 3])
+  })
+
+  it('handles multiple duplicates', () => {
+    expect(CocktailSort.sort([2, 1, 2, 1, 2])).toEqual([1, 1, 2, 2, 2])
+  })
+
+  it('sortInPlace with negative numbers', () => {
+    const arr = [-5, -1, -3]
+    CocktailSort.sortInPlace(arr)
+    expect(arr).toEqual([-5, -3, -1])
+  })
+
+  it('sortInPlace with reverse sorted', () => {
+    const arr = [5, 4, 3, 2, 1]
+    CocktailSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('sortInPlace with duplicates', () => {
+    const arr = [3, 1, 2, 1, 3]
+    CocktailSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 1, 2, 3, 3])
+  })
+
+  it('sortWithComparator descending reverse sorted', () => {
+    const result = CocktailSort.sortWithComparator([1, 2, 3, 4, 5], (a, b) => b - a)
+    expect(result).toEqual([5, 4, 3, 2, 1])
+  })
+
+  it('sortWithComparator with string lengths', () => {
+    const result = CocktailSort.sortWithComparator(['a', 'bbb', 'cc'], (a, b) => a.length - b.length)
+    expect(result).toEqual(['a', 'cc', 'bbb'])
+  })
+
+  it('handles binary pattern 01', () => {
+    expect(CocktailSort.sort([1, 0, 1, 0, 1, 0])).toEqual([0, 0, 0, 1, 1, 1])
+  })
+
+  it('handles three elements unsorted', () => {
+    expect(CocktailSort.sort([3, 1, 2])).toEqual([1, 2, 3])
+  })
+
+  it('handles four elements unsorted', () => {
+    expect(CocktailSort.sort([4, 2, 3, 1])).toEqual([1, 2, 3, 4])
+  })
+
+  it('handles five elements unsorted', () => {
+    expect(CocktailSort.sort([5, 3, 1, 4, 2])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles six elements unsorted', () => {
+    expect(CocktailSort.sort([6, 2, 5, 1, 4, 3])).toEqual([1, 2, 3, 4, 5, 6])
+  })
+
+  it('sortWithComparator does not modify original', () => {
+    const arr = [3, 1, 2]
+    const result = CocktailSort.sortWithComparator(arr, (a, b) => a - b)
+    expect(arr).toEqual([3, 1, 2])
+    expect(result).toEqual([1, 2, 3])
+  })
+
+  it('sortInPlace returns void', () => {
+    const arr = [3, 1, 2]
+    const result = CocktailSort.sortInPlace(arr)
+    expect(result).toBeUndefined()
+  })
+
+  it('handles max integer', () => {
+    expect(CocktailSort.sort([Number.MAX_SAFE_INTEGER, 0, Number.MIN_SAFE_INTEGER])).toEqual([Number.MIN_SAFE_INTEGER, 0, Number.MAX_SAFE_INTEGER])
+  })
+
+  it('handles symmetric values', () => {
+    expect(CocktailSort.sort([-3, 3, -2, 2, -1, 1])).toEqual([-3, -2, -1, 1, 2, 3])
+  })
+
+  it('handles single zero', () => {
+    expect(CocktailSort.sort([0])).toEqual([0])
+  })
+
+  it('sortWithComparator with complex objects', () => {
+    const result = CocktailSort.sortWithComparator(
+      [{ name: 'Charlie', age: 30 }, { name: 'Alice', age: 25 }, { name: 'Bob', age: 27 }],
+      (a, b) => a.age - b.age
+    )
+    expect(result).toEqual([{ name: 'Alice', age: 25 }, { name: 'Bob', age: 27 }, { name: 'Charlie', age: 30 }])
+  })
+
+  it('handles nearly sorted array', () => {
+    expect(CocktailSort.sort([1, 2, 3, 5, 4])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles array with minimum at end', () => {
+    expect(CocktailSort.sort([5, 4, 3, 2, 1, 0])).toEqual([0, 1, 2, 3, 4, 5])
+  })
+
+  it('handles array with maximum at start', () => {
+    expect(CocktailSort.sort([100, 1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5, 100])
+  })
+
+  it('sortWithComparator with negative comparator', () => {
+    const result = CocktailSort.sortWithComparator([1, 2, 3], (a, b) => -(a - b))
+    expect(result).toEqual([3, 2, 1])
   })
 })

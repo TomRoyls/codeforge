@@ -2,8 +2,6 @@ import { describe, expect, it } from 'vitest'
 import { resolvePatterns, normalizeFlags, filterFilesByExtension, getProfileSeverityOverrides } from '../../src/utils/command-helpers.js'
 import type { DiscoveredFile } from '../../src/core/file-discovery.js'
 
-// ─── resolvePatterns ───
-
 describe('resolvePatterns', () => {
   it('returns single string as array', () => {
     expect(resolvePatterns('*.ts', undefined)).toEqual(['*.ts'])
@@ -24,9 +22,27 @@ describe('resolvePatterns', () => {
   it('prioritizes args over config', () => {
     expect(resolvePatterns('*.ts', ['*.js'])).toEqual(['*.ts'])
   })
-})
 
-// ─── normalizeFlags ───
+  it('empty string args falls through to config', () => {
+    expect(resolvePatterns('', ['fallback.ts'])).toEqual(['fallback.ts'])
+  })
+
+  it('empty string args with no config returns empty', () => {
+    expect(resolvePatterns('', undefined)).toEqual([])
+  })
+
+  it('returns single element array for single pattern', () => {
+    expect(resolvePatterns('src/**/*.ts', undefined)).toEqual(['src/**/*.ts'])
+  })
+
+  it('preserves config files when args undefined', () => {
+    expect(resolvePatterns(undefined, ['a.ts', 'b.ts', 'c.ts'])).toEqual(['a.ts', 'b.ts', 'c.ts'])
+  })
+
+  it('handles array with single element', () => {
+    expect(resolvePatterns(['single.ts'], undefined)).toEqual(['single.ts'])
+  })
+})
 
 describe('normalizeFlags', () => {
   const baseFlags = {
@@ -78,9 +94,72 @@ describe('normalizeFlags', () => {
     const result = normalizeFlags({ ...baseFlags, changed: 'main' })
     expect(result.changedMode).toBe('main')
   })
-})
 
-// ─── filterFilesByExtension ───
+  it('passes through fail-on-warnings', () => {
+    const result = normalizeFlags({ ...baseFlags, 'fail-on-warnings': true })
+    expect(result.failOnWarnings).toBe(true)
+  })
+
+  it('passes through max-warnings', () => {
+    const result = normalizeFlags({ ...baseFlags, 'max-warnings': 10 })
+    expect(result.maxWarnings).toBe(10)
+  })
+
+  it('passes through concurrency', () => {
+    const result = normalizeFlags({ ...baseFlags, concurrency: 8 })
+    expect(result.concurrency).toBe(8)
+  })
+
+  it('passes through cache-results', () => {
+    const result = normalizeFlags({ ...baseFlags, 'cache-results': true })
+    expect(result.cacheResults).toBe(true)
+  })
+
+  it('passes through staged mode', () => {
+    const result = normalizeFlags({ ...baseFlags, staged: true })
+    expect(result.stagedMode).toBe(true)
+  })
+
+  it('passes through output', () => {
+    const result = normalizeFlags({ ...baseFlags, output: 'report.json' })
+    expect(result.output).toBe('report.json')
+  })
+
+  it('output is undefined when not provided', () => {
+    const result = normalizeFlags(baseFlags)
+    expect(result.output).toBeUndefined()
+  })
+
+  it('changedMode is undefined when not provided', () => {
+    const result = normalizeFlags(baseFlags)
+    expect(result.changedMode).toBeUndefined()
+  })
+
+  it('quiet flag works without CI', () => {
+    const result = normalizeFlags({ ...baseFlags, quiet: true })
+    expect(result.quiet).toBe(true)
+  })
+
+  it('verbose flag works without CI', () => {
+    const result = normalizeFlags({ ...baseFlags, verbose: true })
+    expect(result.verbose).toBe(true)
+  })
+
+  it('CI mode sets quiet even if quiet flag is false', () => {
+    const result = normalizeFlags({ ...baseFlags, ci: true, quiet: false })
+    expect(result.quiet).toBe(true)
+  })
+
+  it('format defaults to console', () => {
+    const result = normalizeFlags(baseFlags)
+    expect(result.format).toBe('console')
+  })
+
+  it('format sarif passes through', () => {
+    const result = normalizeFlags({ ...baseFlags, format: 'sarif' })
+    expect(result.format).toBe('sarif')
+  })
+})
 
 describe('filterFilesByExtension', () => {
   const files: DiscoveredFile[] = [
@@ -127,9 +206,67 @@ describe('filterFilesByExtension', () => {
   it('handles null extension', () => {
     expect(filterFilesByExtension(files, null)).toEqual(files)
   })
-})
 
-// ─── getProfileSeverityOverrides ───
+  it('handles undefined extension', () => {
+    expect(filterFilesByExtension(files, undefined)).toEqual(files)
+  })
+
+  it('filters case-insensitively', () => {
+    const mixedFiles: DiscoveredFile[] = [
+      { path: 'src/a.TS', hash: '1' },
+      { path: 'src/b.ts', hash: '2' },
+    ]
+    const result = filterFilesByExtension(mixedFiles, '.ts')
+    expect(result.length).toBe(2)
+  })
+
+  it('filters case-insensitively for extensions', () => {
+    const result = filterFilesByExtension(files, '.TS')
+    expect(result.length).toBe(1)
+  })
+
+  it('handles empty files array', () => {
+    expect(filterFilesByExtension([], '.ts')).toEqual([])
+  })
+
+  it('handles empty files array with no extension', () => {
+    expect(filterFilesByExtension([])).toEqual([])
+  })
+
+  it('handles files without extensions', () => {
+    const noExtFiles: DiscoveredFile[] = [
+      { path: 'README', hash: '1' },
+      { path: 'Makefile', hash: '2' },
+    ]
+    expect(filterFilesByExtension(noExtFiles, '.ts')).toEqual([])
+  })
+
+  it('handles dotfiles without secondary extension', () => {
+    const dotFiles: DiscoveredFile[] = [
+      { path: '.gitignore', hash: '1' },
+      { path: '.eslintrc', hash: '2' },
+    ]
+    expect(filterFilesByExtension(dotFiles, '.ts')).toEqual([])
+  })
+
+  it('handles dotfiles with extension', () => {
+    const dotFiles: DiscoveredFile[] = [
+      { path: '.prettierrc.ts', hash: '1' },
+    ]
+    expect(filterFilesByExtension(dotFiles, '.ts')).toEqual([{ path: '.prettierrc.ts', hash: '1' }])
+  })
+
+  it('handles single extension in array', () => {
+    const result = filterFilesByExtension(files, ['.css'])
+    expect(result.length).toBe(1)
+    expect(result[0]!.path).toBe('src/style.css')
+  })
+
+  it('handles extension with spaces in comma-separated string', () => {
+    const result = filterFilesByExtension(files, '.ts , .tsx')
+    expect(result.length).toBe(2)
+  })
+})
 
 describe('getProfileSeverityOverrides', () => {
   it('returns lenient overrides', () => {
@@ -149,18 +286,74 @@ describe('getProfileSeverityOverrides', () => {
     expect(overrides['no-explicit-any']).toBe('error')
   })
 
-  it('getProfileSeverityOverrides returns object', () => {
+  it('returns object for default profile', () => {
     const overrides = getProfileSeverityOverrides('default')
     expect(typeof overrides).toBe('object')
   })
 
-  it('getProfileSeverityOverrides returns object for unknown profile', () => {
-    const overrides = getProfileSeverityOverrides('nonexistent')
+  it('returns object for unknown profile', () => {
+    const overrides = getProfileSeverityOverrides('nonexistent' as any)
     expect(typeof overrides).toBe('object')
   })
 
-  it('getProfileSeverityOverrides returns object for default profile', () => {
-    const overrides = getProfileSeverityOverrides('default')
-    expect(typeof overrides).toBe('object')
+  it('lenient has max-depth as info', () => {
+    expect(getProfileSeverityOverrides('lenient')['max-depth']).toBe('info')
+  })
+
+  it('lenient has max-file-size as info', () => {
+    expect(getProfileSeverityOverrides('lenient')['max-file-size']).toBe('info')
+  })
+
+  it('lenient has max-lines as info', () => {
+    expect(getProfileSeverityOverrides('lenient')['max-lines']).toBe('info')
+  })
+
+  it('lenient has max-params as info', () => {
+    expect(getProfileSeverityOverrides('lenient')['max-params']).toBe('info')
+  })
+
+  it('lenient has no-magic-numbers as info', () => {
+    expect(getProfileSeverityOverrides('lenient')['no-magic-numbers']).toBe('info')
+  })
+
+  it('moderate has max-depth as warning', () => {
+    expect(getProfileSeverityOverrides('moderate')['max-depth']).toBe('warning')
+  })
+
+  it('moderate has max-file-size as warning', () => {
+    expect(getProfileSeverityOverrides('moderate')['max-file-size']).toBe('warning')
+  })
+
+  it('moderate has no-console as warning', () => {
+    expect(getProfileSeverityOverrides('moderate')['no-console']).toBe('warning')
+  })
+
+  it('moderate has no-magic-numbers as warning', () => {
+    expect(getProfileSeverityOverrides('moderate')['no-magic-numbers']).toBe('warning')
+  })
+
+  it('strict has no-console as error', () => {
+    expect(getProfileSeverityOverrides('strict')['no-console']).toBe('error')
+  })
+
+  it('strict has no-debugger as error', () => {
+    expect(getProfileSeverityOverrides('strict')['no-debugger']).toBe('error')
+  })
+
+  it('strict has no-implicit-coercion as error', () => {
+    expect(getProfileSeverityOverrides('strict')['no-implicit-coercion']).toBe('error')
+  })
+
+  it('strict has no-unused-vars as error', () => {
+    expect(getProfileSeverityOverrides('strict')['no-unused-vars']).toBe('error')
+  })
+
+  it('strict has prefer-const as error', () => {
+    expect(getProfileSeverityOverrides('strict')['prefer-const']).toBe('error')
+  })
+
+  it('unknown profile returns empty object', () => {
+    const overrides = getProfileSeverityOverrides('unknown' as any)
+    expect(Object.keys(overrides)).toHaveLength(0)
   })
 })
