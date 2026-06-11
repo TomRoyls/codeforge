@@ -126,4 +126,189 @@ describe('ContinuedFraction', () => {
     const result = ContinuedFraction.fromNumber(1.5)
     expect(result.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('fromNumber handles negative integer', () => {
+    expect(ContinuedFraction.fromNumber(-5)).toEqual([-5])
+  })
+
+  it('fromNumber handles negative fraction', () => {
+    const result = ContinuedFraction.fromNumber(-1.5)
+    expect(result[0]).toBe(-2)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('fromNumber handles very small positive number', () => {
+    const result = ContinuedFraction.fromNumber(0.0001)
+    expect(result[0]).toBe(0)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('fromNumber handles very large number', () => {
+    const result = ContinuedFraction.fromNumber(1e10)
+    expect(result[0]).toBe(10000000000)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('fromNumber handles negative very large number', () => {
+    const result = ContinuedFraction.fromNumber(-1e10)
+    expect(result[0]).toBe(-10000000000)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('fromNumber with small maxTerms', () => {
+    const result = ContinuedFraction.fromNumber(Math.PI, 3)
+    expect(result.length).toBeLessThanOrEqual(3)
+  })
+
+  it('fromNumber with large maxTerms', () => {
+    const result = ContinuedFraction.fromNumber(Math.PI, 50)
+    expect(result.length).toBeGreaterThan(3)
+  })
+
+  it('toNumber with negative coefficient', () => {
+    expect(ContinuedFraction.toNumber([-2])).toBeCloseTo(-2)
+  })
+
+  it('toNumber with multiple terms including negative', () => {
+    const result = ContinuedFraction.toNumber([-2, 2])
+    expect(result).toBeCloseTo(-1.5, 10)
+  })
+
+  it('toNumber with three terms', () => {
+    expect(ContinuedFraction.toNumber([1, 2, 2])).toBeCloseTo(7 / 5, 10)
+  })
+
+  it('convergents with single coefficient', () => {
+    const convs = ContinuedFraction.convergents([5])
+    expect(convs).toEqual([{ numerator: 5, denominator: 1 }])
+  })
+
+  it('convergents with three coefficients', () => {
+    const convs = ContinuedFraction.convergents([1, 2, 2])
+    expect(convs.length).toBe(3)
+    expect(convs[2]).toEqual({ numerator: 7, denominator: 5 })
+  })
+
+  it('convergents recurrence is correct', () => {
+    const convs = ContinuedFraction.convergents([2, 3, 4])
+    expect(convs[0]).toEqual({ numerator: 2, denominator: 1 })
+    expect(convs[1]).toEqual({ numerator: 7, denominator: 3 })
+    expect(convs[2]).toEqual({ numerator: 30, denominator: 13 })
+  })
+
+  it('fromRatio with zero numerator', () => {
+    expect(ContinuedFraction.fromRatio(0, 5)).toEqual([0])
+  })
+
+  it('fromRatio with negative numerator returns positive absolute', () => {
+    expect(ContinuedFraction.fromRatio(-7, 5)).toEqual([1, 2, 2])
+  })
+
+  it('fromRatio with negative denominator returns positive absolute', () => {
+    expect(ContinuedFraction.fromRatio(7, -5)).toEqual([1, 2, 2])
+  })
+
+  it('fromRatio with both negative returns positive absolute', () => {
+    expect(ContinuedFraction.fromRatio(-7, -5)).toEqual([1, 2, 2])
+  })
+
+  it('fromRatio with larger numbers', () => {
+    const result = ContinuedFraction.fromRatio(99, 100)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+    expect(ContinuedFraction.toNumber(result)).toBeCloseTo(0.99, 10)
+  })
+
+  it('fromRatio with very large numbers', () => {
+    const result = ContinuedFraction.fromRatio(1000000, 999999)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('approximate with small maxDenominator', () => {
+    const result = ContinuedFraction.approximate(Math.PI, 10)
+    expect(result.denominator).toBeLessThanOrEqual(10)
+    const value = result.numerator / result.denominator
+    expect(Math.abs(value - Math.PI)).toBeLessThan(0.1)
+  })
+
+  it('approximate with large maxDenominator', () => {
+    const result = ContinuedFraction.approximate(Math.PI, 1000)
+    expect(result.denominator).toBeLessThanOrEqual(1000)
+    const value = result.numerator / result.denominator
+    expect(Math.abs(value - Math.PI)).toBeLessThan(0.001)
+  })
+
+  it('approximate for simple fraction', () => {
+    const result = ContinuedFraction.approximate(1.5, 100)
+    const value = result.numerator / result.denominator
+    expect(value).toBeCloseTo(1.5, 10)
+  })
+
+  it('approximate for golden ratio', () => {
+    const phi = (1 + Math.sqrt(5)) / 2
+    const result = ContinuedFraction.approximate(phi, 100)
+    const value = result.numerator / result.denominator
+    expect(Math.abs(value - phi)).toBeLessThan(0.001)
+  })
+
+  it('roundtrip with negative number', () => {
+    const x = -2.718
+    const cf = ContinuedFraction.fromNumber(x)
+    expect(ContinuedFraction.toNumber(cf)).toBeCloseTo(x, 3)
+  })
+
+  it('roundtrip with very small number', () => {
+    const x = 0.00001
+    const cf = ContinuedFraction.fromNumber(x)
+    expect(ContinuedFraction.toNumber(cf)).toBeCloseTo(x, 5)
+  })
+
+  it('fromNumber for 0.999999', () => {
+    const result = ContinuedFraction.fromNumber(0.999999)
+    expect(result[0]).toBe(0)
+    expect(result.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('fromNumber for 1.000001', () => {
+    const result = ContinuedFraction.fromNumber(1.000001)
+    expect(result[0]).toBe(1)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('convergents empty array returns empty', () => {
+    expect(ContinuedFraction.convergents([])).toEqual([])
+  })
+
+  it('toNumber with multiple positive coefficients', () => {
+    expect(ContinuedFraction.toNumber([3, 4, 5])).toBeCloseTo(3 + 1 / (4 + 1 / 5), 10)
+  })
+
+  it('fromRatio with 1/1', () => {
+    expect(ContinuedFraction.fromRatio(1, 1)).toEqual([1])
+  })
+
+  it('fromRatio with 1/2', () => {
+    expect(ContinuedFraction.fromRatio(1, 2)).toEqual([0, 2])
+  })
+
+  it('approximate returns valid fraction', () => {
+    const result = ContinuedFraction.approximate(Math.E, 100)
+    expect(result.denominator).toBeGreaterThan(0)
+    expect(typeof result.numerator).toBe('number')
+  })
+
+  it('fromNumber with maxTerms 1', () => {
+    const result = ContinuedFraction.fromNumber(Math.PI, 1)
+    expect(result.length).toBe(1)
+  })
+
+  it('fromNumber with maxTerms 0 returns first term', () => {
+    const result = ContinuedFraction.fromNumber(Math.PI, 0)
+    expect(result.length).toBeLessThanOrEqual(1)
+  })
+
+  it('fromNumber recurring decimal terminates', () => {
+    const result = ContinuedFraction.fromNumber(1 / 3)
+    expect(result.length).toBeGreaterThan(0)
+    expect(result[0]).toBe(0)
+  })
 })
