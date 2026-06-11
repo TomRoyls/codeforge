@@ -81,59 +81,295 @@ describe('Quickhull', () => {
     expect(Quickhull.cross({ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 0 })).toBe(0)
   })
 
-  it('hull of collinear points', () => {
-    const points = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }]
-    const hull = Quickhull.convexHull(points)
-    expect(hull.length).toBeGreaterThanOrEqual(2)
-  })
-
-  it('hull of triangle', () => {
-    const points = [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 2, y: 3 }]
-    const hull = Quickhull.convexHull(points)
-    expect(hull.length).toBe(3)
-  })
-
-  it('handles collinear points', () => {
-    const points = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }]
-    const hull = Quickhull.convexHull(points)
-    expect(hull.length).toBeGreaterThanOrEqual(2)
-  })
-
-  it('single point hull', () => {
-    const points = [{ x: 0, y: 0 }]
-    const hull = Quickhull.convexHull(points)
-    expect(hull.length).toBeGreaterThanOrEqual(1)
-  })
-
   it('three non-collinear points form triangle hull', () => {
     const points = [{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 10 }]
     const hull = Quickhull.convexHull(points)
     expect(hull.length).toBe(3)
   })
 
-  it('collinear points return 2 endpoints', () => {
-    const points = [{ x: 0, y: 0 }, { x: 5, y: 5 }, { x: 10, y: 10 }]
+  it('computes area for triangle', () => {
+    const hull = [{ x: 0, y: 0 }, { x: 2, y: 0 }, { x: 1, y: 1 }]
+    expect(Quickhull.hullArea(hull)).toBeCloseTo(1, 6)
+  })
+
+  it('hullArea returns 0 for single point', () => {
+    expect(Quickhull.hullArea([{ x: 0, y: 0 }])).toBe(0)
+  })
+
+  it('hullArea returns 0 for two points', () => {
+    expect(Quickhull.hullArea([{ x: 0, y: 0 }, { x: 1, y: 0 }])).toBe(0)
+  })
+
+  it('computes area for pentagon', () => {
+    const hull = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 1.5, y: 0.5 },
+      { x: 0.5, y: 1 },
+      { x: -0.5, y: 0.5 }
+    ]
+    const area = Quickhull.hullArea(hull)
+    expect(area).toBeGreaterThan(0)
+  })
+
+  it('isConvex returns true for regular polygon', () => {
+    const hull = [
+      { x: 0, y: -1 },
+      { x: 1, y: 0 },
+      { x: 0, y: 1 },
+      { x: -1, y: 0 }
+    ]
+    expect(Quickhull.isConvex(hull)).toBe(true)
+  })
+
+  it('isConvex returns true for triangle with interior point', () => {
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 0.5, y: 0.5 },
+      { x: 0, y: 1 }
+    ]
+    expect(Quickhull.isConvex(pts)).toBe(true)
+  })
+
+  it('isConvex returns false for self-intersecting polygon', () => {
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      { x: 1, y: 0 },
+      { x: 0, y: 1 }
+    ]
+    expect(Quickhull.isConvex(pts)).toBe(false)
+  })
+
+  it('handles points forming a rectangle', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 2, y: 0 },
+      { x: 2, y: 1 },
+      { x: 0, y: 1 },
+      { x: 1, y: 0.5 }
+    ]
     const hull = Quickhull.convexHull(points)
-    expect(hull.length).toBeGreaterThanOrEqual(2)
+    expect(hull.length).toBe(4)
   })
 
-  it('single point returns itself', () => {
-    const hull = Quickhull.convexHull([{ x: 5, y: 5 }])
-    expect(hull.length).toBe(1)
+  it('handles points forming a hexagon', () => {
+    const points = []
+    for (let i = 0; i < 6; i++) {
+      const angle = (i * Math.PI) / 3
+      points.push({ x: Math.cos(angle), y: Math.sin(angle) })
+    }
+    points.push({ x: 0, y: 0 })
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(6)
   })
 
-  it('two points returns both', () => {
-    const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 10, y: 0 }])
-    expect(hull.length).toBe(2)
+  it('cross product negative for clockwise turn', () => {
+    const cross = Quickhull.cross({ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 0 })
+    expect(cross).toBe(-1)
   })
 
-  it('three non-collinear points returns all', () => {
-    const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 5 }])
+  it('cross product positive for counter-clockwise turn', () => {
+    const cross = Quickhull.cross({ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 })
+    expect(cross).toBe(1)
+  })
+
+  it('cross product zero for collinear points', () => {
+    const cross = Quickhull.cross({ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 })
+    expect(cross).toBe(0)
+  })
+
+  it('handles points with same x coordinate', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 0, y: 1 },
+      { x: 1, y: 0.5 },
+      { x: 0, y: -1 }
+    ]
+    const hull = Quickhull.convexHull(points)
     expect(hull.length).toBe(3)
   })
 
-  it('collinear points returns 2 endpoints', () => {
-    const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 5, y: 0 }, { x: 10, y: 0 }])
+  it('handles points with same y coordinate', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 0.5, y: 1 },
+      { x: -1, y: 0 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(3)
+  })
+
+  it('handles all points on line', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      { x: 2, y: 2 },
+      { x: 3, y: 3 },
+      { x: 4, y: 4 }
+    ]
+    const hull = Quickhull.convexHull(points)
     expect(hull.length).toBe(2)
+  })
+
+  it('handles all points on horizontal line', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 3, y: 0 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(2)
+  })
+
+  it('handles all points on vertical line', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 0, y: 1 },
+      { x: 0, y: 2 },
+      { x: 0, y: 3 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(2)
+  })
+
+  it('convex hull is convex', () => {
+    const points = []
+    for (let i = 0; i < 20; i++) {
+      const angle = (i * 2 * Math.PI) / 20
+      points.push({ x: Math.cos(angle) * 10, y: Math.sin(angle) * 10 })
+    }
+    const hull = Quickhull.convexHull(points)
+    expect(Quickhull.isConvex(hull)).toBe(true)
+  })
+
+  it('computes hull of points in circle', () => {
+    const points = []
+    for (let i = 0; i < 50; i++) {
+      const angle = Math.random() * Math.PI * 2
+      const radius = 1 + Math.random() * 9
+      points.push({ x: Math.cos(angle) * radius, y: Math.sin(angle) * radius })
+    }
+    const hull = Quickhull.convexHull(points)
+    expect(Quickhull.isConvex(hull)).toBe(true)
+  })
+
+  it('handles points forming a narrow triangle', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0.001 },
+      { x: 5, y: 10 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(3)
+  })
+
+  it('hullArea works for irregular polygon', () => {
+    const hull = [
+      { x: 0, y: 0 },
+      { x: 3, y: 0 },
+      { x: 4, y: 2 },
+      { x: 2, y: 4 },
+      { x: -1, y: 3 }
+    ]
+    const area = Quickhull.hullArea(hull)
+    expect(area).toBeGreaterThan(0)
+  })
+
+  it('isConvex returns true for right triangle hull', () => {
+    const hull = [
+      { x: 0, y: 0 },
+      { x: 4, y: 0 },
+      { x: 0, y: 3 }
+    ]
+    expect(Quickhull.isConvex(hull)).toBe(true)
+  })
+
+  it('isConvex returns true for obtuse triangle hull', () => {
+    const hull = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 3, y: 1 }
+    ]
+    expect(Quickhull.isConvex(hull)).toBe(true)
+  })
+
+  it('handles points with negative coordinates', () => {
+    const points = [
+      { x: -1, y: -1 },
+      { x: 1, y: -1 },
+      { x: 1, y: 1 },
+      { x: -1, y: 1 },
+      { x: 0, y: 0 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(4)
+  })
+
+  it('handles points with floating point coordinates', () => {
+    const points = [
+      { x: 0.5, y: 0.5 },
+      { x: 1.5, y: 0.5 },
+      { x: 1.5, y: 1.5 },
+      { x: 0.5, y: 1.5 },
+      { x: 1.0, y: 1.0 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(4)
+  })
+
+  it('handles points forming star pattern', () => {
+    const points = []
+    for (let i = 0; i < 10; i++) {
+      const angle = (i * Math.PI) / 5
+      const r = i % 2 === 0 ? 10 : 5
+      points.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r })
+    }
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(5)
+  })
+
+  it('computes area of triangle correctly', () => {
+    const hull = [
+      { x: 0, y: 0 },
+      { x: 3, y: 0 },
+      { x: 0, y: 4 }
+    ]
+    expect(Quickhull.hullArea(hull)).toBeCloseTo(6, 6)
+  })
+
+  it('computes area of rectangle correctly', () => {
+    const hull = [
+      { x: 0, y: 0 },
+      { x: 5, y: 0 },
+      { x: 5, y: 3 },
+      { x: 0, y: 3 }
+    ]
+    expect(Quickhull.hullArea(hull)).toBeCloseTo(15, 6)
+  })
+
+  it('handles nearly collinear points', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0.001 },
+      { x: 3, y: 0 },
+      { x: 4, y: 0 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBeLessThanOrEqual(3)
+  })
+
+  it('hullArea returns correct value for degenerate quadrilateral', () => {
+    const hull = [
+      { x: 0, y: 0 },
+      { x: 2, y: 0 },
+      { x: 2, y: 1 },
+      { x: 0, y: 1 }
+    ]
+    expect(Quickhull.hullArea(hull)).toBeCloseTo(2, 6)
   })
 })

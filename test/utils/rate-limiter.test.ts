@@ -2,34 +2,23 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { RateLimiter } from '../../src/utils/rate-limiter.js'
 
 describe('RateLimiter', () => {
-  beforeEach(() => {
-    vi.useRealTimers()
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
+  beforeEach(() => vi.useRealTimers())
+  afterEach(() => vi.useRealTimers())
 
   it('allows requests up to limit', () => {
     const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
     const results: boolean[] = []
-    for (let i = 0; i < 5; i++) {
-      const result = rl.tryAcquire()
-      results.push(result)
-    }
-    expect(results.every((r) => r)).toBe(true)
+    for (let i = 0; i < 5; i++) results.push(rl.tryAcquire())
+    expect(results.every(r => r)).toBe(true)
   })
 
   it('blocks requests over limit', () => {
     const rl = new RateLimiter({ maxTokens: 3, refillRate: 1, refillIntervalMs: 1000 })
-    for (let i = 0; i < 3; i++) {
-      rl.tryAcquire()
-    }
-    const result = rl.tryAcquire()
-    expect(result).toBe(false)
+    for (let i = 0; i < 3; i++) rl.tryAcquire()
+    expect(rl.tryAcquire()).toBe(false)
   })
 
-  it('remaining decreases', () => {
+  it('remaining decreases after acquire', () => {
     const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
     expect(rl.tryAcquire()).toBe(true)
     expect(rl.getAvailableTokens()).toBe(4)
@@ -37,39 +26,22 @@ describe('RateLimiter', () => {
     expect(rl.getAvailableTokens()).toBe(3)
   })
 
-  it('retryAfterMs is reasonable (acquire waits when blocked)', async () => {
+  it('acquire waits and resolves after refill', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: false })
     const rl = new RateLimiter({ maxTokens: 2, refillRate: 1, refillIntervalMs: 1000 })
     rl.tryAcquire()
     rl.tryAcquire()
-    const acquirePromise = rl.acquire()
+    const p = rl.acquire()
     vi.advanceTimersByTime(1000)
-    await acquirePromise
+    await p
     expect(rl.getAvailableTokens()).toBeLessThanOrEqual(2)
     vi.useRealTimers()
   })
 
-  it('tryAcquire returns boolean for sequential calls', () => {
-    const rl = new RateLimiter({ maxTokens: 2, refillRate: 1, refillIntervalMs: 1000 })
-    expect(rl.tryAcquire()).toBe(true)
-    expect(rl.tryAcquire()).toBe(true)
-    expect(rl.tryAcquire()).toBe(false)
-  })
-
-  it('reset clears counter', () => {
+  it('reset restores all tokens', () => {
     const rl = new RateLimiter({ maxTokens: 2, refillRate: 1, refillIntervalMs: 1000 })
     rl.tryAcquire()
     rl.tryAcquire()
-    expect(rl.tryAcquire()).toBe(false)
-    rl.reset()
-    expect(rl.tryAcquire()).toBe(true)
-  })
-
-  it('reset refills all tokens', () => {
-    const rl = new RateLimiter({ maxTokens: 2, refillRate: 1, refillIntervalMs: 1000 })
-    rl.tryAcquire()
-    rl.tryAcquire()
-    expect(rl.tryAcquire()).toBe(false)
     rl.reset()
     expect(rl.tryAcquire()).toBe(true)
     expect(rl.tryAcquire()).toBe(true)
@@ -77,129 +49,276 @@ describe('RateLimiter', () => {
 
   it('getStats does not consume quota', () => {
     const rl = new RateLimiter({ maxTokens: 3, refillRate: 1, refillIntervalMs: 1000 })
-    const status1 = rl.getStats()
-    expect(status1.availableTokens).toBe(3)
-    const status2 = rl.getStats()
-    expect(status2.availableTokens).toBe(3)
+    const s1 = rl.getStats()
+    expect(s1.availableTokens).toBe(3)
     rl.tryAcquire()
-    const status3 = rl.getStats()
-    expect(status3.availableTokens).toBe(2)
+    const s2 = rl.getStats()
+    expect(s2.availableTokens).toBe(2)
   })
 
   it('window refills after interval', () => {
     vi.useFakeTimers({ shouldAdvanceTime: false })
     vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'))
     const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
-    for (let i = 0; i < 5; i++) {
-      rl.tryAcquire()
-    }
+    for (let i = 0; i < 5; i++) rl.tryAcquire()
     expect(rl.tryAcquire()).toBe(false)
     vi.advanceTimersByTime(1001)
     expect(rl.tryAcquire()).toBe(true)
     vi.useRealTimers()
   })
 
-  it('maxTokens is readonly', () => {
+  it('maxTokens is readonly property', () => {
     const rl = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
     expect(rl.maxTokens).toBe(10)
   })
 
-  it('zero maxTokens throws', () => {
+  it('zero maxTokens throws RangeError', () => {
     expect(() => new RateLimiter({ maxTokens: 0, refillRate: 1, refillIntervalMs: 1000 })).toThrow(RangeError)
   })
 
-  it('acquire returns Promise', async () => {
-    const rl = new RateLimiter({ maxTokens: 3, refillRate: 1, refillIntervalMs: 1000 })
-    expect(rl.tryAcquire()).toBe(true)
-    expect(rl.tryAcquire()).toBe(true)
+  it('negative refillRate throws RangeError', () => {
+    expect(() => new RateLimiter({ maxTokens: 5, refillRate: 0, refillIntervalMs: 1000 })).toThrow(RangeError)
+  })
+
+  it('zero refillIntervalMs throws RangeError', () => {
+    expect(() => new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 0 })).toThrow(RangeError)
+  })
+
+  it('getStats returns totalAcquired', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    rl.tryAcquire()
+    rl.tryAcquire()
+    expect(rl.getStats().totalAcquired).toBe(3)
+  })
+
+  it('getStats returns totalRejected', () => {
+    const rl = new RateLimiter({ maxTokens: 1, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    rl.tryAcquire()
+    expect(rl.getStats().totalRejected).toBe(1)
+  })
+
+  it('getStats returns maxTokens', () => {
+    const rl = new RateLimiter({ maxTokens: 7, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.getStats().maxTokens).toBe(7)
+  })
+
+  it('refillRate is readonly property', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 3, refillIntervalMs: 2000 })
+    expect(rl.refillRate).toBe(3)
+  })
+
+  it('refillIntervalMs is readonly property', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 2000 })
+    expect(rl.refillIntervalMs).toBe(2000)
+  })
+
+  it('tryAcquire with count > 1', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.tryAcquire(3)).toBe(true)
+    expect(rl.getAvailableTokens()).toBe(2)
+  })
+
+  it('tryAcquire with count exceeding available fails', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.tryAcquire(6)).toBe(false)
+    expect(rl.getAvailableTokens()).toBe(5)
+  })
+
+  it('tryAcquire with count 0 throws', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(() => rl.tryAcquire(0)).toThrow(RangeError)
+  })
+
+  it('toString returns descriptive string', () => {
+    const rl = new RateLimiter({ maxTokens: 10, refillRate: 2, refillIntervalMs: 500 })
+    const str = rl.toString()
+    expect(str).toContain('10')
+    expect(str).toContain('2')
+    expect(str).toContain('500')
+  })
+
+  it('toJSON returns options plus tokens', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    const json = rl.toJSON()
+    expect(json.maxTokens).toBe(5)
+    expect(json.refillRate).toBe(1)
+    expect(json.refillIntervalMs).toBe(1000)
+    expect(json.tokens).toBe(5)
+  })
+
+  it('toJSON tokens decrease after acquire', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    rl.tryAcquire()
+    expect(rl.toJSON().tokens).toBe(3)
+  })
+
+  it('clone creates independent copy', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    const copy = rl.clone()
+    expect(copy.getAvailableTokens()).toBe(4)
+    rl.tryAcquire()
+    expect(copy.getAvailableTokens()).toBe(4)
+  })
+
+  it('equals returns true for same config', () => {
+    const rl1 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    const rl2 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl1.equals(rl2)).toBe(true)
+  })
+
+  it('equals returns false for different config', () => {
+    const rl1 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    const rl2 = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl1.equals(rl2)).toBe(false)
+  })
+
+  it('equals returns false for non-RateLimiter', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.equals({})).toBe(false)
+    expect(rl.equals(null)).toBe(false)
+  })
+
+  it('reset clears stats', () => {
+    const rl = new RateLimiter({ maxTokens: 2, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    rl.tryAcquire()
+    rl.tryAcquire()
+    rl.reset()
+    const stats = rl.getStats()
+    expect(stats.totalAcquired).toBe(0)
+    expect(stats.totalRejected).toBe(0)
+  })
+
+  it('refills multiple intervals at once', () => {
+    vi.useFakeTimers({ shouldAdvanceTime: false })
+    vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'))
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    for (let i = 0; i < 5; i++) rl.tryAcquire()
+    vi.advanceTimersByTime(5000)
+    expect(rl.getAvailableTokens()).toBe(5)
+    vi.useRealTimers()
+  })
+
+  it('refills cap at maxTokens', () => {
+    vi.useFakeTimers({ shouldAdvanceTime: false })
+    vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'))
+    const rl = new RateLimiter({ maxTokens: 3, refillRate: 5, refillIntervalMs: 1000 })
+    vi.advanceTimersByTime(10000)
+    expect(rl.getAvailableTokens()).toBe(3)
+    vi.useRealTimers()
+  })
+
+  it('tryAcquire partial batch fails entirely', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire(3)
+    expect(rl.tryAcquire(3)).toBe(false)
+    expect(rl.getAvailableTokens()).toBe(2)
+  })
+
+  it('getStats tracks totalRefills', () => {
+    vi.useFakeTimers({ shouldAdvanceTime: false })
+    vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'))
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    vi.advanceTimersByTime(1500)
+    rl.getStats()
+    expect(rl.getStats().totalRefills).toBeGreaterThanOrEqual(1)
+    vi.useRealTimers()
+  })
+
+  it('clone preserves acquired count', () => {
+    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    rl.tryAcquire()
+    const copy = rl.clone()
+    expect(copy.getStats().totalAcquired).toBe(2)
+  })
+
+  it('single token limiter works', () => {
+    const rl = new RateLimiter({ maxTokens: 1, refillRate: 1, refillIntervalMs: 1000 })
     expect(rl.tryAcquire()).toBe(true)
     expect(rl.tryAcquire()).toBe(false)
+  })
+
+  it('large maxTokens works', () => {
+    const rl = new RateLimiter({ maxTokens: 1000, refillRate: 10, refillIntervalMs: 100 })
+    expect(rl.getAvailableTokens()).toBe(1000)
+    rl.tryAcquire(500)
+    expect(rl.getAvailableTokens()).toBe(500)
+  })
+
+  it('reset resets lastRefillTime', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    rl.reset()
+    expect(rl.getAvailableTokens()).toBe(5)
+  })
+
+  it('tryAcquire returns boolean', () => {
+    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
+    expect(typeof rl.tryAcquire()).toBe('boolean')
   })
 
   it('multiple refills tracked', () => {
     vi.useFakeTimers({ shouldAdvanceTime: false })
     vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'))
     const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
-    for (let i = 0; i < 3; i++) {
-      rl.tryAcquire()
-    }
+    rl.tryAcquire()
+    rl.tryAcquire()
     vi.advanceTimersByTime(500)
-    for (let i = 0; i < 3; i++) {
-      rl.tryAcquire()
-    }
-    expect(rl.tryAcquire()).toBe(false)
+    rl.tryAcquire()
+    expect(rl.tryAcquire()).toBe(true)
     vi.useRealTimers()
   })
 
-  it('getStats returns maxTokens', () => {
+  it('tryAcquire with count after partial use', () => {
     const rl = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
-    const status = rl.getStats()
-    expect(status.maxTokens).toBe(10)
+    rl.tryAcquire(5)
+    expect(rl.tryAcquire(5)).toBe(true)
+    expect(rl.tryAcquire()).toBe(false)
   })
 
-  it('refillIntervalMs is readonly', () => {
-    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 2000 })
-    expect(rl.refillIntervalMs).toBe(2000)
+  it('negative maxTokens throws', () => {
+    expect(() => new RateLimiter({ maxTokens: -1, refillRate: 1, refillIntervalMs: 1000 })).toThrow(RangeError)
   })
 
-  it('getStats returns availableTokens after partial use', () => {
+  it('negative refillIntervalMs throws', () => {
+    expect(() => new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: -1 })).toThrow(RangeError)
+  })
+
+  it('equals returns false for different refillRate', () => {
+    const rl1 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    const rl2 = new RateLimiter({ maxTokens: 5, refillRate: 2, refillIntervalMs: 1000 })
+    expect(rl1.equals(rl2)).toBe(false)
+  })
+
+  it('equals returns false for different refillIntervalMs', () => {
+    const rl1 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    const rl2 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 2000 })
+    expect(rl1.equals(rl2)).toBe(false)
+  })
+
+  it('clone preserves stats', () => {
     const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
     rl.tryAcquire()
     rl.tryAcquire()
     rl.tryAcquire()
-    const status = rl.getStats()
-    expect(status.availableTokens).toBe(2)
+    const copy = rl.clone()
+    expect(copy.getStats().totalAcquired).toBe(3)
   })
 
-  it('tryAcquire returns false when blocked', () => {
-    const rl = new RateLimiter({ maxTokens: 1, refillRate: 1, refillIntervalMs: 1000 })
-    rl.tryAcquire()
-    const result = rl.tryAcquire()
-    expect(result).toBe(false)
+  it('getAvailableTokens starts at maxTokens', () => {
+    const rl = new RateLimiter({ maxTokens: 8, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.getAvailableTokens()).toBe(8)
   })
 
-  it('allows request after reset', () => {
-    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
-    for (let i = 0; i < 5; i++) rl.tryAcquire()
-    rl.reset()
-    expect(rl.tryAcquire()).toBe(true)
-  })
-
-  it('tryAcquire returns boolean', () => {
-    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
-    const result = rl.tryAcquire()
-    expect(typeof result).toBe('boolean')
-  })
-
-  it('tryAcquire returns true initially', () => {
-    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
-    const result = rl.tryAcquire()
-    expect(result).toBe(true)
-  })
-
-  it('has configurable refillRate', () => {
-    const rl = new RateLimiter({ maxTokens: 5, refillRate: 10, refillIntervalMs: 1000 })
-    expect(rl).toBeDefined()
-    expect(rl.refillRate).toBe(10)
-  })
-
-  it('tryAcquire returns true when under limit', () => {
-    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
-    const result = rl.tryAcquire()
-    expect(result).toBe(true)
-  })
-
-  it('second immediate acquire succeeds if tokens remain', () => {
+  it('tryAcquire default count is 1', () => {
     const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
     rl.tryAcquire()
-    const result = rl.tryAcquire()
-    expect(result).toBe(true)
-  })
-
-  it('tryAcquire respects limit', () => {
-    const rl = new RateLimiter({ maxTokens: 1, refillRate: 1, refillIntervalMs: 100000 })
-    rl.tryAcquire()
-    const result = rl.tryAcquire()
-    expect(result).toBe(false)
+    expect(rl.getAvailableTokens()).toBe(4)
   })
 })

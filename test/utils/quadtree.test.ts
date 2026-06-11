@@ -122,35 +122,6 @@ describe('Quadtree', () => {
     expect(qt.query({ x: 0, y: 0, w: 50, h: 50 })).toEqual([])
   })
 
-  it('handles many inserts', () => {
-    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
-    for (let i = 0; i < 100; i++) {
-      qt.insert({ x: i % 100, y: Math.floor(i / 100) * 10, data: i })
-    }
-    expect(qt.size).toBe(100)
-  })
-
-  it('query empty region returns empty', () => {
-    const qt = new Quadtree<number>({ x: 0, y: 0, width: 100, height: 100 })
-    qt.insert({ x: 50, y: 50, data: 1 })
-    const results = qt.query({ x: 0, y: 0, width: 10, height: 10 })
-    expect(results.length).toBe(0)
-  })
-
-  it('query finds inserted point in range', () => {
-    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
-    qt.insert({ x: 50, y: 50, data: 'test' })
-    const results = qt.query({ x: 0, y: 0, w: 100, h: 100 })
-    expect(results.length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('query outside bounds returns empty', () => {
-    const qt = new Quadtree<string>(0, 0, 100, 100)
-    qt.insert({ x: 50, y: 50, data: 'test' })
-    const results = qt.query({ x: 200, y: 200, w: 50, h: 50 })
-    expect(results.length).toBe(0)
-  })
-
   it('insert and query single point', () => {
     const q = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
     q.insert({ x: 50, y: 50, data: 'pt' })
@@ -158,23 +129,260 @@ describe('Quadtree', () => {
     expect(results.length).toBe(1)
   })
 
-  it('query outside bounds returns empty', () => {
-    const q = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
-    q.insert({ x: 50, y: 50, data: 'pt' })
-    const results = q.query({ x: 200, y: 200, w: 10, h: 10 })
+  it('query region containing multiple points', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 10, y: 10, data: 'a' })
+    qt.insert({ x: 20, y: 20, data: 'b' })
+    qt.insert({ x: 30, y: 30, data: 'c' })
+    const results = qt.query({ x: 5, y: 5, w: 30, h: 30 })
+    expect(results.length).toBe(3)
+  })
+
+  it('handles negative coordinates', () => {
+    const qt = new Quadtree({ x: -100, y: -100, w: 200, h: 200 })
+    expect(qt.insert({ x: -50, y: -50, data: 'neg' })).toBe(true)
+    expect(qt.size).toBe(1)
+  })
+
+  it('handles floating point coordinates', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 12.5, y: 37.8, data: 'float' })
+    expect(qt.size).toBe(1)
+  })
+
+  it('queries multiple quadrants after subdivision', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 1)
+    qt.insert({ x: 10, y: 10, data: 'nw' })
+    qt.insert({ x: 90, y: 10, data: 'ne' })
+    qt.insert({ x: 10, y: 90, data: 'sw' })
+    qt.insert({ x: 90, y: 90, data: 'se' })
+    const results = qt.query({ x: 0, y: 0, w: 100, h: 100 })
+    expect(results.length).toBe(4)
+  })
+
+  it('finds points in northeast quadrant', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 2)
+    qt.insert({ x: 75, y: 25, data: 'ne' })
+    qt.insert({ x: 25, y: 75, data: 'sw' })
+    const results = qt.query({ x: 50, y: 0, w: 50, h: 50 })
+    expect(results.length).toBe(1)
+    expect(results[0]!.data).toBe('ne')
+  })
+
+  it('finds points in southwest quadrant', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 2)
+    qt.insert({ x: 75, y: 25, data: 'ne' })
+    qt.insert({ x: 25, y: 75, data: 'sw' })
+    const results = qt.query({ x: 0, y: 50, w: 50, h: 50 })
+    expect(results.length).toBe(1)
+    expect(results[0]!.data).toBe('sw')
+  })
+
+  it('returns empty result for query with zero width/height', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 50, y: 50, data: 'point' })
+    const results = qt.query({ x: 50, y: 50, w: 0, h: 0 })
     expect(results.length).toBe(0)
   })
 
-  it('query on empty tree returns empty', () => {
-    const q = new Quadtree<string>({ x: 0, y: 0, w: 100, h: 100 })
-    const results = q.query({ x: 0, y: 0, w: 100, h: 100 })
+  it('handles points very close to boundaries', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    expect(qt.insert({ x: 0.001, y: 0.001, data: 'near-origin' })).toBe(true)
+    expect(qt.insert({ x: 99.999, y: 99.999, data: 'near-edge' })).toBe(true)
+    expect(qt.size).toBe(2)
+  })
+
+  it('query with range covering multiple children', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 1)
+    qt.insert({ x: 25, y: 25, data: 'a' })
+    qt.insert({ x: 75, y: 25, data: 'b' })
+    qt.insert({ x: 25, y: 75, data: 'c' })
+    qt.insert({ x: 75, y: 75, data: 'd' })
+    const results = qt.query({ x: 40, y: 40, w: 20, h: 20 })
     expect(results.length).toBe(0)
   })
 
-  it('insert and query returns item', () => {
-    const q = new Quadtree<string>({ x: 0, y: 0, w: 100, h: 100 })
-    q.insert({ x: 50, y: 50, data: 'item' })
-    const results = q.query({ x: 0, y: 0, w: 100, h: 100 })
+  it('creates multiple levels of subdivision', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 1)
+    for (let i = 0; i < 10; i++) {
+      qt.insert({ x: i * 5, y: i * 5, data: i })
+    }
+    expect(qt.depth).toBeGreaterThan(2)
+  })
+
+  it('handles insertion of points after subdivision', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 2)
+    qt.insert({ x: 10, y: 10, data: 1 })
+    qt.insert({ x: 20, y: 20, data: 2 })
+    qt.insert({ x: 80, y: 80, data: 3 })
+    expect(qt.insert({ x: 90, y: 90, data: 4 })).toBe(true)
+    expect(qt.size).toBe(4)
+  })
+
+  it('findAll returns all points including subdivided', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 2)
+    qt.insert({ x: 10, y: 10, data: 1 })
+    qt.insert({ x: 20, y: 20, data: 2 })
+    qt.insert({ x: 80, y: 80, data: 3 })
+    const all = qt.findAll()
+    expect(all.length).toBe(3)
+    expect(all.map(p => p.data)).toContain(1)
+    expect(all.map(p => p.data)).toContain(2)
+    expect(all.map(p => p.data)).toContain(3)
+  })
+
+  it('queries exact match range', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 25, y: 25, data: 'exact' })
+    const results = qt.query({ x: 25, y: 25, w: 1, h: 1 })
+    expect(results.length).toBe(1)
+  })
+
+  it('handles large capacity without subdivision', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 100)
+    for (let i = 0; i < 50; i++) {
+      qt.insert({ x: i, y: i, data: i })
+    }
+    expect(qt.depth).toBe(1)
+    expect(qt.size).toBe(50)
+  })
+
+  it('rejects points with negative coordinates in positive bounds', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    expect(qt.insert({ x: -10, y: -10, data: 'neg' })).toBe(false)
+    expect(qt.size).toBe(0)
+  })
+
+  it('handles very small quadtree bounds', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 1, h: 1 })
+    expect(qt.insert({ x: 0.5, y: 0.5, data: 'small' })).toBe(true)
+    expect(qt.size).toBe(1)
+  })
+
+  it('queries overlapping boundary correctly', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 49, y: 49, data: 'boundary' })
+    const results = qt.query({ x: 40, y: 40, w: 20, h: 20 })
+    expect(results.length).toBe(1)
+  })
+
+  it('handles custom data types', () => {
+    interface CustomData {
+      id: number
+      name: string
+    }
+    const qt = new Quadtree<CustomData>({ x: 0, y: 0, w: 100, h: 100 })
+    const data = { id: 1, name: 'test' }
+    qt.insert({ x: 50, y: 50, data })
+    const results = qt.query({ x: 0, y: 0, w: 100, h: 100 })
+    expect(results[0]!.data.id).toBe(1)
+    expect(results[0]!.data.name).toBe('test')
+  })
+
+  it('returns empty array for empty tree findAll', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    expect(qt.findAll()).toEqual([])
+  })
+
+  it('query with range partially overlapping quadtree', () => {
+    const qt = new Quadtree({ x: 50, y: 50, w: 100, h: 100 })
+    qt.insert({ x: 100, y: 100, data: 'overlap' })
+    const results = qt.query({ x: 0, y: 0, w: 150, h: 150 })
+    expect(results.length).toBe(1)
+  })
+
+  it('handles sequential insertions in same quadrant', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 2)
+    qt.insert({ x: 10, y: 10, data: 1 })
+    qt.insert({ x: 15, y: 15, data: 2 })
+    qt.insert({ x: 20, y: 20, data: 3 })
+    expect(qt.size).toBe(3)
+  })
+
+  it('computes correct size after multiple subdivisions', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 1)
+    qt.insert({ x: 10, y: 10, data: 1 })
+    qt.insert({ x: 90, y: 10, data: 2 })
+    qt.insert({ x: 10, y: 90, data: 3 })
+    qt.insert({ x: 90, y: 90, data: 4 })
+    qt.insert({ x: 50, y: 50, data: 5 })
+    expect(qt.size).toBe(5)
+  })
+
+  it('queries points from single specific child', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 1)
+    qt.insert({ x: 10, y: 10, data: 'nw' })
+    qt.insert({ x: 90, y: 90, data: 'se' })
+    const results = qt.query({ x: 0, y: 0, w: 50, h: 50 })
+    expect(results.length).toBe(1)
+    expect(results[0]!.data).toBe('nw')
+  })
+
+  it('handles insertion of duplicate point', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 50, y: 50, data: 'first' })
+    qt.insert({ x: 50, y: 50, data: 'second' })
+    expect(qt.size).toBe(2)
+  })
+
+  it('query with negative range coordinates', () => {
+    const qt = new Quadtree({ x: -50, y: -50, w: 100, h: 100 })
+    qt.insert({ x: -25, y: -25, data: 'neg' })
+    const results = qt.query({ x: -30, y: -30, w: 20, h: 20 })
+    expect(results.length).toBe(1)
+  })
+
+  it('preserves point order in query results within same quadrant', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 10, y: 10, data: 1 })
+    qt.insert({ x: 20, y: 20, data: 2 })
+    qt.insert({ x: 15, y: 15, data: 3 })
+    const results = qt.query({ x: 0, y: 0, w: 50, h: 50 })
+    expect(results.length).toBe(3)
+  })
+
+  it('handles empty range query', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 50, y: 50, data: 'point' })
+    const results = qt.query({ x: 100, y: 100, w: 0, h: 0 })
+    expect(results.length).toBe(0)
+  })
+
+  it('finds points in narrow range', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 50, y: 50, data: 'center' })
+    qt.insert({ x: 50, y: 51, data: 'nearby' })
+    const results = qt.query({ x: 49, y: 49, w: 3, h: 5 })
+    expect(results.length).toBe(2)
+  })
+
+  it('handles capacity of 1 with immediate subdivision', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 }, 1)
+    qt.insert({ x: 10, y: 10, data: 1 })
+    expect(qt.depth).toBe(1)
+    qt.insert({ x: 20, y: 20, data: 2 })
+    expect(qt.depth).toBeGreaterThan(1)
+  })
+
+  it('returns all points when querying entire boundary', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 10, y: 10, data: 'a' })
+    qt.insert({ x: 50, y: 50, data: 'b' })
+    qt.insert({ x: 90, y: 90, data: 'c' })
+    const results = qt.query(qt.boundary)
+    expect(results.length).toBe(3)
+  })
+
+  it('handles asymmetric quadtree bounds', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 200, h: 50 })
+    expect(qt.insert({ x: 150, y: 25, data: 'wide' })).toBe(true)
+    expect(qt.size).toBe(1)
+  })
+
+  it('query with floating point range coordinates', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 50.5, y: 50.5, data: 'float' })
+    const results = qt.query({ x: 50, y: 50, w: 1.5, h: 1.5 })
     expect(results.length).toBe(1)
   })
 })

@@ -27,7 +27,7 @@ describe('RecentCounter', () => {
     expect(rc.ping(5000)).toBe(3)
   })
 
-  it('count() uses binary search without consuming', () => {
+  it('count uses binary search without consuming', () => {
     const rc = new RecentCounter(5000)
     rc.ping(1000)
     rc.ping(2000)
@@ -155,17 +155,11 @@ describe('RecentCounter', () => {
     expect(rc.totalPings).toBe(0)
   })
 
-  it('single ping counted', () => {
-    const rc = new RecentCounter(3000)
-    rc.ping(1000)
-    expect(rc.totalPings).toBe(1)
-  })
-
-  it('count returns recent pings', () => {
-    const rc = new RecentCounter(3000)
-    rc.ping(1000)
-    rc.ping(2000)
-    expect(rc.count(2000)).toBe(2)
+  it('ping then count in same window', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(100)
+    rc.ping(200)
+    expect(rc.count(300)).toBe(2)
   })
 
   it('count outside window is 0', () => {
@@ -174,15 +168,185 @@ describe('RecentCounter', () => {
     expect(rc.count(2000)).toBe(0)
   })
 
-  it('ping and count in same window', () => {
+  it('large window keeps all pings', () => {
+    const rc = new RecentCounter(100000)
+    for (let i = 0; i < 50; i++) rc.ping(i * 100)
+    expect(rc.count(4900)).toBe(50)
+  })
+
+  it('small window expires quickly', () => {
+    const rc = new RecentCounter(100)
+    rc.ping(1000)
+    rc.ping(1050)
+    expect(rc.ping(1200)).toBe(1)
+  })
+
+  it('compact after many pings', () => {
+    const rc = new RecentCounter(500)
+    for (let t = 0; t < 2000; t += 10) rc.ping(t)
+    rc.ping(2000)
+    const removed = rc.compact()
+    expect(removed).toBeGreaterThan(0)
+    expect(rc.totalPings).toBeLessThan(200)
+  })
+
+  it('ping after reset works', () => {
     const rc = new RecentCounter(1000)
     rc.ping(100)
     rc.ping(200)
-    expect(rc.count(300)).toBe(2)
+    rc.reset()
+    expect(rc.ping(500)).toBe(1)
   })
 
-  it('count with no pings returns 0', () => {
-    const rc = new RecentCounter()
+  it('count after reset returns 0', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(100)
+    rc.reset()
     expect(rc.count(100)).toBe(0)
+  })
+
+  it('window boundary exact match', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(1000)
+    expect(rc.count(2000)).toBe(1)
+  })
+
+  it('ping with no arg uses Date.now', () => {
+    const rc = new RecentCounter(5000)
+    const count = rc.ping()
+    expect(count).toBe(1)
+  })
+
+  it('count with no arg uses Date.now', () => {
+    const rc = new RecentCounter(5000)
+    rc.ping()
+    const c = rc.count()
+    expect(c).toBe(1)
+  })
+
+  it('many pings at same time', () => {
+    const rc = new RecentCounter(1000)
+    for (let i = 0; i < 100; i++) rc.ping(500)
+    expect(rc.ping(500)).toBe(101)
+  })
+
+  it('window expiration with compact', () => {
+    const rc = new RecentCounter(100)
+    rc.ping(10)
+    rc.ping(20)
+    rc.ping(200)
+    rc.compact()
+    expect(rc.totalPings).toBe(1)
+    expect(rc.count(200)).toBe(1)
+  })
+
+  it('reset preserves windowMs', () => {
+    const rc = new RecentCounter(5000)
+    rc.reset()
+    expect(rc.windowSize).toBe(5000)
+  })
+
+  it('ping returns correct count for sliding window', () => {
+    const rc = new RecentCounter(1000)
+    expect(rc.ping(0)).toBe(1)
+    expect(rc.ping(500)).toBe(2)
+    expect(rc.ping(1000)).toBe(3)
+    expect(rc.ping(1500)).toBe(3)
+    expect(rc.ping(2000)).toBe(3)
+  })
+
+  it('compact twice in a row', () => {
+    const rc = new RecentCounter(100)
+    rc.ping(10)
+    rc.ping(200)
+    rc.compact()
+    expect(rc.compact()).toBe(0)
+  })
+
+  it('totalPings increases with each ping', () => {
+    const rc = new RecentCounter(10000)
+    expect(rc.totalPings).toBe(0)
+    rc.ping(100)
+    expect(rc.totalPings).toBe(1)
+    rc.ping(200)
+    expect(rc.totalPings).toBe(2)
+    rc.ping(300)
+    expect(rc.totalPings).toBe(3)
+  })
+
+  it('count at exact ping time', () => {
+    const rc = new RecentCounter(500)
+    rc.ping(100)
+    rc.ping(300)
+    rc.ping(500)
+    expect(rc.count(500)).toBe(3)
+    expect(rc.count(600)).toBe(3)
+    expect(rc.count(801)).toBe(1)
+    expect(rc.count(1001)).toBe(0)
+  })
+
+  it('ping with timestamp 0', () => {
+    const rc = new RecentCounter(1000)
+    expect(rc.ping(0)).toBe(1)
+    expect(rc.ping(500)).toBe(2)
+  })
+
+  it('many sequential windows', () => {
+    const rc = new RecentCounter(100)
+    for (let t = 0; t < 1000; t += 50) rc.ping(t)
+    expect(rc.ping(1000)).toBe(3)
+  })
+
+  it('ping with very large timestamp', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(Number.MAX_SAFE_INTEGER - 500)
+    expect(rc.ping(Number.MAX_SAFE_INTEGER)).toBe(2)
+  })
+
+  it('count with very large timestamp', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(100)
+    rc.ping(200)
+    expect(rc.count(Number.MAX_SAFE_INTEGER)).toBe(0)
+  })
+
+  it('window size 1', () => {
+    const rc = new RecentCounter(1)
+    rc.ping(100)
+    expect(rc.ping(102)).toBe(1)
+  })
+
+  it('count equals ping at same timestamp', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(100)
+    rc.ping(200)
+    rc.ping(300)
+    expect(rc.count(300)).toBe(rc.ping(400) - 1)
+  })
+
+  it('compact then ping then count', () => {
+    const rc = new RecentCounter(100)
+    rc.ping(10)
+    rc.ping(20)
+    rc.ping(200)
+    rc.compact()
+    rc.ping(250)
+    expect(rc.count(250)).toBe(2)
+  })
+
+  it('many pings in same window then expiry', () => {
+    const rc = new RecentCounter(1000)
+    for (let i = 0; i < 50; i++) rc.ping(500 + i)
+    expect(rc.ping(1600)).toBe(1)
+  })
+
+  it('compact then reset', () => {
+    const rc = new RecentCounter(100)
+    rc.ping(10)
+    rc.ping(200)
+    rc.compact()
+    rc.reset()
+    expect(rc.totalPings).toBe(0)
+    expect(rc.count(200)).toBe(0)
   })
 })

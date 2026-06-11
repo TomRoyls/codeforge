@@ -100,35 +100,202 @@ describe('PowerSet', () => {
     expect(bySize.get(2)!.length).toBe(3)
   })
 
-  it('handles empty set', () => {
-    expect(PowerSet.generate([])).toEqual([[]])
+  it('handles null values', () => {
+    const result = PowerSet.generate([null, 1])
+    expect(result.length).toBe(4)
+    expect(result).toContainEqual([null])
+    expect(result).toContainEqual([null, 1])
   })
 
-  it('single element has 2 subsets', () => {
-    expect(PowerSet.generate([1])).toEqual([[], [1]])
+  it('handles undefined values', () => {
+    const result = PowerSet.generate([undefined, 'a'])
+    expect(result.length).toBe(4)
+    expect(result).toContainEqual([undefined])
   })
 
-  it('empty set has one subset', () => {
-    expect(PowerSet.generate([])).toEqual([[]])
+  it('handles mixed types', () => {
+    const result = PowerSet.generate([1, 'a', null])
+    expect(result.length).toBe(8)
+    expect(result).toContainEqual([1, 'a', null])
   })
 
-  it('single element has 2 subsets', () => {
-    expect(PowerSet.generate([1]).length).toBe(2)
+  it('handles objects with same reference', () => {
+    const obj = { key: 'value' }
+    const result = PowerSet.generate([obj, 1])
+    expect(result.length).toBe(4)
+    expect(result).toContainEqual([obj])
+    expect(result).toContainEqual([obj, 1])
   })
 
-  it('empty set has one subset', () => {
-    expect(PowerSet.generate([])).toEqual([[]])
+  it('handles negative numbers', () => {
+    const result = PowerSet.generate([-1, -2])
+    expect(result).toContainEqual([-1, -2])
+    expect(result).toContainEqual([-1])
+    expect(result).toContainEqual([-2])
   })
 
-  it('single element has 2 subsets', () => {
-    expect(PowerSet.generate([1]).length).toBe(2)
+  it('handles floating point numbers', () => {
+    const result = PowerSet.generate([1.5, 2.5])
+    expect(result).toContainEqual([1.5, 2.5])
+    expect(result.length).toBe(4)
   })
 
-  it('empty set has 1 subset', () => {
+  it('generates correct subsets for 4 elements', () => {
+    const result = PowerSet.generate([1, 2, 3, 4])
+    expect(result.length).toBe(16)
+    expect(result).toContainEqual([])
+    expect(result).toContainEqual([1, 2, 3, 4])
+  })
+
+  it('generates correct subsets for 5 elements', () => {
+    const result = PowerSet.generate([1, 2, 3, 4, 5])
+    expect(result.length).toBe(32)
+  })
+
+  it('lazy generator can be partially consumed', () => {
+    const gen = PowerSet.lazy([1, 2, 3])
+    const first = gen.next().value
+    const second = gen.next().value
+    expect(first).toEqual([])
+    expect(second).toEqual([1])
+  })
+
+  it('lazy generator yields empty set first', () => {
+    const gen = PowerSet.lazy(['a', 'b'])
+    expect(gen.next().value).toEqual([])
+  })
+
+  it('lazy generator maintains order', () => {
+    const lazyResults: number[][] = []
+    for (const subset of PowerSet.lazy([1, 2])) {
+      lazyResults.push(subset)
+    }
+    expect(lazyResults[0]).toEqual([])
+    expect(lazyResults[3]).toEqual([1, 2])
+  })
+
+  it('bySize handles size 0 correctly', () => {
+    const bySize = PowerSet.bySize([1, 2, 3])
+    expect(bySize.get(0)).toEqual([[]])
+    expect(bySize.get(0)!.length).toBe(1)
+  })
+
+  it('bySize handles maximum size', () => {
+    const bySize = PowerSet.bySize([1, 2, 3])
+    expect(bySize.get(3)).toEqual([[1, 2, 3]])
+    expect(bySize.get(3)!.length).toBe(1)
+  })
+
+  it('bySize has correct number of keys', () => {
+    const bySize = PowerSet.bySize([1, 2, 3, 4])
+    expect(bySize.size).toBe(5)
+  })
+
+  it('bySize missing size returns undefined', () => {
+    const bySize = PowerSet.bySize([1, 2])
+    expect(bySize.get(5)).toBeUndefined()
+  })
+
+  it('count handles large n', () => {
+    expect(PowerSet.count(15)).toBe(32768)
+    expect(PowerSet.count(20)).toBe(1048576)
+  })
+
+  it('count returns 1 for n=0', () => {
+    expect(PowerSet.count(0)).toBe(1)
+  })
+
+  it('count returns 2 for n=1', () => {
+    expect(PowerSet.count(1)).toBe(2)
+  })
+
+  it('subset preserves original order', () => {
+    const result = PowerSet.generate([3, 1, 2])
+    expect(result[7]).toEqual([3, 1, 2])
+  })
+
+  it('handles duplicate values in input', () => {
+    const result = PowerSet.generate([1, 1])
+    expect(result.length).toBe(4)
+    expect(result).toContainEqual([1])
+    expect(result).toContainEqual([1, 1])
+  })
+
+  it('empty array has single subset', () => {
     expect(PowerSet.generate([]).length).toBe(1)
   })
 
-  it('single element has 2 subsets', () => {
-    expect(PowerSet.generate([1]).length).toBe(2)
+  it('two element array has four subsets', () => {
+    expect(PowerSet.generate([1, 2]).length).toBe(4)
+  })
+
+  it('three element array has eight subsets', () => {
+    expect(PowerSet.generate([1, 2, 3]).length).toBe(8)
+  })
+
+  it('five element array has thirty two subsets', () => {
+    expect(PowerSet.generate([1, 2, 3, 4, 5]).length).toBe(32)
+  })
+
+  it('lazy generator for empty array', () => {
+    const results = [...PowerSet.lazy([])]
+    expect(results).toEqual([[]])
+  })
+
+  it('lazy generator for single element', () => {
+    const results = [...PowerSet.lazy([1])]
+    expect(results).toEqual([[], [1]])
+  })
+
+  it('bySize for single element has sizes 0 and 1', () => {
+    const bySize = PowerSet.bySize([1])
+    expect(bySize.has(0)).toBe(true)
+    expect(bySize.has(1)).toBe(true)
+    expect(bySize.has(2)).toBe(false)
+  })
+
+  it('bySize for empty array has only size 0', () => {
+    const bySize = PowerSet.bySize([])
+    expect(bySize.size).toBe(1)
+    expect(bySize.has(0)).toBe(true)
+  })
+
+  it('all subsets are valid subsets', () => {
+    const arr = [1, 2, 3]
+    const result = PowerSet.generate(arr)
+    for (const subset of result) {
+      for (const elem of subset) {
+        expect(arr).toContain(elem)
+      }
+    }
+  })
+
+  it('bySize subsets are valid', () => {
+    const bySize = PowerSet.bySize([1, 2, 3])
+    for (const [size, subsets] of bySize) {
+      for (const subset of subsets) {
+        expect(subset.length).toBe(size)
+      }
+    }
+  })
+
+  it('handles boolean values', () => {
+    const result = PowerSet.generate([true, false])
+    expect(result.length).toBe(4)
+    expect(result).toContainEqual([true, false])
+  })
+
+  it('handles array of arrays', () => {
+    const result = PowerSet.generate([[1], [2]])
+    expect(result.length).toBe(4)
+    expect(result).toContainEqual([[1], [2]])
+  })
+
+  it('generator produces same number of results as generate', () => {
+    const arr = [1, 2, 3, 4]
+    const eager = PowerSet.generate(arr)
+    let lazyCount = 0
+    for (const _ of PowerSet.lazy(arr)) lazyCount++
+    expect(lazyCount).toBe(eager.length)
   })
 })
