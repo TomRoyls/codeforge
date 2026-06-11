@@ -218,4 +218,176 @@ describe('BoundedPriorityQueue', () => {
     q.push(3)
     expect(q.size).toBe(1)
   })
+
+  it('accepts comparator as first arg', () => {
+    const q = new BoundedPriorityQueue<number>((a, b) => a - b, 5)
+    q.push(3)
+    q.push(1)
+    q.push(2)
+    expect(q.size).toBe(3)
+    expect(q.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('toString returns sorted representation', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(3)
+    q.push(1)
+    q.push(2)
+    expect(q.toString()).toBe('[1, 2, 3]')
+  })
+
+  it('toJSON returns sorted array', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(3)
+    q.push(1)
+    q.push(2)
+    expect(q.toJSON()).toEqual([1, 2, 3])
+  })
+
+  it('clone creates independent copy', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(1)
+    q.push(2)
+    q.push(3)
+    const cloned = q.clone()
+    q.clear()
+    expect(cloned.size).toBe(3)
+    expect(cloned.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('equals returns true for identical queues', () => {
+    const q1 = new BoundedPriorityQueue<number>(3, minCmp)
+    const q2 = new BoundedPriorityQueue<number>(3, minCmp)
+    q1.push(1)
+    q1.push(2)
+    q2.push(1)
+    q2.push(2)
+    expect(q1.equals(q2)).toBe(true)
+  })
+
+  it('equals returns false for different contents', () => {
+    const q1 = new BoundedPriorityQueue<number>(3, minCmp)
+    const q2 = new BoundedPriorityQueue<number>(3, minCmp)
+    q1.push(1)
+    q2.push(2)
+    expect(q1.equals(q2)).toBe(false)
+  })
+
+  it('equals returns false for different maxSize', () => {
+    const q1 = new BoundedPriorityQueue<number>(3, minCmp)
+    const q2 = new BoundedPriorityQueue<number>(5, minCmp)
+    expect(q1.equals(q2)).toBe(false)
+  })
+
+  it('equals returns false for non-BoundedPriorityQueue', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    expect(q.equals(null)).toBe(false)
+    expect(q.equals({})).toBe(false)
+  })
+
+  it('equals with self returns true', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(1)
+    expect(q.equals(q)).toBe(true)
+  })
+
+  it('clear then push works', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(100)
+    q.clear()
+    q.push(1)
+    q.push(2)
+    expect(q.toArray()).toEqual([1, 2])
+  })
+
+  it('handles push of identical values', () => {
+    const q = new BoundedPriorityQueue<number>(5, minCmp)
+    q.push(5)
+    q.push(5)
+    q.push(5)
+    q.push(5)
+    q.push(5)
+    expect(q.toArray()).toEqual([5, 5, 5, 5, 5])
+  })
+
+  it('pop from empty queue returns undefined', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    expect(q.pop()).toBeUndefined()
+  })
+
+  it('drain from empty queue returns empty array', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    expect(q.drain()).toEqual([])
+  })
+
+  it('peek does not remove element', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(1)
+    q.push(2)
+    q.peek()
+    expect(q.size).toBe(2)
+  })
+
+  it('handles floating point numbers', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(1.5)
+    q.push(2.7)
+    q.push(0.3)
+    expect(q.toArray()).toEqual([0.3, 1.5, 2.7])
+  })
+
+  it('replaces worst element when better one arrives', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(10)
+    q.push(20)
+    q.push(30)
+    q.push(5)
+    expect(q.toArray()).toEqual([5, 10, 20])
+  })
+
+  it('keeps max-heap top K', () => {
+    const q = new BoundedPriorityQueue<number>(3, maxCmp)
+    for (const v of [1, 5, 3, 9, 2, 7, 8]) q.push(v)
+    expect(q.toArray()).toEqual([9, 8, 7])
+  })
+
+  it('handles descending input', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    for (let i = 10; i >= 0; i--) q.push(i)
+    expect(q.toArray()).toEqual([0, 1, 2])
+  })
+
+  it('handles ascending input', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    for (let i = 0; i <= 10; i++) q.push(i)
+    expect(q.toArray()).toEqual([0, 1, 2])
+  })
+
+  it('pop drains in reverse comparator order', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(1)
+    q.push(3)
+    q.push(2)
+    expect(q.pop()).toBe(3)
+    expect(q.pop()).toBe(2)
+    expect(q.pop()).toBe(1)
+  })
+
+  it('single element maxSize', () => {
+    const q = new BoundedPriorityQueue<number>(1, minCmp)
+    q.push(10)
+    expect(q.isFull).toBe(true)
+    q.push(5)
+    expect(q.toArray()).toEqual([5])
+    q.push(20)
+    expect(q.toArray()).toEqual([5])
+  })
+
+  it('handles large maxSize', () => {
+    const q = new BoundedPriorityQueue<number>(1000, minCmp)
+    for (let i = 0; i < 1000; i++) q.push(i)
+    expect(q.size).toBe(1000)
+    expect(q.toArray()[0]).toBe(0)
+    expect(q.toArray()[999]).toBe(999)
+  })
 })
