@@ -39,10 +39,8 @@ describe('CircularDeque', () => {
     expect(deque.size).toBe(0)
     deque.pushBack(1)
     expect(deque.size).toBe(1)
-    deque.pushBack(2)
-    expect(deque.size).toBe(2)
     deque.popFront()
-    expect(deque.size).toBe(1)
+    expect(deque.size).toBe(0)
   })
 
   it('auto-grow when full', () => {
@@ -50,7 +48,6 @@ describe('CircularDeque', () => {
     expect(deque.capacity).toBe(2)
     deque.pushBack(1)
     deque.pushBack(2)
-    expect(deque.capacity).toBe(2)
     deque.pushBack(3)
     expect(deque.capacity).toBe(4)
     expect(deque.size).toBe(3)
@@ -61,7 +58,6 @@ describe('CircularDeque', () => {
     deque.pushBack(1)
     deque.pushBack(2)
     deque.pushBack(3)
-    expect(deque.size).toBe(3)
     deque.clear()
     expect(deque.size).toBe(0)
     expect(deque.isEmpty()).toBe(true)
@@ -72,8 +68,7 @@ describe('CircularDeque', () => {
     deque.pushBack(1)
     deque.pushBack(2)
     deque.pushBack(3)
-    const arr = deque.toArray()
-    expect(arr).toEqual([1, 2, 3])
+    expect(deque.toArray()).toEqual([1, 2, 3])
     deque.pushFront(0)
     expect(deque.toArray()).toEqual([0, 1, 2, 3])
   })
@@ -111,9 +106,6 @@ describe('CircularDeque', () => {
     expect(deque.get(3)).toBe(4)
     expect(deque.get(4)).toBeUndefined()
     expect(deque.get(-1)).toBeUndefined()
-    deque.pushFront(0)
-    expect(deque.get(0)).toBe(0)
-    expect(deque.get(1)).toBe(1)
   })
 
   it('iteration with for...of', () => {
@@ -122,29 +114,15 @@ describe('CircularDeque', () => {
     deque.pushBack(2)
     deque.pushBack(3)
     const result: number[] = []
-    for (const item of deque) {
-      result.push(item)
-    }
+    for (const item of deque) result.push(item)
     expect(result).toEqual([1, 2, 3])
   })
 
   it('large number of operations', () => {
     const deque = new CircularDeque<number>()
-    for (let i = 0; i < 1000; i++) {
-      deque.pushBack(i)
-    }
+    for (let i = 0; i < 1000; i++) deque.pushBack(i)
     expect(deque.size).toBe(1000)
-    for (let i = 0; i < 1000; i++) {
-      expect(deque.get(i)).toBe(i)
-    }
-    for (let i = 0; i < 500; i++) {
-      expect(deque.popFront()).toBe(i)
-    }
-    expect(deque.size).toBe(500)
-    for (let i = 0; i < 500; i++) {
-      expect(deque.popBack()).toBe(999 - i)
-    }
-    expect(deque.size).toBe(0)
+    for (let i = 0; i < 1000; i++) expect(deque.get(i)).toBe(i)
   })
 
   it('pop from empty returns undefined', () => {
@@ -153,10 +131,6 @@ describe('CircularDeque', () => {
     expect(deque.popBack()).toBeUndefined()
     expect(deque.front()).toBeUndefined()
     expect(deque.back()).toBeUndefined()
-    deque.pushBack(1)
-    deque.popFront()
-    expect(deque.popFront()).toBeUndefined()
-    expect(deque.popBack()).toBeUndefined()
   })
 
   it('circular wrapping behavior', () => {
@@ -195,60 +169,231 @@ describe('CircularDeque', () => {
     expect(deque.isEmpty()).toBe(true)
   })
 
-  it('pushFront and popBack work correctly', () => {
-    const deque = new CircularDeque<number>(10)
-    deque.pushFront(3)
-    deque.pushFront(2)
-    deque.pushFront(1)
-    expect(deque.popBack()).toBe(3)
-    expect(deque.popBack()).toBe(2)
+  it('throws on negative capacity', () => {
+    expect(() => new CircularDeque(-1)).toThrow(RangeError)
   })
 
-  it('size tracks elements', () => {
+  it('default capacity is 16', () => {
     const deque = new CircularDeque<number>()
-    deque.pushBack(1)
-    deque.pushBack(2)
-    expect(deque.size).toBe(2)
+    expect(deque.capacity).toBe(16)
   })
 
-  it('pushFront adds to front', () => {
-    const deque = new CircularDeque(5)
-    deque.pushFront(1)
-    deque.pushFront(2)
-    expect(deque.size).toBe(2)
+  it('capacity 0 is clamped to 1', () => {
+    const deque = new CircularDeque<number>(0)
+    expect(deque.capacity).toBe(1)
   })
 
-  it('pushBack and popFront works as queue', () => {
-    const deque = new CircularDeque<number>(10)
-    deque.pushBack(1)
-    deque.pushBack(2)
-    expect(deque.popFront()).toBe(1)
-    expect(deque.popFront()).toBe(2)
-  })
-
-  it('size tracks elements', () => {
-    const deque = new CircularDeque<number>(5)
+  it('pushBack after popFront wraps correctly', () => {
+    const deque = new CircularDeque<number>(3)
     deque.pushBack(1)
     deque.pushBack(2)
     deque.pushBack(3)
-    expect(deque.size).toBe(3)
+    deque.popFront()
+    deque.popFront()
+    deque.pushBack(4)
+    deque.pushBack(5)
+    expect(deque.toArray()).toEqual([3, 4, 5])
   })
 
-  it('pushFront and popFront work correctly', () => {
+  it('get after pushFront reflects correct index', () => {
     const deque = new CircularDeque<number>()
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushFront(0)
+    expect(deque.get(0)).toBe(0)
+    expect(deque.get(1)).toBe(1)
+    expect(deque.get(2)).toBe(2)
+  })
+
+  it('iterator on empty deque returns nothing', () => {
+    const deque = new CircularDeque<number>()
+    const result: number[] = []
+    for (const item of deque) result.push(item)
+    expect(result).toEqual([])
+  })
+
+  it('toArray on empty deque', () => {
+    const deque = new CircularDeque<number>()
+    expect(deque.toArray()).toEqual([])
+  })
+
+  it('front and back on single element', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(42)
+    expect(deque.front()).toBe(42)
+    expect(deque.back()).toBe(42)
+  })
+
+  it('pushFront triggers grow', () => {
+    const deque = new CircularDeque<number>(2)
     deque.pushFront(1)
     deque.pushFront(2)
-    expect(deque.popFront()).toBe(2)
+    deque.pushFront(3)
+    expect(deque.capacity).toBe(4)
+    expect(deque.toArray()).toEqual([3, 2, 1])
   })
 
-  it('empty deque popFront returns undefined', () => {
-    const deque = new CircularDeque<number>(5)
+  it('alternating push and pop', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(1)
+    expect(deque.popFront()).toBe(1)
+    deque.pushBack(2)
+    expect(deque.popBack()).toBe(2)
+    expect(deque.isEmpty()).toBe(true)
+  })
+
+  it('handles string type', () => {
+    const deque = new CircularDeque<string>()
+    deque.pushBack('hello')
+    deque.pushBack('world')
+    expect(deque.front()).toBe('hello')
+    expect(deque.back()).toBe('world')
+  })
+
+  it('handles object type', () => {
+    const deque = new CircularDeque<{ v: number }>()
+    deque.pushBack({ v: 1 })
+    deque.pushBack({ v: 2 })
+    expect(deque.get(0)!.v).toBe(1)
+    expect(deque.get(1)!.v).toBe(2)
+  })
+
+  it('back-to-front drain', () => {
+    const deque = new CircularDeque<number>()
+    for (let i = 0; i < 10; i++) deque.pushBack(i)
+    for (let i = 9; i >= 0; i--) expect(deque.popBack()).toBe(i)
+    expect(deque.isEmpty()).toBe(true)
+  })
+
+  it('get after grow preserves order', () => {
+    const deque = new CircularDeque<number>(2)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    expect(deque.get(0)).toBe(1)
+    expect(deque.get(1)).toBe(2)
+    expect(deque.get(2)).toBe(3)
+  })
+
+  it('clear after grow works', () => {
+    const deque = new CircularDeque<number>(2)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    deque.clear()
+    expect(deque.size).toBe(0)
+    expect(deque.toArray()).toEqual([])
+  })
+
+  it('many pushFront grow correctly', () => {
+    const deque = new CircularDeque<number>(2)
+    for (let i = 0; i < 10; i++) deque.pushFront(i)
+    expect(deque.toArray()).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])
+  })
+
+  it('interleaved pushFront pushBack', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(2)
+    deque.pushFront(1)
+    deque.pushBack(3)
+    deque.pushFront(0)
+    expect(deque.toArray()).toEqual([0, 1, 2, 3])
+  })
+
+  it('capacity grows by doubling', () => {
+    const deque = new CircularDeque<number>(4)
+    expect(deque.capacity).toBe(4)
+    for (let i = 0; i < 5; i++) deque.pushBack(i)
+    expect(deque.capacity).toBe(8)
+  })
+
+  it('popFront on single element deque', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(42)
+    expect(deque.popFront()).toBe(42)
+    expect(deque.size).toBe(0)
     expect(deque.popFront()).toBeUndefined()
   })
 
-  it('pushBack and popFront roundtrip', () => {
-    const deque = new CircularDeque<number>(5)
-    deque.pushBack(10)
-    expect(deque.popFront()).toBe(10)
+  it('popBack on single element deque', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(42)
+    expect(deque.popBack()).toBe(42)
+    expect(deque.size).toBe(0)
+    expect(deque.popBack()).toBeUndefined()
+  })
+
+  it('pushFront after clear works', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.clear()
+    deque.pushFront(10)
+    expect(deque.front()).toBe(10)
+    expect(deque.back()).toBe(10)
+  })
+
+  it('wrapping with pushFront after popBack', () => {
+    const deque = new CircularDeque<number>(3)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    deque.popBack()
+    deque.pushFront(0)
+    expect(deque.toArray()).toEqual([0, 1, 2])
+  })
+
+  it('handles undefined values in array', () => {
+    const deque = new CircularDeque<number | undefined>()
+    deque.pushBack(undefined)
+    deque.pushBack(1)
+    expect(deque.get(0)).toBeUndefined()
+    expect(deque.get(1)).toBe(1)
+  })
+
+  it('toArray after partial drain', () => {
+    const deque = new CircularDeque<number>()
+    for (let i = 0; i < 5; i++) deque.pushBack(i)
+    deque.popFront()
+    deque.popFront()
+    expect(deque.toArray()).toEqual([2, 3, 4])
+  })
+
+  it('iterator reflects current state', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    deque.popFront()
+    const result: number[] = []
+    for (const item of deque) result.push(item)
+    expect(result).toEqual([2, 3])
+  })
+
+  it('large pushFront sequence', () => {
+    const deque = new CircularDeque<number>()
+    for (let i = 0; i < 500; i++) deque.pushFront(i)
+    expect(deque.size).toBe(500)
+    expect(deque.front()).toBe(499)
+    expect(deque.back()).toBe(0)
+  })
+
+  it('large mixed operations', () => {
+    const deque = new CircularDeque<number>()
+    for (let i = 0; i < 200; i++) deque.pushBack(i)
+    for (let i = 0; i < 100; i++) deque.popFront()
+    for (let i = 200; i < 300; i++) deque.pushBack(i)
+    expect(deque.size).toBe(200)
+    expect(deque.front()).toBe(100)
+    expect(deque.back()).toBe(299)
+  })
+
+  it('pushFront then popBack returns last element', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushFront(1)
+    deque.pushFront(2)
+    deque.pushFront(3)
+    expect(deque.popBack()).toBe(1)
+    expect(deque.toArray()).toEqual([3, 2])
   })
 })
