@@ -69,6 +69,22 @@ describe('MinMaxStack - push and peek', () => {
     stack.push(3)
     expect(stack.peek()).toBe(3)
   })
+
+  it('push single negative value', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(-5)
+    expect(stack.peek()).toBe(-5)
+    expect(stack.min()).toBe(-5)
+    expect(stack.max()).toBe(-5)
+  })
+
+  it('push single zero value', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(0)
+    expect(stack.peek()).toBe(0)
+    expect(stack.min()).toBe(0)
+    expect(stack.max()).toBe(0)
+  })
 })
 
 // ─── Pop ─────────────────────────────────────────────────
@@ -99,6 +115,23 @@ describe('MinMaxStack - pop', () => {
     stack.push(10)
     stack.pop()
     expect(stack.isEmpty()).toBe(true)
+  })
+
+  it('pop returns and removes top element', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(5)
+    stack.push(10)
+    const popped = stack.pop()
+    expect(popped).toBe(10)
+    expect(stack.peek()).toBe(5)
+  })
+
+  it('pop with negative values', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(-5)
+    stack.push(-3)
+    expect(stack.pop()).toBe(-3)
+    expect(stack.pop()).toBe(-5)
   })
 })
 
@@ -266,7 +299,6 @@ describe('MinMaxStack - custom comparator', () => {
   })
 })
 
-// ─── Mixed operations ────────────────────────────────────
 describe('MinMaxStack - mixed operations', () => {
   it('interleaved push and pop maintain correct min/max', () => {
     const stack = new MinMaxStack<number>()
@@ -293,5 +325,426 @@ describe('MinMaxStack - mixed operations', () => {
     stack.pop()
     expect(stack.min()).toBe(2)
     expect(stack.max()).toBe(5)
+  })
+
+  it('push and pop alternating sequence', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.pop()
+    stack.push(2)
+    stack.push(3)
+    stack.pop()
+    stack.push(4)
+    expect(stack.min()).toBe(2)
+    expect(stack.max()).toBe(4)
+  })
+
+  it('multiple pushes then multiple pops', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    stack.push(4)
+    stack.push(5)
+    expect(stack.min()).toBe(1)
+    expect(stack.max()).toBe(5)
+
+    stack.pop()
+    stack.pop()
+    expect(stack.min()).toBe(1)
+    expect(stack.max()).toBe(3)
+  })
+
+  it('peek returns current top after multiple operations', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    expect(stack.peek()).toBe(3)
+
+    stack.pop()
+    expect(stack.peek()).toBe(2)
+
+    stack.push(4)
+    expect(stack.peek()).toBe(4)
+  })
+})
+
+// ─── Single element ─────────────────────────────────────
+describe('MinMaxStack - single element', () => {
+  it('single element is both min and max', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(42)
+    expect(stack.min()).toBe(42)
+    expect(stack.max()).toBe(42)
+    expect(stack.peek()).toBe(42)
+    expect(stack.size).toBe(1)
+  })
+
+  it('single element negative', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(-5)
+    expect(stack.min()).toBe(-5)
+    expect(stack.max()).toBe(-5)
+  })
+
+  it('single element zero', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(0)
+    expect(stack.min()).toBe(0)
+    expect(stack.max()).toBe(0)
+  })
+
+  it('pop single element returns to empty', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(10)
+    stack.pop()
+    expect(stack.isEmpty()).toBe(true)
+    expect(stack.size).toBe(0)
+  })
+})
+
+// ─── Duplicate values ───────────────────────────────────
+describe('MinMaxStack - duplicate values', () => {
+  it('all same values', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(5)
+    stack.push(5)
+    stack.push(5)
+    expect(stack.min()).toBe(5)
+    expect(stack.max()).toBe(5)
+  })
+
+  it('duplicate min and max values', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(1)
+    stack.push(5)
+    stack.push(5)
+    expect(stack.min()).toBe(1)
+    expect(stack.max()).toBe(5)
+    stack.pop()
+    expect(stack.max()).toBe(5)
+    stack.pop()
+    expect(stack.max()).toBe(1)
+  })
+
+  it('popping all duplicates', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(3)
+    stack.push(3)
+    stack.push(3)
+    stack.pop()
+    expect(stack.min()).toBe(3)
+    stack.pop()
+    expect(stack.min()).toBe(3)
+    stack.pop()
+    expect(() => stack.min()).toThrow(RangeError)
+  })
+})
+
+// ─── Large scale ────────────────────────────────────────
+describe('MinMaxStack - large scale', () => {
+  it('handles 100+ elements', () => {
+    const stack = new MinMaxStack<number>()
+    for (let i = 1; i <= 100; i++) {
+      stack.push(i)
+    }
+    expect(stack.min()).toBe(1)
+    expect(stack.max()).toBe(100)
+    expect(stack.size).toBe(100)
+  })
+
+  it('handles large number of pops', () => {
+    const stack = new MinMaxStack<number>()
+    for (let i = 1; i <= 50; i++) {
+      stack.push(i)
+    }
+    for (let i = 50; i >= 1; i--) {
+      expect(stack.pop()).toBe(i)
+    }
+    expect(stack.isEmpty()).toBe(true)
+  })
+
+  it('min and max remain correct after many operations', () => {
+    const stack = new MinMaxStack<number>()
+    for (let i = 1; i <= 30; i++) {
+      stack.push(i)
+    }
+    expect(stack.min()).toBe(1)
+    expect(stack.max()).toBe(30)
+
+    for (let i = 0; i < 15; i++) {
+      stack.pop()
+    }
+    expect(stack.min()).toBe(1)
+    expect(stack.max()).toBe(15)
+  })
+})
+
+// ─── Negative values ────────────────────────────────────
+describe('MinMaxStack - negative values', () => {
+  it('handles negative numbers', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(-5)
+    stack.push(-2)
+    stack.push(-8)
+    expect(stack.min()).toBe(-8)
+    expect(stack.max()).toBe(-2)
+  })
+
+  it('mix of negative and positive', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(-5)
+    stack.push(3)
+    stack.push(-2)
+    stack.push(8)
+    expect(stack.min()).toBe(-5)
+    expect(stack.max()).toBe(8)
+  })
+
+  it('zero with negative values', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(-3)
+    stack.push(0)
+    stack.push(-1)
+    expect(stack.min()).toBe(-3)
+    expect(stack.max()).toBe(0)
+  })
+})
+
+// ─── toString ───────────────────────────────────────────
+describe('MinMaxStack - toString', () => {
+  it('toArray preserves order', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    const arr = stack.toArray()
+    expect(arr).toEqual([1, 2, 3])
+    expect(stack.size).toBe(3)
+    expect(stack.peek()).toBe(3)
+  })
+
+  it('toArray on empty stack', () => {
+    const stack = new MinMaxStack<number>()
+    expect(stack.toArray()).toEqual([])
+  })
+
+  it('toArray after operations', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    stack.pop()
+    stack.push(4)
+    expect(stack.toArray()).toEqual([1, 2, 4])
+  })
+})
+
+// ─── Size and isEmpty ───────────────────────────────────
+describe('MinMaxStack - size and isEmpty', () => {
+  it('size increases with each push', () => {
+    const stack = new MinMaxStack<number>()
+    expect(stack.size).toBe(0)
+    stack.push(1)
+    expect(stack.size).toBe(1)
+    stack.push(2)
+    expect(stack.size).toBe(2)
+    stack.push(3)
+    expect(stack.size).toBe(3)
+  })
+
+  it('size decreases with each pop', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    expect(stack.size).toBe(3)
+    stack.pop()
+    expect(stack.size).toBe(2)
+    stack.pop()
+    expect(stack.size).toBe(1)
+    stack.pop()
+    expect(stack.size).toBe(0)
+  })
+
+  it('isEmpty after clear', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(2)
+    stack.clear()
+    expect(stack.isEmpty()).toBe(true)
+  })
+
+  it('isEmpty changes correctly', () => {
+    const stack = new MinMaxStack<number>()
+    expect(stack.isEmpty()).toBe(true)
+    stack.push(1)
+    expect(stack.isEmpty()).toBe(false)
+    stack.pop()
+    expect(stack.isEmpty()).toBe(true)
+  })
+})
+
+// ─── Custom comparator extended ─────────────────────────
+describe('MinMaxStack - custom comparator extended', () => {
+  it('works with string comparison', () => {
+    const stack = new MinMaxStack<string>((a, b) => a.localeCompare(b))
+    stack.push('zebra')
+    stack.push('apple')
+    stack.push('banana')
+    expect(stack.min()).toBe('apple')
+    expect(stack.max()).toBe('zebra')
+  })
+
+  it('works with object property', () => {
+    interface Item {
+      value: number
+    }
+    const stack = new MinMaxStack<Item>((a, b) => a.value - b.value)
+    stack.push({ value: 5 })
+    stack.push({ value: 1 })
+    stack.push({ value: 3 })
+    expect(stack.min().value).toBe(1)
+    expect(stack.max().value).toBe(5)
+  })
+
+  it('custom comparator with duplicates', () => {
+    const stack = new MinMaxStack<string>((a, b) => a.localeCompare(b))
+    stack.push('a')
+    stack.push('a')
+    stack.push('b')
+    stack.pop()
+    expect(stack.max()).toBe('a')
+  })
+})
+
+// ─── Error messages ─────────────────────────────────────
+describe('MinMaxStack - error messages', () => {
+  it('pop error message is specific', () => {
+    const stack = new MinMaxStack<number>()
+    expect(() => stack.pop()).toThrow('Cannot pop from empty MinMaxStack')
+  })
+
+  it('peek error message is specific', () => {
+    const stack = new MinMaxStack<number>()
+    expect(() => stack.peek()).toThrow('Cannot peek empty MinMaxStack')
+  })
+
+  it('min error message is specific', () => {
+    const stack = new MinMaxStack<number>()
+    expect(() => stack.min()).toThrow('Cannot get min of empty MinMaxStack')
+  })
+
+  it('max error message is specific', () => {
+    const stack = new MinMaxStack<number>()
+    expect(() => stack.max()).toThrow('Cannot get max of empty MinMaxStack')
+  })
+})
+
+// ─── Min/max tracking precision ─────────────────────────
+describe('MinMaxStack - min/max tracking precision', () => {
+  it('min updates correctly when pushing values larger than current min', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(5)
+    expect(stack.min()).toBe(5)
+    stack.push(10)
+    expect(stack.min()).toBe(5)
+    stack.push(7)
+    expect(stack.min()).toBe(5)
+  })
+
+  it('max updates correctly when pushing values smaller than current max', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(5)
+    expect(stack.max()).toBe(5)
+    stack.push(2)
+    expect(stack.max()).toBe(5)
+    stack.push(4)
+    expect(stack.max()).toBe(5)
+  })
+
+  it('min remains same when pushing equal values', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(3)
+    expect(stack.min()).toBe(3)
+    stack.push(3)
+    expect(stack.min()).toBe(3)
+    stack.push(3)
+    expect(stack.min()).toBe(3)
+  })
+
+  it('max remains same when pushing equal values', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(7)
+    expect(stack.max()).toBe(7)
+    stack.push(7)
+    expect(stack.max()).toBe(7)
+    stack.push(7)
+    expect(stack.max()).toBe(7)
+  })
+})
+
+// ─── Clear with min/max ─────────────────────────────────
+describe('MinMaxStack - clear with min/max', () => {
+  it('clear resets min and max', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(5)
+    stack.push(3)
+    stack.clear()
+    expect(() => stack.min()).toThrow(RangeError)
+    expect(() => stack.max()).toThrow(RangeError)
+  })
+
+  it('clear allows new min and max to be established', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(5)
+    stack.clear()
+    stack.push(10)
+    expect(stack.min()).toBe(10)
+    expect(stack.max()).toBe(10)
+  })
+})
+
+// ─── Sequential operations ───────────────────────────────
+describe('MinMaxStack - sequential operations', () => {
+  it('sequential pops return correct values', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    stack.push(4)
+    stack.push(5)
+    expect(stack.pop()).toBe(5)
+    expect(stack.pop()).toBe(4)
+    expect(stack.pop()).toBe(3)
+    expect(stack.pop()).toBe(2)
+    expect(stack.pop()).toBe(1)
+  })
+
+  it('sequential pushes update min/max correctly', () => {
+    const stack = new MinMaxStack<number>()
+    stack.push(5)
+    expect(stack.min()).toBe(5)
+    expect(stack.max()).toBe(5)
+
+    stack.push(2)
+    expect(stack.min()).toBe(2)
+    expect(stack.max()).toBe(5)
+
+    stack.push(8)
+    expect(stack.min()).toBe(2)
+    expect(stack.max()).toBe(8)
+
+    stack.push(1)
+    expect(stack.min()).toBe(1)
+    expect(stack.max()).toBe(8)
+
+    stack.push(10)
+    expect(stack.min()).toBe(1)
+    expect(stack.max()).toBe(10)
   })
 })

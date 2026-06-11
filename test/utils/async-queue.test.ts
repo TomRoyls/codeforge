@@ -275,4 +275,117 @@ describe('AsyncQueue - concurrency patterns', () => {
     expect(q.size).toBe(0)
     expect(q.pending).toBe(0)
   })
+
+  it('toString returns descriptive string', () => {
+    const q = new AsyncQueue<number>()
+    expect(q.toString()).toContain('size=0')
+    q.enqueue(1)
+    expect(q.toString()).toContain('enqueued=1')
+  })
+
+  it('toJSON returns queue state', () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    const json = q.toJSON() as Record<string, unknown>
+    expect(json.enqueued).toBe(2)
+    expect(json.closed).toBe(false)
+    expect(Array.isArray(json.items)).toBe(true)
+  })
+
+  it('clone creates independent copy', () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    const c = q.clone()
+    expect(c.size).toBe(2)
+    expect(c.equals(q)).toBe(true)
+    c.enqueue(3)
+    expect(q.size).toBe(2)
+    expect(c.size).toBe(3)
+  })
+
+  it('equals returns true for same content', () => {
+    const q1 = new AsyncQueue<number>()
+    const q2 = new AsyncQueue<number>()
+    q1.enqueue(1)
+    q2.enqueue(1)
+    expect(q1.equals(q2)).toBe(true)
+  })
+
+  it('equals returns false for different content', () => {
+    const q1 = new AsyncQueue<number>()
+    const q2 = new AsyncQueue<number>()
+    q1.enqueue(1)
+    q2.enqueue(2)
+    expect(q1.equals(q2)).toBe(false)
+  })
+
+  it('equals returns false for non-AsyncQueue', () => {
+    const q = new AsyncQueue<number>()
+    expect(q.equals(null)).toBe(false)
+    expect(q.equals({})).toBe(false)
+  })
+
+  it('clone preserves closed state', () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.close()
+    const c = q.clone()
+    expect(c.closed).toBe(true)
+  })
+
+  it('clone of empty queue', () => {
+    const q = new AsyncQueue<number>()
+    const c = q.clone()
+    expect(c.size).toBe(0)
+    expect(c.closed).toBe(false)
+  })
+
+  it('dequeue many items maintains FIFO', async () => {
+    const q = new AsyncQueue<number>()
+    for (let i = 0; i < 100; i++) q.enqueue(i)
+    for (let i = 0; i < 100; i++) {
+      expect(await q.dequeue()).toBe(i)
+    }
+    expect(q.size).toBe(0)
+  })
+
+  it('peek does not remove item', () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(42)
+    expect(q.peek()).toBe(42)
+    expect(q.peek()).toBe(42)
+    expect(q.size).toBe(1)
+  })
+
+  it('peek returns undefined after all dequeued', async () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    await q.dequeue()
+    expect(q.peek()).toBeUndefined()
+  })
+
+  it('getStats after operations', async () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    await q.dequeue()
+    const stats = q.getStats()
+    expect(stats.enqueued).toBe(2)
+    expect(stats.dequeued).toBe(1)
+    expect(stats.size).toBe(1)
+  })
+
+  it('works with null values', async () => {
+    const q = new AsyncQueue<null>()
+    q.enqueue(null)
+    expect(await q.dequeue()).toBe(null)
+  })
+
+  it('works with undefined values', async () => {
+    const q = new AsyncQueue<number | undefined>()
+    q.enqueue(undefined)
+    expect(await q.dequeue()).toBe(undefined)
+  })
 })

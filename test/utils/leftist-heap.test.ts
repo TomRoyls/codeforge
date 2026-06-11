@@ -30,7 +30,6 @@ describe('LeftistHeap - empty heap', () => {
   })
 })
 
-// ─── Single element ──────────────────────────────────────
 describe('LeftistHeap - single element', () => {
   it('insert and peek', () => {
     const heap = new LeftistHeap<number>()
@@ -46,6 +45,20 @@ describe('LeftistHeap - single element', () => {
     expect(heap.extractMin()).toBe(42)
     expect(heap.size).toBe(0)
     expect(heap.isEmpty()).toBe(true)
+  })
+
+  it('insert with negative value', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(-5)
+    expect(heap.peek()).toBe(-5)
+    expect(heap.extractMin()).toBe(-5)
+  })
+
+  it('insert with zero', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(0)
+    expect(heap.peek()).toBe(0)
+    expect(heap.size).toBe(1)
   })
 })
 
@@ -357,5 +370,411 @@ describe('LeftistHeap - fromArray', () => {
     const heap = LeftistHeap.fromArray<number>([])
     expect(heap.size).toBe(0)
     expect(heap.isEmpty()).toBe(true)
+  })
+
+  it('fromArray with duplicates', () => {
+    const heap = LeftistHeap.fromArray([5, 3, 5, 1, 3, 2, 1])
+    expect(heap.size).toBe(7)
+    expect(heap.toArray()).toEqual([1, 1, 2, 3, 3, 5, 5])
+  })
+
+  it('fromArray with single element', () => {
+    const heap = LeftistHeap.fromArray([42])
+    expect(heap.size).toBe(1)
+    expect(heap.peek()).toBe(42)
+  })
+
+  it('fromArray with already sorted array', () => {
+    const heap = LeftistHeap.fromArray([1, 2, 3, 4, 5])
+    expect(heap.size).toBe(5)
+    expect(heap.toArray()).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('fromArray with reverse sorted array', () => {
+    const heap = LeftistHeap.fromArray([5, 4, 3, 2, 1])
+    expect(heap.size).toBe(5)
+    expect(heap.toArray()).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('fromArray with custom comparator', () => {
+    const heap = LeftistHeap.fromArray([5, 1, 3, 2, 4], { comparator: (a, b) => b - a })
+    expect(heap.size).toBe(5)
+    expect(heap.peek()).toBe(5)
+    expect(heap.toArray()).toEqual([5, 4, 3, 2, 1])
+  })
+})
+
+// ─── toString ─────────────────────────────────────────────
+describe('LeftistHeap - toString', () => {
+  it('returns string representation', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(3)
+    heap.insert(1)
+    heap.insert(2)
+    expect(heap.toString()).toBe('[1,3,2]')
+  })
+
+  it('toString on empty heap returns empty array', () => {
+    const heap = new LeftistHeap<number>()
+    expect(heap.toString()).toBe('[]')
+  })
+
+  it('toString on single element', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(42)
+    expect(heap.toString()).toBe('[42]')
+  })
+})
+
+// ─── toJSON ───────────────────────────────────────────────
+describe('LeftistHeap - toJSON', () => {
+  it('returns array representation', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(3)
+    heap.insert(1)
+    heap.insert(2)
+    expect(heap.toJSON()).toEqual([1, 3, 2])
+  })
+
+  it('toJSON on empty heap returns empty array', () => {
+    const heap = new LeftistHeap<number>()
+    expect(heap.toJSON()).toEqual([])
+  })
+
+  it('toJSON preserves order of insertion', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(5)
+    heap.insert(3)
+    heap.insert(7)
+    expect(heap.toJSON()).toEqual([3, 5, 7])
+  })
+})
+
+// ─── clone ───────────────────────────────────────────────
+describe('LeftistHeap - clone', () => {
+  it('creates independent copy', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(1)
+    heap.insert(2)
+    heap.insert(3)
+    const clone = heap.clone()
+
+    expect(clone.size).toBe(3)
+    expect(clone.peek()).toBe(1)
+    clone.insert(4)
+    expect(clone.size).toBe(4)
+    expect(heap.size).toBe(3)
+  })
+
+  it('clone of empty heap', () => {
+    const heap = new LeftistHeap<number>()
+    const clone = heap.clone()
+    expect(clone.isEmpty()).toBe(true)
+    expect(clone.size).toBe(0)
+  })
+
+  it('clone after extract operations', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(1)
+    heap.insert(2)
+    heap.insert(3)
+    heap.extractMin()
+    const clone = heap.clone()
+    expect(clone.size).toBe(2)
+    expect(clone.peek()).toBe(2)
+  })
+
+  it('clone with custom comparator', () => {
+    const heap = new LeftistHeap<number>({ comparator: (a, b) => b - a })
+    heap.insert(1)
+    heap.insert(2)
+    heap.insert(3)
+    const clone = heap.clone()
+    expect(clone.peek()).toBe(3)
+    expect(clone.extractMin()).toBe(3)
+  })
+})
+
+// ─── equals ──────────────────────────────────────────────
+describe('LeftistHeap - equals', () => {
+  it('equals with identical heaps', () => {
+    const heap1 = new LeftistHeap<number>()
+    heap1.insert(1)
+    heap1.insert(2)
+    heap1.insert(3)
+
+    const heap2 = new LeftistHeap<number>()
+    heap2.insert(1)
+    heap2.insert(2)
+    heap2.insert(3)
+
+    expect(heap1.equals(heap2)).toBe(true)
+  })
+
+  it('equals with different sizes', () => {
+    const heap1 = new LeftistHeap<number>()
+    heap1.insert(1)
+    heap1.insert(2)
+
+    const heap2 = new LeftistHeap<number>()
+    heap2.insert(1)
+    heap2.insert(2)
+    heap2.insert(3)
+
+    expect(heap1.equals(heap2)).toBe(false)
+  })
+
+  it('equals with different values', () => {
+    const heap1 = new LeftistHeap<number>()
+    heap1.insert(1)
+    heap1.insert(2)
+
+    const heap2 = new LeftistHeap<number>()
+    heap2.insert(1)
+    heap2.insert(3)
+
+    expect(heap1.equals(heap2)).toBe(false)
+  })
+
+  it('equals with empty heaps', () => {
+    const heap1 = new LeftistHeap<number>()
+    const heap2 = new LeftistHeap<number>()
+    expect(heap1.equals(heap2)).toBe(true)
+  })
+
+  it('equals with non-LeftistHeap returns false', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(1)
+    expect(heap.equals(null)).toBe(false)
+    expect(heap.equals({})).toBe(false)
+    expect(heap.equals([1])).toBe(false)
+  })
+
+  it('equals after extract operations', () => {
+    const heap1 = new LeftistHeap<number>()
+    heap1.insert(1)
+    heap1.insert(2)
+    heap1.insert(3)
+    heap1.extractMin()
+
+    const heap2 = new LeftistHeap<number>()
+    heap2.insert(2)
+    heap2.insert(3)
+
+    expect(heap1.equals(heap2)).toBe(true)
+  })
+})
+
+// ─── Special values ───────────────────────────────────────
+describe('LeftistHeap - special values', () => {
+  it('handles negative numbers', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(-5)
+    heap.insert(3)
+    heap.insert(-1)
+    heap.insert(0)
+    expect(heap.peek()).toBe(-5)
+    expect(heap.toArray()).toEqual([-5, -1, 0, 3])
+  })
+
+  it('handles zero values', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(0)
+    heap.insert(0)
+    heap.insert(1)
+    heap.insert(-1)
+    heap.insert(0)
+    expect(heap.extractMin()).toBe(-1)
+    expect(heap.extractMin()).toBe(0)
+    expect(heap.extractMin()).toBe(0)
+    expect(heap.extractMin()).toBe(0)
+  })
+
+  it('handles large numbers', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(Number.MAX_SAFE_INTEGER)
+    heap.insert(1)
+    heap.insert(Number.MIN_SAFE_INTEGER)
+    expect(heap.peek()).toBe(Number.MIN_SAFE_INTEGER)
+    expect(heap.extractMin()).toBe(Number.MIN_SAFE_INTEGER)
+    expect(heap.extractMin()).toBe(1)
+    expect(heap.extractMin()).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles floating point numbers', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(3.14)
+    heap.insert(1.41)
+    heap.insert(2.72)
+    heap.insert(1.73)
+    expect(heap.peek()).toBe(1.41)
+    expect(heap.toArray()).toEqual([1.41, 1.73, 2.72, 3.14])
+  })
+})
+
+// ─── Edge cases ───────────────────────────────────────────
+describe('LeftistHeap - edge cases', () => {
+  it('peek after extract', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(5)
+    heap.insert(3)
+    heap.insert(7)
+    heap.extractMin()
+    expect(heap.peek()).toBe(5)
+  })
+
+  it('multiple extracts until empty', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(1)
+    heap.insert(2)
+    heap.insert(3)
+    expect(heap.extractMin()).toBe(1)
+    expect(heap.extractMin()).toBe(2)
+    expect(heap.extractMin()).toBe(3)
+    expect(heap.extractMin()).toBeUndefined()
+    expect(heap.extractMin()).toBeUndefined()
+  })
+
+  it('insert after extract', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(5)
+    heap.insert(3)
+    heap.extractMin()
+    heap.insert(1)
+    expect(heap.peek()).toBe(1)
+    expect(heap.size).toBe(2)
+  })
+
+  it('merge heaps with same values', () => {
+    const heap1 = new LeftistHeap<number>()
+    heap1.insert(1)
+    heap1.insert(2)
+    heap1.insert(3)
+
+    const heap2 = new LeftistHeap<number>()
+    heap2.insert(1)
+    heap2.insert(2)
+    heap2.insert(3)
+
+    heap1.merge(heap2)
+    expect(heap1.size).toBe(6)
+    expect(heap1.toArray()).toEqual([1, 1, 2, 2, 3, 3])
+  })
+
+  it('merge after multiple operations', () => {
+    const heap1 = new LeftistHeap<number>()
+    heap1.insert(10)
+    heap1.insert(5)
+    heap1.extractMin()
+
+    const heap2 = new LeftistHeap<number>()
+    heap2.insert(3)
+    heap2.insert(7)
+    heap2.insert(1)
+    heap2.extractMin()
+
+    heap1.merge(heap2)
+    expect(heap1.size).toBe(3)
+    expect(heap1.toArray()).toEqual([3, 7, 10])
+  })
+
+  it('clear after operations', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(1)
+    heap.insert(2)
+    heap.extractMin()
+    heap.insert(3)
+    heap.clear()
+    expect(heap.isEmpty()).toBe(true)
+    expect(heap.size).toBe(0)
+    expect(heap.peek()).toBeUndefined()
+  })
+
+  it('size after clear and insert', () => {
+    const heap = new LeftistHeap<number>()
+    heap.insert(1)
+    heap.insert(2)
+    heap.clear()
+    heap.insert(5)
+    expect(heap.size).toBe(1)
+  })
+})
+
+// ─── String comparison ────────────────────────────────────
+describe('LeftistHeap - string comparison', () => {
+  it('works with string comparator', () => {
+    const heap = new LeftistHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap.insert('zebra')
+    heap.insert('apple')
+    heap.insert('banana')
+    heap.insert('cherry')
+    expect(heap.peek()).toBe('apple')
+    expect(heap.extractMin()).toBe('apple')
+    expect(heap.extractMin()).toBe('banana')
+  })
+
+  it('handles empty strings', () => {
+    const heap = new LeftistHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap.insert('')
+    heap.insert('a')
+    heap.insert('b')
+    expect(heap.peek()).toBe('')
+  })
+
+  it('handles special characters', () => {
+    const heap = new LeftistHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap.insert('@')
+    heap.insert('!')
+    heap.insert('#')
+    heap.insert('$')
+    expect(heap.extractMin()).toBe('!')
+    expect(heap.extractMin()).toBe('@')
+    expect(heap.extractMin()).toBe('#')
+    expect(heap.extractMin()).toBe('$')
+  })
+
+  it('merge heaps with string comparator', () => {
+    const heap1 = new LeftistHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap1.insert('cherry')
+    heap1.insert('apple')
+
+    const heap2 = new LeftistHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap2.insert('banana')
+    heap2.insert('date')
+
+    heap1.merge(heap2)
+    expect(heap1.toArray()).toEqual(['apple', 'banana', 'cherry', 'date'])
+  })
+})
+
+// ─── Object with complex comparator ───────────────────────
+describe('LeftistHeap - complex object comparison', () => {
+  interface Task {
+    priority: number
+    id: number
+    name: string
+  }
+
+  it('compares objects by multiple fields', () => {
+    const heap = new LeftistHeap<Task>({
+      comparator: (a, b) => {
+        if (a.priority !== b.priority) {
+          return a.priority - b.priority
+        }
+        return a.id - b.id
+      },
+    })
+    heap.insert({ priority: 2, id: 3, name: 'task3' })
+    heap.insert({ priority: 1, id: 1, name: 'task1' })
+    heap.insert({ priority: 2, id: 1, name: 'task1-alt' })
+    heap.insert({ priority: 1, id: 2, name: 'task2' })
+
+    const first = heap.extractMin()
+    expect(first?.priority).toBe(1)
+    expect(first?.id).toBe(1)
+
+    const second = heap.extractMin()
+    expect(second?.priority).toBe(1)
+    expect(second?.id).toBe(2)
   })
 })
