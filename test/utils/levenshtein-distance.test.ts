@@ -106,4 +106,128 @@ describe('LevenshteinDistance', () => {
   it('distance for insertions', () => {
     expect(LevenshteinDistance.distance('', 'abc')).toBe(3)
   })
+
+  it('distanceOptimized for single char', () => {
+    expect(LevenshteinDistance.distanceOptimized('a', 'b')).toBe(1)
+  })
+
+  it('distanceOptimized for empty to non-empty', () => {
+    expect(LevenshteinDistance.distanceOptimized('', 'test')).toBe(4)
+  })
+
+  it('distanceOptimized for non-empty to empty', () => {
+    expect(LevenshteinDistance.distanceOptimized('test', '')).toBe(4)
+  })
+
+  it('distanceOptimized for different lengths', () => {
+    expect(LevenshteinDistance.distanceOptimized('a', 'abcde')).toBe(4)
+  })
+
+  it('distanceOptimized handles special characters', () => {
+    expect(LevenshteinDistance.distanceOptimized('hello!', 'hello?')).toBe(1)
+  })
+
+  it('distanceOptimized handles numbers', () => {
+    expect(LevenshteinDistance.distanceOptimized('123', '456')).toBe(3)
+  })
+
+  it('distanceOptimized with unicode characters', () => {
+    expect(LevenshteinDistance.distanceOptimized('café', 'cafe')).toBe(1)
+  })
+
+  it('distanceOptimized swaps strings efficiently', () => {
+    const a = 'a'
+    const b = 'abcdefghijklmnopqrstuvwxyz'
+    expect(LevenshteinDistance.distanceOptimized(a, b)).toBe(25)
+  })
+
+  it('similarity with partial match', () => {
+    expect(LevenshteinDistance.similarity('hello', 'hell')).toBe(0.8)
+  })
+
+  it('similarity with different lengths', () => {
+    expect(LevenshteinDistance.similarity('hi', 'hello')).toBeCloseTo(0.2, 5)
+  })
+
+  it('similarity returns 0 for completely different', () => {
+    expect(LevenshteinDistance.similarity('abc', 'xyz')).toBe(0)
+  })
+
+  it('similarity is symmetric', () => {
+    expect(LevenshteinDistance.similarity('abc', 'def')).toBe(LevenshteinDistance.similarity('def', 'abc'))
+  })
+
+  it('normalizedDistance for identical is 0', () => {
+    expect(LevenshteinDistance.normalizedDistance('test', 'test')).toBe(0)
+  })
+
+  it('normalizedDistance for completely different is 1', () => {
+    expect(LevenshteinDistance.normalizedDistance('abc', 'xyz')).toBe(1)
+  })
+
+  it('normalizedDistance for partial match', () => {
+    expect(LevenshteinDistance.normalizedDistance('hello', 'hell')).toBe(0.2)
+  })
+
+  it('normalizedDistance is symmetric', () => {
+    expect(LevenshteinDistance.normalizedDistance('abc', 'def')).toBe(LevenshteinDistance.normalizedDistance('def', 'abc'))
+  })
+
+  it('normalizedDistance for empty to non-empty', () => {
+    expect(LevenshteinDistance.normalizedDistance('', 'abc')).toBe(1)
+  })
+
+  it('findClosest handles ties correctly', () => {
+    const result = LevenshteinDistance.findClosest('hello', ['hella', 'hellb', 'world'])
+    expect(['hella', 'hellb']).toContain(result)
+  })
+
+  it('findClosest with multiple candidates', () => {
+    expect(LevenshteinDistance.findClosest('kitten', ['mitten', 'kitchen', 'sitting'])).toBe('mitten')
+  })
+
+  it('findClosest with exact match', () => {
+    expect(LevenshteinDistance.findClosest('test', ['testing', 'test', 'tests'])).toBe('test')
+  })
+
+  it('findClosest handles unicode', () => {
+    expect(LevenshteinDistance.findClosest('café', ['cafe', 'caffe', 'caf'])).toBe('cafe')
+  })
+
+  it('editOperations for insertion', () => {
+    const ops = LevenshteinDistance.editOperations('cat', 'cats')
+    expect(ops.some(o => o.type === 'insert')).toBe(true)
+  })
+
+  it('editOperations for deletion', () => {
+    const ops = LevenshteinDistance.editOperations('cats', 'cat')
+    expect(ops.some(o => o.type === 'delete')).toBe(true)
+  })
+
+  it('editOperations returns reverse chronological order', () => {
+    const ops = LevenshteinDistance.editOperations('cat', 'bat')
+    expect(ops.length).toBeGreaterThan(0)
+  })
+
+  it('editOperations for complex transformation', () => {
+    const ops = LevenshteinDistance.editOperations('kitten', 'sitting')
+    expect(ops.length).toBeGreaterThan(0)
+    expect(ops.some(o => o.type === 'replace')).toBe(true)
+  })
+
+  it('editOperations for empty strings', () => {
+    const ops = LevenshteinDistance.editOperations('', '')
+    expect(ops.length).toBe(0)
+  })
+
+  it('editOperations for one empty string', () => {
+    const ops = LevenshteinDistance.editOperations('abc', '')
+    expect(ops.length).toBe(3)
+  })
+
+  it('editOperations handles multiple operations', () => {
+    const ops = LevenshteinDistance.editOperations('intention', 'execution')
+    expect(ops.length).toBeGreaterThan(0)
+    expect(ops.some(o => o.type === 'replace')).toBe(true)
+  })
 })

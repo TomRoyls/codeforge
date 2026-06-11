@@ -93,7 +93,7 @@ describe('CartesianProduct', () => {
     expect(CartesianProduct.generate([1], [2], [3])).toEqual([[1, 2, 3]])
   })
 
-  it('generate with empty array returns empty', () => {
+  it('generate with empty array at start returns empty', () => {
     expect(CartesianProduct.generate([], [1])).toEqual([])
   })
 
@@ -102,7 +102,7 @@ describe('CartesianProduct', () => {
     expect(result.length).toBe(2)
   })
 
-  it('generate with empty array returns empty', () => {
+  it('generate with empty array second position returns empty', () => {
     const result = CartesianProduct.generate([], ['a'])
     expect(result).toEqual([])
   })
@@ -112,15 +112,165 @@ describe('CartesianProduct', () => {
     expect(result).toEqual([[1, 'a']])
   })
 
-  it('generate with empty array returns empty', () => {
+  it('generate with single empty array', () => {
     const result = CartesianProduct.generate([])
     expect(result).toEqual([])
   })
 
-  // Skipped: irreconcilable - generate([[1,2,3]]) returns [[1,2,3]] not [[1]]
-  it.skip('generate single array returns elements', () => {
-    const result = CartesianProduct.generate([[1, 2, 3]])
+  it('generate with strings', () => {
+    const result = CartesianProduct.generate(['a', 'b'], ['x', 'y'])
+    expect(result).toEqual([['a', 'x'], ['a', 'y'], ['b', 'x'], ['b', 'y']])
+  })
+
+  it('generate with mixed types', () => {
+    const result = CartesianProduct.generate([1, 2], ['a', 'b'], [true, false])
+    expect(result.length).toBe(8)
+  })
+
+  it('generate preserves element types', () => {
+    const result = CartesianProduct.generate([1, 2], ['a'])
+    expect(result[0]![0]).toBe(1)
+    expect(result[0]![1]).toBe('a')
+  })
+
+  it('generate with four sets', () => {
+    const result = CartesianProduct.generate([1], [2], [3], [4])
+    expect(result).toEqual([[1, 2, 3, 4]])
+  })
+
+  it('generate with five sets', () => {
+    const result = CartesianProduct.generate([1], [2], [3], [4], [5])
     expect(result.length).toBe(1)
-    expect(result[0]).toEqual([1])
+  })
+
+  it('generate produces correct number of combinations', () => {
+    const result = CartesianProduct.generate([1, 2], [3, 4], [5, 6])
+    expect(result.length).toBe(8)
+  })
+
+  it('generate with undefined and null', () => {
+    const result = CartesianProduct.generate([1, undefined], [null, 2])
+    expect(result.length).toBe(4)
+  })
+
+  it('generate with zero', () => {
+    const result = CartesianProduct.generate([0], [1, 2])
+    expect(result.length).toBe(2)
+  })
+
+  it('generate with negative numbers', () => {
+    const result = CartesianProduct.generate([-1, -2], [1, 2])
+    expect(result.length).toBe(4)
+  })
+
+  it('generate with floating point numbers', () => {
+    const result = CartesianProduct.generate([1.5, 2.5], [0.1, 0.2])
+    expect(result.length).toBe(4)
+  })
+
+  it('generate produces unique combinations', () => {
+    const result = CartesianProduct.generate([1, 2], [3, 4])
+    const unique = new Set(result.map(JSON.stringify))
+    expect(unique.size).toBe(result.length)
+  })
+
+  it('lazy with no sets yields empty array', () => {
+    const result = [...CartesianProduct.lazy()]
+    expect(result).toEqual([[]])
+  })
+
+  it('lazy with single set yields elements', () => {
+    const result = [...CartesianProduct.lazy([1, 2, 3])]
+    expect(result).toEqual([[1], [2], [3]])
+  })
+
+  it('lazy with multiple sets yields combinations', () => {
+    const result = [...CartesianProduct.lazy([1, 2], ['a', 'b'])]
+    expect(result.length).toBe(4)
+  })
+
+  it('lazy preserves order', () => {
+    const result = [...CartesianProduct.lazy([1, 2], ['a', 'b'])]
+    expect(result[0]).toEqual([1, 'a'])
+    expect(result[3]).toEqual([2, 'b'])
+  })
+
+  it('lazy with four sets', () => {
+    const result = [...CartesianProduct.lazy([1], [2], [3], [4])]
+    expect(result.length).toBe(1)
+  })
+
+  it('lazy produces same as generate', () => {
+    const sets = [[1, 2], [3, 4], [5, 6]]
+    const eager = CartesianProduct.generate(...sets)
+    const lazy = [...CartesianProduct.lazy(...sets)]
+    expect(lazy).toEqual(eager)
+  })
+
+  it('lazy with empty set yields nothing', () => {
+    const result = [...CartesianProduct.lazy([1, 2], [])]
+    expect(result).toEqual([])
+  })
+
+  it('lazy can be consumed partially', () => {
+    const gen = CartesianProduct.lazy([1, 2, 3])
+    const first = gen.next().value
+    expect(first).toEqual([1])
+  })
+
+  it('count with zero returns zero', () => {
+    expect(CartesianProduct.count(0, 5, 3)).toBe(0)
+  })
+
+  it('count with single length', () => {
+    expect(CartesianProduct.count(5)).toBe(5)
+  })
+
+  it('count with multiple lengths', () => {
+    expect(CartesianProduct.count(2, 3, 4, 5)).toBe(120)
+  })
+
+  it('count with large numbers', () => {
+    expect(CartesianProduct.count(100, 50, 2)).toBe(10000)
+  })
+
+  it('count returns number', () => {
+    const result = CartesianProduct.count(3, 4)
+    expect(typeof result).toBe('number')
+  })
+
+  it('withRepeat with k=1 returns single elements', () => {
+    const result = CartesianProduct.withRepeat([1, 2, 3], 1)
+    expect(result).toEqual([[1], [2], [3]])
+  })
+
+  it('withRepeat with k=4', () => {
+    const result = CartesianProduct.withRepeat([0, 1], 4)
+    expect(result.length).toBe(16)
+  })
+
+  it('withRepeat with empty set', () => {
+    const result = CartesianProduct.withRepeat([], 3)
+    expect(result).toEqual([])
+  })
+
+  it('withRepeat produces correct count', () => {
+    const result = CartesianProduct.withRepeat([1, 2, 3], 2)
+    expect(result.length).toBe(9)
+  })
+
+  it('withRepeat with strings', () => {
+    const result = CartesianProduct.withRepeat(['a', 'b'], 2)
+    expect(result.length).toBe(4)
+  })
+
+  it('withRepeat with negative k returns empty tuple', () => {
+    const result = CartesianProduct.withRepeat([1, 2], -1)
+    expect(result).toEqual([[]])
+  })
+
+  it('withRepeat with k=0 and empty set returns empty tuple', () => {
+    const result = CartesianProduct.withRepeat([], 0)
+    expect(result).toEqual([[]])
   })
 })

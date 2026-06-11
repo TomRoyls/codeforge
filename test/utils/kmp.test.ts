@@ -107,4 +107,112 @@ describe('KMP', () => {
   it('finds no match returns empty', () => {
     expect(KMP.search('abcdef', 'xyz')).toEqual([])
   })
+
+  it('buildTable handles empty pattern', () => {
+    expect(KMP.buildTable('')).toEqual([])
+  })
+
+  it('buildTable handles pattern with all same character', () => {
+    expect(KMP.buildTable('AAAA')).toEqual([0, 1, 2, 3])
+  })
+
+  it('buildTable handles alternating pattern', () => {
+    expect(KMP.buildTable('ABAB')).toEqual([0, 0, 1, 2])
+  })
+
+  it('buildTable handles pattern with repeated prefix', () => {
+    expect(KMP.buildTable('ABABAB')).toEqual([0, 0, 1, 2, 3, 4])
+  })
+
+  it('search handles empty text', () => {
+    expect(KMP.search('', 'abc')).toEqual([])
+  })
+
+  it('search handles both empty', () => {
+    expect(KMP.search('', '')).toEqual([])
+  })
+
+  it('search handles special characters', () => {
+    expect(KMP.search('a!@#$', '@')).toEqual([2])
+  })
+
+  it('search handles numbers in string', () => {
+    expect(KMP.search('abc123abc', '123')).toEqual([3])
+  })
+
+  it('search handles whitespace', () => {
+    expect(KMP.search('a b c', 'b')).toEqual([2])
+  })
+
+  it('search handles unicode characters', () => {
+    expect(KMP.search('café', 'é')).toEqual([3])
+  })
+
+  it('contains handles empty text', () => {
+    expect(KMP.contains('', 'abc')).toBe(false)
+  })
+
+  it('contains handles empty pattern', () => {
+    expect(KMP.contains('abc', '')).toBe(false)
+  })
+
+  it('contains returns true for exact match', () => {
+    expect(KMP.contains('abc', 'abc')).toBe(true)
+  })
+
+  it('contains handles special characters', () => {
+    expect(KMP.contains('hello@world', '@')).toBe(true)
+  })
+
+  it('countOccurrences handles empty text', () => {
+    expect(KMP.countOccurrences('', 'abc')).toBe(0)
+  })
+
+  it('countOccurrences handles empty pattern', () => {
+    expect(KMP.countOccurrences('abc', '')).toBe(0)
+  })
+
+  it('countOccurrences handles single character pattern', () => {
+    expect(KMP.countOccurrences('aaa', 'a')).toBe(3)
+  })
+
+  it('countOccurrences counts overlapping correctly', () => {
+    expect(KMP.countOccurrences('AAAAA', 'AAA')).toBe(3)
+  })
+
+  it('countOccurrences with pattern at start and end', () => {
+    expect(KMP.countOccurrences('ABCABCABC', 'ABC')).toBe(3)
+  })
+
+  it('findAllOverlapping handles empty text', () => {
+    expect(KMP.findAllOverlapping('', 'abc')).toEqual([])
+  })
+
+  it('findAllOverlapping handles empty pattern', () => {
+    expect(KMP.findAllOverlapping('abc', '')).toEqual([])
+  })
+
+  it('findAllOverlapping returns single match', () => {
+    expect(KMP.findAllOverlapping('abc', 'abc')).toEqual(['abc'])
+  })
+
+  it('findAllOverlapping with special characters', () => {
+    expect(KMP.findAllOverlapping('a@b@c', '@')).toEqual(['@', '@'])
+  })
+
+  it('findAllOverlapping handles pattern with numbers', () => {
+    expect(KMP.findAllOverlapping('123123', '123')).toEqual(['123', '123'])
+  })
+
+  it('search handles case sensitivity', () => {
+    expect(KMP.search('ABCabc', 'abc')).toEqual([3])
+  })
+
+  it('search finds all overlapping occurrences', () => {
+    expect(KMP.search('AAAA', 'AA')).toEqual([0, 1, 2])
+  })
+
+  it('search handles long pattern at end', () => {
+    expect(KMP.search('shortlong', 'long')).toEqual([5])
+  })
 })

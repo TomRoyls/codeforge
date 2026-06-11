@@ -184,4 +184,172 @@ describe('LineGraph', () => {
     const adj = lg.build()
     expect(adj.length).toBeGreaterThan(0)
   })
+
+  it('toString returns correct string representation', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    expect(lg.toString()).toBe('LineGraph(1 edges)')
+  })
+
+  it('toJSON returns correct JSON for empty graph', () => {
+    const lg = new LineGraph(3)
+    const json = lg.toJSON()
+    expect(json).toEqual([])
+  })
+
+  it('toJSON returns correct JSON with edges', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    const json = lg.toJSON()
+    expect(json).toEqual([[0, 1], [1, 2]])
+  })
+
+  it('clone creates independent copy of empty graph', () => {
+    const lg = new LineGraph(3)
+    const clone = lg.clone()
+    expect(clone.edgeCount()).toBe(0)
+    lg.addEdge(0, 1)
+    expect(clone.edgeCount()).toBe(0)
+  })
+
+  it('clone creates independent copy with edges', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    const clone = lg.clone()
+    expect(clone.edgeCount()).toBe(2)
+    lg.addEdge(2, 3)
+    expect(clone.edgeCount()).toBe(2)
+  })
+
+  it('equals returns true for identical graphs', () => {
+    const lg1 = new LineGraph(3)
+    const lg2 = new LineGraph(3)
+    expect(lg1.equals(lg2)).toBe(true)
+  })
+
+  it('equals returns false for graphs with different edge count', () => {
+    const lg1 = new LineGraph(3)
+    const lg2 = new LineGraph(3)
+    lg1.addEdge(0, 1)
+    lg2.addEdge(0, 1)
+    lg2.addEdge(1, 2)
+    expect(lg1.equals(lg2)).toBe(false)
+  })
+
+  it('equals returns false for graphs with different edges', () => {
+    const lg1 = new LineGraph(3)
+    const lg2 = new LineGraph(3)
+    lg1.addEdge(0, 1)
+    lg2.addEdge(1, 2)
+    expect(lg1.equals(lg2)).toBe(false)
+  })
+
+  it('equals returns false for non-LineGraph objects', () => {
+    const lg = new LineGraph(3)
+    expect(lg.equals(null)).toBe(false)
+    expect(lg.equals({})).toBe(false)
+    expect(lg.equals([0, 1])).toBe(false)
+  })
+
+  it('addEdge returns correct index', () => {
+    const lg = new LineGraph(3)
+    const idx1 = lg.addEdge(0, 1)
+    const idx2 = lg.addEdge(1, 2)
+    expect(idx1).toBe(0)
+    expect(idx2).toBe(1)
+  })
+
+  it('addEdge increments edge count', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    expect(lg.edgeCount()).toBe(1)
+    lg.addEdge(1, 2)
+    expect(lg.edgeCount()).toBe(2)
+  })
+
+  it('isCompleteLineGraph returns false for incomplete graph', () => {
+    const lg = new LineGraph(4)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.addEdge(2, 3)
+    expect(lg.isCompleteLineGraph()).toBe(false)
+  })
+
+  it('isCompleteLineGraph returns false for path graph', () => {
+    const lg = new LineGraph(4)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.addEdge(2, 3)
+    expect(lg.isCompleteLineGraph()).toBe(false)
+  })
+
+  it('build creates correct adjacency list', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.addEdge(0, 2)
+    const adj = lg.build()
+    expect(adj.length).toBe(3)
+    expect(adj[0]!.length).toBe(2)
+    expect(adj[1]!.length).toBe(2)
+    expect(adj[2]!.length).toBe(2)
+  })
+
+  it('build returns empty array for no edges', () => {
+    const lg = new LineGraph(3)
+    const adj = lg.build()
+    expect(Array.isArray(adj)).toBe(true)
+    expect(adj.length).toBe(0)
+  })
+
+  it('maxDegree returns 0 for empty graph', () => {
+    const lg = new LineGraph(3)
+    expect(lg.maxDegree()).toBe(0)
+  })
+
+  it('maxDegree returns 1 for single edge', () => {
+    const lg = new LineGraph(2)
+    lg.addEdge(0, 1)
+    expect(lg.maxDegree()).toBe(0)
+  })
+
+  it('handles large number of edges', () => {
+    const lg = new LineGraph(10)
+    for (let i = 0; i < 10; i++) {
+      for (let j = i + 1; j < 10; j++) {
+        lg.addEdge(i, j)
+      }
+    }
+    expect(lg.edgeCount()).toBe(45)
+  })
+
+  it('handles multiple edges sharing same vertex', () => {
+    const lg = new LineGraph(5)
+    lg.addEdge(0, 1)
+    lg.addEdge(0, 2)
+    lg.addEdge(0, 3)
+    lg.addEdge(0, 4)
+    const adj = lg.build()
+    const maxDeg = lg.maxDegree()
+    expect(maxDeg).toBe(3)
+  })
+
+  it('cycle graph has correct line graph', () => {
+    const lg = new LineGraph(4)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.addEdge(2, 3)
+    lg.addEdge(3, 0)
+    expect(lg.maxDegree()).toBe(2)
+  })
+
+  it('equals returns true for cloned graph', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    const clone = lg.clone()
+    expect(lg.equals(clone)).toBe(true)
+  })
 })

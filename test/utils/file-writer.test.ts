@@ -195,4 +195,65 @@ describe('writeToFileAtomic', () => {
     expect(fs.readFileSync(fp, 'utf8')).toBe(' world')
     fs.rmSync(dir, { recursive: true })
   })
+
+  it('writeToFileAtomic cleans up temp file', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'cleanup.txt')
+    writeToFileAtomic(fp, 'content')
+    const files = fs.readdirSync(dir).filter(f => f.endsWith('.tmp'))
+    expect(files.length).toBe(0)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writeToFile handles binary-like content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'binary.txt')
+    const content = Buffer.from([0, 1, 2, 255]).toString('utf8')
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writeToFileAtomic handles special characters in path', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'file with spaces.txt')
+    writeToFileAtomic(fp, 'spaced path')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('spaced path')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writeToFile creates deep nested path', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'a', 'b', 'c', 'd', 'deep.txt')
+    writeToFile(fp, 'very deep')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('very deep')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writeToFileAtomic overwrites correctly', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'overwrite.txt')
+    writeToFileAtomic(fp, 'longer initial content')
+    writeToFileAtomic(fp, 'short')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('short')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writeToFile handles JSON content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'data.json')
+    const content = JSON.stringify({ key: 'value', arr: [1, 2, 3] }, null, 2)
+    writeToFile(fp, content)
+    expect(JSON.parse(fs.readFileSync(fp, 'utf8'))).toEqual({ key: 'value', arr: [1, 2, 3] })
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writeToFileAtomic handles JSON content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'data.json')
+    const content = JSON.stringify({ a: 1 })
+    writeToFileAtomic(fp, content)
+    expect(JSON.parse(fs.readFileSync(fp, 'utf8'))).toEqual({ a: 1 })
+    fs.rmSync(dir, { recursive: true })
+  })
 })

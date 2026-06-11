@@ -175,4 +175,164 @@ describe('EulerTour', () => {
     const et = new EulerTour(adj, 0)
     expect(et.isAncestor(1, 0)).toBe(false)
   })
+
+  it('toString returns correct format', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.toString()).toBe('EulerTour(3 nodes)')
+  })
+
+  it('toString for single node', () => {
+    const et = new EulerTour([[]], 0)
+    expect(et.toString()).toBe('EulerTour(1 nodes)')
+  })
+
+  it('toJSON returns all properties', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    const json = et.toJSON()
+    expect(json).toHaveProperty('tour')
+    expect(json).toHaveProperty('first')
+    expect(json).toHaveProperty('last')
+    expect(json).toHaveProperty('depth')
+    expect(json).toHaveProperty('parent')
+  })
+
+  it('toJSON tour is array', () => {
+    const adj = [[1], [0]]
+    const et = new EulerTour(adj, 0)
+    const json = et.toJSON()
+    expect(Array.isArray(json.tour)).toBe(true)
+  })
+
+  it('toJSON returns copies not references', () => {
+    const adj = [[1], [0]]
+    const et = new EulerTour(adj, 0)
+    const json = et.toJSON()
+    json.tour.push(99)
+    expect(et.tour.length).toBe(2)
+  })
+
+  it('equals returns true for identical tours', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et1 = new EulerTour(adj, 0)
+    const et2 = new EulerTour(adj, 0)
+    expect(et1.equals(et2)).toBe(true)
+  })
+
+  it('equals returns false for different tours', () => {
+    const et1 = new EulerTour([[]], 0)
+    const et2 = new EulerTour([[1], [0]], 0)
+    expect(et1.equals(et2)).toBe(false)
+  })
+
+  it('equals returns false for non-EulerTour object', () => {
+    const et = new EulerTour([[]], 0)
+    expect(et.equals({})).toBe(false)
+    expect(et.equals(null)).toBe(false)
+    expect(et.equals(undefined)).toBe(false)
+  })
+
+  it('equals returns false for array', () => {
+    const et = new EulerTour([[]], 0)
+    expect(et.equals([1, 2, 3])).toBe(false)
+  })
+
+  it('getSubtreeRange returns tuple', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    const range = et.getSubtreeRange(0)
+    expect(Array.isArray(range)).toBe(true)
+    expect(range.length).toBe(2)
+  })
+
+  it('getSubtreeRange values are non-negative', () => {
+    const adj = [[1], [0]]
+    const et = new EulerTour(adj, 0)
+    const [lo, hi] = et.getSubtreeRange(0)
+    expect(lo).toBeGreaterThanOrEqual(0)
+    expect(hi).toBeGreaterThanOrEqual(0)
+  })
+
+  it('getSubtreeSize returns positive number', () => {
+    const adj = [[1], [0]]
+    const et = new EulerTour(adj, 0)
+    const size = et.getSubtreeSize(0)
+    expect(size).toBeGreaterThan(0)
+  })
+
+  it('first positions are sequential', () => {
+    const adj = [[1], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.first[0]).toBe(0)
+    expect(et.first[1]).toBe(1)
+  })
+
+  it('last positions cover tour range', () => {
+    const adj = [[1], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.last[0]).toBe(1)
+    expect(et.last[1]).toBe(1)
+  })
+
+  it('tour contains all nodes', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.tour).toContain(0)
+    expect(et.tour).toContain(1)
+    expect(et.tour).toContain(2)
+  })
+
+  it('tour length equals node count', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.tour.length).toBe(3)
+  })
+
+  it('depth of root is zero', () => {
+    const adj = [[1], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.depth[0]).toBe(0)
+  })
+
+  it('depth increases along path', () => {
+    const adj = [[1], [2], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.depth[0]).toBe(0)
+    expect(et.depth[1]).toBe(1)
+    expect(et.depth[2]).toBe(2)
+  })
+
+  it('parent of root is -1', () => {
+    const adj = [[1], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.parent[0]).toBe(-1)
+  })
+
+  it('handles tree with multiple children', () => {
+    const adj = [[1, 2, 3], [0], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.tour.length).toBe(4)
+    expect(et.depth[1]).toBe(1)
+    expect(et.depth[2]).toBe(1)
+    expect(et.depth[3]).toBe(1)
+  })
+
+  it('getPath returns empty array when no path exists', () => {
+    const adj = [[1], [], [3], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.getPath(2, 1)).toEqual([])
+  })
+
+  it('first array length equals number of nodes', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.first.length).toBe(3)
+  })
+
+  it('last array length equals number of nodes', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.last.length).toBe(3)
+  })
 })

@@ -190,4 +190,142 @@ describe('KdTree', () => {
     const result = tree.nearest({ coords: [1, 2] })
     expect(result.length).toBeGreaterThan(0)
   })
+
+  it('toString returns correct string representation', () => {
+    const tree = new KdTree<Point>()
+    expect(tree.toString()).toBe('KdTree(0, dims=2)')
+  })
+
+  it('toString with points includes count', () => {
+    const tree = new KdTree<Point>([{ coords: [1, 2] }])
+    expect(tree.toString()).toBe('KdTree(1, dims=2)')
+  })
+
+  it('toString with custom dimensions', () => {
+    const tree = new KdTree<Point>([], 3)
+    expect(tree.toString()).toBe('KdTree(0, dims=3)')
+  })
+
+  it('toJSON returns array of points', () => {
+    const points: Point[] = [{ coords: [1, 2] }, { coords: [3, 4] }]
+    const tree = new KdTree<Point>(points)
+    const json = tree.toJSON() as Point[]
+    expect(json.length).toBe(2)
+  })
+
+  it('toJSON on empty tree returns empty array', () => {
+    const tree = new KdTree<Point>()
+    expect(tree.toJSON()).toEqual([])
+  })
+
+  it('clone creates independent tree', () => {
+    const tree = new KdTree<Point>([{ coords: [1, 2] }])
+    const clone = tree.clone()
+    tree.insert({ coords: [3, 4] })
+    expect(clone.size).toBe(1)
+    expect(tree.size).toBe(2)
+  })
+
+  it('clone preserves all points', () => {
+    const points: Point[] = [{ coords: [1, 2] }, { coords: [3, 4] }, { coords: [5, 6] }]
+    const tree = new KdTree<Point>(points)
+    const clone = tree.clone()
+    expect(clone.size).toBe(3)
+  })
+
+  it('clone preserves dimensions', () => {
+    const tree = new KdTree<Point>([], 4)
+    const clone = tree.clone()
+    expect(clone.size).toBe(0)
+  })
+
+  it('equals returns true for identical trees', () => {
+    const tree1 = new KdTree<Point>([{ coords: [1, 2] }, { coords: [3, 4] }])
+    const tree2 = new KdTree<Point>([{ coords: [1, 2] }, { coords: [3, 4] }])
+    expect(tree1.equals(tree2)).toBe(true)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const tree1 = new KdTree<Point>([{ coords: [1, 2] }])
+    const tree2 = new KdTree<Point>([{ coords: [1, 2] }, { coords: [3, 4] }])
+    expect(tree1.equals(tree2)).toBe(false)
+  })
+
+  it('equals returns false for different dimensions', () => {
+    const tree1 = new KdTree<Point>([], 2)
+    const tree2 = new KdTree<Point>([], 3)
+    expect(tree1.equals(tree2)).toBe(false)
+  })
+
+  it('equals returns false for different points', () => {
+    const tree1 = new KdTree<Point>([{ coords: [1, 2] }])
+    const tree2 = new KdTree<Point>([{ coords: [3, 4] }])
+    expect(tree1.equals(tree2)).toBe(false)
+  })
+
+  it('equals returns false for non-KdTree objects', () => {
+    const tree = new KdTree<Point>()
+    expect(tree.equals(null)).toBe(false)
+    expect(tree.equals({})).toBe(false)
+  })
+
+  it('handles 1D points', () => {
+    const points: Point[] = [{ coords: [1] }, { coords: [2] }, { coords: [3] }]
+    const tree = new KdTree<Point>(points, 1)
+    const nearest = tree.nearest([0])
+    expect(nearest.length).toBe(1)
+  })
+
+  it('handles 4D points', () => {
+    const points: Point[] = [
+      { coords: [1, 2, 3, 4] },
+      { coords: [5, 6, 7, 8] },
+    ]
+    const tree = new KdTree<Point>(points, 4)
+    const nearest = tree.nearest([0, 0, 0, 0])
+    expect(nearest.length).toBe(1)
+  })
+
+  it('range search with matching min and max', () => {
+    const tree = new KdTree<Point>([{ coords: [1, 2] }])
+    const results = tree.rangeSearch([1, 2], [1, 2])
+    expect(results.length).toBe(1)
+  })
+
+  it('nearest handles target at exact point', () => {
+    const tree = new KdTree<Point>([{ coords: [1, 2] }])
+    const nearest = tree.nearest([1, 2])
+    expect(nearest.length).toBe(1)
+  })
+
+  it('insert preserves existing points', () => {
+    const tree = new KdTree<Point>([{ coords: [1, 2] }])
+    tree.insert({ coords: [3, 4] })
+    const nearest = tree.nearest([1, 2])
+    expect(nearest[0]!.coords).toEqual([1, 2])
+  })
+
+  it('range search with zero bounds', () => {
+    const tree = new KdTree<Point>([{ coords: [0, 0] }])
+    const results = tree.rangeSearch([0, 0], [0, 0])
+    expect(results.length).toBe(1)
+  })
+
+  it('handles large tree insert order independence', () => {
+    const points1: Point[] = [{ coords: [5, 5] }, { coords: [1, 1] }, { coords: [10, 10] }]
+    const tree1 = new KdTree<Point>(points1)
+
+    const tree2 = new KdTree<Point>()
+    tree2.insert({ coords: [10, 10] })
+    tree2.insert({ coords: [1, 1] })
+    tree2.insert({ coords: [5, 5] })
+
+    expect(tree1.equals(tree2)).toBe(true)
+  })
+
+  it('range search with negative bounds', () => {
+    const tree = new KdTree<Point>([{ coords: [-5, -5] }, { coords: [5, 5] }])
+    const results = tree.rangeSearch([-10, -10], [0, 0])
+    expect(results.length).toBe(1)
+  })
 })
