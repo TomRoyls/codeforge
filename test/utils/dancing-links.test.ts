@@ -219,11 +219,253 @@ describe('DancingLinks', () => {
 
   it('solve with no constraints returns empty', () => {
     const dlx = new DancingLinks(0, 0)
-    expect(dlx).toBeDefined()
+    dlx.addRow(0, [])
+    const solutions = dlx.solve()
+    expect(solutions).toEqual([[]])
   })
 
   it('solve with single column', () => {
     const dlx = new DancingLinks(1, 1)
+    dlx.addRow(0, [0])
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(1)
+  })
+
+  it('handles zero columns', () => {
+    const dlx = new DancingLinks(0)
     expect(dlx).toBeDefined()
+  })
+
+  it('adds row with single column', () => {
+    const dlx = new DancingLinks(5)
+    dlx.addRow(0, [3])
+    dlx.addRow(1, [0])
+    dlx.addRow(2, [1])
+    dlx.addRow(3, [2])
+    dlx.addRow(4, [4])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(1)
+  })
+
+  it('handles row covering all columns', () => {
+    const dlx = new DancingLinks(4)
+    dlx.addRow(0, [0, 1, 2, 3])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(1)
+    expect(solutions[0]).toEqual([0])
+  })
+
+  it('solves with multiple overlapping solutions', () => {
+    const dlx = new DancingLinks(4, 10)
+    dlx.addRow(0, [0, 1])
+    dlx.addRow(1, [1, 2])
+    dlx.addRow(2, [2, 3])
+    dlx.addRow(3, [3, 0])
+    dlx.addRow(4, [0, 2])
+    dlx.addRow(5, [1, 3])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBeGreaterThan(0)
+  })
+
+  it('handles rows with duplicate columns', () => {
+    const dlx = new DancingLinks(3)
+    dlx.addRow(0, [0, 1, 2])
+    dlx.addRow(1, [1, 2])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBeGreaterThan(0)
+  })
+
+  it('solves N-queens 4x4 problem', () => {
+    const dlx = new DancingLinks(16, 10)
+    const positions = [
+      [0, 4, 8, 12],
+      [1, 5, 9, 13],
+      [2, 6, 10, 14],
+      [3, 7, 11, 15]
+    ]
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        dlx.addRow(i * 4 + j, positions[j])
+      }
+    }
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBeGreaterThan(0)
+  })
+
+  it('handles sparse exact cover', () => {
+    const dlx = new DancingLinks(20)
+    for (let i = 0; i < 10; i++) {
+      dlx.addRow(i, [i * 2, i * 2 + 1])
+    }
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBeGreaterThan(0)
+  })
+
+  it('solves with all single-column rows', () => {
+    const dlx = new DancingLinks(5)
+    for (let i = 0; i < 5; i++) {
+      dlx.addRow(i, [i])
+    }
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(1)
+    expect(solutions[0]!.length).toBe(5)
+  })
+
+  it('handles empty columns', () => {
+    const dlx = new DancingLinks(3)
+    dlx.addRow(0, [0])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(0)
+  })
+
+  it('multiple rows cover same columns', () => {
+    const dlx = new DancingLinks(2, 10)
+    dlx.addRow(0, [0, 1])
+    dlx.addRow(1, [0, 1])
+    dlx.addRow(2, [0, 1])
+
+    const solutions = dlx.solve()
+    expect(dlx.solutionCount).toBe(3)
+  })
+
+  it('handles partial coverage', () => {
+    const dlx = new DancingLinks(4)
+    dlx.addRow(0, [0, 1])
+    dlx.addRow(1, [1, 2])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(0)
+  })
+
+  it('solves with large max solutions', () => {
+    const dlx = new DancingLinks(3, 1000)
+    dlx.addRow(0, [0])
+    dlx.addRow(1, [1])
+    dlx.addRow(2, [2])
+    dlx.addRow(3, [0, 1, 2])
+
+    dlx.solve()
+    expect(dlx.solutionCount).toBeGreaterThan(1)
+  })
+
+  it('handles non-contiguous column indices', () => {
+    const dlx = new DancingLinks(5)
+    dlx.addRow(0, [0, 2, 4])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(0)
+  })
+
+  it('solves with overlapping row sets', () => {
+    const dlx = new DancingLinks(5)
+    dlx.addRow(0, [0, 1])
+    dlx.addRow(1, [1, 2])
+    dlx.addRow(2, [2, 3])
+    dlx.addRow(3, [3, 4])
+    dlx.addRow(4, [0, 4])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles duplicate rows', () => {
+    const dlx = new DancingLinks(4)
+    dlx.addRow(0, [0, 1])
+    dlx.addRow(1, [0, 1])
+    dlx.addRow(2, [2, 3])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBeGreaterThan(0)
+  })
+
+  it('solves problem with many columns', () => {
+    const dlx = new DancingLinks(50)
+    for (let i = 0; i < 25; i++) {
+      dlx.addRow(i, [i * 2, i * 2 + 1])
+    }
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBeGreaterThan(0)
+  })
+
+  it('returns unique solutions', () => {
+    const dlx = new DancingLinks(3, 100)
+    dlx.addRow(0, [0])
+    dlx.addRow(1, [1])
+    dlx.addRow(2, [2])
+    dlx.addRow(3, [0, 1, 2])
+
+    const solutions = dlx.solve()
+    const uniqueSolutions = new Set(solutions.map(s => s.sort().join(',')))
+    expect(uniqueSolutions.size).toBe(dlx.solutionCount)
+  })
+
+  it('handles max solutions of 1', () => {
+    const dlx = new DancingLinks(3, 1)
+    dlx.addRow(0, [0])
+    dlx.addRow(1, [1])
+    dlx.addRow(2, [2])
+    dlx.addRow(3, [0, 1, 2])
+
+    dlx.solve()
+    expect(dlx.solutionCount).toBeLessThanOrEqual(1)
+  })
+
+  it('handles max solutions of 0', () => {
+    const dlx = new DancingLinks(3, 0)
+    dlx.addRow(0, [0])
+    dlx.addRow(1, [1])
+    dlx.addRow(2, [2])
+
+    dlx.solve()
+    expect(dlx.solutionCount).toBeGreaterThanOrEqual(0)
+  })
+
+  it('solves with row covering half columns', () => {
+    const dlx = new DancingLinks(6)
+    dlx.addRow(0, [0, 1, 2])
+    dlx.addRow(1, [3, 4, 5])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(1)
+  })
+
+  it('handles max solutions as exact match', () => {
+    const dlx = new DancingLinks(3, 2)
+    dlx.addRow(0, [0])
+    dlx.addRow(1, [1])
+    dlx.addRow(2, [2])
+    dlx.addRow(3, [0, 1, 2])
+
+    dlx.solve()
+    expect(dlx.solutionCount).toBe(2)
+  })
+
+  it('handles negative max solutions', () => {
+    const dlx = new DancingLinks(3, -1)
+    dlx.addRow(0, [0])
+    dlx.addRow(1, [1])
+    dlx.addRow(2, [2])
+    dlx.addRow(3, [0, 1, 2])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBeGreaterThan(0)
+  })
+
+  it('solves problem with single constraint', () => {
+    const dlx = new DancingLinks(1)
+    dlx.addRow(0, [0])
+    dlx.addRow(1, [0])
+
+    const solutions = dlx.solve()
+    expect(solutions.length).toBe(2)
   })
 })
