@@ -140,62 +140,285 @@ describe('DequeMin', () => {
     expect(dq.min).toBe(1)
   })
 
-  it('handles empty deque min is undefined', () => {
-    const dq = new DequeMin()
-    expect(dq.min).toBeUndefined()
-  })
-
-  it('min tracks pushed values', () => {
+  it('min with all equal elements after pop', () => {
     const dq = new DequeMin()
     dq.pushBack(5)
+    dq.pushBack(5)
+    dq.pushBack(5)
+    dq.popFront()
+    dq.popFront()
+    expect(dq.min).toBe(5)
+  })
+
+  it('min after pushing larger values', () => {
+    const dq = new DequeMin()
     dq.pushBack(3)
-    dq.pushBack(7)
+    expect(dq.min).toBe(3)
+    dq.pushBack(10)
+    expect(dq.min).toBe(3)
+    dq.pushBack(20)
     expect(dq.min).toBe(3)
   })
 
-  it('min updates after popFront', () => {
+  it('min updates when min element popped', () => {
     const dq = new DequeMin()
+    dq.pushBack(1)
     dq.pushBack(5)
     dq.pushBack(3)
-    dq.pushBack(7)
+    expect(dq.min).toBe(1)
     dq.popFront()
     expect(dq.min).toBe(3)
   })
 
-  it('single element min is itself', () => {
+  it('popFront returns correct values in order', () => {
     const dq = new DequeMin()
-    dq.pushBack(42)
-    expect(dq.min).toBe(42)
+    dq.pushBack(10)
+    dq.pushBack(20)
+    dq.pushBack(30)
+    expect(dq.popFront()).toBe(10)
+    expect(dq.popFront()).toBe(20)
+    expect(dq.popFront()).toBe(30)
   })
 
-  it('min updates after pushBack of smaller', () => {
+  it('size after each operation', () => {
+    const dq = new DequeMin()
+    expect(dq.size).toBe(0)
+    dq.pushBack(1)
+    expect(dq.size).toBe(1)
+    dq.pushBack(2)
+    expect(dq.size).toBe(2)
+    dq.popFront()
+    expect(dq.size).toBe(1)
+    dq.popFront()
+    expect(dq.size).toBe(0)
+  })
+
+  it('isEmpty after operations', () => {
+    const dq = new DequeMin()
+    expect(dq.isEmpty).toBe(true)
+    dq.pushBack(1)
+    expect(dq.isEmpty).toBe(false)
+    dq.popFront()
+    expect(dq.isEmpty).toBe(true)
+  })
+
+  it('toArray after pops', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.pushBack(3)
+    dq.pushBack(4)
+    dq.popFront()
+    expect(dq.toArray()).toEqual([2, 3, 4])
+  })
+
+  it('handles large number of elements', () => {
+    const dq = new DequeMin()
+    for (let i = 100; i >= 1; i--) dq.pushBack(i)
+    expect(dq.min).toBe(1)
+    expect(dq.size).toBe(100)
+  })
+
+  it('sliding window with all same values', () => {
+    const dq = new DequeMin()
+    for (let i = 0; i < 5; i++) dq.pushBack(7)
+    for (let i = 0; i < 3; i++) dq.popFront()
+    expect(dq.min).toBe(7)
+    expect(dq.size).toBe(2)
+  })
+
+  it('handles alternating high low values', () => {
+    const dq = new DequeMin()
+    dq.pushBack(10)
+    dq.pushBack(1)
+    dq.pushBack(8)
+    dq.pushBack(2)
+    dq.pushBack(6)
+    dq.pushBack(3)
+    expect(dq.min).toBe(1)
+  })
+
+  it('popFront after min is pushed away', () => {
     const dq = new DequeMin()
     dq.pushBack(5)
+    dq.pushBack(1)
     dq.pushBack(3)
+    dq.popFront()
+    expect(dq.min).toBe(1)
+    dq.popFront()
     expect(dq.min).toBe(3)
   })
 
-  it('empty deque min is undefined', () => {
-    const dq = new DequeMin<number>()
+  it('push pop push maintains correct min', () => {
+    const dq = new DequeMin()
+    dq.pushBack(5)
+    dq.popFront()
+    dq.pushBack(3)
+    dq.pushBack(1)
+    expect(dq.min).toBe(1)
+  })
+
+  it('toArray on empty', () => {
+    const dq = new DequeMin()
+    expect(dq.toArray()).toEqual([])
+  })
+
+  it('multiple consecutive pops on empty', () => {
+    const dq = new DequeMin()
+    expect(dq.popFront()).toBeUndefined()
+    expect(dq.popFront()).toBeUndefined()
+    expect(dq.popFront()).toBeUndefined()
+  })
+
+  it('min after popFront reveals new min from later push', () => {
+    const dq = new DequeMin()
+    dq.pushBack(10)
+    dq.pushBack(1)
+    dq.pushBack(5)
+    dq.popFront()
+    expect(dq.min).toBe(1)
+  })
+
+  it('handles mixed positive and negative', () => {
+    const dq = new DequeMin()
+    dq.pushBack(5)
+    dq.pushBack(-3)
+    dq.pushBack(0)
+    dq.pushBack(-1)
+    expect(dq.min).toBe(-3)
+  })
+
+  it('push same value many times', () => {
+    const dq = new DequeMin()
+    for (let i = 0; i < 50; i++) dq.pushBack(7)
+    expect(dq.min).toBe(7)
+    expect(dq.size).toBe(50)
+  })
+
+  it('sliding window across real data', () => {
+    const data = [3, 1, 4, 1, 5, 9, 2, 6]
+    const dq = new DequeMin()
+    const windowMins: number[] = []
+    for (let i = 0; i < data.length; i++) {
+      dq.pushBack(data[i]!)
+      if (i >= 3) dq.popFront()
+      if (i >= 2) windowMins.push(dq.min!)
+    }
+    expect(windowMins).toEqual([1, 1, 1, 1, 2, 2])
+  })
+
+  it('size after all pops is zero', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.pushBack(3)
+    dq.popFront()
+    dq.popFront()
+    dq.popFront()
+    expect(dq.size).toBe(0)
+    expect(dq.isEmpty).toBe(true)
+  })
+
+  it('push large value after small', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.pushBack(1000000)
+    dq.pushBack(999999)
+    expect(dq.min).toBe(1)
+  })
+
+  it('push small after large reveals new min', () => {
+    const dq = new DequeMin()
+    dq.pushBack(100)
+    dq.pushBack(50)
+    dq.pushBack(1)
+    expect(dq.min).toBe(1)
+    dq.popFront()
+    dq.popFront()
+    expect(dq.min).toBe(1)
+  })
+
+  it('float values for min', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1.5)
+    dq.pushBack(0.5)
+    dq.pushBack(2.0)
+    expect(dq.min).toBe(0.5)
+  })
+
+  it('handles very negative values', () => {
+    const dq = new DequeMin()
+    dq.pushBack(-1000000)
+    dq.pushBack(-999999)
+    dq.pushBack(-1000001)
+    expect(dq.min).toBe(-1000001)
+  })
+
+  it('repeated push pop cycles', () => {
+    const dq = new DequeMin()
+    for (let i = 0; i < 100; i++) {
+      dq.pushBack(i)
+      dq.popFront()
+    }
+    expect(dq.isEmpty).toBe(true)
     expect(dq.min).toBeUndefined()
   })
 
-  it('single element min is that element', () => {
-    const dq = new DequeMin<number>()
+  it('min preserved when non-min popped', () => {
+    const dq = new DequeMin()
+    dq.pushBack(5)
+    dq.pushBack(1)
+    dq.pushBack(3)
+    dq.popFront()
+    expect(dq.min).toBe(1)
+  })
+
+  it('toArray reflects current state only', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    const arr1 = dq.toArray()
+    dq.popFront()
+    const arr2 = dq.toArray()
+    expect(arr1).toEqual([1, 2])
+    expect(arr2).toEqual([2])
+  })
+
+  it('min of two elements after first popped', () => {
+    const dq = new DequeMin()
+    dq.pushBack(3)
+    dq.pushBack(7)
+    dq.popFront()
+    expect(dq.min).toBe(7)
+  })
+
+  it('min of two elements after second popped conceptually', () => {
+    const dq = new DequeMin()
+    dq.pushBack(3)
+    dq.pushBack(7)
+    dq.popFront()
+    expect(dq.min).toBe(7)
+    dq.popFront()
+    expect(dq.min).toBeUndefined()
+  })
+
+  it('push after drain', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.popFront()
+    expect(dq.min).toBeUndefined()
     dq.pushBack(5)
     expect(dq.min).toBe(5)
   })
 
-  it('min updates on push', () => {
-    const dq = new DequeMin<number>()
+  it('many push one pop min correct', () => {
+    const dq = new DequeMin()
+    dq.pushBack(10)
     dq.pushBack(5)
+    dq.pushBack(8)
     dq.pushBack(3)
+    dq.pushBack(7)
+    dq.popFront()
     expect(dq.min).toBe(3)
-  })
-
-  it('single element min', () => {
-    const dq = new DequeMin<number>()
-    dq.pushBack(42)
-    expect(dq.min).toBe(42)
   })
 })

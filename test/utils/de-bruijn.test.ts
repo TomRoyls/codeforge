@@ -91,53 +91,179 @@ describe('DeBruijnSequence', () => {
     }
   })
 
-  it('binary n=2 has length 4', () => {
-    const seq = DeBruijnSequence.generateBinary(2)
-    expect(seq.length).toBe(4)
+  it('generates hex sequence for n=2', () => {
+    const seq = DeBruijnSequence.generate(16, 2)
+    expect(seq.length).toBe(256)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 16, 2)).toBe(true)
   })
 
-  it('binary n=1 has length 2', () => {
+  it('containsAllSubstrings handles k=1', () => {
+    const seq = DeBruijnSequence.generate(1, 5)
+    expect(seq.length).toBe(1)
+    expect(seq).toBe('0')
+  })
+
+  it('binary n=5 has correct length and validates', () => {
+    const seq = DeBruijnSequence.generateBinary(5)
+    expect(seq.length).toBe(32)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 5)).toBe(true)
+  })
+
+  it('ternary n=3 has correct length and validates', () => {
+    const seq = DeBruijnSequence.generate(3, 3)
+    expect(seq.length).toBe(27)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 3, 3)).toBe(true)
+  })
+
+  it('k=6 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(6, 2)
+    expect(seq.length).toBe(36)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 6, 2)).toBe(true)
+  })
+
+  it('k=7 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(7, 2)
+    expect(seq.length).toBe(49)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 7, 2)).toBe(true)
+  })
+
+  it('k=8 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(8, 2)
+    expect(seq.length).toBe(64)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 8, 2)).toBe(true)
+  })
+
+  it('k=9 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(9, 2)
+    expect(seq.length).toBe(81)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 9, 2)).toBe(true)
+  })
+
+  it('k=10 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(10, 2)
+    expect(seq.length).toBe(100)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 10, 2)).toBe(true)
+  })
+
+  it('generates lowercase hex sequence for n=2', () => {
+    const seq = DeBruijnSequence.generate(16, 2)
+    expect(seq).toMatch(/^[0-9a-f]+$/)
+  })
+
+  it('binary sequence only contains 0 and 1', () => {
+    const seq = DeBruijnSequence.generateBinary(4)
+    expect(seq).toMatch(/^[01]+$/)
+  })
+
+  it('ternary sequence only contains 0, 1, and 2', () => {
+    const seq = DeBruijnSequence.generate(3, 3)
+    expect(seq).toMatch(/^[012]+$/)
+  })
+
+  it('containsAllSubstrings returns false for empty sequence', () => {
+    expect(DeBruijnSequence.containsAllSubstrings('', 2, 2)).toBe(false)
+  })
+
+  it('binary n=6 generates correctly', () => {
+    const seq = DeBruijnSequence.generateBinary(6)
+    expect(seq.length).toBe(64)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 6)).toBe(true)
+  })
+
+  it('k=4 n=3 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(4, 3)
+    expect(seq.length).toBe(64)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 4, 3)).toBe(true)
+  })
+
+  it('k=5 n=3 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(5, 3)
+    expect(seq.length).toBe(125)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 5, 3)).toBe(true)
+  })
+
+  it('throws for alphabet size exceeding 36', () => {
+    expect(() => DeBruijnSequence.generate(37, 2)).toThrow('Alphabet size 37 exceeds available characters')
+  })
+
+  it('k=2 n=7 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(2, 7)
+    expect(seq.length).toBe(128)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 7)).toBe(true)
+  })
+
+  it('k=11 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(11, 2)
+    expect(seq.length).toBe(121)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 11, 2)).toBe(true)
+  })
+
+  it('k=12 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(12, 2)
+    expect(seq.length).toBe(144)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 12, 2)).toBe(true)
+  })
+
+  it('containsAllSubstrings detects missing substrings', () => {
+    const seq = '00110011'
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 3)).toBe(false)
+  })
+
+  it('k=3 n=4 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(3, 4)
+    expect(seq.length).toBe(81)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 3, 4)).toBe(true)
+  })
+
+  it('binary n=1 validates correctly', () => {
     const seq = DeBruijnSequence.generateBinary(1)
-    expect(seq.length).toBe(2)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 1)).toBe(true)
   })
 
-  it('binary n=2 has length 4', () => {
-    const seq = DeBruijnSequence.generateBinary(2)
-    expect(seq.length).toBe(4)
+  it('k=1 n=1 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(1, 1)
+    expect(seq.length).toBe(1)
+    expect(seq).toBe('0')
   })
 
-  it('binary n=3 has length 8', () => {
-    const seq = DeBruijnSequence.generateBinary(3)
-    expect(seq.length).toBe(8)
+  it('k=36 n=2 uses all alphanumeric characters', () => {
+    const seq = DeBruijnSequence.generate(36, 2)
+    expect(seq.length).toBe(1296)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 36, 2)).toBe(true)
   })
 
-  it('binary n=1 has length 2', () => {
-    const seq = DeBruijnSequence.generateBinary(1)
-    expect(seq.length).toBe(2)
+  it('containsAllSubstrings with k>n works correctly', () => {
+    const seq = DeBruijnSequence.generate(4, 2)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 4, 2)).toBe(true)
   })
 
-  it('binary n=2 has length 4', () => {
-    const seq = DeBruijnSequence.generateBinary(2)
-    expect(seq.length).toBe(4)
+  it('binary n=8 generates correctly', () => {
+    const seq = DeBruijnSequence.generateBinary(8)
+    expect(seq.length).toBe(256)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 8)).toBe(true)
   })
 
-  it('binary n=1 has length 2', () => {
-    const seq = DeBruijnSequence.generateBinary(1)
-    expect(seq.length).toBe(2)
+  it('k=2 n=9 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(2, 9)
+    expect(seq.length).toBe(512)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 9)).toBe(true)
   })
 
-  it('binary n=2 has length 4', () => {
-    const seq = DeBruijnSequence.generateBinary(2)
-    expect(seq.length).toBe(4)
+  it('k=13 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(13, 2)
+    expect(seq.length).toBe(169)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 13, 2)).toBe(true)
   })
 
-  it('binary n=1 has length 2', () => {
-    const seq = DeBruijnSequence.generateBinary(1)
-    expect(seq.length).toBe(2)
+  it('k=14 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(14, 2)
+    expect(seq.length).toBe(196)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 14, 2)).toBe(true)
   })
 
-  it('binary n=2 has length 4', () => {
-    const seq = DeBruijnSequence.generateBinary(2)
-    expect(seq.length).toBe(4)
+  it('k=15 n=2 generates correctly', () => {
+    const seq = DeBruijnSequence.generate(15, 2)
+    expect(seq.length).toBe(225)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 15, 2)).toBe(true)
   })
 })

@@ -139,50 +139,218 @@ describe('DeterministicRng', () => {
     expect(val).toBeLessThanOrEqual(10)
   })
 
-  it('produces same sequence with same seed', () => {
-    const rng1 = new DeterministicRng(42)
-    const rng2 = new DeterministicRng(42)
-    expect(rng1.nextInt()).toBe(rng2.nextInt())
-  })
-
-  it('constructor accepts seed', () => {
+  it('nextBool with probability 1 always true', () => {
     const rng = new DeterministicRng(42)
-    expect(rng).toBeDefined()
-  })
-
-  it('next returns number between 0 and 1', () => {
-    const rng = new DeterministicRng(42)
-    const val = rng.next()
-    expect(val).toBeGreaterThanOrEqual(0)
-    expect(val).toBeLessThan(1)
-  })
-
-  it('nextInt respects bounds', () => {
-    const rng = new DeterministicRng(42)
-    const val = rng.nextInt(10, 20)
-    expect(val).toBeGreaterThanOrEqual(10)
-    expect(val).toBeLessThanOrEqual(20)
-  })
-
-  it('same seed produces same sequence', () => {
-    const r1 = new DeterministicRng(42)
-    const r2 = new DeterministicRng(42)
-    expect(r1.nextInt(0, 100)).toBe(r2.nextInt(0, 100))
-  })
-
-  it('nextInt range is bounded', () => {
-    const rng = new DeterministicRng(123)
-    for (let i = 0; i < 50; i++) {
-      const v = rng.nextInt(10, 20)
-      expect(v).toBeGreaterThanOrEqual(10)
-      expect(v).toBeLessThanOrEqual(20)
+    for (let i = 0; i < 20; i++) {
+      expect(rng.nextBool(1)).toBe(true)
     }
   })
 
-  it('nextFloat returns value in [0, 1)', () => {
-    const rng = new DeterministicRng(12345)
-    const v = rng.nextFloat()
-    expect(v).toBeGreaterThanOrEqual(0)
-    expect(v).toBeLessThan(1)
+  it('nextFloat same as next', () => {
+    const rng1 = new DeterministicRng(42)
+    const rng2 = new DeterministicRng(42)
+    for (let i = 0; i < 10; i++) {
+      expect(rng1.nextFloat()).toBe(rng2.next())
+    }
+  })
+
+  it('clone produces identical sequence', () => {
+    const rng = new DeterministicRng(42)
+    rng.next()
+    rng.next()
+    const cloned = rng.clone()
+    expect(rng.next()).toBe(cloned.next())
+    expect(rng.next()).toBe(cloned.next())
+  })
+
+  it('equals with same state', () => {
+    const rng1 = new DeterministicRng(42)
+    const rng2 = new DeterministicRng(42)
+    expect(rng1.equals(rng2)).toBe(true)
+  })
+
+  it('equals with different state', () => {
+    const rng1 = new DeterministicRng(42)
+    const rng2 = new DeterministicRng(99)
+    expect(rng1.equals(rng2)).toBe(false)
+  })
+
+  it('equals with non-DeterministicRng', () => {
+    const rng = new DeterministicRng(42)
+    expect(rng.equals({})).toBe(false)
+    expect(rng.equals(null)).toBe(false)
+    expect(rng.equals(42)).toBe(false)
+  })
+
+  it('toString returns formatted string', () => {
+    const rng = new DeterministicRng(42)
+    const str = rng.toString()
+    expect(str).toContain('DeterministicRng')
+    expect(str).toContain('state=')
+  })
+
+  it('toJSON returns state number', () => {
+    const rng = new DeterministicRng(42)
+    expect(typeof rng.toJSON()).toBe('number')
+  })
+
+  it('currentSeed changes after next', () => {
+    const rng = new DeterministicRng(42)
+    const seed1 = rng.currentSeed
+    rng.next()
+    const seed2 = rng.currentSeed
+    expect(seed1).not.toBe(seed2)
+  })
+
+  it('reset to different seed changes sequence', () => {
+    const rng = new DeterministicRng(42)
+    const val1 = rng.next()
+    rng.reset(99)
+    const val2 = rng.next()
+    expect(val1).not.toBe(val2)
+  })
+
+  it('shuffle of two elements returns both', () => {
+    const rng = new DeterministicRng(1)
+    const shuffled = rng.shuffle([1, 2])
+    expect(shuffled.length).toBe(2)
+    expect(shuffled.sort()).toEqual([1, 2])
+  })
+
+  it('shuffle is deterministic with same seed', () => {
+    const rng1 = new DeterministicRng(42)
+    const rng2 = new DeterministicRng(42)
+    const arr = [1, 2, 3, 4, 5]
+    expect(rng1.shuffle(arr)).toEqual(rng2.shuffle(arr))
+  })
+
+  it('shuffle of large array preserves all elements', () => {
+    const rng = new DeterministicRng(42)
+    const arr = Array.from({ length: 100 }, (_, i) => i)
+    const shuffled = rng.shuffle(arr)
+    expect(shuffled.sort((a, b) => a - b)).toEqual(arr)
+  })
+
+  it('nextInt with large range', () => {
+    const rng = new DeterministicRng(42)
+    for (let i = 0; i < 50; i++) {
+      const v = rng.nextInt(0, 1000000)
+      expect(v).toBeGreaterThanOrEqual(0)
+      expect(v).toBeLessThanOrEqual(1000000)
+    }
+  })
+
+  it('nextInt with negative range', () => {
+    const rng = new DeterministicRng(42)
+    for (let i = 0; i < 50; i++) {
+      const v = rng.nextInt(-100, -1)
+      expect(v).toBeGreaterThanOrEqual(-100)
+      expect(v).toBeLessThanOrEqual(-1)
+    }
+  })
+
+  it('default seed is 12345', () => {
+    const rng1 = new DeterministicRng()
+    const rng2 = new DeterministicRng(12345)
+    expect(rng1.next()).toBe(rng2.next())
+  })
+
+  it('nextBool with 0.5 probability roughly even', () => {
+    const rng = new DeterministicRng(42)
+    let trues = 0
+    for (let i = 0; i < 1000; i++) {
+      if (rng.nextBool(0.5)) trues++
+    }
+    expect(trues).toBeGreaterThan(300)
+    expect(trues).toBeLessThan(700)
+  })
+
+  it('clone after several calls', () => {
+    const rng = new DeterministicRng(42)
+    rng.next()
+    rng.next()
+    rng.next()
+    const cloned = rng.clone()
+    for (let i = 0; i < 10; i++) {
+      expect(rng.next()).toBe(cloned.next())
+    }
+  })
+
+  it('equals after advancing to same state', () => {
+    const rng1 = new DeterministicRng(42)
+    const rng2 = new DeterministicRng(42)
+    rng1.next()
+    rng2.next()
+    expect(rng1.equals(rng2)).toBe(true)
+  })
+
+  it('pick from array is deterministic', () => {
+    const rng1 = new DeterministicRng(42)
+    const rng2 = new DeterministicRng(42)
+    const arr = ['a', 'b', 'c', 'd']
+    for (let i = 0; i < 10; i++) {
+      expect(rng1.pick(arr)).toBe(rng2.pick(arr))
+    }
+  })
+
+  it('many next calls stay in range', () => {
+    const rng = new DeterministicRng(42)
+    for (let i = 0; i < 1000; i++) {
+      const v = rng.next()
+      expect(v).toBeGreaterThanOrEqual(0)
+      expect(v).toBeLessThan(1)
+    }
+  })
+
+  it('nextGaussian has some variance', () => {
+    const rng = new DeterministicRng(42)
+    const vals: number[] = []
+    for (let i = 0; i < 100; i++) vals.push(rng.nextGaussian())
+    const min = Math.min(...vals)
+    const max = Math.max(...vals)
+    expect(max - min).toBeGreaterThan(1)
+  })
+
+  it('reset to same seed gives same sequence', () => {
+    const rng = new DeterministicRng(42)
+    const first = rng.next()
+    rng.next()
+    rng.next()
+    rng.next()
+    rng.reset(42)
+    expect(rng.next()).toBe(first)
+  })
+
+  it('toJSON returns current state', () => {
+    const rng = new DeterministicRng(42)
+    const stateBefore = rng.toJSON()
+    rng.next()
+    const stateAfter = rng.toJSON()
+    expect(stateBefore).not.toBe(stateAfter)
+  })
+
+  it('currentSeed is always non-negative', () => {
+    const rng = new DeterministicRng(-1)
+    for (let i = 0; i < 20; i++) {
+      rng.next()
+      expect(rng.currentSeed).toBeGreaterThanOrEqual(0)
+    }
+  })
+
+  it('nextInt always returns integers', () => {
+    const rng = new DeterministicRng(42)
+    for (let i = 0; i < 100; i++) {
+      expect(Number.isInteger(rng.nextInt(0, 100))).toBe(true)
+    }
+  })
+
+  it('shuffle with two element array produces valid output', () => {
+    const rng = new DeterministicRng(42)
+    for (let i = 0; i < 10; i++) {
+      const result = rng.shuffle([1, 2])
+      expect(result.length).toBe(2)
+      expect(result).toContain(1)
+      expect(result).toContain(2)
+    }
   })
 })

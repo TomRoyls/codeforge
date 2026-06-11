@@ -200,7 +200,7 @@ describe('DifferenceArray', () => {
     expect(result[3]).toBe(0)
   })
 
-  it('rangeAdd with zero does nothing', () => {
+  it('rangeAdd with zero does nothing meaningful', () => {
     const da = new DifferenceArray(3)
     da.rangeAdd(0, 2, 0)
     expect(da.get(0)).toBe(0)
@@ -217,5 +217,191 @@ describe('DifferenceArray', () => {
     const da = new DifferenceArray(3)
     da.rangeAdd(1, 1, 5)
     expect(da.get(1)).toBe(5)
+  })
+
+  it('toString returns formatted string', () => {
+    const da = new DifferenceArray(10)
+    expect(da.toString()).toBe('DifferenceArray(10)')
+  })
+
+  it('toJSON returns diff array copy', () => {
+    const da = new DifferenceArray(3)
+    da.pointAdd(1, 5)
+    const json = da.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect(json.length).toBe(4)
+  })
+
+  it('clone creates independent copy', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(0, 4, 10)
+    const copy = da.clone()
+    expect(copy.toArray()).toEqual(da.toArray())
+    copy.rangeAdd(0, 4, 5)
+    expect(da.get(0)).toBe(10)
+    expect(copy.get(0)).toBe(15)
+  })
+
+  it('clone of empty difference array', () => {
+    const da = new DifferenceArray(5)
+    const copy = da.clone()
+    expect(copy.toArray()).toEqual([0, 0, 0, 0, 0])
+    expect(copy.length).toBe(5)
+  })
+
+  it('equals with identical arrays', () => {
+    const a = new DifferenceArray(5)
+    const b = new DifferenceArray(5)
+    a.rangeAdd(1, 3, 10)
+    b.rangeAdd(1, 3, 10)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('equals with different values', () => {
+    const a = new DifferenceArray(5)
+    const b = new DifferenceArray(5)
+    a.rangeAdd(1, 3, 10)
+    b.rangeAdd(1, 3, 20)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('equals with different sizes', () => {
+    const a = new DifferenceArray(5)
+    const b = new DifferenceArray(10)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('equals with non-DifferenceArray', () => {
+    const da = new DifferenceArray(5)
+    expect(da.equals({})).toBe(false)
+    expect(da.equals(null)).toBe(false)
+    expect(da.equals(undefined)).toBe(false)
+  })
+
+  it('empty arrays of same size are equal', () => {
+    const a = new DifferenceArray(5)
+    const b = new DifferenceArray(5)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('get at index 0 returns first value', () => {
+    const da = new DifferenceArray(5)
+    da.pointAdd(0, 42)
+    expect(da.get(0)).toBe(42)
+  })
+
+  it('get at last index', () => {
+    const da = new DifferenceArray(5)
+    da.pointAdd(4, 99)
+    expect(da.get(4)).toBe(99)
+    expect(da.get(3)).toBe(0)
+  })
+
+  it('pointAdd at boundaries', () => {
+    const da = new DifferenceArray(5)
+    da.pointAdd(0, 1)
+    da.pointAdd(4, 2)
+    const result = da.toArray()
+    expect(result).toEqual([1, 0, 0, 0, 2])
+  })
+
+  it('rangeAdd at exact boundaries', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(0, 0, 10)
+    da.rangeAdd(4, 4, 20)
+    expect(da.toArray()).toEqual([10, 0, 0, 0, 20])
+  })
+
+  it('multiple overlapping ranges', () => {
+    const da = new DifferenceArray(10)
+    da.rangeAdd(0, 9, 1)
+    da.rangeAdd(2, 7, 2)
+    da.rangeAdd(4, 5, 3)
+    const result = da.toArray()
+    expect(result).toEqual([1, 1, 3, 3, 6, 6, 3, 3, 1, 1])
+  })
+
+  it('negative value makes value negative', () => {
+    const da = new DifferenceArray(3)
+    da.rangeAdd(0, 2, -5)
+    expect(da.toArray()).toEqual([-5, -5, -5])
+  })
+
+  it('size 1 array', () => {
+    const da = new DifferenceArray(1)
+    expect(da.length).toBe(1)
+    expect(da.toArray()).toEqual([0])
+    da.pointAdd(0, 10)
+    expect(da.get(0)).toBe(10)
+  })
+
+  it('large range add', () => {
+    const da = new DifferenceArray(100)
+    da.rangeAdd(0, 99, 1)
+    expect(da.get(0)).toBe(1)
+    expect(da.get(99)).toBe(1)
+    expect(da.toArray().every(v => v === 1)).toBe(true)
+  })
+
+  it('get at 0 with no changes', () => {
+    const da = new DifferenceArray(5)
+    expect(da.get(0)).toBe(0)
+  })
+
+  it('pointAdd is alias for rangeAdd of single element', () => {
+    const a = new DifferenceArray(10)
+    const b = new DifferenceArray(10)
+    a.pointAdd(5, 42)
+    b.rangeAdd(5, 5, 42)
+    expect(a.toArray()).toEqual(b.toArray())
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('clone after modifications', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(1, 3, 10)
+    const copy = da.clone()
+    expect(copy.get(2)).toBe(10)
+    expect(copy.length).toBe(5)
+  })
+
+  it('toString reflects size', () => {
+    const da = new DifferenceArray(42)
+    expect(da.toString()).toBe('DifferenceArray(42)')
+  })
+
+  it('toJSON after modifications', () => {
+    const da = new DifferenceArray(3)
+    da.pointAdd(1, 5)
+    const json = da.toJSON()
+    expect(json).not.toEqual(new Array(4).fill(0))
+    expect(json.length).toBe(4)
+  })
+
+  it('equals after same operations', () => {
+    const a = new DifferenceArray(5)
+    const b = new DifferenceArray(5)
+    a.pointAdd(0, 10)
+    a.pointAdd(2, 20)
+    b.pointAdd(0, 10)
+    b.pointAdd(2, 20)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('staircase pattern', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(0, 0, 1)
+    da.rangeAdd(0, 1, 1)
+    da.rangeAdd(0, 2, 1)
+    da.rangeAdd(0, 3, 1)
+    da.rangeAdd(0, 4, 1)
+    expect(da.toArray()).toEqual([5, 4, 3, 2, 1])
+  })
+
+  it('rangeAdd with very large value', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(0, 4, 1e9)
+    expect(da.get(0)).toBe(1e9)
+    expect(da.get(4)).toBe(1e9)
   })
 })
