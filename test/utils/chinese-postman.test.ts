@@ -2,169 +2,373 @@ import { describe, expect, it } from 'vitest'
 import { ChinesePostman } from '../../src/utils/chinese-postman.js'
 
 describe('ChinesePostman', () => {
-  it('handles eulerian graph (no odd vertices)', () => {
-    const cp = new ChinesePostman(3)
-    cp.addEdge(0, 1, 1)
-    cp.addEdge(1, 2, 1)
-    cp.addEdge(2, 0, 1)
-    expect(cp.solve()).toBe(3)
+  describe('Single node tests', () => {
+    it('handles single node with no edges', () => {
+      const cp = new ChinesePostman(1)
+      expect(cp.solve()).toBe(0)
+    })
+
+    it('single node has zero cost', () => {
+      const cp = new ChinesePostman(1)
+      expect(cp.solve()).toBe(0)
+    })
+
+    it('single node has cost 0', () => {
+      const cp = new ChinesePostman(1)
+      expect(cp.solve()).toBe(0)
+    })
   })
 
-  it('handles single edge', () => {
-    const cp = new ChinesePostman(2)
-    cp.addEdge(0, 1, 5)
-    expect(cp.solve()).toBe(10)
+  describe('Two node graphs', () => {
+    it('handles single edge', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 5)
+      expect(cp.solve()).toBe(10)
+    })
+
+    it('two nodes with edge has cost of edge', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 5)
+      expect(cp.solve()).toBe(10)
+    })
+
+    it('two nodes with edge has nonzero cost', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 5)
+      expect(cp.solve()).toBeGreaterThanOrEqual(5)
+    })
+
+    it('two nodes no edge', () => {
+      const cp = new ChinesePostman(2)
+      expect(cp.solve()).toBe(0)
+    })
+
+    it('two nodes with edge weight 1', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 1)
+      expect(cp.solve()).toBe(2)
+    })
+
+    it('two nodes with large edge weight', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 100)
+      expect(cp.solve()).toBe(200)
+    })
   })
 
-  it('handles path of 3', () => {
-    const cp = new ChinesePostman(3)
-    cp.addEdge(0, 1, 2)
-    cp.addEdge(1, 2, 3)
-    expect(cp.solve()).toBe(10)
+  describe('Eulerian graphs', () => {
+    it('handles eulerian graph (no odd vertices)', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 0, 1)
+      expect(cp.solve()).toBe(3)
+    })
+
+    it('handles square', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(3, 0, 1)
+      expect(cp.solve()).toBe(4)
+    })
+
+    it('handles larger eulerian graph', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(3, 0, 1)
+      expect(cp.solve()).toBe(4)
+    })
+
+    it('handles triangle graph', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 2)
+      cp.addEdge(1, 2, 3)
+      cp.addEdge(2, 0, 1)
+      expect(cp.solve()).toBe(6)
+    })
+
+    it('eulerian graph with different weights', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 5)
+      cp.addEdge(1, 2, 7)
+      cp.addEdge(2, 0, 3)
+      expect(cp.solve()).toBe(15)
+    })
   })
 
-  it('handles single node', () => {
-    const cp = new ChinesePostman(1)
-    expect(cp.solve()).toBe(0)
+  describe('Path graphs', () => {
+    it('handles path of 3', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 2)
+      cp.addEdge(1, 2, 3)
+      expect(cp.solve()).toBe(10)
+    })
+
+    it('handles path of 3 with weight 1 edges', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      expect(cp.solve()).toBe(4)
+    })
+
+    it('path of 4 nodes', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 3, 1)
+      expect(cp.solve()).toBe(6)
+    })
+
+    it('path of 5 nodes', () => {
+      const cp = new ChinesePostman(5)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(3, 4, 1)
+      expect(cp.solve()).toBe(8)
+    })
+
+    it('path with weighted edges', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 10)
+      cp.addEdge(1, 2, 20)
+      expect(cp.solve()).toBe(60)
+    })
   })
 
-  it('handles square', () => {
-    const cp = new ChinesePostman(4)
-    cp.addEdge(0, 1, 1)
-    cp.addEdge(1, 2, 1)
-    cp.addEdge(2, 3, 1)
-    cp.addEdge(3, 0, 1)
-    expect(cp.solve()).toBe(4)
+  describe('Star graphs', () => {
+    it('handles two edges', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(0, 2, 1)
+      expect(cp.solve()).toBe(4)
+    })
+
+    it('star graph with 3 leaves', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(0, 2, 1)
+      cp.addEdge(0, 3, 1)
+      expect(cp.solve()).toBe(6)
+    })
+
+    it('star graph with 4 leaves', () => {
+      const cp = new ChinesePostman(5)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(0, 2, 1)
+      cp.addEdge(0, 3, 1)
+      cp.addEdge(0, 4, 1)
+      expect(cp.solve()).toBe(8)
+    })
+
+    it('star graph with weighted edges', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 2)
+      cp.addEdge(0, 2, 3)
+      cp.addEdge(0, 3, 4)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
   })
 
-  it('handles triangle with pendant', () => {
-    const cp = new ChinesePostman(4)
-    cp.addEdge(0, 1, 1)
-    cp.addEdge(1, 2, 1)
-    cp.addEdge(2, 0, 1)
-    cp.addEdge(2, 3, 2)
-    const result = cp.solve()
-    expect(result).toBeGreaterThan(5)
+  describe('Complete graphs', () => {
+    it('handles K4 (odd degree vertices)', () => {
+      const cp = new ChinesePostman(4)
+      for (let i = 0; i < 4; i++)
+        for (let j = i + 1; j < 4; j++)
+          cp.addEdge(i, j, 1)
+      expect(cp.solve()).toBe(8)
+    })
+
+    it('handles K3 (eulerian)', () => {
+      const cp = new ChinesePostman(3)
+      for (let i = 0; i < 3; i++)
+        for (let j = i + 1; j < 3; j++)
+          cp.addEdge(i, j, 1)
+      expect(cp.solve()).toBe(3)
+    })
+
+    it('complete graph with 5 vertices', () => {
+      const cp = new ChinesePostman(5)
+      for (let i = 0; i < 5; i++)
+        for (let j = i + 1; j < 5; j++)
+          cp.addEdge(i, j, 1)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
   })
 
-  it('handles two edges', () => {
-    const cp = new ChinesePostman(3)
-    cp.addEdge(0, 1, 1)
-    cp.addEdge(0, 2, 1)
-    expect(cp.solve()).toBe(4)
+  describe('Graphs with pendants', () => {
+    it('handles triangle with pendant', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 0, 1)
+      cp.addEdge(2, 3, 2)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(5)
+    })
+
+    it('square with two pendants', () => {
+      const cp = new ChinesePostman(6)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(3, 0, 1)
+      cp.addEdge(0, 4, 1)
+      cp.addEdge(2, 5, 1)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
+
+    it('path with pendant on middle node', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(1, 3, 1)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
   })
 
-  it('handles K4 (odd degree vertices)', () => {
-    const cp = new ChinesePostman(4)
-    for (let i = 0; i < 4; i++)
-      for (let j = i + 1; j < 4; j++)
-        cp.addEdge(i, j, 1)
-    expect(cp.solve()).toBe(8)
+  describe('Disconnected graphs', () => {
+    it('handles disconnected (some unreachable)', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(2, 3, 1)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
+
+    it('three disconnected components', () => {
+      const cp = new ChinesePostman(6)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(4, 5, 1)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
+
+    it('disconnected with isolated vertex', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 1)
+      const result = cp.solve()
+      expect(result).toBe(2)
+    })
   })
 
-  it('handles disconnected (some unreachable)', () => {
-    const cp = new ChinesePostman(4)
-    cp.addEdge(0, 1, 1)
-    cp.addEdge(2, 3, 1)
-    const result = cp.solve()
-    expect(result).toBeGreaterThan(0)
+  describe('Weighted edge tests', () => {
+    it('handles weighted edges', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 10)
+      cp.addEdge(1, 2, 20)
+      cp.addEdge(0, 2, 5)
+      expect(cp.solve()).toBe(35)
+    })
+
+    it('triangle with varying weights', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 100)
+      cp.addEdge(1, 2, 200)
+      cp.addEdge(2, 0, 150)
+      expect(cp.solve()).toBe(450)
+    })
+
+    it('path with large weight differences', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 100)
+      const result = cp.solve()
+      expect(result).toBe(202)
+    })
   })
 
-  it('handles weighted edges', () => {
-    const cp = new ChinesePostman(3)
-    cp.addEdge(0, 1, 10)
-    cp.addEdge(1, 2, 20)
-    cp.addEdge(0, 2, 5)
-    expect(cp.solve()).toBe(35)
+  describe('Multiple edges between vertices', () => {
+    it('multiple edges between same vertices', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(0, 1, 2)
+      cp.addEdge(0, 1, 3)
+      const result = cp.solve()
+      expect(result).toBe(12)
+    })
+
+    it('parallel edges in triangle', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(0, 1, 2)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 0, 1)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
   })
 
-  it('handles single edge correctly', () => {
-    const cp = new ChinesePostman(2)
-    cp.addEdge(0, 1, 3)
-    expect(cp.solve()).toBe(6)
+  describe('Zero-weight edges', () => {
+    it('single edge with zero weight', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 0)
+      expect(cp.solve()).toBe(0)
+    })
+
+    it('triangle with one zero weight edge', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 0)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 0, 1)
+      const result = cp.solve()
+      expect(result).toBe(2)
+    })
   })
 
-  it('handles larger eulerian graph', () => {
-    const cp = new ChinesePostman(4)
-    cp.addEdge(0, 1, 1)
-    cp.addEdge(1, 2, 1)
-    cp.addEdge(2, 3, 1)
-    cp.addEdge(3, 0, 1)
-    expect(cp.solve()).toBe(4)
+  describe('Larger graphs', () => {
+    it('hexagon (eulerian)', () => {
+      const cp = new ChinesePostman(6)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(3, 4, 1)
+      cp.addEdge(4, 5, 1)
+      cp.addEdge(5, 0, 1)
+      expect(cp.solve()).toBe(6)
+    })
+
+    it('octagon (eulerian)', () => {
+      const cp = new ChinesePostman(8)
+      for (let i = 0; i < 8; i++) {
+        cp.addEdge(i, (i + 1) % 8, 1)
+      }
+      expect(cp.solve()).toBe(8)
+    })
   })
 
-  it('handles path of 3', () => {
-    const cp = new ChinesePostman(3)
-    cp.addEdge(0, 1, 1)
-    cp.addEdge(1, 2, 1)
-    expect(cp.solve()).toBe(4)
+  describe('No edges', () => {
+    it('no edges solve returns 0', () => {
+      const cp = new ChinesePostman(1)
+      expect(cp.solve()).toBe(0)
+    })
+
+    it('three nodes with no edges', () => {
+      const cp = new ChinesePostman(3)
+      expect(cp.solve()).toBe(0)
+    })
   })
 
-  it('handles single node', () => {
-    const cp = new ChinesePostman(1)
-    expect(cp.solve()).toBe(0)
-  })
+  describe('Large weight tests', () => {
+    it('single edge cost', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 5)
+      expect(cp.solve()).toBeGreaterThanOrEqual(5)
+    })
 
-  it('handles two nodes no edge', () => {
-    const cp = new ChinesePostman(2)
-    expect(cp.solve()).toBe(0)
-  })
-
-  it('handles triangle graph', () => {
-    const cp = new ChinesePostman(3)
-    cp.addEdge(0, 1, 2)
-    cp.addEdge(1, 2, 3)
-    cp.addEdge(2, 0, 1)
-    expect(cp.solve()).toBe(6)
-  })
-
-  it('handles two nodes with edge', () => {
-    const cp = new ChinesePostman(2)
-    cp.addEdge(0, 1, 3)
-    expect(cp.solve()).toBe(6)
-  })
-
-  it('single node has zero cost', () => {
-    const cp = new ChinesePostman(1)
-    expect(cp.solve()).toBe(0)
-  })
-
-  it('two node graph returns edge weight', () => {
-    const cp = new ChinesePostman(2)
-    cp.addEdge(0, 1, 5)
-    expect(cp.solve()).toBe(10)
-  })
-
-  it('single node has cost 0', () => {
-    const cp = new ChinesePostman(1)
-    expect(cp.solve()).toBe(0)
-  })
-
-  it('two nodes with edge has cost of edge', () => {
-    const cp = new ChinesePostman(2)
-    cp.addEdge(0, 1, 5)
-    expect(cp.solve()).toBe(10)
-  })
-
-  it('single node has zero cost', () => {
-    const cp = new ChinesePostman(1)
-    expect(cp.solve()).toBe(0)
-  })
-
-  it('two nodes with edge has nonzero cost', () => {
-    const cp = new ChinesePostman(2)
-    cp.addEdge(0, 1, 5)
-    expect(cp.solve()).toBeGreaterThanOrEqual(5)
-  })
-
-  it('no edges solve returns 0', () => {
-    const cp = new ChinesePostman(1)
-    expect(cp.solve()).toBe(0)
-  })
-
-  it('single edge cost', () => {
-    const cp = new ChinesePostman(2)
-    cp.addEdge(0, 1, 5)
-    expect(cp.solve()).toBeGreaterThanOrEqual(5)
+    it('single edge with weight 1000', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 1000)
+      expect(cp.solve()).toBe(2000)
+    })
   })
 })

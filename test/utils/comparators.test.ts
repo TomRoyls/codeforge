@@ -106,52 +106,191 @@ describe('Comparators', () => {
     expect(comp({ a: 2, b: 1 }, { a: 1, b: 2 })).toBeGreaterThan(0)
   })
 
-  it('natural handles equal values', () => {
-    const comp = Comparators.natural<number>()
-    expect(comp(5, 5)).toBe(0)
-  })
-
   it('reverse inverts comparison', () => {
     const comp = Comparators.natural<number>()
     const rev = Comparators.reverse(comp)
     expect(rev(1, 2)).toBeGreaterThan(0)
   })
 
-  it('natural comparator orders numbers', () => {
-    const comp = Comparators.natural<number>()
-    expect(comp(1, 2)).toBeLessThan(0)
-    expect(comp(2, 1)).toBeGreaterThan(0)
-    expect(comp(1, 1)).toBe(0)
+  it('locale handles empty strings', () => {
+    expect(Comparators.locale('', 'a')).toBeLessThan(0)
+    expect(Comparators.locale('a', '')).toBeGreaterThan(0)
+    expect(Comparators.locale('', '')).toBe(0)
   })
 
-  it('reverse comparator inverts order', () => {
-    const comp = Comparators.natural<number>()
-    expect(comp(1, 2)).toBeLessThan(0)
-    expect(comp(2, 1)).toBeGreaterThan(0)
+  it('localeReverse handles empty strings', () => {
+    expect(Comparators.localeReverse('', 'a')).toBeGreaterThan(0)
+    expect(Comparators.localeReverse('a', '')).toBeLessThan(0)
   })
 
-  it('natural comparator returns 0 for equal', () => {
-    const comp = Comparators.natural<number>()
-    expect(comp(5, 5)).toBe(0)
+  it('byStringLength with equal lengths returns 0', () => {
+    expect(Comparators.byStringLength('hello', 'world')).toBe(0)
   })
 
-  it('natural comparator returns negative for less', () => {
-    const comp = Comparators.natural<number>()
-    expect(comp(1, 5)).toBeLessThan(0)
+  it('boolean equal values returns 0', () => {
+    const comp = Comparators.boolean()
+    expect(comp(false, false)).toBe(0)
   })
 
-  it('natural comparator returns positive for greater', () => {
-    const comp = Comparators.natural<number>()
-    expect(comp(5, 1)).toBeGreaterThan(0)
+  it('nullish handles mixed null and undefined', () => {
+    const comp = Comparators.nullish(Comparators.natural<number>())
+    expect(comp(null, undefined)).toBe(0)
+    expect(comp(undefined, null)).toBe(0)
   })
 
-  it('natural comparator returns negative for less', () => {
-    const comp = Comparators.natural<number>()
-    expect(comp(1, 5)).toBeLessThan(0)
+  it('nullish sorts both null values to end', () => {
+    const comp = Comparators.nullish(Comparators.natural<number>())
+    const arr = [5, null, 3, undefined, 1]
+    const sorted = arr.sort(comp)
+    expect(sorted.filter(v => v != null)).toEqual([1, 3, 5])
   })
 
-  it('natural comparator returns positive for greater', () => {
+  it('derived with reverse comparator', () => {
+    const comp = Comparators.derived((s: string) => s.length, Comparators.reverse<number>())
+    expect(comp('ab', 'abc')).toBeGreaterThan(0)
+    expect(comp('abc', 'ab')).toBeLessThan(0)
+  })
+
+  it('chain returns 0 for identical objects', () => {
+    const comp = Comparators.chain<{ a: number }>(Comparators.byKey(x => x.a))
+    const obj = { a: 5 }
+    expect(comp(obj, obj)).toBe(0)
+  })
+
+  it('natural handles negative numbers', () => {
     const comp = Comparators.natural<number>()
-    expect(comp(5, 1)).toBeGreaterThan(0)
+    expect(comp(-5, 5)).toBeLessThan(0)
+    expect(comp(5, -5)).toBeGreaterThan(0)
+    expect(comp(-3, -1)).toBeLessThan(0)
+  })
+
+  it('reverse handles negative numbers', () => {
+    const comp = Comparators.reverse<number>()
+    expect(comp(-5, 5)).toBeGreaterThan(0)
+    expect(comp(5, -5)).toBeLessThan(0)
+  })
+
+  it('natural handles zero', () => {
+    const comp = Comparators.natural<number>()
+    expect(comp(0, 0)).toBe(0)
+    expect(comp(0, 1)).toBeLessThan(0)
+    expect(comp(1, 0)).toBeGreaterThan(0)
+  })
+
+  it('byKey with string key', () => {
+    const comp = Comparators.byKey<{ name: string }, string>(x => x.name, Comparators.locale)
+    expect(comp({ name: 'alice' }, { name: 'bob' })).toBeLessThan(0)
+    expect(comp({ name: 'bob' }, { name: 'alice' })).toBeGreaterThan(0)
+  })
+
+  it('byKey equal keys returns 0', () => {
+    const comp = Comparators.byKey<{ v: number }, number>(x => x.v)
+    expect(comp({ v: 5 }, { v: 5 })).toBe(0)
+  })
+
+  it('chain with empty comparators returns 0', () => {
+    const comp = Comparators.chain<number>()
+    expect(comp(1, 2)).toBe(0)
+  })
+
+  it('chain three level sorting', () => {
+    type Item = { a: number; b: number; c: number }
+    const comp = Comparators.chain<Item>(
+      Comparators.byKey(x => x.a),
+      Comparators.byKey(x => x.b),
+      Comparators.byKey(x => x.c),
+    )
+    expect(comp({ a: 1, b: 1, c: 1 }, { a: 1, b: 1, c: 2 })).toBeLessThan(0)
+    expect(comp({ a: 1, b: 2, c: 1 }, { a: 1, b: 1, c: 2 })).toBeGreaterThan(0)
+  })
+
+  it('locale handles case', () => {
+    expect(Comparators.locale('A', 'a')).toBeGreaterThan(0)
+    expect(Comparators.locale('a', 'B')).toBeLessThan(0)
+  })
+
+  it('localeReverse reverses locale comparison', () => {
+    expect(Comparators.localeReverse('a', 'b')).toBeGreaterThan(0)
+    expect(Comparators.localeReverse('b', 'a')).toBeLessThan(0)
+  })
+
+  it('byStringLength with various lengths', () => {
+    expect(Comparators.byStringLength('', 'a')).toBeLessThan(0)
+    expect(Comparators.byStringLength('abc', '')).toBeGreaterThan(0)
+    expect(Comparators.byStringLength('', '')).toBe(0)
+  })
+
+  it('derived with toLowerCase', () => {
+    const comp = Comparators.derived((s: string) => s.toLowerCase(), Comparators.locale)
+    expect(comp('A', 'b')).toBeLessThan(0)
+    expect(comp('B', 'a')).toBeGreaterThan(0)
+  })
+
+  it('natural sorts floating point', () => {
+    const comp = Comparators.natural<number>()
+    expect(comp(1.5, 2.5)).toBeLessThan(0)
+    expect(comp(2.5, 1.5)).toBeGreaterThan(0)
+    expect(comp(1.5, 1.5)).toBe(0)
+  })
+
+  it('reverse sorts floating point', () => {
+    const comp = Comparators.reverse<number>()
+    expect(comp(1.5, 2.5)).toBeGreaterThan(0)
+    expect(comp(2.5, 1.5)).toBeLessThan(0)
+  })
+
+  it('byKey with nested objects', () => {
+    type Item = { nested: { val: number } }
+    const comp = Comparators.byKey<Item, number>(x => x.nested.val)
+    expect(comp({ nested: { val: 1 } }, { nested: { val: 2 } })).toBeLessThan(0)
+  })
+
+  it('nullish with non-null values delegates to inner comparator', () => {
+    const comp = Comparators.nullish(Comparators.natural<number>())
+    expect(comp(1, 3)).toBeLessThan(0)
+    expect(comp(3, 1)).toBeGreaterThan(0)
+    expect(comp(2, 2)).toBe(0)
+  })
+
+  it('chain stops at first non-zero result', () => {
+    const comp = Comparators.chain<{ a: number }>(Comparators.byKey(x => x.a))
+    expect(comp({ a: 1 }, { a: 2 })).toBeLessThan(0)
+  })
+
+  it('byKey works with Array.sort', () => {
+    const items = [{ v: 3 }, { v: 1 }, { v: 2 }]
+    items.sort(Comparators.byKey<{ v: number }, number>(x => x.v))
+    expect(items.map(x => x.v)).toEqual([1, 2, 3])
+  })
+
+  it('derived with absolute value', () => {
+    const comp = Comparators.derived((n: number) => Math.abs(n), Comparators.natural<number>())
+    expect(comp(-5, 3)).toBeGreaterThan(0)
+    expect(comp(-2, 3)).toBeLessThan(0)
+    expect(comp(-3, 3)).toBe(0)
+  })
+
+  it('boolean with Array.sort', () => {
+    const arr = [false, true, false, true]
+    arr.sort(Comparators.boolean())
+    expect(arr).toEqual([true, true, false, false])
+  })
+
+  it('natural comparator type is function', () => {
+    const comp = Comparators.natural<number>()
+    expect(typeof comp).toBe('function')
+  })
+
+  it('reverse comparator type is function', () => {
+    const comp = Comparators.reverse<number>()
+    expect(typeof comp).toBe('function')
+  })
+
+  it('locale comparator type is function', () => {
+    expect(typeof Comparators.locale).toBe('function')
+  })
+
+  it('localeReverse comparator type is function', () => {
+    expect(typeof Comparators.localeReverse).toBe('function')
   })
 })
