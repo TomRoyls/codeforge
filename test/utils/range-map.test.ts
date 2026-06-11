@@ -285,4 +285,165 @@ describe('RangeMap - clone', () => {
     expect(rm.size).toBe(1)
     expect(copy.size).toBe(2)
   })
+
+  it('set with zero range (start === end)', () => {
+    const rm = new RangeMap<string>()
+    rm.set(0, 0, 'zero')
+    expect(rm.get(0)).toBe('zero')
+    expect(rm.get(-1)).toBeUndefined()
+    expect(rm.get(1)).toBeUndefined()
+  })
+
+  it('set with negative range', () => {
+    const rm = new RangeMap<string>()
+    rm.set(-5, -1, 'neg')
+    expect(rm.get(-5)).toBe('neg')
+    expect(rm.get(-3)).toBe('neg')
+    expect(rm.get(-1)).toBe('neg')
+    expect(rm.get(0)).toBeUndefined()
+  })
+
+  it('handles very large range values', () => {
+    const rm = new RangeMap<string>()
+    rm.set(0, Number.MAX_SAFE_INTEGER, 'large')
+    expect(rm.get(Number.MAX_SAFE_INTEGER)).toBe('large')
+    expect(rm.get(0)).toBe('large')
+    expect(rm.get(Number.MAX_SAFE_INTEGER / 2)).toBe('large')
+  })
+
+  it('findOverlapping with exact match', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 5, 'a')
+    const overlap = rm.findOverlapping(1, 5)
+    expect(overlap).toHaveLength(1)
+    expect(overlap[0]!.value).toBe('a')
+  })
+
+  it('findOverlapping with point range', () => {
+    const rm = new RangeMap<string>()
+    rm.set(5, 10, 'a')
+    const overlap = rm.findOverlapping(7, 7)
+    expect(overlap).toHaveLength(1)
+    expect(overlap[0]!.value).toBe('a')
+  })
+
+  it('findOverlapping with partial overlap at start', () => {
+    const rm = new RangeMap<string>()
+    rm.set(5, 10, 'a')
+    const overlap = rm.findOverlapping(3, 7)
+    expect(overlap).toHaveLength(1)
+    expect(overlap[0]!.value).toBe('a')
+  })
+
+  it('findOverlapping with partial overlap at end', () => {
+    const rm = new RangeMap<string>()
+    rm.set(5, 10, 'a')
+    const overlap = rm.findOverlapping(8, 15)
+    expect(overlap).toHaveLength(1)
+    expect(overlap[0]!.value).toBe('a')
+  })
+
+  it('findOverlapping returns empty for non-overlapping', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 5, 'a')
+    expect(rm.findOverlapping(6, 10)).toEqual([])
+    expect(rm.findOverlapping(-5, 0)).toEqual([])
+  })
+
+  it('forEach receives index parameter', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 3, 'a')
+    rm.set(5, 7, 'b')
+    rm.set(9, 11, 'c')
+    const indices: number[] = []
+    rm.forEach((_entry, i) => indices.push(i))
+    expect(indices).toEqual([0, 1, 2])
+  })
+
+  it('coversEntireRange with single entry covering exactly', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 10, 'a')
+    expect(rm.coversEntireRange(1, 10)).toBe(true)
+  })
+
+  it('coversEntireRange with single entry covering larger', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 20, 'a')
+    expect(rm.coversEntireRange(5, 15)).toBe(true)
+  })
+
+  it('coversEntireRange false when partially covered', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 5, 'a')
+    rm.set(10, 15, 'b')
+    expect(rm.coversEntireRange(1, 15)).toBe(false)
+  })
+
+  it('coversEntireRange with adjacent ranges', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 5, 'a')
+    rm.set(6, 10, 'b')
+    expect(rm.coversEntireRange(1, 10)).toBe(true)
+  })
+
+  it('totalCovered with single point', () => {
+    const rm = new RangeMap<string>()
+    rm.set(5, 5, 'a')
+    expect(rm.totalCovered()).toBe(1)
+  })
+
+  it('totalCovered with single range', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 10, 'a')
+    rm.set(5, 15, 'b')
+    expect(rm.totalCovered()).toBe(11)
+  })
+
+  it('remove with point range', () => {
+    const rm = new RangeMap<string>()
+    rm.set(5, 5, 'a')
+    expect(rm.remove(5, 5)).toBe(1)
+    expect(rm.isEmpty).toBe(true)
+  })
+
+  it('remove with negative range', () => {
+    const rm = new RangeMap<string>()
+    rm.set(-10, -5, 'neg')
+    expect(rm.remove(-10, -5)).toBe(1)
+    expect(rm.isEmpty).toBe(true)
+  })
+
+  it('getAll returns entries in insertion order', () => {
+    const rm = new RangeMap<string>()
+    rm.set(10, 15, 'z')
+    rm.set(1, 5, 'a')
+    rm.set(6, 9, 'm')
+    const entries = rm.getAll()
+    expect(entries.map((e) => e.value)).toEqual(['a', 'm', 'z'])
+  })
+
+  it('handles complex values (objects)', () => {
+    const rm = new RangeMap<object>()
+    const obj = { data: { value: 42 } }
+    rm.set(1, 5, obj)
+    expect(rm.get(3)).toEqual(obj)
+  })
+
+  it('multiple overlapping removals', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 3, 'a')
+    rm.set(4, 6, 'b')
+    rm.set(7, 9, 'c')
+    rm.set(10, 12, 'd')
+    expect(rm.remove(3, 11)).toBe(4)
+    expect(rm.isEmpty).toBe(true)
+  })
+
+  it('set replaces single exact overlap', () => {
+    const rm = new RangeMap<string>()
+    rm.set(1, 5, 'old')
+    rm.set(1, 5, 'new')
+    expect(rm.size).toBe(1)
+    expect(rm.get(3)).toBe('new')
+  })
 })

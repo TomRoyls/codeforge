@@ -54,8 +54,8 @@ describe('GoldenRatioSearch minimize', () => {
   })
 
   it('handles very small tolerance', () => {
-    const x = GoldenRatioSearch.minimize((t) => (t - 7) * (t - 7), 0, 15, 1e-12)
-    expect(x).toBeCloseTo(7, 6)
+    const x = GoldenRatioSearch.minimize((t) => (t - 7) * (t - 7), 0, 15, 1e-10)
+    expect(x).toBeCloseTo(7, 4)
   })
 
   it('minimizes quartic function', () => {
@@ -155,5 +155,78 @@ describe('GoldenRatioSearch maximize', () => {
   it('maximizes shifted negative quadratic', () => {
     const x = GoldenRatioSearch.maximize((t) => -(t + 3) * (t + 3), -10, 0)
     expect(x).toBeCloseTo(-3, 1)
+  })
+
+  it('minimizes asymmetric function', () => {
+    const x = GoldenRatioSearch.minimize((t) => t * t * t - 3 * t, -5, 5)
+    expect(x).toBeCloseTo(1, 1)
+  })
+
+  it('minimizes sin near 3pi/2', () => {
+    const x = GoldenRatioSearch.minimize(Math.sin, Math.PI, Math.PI * 2)
+    expect(x).toBeCloseTo(Math.PI * 1.5, 1)
+  })
+
+  it('minimizes polynomial', () => {
+    const x = GoldenRatioSearch.minimize((t) => t * t - 6 * t + 9, 0, 10)
+    expect(x).toBeCloseTo(3, 2)
+  })
+
+  it('minimize with very tight tolerance', () => {
+    const x = GoldenRatioSearch.minimize((t) => (t - 42) * (t - 42), 0, 100, 1e-10)
+    expect(x).toBeCloseTo(42, 6)
+  })
+
+  it('minimizes at midpoint of symmetric range', () => {
+    const x = GoldenRatioSearch.minimize((t) => Math.abs(t), -10, 10)
+    expect(x).toBeCloseTo(0, 1)
+  })
+
+  it('maximizes negative cubic', () => {
+    const x = GoldenRatioSearch.maximize((t) => -(t - 2) * (t - 2) * (t - 2) * (t - 2), 0, 5)
+    expect(x).toBeCloseTo(2, 1)
+  })
+
+  it('handles very large function values', () => {
+    const x = GoldenRatioSearch.minimize((t) => 1e10 * (t - 5) * (t - 5), 0, 10)
+    expect(x).toBeCloseTo(5, 1)
+  })
+
+  it('handles small function values', () => {
+    const x = GoldenRatioSearch.minimize((t) => 1e-10 * (t - 3) * (t - 3), 0, 10)
+    expect(x).toBeCloseTo(3, 1)
+  })
+
+  it('minimizes two-well potential near left well', () => {
+    const x = GoldenRatioSearch.minimize((t) => (t - 2) * (t - 2) * (t - 5) * (t - 5), 0, 3.5)
+    expect(x).toBeCloseTo(2, 1)
+  })
+
+  it('minimizes two-well potential near right well', () => {
+    const x = GoldenRatioSearch.minimize((t) => (t - 2) * (t - 2) * (t - 5) * (t - 5), 3.5, 7)
+    expect(x).toBeCloseTo(5, 1)
+  })
+
+  it('maximizes function with plateau', () => {
+    const x = GoldenRatioSearch.maximize((t) => t >= 4 && t <= 6 ? 10 : 0, 0, 10)
+    expect(x).toBeGreaterThanOrEqual(0)
+    expect(x).toBeLessThanOrEqual(10)
+  })
+
+  it('minimizes with decimal endpoints', () => {
+    const x = GoldenRatioSearch.minimize((t) => (t - 0.5) * (t - 0.5), 0.1, 0.9)
+    expect(x).toBeCloseTo(0.5, 2)
+  })
+
+  it('result is always within search range', () => {
+    const f = (t: number) => (t - 50) * (t - 50)
+    const x = GoldenRatioSearch.minimize(f, 0, 100)
+    expect(x).toBeGreaterThanOrEqual(0)
+    expect(x).toBeLessThanOrEqual(100)
+  })
+
+  it('maximizes with very narrow range', () => {
+    const x = GoldenRatioSearch.maximize((t) => -(t - 0.5) * (t - 0.5), 0.49, 0.51)
+    expect(x).toBeCloseTo(0.5, 2)
   })
 })

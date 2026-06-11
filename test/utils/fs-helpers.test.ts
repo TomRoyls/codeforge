@@ -353,4 +353,186 @@ describe('getFileInfo', () => {
     await getFileInfo(path)
     expect(getCacheStats().size).toBeGreaterThan(0)
   })
+
+  it('returns directory info for directory', async () => {
+    const info = await getFileInfo(TEMP_DIR)
+    expect(info.isDirectory).toBe(true)
+    expect(info.path).toContain(TEMP_DIR)
+  })
+})
+
+// ─── readFileSafe additional cases ──────────────────────────────────────
+
+describe('readFileSafe - additional', () => {
+  beforeEach(() => {
+    clearCache()
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    clearCache()
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('returns empty string for empty file', async () => {
+    const path = tempFile('empty.txt')
+    writeFileSync(path, '', 'utf8')
+    const content = await readFileSafe(path)
+    expect(content).toBe('')
+  })
+
+  it('handles Unicode content', async () => {
+    const path = tempFile('unicode.txt')
+    const unicode = 'Hello 世界 🌍 ñ'
+    writeFileSync(path, unicode, 'utf8')
+    const content = await readFileSafe(path)
+    expect(content).toBe(unicode)
+  })
+
+  it('handles multiline content', async () => {
+    const path = tempFile('multiline.txt')
+    const content = 'line1\nline2\nline3'
+    writeFileSync(path, content, 'utf8')
+    const result = await readFileSafe(path)
+    expect(result).toBe(content)
+  })
+})
+
+// ─── readFileStrict additional cases ────────────────────────────────────
+
+describe('readFileStrict - additional', () => {
+  beforeEach(() => {
+    clearCache()
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    clearCache()
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('returns empty string for empty file', async () => {
+    const path = tempFile('empty.txt')
+    writeFileSync(path, '', 'utf8')
+    const content = await readFileStrict(path)
+    expect(content).toBe('')
+  })
+
+  it('handles large file content', async () => {
+    const path = tempFile('large.txt')
+    const content = 'x'.repeat(10000)
+    writeFileSync(path, content, 'utf8')
+    const result = await readFileStrict(path)
+    expect(result.length).toBe(10000)
+  })
+})
+
+// ─── readJsonFile additional cases ───────────────────────────────────────
+
+describe('readJsonFile - additional', () => {
+  beforeEach(() => {
+    clearCache()
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    clearCache()
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('handles empty JSON object', async () => {
+    const path = tempFile('empty.json')
+    writeFileSync(path, '{}', 'utf8')
+    const result = await readJsonFile<Record<string, never>>(path)
+    expect(result).toEqual({})
+  })
+
+  it('handles JSON array', async () => {
+    const path = tempFile('array.json')
+    writeFileSync(path, '[1,2,3]', 'utf8')
+    const result = await readJsonFile<number[]>(path)
+    expect(result).toEqual([1, 2, 3])
+  })
+
+  it('handles nested JSON', async () => {
+    const path = tempFile('nested.json')
+    writeFileSync(path, '{"a":{"b":{"c":1}}}', 'utf8')
+    const result = await readJsonFile<{ a: { b: { c: number } } }>(path)
+    expect(result?.a?.b?.c).toBe(1)
+  })
+
+  it('throws for invalid JSON', async () => {
+    const path = tempFile('invalid.json')
+    writeFileSync(path, '{invalid}', 'utf8')
+    await expect(readJsonFile(path)).rejects.toThrow()
+  })
+
+  it('throws for non-JSON content', async () => {
+    const path = tempFile('not-json.txt')
+    writeFileSync(path, 'just text', 'utf8')
+    await expect(readJsonFile(path)).rejects.toThrow()
+  })
+})
+
+// ─── writeFileSafe additional cases ─────────────────────────────────────
+
+describe('writeFileSafe - additional', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('writes empty content', async () => {
+    const path = tempFile('empty.txt')
+    await writeFileSafe(path, '')
+    const { readFileSync } = await import('node:fs')
+    expect(readFileSync(path, 'utf8')).toBe('')
+  })
+
+  it('writes JSON content', async () => {
+    const path = tempFile('data.json')
+    const data = JSON.stringify({ key: 'value' })
+    await writeFileSafe(path, data)
+    const { readFileSync } = await import('node:fs')
+    expect(readFileSync(path, 'utf8')).toBe(data)
+  })
+})
+
+// ─── listFiles additional cases ─────────────────────────────────────────
+
+describe('listFiles - additional', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('filters by extension pattern', async () => {
+    writeFileSync(tempFile('a.test.ts'), 'a', 'utf8')
+    writeFileSync(tempFile('b.test.js'), 'b', 'utf8')
+    const files = await listFiles(TEMP_DIR, '*.test.ts')
+    expect(files.length).toBe(1)
+    expect(files[0].endsWith('.test.ts')).toBe(true)
+  })
+
+  it('filters by wildcard pattern', async () => {
+    writeFileSync(tempFile('file1.txt'), 'a', 'utf8')
+    writeFileSync(tempFile('file2.txt'), 'b', 'utf8')
+    writeFileSync(tempFile('data.json'), 'c', 'utf8')
+    const files = await listFiles(TEMP_DIR, '*.txt')
+    expect(files.length).toBe(2)
+  })
+
+  it('handles pattern with multiple wildcards', async () => {
+    writeFileSync(tempFile('test.ts'), 'a', 'utf8')
+    writeFileSync(tempFile('test.js'), 'b', 'utf8')
+    writeFileSync(tempFile('other.txt'), 'c', 'utf8')
+    const files = await listFiles(TEMP_DIR, 'test.*')
+    expect(files.length).toBe(2)
+  })
 })

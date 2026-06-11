@@ -273,4 +273,161 @@ describe('TTLCache keys & values', () => {
     const vals = cache.values()
     expect(vals.sort()).toEqual([1, 2])
   })
+
+  it('values filters out expired entries', async () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 10 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    await new Promise((r) => setTimeout(r, 50))
+    const vals = cache.values()
+    expect(vals).toEqual([])
+  })
+
+  it('getTTL returns -1 for expired key', async () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 10 })
+    cache.set('k', 1)
+    await new Promise((r) => setTimeout(r, 50))
+    expect(cache.getTTL('k')).toBe(-1)
+    expect(cache.size).toBe(0)
+  })
+
+  it('peek returns undefined for missing key', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000 })
+    expect(cache.peek('missing')).toBeUndefined()
+  })
+
+  it('keys preserves insertion order', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000 })
+    cache.set('c', 3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    const keys = cache.keys()
+    expect(keys).toEqual(['c', 'a', 'b'])
+  })
+
+  it('eviction follows FIFO order', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000, maxSize: 3 })
+    cache.set('first', 1)
+    cache.set('second', 2)
+    cache.set('third', 3)
+    cache.set('fourth', 4)
+    expect(cache.has('first')).toBe(false)
+    expect(cache.has('second')).toBe(true)
+    expect(cache.has('third')).toBe(true)
+    expect(cache.has('fourth')).toBe(true)
+  })
+
+  it('get renews entry position', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000, maxSize: 3 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.set('c', 3)
+    cache.get('a')
+    cache.set('d', 4)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.has('b')).toBe(false)
+    expect(cache.has('c')).toBe(true)
+    expect(cache.has('d')).toBe(true)
+  })
+
+  it('clear does not reset stats', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000 })
+    cache.set('a', 1)
+    cache.get('a')
+    cache.get('missing')
+    cache.clear()
+    const stats = cache.getStats()
+    expect(stats.hits).toBe(1)
+    expect(stats.misses).toBe(1)
+    expect(stats.size).toBe(0)
+  })
+
+  it('touch with custom TTL', async () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 100 })
+    cache.set('k', 1)
+    await new Promise((r) => setTimeout(r, 60))
+    cache.touch('k', 200)
+    await new Promise((r) => setTimeout(r, 100))
+    expect(cache.get('k')).toBe(1)
+  })
+
+  it('purgeExpired with mixed entries', async () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 10 })
+    cache.set('expired1', 1)
+    cache.set('live', 2, 5000)
+    cache.set('expired2', 3)
+    await new Promise((r) => setTimeout(r, 50))
+    const purged = cache.purgeExpired()
+    expect(purged).toBe(2)
+    expect(cache.size).toBe(1)
+    expect(cache.get('live')).toBe(2)
+  })
+
+  it('delete on expired key returns true', async () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 10 })
+    cache.set('k', 1)
+    await new Promise((r) => setTimeout(r, 50))
+    expect(cache.delete('k')).toBe(true)
+  })
+
+  it('has removes expired entry', async () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 10 })
+    cache.set('k', 1)
+    await new Promise((r) => setTimeout(r, 50))
+    cache.has('k')
+    expect(cache.size).toBe(0)
+  })
+
+  it('get on expired key increments misses and evictions', async () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 10 })
+    cache.set('k', 1)
+    await new Promise((r) => setTimeout(r, 50))
+    cache.get('k')
+    const stats = cache.getStats()
+    expect(stats.misses).toBe(1)
+    expect(stats.evictions).toBe(1)
+  })
+
+  it('stores and retrieves complex values', () => {
+    const cache = new TTLCache<string, object>({ defaultTTL: 5000 })
+    const obj = { nested: { value: 42 } }
+    cache.set('obj', obj)
+    expect(cache.get('obj')).toEqual(obj)
+  })
+
+  it('set with large TTL values', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000 })
+    cache.set('k', 1, Number.MAX_SAFE_INTEGER)
+    const ttl = cache.getTTL('k')
+    expect(ttl).toBeGreaterThan(0)
+  })
+
+  it('multiple gets track stats correctly', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.get('a')
+    cache.get('a')
+    cache.get('b')
+    cache.get('missing')
+    const stats = cache.getStats()
+    expect(stats.hits).toBe(3)
+    expect(stats.misses).toBe(1)
+    expect(stats.hitRate).toBeCloseTo(3 / 4)
+  })
+
+  it('purgeExpired returns 0 when no expired entries', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000 })
+    cache.set('a', 1)
+    expect(cache.purgeExpired()).toBe(0)
+    expect(cache.size).toBe(1)
+  })
+
+  it('set on full cache evicts one entry', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 5000, maxSize: 1 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.size).toBe(1)
+    expect(cache.has('a')).toBe(false)
+  })
 })

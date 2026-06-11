@@ -304,3 +304,135 @@ describe('DisjointSetUnion - bounds checking', () => {
     expect(() => dsu.connected(0, 5)).toThrow(RangeError)
   })
 })
+
+// ─── toString and toJSON ─────────────────────────────────────────────────
+describe('DisjointSetUnion - toString and toJSON', () => {
+  it('toString returns correct representation', () => {
+    const dsu = new DisjointSetUnion(5)
+    expect(dsu.toString()).toBe('DisjointSetUnion(n=5, components=5)')
+    dsu.union(0, 1)
+    expect(dsu.toString()).toBe('DisjointSetUnion(n=5, components=4)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const dsu = new DisjointSetUnion(3)
+    const json = dsu.toJSON()
+    expect(json.parent).toEqual([0, 1, 2])
+    expect(json.size).toEqual([1, 1, 1])
+    expect(json.components).toBe(3)
+  })
+
+  it('toJSON reflects union operations', () => {
+    const dsu = new DisjointSetUnion(3)
+    dsu.union(0, 1)
+    const json = dsu.toJSON()
+    expect(json.components).toBe(2)
+    expect(json.size).toContain(2)
+  })
+})
+
+// ─── Clone ────────────────────────────────────────────────────────────────
+describe('DisjointSetUnion - clone', () => {
+  it('clone creates independent copy', () => {
+    const dsu = new DisjointSetUnion(3)
+    dsu.union(0, 1)
+    const clone = dsu.clone()
+    clone.union(1, 2)
+    expect(dsu.componentCount).toBe(2)
+    expect(clone.componentCount).toBe(1)
+  })
+
+  it('clone has same initial state', () => {
+    const dsu = new DisjointSetUnion(4)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    const clone = dsu.clone()
+    expect(dsu.componentCount).toBe(clone.componentCount)
+    expect(dsu.find(0)).toBe(clone.find(0))
+  })
+})
+
+// ─── Equals ────────────────────────────────────────────────────────────────
+describe('DisjointSetUnion - equals', () => {
+  it('returns true for identical structure', () => {
+    const dsu1 = new DisjointSetUnion(5)
+    const dsu2 = new DisjointSetUnion(5)
+    dsu1.union(0, 1)
+    dsu1.union(2, 3)
+    dsu2.union(0, 1)
+    dsu2.union(2, 3)
+    expect(dsu1.equals(dsu2)).toBe(true)
+  })
+
+  it('returns false for different sizes', () => {
+    const dsu1 = new DisjointSetUnion(3)
+    const dsu2 = new DisjointSetUnion(5)
+    expect(dsu1.equals(dsu2)).toBe(false)
+  })
+
+  it('returns false for different component counts', () => {
+    const dsu1 = new DisjointSetUnion(3)
+    const dsu2 = new DisjointSetUnion(3)
+    dsu1.union(0, 1)
+    expect(dsu1.equals(dsu2)).toBe(false)
+  })
+
+  it('returns false for different partitioning', () => {
+    const dsu1 = new DisjointSetUnion(4)
+    const dsu2 = new DisjointSetUnion(4)
+    dsu1.union(0, 1)
+    dsu1.union(2, 3)
+    dsu2.union(0, 2)
+    dsu2.union(1, 3)
+    expect(dsu1.equals(dsu2)).toBe(false)
+  })
+
+  it('handles non-DSU input', () => {
+    const dsu = new DisjointSetUnion(3)
+    expect(dsu.equals({})).toBe(false)
+    expect(dsu.equals(null)).toBe(false)
+  })
+})
+
+// ─── Additional edge cases ────────────────────────────────────────────────
+describe('DisjointSetUnion - edge cases', () => {
+  it('handles NaN in constructor', () => {
+    expect(() => new DisjointSetUnion(NaN)).toThrow(RangeError)
+  })
+
+  it('handles Infinity in constructor', () => {
+    expect(() => new DisjointSetUnion(Infinity)).toThrow(RangeError)
+  })
+
+  it('handles decimal numbers in constructor', () => {
+    expect(() => new DisjointSetUnion(3.5)).toThrow(RangeError)
+  })
+
+  it('handles large number of unions', () => {
+    const dsu = new DisjointSetUnion(100)
+    for (let i = 0; i < 99; i++) {
+      dsu.union(i, i + 1)
+    }
+    expect(dsu.componentCount).toBe(1)
+  })
+
+  it('setSize works after complex union tree', () => {
+    const dsu = new DisjointSetUnion(8)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    dsu.union(4, 5)
+    dsu.union(6, 7)
+    dsu.union(0, 2)
+    dsu.union(4, 6)
+    dsu.union(0, 4)
+    expect(dsu.setSize(7)).toBe(8)
+  })
+
+  it('rank remains bounded', () => {
+    const dsu = new DisjointSetUnion(1000)
+    for (let i = 1; i < 1000; i++) {
+      dsu.union(0, i)
+    }
+    expect(dsu.rank(0)).toBeLessThan(15)
+  })
+})

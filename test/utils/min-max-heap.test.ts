@@ -348,18 +348,330 @@ describe('MinMaxHeap - custom comparator', () => {
     expect(heap.extractMax()).toBe('cherry')
   })
 
-  it('works with objects using custom comparator', () => {
+describe('MinMaxHeap - clone', () => {
+  it('creates an independent copy', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(1)
+    heap.insert(2)
+    heap.insert(3)
+    const clone = heap.clone()
+    clone.insert(4)
+    expect(heap.size).toBe(3)
+    expect(clone.size).toBe(4)
+  })
+
+  it('clone has same elements', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(5)
+    heap.insert(1)
+    heap.insert(3)
+    const clone = heap.clone()
+    expect(clone.peekMin()).toBe(1)
+    expect(clone.peekMax()).toBe(5)
+    expect(clone.size).toBe(3)
+  })
+
+  it('clone preserves custom comparator', () => {
+    const heap = new MinMaxHeap<number>({ comparator: (a, b) => b - a })
+    heap.insert(1)
+    heap.insert(3)
+    heap.insert(2)
+    const clone = heap.clone()
+    expect(clone.peekMin()).toBe(3)
+    expect(clone.peekMax()).toBe(1)
+  })
+})
+
+describe('MinMaxHeap - equals', () => {
+  it('returns true for identical heaps', () => {
+    const heap1 = new MinMaxHeap<number>()
+    const heap2 = new MinMaxHeap<number>()
+    heap1.insert(1)
+    heap1.insert(2)
+    heap1.insert(3)
+    heap2.insert(1)
+    heap2.insert(2)
+    heap2.insert(3)
+    expect(heap1.equals(heap2)).toBe(true)
+  })
+
+  it('returns false for heaps with different elements', () => {
+    const heap1 = new MinMaxHeap<number>()
+    const heap2 = new MinMaxHeap<number>()
+    heap1.insert(1)
+    heap1.insert(2)
+    heap2.insert(1)
+    heap2.insert(3)
+    expect(heap1.equals(heap2)).toBe(false)
+  })
+
+  it('returns false for heaps with different sizes', () => {
+    const heap1 = new MinMaxHeap<number>()
+    const heap2 = new MinMaxHeap<number>()
+    heap1.insert(1)
+    heap1.insert(2)
+    heap2.insert(1)
+    expect(heap1.equals(heap2)).toBe(false)
+  })
+
+  it('returns true for both empty heaps', () => {
+    const heap1 = new MinMaxHeap<number>()
+    const heap2 = new MinMaxHeap<number>()
+    expect(heap1.equals(heap2)).toBe(true)
+  })
+
+  it('returns false when comparing to non-heap object', () => {
+    const heap = new MinMaxHeap<number>()
+    expect(heap.equals({})).toBe(false)
+    expect(heap.equals([1, 2, 3])).toBe(false)
+  })
+})
+
+describe('MinMaxHeap - toString and toJSON', () => {
+  it('toString returns JSON string representation', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(1)
+    heap.insert(2)
+    heap.insert(3)
+    const str = heap.toString()
+    expect(str).toContain('1')
+    expect(str).toContain('2')
+    expect(str).toContain('3')
+    expect(JSON.parse(str)).toEqual(expect.any(Array))
+  })
+
+  it('toJSON returns array of elements', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(5)
+    heap.insert(1)
+    heap.insert(3)
+    const json = heap.toJSON()
+    expect(json).toBeInstanceOf(Array)
+    expect(json.length).toBe(3)
+    expect(json).toContain(1)
+    expect(json).toContain(3)
+    expect(json).toContain(5)
+  })
+
+  it('toJSON returns copy not reference', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(1)
+    heap.insert(2)
+    const json = heap.toJSON()
+    json.push(999)
+    expect(heap.size).toBe(2)
+  })
+
+  it('toString works with empty heap', () => {
+    const heap = new MinMaxHeap<number>()
+    expect(heap.toString()).toBe('[]')
+  })
+
+  it('toJSON works with empty heap', () => {
+    const heap = new MinMaxHeap<number>()
+    expect(heap.toJSON()).toEqual([])
+  })
+})
+
+describe('MinMaxHeap - negative numbers', () => {
+  it('handles negative values correctly', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(-5)
+    heap.insert(-1)
+    heap.insert(-3)
+    heap.insert(-7)
+    expect(heap.peekMin()).toBe(-7)
+    expect(heap.peekMax()).toBe(-1)
+  })
+
+  it('handles mixed positive and negative values', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(5)
+    heap.insert(-3)
+    heap.insert(0)
+    heap.insert(-8)
+    heap.insert(10)
+    expect(heap.peekMin()).toBe(-8)
+    expect(heap.peekMax()).toBe(10)
+  })
+
+  it('extracts min and max correctly with negative values', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(-5)
+    heap.insert(10)
+    heap.insert(-2)
+    heap.insert(7)
+    expect(heap.extractMin()).toBe(-5)
+    expect(heap.extractMax()).toBe(10)
+    expect(heap.peekMin()).toBe(-2)
+    expect(heap.peekMax()).toBe(7)
+  })
+})
+
+describe('MinMaxHeap - edge cases', () => {
+  it('handles single element after extractMin', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(5)
+    heap.insert(3)
+    heap.extractMin()
+    expect(heap.peekMin()).toBe(5)
+    expect(heap.peekMax()).toBe(5)
+    expect(heap.size).toBe(1)
+  })
+
+  it('handles single element after extractMax', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(5)
+    heap.insert(7)
+    heap.extractMax()
+    expect(heap.peekMin()).toBe(5)
+    expect(heap.peekMax()).toBe(5)
+    expect(heap.size).toBe(1)
+  })
+
+  it('handles two elements correctly', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(3)
+    heap.insert(7)
+    expect(heap.peekMin()).toBe(3)
+    expect(heap.peekMax()).toBe(7)
+  })
+
+  it('extracts correctly from two elements', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(3)
+    heap.insert(7)
+    expect(heap.extractMin()).toBe(3)
+    expect(heap.peekMin()).toBe(7)
+    expect(heap.peekMax()).toBe(7)
+  })
+
+  it('handles duplicate max values', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(5)
+    heap.insert(10)
+    heap.insert(10)
+    heap.insert(3)
+    expect(heap.extractMax()).toBe(10)
+    expect(heap.extractMax()).toBe(10)
+    expect(heap.peekMax()).toBe(5)
+  })
+
+  it('handles same value inserted multiple times', () => {
+    const heap = new MinMaxHeap<number>()
+    heap.insert(5)
+    heap.insert(5)
+    heap.insert(5)
+    expect(heap.extractMin()).toBe(5)
+    expect(heap.extractMin()).toBe(5)
+    expect(heap.extractMin()).toBe(5)
+    expect(heap.isEmpty()).toBe(true)
+  })
+})
+
+describe('MinMaxHeap - string comparison', () => {
+  it('handles empty strings', () => {
+    const heap = new MinMaxHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap.insert('')
+    heap.insert('a')
+    heap.insert('b')
+    expect(heap.peekMin()).toBe('')
+    expect(heap.peekMax()).toBe('b')
+  })
+
+  it('handles special characters', () => {
+    const heap = new MinMaxHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap.insert('!')
+    heap.insert('@')
+    heap.insert('#')
+    heap.insert('a')
+    expect(heap.peekMin()).toBe('!')
+    expect(heap.peekMax()).toBe('a')
+  })
+
+  it('extracts strings in sorted order', () => {
+    const heap = new MinMaxHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap.insert('zebra')
+    heap.insert('apple')
+    heap.insert('mango')
+    heap.insert('banana')
+    expect(heap.extractMin()).toBe('apple')
+    expect(heap.extractMax()).toBe('zebra')
+  })
+})
+
+describe('MinMaxHeap - custom comparator advanced', () => {
+  it('handles objects with multiple properties', () => {
     interface Item {
       priority: number
-      name: string
+      id: string
     }
     const heap = new MinMaxHeap<Item>({
       comparator: (a, b) => a.priority - b.priority,
     })
-    heap.insert({ priority: 3, name: 'c' })
-    heap.insert({ priority: 1, name: 'a' })
-    heap.insert({ priority: 2, name: 'b' })
-    expect(heap.extractMin()?.name).toBe('a')
-    expect(heap.extractMax()?.name).toBe('c')
+    heap.insert({ priority: 3, id: 'c' })
+    heap.insert({ priority: 1, id: 'a' })
+    heap.insert({ priority: 2, id: 'b' })
+    expect(heap.extractMin()?.id).toBe('a')
+    expect(heap.extractMax()?.id).toBe('c')
+  })
+
+  it('preserves object identity through clone', () => {
+    interface Item {
+      value: number
+    }
+    const heap = new MinMaxHeap<Item>({
+      comparator: (a, b) => a.value - b.value,
+    })
+    const item1 = { value: 1 }
+    const item2 = { value: 2 }
+    heap.insert(item1)
+    heap.insert(item2)
+    const clone = heap.clone()
+    const extracted = clone.extractMin()
+    expect(extracted).toBe(item1)
+    expect(clone.size).toBe(1)
+  })
+
+  it('works with date objects', () => {
+    const heap = new MinMaxHeap<Date>({
+      comparator: (a, b) => a.getTime() - b.getTime(),
+    })
+    const date1 = new Date('2023-01-01')
+    const date2 = new Date('2023-01-15')
+    const date3 = new Date('2023-01-07')
+    heap.insert(date1)
+    heap.insert(date2)
+    heap.insert(date3)
+    expect(heap.extractMin()).toBe(date1)
+    expect(heap.extractMax()).toBe(date2)
+  })
+})
+
+describe('MinMaxHeap - serialization with custom comparator', () => {
+  it('toString works with string heap', () => {
+    const heap = new MinMaxHeap<string>({ comparator: (a, b) => a.localeCompare(b) })
+    heap.insert('apple')
+    heap.insert('banana')
+    heap.insert('cherry')
+    const str = heap.toString()
+    expect(str).toContain('apple')
+    expect(str).toContain('banana')
+    expect(str).toContain('cherry')
+  })
+
+  it('toJSON works with object heap', () => {
+    interface Item {
+      value: number
+    }
+    const heap = new MinMaxHeap<Item>({
+      comparator: (a, b) => a.value - b.value,
+    })
+    heap.insert({ value: 1 })
+    heap.insert({ value: 2 })
+    const json = heap.toJSON()
+    expect(json.length).toBe(2)
+    expect(json[0]).toEqual({ value: 1 })
+    expect(json[1]).toEqual({ value: 2 })
   })
 })
