@@ -15,6 +15,7 @@ describe('TriangularNumber', () => {
 
   it('handles negative n', () => {
     expect(TriangularNumber.nth(-1)).toBe(0)
+    expect(TriangularNumber.nth(-100)).toBe(0)
   })
 
   it('isTriangular detects triangular numbers', () => {
@@ -22,22 +23,40 @@ describe('TriangularNumber', () => {
     expect(TriangularNumber.isTriangular(3)).toBe(true)
     expect(TriangularNumber.isTriangular(6)).toBe(true)
     expect(TriangularNumber.isTriangular(10)).toBe(true)
+    expect(TriangularNumber.isTriangular(15)).toBe(true)
+    expect(TriangularNumber.isTriangular(21)).toBe(true)
   })
 
   it('isTriangular rejects non-triangular', () => {
     expect(TriangularNumber.isTriangular(2)).toBe(false)
     expect(TriangularNumber.isTriangular(4)).toBe(false)
     expect(TriangularNumber.isTriangular(5)).toBe(false)
+    expect(TriangularNumber.isTriangular(7)).toBe(false)
+    expect(TriangularNumber.isTriangular(8)).toBe(false)
+  })
+
+  it('isTriangular rejects 0', () => {
+    expect(TriangularNumber.isTriangular(0)).toBe(false)
+  })
+
+  it('isTriangular rejects negative', () => {
+    expect(TriangularNumber.isTriangular(-1)).toBe(false)
+    expect(TriangularNumber.isTriangular(-10)).toBe(false)
   })
 
   it('indexOf returns correct index', () => {
+    expect(TriangularNumber.indexOf(1)).toBe(1)
+    expect(TriangularNumber.indexOf(3)).toBe(2)
     expect(TriangularNumber.indexOf(6)).toBe(3)
     expect(TriangularNumber.indexOf(10)).toBe(4)
     expect(TriangularNumber.indexOf(55)).toBe(10)
   })
 
   it('indexOf returns -1 for non-triangular', () => {
+    expect(TriangularNumber.indexOf(2)).toBe(-1)
     expect(TriangularNumber.indexOf(4)).toBe(-1)
+    expect(TriangularNumber.indexOf(7)).toBe(-1)
+    expect(TriangularNumber.indexOf(-1)).toBe(-1)
   })
 
   it('generate returns sequence', () => {
@@ -48,72 +67,207 @@ describe('TriangularNumber', () => {
     expect(TriangularNumber.generate(0)).toEqual([])
   })
 
-  it('pentagonal computes pentagonal numbers', () => {
+  it('generate handles 1', () => {
+    expect(TriangularNumber.generate(1)).toEqual([1])
+  })
+
+  it('generate handles large count', () => {
+    const result = TriangularNumber.generate(100)
+    expect(result.length).toBe(100)
+    expect(result[0]).toBe(1)
+    expect(result[99]).toBe(5050)
+  })
+
+  it('pentagonal computes correctly', () => {
     expect(TriangularNumber.pentagonal(1)).toBe(1)
     expect(TriangularNumber.pentagonal(2)).toBe(5)
     expect(TriangularNumber.pentagonal(3)).toBe(12)
+    expect(TriangularNumber.pentagonal(4)).toBe(22)
+    expect(TriangularNumber.pentagonal(5)).toBe(35)
   })
 
-  it('hexagonal computes hexagonal numbers', () => {
+  it('pentagonal handles 0 and negative', () => {
+    expect(TriangularNumber.pentagonal(0)).toBe(0)
+    expect(TriangularNumber.pentagonal(-1)).toBe(0)
+  })
+
+  it('hexagonal computes correctly', () => {
     expect(TriangularNumber.hexagonal(1)).toBe(1)
     expect(TriangularNumber.hexagonal(2)).toBe(6)
     expect(TriangularNumber.hexagonal(3)).toBe(15)
+    expect(TriangularNumber.hexagonal(4)).toBe(28)
+    expect(TriangularNumber.hexagonal(5)).toBe(45)
   })
 
-  it('tetrahedral computes tetrahedral numbers', () => {
+  it('hexagonal handles 0 and negative', () => {
+    expect(TriangularNumber.hexagonal(0)).toBe(0)
+    expect(TriangularNumber.hexagonal(-1)).toBe(0)
+  })
+
+  it('tetrahedral computes correctly', () => {
     expect(TriangularNumber.tetrahedral(1)).toBe(1)
+    expect(TriangularNumber.tetrahedral(2)).toBe(4)
     expect(TriangularNumber.tetrahedral(3)).toBe(10)
+    expect(TriangularNumber.tetrahedral(4)).toBe(20)
+    expect(TriangularNumber.tetrahedral(5)).toBe(35)
+  })
+
+  it('tetrahedral handles 0', () => {
+    expect(TriangularNumber.tetrahedral(0)).toBe(0)
+    expect(TriangularNumber.tetrahedral(-1)).toBe(0)
   })
 
   it('sumOfFirst equals tetrahedral', () => {
     expect(TriangularNumber.sumOfFirst(5)).toBe(TriangularNumber.tetrahedral(5))
+    expect(TriangularNumber.sumOfFirst(10)).toBe(TriangularNumber.tetrahedral(10))
   })
 
-  it('isTriangular rejects negative', () => {
-    expect(TriangularNumber.isTriangular(-1)).toBe(false)
+  it('sumOfFirst handles 0 and negative', () => {
+    expect(TriangularNumber.sumOfFirst(0)).toBe(0)
+    expect(TriangularNumber.sumOfFirst(-5)).toBe(0)
   })
 
   it('nth handles large n', () => {
     expect(TriangularNumber.nth(1000)).toBe(500500)
+    expect(TriangularNumber.nth(100)).toBe(5050)
   })
 
-  it('nth handles n=0', () => {
-    expect(TriangularNumber.nth(0)).toBe(0)
+  it('nth formula: n*(n+1)/2', () => {
+    for (let n = 1; n <= 20; n++) {
+      expect(TriangularNumber.nth(n)).toBe((n * (n + 1)) / 2)
+    }
   })
 
-  it('isTriangular identifies triangular numbers', () => {
-    expect(TriangularNumber.isTriangular(6)).toBe(true)
-    expect(TriangularNumber.isTriangular(10)).toBe(true)
-    expect(TriangularNumber.isTriangular(7)).toBe(false)
+  it('isTriangular and indexOf are consistent', () => {
+    for (let n = 1; n <= 20; n++) {
+      const t = TriangularNumber.nth(n)
+      expect(TriangularNumber.isTriangular(t)).toBe(true)
+      expect(TriangularNumber.indexOf(t)).toBe(n)
+    }
   })
 
-  it('nth triangular number is correct', () => {
+  it('generate values are all triangular', () => {
+    const values = TriangularNumber.generate(20)
+    for (const v of values) {
+      expect(TriangularNumber.isTriangular(v)).toBe(true)
+    }
+  })
+
+  it('pentagonal formula: (3n²-n)/2', () => {
+    for (let n = 1; n <= 10; n++) {
+      expect(TriangularNumber.pentagonal(n)).toBe((3 * n * n - n) / 2)
+    }
+  })
+
+  it('hexagonal formula: n*(2n-1)', () => {
+    for (let n = 1; n <= 10; n++) {
+      expect(TriangularNumber.hexagonal(n)).toBe(n * (2 * n - 1))
+    }
+  })
+
+  it('tetrahedral formula: n*(n+1)*(n+2)/6', () => {
+    for (let n = 1; n <= 10; n++) {
+      expect(TriangularNumber.tetrahedral(n)).toBe((n * (n + 1) * (n + 2)) / 6)
+    }
+  })
+
+  it('isTriangular(210) is true', () => {
+    expect(TriangularNumber.isTriangular(210)).toBe(true)
+    expect(TriangularNumber.indexOf(210)).toBe(20)
+  })
+
+  it('hexagonal numbers that are also triangular', () => {
+    expect(TriangularNumber.isTriangular(TriangularNumber.hexagonal(1))).toBe(true)
+    expect(TriangularNumber.isTriangular(TriangularNumber.hexagonal(3))).toBe(true)
+  })
+
+  it('nth(50) is correct', () => {
+    expect(TriangularNumber.nth(50)).toBe(1275)
+  })
+
+  it('nth(100) is correct', () => {
+    expect(TriangularNumber.nth(100)).toBe(5050)
+  })
+
+  it('pentagonal large n', () => {
+    expect(TriangularNumber.pentagonal(100)).toBe(14950)
+  })
+
+  it('hexagonal large n', () => {
+    expect(TriangularNumber.hexagonal(100)).toBe(19900)
+  })
+
+  it('generate ascending order', () => {
+    const values = TriangularNumber.generate(50)
+    for (let i = 1; i < values.length; i++) {
+      expect(values[i]).toBeGreaterThan(values[i - 1]!)
+    }
+  })
+
+  it('pentagonal values increase', () => {
+    for (let n = 1; n < 20; n++) {
+      expect(TriangularNumber.pentagonal(n + 1)).toBeGreaterThan(TriangularNumber.pentagonal(n))
+    }
+  })
+
+  it('hexagonal values increase', () => {
+    for (let n = 1; n < 20; n++) {
+      expect(TriangularNumber.hexagonal(n + 1)).toBeGreaterThan(TriangularNumber.hexagonal(n))
+    }
+  })
+
+  it('tetrahedral values increase', () => {
+    for (let n = 1; n < 20; n++) {
+      expect(TriangularNumber.tetrahedral(n + 1)).toBeGreaterThan(TriangularNumber.tetrahedral(n))
+    }
+  })
+
+  it('nth triangular is sum of 1..n', () => {
+    for (let n = 1; n <= 15; n++) {
+      let sum = 0
+      for (let i = 1; i <= n; i++) sum += i
+      expect(TriangularNumber.nth(n)).toBe(sum)
+    }
+  })
+
+  it('indexOf of nth returns n', () => {
+    for (let n = 1; n <= 15; n++) {
+      expect(TriangularNumber.indexOf(TriangularNumber.nth(n))).toBe(n)
+    }
+  })
+
+  it('isTriangular false for non-integer between triangulars', () => {
+    expect(TriangularNumber.isTriangular(11)).toBe(false)
+    expect(TriangularNumber.isTriangular(12)).toBe(false)
+    expect(TriangularNumber.isTriangular(13)).toBe(false)
+    expect(TriangularNumber.isTriangular(14)).toBe(false)
+    expect(TriangularNumber.isTriangular(16)).toBe(false)
+    expect(TriangularNumber.isTriangular(17)).toBe(false)
+  })
+
+  it('generate with large count produces correct last', () => {
+    const result = TriangularNumber.generate(200)
+    expect(result[199]).toBe(20100)
+  })
+
+  it('pentagonal and hexagonal both produce 1 for n=1', () => {
+    expect(TriangularNumber.pentagonal(1)).toBe(1)
+    expect(TriangularNumber.hexagonal(1)).toBe(1)
     expect(TriangularNumber.nth(1)).toBe(1)
-    expect(TriangularNumber.nth(3)).toBe(6)
-    expect(TriangularNumber.nth(4)).toBe(10)
   })
 
-  it('nth(0) returns 0', () => {
-    expect(TriangularNumber.nth(0)).toBe(0)
+  it('sumOfFirst formula matches manual sum', () => {
+    let manualSum = 0
+    for (let n = 1; n <= 10; n++) {
+      manualSum += TriangularNumber.nth(n)
+      expect(TriangularNumber.sumOfFirst(n)).toBe(manualSum)
+    }
   })
 
-  it('nth(1) returns 1', () => {
-    expect(TriangularNumber.nth(1)).toBe(1)
-  })
-
-  it('nth(3) returns 6', () => {
-    expect(TriangularNumber.nth(3)).toBe(6)
-  })
-
-  it('nth(1) returns 1', () => {
-    expect(TriangularNumber.nth(1)).toBe(1)
-  })
-
-  it('nth(0) returns 0', () => {
-    expect(TriangularNumber.nth(0)).toBe(0)
-  })
-
-  it('nth(1) returns 1', () => {
-    expect(TriangularNumber.nth(1)).toBe(1)
+  it('nth and generate are consistent', () => {
+    const values = TriangularNumber.generate(10)
+    for (let i = 0; i < 10; i++) {
+      expect(values[i]).toBe(TriangularNumber.nth(i + 1))
+    }
   })
 })

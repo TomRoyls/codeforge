@@ -152,33 +152,10 @@ describe('TopK - edge cases', () => {
     expect(tk.topValues).toEqual(['b'])
   })
 
-  it('empty tracker has no top values', () => {
-    const tk = new TopK<string>(3)
-    expect(tk.topValues).toEqual([])
-  })
-
-  it('add and query top values', () => {
-    const tk = new TopK<string>(3)
-    tk.add('a', 5)
-    tk.add('b', 3)
-    const top = tk.topValues
-    expect(top.length).toBeGreaterThan(0)
-  })
-
-  it('empty tracker has no top values', () => {
-    const tk = new TopK<string>(3)
-    expect(tk.topValues).toEqual([])
-  })
-
   it('add single value returns it in top', () => {
     const tk = new TopK<string>(3)
     tk.add('hello')
     expect(tk.topValues).toContain('hello')
-  })
-
-  it('empty tracker has no top values', () => {
-    const tk = new TopK<string>(3)
-    expect(tk.topValues).toEqual([])
   })
 
   it('single element is top', () => {
@@ -190,5 +167,232 @@ describe('TopK - edge cases', () => {
   it('empty topK has no values', () => {
     const tk = new TopK<string>(3)
     expect(tk.topValues.length).toBe(0)
+  })
+
+  it('handles adding same value multiple times', () => {
+    const tk = new TopK<string>(3)
+    tk.add('x')
+    tk.add('x')
+    tk.add('x')
+    expect(tk.getCount('x')).toBe(3)
+    expect(tk.topValues).toEqual(['x'])
+  })
+
+  it('top respects k limit exactly', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 10)
+    tk.add('b', 9)
+    tk.add('c', 8)
+    tk.add('d', 7)
+    expect(tk.topValues).toEqual(['a', 'b', 'c'])
+  })
+
+  it('merge with empty TopK returns copy', () => {
+    const tk1 = new TopK<string>(3)
+    tk1.add('a', 5)
+    const tk2 = new TopK<string>(3)
+    const merged = tk1.merge(tk2)
+    expect(merged.getCount('a')).toBe(5)
+    expect(merged.k).toBe(3)
+  })
+
+  it('merge empty with empty returns empty', () => {
+    const tk1 = new TopK<string>(3)
+    const tk2 = new TopK<string>(3)
+    const merged = tk1.merge(tk2)
+    expect(merged.isEmpty).toBe(true)
+  })
+
+  it('merge handles overlapping values', () => {
+    const tk1 = new TopK<string>(3)
+    tk1.add('a', 5)
+    tk1.add('b', 3)
+    const tk2 = new TopK<string>(3)
+    tk2.add('a', 2)
+    tk2.add('c', 4)
+    const merged = tk1.merge(tk2)
+    expect(merged.getCount('a')).toBe(7)
+    expect(merged.getCount('b')).toBe(3)
+    expect(merged.getCount('c')).toBe(4)
+  })
+
+  it('merge uses larger k from both', () => {
+    const tk1 = new TopK<string>(10)
+    tk1.add('a', 1)
+    const tk2 = new TopK<string>(5)
+    tk2.add('b', 2)
+    const merged = tk1.merge(tk2)
+    expect(merged.k).toBe(10)
+  })
+
+  it('forEach with empty tracker', () => {
+    const tk = new TopK<string>(3)
+    const entries: string[] = []
+    tk.forEach((e) => entries.push(e.value))
+    expect(entries).toEqual([])
+  })
+
+  it('forEach with fewer than k items', () => {
+    const tk = new TopK<string>(5)
+    tk.add('a', 3)
+    tk.add('b', 1)
+    const entries: string[] = []
+    tk.forEach((e) => entries.push(e.value))
+    expect(entries).toEqual(['a', 'b'])
+  })
+
+  it('forEach iterates in descending order', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 1)
+    tk.add('b', 3)
+    tk.add('c', 2)
+    const counts: number[] = []
+    tk.forEach((e) => counts.push(e.count))
+    expect(counts).toEqual([3, 2, 1])
+  })
+
+  it('handles large count values', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', Number.MAX_SAFE_INTEGER)
+    tk.add('b', 1)
+    expect(tk.topValues).toEqual(['a', 'b'])
+  })
+
+  it('handles large k value', () => {
+    const tk = new TopK<string>(1000)
+    tk.add('a', 5)
+    tk.add('b', 3)
+    expect(tk.topValues).toEqual(['a', 'b'])
+  })
+
+  it('handles k larger than total items', () => {
+    const tk = new TopK<string>(100)
+    tk.add('a', 5)
+    tk.add('b', 3)
+    expect(tk.topValues.length).toBe(2)
+  })
+
+  it('getCount on non-existent value returns 0', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 5)
+    expect(tk.getCount('nonexistent')).toBe(0)
+  })
+
+  it('has returns false for non-existent value', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 5)
+    expect(tk.has('nonexistent')).toBe(false)
+  })
+
+  it('remove on non-existent value returns false', () => {
+    const tk = new TopK<string>(3)
+    expect(tk.remove('nonexistent')).toBe(false)
+  })
+
+  it('clear then size returns 0', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 5)
+    tk.add('b', 3)
+    tk.clear()
+    expect(tk.size).toBe(0)
+  })
+
+  it('clear then isEmpty returns true', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 5)
+    tk.clear()
+    expect(tk.isEmpty).toBe(true)
+  })
+
+  it('clear then totalCount returns 0', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 5)
+    tk.add('b', 3)
+    tk.clear()
+    expect(tk.totalCount).toBe(0)
+  })
+
+  it('add with count 0 does nothing', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 0)
+    expect(tk.isEmpty).toBe(true)
+  })
+
+  it('add with negative count does nothing', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', -5)
+    expect(tk.isEmpty).toBe(true)
+  })
+
+  it('top returns entries with correct structure', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 5)
+    const top = tk.top
+    expect(top[0]!).toHaveProperty('value')
+    expect(top[0]!).toHaveProperty('count')
+    expect(top[0]!.value).toBe('a')
+    expect(top[0]!.count).toBe(5)
+  })
+
+  it('handles tie in counts (earlier added first)', () => {
+    const tk = new TopK<string>(2)
+    tk.add('a', 5)
+    tk.add('b', 5)
+    const top = tk.topValues
+    expect(top).toContain('a')
+    expect(top).toContain('b')
+  })
+
+  it('merge does not modify original instances', () => {
+    const tk1 = new TopK<string>(3)
+    tk1.add('a', 5)
+    const initialCount1 = tk1.getCount('a')
+    const tk2 = new TopK<string>(3)
+    tk2.add('b', 3)
+    const initialCount2 = tk2.getCount('b')
+    tk1.merge(tk2)
+    expect(tk1.getCount('a')).toBe(initialCount1)
+    expect(tk2.getCount('b')).toBe(initialCount2)
+  })
+
+  it('k getter returns original k value', () => {
+    const tk = new TopK<string>(7)
+    expect(tk.k).toBe(7)
+  })
+
+  it('handles sequential adds of same value', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a', 1)
+    tk.add('a', 2)
+    tk.add('a', 3)
+    expect(tk.getCount('a')).toBe(6)
+  })
+
+  it('top values are unique', () => {
+    const tk = new TopK<string>(5)
+    tk.add('a', 10)
+    tk.add('b', 8)
+    tk.add('a', 2)
+    const topValues = tk.topValues
+    const uniqueValues = new Set(topValues)
+    expect(uniqueValues.size).toBe(topValues.length)
+  })
+
+  it('handles numbers as values', () => {
+    const tk = new TopK<number>(3)
+    tk.add(1, 5)
+    tk.add(2, 10)
+    tk.add(3, 7)
+    expect(tk.topValues).toEqual([2, 3, 1])
+  })
+
+  it('handles objects as values', () => {
+    const tk = new TopK<{ id: string }>(3)
+    const obj1 = { id: 'a' }
+    const obj2 = { id: 'b' }
+    tk.add(obj1, 5)
+    tk.add(obj2, 3)
+    expect(tk.has(obj1)).toBe(true)
+    expect(tk.has(obj2)).toBe(true)
   })
 })

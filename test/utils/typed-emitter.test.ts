@@ -6,8 +6,11 @@ interface TestEvents {
   count: number
 }
 
-// ─── On and Emit ──────────────────────────────────────────
-describe('TypedEventEmitter - on and emit', () => {
+interface Events {
+  message: string
+}
+
+describe('TypedEventEmitter', () => {
   it('receives emitted events', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     let received = ''
@@ -24,11 +27,8 @@ describe('TypedEventEmitter - on and emit', () => {
     emitter.emit('count', 1)
     expect(count).toBe(2)
   })
-})
 
-// ─── Once ─────────────────────────────────────────────────
-describe('TypedEventEmitter - once', () => {
-  it('fires only once', () => {
+  it('once fires only once', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     let count = 0
     emitter.once('count', () => { count++ })
@@ -36,11 +36,17 @@ describe('TypedEventEmitter - once', () => {
     emitter.emit('count', 2)
     expect(count).toBe(1)
   })
-})
 
-// ─── Off ──────────────────────────────────────────────────
-describe('TypedEventEmitter - off', () => {
-  it('removes listener', () => {
+  it('once receives correct data', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let received = ''
+    emitter.once('message', (msg) => { received = msg })
+    emitter.emit('message', 'first')
+    emitter.emit('message', 'second')
+    expect(received).toBe('first')
+  })
+
+  it('off removes listener', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     let count = 0
     const handler = () => { count++ }
@@ -60,10 +66,16 @@ describe('TypedEventEmitter - off', () => {
     emitter.emit('count', 2)
     expect(count).toBe(1)
   })
-})
 
-// ─── Stats ────────────────────────────────────────────────
-describe('TypedEventEmitter - stats', () => {
+  it('once returns unsubscribe function', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count = 0
+    const unsub = emitter.once('count', () => { count++ })
+    unsub()
+    emitter.emit('count', 1)
+    expect(count).toBe(0)
+  })
+
   it('tracks listener count', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     emitter.on('message', () => {})
@@ -79,11 +91,9 @@ describe('TypedEventEmitter - stats', () => {
     const stats = emitter.getStats()
     expect(stats.totalListeners).toBe(1)
     expect(stats.totalEmitted).toBe(1)
+    expect(stats.events).toBe(1)
   })
-})
 
-// ─── removeAllListeners ───────────────────────────────────
-describe('TypedEventEmitter - removeAllListeners', () => {
   it('removes all listeners for specific event', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     emitter.on('message', () => {})
@@ -99,10 +109,7 @@ describe('TypedEventEmitter - removeAllListeners', () => {
     emitter.removeAllListeners()
     expect(emitter.getStats().totalListeners).toBe(0)
   })
-})
 
-// ─── Max listeners ────────────────────────────────────────
-describe('TypedEventEmitter - max listeners', () => {
   it('throws when max listeners exceeded', () => {
     const emitter = new TypedEventEmitter<TestEvents>({ maxListeners: 2 })
     emitter.on('message', () => {})
@@ -118,31 +125,13 @@ describe('TypedEventEmitter - max listeners', () => {
     expect(receivedNum).toBe(42)
   })
 
-  it('once returns unsubscribe function', () => {
-    const emitter = new TypedEventEmitter<TestEvents>()
-    let count = 0
-    const unsub = emitter.once('count', () => { count++ })
-    unsub()
-    emitter.emit('count', 1)
-    expect(count).toBe(0)
-  })
-
   it('off does nothing for unknown handler', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     emitter.off('message', () => {})
     expect(emitter.listenerCount('message')).toBe(0)
   })
 
-  it('once with multiple events', () => {
-    const emitter = new TypedEventEmitter<TestEvents>()
-    let received = ''
-    emitter.once('message', (msg) => { received = msg })
-    emitter.emit('message', 'first')
-    emitter.emit('message', 'second')
-    expect(received).toBe('first')
-  })
-
-  it('on with multiple handlers', () => {
+  it('on with multiple handlers on same event', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     let sum = 0
     emitter.on('count', (n) => { sum += n })
@@ -156,7 +145,7 @@ describe('TypedEventEmitter - max listeners', () => {
     expect(() => emitter.emit('message', 'test')).not.toThrow()
   })
 
-  it('removeAllListeners clears handlers', () => {
+  it('removeAllListeners clears handlers preventing future emissions', () => {
     const emitter = new TypedEventEmitter<TestEvents>()
     let count = 0
     emitter.on('message', () => { count++ })
@@ -165,49 +154,252 @@ describe('TypedEventEmitter - max listeners', () => {
     expect(count).toBe(0)
   })
 
-  it('emit with no listeners does not throw', () => {
-    const emitter = new TypedEventEmitter<Events>()
-    expect(() => emitter.emit('message', 'test')).not.toThrow()
-  })
-
-  it('removeAllListeners clears handlers', () => {
-    const emitter = new TypedEventEmitter<Events>()
-    const fn = (msg: string) => {}
-    emitter.on('message', fn)
-    emitter.removeAllListeners('message')
+  it('listenerCount returns 0 for unregistered event', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
     expect(emitter.listenerCount('message')).toBe(0)
   })
 
-  it('emit with no listeners does not throw', () => {
-    const emitter = new TypedEventEmitter<{ click: void }>()
-    expect(() => emitter.emit('click')).not.toThrow()
-  })
-
-  it('on registers listener that receives events', () => {
-    const emitter = new TypedEventEmitter<{ data: number }>()
-    let received = 0
-    emitter.on('data', (n) => { received = n })
-    emitter.emit('data', 42)
-    expect(received).toBe(42)
-  })
-
-  it('removeAllListeners clears handlers', () => {
-    const emitter = new TypedEventEmitter<{ data: number }>()
+  it('multiple emits trigger handler each time', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
     let count = 0
-    emitter.on('data', () => { count++ })
-    emitter.removeAllListeners('data')
-    emitter.emit('data', 1)
-    expect(count).toBe(0)
+    emitter.on('count', () => { count++ })
+    emitter.emit('count', 1)
+    emitter.emit('count', 2)
+    emitter.emit('count', 3)
+    expect(count).toBe(3)
   })
 
-  it('emit with no listeners does not throw', () => {
-    const emitter = new TypedEventEmitter()
-    expect(() => emitter.emit('data', 42)).not.toThrow()
+  it('stats tracks multiple emitted events', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.on('message', () => {})
+    emitter.emit('message', 'a')
+    emitter.emit('message', 'b')
+    emitter.emit('message', 'c')
+    expect(emitter.getStats().totalEmitted).toBe(3)
   })
 
-  it('on returns unsubscribe function', () => {
-    const emitter = new TypedEventEmitter()
-    const unsub = emitter.on('data', () => {})
-    expect(typeof unsub).toBe('function')
+  it('stats tracks multiple event types', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.on('message', () => {})
+    emitter.on('count', () => {})
+    expect(emitter.getStats().events).toBe(2)
+    expect(emitter.getStats().totalListeners).toBe(2)
+  })
+
+  it('add and remove listener updates count', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    const handler = () => {}
+    emitter.on('message', handler)
+    expect(emitter.listenerCount('message')).toBe(1)
+    emitter.off('message', handler)
+    expect(emitter.listenerCount('message')).toBe(0)
+  })
+
+  it('removeAllListeners with no args clears everything', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.on('message', () => {})
+    emitter.on('count', () => {})
+    emitter.removeAllListeners()
+    expect(emitter.getStats().events).toBe(0)
+  })
+
+  it('emitting after removeAllListeners does not throw', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.on('message', () => {})
+    emitter.removeAllListeners()
+    expect(() => emitter.emit('message', 'test')).not.toThrow()
+  })
+
+  it('default max listeners is 50', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    for (let i = 0; i < 50; i++) {
+      emitter.on('message', () => {})
+    }
+    expect(() => emitter.on('message', () => {})).toThrow('Max listeners')
+  })
+
+  it('custom max listeners works', () => {
+    const emitter = new TypedEventEmitter<TestEvents>({ maxListeners: 5 })
+    for (let i = 0; i < 5; i++) {
+      emitter.on('message', () => {})
+    }
+    expect(() => emitter.on('message', () => {})).toThrow('Max listeners')
+  })
+
+  it('different events have independent max listeners', () => {
+    const emitter = new TypedEventEmitter<TestEvents>({ maxListeners: 1 })
+    emitter.on('message', () => {})
+    expect(() => emitter.on('message', () => {})).toThrow()
+    emitter.on('count', () => {})
+    expect(emitter.listenerCount('count')).toBe(1)
+  })
+
+  it('re-registering same handler counts as separate', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    const handler = () => {}
+    emitter.on('message', handler)
+    emitter.on('message', handler)
+    expect(emitter.listenerCount('message')).toBe(1)
+  })
+
+  it('off for non-existent event does nothing', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    expect(() => emitter.off('message', () => {})).not.toThrow()
+  })
+
+  it('once with data receives correct data', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let received = 0
+    emitter.once('count', (n) => { received = n })
+    emitter.emit('count', 99)
+    expect(received).toBe(99)
+  })
+
+  it('stats after multiple operations', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.on('message', () => {})
+    emitter.on('count', () => {})
+    emitter.emit('message', 'a')
+    emitter.emit('count', 1)
+    emitter.emit('count', 2)
+    const stats = emitter.getStats()
+    expect(stats.events).toBe(2)
+    expect(stats.totalListeners).toBe(2)
+    expect(stats.totalEmitted).toBe(3)
+  })
+
+  it('remove specific event leaves others intact', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let countCalled = false
+    emitter.on('message', () => {})
+    emitter.on('count', () => { countCalled = true })
+    emitter.removeAllListeners('message')
+    emitter.emit('count', 1)
+    expect(countCalled).toBe(true)
+    expect(emitter.listenerCount('message')).toBe(0)
+    expect(emitter.listenerCount('count')).toBe(1)
+  })
+
+  it('unsubscribe from once before fire', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let called = false
+    const unsub = emitter.once('message', () => { called = true })
+    unsub()
+    emitter.emit('message', 'test')
+    expect(called).toBe(false)
+  })
+
+  it('multiple once listeners on same event', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count = 0
+    emitter.once('count', () => { count++ })
+    emitter.once('count', () => { count++ })
+    emitter.emit('count', 1)
+    expect(count).toBe(2)
+    emitter.emit('count', 2)
+    expect(count).toBe(2)
+  })
+
+  it('void event type works', () => {
+    const emitter = new TypedEventEmitter<{ click: void }>()
+    let clicked = false
+    emitter.on('click', () => { clicked = true })
+    emitter.emit('click')
+    expect(clicked).toBe(true)
+  })
+
+  it('emit to void event with undefined', () => {
+    const emitter = new TypedEventEmitter<{ done: void }>()
+    expect(() => emitter.emit('done')).not.toThrow()
+  })
+
+  it('on and off multiple times', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count = 0
+    const handler = () => { count++ }
+    emitter.on('count', handler)
+    emitter.off('count', handler)
+    emitter.on('count', handler)
+    emitter.emit('count', 1)
+    expect(count).toBe(1)
+  })
+
+  it('once then on same event', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let onceCalled = false
+    let onCalled = false
+    emitter.once('message', () => { onceCalled = true })
+    emitter.on('message', () => { onCalled = true })
+    emitter.emit('message', 'test')
+    expect(onceCalled).toBe(true)
+    expect(onCalled).toBe(true)
+    emitter.emit('message', 'test2')
+    expect(emitter.listenerCount('message')).toBe(1)
+  })
+
+  it('stats totalEmitted increments for each emit call', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.emit('message', 'a')
+    emitter.emit('count', 1)
+    emitter.emit('message', 'b')
+    expect(emitter.getStats().totalEmitted).toBe(3)
+  })
+
+  it('stats totalEmitted increments even with no listeners', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.emit('message', 'test')
+    expect(emitter.getStats().totalEmitted).toBe(1)
+  })
+
+  it('maxListeners error message includes event name', () => {
+    const emitter = new TypedEventEmitter<TestEvents>({ maxListeners: 1 })
+    emitter.on('message', () => {})
+    try {
+      emitter.on('message', () => {})
+      expect.unreachable('Should have thrown')
+    } catch (e) {
+      expect((e as Error).message).toContain('message')
+      expect((e as Error).message).toContain('1')
+    }
+  })
+
+  it('constructor with empty options uses defaults', () => {
+    const emitter = new TypedEventEmitter<TestEvents>({})
+    for (let i = 0; i < 50; i++) {
+      emitter.on('message', () => {})
+    }
+    expect(() => emitter.on('message', () => {})).toThrow()
+  })
+
+  it('off removes exact handler not others', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count1 = 0
+    let count2 = 0
+    const handler1 = () => { count1++ }
+    const handler2 = () => { count2++ }
+    emitter.on('count', handler1)
+    emitter.on('count', handler2)
+    emitter.off('count', handler1)
+    emitter.emit('count', 1)
+    expect(count1).toBe(0)
+    expect(count2).toBe(1)
+  })
+
+  it('maxListeners of 1 allows exactly one listener', () => {
+    const emitter = new TypedEventEmitter<TestEvents>({ maxListeners: 1 })
+    emitter.on('message', () => {})
+    expect(emitter.listenerCount('message')).toBe(1)
+    expect(() => emitter.on('message', () => {})).toThrow()
+  })
+
+  it('removeAllListeners then re-register works', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count = 0
+    emitter.on('count', () => { count++ })
+    emitter.removeAllListeners('count')
+    emitter.on('count', () => { count++ })
+    emitter.emit('count', 1)
+    expect(count).toBe(1)
+    expect(emitter.listenerCount('count')).toBe(1)
   })
 })

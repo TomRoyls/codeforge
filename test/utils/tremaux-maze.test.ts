@@ -2,7 +2,22 @@ import { describe, expect, it } from 'vitest'
 import { TremauxMaze } from '../../src/utils/tremaux-maze.js'
 
 describe('TremauxMaze', () => {
-  it('solves straight corridor', () => {
+  it('solves single cell', () => {
+    const maze = new TremauxMaze(1, 1)
+    const path = maze.solve([0, 0], [0, 0])
+    expect(path).toEqual([[0, 0]])
+  })
+
+  it('solves 2x1 corridor', () => {
+    const maze = new TremauxMaze(2, 1)
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [1, 0])
+    expect(path.length).toBe(2)
+    expect(path[0]).toEqual([0, 0])
+    expect(path[1]).toEqual([1, 0])
+  })
+
+  it('solves straight 3-cell corridor', () => {
     const maze = new TremauxMaze(3, 1)
     maze.addPassage([0, 0], [1, 0])
     maze.addPassage([1, 0], [2, 0])
@@ -12,37 +27,29 @@ describe('TremauxMaze', () => {
     expect(path[path.length - 1]).toEqual([2, 0])
   })
 
-  it('solves single cell', () => {
-    const maze = new TremauxMaze(1, 1)
-    const path = maze.solve([0, 0], [0, 0])
-    expect(path).toEqual([[0, 0]])
-  })
-
-  it('solves 2x2 maze', () => {
-    const maze = new TremauxMaze(2, 2)
+  it('solves straight 4-cell corridor', () => {
+    const maze = new TremauxMaze(4, 1)
     maze.addPassage([0, 0], [1, 0])
-    maze.addPassage([1, 0], [1, 1])
-    maze.addPassage([0, 0], [0, 1])
-    const path = maze.solve([0, 0], [1, 1])
-    expect(path.length).toBeGreaterThanOrEqual(2)
-    expect(path[path.length - 1]).toEqual([1, 1])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([2, 0], [3, 0])
+    const path = maze.solve([0, 0], [3, 0])
+    expect(path.length).toBe(4)
   })
 
-  it('returns empty for no path', () => {
+  it('returns empty for no path (no passages)', () => {
     const maze = new TremauxMaze(2, 1)
     const path = maze.solve([0, 0], [1, 0])
     expect(path).toEqual([])
   })
 
-  it('handles dead end', () => {
+  it('returns empty for disconnected cells', () => {
     const maze = new TremauxMaze(3, 1)
     maze.addPassage([0, 0], [1, 0])
-    maze.addPassage([1, 0], [2, 0])
     const path = maze.solve([0, 0], [2, 0])
-    expect(path.length).toBe(3)
+    expect(path).toEqual([])
   })
 
-  it('handles L-shaped path', () => {
+  it('solves L-shaped path', () => {
     const maze = new TremauxMaze(2, 2)
     maze.addPassage([0, 0], [1, 0])
     maze.addPassage([1, 0], [1, 1])
@@ -50,7 +57,41 @@ describe('TremauxMaze', () => {
     expect(path.length).toBe(3)
   })
 
-  it('handles 3x3 maze', () => {
+  it('solves L-shaped path vertical then horizontal', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [0, 2])
+    maze.addPassage([0, 2], [1, 2])
+    maze.addPassage([1, 2], [2, 2])
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path.length).toBe(5)
+  })
+
+  it('solves 2x2 maze with loop', () => {
+    const maze = new TremauxMaze(2, 2)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [1, 1])
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [1, 1])
+    const path = maze.solve([0, 0], [1, 1])
+    expect(path.length).toBeGreaterThanOrEqual(2)
+    expect(path[path.length - 1]).toEqual([1, 1])
+  })
+
+  it('solves 3x3 spiral maze', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([2, 0], [2, 1])
+    maze.addPassage([2, 1], [2, 2])
+    maze.addPassage([2, 2], [1, 2])
+    maze.addPassage([1, 2], [0, 2])
+    const path = maze.solve([0, 0], [0, 2])
+    expect(path.length).toBeGreaterThanOrEqual(3)
+    expect(path[path.length - 1]).toEqual([0, 2])
+  })
+
+  it('solves 3x3 outer ring path', () => {
     const maze = new TremauxMaze(3, 3)
     maze.addPassage([0, 0], [1, 0])
     maze.addPassage([1, 0], [2, 0])
@@ -61,17 +102,17 @@ describe('TremauxMaze', () => {
     expect(path[path.length - 1]).toEqual([2, 2])
   })
 
-  it('handles maze with loop', () => {
-    const maze = new TremauxMaze(2, 2)
+  it('handles T-shaped maze', () => {
+    const maze = new TremauxMaze(3, 2)
     maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
     maze.addPassage([1, 0], [1, 1])
-    maze.addPassage([0, 0], [0, 1])
-    maze.addPassage([0, 1], [1, 1])
     const path = maze.solve([0, 0], [1, 1])
     expect(path.length).toBeGreaterThanOrEqual(2)
+    expect(path[path.length - 1]).toEqual([1, 1])
   })
 
-  it('handles backtracking', () => {
+  it('handles backtracking with dead end', () => {
     const maze = new TremauxMaze(3, 2)
     maze.addPassage([0, 0], [1, 0])
     maze.addPassage([1, 0], [2, 0])
@@ -80,7 +121,7 @@ describe('TremauxMaze', () => {
     expect(path[path.length - 1]).toEqual([1, 1])
   })
 
-  it('all cells visited are valid', () => {
+  it('all cells visited are within bounds', () => {
     const maze = new TremauxMaze(3, 3)
     maze.addPassage([0, 0], [1, 0])
     maze.addPassage([1, 0], [2, 0])
@@ -95,109 +136,304 @@ describe('TremauxMaze', () => {
     }
   })
 
-  it('handles spiral-like maze', () => {
+  it('path starts at start and ends at end', () => {
     const maze = new TremauxMaze(3, 3)
     maze.addPassage([0, 0], [1, 0])
     maze.addPassage([1, 0], [2, 0])
     maze.addPassage([2, 0], [2, 1])
     maze.addPassage([2, 1], [2, 2])
-    maze.addPassage([2, 2], [1, 2])
-    maze.addPassage([1, 2], [0, 2])
-    const path = maze.solve([0, 0], [0, 2])
-    expect(path.length).toBeGreaterThanOrEqual(3)
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path[0]).toEqual([0, 0])
+    expect(path[path.length - 1]).toEqual([2, 2])
   })
 
-  it('handles T-shaped maze', () => {
-    const maze = new TremauxMaze(3, 2)
+  it('consecutive path cells are adjacent', () => {
+    const maze = new TremauxMaze(3, 3)
     maze.addPassage([0, 0], [1, 0])
     maze.addPassage([1, 0], [2, 0])
-    maze.addPassage([1, 0], [1, 1])
-    const path = maze.solve([0, 0], [1, 1])
-    expect(path.length).toBeGreaterThanOrEqual(2)
+    maze.addPassage([2, 0], [2, 1])
+    maze.addPassage([2, 1], [2, 2])
+    const path = maze.solve([0, 0], [2, 2])
+    for (let i = 1; i < path.length; i++) {
+      const dx = Math.abs(path[i]![0] - path[i - 1]![0])
+      const dy = Math.abs(path[i]![1] - path[i - 1]![1])
+      expect(dx + dy).toBe(1)
+    }
   })
 
-  it('handles 1x1 maze', () => {
-    const maze = new TremauxMaze(1, 1)
-    const path = maze.solve([0, 0], [0, 0])
-    expect(path.length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('handles 2x1 corridor', () => {
-    const maze = new TremauxMaze(2, 1)
+  it('solve returns an array', () => {
+    const maze = new TremauxMaze(2, 2)
     maze.addPassage([0, 0], [1, 0])
     const path = maze.solve([0, 0], [1, 0])
-    expect(path.length).toBe(2)
+    expect(Array.isArray(path)).toBe(true)
   })
 
-  it('handles L-shaped maze', () => {
+  it('solve returns empty array for impossible maze', () => {
     const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path).toEqual([])
+    expect(Array.isArray(path)).toBe(true)
+  })
+
+  it('handles default constructor', () => {
+    const maze = new TremauxMaze()
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [1, 0])
+    expect(Array.isArray(path)).toBe(true)
+  })
+
+  it('start equals end returns single point', () => {
+    const maze = new TremauxMaze(2, 2)
+    const path = maze.solve([0, 0], [0, 0])
+    expect(path).toEqual([[0, 0]])
+  })
+
+  it('start equals end with passage still returns single point', () => {
+    const maze = new TremauxMaze(2, 2)
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [0, 0])
+    expect(path.length).toBe(1)
+    expect(path[0]).toEqual([0, 0])
+  })
+
+  it('handles vertical corridor', () => {
+    const maze = new TremauxMaze(1, 3)
     maze.addPassage([0, 0], [0, 1])
     maze.addPassage([0, 1], [0, 2])
-    maze.addPassage([0, 2], [1, 2])
+    const path = maze.solve([0, 0], [0, 2])
+    expect(path.length).toBe(3)
+  })
+
+  it('handles 4x4 maze', () => {
+    const maze = new TremauxMaze(4, 4)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([2, 0], [3, 0])
+    maze.addPassage([3, 0], [3, 1])
+    maze.addPassage([3, 1], [3, 2])
+    maze.addPassage([3, 2], [3, 3])
+    const path = maze.solve([0, 0], [3, 3])
+    expect(path.length).toBe(7)
+    expect(path[path.length - 1]).toEqual([3, 3])
+  })
+
+  it('handles zigzag path', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [1, 1])
+    maze.addPassage([1, 1], [1, 2])
     maze.addPassage([1, 2], [2, 2])
     const path = maze.solve([0, 0], [2, 2])
     expect(path.length).toBe(5)
   })
 
-  it('handles straight corridor', () => {
-    const maze = new TremauxMaze(4, 1)
+  it('handles dead end branch that must be backtracked', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([1, 0], [1, 1])
+    maze.addPassage([1, 1], [1, 2])
+    maze.addPassage([1, 2], [2, 2])
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path[path.length - 1]).toEqual([2, 2])
+  })
+
+  it('passages are bidirectional', () => {
+    const maze = new TremauxMaze(3, 1)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    const path = maze.solve([2, 0], [0, 0])
+    expect(path.length).toBe(3)
+    expect(path[0]).toEqual([2, 0])
+    expect(path[2]).toEqual([0, 0])
+  })
+
+  it('handles 1x2 vertical maze', () => {
+    const maze = new TremauxMaze(1, 2)
+    maze.addPassage([0, 0], [0, 1])
+    const path = maze.solve([0, 0], [0, 1])
+    expect(path.length).toBe(2)
+  })
+
+  it('handles 5x1 corridor', () => {
+    const maze = new TremauxMaze(5, 1)
     maze.addPassage([0, 0], [1, 0])
     maze.addPassage([1, 0], [2, 0])
     maze.addPassage([2, 0], [3, 0])
+    maze.addPassage([3, 0], [4, 0])
+    const path = maze.solve([0, 0], [4, 0])
+    expect(path.length).toBe(5)
+  })
+
+  it('handles 1x5 vertical corridor', () => {
+    const maze = new TremauxMaze(1, 5)
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [0, 2])
+    maze.addPassage([0, 2], [0, 3])
+    maze.addPassage([0, 3], [0, 4])
+    const path = maze.solve([0, 0], [0, 4])
+    expect(path.length).toBe(5)
+  })
+
+  it('passage added in reverse direction works', () => {
+    const maze = new TremauxMaze(3, 1)
+    maze.addPassage([1, 0], [0, 0])
+    maze.addPassage([2, 0], [1, 0])
+    const path = maze.solve([0, 0], [2, 0])
+    expect(path.length).toBe(3)
+  })
+
+  it('adding duplicate passage does not break solve', () => {
+    const maze = new TremauxMaze(2, 1)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [1, 0])
+    expect(path.length).toBe(2)
+  })
+
+  it('handles 3x3 full grid maze', () => {
+    const maze = new TremauxMaze(3, 3)
+    for (let x = 0; x < 3; x++) {
+      for (let y = 0; y < 3; y++) {
+        if (x + 1 < 3) maze.addPassage([x, y], [x + 1, y])
+        if (y + 1 < 3) maze.addPassage([x, y], [x, y + 1])
+      }
+    }
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path.length).toBeGreaterThanOrEqual(3)
+    expect(path[path.length - 1]).toEqual([2, 2])
+  })
+
+  it('no passage to target returns empty', () => {
+    const maze = new TremauxMaze(2, 2)
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [0, 1])
+    expect(path).toEqual([])
+  })
+
+  it('handles path with multiple branches', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([1, 0], [1, 1])
+    maze.addPassage([1, 1], [1, 2])
+    maze.addPassage([1, 2], [2, 2])
+    maze.addPassage([2, 0], [2, 1])
+    maze.addPassage([2, 1], [2, 2])
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path.length).toBeGreaterThanOrEqual(3)
+    expect(path[path.length - 1]).toEqual([2, 2])
+  })
+
+  it('handles U-shaped path', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [0, 2])
+    maze.addPassage([0, 2], [1, 2])
+    maze.addPassage([1, 2], [2, 2])
+    maze.addPassage([2, 2], [2, 1])
+    maze.addPassage([2, 1], [2, 0])
+    const path = maze.solve([0, 0], [2, 0])
+    expect(path.length).toBe(7)
+  })
+
+  it('handles cross-shaped maze', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([1, 0], [1, 1])
+    maze.addPassage([1, 1], [1, 2])
+    maze.addPassage([0, 1], [1, 1])
+    maze.addPassage([1, 1], [2, 1])
+    const path = maze.solve([1, 0], [1, 2])
+    expect(path.length).toBeGreaterThanOrEqual(3)
+    expect(path[0]).toEqual([1, 0])
+    expect(path[path.length - 1]).toEqual([1, 2])
+  })
+
+  it('path through cross center', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 1], [1, 1])
+    maze.addPassage([1, 1], [2, 1])
+    const path = maze.solve([0, 1], [2, 1])
+    expect(path.length).toBe(3)
+  })
+
+  it('handles 2x3 maze', () => {
+    const maze = new TremauxMaze(2, 3)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [1, 1])
+    maze.addPassage([1, 1], [1, 2])
+    maze.addPassage([1, 2], [0, 2])
+    const path = maze.solve([0, 0], [0, 2])
+    expect(path.length).toBe(5)
+  })
+
+  it('handles 3x2 maze', () => {
+    const maze = new TremauxMaze(3, 2)
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [1, 1])
+    maze.addPassage([1, 1], [2, 1])
+    maze.addPassage([2, 1], [2, 0])
+    const path = maze.solve([0, 0], [2, 0])
+    expect(path.length).toBe(5)
+  })
+
+  it('solve on maze with no passages at all', () => {
+    const maze = new TremauxMaze(3, 3)
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path).toEqual([])
+  })
+
+  it('handles single passage', () => {
+    const maze = new TremauxMaze(2, 2)
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [1, 0])
+    expect(path.length).toBe(2)
+  })
+
+  it('finds shortest path in simple maze', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([2, 0], [2, 1])
+    maze.addPassage([2, 1], [2, 2])
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path.length).toBe(5)
+  })
+
+  it('handles maze with only horizontal passages', () => {
+    const maze = new TremauxMaze(4, 2)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([2, 0], [3, 0])
+    maze.addPassage([0, 1], [1, 1])
+    maze.addPassage([1, 1], [2, 1])
+    maze.addPassage([2, 1], [3, 1])
     const path = maze.solve([0, 0], [3, 0])
     expect(path.length).toBe(4)
   })
 
-  it('start equals end returns single point', () => {
-    const maze = new TremauxMaze()
-    maze.addPassage([0, 0], [1, 0])
-    const path = maze.solve([0, 0], [0, 0])
-    expect(path.length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('adjacent cells have a path', () => {
-    const maze = new TremauxMaze(2, 2)
-    maze.addPassage([0, 0], [1, 0])
-    const path = maze.solve([0, 0], [1, 0])
-    expect(path.length).toBeGreaterThanOrEqual(2)
-  })
-
-  it('solve returns an array', () => {
-    const maze = new TremauxMaze()
-    maze.addPassage([0, 0], [1, 0])
-    const path = maze.solve([0, 0], [1, 0])
-    expect(Array.isArray(path)).toBe(true)
-  })
-
-  it('start equals end returns single point', () => {
-    const maze = new TremauxMaze()
-    const path = maze.solve([0, 0], [0, 0])
-    expect(path.length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('solve returns array', () => {
-    const maze = new TremauxMaze()
-    const path = maze.solve([0, 0], [0, 0])
-    expect(Array.isArray(path)).toBe(true)
-  })
-
-  it('solve adjacent cells returns path', () => {
-    const maze = new TremauxMaze()
-    const path = maze.solve([0, 0], [1, 0])
-    expect(Array.isArray(path)).toBe(true)
-  })
-
-  it('solve same start and end returns path', () => {
-    const maze = new TremauxMaze()
-    const path = maze.solve([0, 0], [0, 0])
-    expect(Array.isArray(path)).toBe(true)
-  })
-
-  it('solve simple 2x2 maze', () => {
-    const maze = new TremauxMaze(2, 2)
-    maze.addPassage([0, 0], [1, 0])
+  it('handles maze with only vertical passages', () => {
+    const maze = new TremauxMaze(2, 4)
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [0, 2])
+    maze.addPassage([0, 2], [0, 3])
     maze.addPassage([1, 0], [1, 1])
-    const path = maze.solve([0, 0], [1, 1])
-    expect(path.length).toBeGreaterThan(1)
+    maze.addPassage([1, 1], [1, 2])
+    maze.addPassage([1, 2], [1, 3])
+    const path = maze.solve([0, 0], [0, 3])
+    expect(path.length).toBe(4)
+  })
+
+  it('handles maze requiring revisit of junction', () => {
+    const maze = new TremauxMaze(3, 3)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [2, 0])
+    maze.addPassage([1, 0], [1, 1])
+    maze.addPassage([1, 1], [0, 1])
+    maze.addPassage([2, 0], [2, 1])
+    maze.addPassage([2, 1], [2, 2])
+    const path = maze.solve([0, 0], [2, 2])
+    expect(path[path.length - 1]).toEqual([2, 2])
   })
 })

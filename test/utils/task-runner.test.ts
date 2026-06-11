@@ -113,6 +113,268 @@ describe('TaskRunner', () => {
     expect(results[0]!.taskName).toBe('task-1')
     expect(results[1]!.taskName).toBe('task-2')
   })
+
+  it('handles all tasks failing', async () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const results = await runner.runAll([
+      { fn: async () => { throw new Error('fail1') }, name: 'a' },
+      { fn: async () => { throw new Error('fail2') }, name: 'b' },
+    ])
+    expect(results.every(r => r.status === 'error')).toBe(true)
+  })
+
+  it('runSuccessful returns empty when all fail', async () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const results = await runner.runSuccessful([
+      { fn: async () => { throw new Error('fail') }, name: 'a' },
+      { fn: async () => { throw new Error('fail') }, name: 'b' },
+    ])
+    expect(results).toEqual([])
+  })
+
+  it('concurrency higher than task count', async () => {
+    const runner = new TaskRunner({ concurrency: 10 })
+    const results = await runner.runAll([
+      { fn: async () => 1, name: 'a' },
+      { fn: async () => 2, name: 'b' },
+    ])
+    expect(results.length).toBe(2)
+  })
+
+  it('stopOnError with concurrency > 1', async () => {
+    let secondTaskStarted = false
+    const runner = new TaskRunner({ concurrency: 3, stopOnError: true })
+    const results = await runner.runAll([
+      { fn: async () => 1, name: 'a' },
+      { fn: async () => { await new Promise(r => setTimeout(r, 5)); secondTaskStarted = true; throw new Error('stop') }, name: 'b' },
+      { fn: async () => { await new Promise(r => setTimeout(r, 10)); return 3 }, name: 'c' },
+    ])
+    expect(results[1]!.status).toBe('error')
+  })
+
+  it('stats with zero errors', async () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const results = await runner.runAll([
+      { fn: async () => 1, name: 'a' },
+      { fn: async () => 2, name: 'b' },
+    ])
+    const stats = runner.getStats(results)
+    expect(stats.errors).toBe(0)
+  })
+
+  it('stats with all errors', async () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const results = await runner.runAll([
+      { fn: async () => { throw new Error('fail') }, name: 'a' },
+      { fn: async () => { throw new Error('fail') }, name: 'b' },
+    ])
+    const stats = runner.getStats(results)
+    expect(stats.errors).toBe(2)
+  })
+
+  it('index in results matches task index', async () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const results = await runner.runAll([
+      { fn: async () => 'first', name: 'a' },
+      { fn: async () => 'second', name: 'b' },
+      { fn: async () => 'third', name: 'c' },
+    ])
+    expect(results[0]!.index).toBe(0)
+    expect(results[1]!.index).toBe(1)
+    expect(results[2]!.index).toBe(2)
+  })
+
+  it('throws on negative concurrency', () => {
+    expect(() => new TaskRunner({ concurrency: -1 })).toThrow(RangeError)
+  })
+
+  it('allows concurrency of 1', () => {
+    expect(() => new TaskRunner({ concurrency: 1 })).not.toThrow()
+  })
+
+  it('result has correct error object', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const error = new Error('test error')
+    const results = await runner.runAll([
+      { fn: async () => { throw error }, name: 'fail' },
+    ])
+    expect(results[0]!.error).toBe(error)
+    expect(results[0]!.error!.message).toBe('test error')
+  })
+
+  it('onProgress called with correct totals', async () => {
+    const progress: Array<[number, number]> = []
+    const runner = new TaskRunner({
+      concurrency: 2,
+      onProgress: (c, t) => progress.push([c, t]),
+    })
+    await runner.runAll([
+      { fn: async () => 1, name: 'a' },
+      { fn: async () => 2, name: 'b' },
+      { fn: async () => 3, name: 'c' },
+      { fn: async () => 4, name: 'd' },
+    ])
+    expect(progress.every(p => p[1] === 4)).toBe(true)
+  })
+
+  it('isAborted false before abort', () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    expect(runner.isAborted).toBe(false)
+  })
+
+  it('isAborted true after abort', () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    runner.abort()
+    expect(runner.isAborted).toBe(true)
+  })
+
+  it('multiple abort calls', () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    runner.abort()
+    runner.abort()
+    expect(runner.isAborted).toBe(true)
+  })
+
+  it('result with status success', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const results = await runner.runAll([
+      { fn: async () => 42, name: 'ok' },
+    ])
+    expect(results[0]!.status).toBe('success')
+  })
+
+  it('result with status error', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const results = await runner.runAll([
+      { fn: async () => { throw new Error('fail') }, name: 'bad' },
+    ])
+    expect(results[0]!.status).toBe('error')
+  })
+
+  it('result object contains result property on success', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const results = await runner.runAll([
+      { fn: async () => 42, name: 'ok' },
+    ])
+    expect(results[0]!.result).toBe(42)
+  })
+
+  it('result object contains error property on failure', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const results = await runner.runAll([
+      { fn: async () => { throw new Error('fail') }, name: 'bad' },
+    ])
+    expect(results[0]!.error).toBeDefined()
+    expect(results[0]!.error!.message).toBe('fail')
+  })
+
+  it('runSuccessful filters by status correctly', async () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const allResults = await runner.runAll([
+      { fn: async () => 1, name: 'a' },
+      { fn: async () => { throw new Error('fail') }, name: 'b' },
+      { fn: async () => 3, name: 'c' },
+    ])
+    const successful = await runner.runSuccessful([
+      { fn: async () => 1, name: 'a' },
+      { fn: async () => { throw new Error('fail') }, name: 'b' },
+      { fn: async () => 3, name: 'c' },
+    ])
+    expect(successful.length).toBe(2)
+  })
+
+  it('stats elapsedMs is zero by default', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const results = await runner.runAll([
+      { fn: async () => 1, name: 'a' },
+    ])
+    const stats = runner.getStats(results)
+    expect(stats.elapsedMs).toBe(0)
+  })
+
+  it('handles large number of tasks', async () => {
+    const runner = new TaskRunner({ concurrency: 5 })
+    const tasks = Array.from({ length: 100 }, (_, i) => ({
+      fn: async () => i,
+      name: `task-${i}`,
+    }))
+    const results = await runner.runAll(tasks)
+    expect(results.length).toBe(100)
+    expect(results.every(r => r.status === 'success')).toBe(true)
+  })
+
+  it('stopOnError default is false', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const results = await runner.runAll([
+      { fn: async () => 1, name: 'a' },
+      { fn: async () => { throw new Error('fail') }, name: 'b' },
+      { fn: async () => 3, name: 'c' },
+    ])
+    expect(results[2]!.status).toBe('success')
+  })
+
+  it('async task resolution', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const results = await runner.runAll([
+      { fn: async () => await Promise.resolve(42), name: 'a' },
+    ])
+    expect(results[0]!.result).toBe(42)
+  })
+
+  it('mixed sync and async results', async () => {
+    const runner = new TaskRunner({ concurrency: 1 })
+    const results = await runner.runAll([
+      { fn: async () => 1, name: 'a' },
+      { fn: async () => await Promise.resolve(2), name: 'b' },
+      { fn: async () => 3, name: 'c' },
+    ])
+    expect(results.map(r => r.result)).toEqual([1, 2, 3])
+  })
+
+  it('concurrent tasks execute in parallel', async () => {
+    const startTimes: number[] = []
+    const runner = new TaskRunner({ concurrency: 3 })
+    await runner.runAll([
+      { fn: async () => { startTimes.push(Date.now()); await new Promise(r => setTimeout(r, 20)); return 1 }, name: 'a' },
+      { fn: async () => { startTimes.push(Date.now()); await new Promise(r => setTimeout(r, 20)); return 2 }, name: 'b' },
+      { fn: async () => { startTimes.push(Date.now()); await new Promise(r => setTimeout(r, 20)); return 3 }, name: 'c' },
+    ])
+    expect(startTimes[2]! - startTimes[0]!).toBeLessThan(30)
+  })
+
+  it('sequential tasks with concurrency 1', async () => {
+    const order: number[] = []
+    const runner = new TaskRunner({ concurrency: 1 })
+    await runner.runAll([
+      { fn: async () => { order.push(1); await new Promise(r => setTimeout(r, 10)); return 1 }, name: 'a' },
+      { fn: async () => { order.push(2); return 2 }, name: 'b' },
+    ])
+    expect(order).toEqual([1, 2])
+  })
+
+  it('empty task array returns empty results', async () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const results = await runner.runAll([])
+    expect(results).toEqual([])
+  })
+
+  it('stats on empty results', () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const stats = runner.getStats([])
+    expect(stats.completed).toBe(0)
+    expect(stats.errors).toBe(0)
+    expect(stats.total).toBe(0)
+  })
+
+  it('task execution order independent of completion', async () => {
+    const runner = new TaskRunner({ concurrency: 2 })
+    const results = await runner.runAll([
+      { fn: async () => { await new Promise(r => setTimeout(r, 30)); return 'slow' }, name: 'slow' },
+      { fn: async () => { await new Promise(r => setTimeout(r, 10)); return 'fast' }, name: 'fast' },
+    ])
+    expect(results[0]!.result).toBe('slow')
+    expect(results[1]!.result).toBe('fast')
+  })
 })
 
 describe('runWithConcurrency', () => {
@@ -140,66 +402,69 @@ describe('runWithConcurrency', () => {
     expect(maxActive).toBeLessThanOrEqual(2)
   })
 
-  it('handles errors in tasks gracefully', async () => {
-    const runner = new TaskRunner({ concurrency: 1 })
-    const results = await runner.runAll([
-      { fn: async () => { throw new Error('boom') }, name: 'fail' },
-      { fn: async () => 42, name: 'ok' },
-    ])
-    expect(results.length).toBe(2)
-  })
-
   it('runWithConcurrency handles single item', async () => {
     let called = false
     await runWithConcurrency([1], async () => { called = true }, 1)
     expect(called).toBe(true)
   })
 
-  it('processes empty array', async () => {
-    const results: number[] = []
-    await runWithConcurrency([], async (x) => { results.push(x) }, 2)
-    expect(results).toEqual([])
-  })
-
-  it('single task completes', async () => {
-    const results: number[] = []
-    await runWithConcurrency([42], async (x) => { results.push(x) }, 2)
-    expect(results).toEqual([42])
-  })
-
-  it('respects concurrency limit', async () => {
-    const order: number[] = []
-    await runWithConcurrency([1, 2, 3, 4], async (x) => { order.push(x) }, 2)
-    expect(order.length).toBe(4)
-  })
-
-  it('empty array completes immediately', async () => {
-    const order: number[] = []
-    await runWithConcurrency([], async (x) => { order.push(x) }, 2)
-    expect(order.length).toBe(0)
-  })
-
-  it('runs single task', async () => {
-    const order: number[] = []
-    await runWithConcurrency([42], async (x) => { order.push(x) }, 2)
-    expect(order).toEqual([42])
-  })
-
-  it('handles empty task list', async () => {
-    const order: number[] = []
-    await runWithConcurrency([], async (x) => { order.push(x) }, 2)
-    expect(order).toEqual([])
-  })
-
-  it('runWithConcurrency with single item', async () => {
-    const order: number[] = []
-    await runWithConcurrency([42], async (x) => { order.push(x) }, 2)
-    expect(order).toEqual([42])
-  })
-
   it('runs with concurrency 1 sequentially', async () => {
     const order: number[] = []
     await runWithConcurrency([1, 2, 3], async (x) => { order.push(x) }, 1)
+    expect(order).toEqual([1, 2, 3])
+  })
+
+  it('passes index to callback', async () => {
+    const indices: number[] = []
+    await runWithConcurrency([1, 2, 3], async (_, index) => {
+      indices.push(index)
+    }, 2)
+    expect(indices).toEqual([0, 1, 2])
+  })
+
+  it('passes item to callback', async () => {
+    const items: number[] = []
+    await runWithConcurrency([1, 2, 3], async (item) => {
+      items.push(item)
+    }, 2)
+    expect(items).toEqual([1, 2, 3])
+  })
+
+  it('concurrency larger than array length', async () => {
+    const order: number[] = []
+    await runWithConcurrency([1, 2], async (x) => { order.push(x) }, 10)
+    expect(order.sort()).toEqual([1, 2])
+  })
+
+  it('all items processed', async () => {
+    let processed = 0
+    await runWithConcurrency([1, 2, 3, 4, 5], async () => {
+      processed++
+    }, 2)
+    expect(processed).toBe(5)
+  })
+
+  it('errors propagate correctly', async () => {
+    await expect(runWithConcurrency([1], async () => {
+      throw new Error('fail')
+    }, 1)).rejects.toThrow('fail')
+  })
+
+  it('processes items in parallel with concurrency > 1', async () => {
+    const startTimes: number[] = []
+    await runWithConcurrency([1, 2, 3], async () => {
+      startTimes.push(Date.now())
+      await new Promise(r => setTimeout(r, 20))
+    }, 3)
+    expect(startTimes[2]! - startTimes[0]!).toBeLessThan(30)
+  })
+
+  it('sequential with concurrency 1', async () => {
+    const order: number[] = []
+    await runWithConcurrency([1, 2, 3], async (x) => {
+      order.push(x)
+      await new Promise(r => setTimeout(r, 10))
+    }, 1)
     expect(order).toEqual([1, 2, 3])
   })
 })

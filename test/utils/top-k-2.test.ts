@@ -138,39 +138,222 @@ describe('TopK2', () => {
     expect(top.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('empty tracker returns empty top', () => {
-    const tracker = new TopK2<string>(3)
-    expect(tracker.top()).toEqual([])
+  it('handles zero count item', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 0)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+    expect(result[0]!.count).toBe(0)
   })
 
-  it('add and retrieve top items', () => {
-    const tracker = new TopK2<string>(3)
-    tracker.add('a')
-    tracker.add('b')
-    tracker.add('c')
-    expect(tracker.top().length).toBeLessThanOrEqual(3)
+  it('handles k equal to 1', () => {
+    const tracker = new TopK2<number>(1)
+    tracker.add(1, 5)
+    tracker.add(2, 3)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+    expect(result[0]!.item).toBe(1)
   })
 
-  it('empty tracker returns empty top', () => {
-    const tracker = new TopK2<string>(3)
-    expect(tracker.top()).toEqual([])
+  it('handles items with same count', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 5)
+    tracker.add(2, 5)
+    tracker.add(3, 5)
+    const result = tracker.top()
+    expect(result.length).toBe(3)
+    expect(result.every((x) => x.count === 5)).toBe(true)
   })
 
-  it('add and retrieve single item', () => {
-    const tracker = new TopK2<string>(3)
-    tracker.add('a')
-    expect(tracker.top()[0]!.item).toBe('a')
+  it('handles array items', () => {
+    const tracker = new TopK2<number[]>(3)
+    tracker.add([1, 2], 5)
+    tracker.add([3, 4], 3)
+    const result = tracker.top()
+    expect(result[0]!.item).toEqual([1, 2])
   })
 
-  it('empty tracker has empty top', () => {
-    const tracker = new TopK2<string>(3)
-    expect(tracker.top()).toEqual([])
+  it('handles null item', () => {
+    const tracker = new TopK2<null>(3)
+    tracker.add(null, 5)
+    const result = tracker.top()
+    expect(result[0]!.item).toBe(null)
   })
 
-  it('add and top returns items', () => {
-    const tracker = new TopK2<string>(3)
-    tracker.add('a')
-    tracker.add('b')
-    expect(tracker.top().length).toBeGreaterThan(0)
+  it('handles undefined item', () => {
+    const tracker = new TopK2<undefined>(3)
+    tracker.add(undefined, 5)
+    const result = tracker.top()
+    expect(result[0]!.item).toBe(undefined)
+  })
+
+  it('handles very large count values', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, Number.MAX_SAFE_INTEGER)
+    const result = tracker.top()
+    expect(result[0]!.count).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles negative count items', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, -5)
+    const result = tracker.top()
+    expect(result[0]!.count).toBe(-5)
+  })
+
+  it('handles complex nested objects', () => {
+    const tracker = new TopK2<{ nested: { deep: { value: number } } }>(3)
+    tracker.add({ nested: { deep: { value: 42 } } }, 5)
+    const result = tracker.top()
+    expect(result[0]!.item.nested.deep.value).toBe(42)
+  })
+
+  it('handles empty object items', () => {
+    const tracker = new TopK2<{}>(3)
+    tracker.add({}, 5)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+  })
+
+  it('handles boolean items', () => {
+    const tracker = new TopK2<boolean>(3)
+    tracker.add(true, 5)
+    tracker.add(false, 3)
+    const result = tracker.top()
+    expect(result.length).toBe(2)
+  })
+
+  it('handles date items', () => {
+    const tracker = new TopK2<Date>(3)
+    const date1 = new Date('2024-01-01')
+    const date2 = new Date('2024-01-02')
+    tracker.add(date1, 5)
+    tracker.add(date2, 3)
+    const result = tracker.top()
+    expect(result.length).toBe(2)
+  })
+
+  it('handles multiple resets', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 5)
+    tracker.reset()
+    tracker.add(2, 3)
+    tracker.reset()
+    expect(tracker.size).toBe(0)
+  })
+
+  it('does not replace item when count equals minimum at capacity', () => {
+    const tracker = new TopK2<number>(2)
+    tracker.add(1, 5)
+    tracker.add(2, 5)
+    tracker.add(3, 5)
+    const result = tracker.top()
+    expect(result.length).toBe(2)
+    expect(result.some((x) => x.item === 3)).toBe(false)
+  })
+
+  it('handles adding same item multiple times before capacity', () => {
+    const tracker = new TopK2<number>(5)
+    tracker.add(1, 1)
+    tracker.add(1, 1)
+    tracker.add(1, 1)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+    expect(result[0]!.count).toBe(3)
+  })
+
+  it('handles capacity of 100', () => {
+    const tracker = new TopK2<number>(100)
+    for (let i = 0; i < 50; i++) {
+      tracker.add(i, 1)
+    }
+    expect(tracker.size).toBe(50)
+  })
+
+  it('handles mixed positive and negative counts', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 10)
+    tracker.add(2, -5)
+    tracker.add(3, 0)
+    const result = tracker.top()
+    expect(result.length).toBe(3)
+  })
+
+  it('handles adding with fractional counts', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 5.5)
+    tracker.add(2, 3.7)
+    const result = tracker.top()
+    expect(result[0]!.count).toBe(5.5)
+  })
+
+  it('handles items that JSON.stringify the same way', () => {
+    const tracker = new TopK2<{ x: number }>(3)
+    tracker.add({ x: 1 }, 5)
+    tracker.add({ x: 1 }, 3)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+    expect(result[0]!.count).toBe(8)
+  })
+
+  it('handles symbol items', () => {
+    const tracker = new TopK2<symbol>(3)
+    const sym1 = Symbol('test1')
+    tracker.add(sym1, 5)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+  })
+
+  it('handles very large k value', () => {
+    const tracker = new TopK2<number>(10000)
+    tracker.add(1, 5)
+    expect(tracker.capacity).toBe(10000)
+  })
+
+  it('maintains capacity after reset', () => {
+    const tracker = new TopK2<number>(5)
+    tracker.add(1, 5)
+    tracker.reset()
+    expect(tracker.capacity).toBe(5)
+  })
+
+  it('handles NaN count', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, NaN)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+    expect(result[0]!.count).toBeNaN()
+  })
+
+  it('handles Infinity count', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, Infinity)
+    const result = tracker.top()
+    expect(result[0]!.count).toBe(Infinity)
+  })
+
+  it('handles -Infinity count', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, -Infinity)
+    const result = tracker.top()
+    expect(result[0]!.count).toBe(-Infinity)
+  })
+
+  it('handles items that are numbers with same value but different objects', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 5)
+    tracker.add(1, 3)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+    expect(result[0]!.count).toBe(8)
+  })
+
+  it('handles adding zero after some items exist', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 5)
+    tracker.add(2, 0)
+    const result = tracker.top()
+    expect(result.length).toBe(2)
+    expect(result.some((x) => x.item === 2 && x.count === 0)).toBe(true)
   })
 })

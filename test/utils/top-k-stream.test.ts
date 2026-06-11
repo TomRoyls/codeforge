@@ -187,7 +187,258 @@ describe('TopKStream', () => {
   })
 
   it('empty stream returns empty', () => {
-    const stream = new TopKStream<string>(3)
+    const stream = new TopKStream<string>({ k: 3 })
     expect(stream.getItems()).toEqual([])
+  })
+
+  it('handles negative scores', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, -5)
+    stream.offer(2, -10)
+    const result = stream.getItems()
+    expect(result).toContain(1)
+    expect(result).toContain(2)
+  })
+
+  it('handles zero scores', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, 0)
+    stream.offer(2, 0)
+    const result = stream.getItems()
+    expect(result.length).toBe(2)
+  })
+
+  it('handles Infinity score', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, Infinity)
+    stream.offer(2, 5)
+    const result = stream.getTopK()
+    expect(result[0]!.score).toBe(Infinity)
+  })
+
+  it('handles -Infinity score', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, -Infinity)
+    stream.offer(2, 5)
+    const result = stream.getTopK()
+    expect(result[1]!.score).toBe(-Infinity)
+  })
+
+  it('handles NaN score', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, NaN)
+    stream.offer(2, 5)
+    const result = stream.getTopK()
+    expect(result.length).toBe(2)
+  })
+
+  it('handles very large k value', () => {
+    const stream = new TopKStream<number>({ k: 10000 })
+    stream.offer(1, 10)
+    expect(stream.size).toBe(1)
+  })
+
+  it('handles k equal to 1', () => {
+    const stream = new TopKStream<number>({ k: 1 })
+    stream.offer(1, 5)
+    stream.offer(2, 3)
+    const result = stream.getItems()
+    expect(result.length).toBe(1)
+    expect(result[0]).toBe(1)
+  })
+
+  it('handles duplicate items with different scores', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, 5)
+    stream.offer(1, 10)
+    const result = stream.getTopK()
+    expect(result[0]!.item).toBe(1)
+    expect(result[0]!.score).toBe(10)
+  })
+
+  it('handles object items', () => {
+    const stream = new TopKStream<{ id: number }>({ k: 2 })
+    stream.offer({ id: 1 }, 10)
+    stream.offer({ id: 2 }, 5)
+    const result = stream.getItems()
+    expect(result.length).toBe(2)
+  })
+
+  it('handles array items', () => {
+    const stream = new TopKStream<number[]>({ k: 2 })
+    stream.offer([1, 2], 10)
+    stream.offer([3, 4], 5)
+    const result = stream.getItems()
+    expect(result.length).toBe(2)
+  })
+
+  it('handles null items', () => {
+    const stream = new TopKStream<null>({ k: 2 })
+    stream.offer(null, 10)
+    const result = stream.getItems()
+    expect(result[0]).toBe(null)
+  })
+
+  it('handles undefined items', () => {
+    const stream = new TopKStream<undefined>({ k: 2 })
+    stream.offer(undefined, 10)
+    const result = stream.getItems()
+    expect(result[0]).toBe(undefined)
+  })
+
+  it('custom comparator for descending order keeps lowest scores', () => {
+    const stream = new TopKStream<number>({ k: 2, comparator: (a, b) => b - a })
+    stream.offer(1, 10)
+    stream.offer(2, 5)
+    stream.offer(3, 8)
+    const result = stream.getItems()
+    expect(result).toContain(2)
+    expect(result).toContain(3)
+    expect(result).not.toContain(1)
+  })
+
+  it('merge with empty stream', () => {
+    const stream1 = new TopKStream<number>({ k: 3 })
+    stream1.offer(1, 10)
+    const stream2 = new TopKStream<number>({ k: 3 })
+    stream1.merge(stream2)
+    const result = stream1.getItems()
+    expect(result).toContain(1)
+  })
+
+  it('merge preserves capacity', () => {
+    const stream1 = new TopKStream<number>({ k: 2 })
+    stream1.offer(1, 10)
+
+    const stream2 = new TopKStream<number>({ k: 2 })
+    stream2.offer(2, 5)
+    stream2.offer(3, 8)
+
+    stream1.merge(stream2)
+    expect(stream1.size).toBeLessThanOrEqual(2)
+  })
+
+  it('clear resets processed count', () => {
+    const stream = new TopKStream<number>({ k: 3 })
+    stream.offer(1, 10)
+    stream.offer(2, 5)
+    stream.clear()
+    expect(stream.processed).toBe(0)
+  })
+
+  it('clear resets isFull', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, 10)
+    stream.offer(2, 5)
+    stream.clear()
+    expect(stream.isFull).toBe(false)
+  })
+
+  it('clear resets minScore', () => {
+    const stream = new TopKStream<number>({ k: 3 })
+    stream.offer(1, 10)
+    stream.offer(2, 5)
+    stream.clear()
+    expect(stream.minScore).toBe(undefined)
+  })
+
+  it('fromItems with empty array', () => {
+    const stream = TopKStream.fromItems([], { k: 3 })
+    expect(stream.size).toBe(0)
+    expect(stream.processed).toBe(0)
+  })
+
+  it('fromItems with single item', () => {
+    const stream = TopKStream.fromItems([{ item: 1, score: 10 }], { k: 3 })
+    expect(stream.size).toBe(1)
+    expect(stream.processed).toBe(1)
+  })
+
+  it('fromItems with items exceeding capacity', () => {
+    const items = [
+      { item: 1, score: 10 },
+      { item: 2, score: 5 },
+      { item: 3, score: 8 },
+      { item: 4, score: 3 },
+      { item: 5, score: 7 }
+    ]
+    const stream = TopKStream.fromItems(items, { k: 2 })
+    expect(stream.size).toBe(2)
+  })
+
+  it('handles many offers', () => {
+    const stream = new TopKStream<number>({ k: 3 })
+    for (let i = 0; i < 100; i++) {
+      stream.offer(i, i)
+    }
+    expect(stream.size).toBe(3)
+    expect(stream.processed).toBe(100)
+  })
+
+  it('getTopK returns items with same score', () => {
+    const stream = new TopKStream<number>({ k: 3 })
+    stream.offer(1, 5)
+    stream.offer(2, 5)
+    stream.offer(3, 5)
+    const result = stream.getTopK()
+    expect(result.length).toBe(3)
+    expect(result.every((x) => x.score === 5)).toBe(true)
+  })
+
+  it('getScores returns empty when empty', () => {
+    const stream = new TopKStream<number>({ k: 3 })
+    expect(stream.getScores()).toEqual([])
+  })
+
+  it('getItems returns empty when empty', () => {
+    const stream = new TopKStream<number>({ k: 3 })
+    expect(stream.getItems()).toEqual([])
+  })
+
+  it('getTopK returns empty when empty', () => {
+    const stream = new TopKStream<number>({ k: 3 })
+    expect(stream.getTopK()).toEqual([])
+  })
+
+  it('handles fractional scores', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, 5.5)
+    stream.offer(2, 3.7)
+    const result = stream.getTopK()
+    expect(result[0]!.score).toBe(5.5)
+    expect(result[1]!.score).toBe(3.7)
+  })
+
+  it('handles very small scores', () => {
+    const stream = new TopKStream<number>({ k: 2 })
+    stream.offer(1, Number.MIN_VALUE)
+    stream.offer(2, Number.EPSILON)
+    const result = stream.getTopK()
+    expect(result.length).toBe(2)
+  })
+
+  it('maintains heap property after many operations', () => {
+    const stream = new TopKStream<number>({ k: 3 })
+    for (let i = 0; i < 50; i++) {
+      stream.offer(i, Math.random() * 100)
+    }
+    const result = stream.getTopK()
+    for (let i = 0; i < result.length - 1; i++) {
+      expect(result[i]!.score).toBeGreaterThanOrEqual(result[i + 1]!.score)
+    }
+  })
+
+  it('merge with same items', () => {
+    const stream1 = new TopKStream<number>({ k: 3 })
+    stream1.offer(1, 10)
+    stream1.offer(2, 5)
+
+    const stream2 = new TopKStream<number>({ k: 3 })
+    stream2.offer(1, 8)
+    stream2.offer(2, 3)
+
+    stream1.merge(stream2)
+    const result = stream1.getTopK()
+    expect(result.length).toBeLessThanOrEqual(3)
   })
 })
