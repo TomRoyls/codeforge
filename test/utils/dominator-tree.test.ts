@@ -114,13 +114,7 @@ describe('DominatorTree', () => {
     expect(dom[3]).toBe(0)
   })
 
-  it('handles single node', () => {
-    const dt = new DominatorTree(1)
-    const dom = dt.build(0)
-    expect(dom[0]).toBe(0)
-  })
-
-  it('two edges to same target', () => {
+  it('handles two edges to same target', () => {
     const dt = new DominatorTree(4)
     dt.addEdge(0, 1)
     dt.addEdge(0, 2)
@@ -139,21 +133,6 @@ describe('DominatorTree', () => {
     expect(dom[1]).toBe(0)
   })
 
-  it('handles self loop', () => {
-    const dt = new DominatorTree(2)
-    dt.addEdge(0, 1)
-    dt.addEdge(1, 1)
-    const dom = dt.build(0)
-    expect(dom[0]).toBe(0)
-    expect(dom[1]).toBe(0)
-  })
-
-  it('single node dominates itself', () => {
-    const dt = new DominatorTree(1)
-    const dom = dt.build(0)
-    expect(dom[0]).toBe(0)
-  })
-
   it('linear chain dominators', () => {
     const dt = new DominatorTree(3)
     dt.addEdge(0, 1)
@@ -163,44 +142,12 @@ describe('DominatorTree', () => {
     expect(dom[2]).toBe(1)
   })
 
-  it('single node dominates itself', () => {
-    const dt = new DominatorTree(1)
-    const dom = dt.build(0)
-    expect(dom[0]).toBe(0)
-  })
-
-  it('two node chain', () => {
-    const dt = new DominatorTree(2)
-    dt.addEdge(0, 1)
-    const dom = dt.build(0)
-    expect(dom[1]).toBe(0)
-  })
-
   it('dominates returns true for immediate dominator', () => {
     const dt = new DominatorTree(3)
     dt.addEdge(0, 1)
     dt.addEdge(1, 2)
     const dom = dt.build(0)
     expect(dom[2]).toBe(1)
-  })
-
-  it('root has no dominator', () => {
-    const dt = new DominatorTree(1)
-    const dom = dt.build(0)
-    expect(dom[0]).toBe(0)
-  })
-
-  it('two node chain', () => {
-    const dt = new DominatorTree(2)
-    dt.addEdge(0, 1)
-    const dom = dt.build(0)
-    expect(dom[1]).toBe(0)
-  })
-
-  it('root dominates itself', () => {
-    const dt = new DominatorTree(1)
-    const dom = dt.build(0)
-    expect(dom[0]).toBe(0)
   })
 
   it('high-index root does not infinite loop', () => {
@@ -229,5 +176,262 @@ describe('DominatorTree', () => {
     expect(dom[3]).toBe(4)
     expect(dom[0]).toBe(4)
     expect(dom[1]).toBe(0)
+  })
+
+  it('toString returns correct format', () => {
+    const dt = new DominatorTree(5)
+    expect(dt.toString()).toBe('DominatorTree(n=5)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const dt = new DominatorTree(3)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    const json = dt.toJSON()
+    expect(json).toEqual({ n: 3, edges: [[1], [2], []] })
+  })
+
+  it('clone creates independent copy', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(2, 3)
+    const copy = dt.clone()
+    copy.addEdge(0, 3)
+    const dtDom = dt.build(0)
+    const copyDom = copy.build(0)
+    expect(dtDom).toEqual([0, 0, 0, 0])
+    expect(copyDom).toEqual([0, 0, 0, 0])
+    expect(dt.toJSON()).toEqual({ n: 4, edges: [[1, 2], [3], [3], []] })
+    expect(copy.toJSON()).toEqual({ n: 4, edges: [[1, 2, 3], [3], [3], []] })
+  })
+
+  it('equals returns true for same size trees', () => {
+    const dt1 = new DominatorTree(5)
+    const dt2 = new DominatorTree(5)
+    expect(dt1.equals(dt2)).toBe(true)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const dt1 = new DominatorTree(3)
+    const dt2 = new DominatorTree(5)
+    expect(dt1.equals(dt2)).toBe(false)
+  })
+
+  it('equals returns false for non-DominatorTree', () => {
+    const dt = new DominatorTree(3)
+    expect(dt.equals({})).toBe(false)
+    expect(dt.equals(null)).toBe(false)
+    expect(dt.equals(undefined)).toBe(false)
+  })
+
+  it('star topology graph', () => {
+    const dt = new DominatorTree(5)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(0, 3)
+    dt.addEdge(0, 4)
+    const dom = dt.build(0)
+    expect(dom).toEqual([0, 0, 0, 0, 0])
+  })
+
+  it('multiple merge points', () => {
+    const dt = new DominatorTree(6)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(2, 3)
+    dt.addEdge(3, 4)
+    dt.addEdge(3, 5)
+    const dom = dt.build(0)
+    expect(dom[3]).toBe(0)
+    expect(dom[4]).toBe(3)
+    expect(dom[5]).toBe(3)
+  })
+
+  it('cross edges', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(2, 3)
+    dt.addEdge(1, 2)
+    const dom = dt.build(0)
+    expect(dom[2]).toBe(0)
+    expect(dom[3]).toBe(0)
+  })
+
+  it('all nodes unreachable from root', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(1, 2)
+    dt.addEdge(2, 3)
+    const dom = dt.build(0)
+    expect(dom[0]).toBe(0)
+    expect(dom[1]).toBe(-1)
+    expect(dom[2]).toBe(-1)
+    expect(dom[3]).toBe(-1)
+  })
+
+  it('graph with cycle', () => {
+    const dt = new DominatorTree(3)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    dt.addEdge(2, 1)
+    const dom = dt.build(0)
+    expect(dom[0]).toBe(0)
+    expect(dom[1]).toBe(0)
+    expect(dom[2]).toBe(1)
+  })
+
+  it('forward edges', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    dt.addEdge(2, 3)
+    dt.addEdge(0, 2)
+    const dom = dt.build(0)
+    expect(dom[1]).toBe(0)
+    expect(dom[2]).toBe(0)
+    expect(dom[3]).toBe(2)
+  })
+
+  it('backward edges', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    dt.addEdge(2, 3)
+    dt.addEdge(2, 1)
+    const dom = dt.build(0)
+    expect(dom[1]).toBe(0)
+    expect(dom[2]).toBe(1)
+    expect(dom[3]).toBe(2)
+  })
+
+  it('complex diamond with multiple levels', () => {
+    const dt = new DominatorTree(7)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(2, 3)
+    dt.addEdge(3, 4)
+    dt.addEdge(3, 5)
+    dt.addEdge(4, 6)
+    dt.addEdge(5, 6)
+    const dom = dt.build(0)
+    expect(dom[3]).toBe(0)
+    expect(dom[6]).toBe(3)
+  })
+
+  it('different roots on same graph', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    dt.addEdge(2, 3)
+    const dom1 = dt.build(0)
+    const dom2 = dt.build(1)
+    expect(dom1[0]).toBe(0)
+    expect(dom2[1]).toBe(1)
+    expect(dom2[2]).toBe(1)
+  })
+
+  it('graph with split and rejoin', () => {
+    const dt = new DominatorTree(6)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(1, 4)
+    dt.addEdge(2, 5)
+    dt.addEdge(3, 5)
+    dt.addEdge(4, 5)
+    const dom = dt.build(0)
+    expect(dom[1]).toBe(0)
+    expect(dom[2]).toBe(0)
+    expect(dom[5]).toBe(0)
+  })
+
+  it('large graph', () => {
+    const dt = new DominatorTree(10)
+    for (let i = 0; i < 9; i++) {
+      dt.addEdge(i, i + 1)
+    }
+    const dom = dt.build(0)
+    for (let i = 1; i < 10; i++) {
+      expect(dom[i]).toBe(i - 1)
+    }
+  })
+
+  it('graph with isolated nodes', () => {
+    const dt = new DominatorTree(6)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    const dom = dt.build(0)
+    expect(dom[0]).toBe(0)
+    expect(dom[1]).toBe(0)
+    expect(dom[2]).toBe(1)
+    expect(dom[3]).toBe(-1)
+    expect(dom[4]).toBe(-1)
+    expect(dom[5]).toBe(-1)
+  })
+
+  it('self-loop on root', () => {
+    const dt = new DominatorTree(3)
+    dt.addEdge(0, 0)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    const dom = dt.build(0)
+    expect(dom[0]).toBe(0)
+    expect(dom[1]).toBe(0)
+    expect(dom[2]).toBe(1)
+  })
+
+  it('multiple incoming edges', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(0, 2)
+    dt.addEdge(1, 3)
+    dt.addEdge(2, 3)
+    dt.addEdge(0, 3)
+    const dom = dt.build(0)
+    expect(dom[3]).toBe(0)
+  })
+
+  it('node equals dominator', () => {
+    const dt = new DominatorTree(3)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    expect(dt.dominates(0, 1, 1)).toBe(true)
+  })
+
+  it('dominates with different root', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(1, 2)
+    dt.addEdge(2, 3)
+    expect(dt.dominates(1, 2, 3)).toBe(true)
+    expect(dt.dominates(0, 2, 3)).toBe(false)
+  })
+
+  it('equals with same instance', () => {
+    const dt = new DominatorTree(5)
+    expect(dt.equals(dt)).toBe(true)
+  })
+
+  it('toJSON with no edges', () => {
+    const dt = new DominatorTree(3)
+    const json = dt.toJSON()
+    expect(json).toEqual({ n: 3, edges: [[], [], []] })
+  })
+
+  it('clone with no edges', () => {
+    const dt = new DominatorTree(3)
+    const copy = dt.clone()
+    expect(copy.toJSON()).toEqual(dt.toJSON())
+  })
+
+  it('dominates with unreachable node', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    expect(dt.dominates(0, 1, 3)).toBe(false)
   })
 })

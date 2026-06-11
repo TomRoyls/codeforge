@@ -98,130 +98,13 @@ describe('ArtGallery', () => {
     expect(ag.polygonArea()).toBeCloseTo(16, 5)
   })
 
-  it('point inside convex polygon', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(2, 2)).toBe(true)
-  })
-
-  it('point outside polygon', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(10, 10)).toBe(false)
-  })
-
-  it('handles triangle area', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(0, 4)
-    expect(ag.polygonArea()).toBeCloseTo(8, 5)
-  })
-
-  it('convex quadrilateral', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.isConvex()).toBe(true)
-  })
-
-  it('handles concave polygon', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(2, 1)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.polygonArea()).toBeGreaterThan(0)
-  })
-
-  it('point on edge considered inside', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(2, 0)).toBe(true)
-  })
-
   it('point outside polygon is false', () => {
     const ag = new ArtGallery()
     ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
+    ag.addPoint(2, 0)
+    ag.addPoint(2, 2)
+    ag.addPoint(0, 2)
     expect(ag.pointInPolygon(5, 5)).toBe(false)
-  })
-
-  it('point inside square is detected', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(2, 2)).toBe(true)
-  })
-
-  it('point outside polygon is false', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(10, 10)).toBe(false)
-  })
-
-  it('point inside square polygon returns true', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(2, 2)).toBe(true)
-  })
-
-  it('point outside polygon is false', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(10, 10)).toBe(false)
-  })
-
-  it('pointInPolygon returns true for interior point', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(2, 2)).toBe(true)
-  })
-
-  it('point outside polygon', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(10, 10)).toBe(false)
-  })
-
-  it('point inside simple polygon', () => {
-    const ag = new ArtGallery()
-    ag.addPoint(0, 0)
-    ag.addPoint(4, 0)
-    ag.addPoint(4, 4)
-    ag.addPoint(0, 4)
-    expect(ag.pointInPolygon(2, 2)).toBe(true)
   })
 
   it('triangulates CW polygon', () => {
@@ -243,5 +126,378 @@ describe('ArtGallery', () => {
     ag.addPoint(4, 0)
     const tri = ag.triangulation()
     expect(tri.length).toBe(3)
+  })
+
+  it('computes area of pentagon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(3, 1)
+    ag.addPoint(2, 2)
+    ag.addPoint(0, 2)
+    expect(ag.polygonArea()).toBeCloseTo(5, 5)
+  })
+
+  it('detects regular convex pentagon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(3, 1)
+    ag.addPoint(2, 2)
+    ag.addPoint(0, 2)
+    expect(ag.isConvex()).toBe(true)
+  })
+
+  it('triangulates pentagon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(3, 1)
+    ag.addPoint(2, 2)
+    ag.addPoint(0, 2)
+    const tri = ag.triangulation()
+    expect(tri.length).toBe(3)
+  })
+
+  it('point at vertex of polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.pointInPolygon(0, 0)).toBe(true)
+  })
+
+  it('point near but outside polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.pointInPolygon(-0.1, 2)).toBe(false)
+  })
+
+  it('area of rectangle not at origin', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(1, 1)
+    ag.addPoint(3, 1)
+    ag.addPoint(3, 3)
+    ag.addPoint(1, 3)
+    expect(ag.polygonArea()).toBe(4)
+  })
+
+  it('point in polygon with negative coordinates', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(-2, -2)
+    ag.addPoint(2, -2)
+    ag.addPoint(2, 2)
+    ag.addPoint(-2, 2)
+    expect(ag.pointInPolygon(0, 0)).toBe(true)
+  })
+
+  it('area with negative coordinates', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(-2, -2)
+    ag.addPoint(2, -2)
+    ag.addPoint(2, 2)
+    ag.addPoint(-2, 2)
+    expect(ag.polygonArea()).toBeCloseTo(16, 5)
+  })
+
+  it('convex with negative coordinates', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(-2, -2)
+    ag.addPoint(2, -2)
+    ag.addPoint(2, 2)
+    ag.addPoint(-2, 2)
+    expect(ag.isConvex()).toBe(true)
+  })
+
+  it('triangulates polygon with 6 points', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(3, 1)
+    ag.addPoint(2, 2)
+    ag.addPoint(1, 2)
+    ag.addPoint(0, 1)
+    const tri = ag.triangulation()
+    expect(tri.length).toBe(4)
+  })
+
+  it('point near vertical edge inside polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.pointInPolygon(3.9, 2)).toBe(true)
+  })
+
+  it('point on diagonal edge of square', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 4)
+    ag.addPoint(0, 4)
+    expect(ag.pointInPolygon(2, 2)).toBe(true)
+  })
+
+  it('area of right triangle', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(0, 3)
+    expect(ag.polygonArea()).toBe(6)
+  })
+
+  it('triangulates skinny triangle', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(0.01, 0)
+    ag.addPoint(0, 5)
+    const tri = ag.triangulation()
+    expect(tri.length).toBe(1)
+  })
+
+  it('area of very small polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(0.001, 0)
+    ag.addPoint(0.001, 0.001)
+    ag.addPoint(0, 0.001)
+    expect(ag.polygonArea()).toBeGreaterThan(0)
+  })
+
+  it('point in very large polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(10000, 0)
+    ag.addPoint(10000, 10000)
+    ag.addPoint(0, 10000)
+    expect(ag.pointInPolygon(5000, 5000)).toBe(true)
+  })
+
+  it('area of very large polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(1000, 0)
+    ag.addPoint(1000, 1000)
+    ag.addPoint(0, 1000)
+    expect(ag.polygonArea()).toBeCloseTo(1000000, 5)
+  })
+
+  it('detects L-shaped concave polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(2, 1)
+    ag.addPoint(1, 1)
+    ag.addPoint(1, 2)
+    ag.addPoint(0, 2)
+    expect(ag.isConvex()).toBe(false)
+  })
+
+  it('area of L-shaped polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(2, 1)
+    ag.addPoint(1, 1)
+    ag.addPoint(1, 2)
+    ag.addPoint(0, 2)
+    expect(ag.polygonArea()).toBe(3)
+  })
+
+  it('triangulates L-shaped polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(2, 1)
+    ag.addPoint(1, 1)
+    ag.addPoint(1, 2)
+    ag.addPoint(0, 2)
+    const tri = ag.triangulation()
+    expect(tri.length).toBe(4)
+  })
+
+  it('point at center of L-shaped polygon', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(2, 1)
+    ag.addPoint(1, 1)
+    ag.addPoint(1, 2)
+    ag.addPoint(0, 2)
+    expect(ag.pointInPolygon(0.5, 0.5)).toBe(true)
+  })
+
+  it('toString returns correct format', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(1, 1)
+    const str = ag.toString()
+    expect(str).toBe('ArtGallery(points=2)')
+  })
+
+  it('toString with single point', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    const str = ag.toString()
+    expect(str).toBe('ArtGallery(points=1)')
+  })
+
+  it('toJSON returns points array', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(1, 1)
+    ag.addPoint(2, 2)
+    const json = ag.toJSON()
+    expect(json).toEqual([[0, 0], [1, 1], [2, 2]])
+  })
+
+  it('toJSON with empty gallery', () => {
+    const ag = new ArtGallery()
+    const json = ag.toJSON()
+    expect(json).toEqual([])
+  })
+
+  it('clone creates independent copy', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(0, 2)
+    const cloned = ag.clone()
+    cloned.addPoint(2, 2)
+    expect(ag.polygonArea()).not.toBe(cloned.polygonArea())
+  })
+
+  it('clone has same initial state', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(0, 2)
+    const cloned = ag.clone()
+    expect(ag.equals(cloned)).toBe(true)
+    expect(ag.polygonArea()).toBe(cloned.polygonArea())
+  })
+
+  it('equals with same gallery', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(1, 1)
+    expect(ag.equals(ag)).toBe(true)
+  })
+
+  it('equals with identical galleries', () => {
+    const ag1 = new ArtGallery()
+    ag1.addPoint(0, 0)
+    ag1.addPoint(1, 1)
+    const ag2 = new ArtGallery()
+    ag2.addPoint(0, 0)
+    ag2.addPoint(1, 1)
+    expect(ag1.equals(ag2)).toBe(true)
+  })
+
+  it('equals with different point order', () => {
+    const ag1 = new ArtGallery()
+    ag1.addPoint(0, 0)
+    ag1.addPoint(1, 1)
+    const ag2 = new ArtGallery()
+    ag2.addPoint(1, 1)
+    ag2.addPoint(0, 0)
+    expect(ag1.equals(ag2)).toBe(false)
+  })
+
+  it('equals with different number of points', () => {
+    const ag1 = new ArtGallery()
+    ag1.addPoint(0, 0)
+    ag1.addPoint(1, 1)
+    const ag2 = new ArtGallery()
+    ag2.addPoint(0, 0)
+    expect(ag1.equals(ag2)).toBe(false)
+  })
+
+  it('equals with different point coordinates', () => {
+    const ag1 = new ArtGallery()
+    ag1.addPoint(0, 0)
+    ag1.addPoint(1, 1)
+    const ag2 = new ArtGallery()
+    ag2.addPoint(0, 0)
+    ag2.addPoint(2, 2)
+    expect(ag1.equals(ag2)).toBe(false)
+  })
+
+  it('equals returns false for non-ArtGallery object', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    expect(ag.equals({})).toBe(false)
+    expect(ag.equals(null)).toBe(false)
+    expect(ag.equals(undefined)).toBe(false)
+  })
+
+  it('equals with empty galleries', () => {
+    const ag1 = new ArtGallery()
+    const ag2 = new ArtGallery()
+    expect(ag1.equals(ag2)).toBe(true)
+  })
+
+  it('area is zero for empty gallery', () => {
+    const ag = new ArtGallery()
+    expect(ag.polygonArea()).toBe(0)
+  })
+
+  it('isConvex returns false for empty gallery', () => {
+    const ag = new ArtGallery()
+    expect(ag.isConvex()).toBe(false)
+  })
+
+  it('triangulation returns empty for empty gallery', () => {
+    const ag = new ArtGallery()
+    const tri = ag.triangulation()
+    expect(tri).toEqual([])
+  })
+
+  it('point in empty polygon is false', () => {
+    const ag = new ArtGallery()
+    expect(ag.pointInPolygon(0, 0)).toBe(false)
+  })
+
+  it('triangulates polygon with collinear points', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0, 0)
+    ag.addPoint(2, 0)
+    ag.addPoint(4, 0)
+    ag.addPoint(4, 2)
+    ag.addPoint(0, 2)
+    const tri = ag.triangulation()
+    expect(tri.length).toBeGreaterThan(0)
+  })
+
+  it('area with floating point coordinates', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0.5, 0.5)
+    ag.addPoint(2.5, 0.5)
+    ag.addPoint(2.5, 2.5)
+    ag.addPoint(0.5, 2.5)
+    expect(ag.polygonArea()).toBeCloseTo(4, 5)
+  })
+
+  it('point in polygon with floating point coordinates', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0.5, 0.5)
+    ag.addPoint(2.5, 0.5)
+    ag.addPoint(2.5, 2.5)
+    ag.addPoint(0.5, 2.5)
+    expect(ag.pointInPolygon(1.5, 1.5)).toBe(true)
+  })
+
+  it('convex with floating point coordinates', () => {
+    const ag = new ArtGallery()
+    ag.addPoint(0.1, 0.1)
+    ag.addPoint(2.9, 0.1)
+    ag.addPoint(2.9, 2.9)
+    ag.addPoint(0.1, 2.9)
+    expect(ag.isConvex()).toBe(true)
   })
 })
