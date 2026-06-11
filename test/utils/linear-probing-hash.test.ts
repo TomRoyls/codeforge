@@ -200,4 +200,238 @@ describe('LinearProbingHashTable', () => {
     expect(ht.get('a')).toBe(3)
     expect(ht.get('e')).toBe(2)
   })
+
+  it('handles NaN value', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('nan', NaN)
+    expect(ht.get('nan')).toBe(NaN)
+    expect(ht.has('nan')).toBe(true)
+  })
+
+  it('handles negative number keys', () => {
+    const ht = new LinearProbingHashTable<number, string>()
+    ht.set(-1, 'minus-one')
+    ht.set(-42, 'minus-forty-two')
+    expect(ht.get(-1)).toBe('minus-one')
+    expect(ht.get(-42)).toBe('minus-forty-two')
+  })
+
+  it('handles zero as key', () => {
+    const ht = new LinearProbingHashTable<number, string>()
+    ht.set(0, 'zero')
+    expect(ht.get(0)).toBe('zero')
+  })
+
+  it('handles special string keys', () => {
+    const ht = new LinearProbingHashTable<string, string>()
+    ht.set('key with spaces', 'value1')
+    ht.set('key-with-dashes', 'value2')
+    ht.set('key_with_underscores', 'value3')
+    ht.set('key.with.dots', 'value4')
+    expect(ht.get('key with spaces')).toBe('value1')
+    expect(ht.get('key-with-dashes')).toBe('value2')
+    expect(ht.get('key_with_underscores')).toBe('value3')
+    expect(ht.get('key.with.dots')).toBe('value4')
+  })
+
+  it('toString returns correct format', () => {
+    const ht = new LinearProbingHashTable<string, number>(16)
+    expect(ht.toString()).toBe('LinearProbingHashTable(0/16)')
+    ht.set('a', 1)
+    ht.set('b', 2)
+    expect(ht.toString()).toBe('LinearProbingHashTable(2/16)')
+  })
+
+  it('toJSON returns array of entries', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('a', 1)
+    ht.set('b', 2)
+    ht.set('c', 3)
+    const json = ht.toJSON() as Array<[string, number]>
+    expect(json).toHaveLength(3)
+    expect(json).toContainEqual(['a', 1])
+    expect(json).toContainEqual(['b', 2])
+    expect(json).toContainEqual(['c', 3])
+  })
+
+  it('toJSON returns empty array for empty table', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    const json = ht.toJSON() as Array<[string, number]>
+    expect(json).toEqual([])
+  })
+
+  it('clone creates independent copy', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('a', 1)
+    ht.set('b', 2)
+    const copy = ht.clone()
+    copy.set('c', 3)
+    expect(ht.get('c')).toBeUndefined()
+    expect(copy.get('c')).toBe(3)
+    expect(ht.size).toBe(2)
+    expect(copy.size).toBe(3)
+  })
+
+  it('clone preserves all entries', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('a', 1)
+    ht.set('b', 2)
+    ht.set('c', 3)
+    const copy = ht.clone()
+    expect(copy.get('a')).toBe(1)
+    expect(copy.get('b')).toBe(2)
+    expect(copy.get('c')).toBe(3)
+    expect(copy.size).toBe(3)
+  })
+
+  it('clone preserves deleted slots correctly', () => {
+    const ht = new LinearProbingHashTable<string, number>(8)
+    ht.set('a', 1)
+    ht.set('b', 2)
+    ht.set('c', 3)
+    ht.delete('b')
+    const copy = ht.clone()
+    expect(copy.get('a')).toBe(1)
+    expect(copy.get('b')).toBeUndefined()
+    expect(copy.get('c')).toBe(3)
+    expect(copy.size).toBe(2)
+  })
+
+  it('equals returns true for identical tables', () => {
+    const ht1 = new LinearProbingHashTable<string, number>()
+    const ht2 = new LinearProbingHashTable<string, number>()
+    ht1.set('a', 1)
+    ht1.set('b', 2)
+    ht2.set('a', 1)
+    ht2.set('b', 2)
+    expect(ht1.equals(ht2)).toBe(true)
+  })
+
+  it('equals returns false for different tables', () => {
+    const ht1 = new LinearProbingHashTable<string, number>()
+    const ht2 = new LinearProbingHashTable<string, number>()
+    ht1.set('a', 1)
+    ht2.set('a', 2)
+    expect(ht1.equals(ht2)).toBe(false)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const ht1 = new LinearProbingHashTable<string, number>()
+    const ht2 = new LinearProbingHashTable<string, number>()
+    ht1.set('a', 1)
+    expect(ht1.equals(ht2)).toBe(false)
+  })
+
+  it('equals returns false for non-LinearProbingHashTable', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    expect(ht.equals({})).toBe(false)
+    expect(ht.equals(null)).toBe(false)
+    expect(ht.equals(undefined)).toBe(false)
+  })
+
+  it('handles boolean keys', () => {
+    const ht = new LinearProbingHashTable<boolean, string>()
+    ht.set(true, 'true-val')
+    ht.set(false, 'false-val')
+    expect(ht.get(true)).toBe('true-val')
+    expect(ht.get(false)).toBe('false-val')
+  })
+
+  it('handles null and undefined keys as strings', () => {
+    const ht = new LinearProbingHashTable<string | null | undefined, number>()
+    ht.set(null, 1)
+    ht.set(undefined, 2)
+    expect(ht.get(null)).toBe(1)
+    expect(ht.get(undefined)).toBe(2)
+  })
+
+  it('fills table to capacity', () => {
+    const ht = new LinearProbingHashTable<string, number>(5)
+    ht.set('a', 1)
+    ht.set('b', 2)
+    ht.set('c', 3)
+    ht.set('d', 4)
+    ht.set('e', 5)
+    expect(ht.size).toBe(5)
+    expect(() => ht.set('f', 6)).toThrow('Hash table is full')
+  })
+
+  it('handles collision chain reuse', () => {
+    const ht = new LinearProbingHashTable<string, number>(4)
+    ht.set('a', 1)
+    ht.set('e', 2)
+    ht.set('i', 3)
+    expect(ht.get('a')).toBe(1)
+    expect(ht.get('e')).toBe(2)
+    expect(ht.get('i')).toBe(3)
+    ht.delete('e')
+    ht.set('m', 4)
+    expect(ht.get('m')).toBe(4)
+    expect(ht.get('i')).toBe(3)
+  })
+
+  it('keys_Array returns empty array for empty table', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    expect(ht.keys_Array()).toEqual([])
+  })
+
+  it('values_Array returns empty array for empty table', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    expect(ht.values_Array()).toEqual([])
+  })
+
+  it('size remains correct after multiple operations', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    expect(ht.size).toBe(0)
+    ht.set('a', 1)
+    expect(ht.size).toBe(1)
+    ht.set('b', 2)
+    expect(ht.size).toBe(2)
+    ht.set('a', 3)
+    expect(ht.size).toBe(2)
+    ht.delete('a')
+    expect(ht.size).toBe(1)
+    ht.delete('b')
+    expect(ht.size).toBe(0)
+  })
+
+  it('get after multiple delete and reinsert', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('a', 1)
+    ht.delete('a')
+    ht.set('a', 2)
+    ht.delete('a')
+    ht.set('a', 3)
+    expect(ht.get('a')).toBe(3)
+    expect(ht.size).toBe(1)
+  })
+
+  it('has returns false after delete', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    ht.set('a', 1)
+    ht.delete('a')
+    expect(ht.has('a')).toBe(false)
+  })
+
+  it('handles custom capacity', () => {
+    const ht = new LinearProbingHashTable<string, number>(32)
+    expect(ht.toString()).toBe('LinearProbingHashTable(0/32)')
+    ht.set('a', 1)
+    expect(ht.toString()).toBe('LinearProbingHashTable(1/32)')
+  })
+
+  it('equals handles NaN values', () => {
+    const ht1 = new LinearProbingHashTable<string, number>()
+    const ht2 = new LinearProbingHashTable<string, number>()
+    ht1.set('a', NaN)
+    ht2.set('a', NaN)
+    expect(ht1.equals(ht2)).toBe(true)
+  })
+
+  it('clone with empty table', () => {
+    const ht = new LinearProbingHashTable<string, number>()
+    const copy = ht.clone()
+    expect(copy.size).toBe(0)
+    expect(copy.isEmpty()).toBe(true)
+  })
 })

@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { PairingHeap } from '../../src/utils/pairing-heap.js'
 
-// ─── Empty Heap Operations ──────────────────────────────────────────────
 describe('PairingHeap', () => {
   let heap: PairingHeap<number>
 
@@ -32,7 +31,6 @@ describe('PairingHeap', () => {
     })
   })
 
-  // ─── Insert ─────────────────────────────────────────────────────────────
   describe('insert', () => {
     it('inserts a single element', () => {
       heap.insert(10)
@@ -51,9 +49,27 @@ describe('PairingHeap', () => {
       heap.insert(20)
       expect(heap.peek()).toBe(10)
     })
+
+    it('handles negative numbers', () => {
+      heap.insert(-5)
+      heap.insert(10)
+      heap.insert(-10)
+      expect(heap.peek()).toBe(-10)
+    })
+
+    it('handles zero', () => {
+      heap.insert(0)
+      expect(heap.peek()).toBe(0)
+      expect(heap.extractMin()).toBe(0)
+    })
+
+    it('inserts many elements maintaining min', () => {
+      for (let i = 100; i >= 1; i--) heap.insert(i)
+      expect(heap.peek()).toBe(1)
+      expect(heap.size).toBe(100)
+    })
   })
 
-  // ─── ExtractMin ─────────────────────────────────────────────────────────
   describe('extractMin', () => {
     it('extracts the single element', () => {
       heap.insert(99)
@@ -76,9 +92,17 @@ describe('PairingHeap', () => {
       heap.extractMin()
       expect(heap.extractMin()).toBeUndefined()
     })
+
+    it('extracts with repeated values', () => {
+      heap.insert(5)
+      heap.insert(5)
+      heap.insert(5)
+      expect(heap.extractMin()).toBe(5)
+      expect(heap.extractMin()).toBe(5)
+      expect(heap.extractMin()).toBe(5)
+    })
   })
 
-  // ─── Merge ──────────────────────────────────────────────────────────────
   describe('merge', () => {
     it('merges two non-empty heaps', () => {
       const other = new PairingHeap<number>()
@@ -86,7 +110,6 @@ describe('PairingHeap', () => {
       heap.insert(10)
       other.insert(2)
       other.insert(8)
-
       heap.merge(other)
       expect(heap.size).toBe(4)
       expect(heap.peek()).toBe(2)
@@ -117,9 +140,29 @@ describe('PairingHeap', () => {
       expect(heap.size).toBe(0)
       expect(heap.isEmpty()).toBe(true)
     })
+
+    it('merged heap extracts in sorted order', () => {
+      const other = new PairingHeap<number>()
+      heap.insert(10)
+      heap.insert(30)
+      other.insert(20)
+      other.insert(5)
+      heap.merge(other)
+      expect(heap.extractMin()).toBe(5)
+      expect(heap.extractMin()).toBe(10)
+      expect(heap.extractMin()).toBe(20)
+      expect(heap.extractMin()).toBe(30)
+    })
+
+    it('other heap is empty after merge', () => {
+      const other = new PairingHeap<number>()
+      other.insert(1)
+      heap.merge(other)
+      expect(other.peek()).toBeUndefined()
+      expect(other.extractMin()).toBeUndefined()
+    })
   })
 
-  // ─── DecreaseKey ────────────────────────────────────────────────────────
   describe('decreaseKey', () => {
     it('decreases a node value and updates min', () => {
       const nodeA = heap.insert(10)
@@ -143,9 +186,21 @@ describe('PairingHeap', () => {
       heap.decreaseKey(nodes[0]!, 0)
       expect(heap.peek()).toBe(0)
     })
+
+    it('decreaseKey on root node works', () => {
+      const root = heap.insert(5)
+      heap.insert(10)
+      heap.decreaseKey(root, 1)
+      expect(heap.peek()).toBe(1)
+    })
+
+    it('decreaseKey to same value works', () => {
+      const node = heap.insert(5)
+      heap.decreaseKey(node, 5)
+      expect(heap.peek()).toBe(5)
+    })
   })
 
-  // ─── Delete ─────────────────────────────────────────────────────────────
   describe('delete', () => {
     it('removes a specific node', () => {
       const nodeB = heap.insert(3)
@@ -167,9 +222,22 @@ describe('PairingHeap', () => {
       expect(heap.size).toBe(2)
       expect(heap.peek()).toBe(3)
     })
+
+    it('delete decreases size', () => {
+      const node = heap.insert(10)
+      heap.insert(20)
+      heap.delete(node)
+      expect(heap.size).toBe(1)
+    })
+
+    it('delete last element leaves empty heap', () => {
+      const node = heap.insert(42)
+      heap.delete(node)
+      expect(heap.isEmpty()).toBe(true)
+      expect(heap.size).toBe(0)
+    })
   })
 
-  // ─── Clear ──────────────────────────────────────────────────────────────
   describe('clear', () => {
     it('empties the heap completely', () => {
       heap.insert(1)
@@ -181,9 +249,21 @@ describe('PairingHeap', () => {
       expect(heap.peek()).toBeUndefined()
       expect(heap.extractMin()).toBeUndefined()
     })
+
+    it('clear on empty heap is safe', () => {
+      heap.clear()
+      expect(heap.size).toBe(0)
+    })
+
+    it('can insert after clear', () => {
+      heap.insert(10)
+      heap.clear()
+      heap.insert(5)
+      expect(heap.peek()).toBe(5)
+      expect(heap.size).toBe(1)
+    })
   })
 
-  // ─── Size Tracking ──────────────────────────────────────────────────────
   describe('size tracking', () => {
     it('tracks size correctly through mixed operations', () => {
       expect(heap.size).toBe(0)
@@ -201,7 +281,6 @@ describe('PairingHeap', () => {
     })
   })
 
-  // ─── Custom Comparator (Max Heap) ──────────────────────────────────────
   describe('custom comparator', () => {
     it('supports max-heap via reversed comparator', () => {
       const maxHeap = new PairingHeap<number>({
@@ -215,9 +294,30 @@ describe('PairingHeap', () => {
       expect(maxHeap.extractMin()).toBe(20)
       expect(maxHeap.extractMin()).toBe(10)
     })
+
+    it('supports string comparator', () => {
+      const strHeap = new PairingHeap<string>({
+        comparator: (a, b) => a.localeCompare(b),
+      })
+      strHeap.insert('cherry')
+      strHeap.insert('apple')
+      strHeap.insert('banana')
+      expect(strHeap.peek()).toBe('apple')
+      expect(strHeap.extractMin()).toBe('apple')
+      expect(strHeap.extractMin()).toBe('banana')
+    })
+
+    it('supports object comparator by property', () => {
+      const objHeap = new PairingHeap<{ priority: number }>({
+        comparator: (a, b) => a.priority - b.priority,
+      })
+      objHeap.insert({ priority: 3 })
+      objHeap.insert({ priority: 1 })
+      objHeap.insert({ priority: 2 })
+      expect(objHeap.peek()!.priority).toBe(1)
+    })
   })
 
-  // ─── Large Number of Elements ───────────────────────────────────────────
   describe('large number of elements', () => {
     it('handles 200 elements correctly', () => {
       const items = Array.from({ length: 200 }, (_, i) => i + 1)
@@ -234,9 +334,15 @@ describe('PairingHeap', () => {
       }
       expect(heap.isEmpty()).toBe(true)
     })
+
+    it('handles 1000 elements', () => {
+      for (let i = 1000; i >= 1; i--) heap.insert(i)
+      for (let i = 1; i <= 1000; i++) {
+        expect(heap.extractMin()).toBe(i)
+      }
+    })
   })
 
-  // ─── Duplicate Values ──────────────────────────────────────────────────
   describe('duplicate values', () => {
     it('handles duplicate values correctly', () => {
       heap.insert(5)
@@ -252,7 +358,6 @@ describe('PairingHeap', () => {
     })
   })
 
-  // ─── Sequential Extracts ────────────────────────────────────────────────
   describe('sequential extracts', () => {
     it('extracts all returns sorted order', () => {
       const values = [42, 17, 8, 99, 3, 23, 56, 1, 71, 34]
@@ -267,7 +372,6 @@ describe('PairingHeap', () => {
     })
   })
 
-  // ─── Interleaved Insert/Extract ─────────────────────────────────────────
   describe('interleaved operations', () => {
     it('handles interleaved insert and extract', () => {
       heap.insert(5)
@@ -282,6 +386,77 @@ describe('PairingHeap', () => {
       expect(heap.extractMin()).toBe(4)
       expect(heap.extractMin()).toBe(7)
       expect(heap.isEmpty()).toBe(true)
+    })
+  })
+
+  describe('findMin', () => {
+    it('returns same as peek', () => {
+      heap.insert(10)
+      heap.insert(5)
+      heap.insert(15)
+      expect(heap.findMin()).toBe(heap.peek())
+    })
+
+    it('does not remove element', () => {
+      heap.insert(42)
+      heap.findMin()
+      expect(heap.size).toBe(1)
+    })
+  })
+
+  describe('edge cases', () => {
+    it('handles floating point numbers', () => {
+      heap.insert(3.14)
+      heap.insert(1.41)
+      heap.insert(2.72)
+      expect(heap.extractMin()).toBeCloseTo(1.41, 2)
+      expect(heap.extractMin()).toBeCloseTo(2.72, 2)
+      expect(heap.extractMin()).toBeCloseTo(3.14, 2)
+    })
+
+    it('handles very large numbers', () => {
+      heap.insert(Number.MAX_SAFE_INTEGER)
+      heap.insert(Number.MIN_SAFE_INTEGER)
+      expect(heap.peek()).toBe(Number.MIN_SAFE_INTEGER)
+    })
+
+    it('insert after extractAll works', () => {
+      heap.insert(1)
+      heap.insert(2)
+      heap.extractMin()
+      heap.extractMin()
+      heap.insert(3)
+      expect(heap.peek()).toBe(3)
+      expect(heap.size).toBe(1)
+    })
+
+    it('multiple merges in sequence', () => {
+      heap.insert(5)
+      const h2 = new PairingHeap<number>()
+      h2.insert(3)
+      const h3 = new PairingHeap<number>()
+      h3.insert(1)
+      heap.merge(h2)
+      heap.merge(h3)
+      expect(heap.size).toBe(3)
+      expect(heap.peek()).toBe(1)
+    })
+
+    it('decreaseKey then extractMin gives correct result', () => {
+      const n1 = heap.insert(100)
+      heap.insert(50)
+      heap.decreaseKey(n1, 25)
+      expect(heap.extractMin()).toBe(25)
+      expect(heap.extractMin()).toBe(50)
+    })
+
+    it('delete non-min node preserves min', () => {
+      const max = heap.insert(100)
+      heap.insert(1)
+      heap.insert(50)
+      heap.delete(max)
+      expect(heap.peek()).toBe(1)
+      expect(heap.size).toBe(2)
     })
   })
 })

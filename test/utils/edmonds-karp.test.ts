@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { EdmondsKarp } from '../../src/utils/edmonds-karp.js'
 
-describe('EdmondsKarp', () => {
+describe('EdmondsKarp maxFlow', () => {
   it('computes max flow for simple path', () => {
     const edges = [
       { from: 0, to: 1, capacity: 3 },
@@ -34,16 +34,6 @@ describe('EdmondsKarp', () => {
       { from: 1, to: 2, capacity: 1 },
     ]
     expect(EdmondsKarp.maxFlow(edges, 0, 2, 3)).toBe(1)
-  })
-
-  it('minCut returns reachable set', () => {
-    const edges = [
-      { from: 0, to: 1, capacity: 3 },
-      { from: 1, to: 2, capacity: 1 },
-    ]
-    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 2, 3)
-    expect(maxFlow).toBe(1)
-    expect(reachable.has(0)).toBe(true)
   })
 
   it('handles parallel edges', () => {
@@ -84,25 +74,15 @@ describe('EdmondsKarp', () => {
     expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(5)
   })
 
-  it('handles diamond graph', () => {
-    const edges = [
-      { from: 0, to: 1, capacity: 10 },
-      { from: 0, to: 2, capacity: 10 },
-      { from: 1, to: 3, capacity: 10 },
-      { from: 2, to: 3, capacity: 10 },
-    ]
-    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(20)
+  it('no path yields zero flow', () => {
+    expect(EdmondsKarp.maxFlow([{ from: 0, to: 1, capacity: 5 }], 1, 0, 2)).toBe(0)
   })
 
-  it('handles disconnected source-sink', () => {
-    expect(EdmondsKarp.maxFlow([{ from: 1, to: 2, capacity: 5 }], 0, 3, 4)).toBe(0)
+  it('disconnected graph has zero flow', () => {
+    expect(EdmondsKarp.maxFlow([{ from: 0, to: 1, capacity: 10 }], 2, 3, 4)).toBe(0)
   })
 
-  it('handles single node', () => {
-    expect(EdmondsKarp.maxFlow([], 0, 0, 1)).toBe(0)
-  })
-
-  it('handles bottleneck graph', () => {
+  it('handles long bottleneck chain', () => {
     const edges = [
       { from: 0, to: 1, capacity: 100 },
       { from: 1, to: 2, capacity: 1 },
@@ -111,72 +91,114 @@ describe('EdmondsKarp', () => {
     expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(1)
   })
 
-  it('handles parallel edges', () => {
+  it('handles three parallel paths', () => {
     const edges = [
       { from: 0, to: 1, capacity: 3 },
-      { from: 0, to: 1, capacity: 7 },
+      { from: 0, to: 1, capacity: 4 },
+      { from: 0, to: 1, capacity: 5 },
     ]
-    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(12)
   })
 
-  it('handles single edge', () => {
-    const edges = [{ from: 0, to: 1, capacity: 5 }]
+  it('handles self-loop', () => {
+    const edges = [
+      { from: 0, to: 0, capacity: 10 },
+      { from: 0, to: 1, capacity: 5 },
+    ]
     expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(5)
   })
 
-  it('no path gives zero flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 5 }]
-    expect(EdmondsKarp.maxFlow(edges, 1, 0, 2)).toBe(0)
+  it('handles large capacity', () => {
+    expect(EdmondsKarp.maxFlow([{ from: 0, to: 1, capacity: 1000000 }], 0, 1, 2)).toBe(1000000)
   })
 
-  it('single edge max flow equals capacity', () => {
-    const edges = [{ from: 0, to: 1, capacity: 7 }]
-    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(7)
+  it('handles multiple bottlenecks', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 0, to: 2, capacity: 5 },
+      { from: 1, to: 3, capacity: 2 },
+      { from: 2, to: 3, capacity: 2 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(4)
   })
 
-  it('disconnected graph has zero flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 10 }]
-    expect(EdmondsKarp.maxFlow(edges, 2, 3, 4)).toBe(0)
+  it('handles five-node chain', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 3, capacity: 8 },
+      { from: 3, to: 4, capacity: 3 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 4, 5)).toBe(3)
   })
 
-  it('single edge flow equals capacity', () => {
-    const edges = [{ from: 0, to: 1, capacity: 7 }]
-    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(7)
+  it('handles bidirectional edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 1, capacity: 3 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 2, 3)).toBe(5)
   })
 
-  it('no path yields zero flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 5 }]
-    expect(EdmondsKarp.maxFlow(edges, 1, 0, 2)).toBe(0)
+  it('handles empty edges', () => {
+    expect(EdmondsKarp.maxFlow([], 0, 1, 2)).toBe(0)
   })
 
-  it('single edge flow equals capacity', () => {
-    const edges = [{ from: 0, to: 1, capacity: 10 }]
-    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
+  it('handles complete K4 graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 2 },
+      { from: 0, to: 2, capacity: 3 },
+      { from: 0, to: 3, capacity: 1 },
+      { from: 1, to: 2, capacity: 1 },
+      { from: 1, to: 3, capacity: 4 },
+      { from: 2, to: 3, capacity: 2 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(5)
   })
 
-  it('no path yields zero flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 10 }]
-    expect(EdmondsKarp.maxFlow(edges, 1, 0, 2)).toBe(0)
+  it('handles capacity of 1 on all edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 1 },
+      { from: 0, to: 2, capacity: 1 },
+      { from: 1, to: 3, capacity: 1 },
+      { from: 2, to: 3, capacity: 1 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(2)
   })
 
-  it('single edge yields flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 10 }]
-    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
+  it('handles asymmetric diamond', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 1 },
+      { from: 1, to: 3, capacity: 1 },
+      { from: 2, to: 3, capacity: 10 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(2)
   })
 
-  it('minCut returns correct reachable set for simple path', () => {
+  it('handles star topology', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 0, to: 2, capacity: 5 },
+      { from: 0, to: 3, capacity: 5 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 4)).toBe(5)
+  })
+})
+
+describe('EdmondsKarp minCut', () => {
+  it('returns reachable set for simple path', () => {
     const edges = [
       { from: 0, to: 1, capacity: 3 },
-      { from: 1, to: 2, capacity: 2 },
+      { from: 1, to: 2, capacity: 1 },
     ]
     const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 2, 3)
-    expect(maxFlow).toBe(2)
+    expect(maxFlow).toBe(1)
     expect(reachable.has(0)).toBe(true)
-    expect(reachable.has(1)).toBe(true)
-    expect(reachable.has(2)).toBe(false)
   })
 
-  it('minCut returns correct reachable set for diamond', () => {
+  it('returns correct reachable for diamond', () => {
     const edges = [
       { from: 0, to: 1, capacity: 3 },
       { from: 0, to: 2, capacity: 2 },
@@ -189,9 +211,168 @@ describe('EdmondsKarp', () => {
     expect(reachable.has(3)).toBe(false)
   })
 
-  it('minCut source equals sink', () => {
+  it('source equals sink', () => {
     const result = EdmondsKarp.minCut([], 0, 0, 1)
     expect(result.maxFlow).toBe(0)
     expect(result.reachable.has(0)).toBe(true)
+  })
+
+  it('reachable set for bottleneck', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 2 },
+    ]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 2, 3)
+    expect(maxFlow).toBe(2)
+    expect(reachable.has(0)).toBe(true)
+    expect(reachable.has(1)).toBe(true)
+  })
+
+  it('disconnected graph reachable only source', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 2, 3, 4)
+    expect(maxFlow).toBe(0)
+    expect(reachable.has(2)).toBe(true)
+    expect(reachable.size).toBe(1)
+  })
+
+  it('reachable set for zero capacity', () => {
+    const edges = [{ from: 0, to: 1, capacity: 0 }]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 1, 2)
+    expect(maxFlow).toBe(0)
+    expect(reachable.has(0)).toBe(true)
+  })
+
+  it('reachable set for multi-level graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 3, 4)
+    expect(maxFlow).toBe(10)
+    expect(reachable.has(0)).toBe(true)
+    expect(reachable.has(3)).toBe(false)
+  })
+
+  it('empty edges with valid source and sink', () => {
+    const { maxFlow, reachable } = EdmondsKarp.minCut([], 0, 1, 2)
+    expect(maxFlow).toBe(0)
+    expect(reachable.has(0)).toBe(true)
+    expect(reachable.has(1)).toBe(false)
+  })
+
+  it('single edge minCut', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 1, 2)
+    expect(maxFlow).toBe(5)
+    expect(reachable.has(0)).toBe(true)
+    expect(reachable.has(1)).toBe(false)
+  })
+
+  it('parallel edges minCut', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 1, capacity: 4 },
+    ]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 1, 2)
+    expect(maxFlow).toBe(7)
+  })
+
+  it('handles 10-node linear chain', () => {
+    const edges: Array<{ from: number; to: number; capacity: number }> = []
+    for (let i = 0; i < 9; i++) edges.push({ from: i, to: i + 1, capacity: 5 })
+    expect(EdmondsKarp.maxFlow(edges, 0, 9, 10)).toBe(5)
+  })
+
+  it('handles multiple sources to single sink', () => {
+    const edges = [
+      { from: 0, to: 3, capacity: 3 },
+      { from: 1, to: 3, capacity: 4 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 1, 3, 4)).toBe(4)
+  })
+
+  it('handles source with no outgoing edges', () => {
+    const edges = [{ from: 1, to: 2, capacity: 5 }]
+    expect(EdmondsKarp.maxFlow(edges, 0, 2, 3)).toBe(0)
+  })
+
+  it('handles sink with no incoming edges', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    expect(EdmondsKarp.maxFlow(edges, 0, 2, 3)).toBe(0)
+  })
+
+  it('handles very small capacity', () => {
+    expect(EdmondsKarp.maxFlow([{ from: 0, to: 1, capacity: 0.5 }], 0, 1, 2)).toBe(0.5)
+  })
+
+  it('handles triangular graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 1, to: 2, capacity: 3 },
+      { from: 0, to: 2, capacity: 2 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 2, 3)).toBe(5)
+  })
+
+  it('handles four parallel paths to sink', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 1 },
+      { from: 0, to: 1, capacity: 2 },
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 1, capacity: 4 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
+
+  it('handles graph where back edges augment flow', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 2, capacity: 2 },
+      { from: 1, to: 2, capacity: 2 },
+      { from: 1, to: 3, capacity: 2 },
+      { from: 2, to: 3, capacity: 3 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(5)
+  })
+
+  it('handles two-node flow with multiple edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 1 },
+      { from: 0, to: 1, capacity: 1 },
+      { from: 0, to: 1, capacity: 1 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(3)
+  })
+
+  it('handles six-node butterfly graph', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 10 },
+      { from: 2, to: 4, capacity: 10 },
+      { from: 3, to: 5, capacity: 10 },
+      { from: 4, to: 5, capacity: 10 },
+      { from: 1, to: 4, capacity: 1 },
+      { from: 2, to: 3, capacity: 1 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 5, 6)).toBe(20)
+  })
+
+  it('minCut reachable stops at bottleneck edge', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 3 },
+      { from: 2, to: 3, capacity: 10 },
+    ]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 3, 4)
+    expect(maxFlow).toBe(3)
+    expect(reachable.has(0)).toBe(true)
+    expect(reachable.has(1)).toBe(true)
+    expect(reachable.has(2)).toBe(false)
+    expect(reachable.has(3)).toBe(false)
   })
 })

@@ -225,4 +225,218 @@ describe('MovingAverage', () => {
     expect(var1).toBe(0.6666666666666666)
     expect(var2).toBe(0.6666666666666666)
   })
+
+  it('handles very large window size', () => {
+    const ma = new MovingAverage(1000)
+    for (let i = 0; i < 1500; i++) {
+      ma.push(i)
+    }
+    expect(ma.size).toBe(1000)
+    expect(ma.average).toBe(999.5)
+  })
+
+  it('handles window size of 2', () => {
+    const ma = new MovingAverage(2)
+    ma.push(10)
+    ma.push(20)
+    expect(ma.average).toBe(15)
+    expect(ma.size).toBe(2)
+    ma.push(30)
+    expect(ma.average).toBe(25)
+    expect(ma.size).toBe(2)
+  })
+
+  it('handles very large positive values', () => {
+    const ma = new MovingAverage()
+    ma.push(Number.MAX_SAFE_INTEGER)
+    ma.push(Number.MAX_SAFE_INTEGER - 1)
+    ma.push(Number.MAX_SAFE_INTEGER - 2)
+    expect(ma.min).toBe(Number.MAX_SAFE_INTEGER - 2)
+    expect(ma.max).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles very small negative values', () => {
+    const ma = new MovingAverage()
+    ma.push(Number.MIN_SAFE_INTEGER)
+    ma.push(Number.MIN_SAFE_INTEGER + 1)
+    ma.push(Number.MIN_SAFE_INTEGER + 2)
+    expect(ma.min).toBe(Number.MIN_SAFE_INTEGER)
+    expect(ma.max).toBe(Number.MIN_SAFE_INTEGER + 2)
+  })
+
+  it('handles repeated identical values', () => {
+    const ma = new MovingAverage()
+    ma.push(5)
+    ma.push(5)
+    ma.push(5)
+    expect(ma.average).toBe(5)
+    expect(ma.variance).toBe(0)
+    expect(ma.stddev).toBe(0)
+    expect(ma.min).toBe(5)
+    expect(ma.max).toBe(5)
+  })
+
+  it('handles alternating values', () => {
+    const ma = new MovingAverage()
+    ma.push(1)
+    ma.push(100)
+    ma.push(1)
+    ma.push(100)
+    ma.push(1)
+    expect(ma.average).toBe(40.6)
+    expect(ma.min).toBe(1)
+    expect(ma.max).toBe(100)
+  })
+
+  it('handles monotonically increasing sequence', () => {
+    const ma = new MovingAverage(5)
+    ma.push(1)
+    ma.push(2)
+    ma.push(3)
+    ma.push(4)
+    ma.push(5)
+    expect(ma.average).toBe(3)
+    expect(ma.min).toBe(1)
+    expect(ma.max).toBe(5)
+  })
+
+  it('handles monotonically decreasing sequence', () => {
+    const ma = new MovingAverage(5)
+    ma.push(5)
+    ma.push(4)
+    ma.push(3)
+    ma.push(2)
+    ma.push(1)
+    expect(ma.average).toBe(3)
+    expect(ma.min).toBe(1)
+    expect(ma.max).toBe(5)
+  })
+
+  it('handles very small fractional values', () => {
+    const ma = new MovingAverage()
+    ma.push(0.0001)
+    ma.push(0.0002)
+    ma.push(0.0003)
+    expect(ma.average).toBe(0.0002)
+  })
+
+  it('handles very large window with rapid turnover', () => {
+    const ma = new MovingAverage(100)
+    for (let i = 0; i < 10000; i++) {
+      ma.push(i % 100)
+    }
+    expect(ma.size).toBe(100)
+  })
+
+  it('calculates stddev correctly with known values', () => {
+    const ma = new MovingAverage()
+    ma.push(2)
+    ma.push(4)
+    ma.push(4)
+    ma.push(4)
+    ma.push(5)
+    ma.push(5)
+    ma.push(7)
+    ma.push(9)
+    expect(ma.stddev).toBe(2)
+  })
+
+  it('maintains accuracy after many operations', () => {
+    const ma = new MovingAverage(10)
+    const expectedSum = 0
+    for (let i = 0; i < 1000; i++) {
+      ma.push(i)
+    }
+    const arr = ma.toArray()
+    const manualAvg = arr.reduce((a, b) => a + b, 0) / arr.length
+    expect(ma.average).toBeCloseTo(manualAvg, 10)
+  })
+
+  it('handles sequence with only negatives', () => {
+    const ma = new MovingAverage()
+    ma.push(-1)
+    ma.push(-2)
+    ma.push(-3)
+    expect(ma.average).toBe(-2)
+    expect(ma.min).toBe(-3)
+    expect(ma.max).toBe(-1)
+  })
+
+  it('handles sequence with mixed signs and zeros', () => {
+    const ma = new MovingAverage()
+    ma.push(-5)
+    ma.push(0)
+    ma.push(5)
+    expect(ma.average).toBe(0)
+    expect(ma.min).toBe(-5)
+    expect(ma.max).toBe(5)
+  })
+
+  it('handles empty window size (default)', () => {
+    const ma = new MovingAverage()
+    expect(ma.average).toBe(0)
+    expect(ma.variance).toBe(0)
+    expect(ma.stddev).toBe(0)
+    expect(ma.min).toBe(0)
+    expect(ma.max).toBe(0)
+    expect(ma.size).toBe(0)
+  })
+
+  it('handles variance with single value', () => {
+    const ma = new MovingAverage()
+    ma.push(42)
+    expect(ma.variance).toBe(0)
+    expect(ma.stddev).toBe(0)
+  })
+
+  it('handles window size limit reached multiple times', () => {
+    const ma = new MovingAverage(3)
+    ma.push(1)
+    ma.push(2)
+    ma.push(3)
+    ma.push(4)
+    ma.push(5)
+    ma.push(6)
+    expect(ma.size).toBe(3)
+    expect(ma.average).toBe(5)
+  })
+
+  it('handles rapid reset and fill cycles', () => {
+    const ma = new MovingAverage(5)
+    for (let i = 0; i < 10; i++) {
+      ma.push(i)
+      ma.reset()
+    }
+    expect(ma.size).toBe(0)
+    expect(ma.average).toBe(0)
+  })
+
+  it('handles variance with repeated pattern', () => {
+    const ma = new MovingAverage(6)
+    ma.push(1)
+    ma.push(2)
+    ma.push(3)
+    ma.push(1)
+    ma.push(2)
+    ma.push(3)
+    const avg = ma.average
+    expect(avg).toBe(2)
+    expect(ma.variance).toBeGreaterThan(0)
+    expect(ma.variance).toBeLessThan(1)
+  })
+
+  it('handles min and max after multiple slides', () => {
+    const ma = new MovingAverage(3)
+    ma.push(10)
+    ma.push(20)
+    ma.push(30)
+    expect(ma.min).toBe(10)
+    expect(ma.max).toBe(30)
+    ma.push(40)
+    expect(ma.min).toBe(20)
+    expect(ma.max).toBe(40)
+    ma.push(50)
+    expect(ma.min).toBe(30)
+    expect(ma.max).toBe(50)
+  })
 })

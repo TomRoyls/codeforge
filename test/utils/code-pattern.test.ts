@@ -112,6 +112,259 @@ describe('findPatterns', () => {
     const matches = findPatterns(content)
     expect(matches.length).toBe(3)
   })
+
+  it('should find console.debug statements', () => {
+    const content = 'console.debug("debug info")'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('console-log')
+  })
+
+  it('should find console.info statements', () => {
+    const content = 'console.info("info message")'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('console-log')
+  })
+
+  it('should find console.warn statements', () => {
+    const content = 'console.warn("warning message")'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('console-log')
+  })
+
+  it('should find hardcoded secret with API_KEY pattern', () => {
+    const content = 'api_key: "myApiKey12345678"'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('hardcoded-secret')
+  })
+
+  it('should find hardcoded secret with TOKEN pattern', () => {
+    const content = 'token: "mySecretToken12345"'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('hardcoded-secret')
+  })
+
+  it('should find hardcoded port with 127.0.0.1', () => {
+    const content = 'http://127.0.0.1:3000'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('hardcoded-port')
+  })
+
+  it('should handle empty string content', () => {
+    const content = ''
+    const matches = findPatterns(content)
+    expect(matches).toEqual([])
+  })
+
+  it('should handle content with only whitespace', () => {
+    const content = '   \n\n  \t  \n'
+    const matches = findPatterns(content)
+    expect(matches).toEqual([])
+  })
+
+  it('should handle content with only newlines', () => {
+    const content = '\n\n\n\n'
+    const matches = findPatterns(content)
+    expect(matches).toEqual([])
+  })
+
+  it('should handle multiple TODO keywords in same comment', () => {
+    const content = '// TODO FIXME HACK XXX all in one'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('todo-comment')
+  })
+
+  it('should handle custom rule with no matches', () => {
+    const customRule = createCustomRule('no-match', /xyz123/g, 'No match pattern')
+    const content = 'This content has no matches'
+    const matches = findPatterns(content, [customRule])
+    expect(matches.length).toBe(0)
+  })
+
+  it('should handle multiple custom rules', () => {
+    const rule1 = createCustomRule('pattern1', /abc/g, 'Pattern 1')
+    const rule2 = createCustomRule('pattern2', /xyz/g, 'Pattern 2')
+    const content = 'abc and xyz'
+    const matches = findPatterns(content, [rule1, rule2])
+    expect(matches.length).toBe(2)
+    expect(matches[0]!.pattern).toBe('pattern1')
+    expect(matches[1]!.pattern).toBe('pattern2')
+  })
+
+  it('should handle custom rule with complex regex', () => {
+    const customRule = createCustomRule('email', /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, 'Email found')
+    const content = 'Contact us at test@example.com'
+    const matches = findPatterns(content, [customRule])
+    expect(matches.length).toBe(1)
+    expect(matches[0]!.pattern).toBe('email')
+  })
+
+  it('should handle custom rule with insensitive flag', () => {
+    const customRule = createCustomRule('case-insensitive', /error/gi, 'Error found')
+    const content = 'ERROR error ErRoR'
+    const matches = findPatterns(content, [customRule])
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('case-insensitive')
+  })
+
+  it('should find pattern at end of line', () => {
+    const content = 'console.log("test")'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.column).toBe(1)
+  })
+
+  it('should handle very long content line', () => {
+    const content = 'a'.repeat(1000) + ' console.log(' + 'a'.repeat(1000)
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.column).toBe(1002)
+  })
+
+  it('should handle content with Unicode characters', () => {
+    const content = '// TODO: add unicode support 你好'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('todo-comment')
+  })
+
+  it('should find debugger with surrounding code', () => {
+    const content = 'function test() {\n  debugger\n  return true\n}'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('debugger-statement')
+    expect(matches[0]!.line).toBe(2)
+  })
+
+  it('should handle pattern matching with parentheses', () => {
+    const content = 'console.log((1 + 2))'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.match).toBe('console.log(')
+  })
+
+  it('should handle content with multiple patterns on different lines', () => {
+    const content = '// TODO: fix\nconsole.log("debug")\ndebugger\n'
+    const matches = findPatterns(content)
+    expect(matches.length).toBe(3)
+  })
+
+  it('should getBuiltinRules returns copy not reference', () => {
+    const rules1 = getBuiltinRules()
+    const rules2 = getBuiltinRules()
+    expect(rules1).not.toBe(rules2)
+    expect(rules1.length).toBe(rules2.length)
+  })
+
+  it('should getBuiltinRules returns exactly 5 rules', () => {
+    const rules = getBuiltinRules()
+    expect(rules.length).toBe(5)
+  })
+
+  it('should createCustomRule with error severity', () => {
+    const rule = createCustomRule('error-rule', /error/g, 'Error pattern', 'error')
+    expect(rule.severity).toBe('error')
+  })
+
+  it('should createCustomRule preserve regex flags', () => {
+    const pattern = /test/gi
+    const rule = createCustomRule('flag-rule', pattern, 'Pattern with flags')
+    expect(rule.pattern.flags).toBe(pattern.flags)
+  })
+
+  it('should find hardcoded secret with SECRET pattern', () => {
+    const content = 'SECRET: "mySecret12345678"'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('hardcoded-secret')
+  })
+
+  it('should find hardcoded secret with SECRET keyword uppercase', () => {
+    const content = 'secret: "mySecret12345678"'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('hardcoded-secret')
+  })
+
+  it('should handle TODO in code comment with various formats', () => {
+    const content = '/* TODO: implement feature */'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('todo-comment')
+  })
+
+  it('should handle FIXME in inline comment', () => {
+    const content = 'const x = 1 // FIXME: broken'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('todo-comment')
+  })
+
+  it('should find HACK in block comment', () => {
+    const content = '/**\n * HACK: temporary fix\n */'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.pattern).toBe('todo-comment')
+  })
+
+  it('should handle multiple TODO on same line', () => {
+    const content = '// TODO: fix1 TODO: fix2'
+    const matches = findPatterns(content)
+    expect(matches.length).toBe(2)
+  })
+
+  it('should handle empty lines between patterns', () => {
+    const content = 'console.log("a")\n\n\nconsole.log("b")'
+    const matches = findPatterns(content)
+    expect(matches.length).toBe(2)
+    expect(matches[0]!.line).toBe(1)
+    expect(matches[1]!.line).toBe(4)
+  })
+
+  it('should handle custom rule matching across multiple lines', () => {
+    const customRule = createCustomRule('multi-line', /console\.log/g, 'Console log')
+    const content = 'console.log("line1")\nconsole.log("line2")\nconsole.log("line3")'
+    const matches = findPatterns(content, [customRule])
+    expect(matches.length).toBe(3)
+  })
+
+  it('should handle pattern at beginning of file', () => {
+    const content = 'TODO: start here\nconst x = 1'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.line).toBe(1)
+    expect(matches[0]!.column).toBe(1)
+  })
+
+  it('should handle pattern at end of file', () => {
+    const content = 'const x = 1\nTODO: end here'
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches[0]!.line).toBe(2)
+  })
+
+  it('should handle all built-in rules in single content', () => {
+    const content = `// TODO: implement
+console.log("debug")
+debugger
+http://localhost:8080
+password: "secret12345678"`
+    const matches = findPatterns(content)
+    expect(matches.length).toBeGreaterThan(0)
+  })
+
+  it('should handle custom rule with anchored pattern', () => {
+    const customRule = createCustomRule('anchored', /^TODO:/g, 'Anchored TODO')
+    const content = 'TODO: fix this\n  TODO: fix that'
+    const matches = findPatterns(content, [customRule])
+    expect(matches.length).toBe(1)
+  })
 })
 
 describe('getBuiltinRules', () => {

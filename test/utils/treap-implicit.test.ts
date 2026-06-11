@@ -35,6 +35,13 @@ describe('TreapImplicit basics', () => {
     treap.insert(2, 3)
     expect(treap.toArray()).toEqual([1, 2, 3])
   })
+
+  it('push single element', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(42)
+    expect(treap.size).toBe(1)
+    expect(treap.get(0)).toBe(42)
+  })
 })
 
 describe('TreapImplicit get', () => {
@@ -50,6 +57,21 @@ describe('TreapImplicit get', () => {
     expect(treap.get(3)).toBe(40)
     expect(treap.get(4)).toBeUndefined()
     expect(treap.get(-1)).toBeUndefined()
+  })
+
+  it('get returns undefined for empty treap', () => {
+    const treap = new TreapImplicit<number>()
+    expect(treap.get(0)).toBeUndefined()
+  })
+
+  it('get after delete returns shifted values', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.delete(0)
+    expect(treap.get(0)).toBe(2)
+    expect(treap.get(1)).toBe(3)
   })
 })
 
@@ -71,6 +93,30 @@ describe('TreapImplicit set', () => {
     treap.set(5, 99)
     expect(treap.toArray()).toEqual([1, 2])
   })
+
+  it('set at negative index does nothing', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.set(-1, 99)
+    expect(treap.toArray()).toEqual([1])
+  })
+
+  it('set at index 0', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.set(0, 99)
+    expect(treap.get(0)).toBe(99)
+  })
+
+  it('set at last index', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.set(2, 99)
+    expect(treap.get(2)).toBe(99)
+  })
 })
 
 describe('TreapImplicit delete', () => {
@@ -91,6 +137,33 @@ describe('TreapImplicit delete', () => {
     expect(treap.delete(5)).toBeUndefined()
     expect(treap.delete(-1)).toBeUndefined()
   })
+
+  it('delete decreases size', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.delete(1)
+    expect(treap.size).toBe(2)
+  })
+
+  it('delete from middle', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(10)
+    treap.push(20)
+    treap.push(30)
+    expect(treap.delete(1)).toBe(20)
+    expect(treap.toArray()).toEqual([10, 30])
+  })
+
+  it('delete last element', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    expect(treap.delete(2)).toBe(3)
+    expect(treap.toArray()).toEqual([1, 2])
+  })
 })
 
 describe('TreapImplicit toArray', () => {
@@ -107,14 +180,21 @@ describe('TreapImplicit toArray', () => {
     const treap = new TreapImplicit<number>()
     expect(treap.toArray()).toEqual([])
   })
+
+  it('toArray after reverse', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.reverse(0, 3)
+    expect(treap.toArray()).toEqual([3, 2, 1])
+  })
 })
 
 describe('TreapImplicit reverse', () => {
   it('reverse subarray', () => {
     const treap = new TreapImplicit<number>()
-    for (let i = 0; i < 10; i++) {
-      treap.push(i)
-    }
+    for (let i = 0; i < 10; i++) treap.push(i)
     treap.reverse(2, 7)
     expect(treap.toArray()).toEqual([0, 1, 6, 5, 4, 3, 2, 7, 8, 9])
   })
@@ -127,14 +207,69 @@ describe('TreapImplicit reverse', () => {
     treap.reverse(1, 2)
     expect(treap.toArray()).toEqual([1, 2, 3])
   })
+
+  it('reverse entire array', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.push(4)
+    treap.push(5)
+    treap.reverse(0, 5)
+    expect(treap.toArray()).toEqual([5, 4, 3, 2, 1])
+  })
+
+  it('reverse with invalid range does nothing', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.reverse(-1, 2)
+    expect(treap.toArray()).toEqual([1, 2])
+  })
+
+  it('reverse with l >= r does nothing', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.reverse(2, 1)
+    expect(treap.toArray()).toEqual([1, 2])
+  })
+
+  it('double reverse restores order', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.push(4)
+    treap.reverse(0, 4)
+    treap.reverse(0, 4)
+    expect(treap.toArray()).toEqual([1, 2, 3, 4])
+  })
+
+  it('reverse two elements', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.reverse(0, 2)
+    expect(treap.toArray()).toEqual([2, 1])
+  })
+
+  it('reverse then get returns correct values', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(10)
+    treap.push(20)
+    treap.push(30)
+    treap.reverse(0, 3)
+    expect(treap.get(0)).toBe(30)
+    expect(treap.get(1)).toBe(20)
+    expect(treap.get(2)).toBe(10)
+  })
 })
 
 describe('TreapImplicit splitAt', () => {
   it('split at various positions', () => {
     const treap = new TreapImplicit<number>()
-    for (let i = 0; i < 10; i++) {
-      treap.push(i)
-    }
+    for (let i = 0; i < 10; i++) treap.push(i)
     const [left, right] = treap.splitAt(5)
     expect(left.toArray()).toEqual([0, 1, 2, 3, 4])
     expect(right.toArray()).toEqual([5, 6, 7, 8, 9])
@@ -159,6 +294,24 @@ describe('TreapImplicit splitAt', () => {
     const [left, right] = treap.splitAt(3)
     expect(left.toArray()).toEqual([1, 2, 3])
     expect(right.toArray()).toEqual([])
+  })
+
+  it('split with invalid index returns two empty treaps', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    const [left, right] = treap.splitAt(-1)
+    expect(left.size).toBe(0)
+    expect(right.size).toBe(0)
+  })
+
+  it('split clears original treap', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.splitAt(1)
+    expect(treap.size).toBe(0)
+    expect(treap.toArray()).toEqual([])
   })
 })
 
@@ -189,14 +342,17 @@ describe('TreapImplicit empty treap operations', () => {
     const treap = new TreapImplicit<number>()
     expect(treap.toArray()).toEqual([])
   })
+
+  it('size is 0 on empty treap', () => {
+    const treap = new TreapImplicit<number>()
+    expect(treap.size).toBe(0)
+  })
 })
 
 describe('TreapImplicit large sequence operations', () => {
   it('handles 1000+ elements', () => {
     const treap = new TreapImplicit<number>()
-    for (let i = 0; i < 1000; i++) {
-      treap.push(i)
-    }
+    for (let i = 0; i < 1000; i++) treap.push(i)
     expect(treap.size).toBe(1000)
     expect(treap.get(500)).toBe(500)
     const arr = treap.toArray()
@@ -204,32 +360,13 @@ describe('TreapImplicit large sequence operations', () => {
     expect(arr[0]).toBe(0)
     expect(arr[999]).toBe(999)
   })
-})
 
-describe('TreapImplicit delete all elements one by one', () => {
-  it('deletes all elements correctly', () => {
+  it('delete all elements one by one', () => {
     const treap = new TreapImplicit<number>()
-    for (let i = 0; i < 10; i++) {
-      treap.push(i)
-    }
-    for (let i = 0; i < 10; i++) {
-      treap.delete(0)
-    }
+    for (let i = 0; i < 10; i++) treap.push(i)
+    for (let i = 0; i < 10; i++) treap.delete(0)
     expect(treap.size).toBe(0)
     expect(treap.toArray()).toEqual([])
-  })
-})
-
-describe('TreapImplicit reverse full array', () => {
-  it('reverses entire array', () => {
-    const treap = new TreapImplicit<number>()
-    treap.push(1)
-    treap.push(2)
-    treap.push(3)
-    treap.push(4)
-    treap.push(5)
-    treap.reverse(0, 5)
-    expect(treap.toArray()).toEqual([5, 4, 3, 2, 1])
   })
 })
 
@@ -260,5 +397,83 @@ describe('TreapImplicit insert out of bounds', () => {
     treap.push(1)
     treap.insert(5, 99)
     expect(treap.toArray()).toEqual([1])
+  })
+
+  it('insert at exact size appends', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.insert(2, 3)
+    expect(treap.toArray()).toEqual([1, 2, 3])
+  })
+})
+
+describe('TreapImplicit complex operations', () => {
+  it('insert delete and reverse combined', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.insert(1, 10)
+    expect(treap.toArray()).toEqual([1, 10, 2, 3])
+    treap.delete(2)
+    expect(treap.toArray()).toEqual([1, 10, 3])
+    treap.reverse(0, 3)
+    expect(treap.toArray()).toEqual([3, 10, 1])
+  })
+
+  it('multiple inserts at same position', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(4)
+    treap.insert(1, 2)
+    treap.insert(2, 3)
+    expect(treap.toArray()).toEqual([1, 2, 3, 4])
+  })
+
+  it('set after reverse', () => {
+    const treap = new TreapImplicit<number>()
+    treap.push(1)
+    treap.push(2)
+    treap.push(3)
+    treap.reverse(0, 3)
+    treap.set(0, 99)
+    expect(treap.toArray()).toEqual([99, 2, 1])
+  })
+
+  it('object values', () => {
+    const treap = new TreapImplicit<{ x: number }>()
+    treap.push({ x: 1 })
+    treap.push({ x: 2 })
+    treap.push({ x: 3 })
+    expect(treap.get(1)!.x).toBe(2)
+    treap.set(1, { x: 99 })
+    expect(treap.get(1)!.x).toBe(99)
+  })
+
+  it('split then modify halves independently', () => {
+    const treap = new TreapImplicit<number>()
+    for (let i = 0; i < 6; i++) treap.push(i)
+    const [left, right] = treap.splitAt(3)
+    left.push(100)
+    right.insert(0, 200)
+    expect(left.toArray()).toEqual([0, 1, 2, 100])
+    expect(right.toArray()).toEqual([200, 3, 4, 5])
+  })
+
+  it('reverse middle section', () => {
+    const treap = new TreapImplicit<number>()
+    for (let i = 1; i <= 5; i++) treap.push(i)
+    treap.reverse(1, 4)
+    expect(treap.toArray()).toEqual([1, 4, 3, 2, 5])
+  })
+
+  it('push many then delete from end', () => {
+    const treap = new TreapImplicit<number>()
+    for (let i = 0; i < 20; i++) treap.push(i)
+    for (let i = 19; i >= 0; i--) {
+      expect(treap.delete(treap.size - 1)).toBe(i)
+    }
+    expect(treap.size).toBe(0)
   })
 })
