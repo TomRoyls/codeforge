@@ -161,4 +161,41 @@ describe('escapeMarkdown', () => {
   it('does not escape parenthesis by default', () => {
     expect(escapeMarkdown('(text)')).toBe('(text)')
   })
+
+  it('escapeXml handles unicode', () => {
+    expect(escapeXml('café & résumé')).toBe('café &amp; résumé')
+  })
+
+  it('escapeXml handles only ampersand', () => {
+    expect(escapeXml('&')).toBe('&amp;')
+  })
+
+  it('escapeXml handles only less than', () => {
+    expect(escapeXml('<')).toBe('&lt;')
+  })
+
+  it('escapeXml with numbers', () => {
+    expect(escapeXml('1 < 2 & 3 > 0')).toBe('1 &lt; 2 &amp; 3 &gt; 0')
+  })
+
+  it('escapeHtml handles unicode', () => {
+    expect(escapeHtml('日本語<test>')).toBe('日本語&lt;test&gt;')
+  })
+
+  it('escapeHtml with newline', () => {
+    expect(escapeHtml('line1\nline2')).toBe('line1\nline2')
+  })
+
+  it('escapeHtml escapes all five entities', () => {
+    expect(escapeHtml('"\'&<>')).toBe('&quot;&#039;&amp;&lt;&gt;')
+  })
+
+  it('escapeMarkdown handles multiple pipes', () => {
+    expect(escapeMarkdown('| a | b |')).toBe('\\| a \\| b \\|')
+  })
+
+  it('escapeMarkdown handles mixed special chars', () => {
+    const result = escapeMarkdown('*_`#')
+    expect(result).toBe('\\*\\_\\`\\#')
+  })
 })
