@@ -152,28 +152,12 @@ describe('BiconnectedComponents', () => {
     expect(bc.findArticulationPoints()).toEqual([0])
   })
 
-  it('triangle has no articulation points', () => {
-    const bc = new BiconnectedComponents(3)
-    bc.addEdge(0, 1)
-    bc.addEdge(1, 2)
-    bc.addEdge(0, 2)
-    expect(bc.findArticulationPoints()).toEqual([])
-  })
-
   it('chain of 3 has one articulation point', () => {
     const bc = new BiconnectedComponents(3)
     bc.addEdge(0, 1)
     bc.addEdge(1, 2)
     const ap = bc.findArticulationPoints()
     expect(ap).toContain(1)
-  })
-
-  it('triangle has no articulation points', () => {
-    const bc = new BiconnectedComponents(3)
-    bc.addEdge(0, 1)
-    bc.addEdge(1, 2)
-    bc.addEdge(0, 2)
-    expect(bc.findArticulationPoints()).toEqual([])
   })
 
   it('findComponents on linear graph', () => {
@@ -212,5 +196,242 @@ describe('BiconnectedComponents', () => {
     const bc = new BiconnectedComponents(1)
     const comps = bc.findComponents()
     expect(comps.length).toBe(0)
+  })
+
+  it('double articulation point in chain of 5', () => {
+    const bc = new BiconnectedComponents(5)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 3)
+    bc.addEdge(3, 4)
+    const ap = bc.findArticulationPoints()
+    expect(ap.sort()).toEqual([1, 2, 3])
+  })
+
+  it('diamond shape has no articulation points', () => {
+    const bc = new BiconnectedComponents(4)
+    bc.addEdge(0, 1)
+    bc.addEdge(0, 2)
+    bc.addEdge(1, 3)
+    bc.addEdge(2, 3)
+    bc.addEdge(1, 2)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
+
+  it('pentagon cycle has no articulation points', () => {
+    const bc = new BiconnectedComponents(5)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 3)
+    bc.addEdge(3, 4)
+    bc.addEdge(4, 0)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
+
+  it('double triangle with bridge', () => {
+    const bc = new BiconnectedComponents(6)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 0)
+    bc.addEdge(3, 4)
+    bc.addEdge(4, 5)
+    bc.addEdge(5, 3)
+    bc.addEdge(2, 3)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toContain(2)
+    expect(ap).toContain(3)
+  })
+
+  it('multiple disconnected triangles', () => {
+    const bc = new BiconnectedComponents(6)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 0)
+    bc.addEdge(3, 4)
+    bc.addEdge(4, 5)
+    bc.addEdge(5, 3)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
+
+  it('Y-shaped graph has one articulation point', () => {
+    const bc = new BiconnectedComponents(5)
+    bc.addEdge(0, 1)
+    bc.addEdge(0, 2)
+    bc.addEdge(0, 3)
+    bc.addEdge(0, 4)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toEqual([0])
+  })
+
+  it('two parallel edges create articulation', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toContain(1)
+  })
+
+  it('K2 single edge no articulation points', () => {
+    const bc = new BiconnectedComponents(2)
+    bc.addEdge(0, 1)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
+
+  it('K3 complete graph no articulation points', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 0)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
+
+  it('K5 complete graph no articulation points', () => {
+    const bc = new BiconnectedComponents(5)
+    for (let i = 0; i < 5; i++)
+      for (let j = i + 1; j < 5; j++)
+        bc.addEdge(i, j)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
+
+  it('graph with cut vertex', () => {
+    const bc = new BiconnectedComponents(7)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 3)
+    bc.addEdge(3, 1)
+    bc.addEdge(2, 4)
+    bc.addEdge(4, 5)
+    bc.addEdge(5, 6)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toContain(2)
+    expect(ap).toContain(4)
+  })
+
+  it('multiple bridges in graph', () => {
+    const bc = new BiconnectedComponents(6)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 3)
+    bc.addEdge(3, 4)
+    bc.addEdge(4, 5)
+    const ap = bc.findArticulationPoints()
+    expect(ap.length).toBeGreaterThan(0)
+  })
+
+  it('cube graph has no articulation points', () => {
+    const bc = new BiconnectedComponents(8)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 3)
+    bc.addEdge(3, 0)
+    bc.addEdge(4, 5)
+    bc.addEdge(5, 6)
+    bc.addEdge(6, 7)
+    bc.addEdge(7, 4)
+    bc.addEdge(0, 4)
+    bc.addEdge(1, 5)
+    bc.addEdge(2, 6)
+    bc.addEdge(3, 7)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
+
+  it('wheel graph has no articulation points', () => {
+    const bc = new BiconnectedComponents(6)
+    bc.addEdge(0, 1)
+    bc.addEdge(0, 2)
+    bc.addEdge(0, 3)
+    bc.addEdge(0, 4)
+    bc.addEdge(0, 5)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 3)
+    bc.addEdge(3, 4)
+    bc.addEdge(4, 5)
+    bc.addEdge(5, 1)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toEqual([])
+  })
+
+  it('empty graph has no articulation points', () => {
+    const bc = new BiconnectedComponents(5)
+    expect(bc.findArticulationPoints()).toEqual([])
+  })
+
+  it('two components in connected graph', () => {
+    const bc = new BiconnectedComponents(5)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 0)
+    bc.addEdge(2, 3)
+    bc.addEdge(3, 4)
+    const comps = bc.findComponents()
+    expect(comps.length).toBe(3)
+  })
+
+  it('toString returns correct format', () => {
+    const bc = new BiconnectedComponents(5)
+    expect(bc.toString()).toBe('BiconnectedComponents(n=5)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    const json = bc.toJSON()
+    expect(json.n).toBe(3)
+    expect(json.adj.length).toBe(3)
+  })
+
+  it('clone creates independent copy', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    const clone = bc.clone()
+    bc.addEdge(1, 2)
+    expect(bc.findComponents().length).not.toBe(clone.findComponents().length)
+  })
+
+  it('clone preserves edges', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    const clone = bc.clone()
+    expect(clone.findComponents().length).toBe(bc.findComponents().length)
+  })
+
+  it('equals with same graph', () => {
+    const bc1 = new BiconnectedComponents(3)
+    bc1.addEdge(0, 1)
+    bc1.addEdge(1, 2)
+    const bc2 = new BiconnectedComponents(3)
+    bc2.addEdge(0, 1)
+    bc2.addEdge(1, 2)
+    expect(bc1.equals(bc2)).toBe(true)
+  })
+
+  it('equals with different n', () => {
+    const bc1 = new BiconnectedComponents(3)
+    const bc2 = new BiconnectedComponents(4)
+    expect(bc1.equals(bc2)).toBe(false)
+  })
+
+  it('equals with different edges', () => {
+    const bc1 = new BiconnectedComponents(3)
+    bc1.addEdge(0, 1)
+    const bc2 = new BiconnectedComponents(3)
+    bc2.addEdge(1, 2)
+    expect(bc1.equals(bc2)).toBe(false)
+  })
+
+  it('equals with non-BiconnectedComponents', () => {
+    const bc = new BiconnectedComponents(3)
+    expect(bc.equals(null)).toBe(false)
+    expect(bc.equals({})).toBe(false)
+  })
+
+  it('addEdge adds bidirectional edge', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    const comps = bc.findComponents()
+    expect(comps.length).toBeGreaterThanOrEqual(1)
   })
 })

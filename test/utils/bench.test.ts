@@ -267,7 +267,249 @@ describe('bench', () => {
   })
 
   it('formatSuite with results returns string', () => {
-    const result = formatSuite({ name: 'test', results: [{ name: 'a', opsPerSec: 1000, avgNs: 1000000, margin: 1 }] })
+    const result = formatSuite({ name: 'test', results: [{ name: 'a', opsPerSec: 1000, avgNs: 1000000, iterations: 100, totalMs: 100 }] })
     expect(typeof result).toBe('string')
+  })
+
+  it('bench runs function that increments counter', () => {
+    let count = 0
+    const result = bench('increment', () => {
+      count++
+    }, 10)
+
+    expect(result.iterations).toBe(10)
+    expect(result.totalMs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles very small iteration count', () => {
+    let count = 0
+    const result = bench('tiny', () => {
+      count++
+    }, 1)
+
+    expect(count).toBe(1)
+    expect(result.iterations).toBe(1)
+  })
+
+  it('handles large iteration count', () => {
+    let count = 0
+    const result = bench('large', () => {
+      count++
+    }, 500000)
+
+    expect(count).toBe(500000)
+    expect(result.iterations).toBe(500000)
+  })
+
+  it('handles empty function', () => {
+    const result = bench('empty', () => {}, 1000)
+    expect(result.totalMs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('benchmarks function with return value', () => {
+    const result = bench('returns', () => {
+      return 42
+    }, 100)
+
+    expect(result.iterations).toBe(100)
+    expect(result.totalMs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles async function with rejection', async () => {
+    let rejectionCount = 0
+    const result = await benchAsync('rejects', async () => {
+      throw new Error('rejected')
+    }, 10)
+
+    expect(result.iterations).toBe(10)
+    expect(result.totalMs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles async function with variable delays', async () => {
+    const delays = [1, 2, 3, 4, 5]
+    let index = 0
+    const result = await benchAsync('variable', async () => {
+      const delay = delays[index % delays.length]
+      index++
+      await new Promise((resolve) => setTimeout(resolve, delay))
+    }, 5)
+
+    expect(result.iterations).toBe(5)
+  })
+
+  it('compareBenchmarks with multiple results', () => {
+    const results = [
+      bench('fast', () => {}, 100),
+      bench('medium', () => {
+        for (let i = 0; i < 100; i++) {}
+      }, 100),
+      bench('slow', () => {
+        for (let i = 0; i < 1000; i++) {}
+      }, 100),
+    ]
+
+    const suite = compareBenchmarks(results)
+    expect(suite.results).toHaveLength(3)
+    expect(suite.results[0]!.avgNs).toBeLessThanOrEqual(suite.results[1]!.avgNs)
+    expect(suite.results[1]!.avgNs).toBeLessThanOrEqual(suite.results[2]!.avgNs)
+  })
+
+  it('handles very fast operation', () => {
+    const result = bench('instant', () => {
+      Math.random()
+    }, 100000)
+
+    expect(result.iterations).toBe(100000)
+    expect(result.opsPerSec).toBeGreaterThan(0)
+  })
+
+  it('handles operations with near-equal timing', () => {
+    const result1 = bench('test1', () => {}, 1000)
+    const result2 = bench('test2', () => {}, 1000)
+    const suite = compareBenchmarks([result1, result2])
+
+    const ratio = suite.results[1]!.avgNs / suite.results[0]!.avgNs
+    expect(ratio).toBeGreaterThan(0)
+  })
+
+  it('formatResult with very small opsPerSec', () => {
+    const result: ReturnType<typeof bench> = {
+      name: 'tiny',
+      iterations: 1,
+      totalMs: 1000,
+      opsPerSec: 1,
+      avgNs: 1000000000,
+    }
+
+    const formatted = formatResult(result)
+    expect(formatted).toContain('1 ops/s')
+  })
+
+  it('formatResult with boundary of thousands', () => {
+    const result: ReturnType<typeof bench> = {
+      name: 'boundary',
+      iterations: 1000,
+      totalMs: 1000,
+      opsPerSec: 1500,
+      avgNs: 1000000,
+    }
+
+    const formatted = formatResult(result)
+    expect(formatted).toContain('1.50K ops/s')
+  })
+
+  it('formatResult with boundary of millions', () => {
+    const result: ReturnType<typeof bench> = {
+      name: 'boundary',
+      iterations: 1000000,
+      totalMs: 1000,
+      opsPerSec: 1500000,
+      avgNs: 1000,
+    }
+
+    const formatted = formatResult(result)
+    expect(formatted).toContain('1.50M ops/s')
+  })
+
+  it('formatResult with very large opsPerSec', () => {
+    const result: ReturnType<typeof bench> = {
+      name: 'huge',
+      iterations: 10000000,
+      totalMs: 10,
+      opsPerSec: 1000000000,
+      avgNs: 1,
+    }
+
+    const formatted = formatResult(result)
+    expect(formatted).toContain('1000.00M ops/s')
+  })
+
+  it('formatSuite with many results', () => {
+    const results: ReturnType<typeof bench>[] = Array.from({ length: 10 }, (_, i) => ({
+      name: `bench${i}`,
+      iterations: 1000,
+      totalMs: (i + 1) * 10,
+      opsPerSec: 100000 / (i + 1),
+      avgNs: (i + 1) * 10000,
+    }))
+
+    const suite = compareBenchmarks(results)
+    const formatted = formatSuite(suite)
+
+    expect(formatted).toContain('=== comparison ===')
+    expect(formatted.split('\n').length).toBeGreaterThan(1)
+  })
+
+  it('formatSuite with unsorted input', () => {
+    const results: ReturnType<typeof bench>[] = [
+      {
+        name: 'slow',
+        iterations: 1000,
+        totalMs: 200,
+        opsPerSec: 5000,
+        avgNs: 200000,
+      },
+      {
+        name: 'fast',
+        iterations: 1000,
+        totalMs: 100,
+        opsPerSec: 10000,
+        avgNs: 100000,
+      },
+      {
+        name: 'medium',
+        iterations: 1000,
+        totalMs: 150,
+        opsPerSec: 6666,
+        avgNs: 150000,
+      },
+    ]
+
+    const suite = compareBenchmarks(results)
+    expect(suite.results[0]!.name).toBe('fast')
+    expect(suite.results[1]!.name).toBe('medium')
+    expect(suite.results[2]!.name).toBe('slow')
+  })
+
+  it('handles async function with promise resolution', async () => {
+    let count = 0
+    const result = await benchAsync('promise', async () => {
+      await Promise.resolve()
+      count++
+    }, 10)
+
+    expect(count).toBe(10)
+    expect(result.iterations).toBe(10)
+  })
+
+  it('benchmarks function with allocations', () => {
+    const result = bench('allocations', () => {
+      const arr = new Array(100).fill(0)
+      arr.map((x) => x * 2)
+    }, 1000)
+
+    expect(result.iterations).toBe(1000)
+    expect(result.totalMs).toBeGreaterThan(0)
+  })
+
+  it('compares empty function vs function with work', () => {
+    const empty = bench('empty', () => {}, 10000)
+    const work = bench('work', () => {
+      for (let i = 0; i < 100; i++) {}
+    }, 10000)
+    const suite = compareBenchmarks([empty, work])
+
+    expect(suite.results[0]!.avgNs).toBeLessThan(suite.results[1]!.avgNs)
+  })
+
+  it('handles benchmark with exact timing boundary', () => {
+    const result = bench('boundary', () => {
+      for (let i = 0; i < 100000; i++) {
+        Math.sqrt(i)
+      }
+    }, 10)
+
+    expect(result.opsPerSec).toBeGreaterThan(0)
+    expect(result.avgNs).toBeGreaterThan(0)
   })
 })

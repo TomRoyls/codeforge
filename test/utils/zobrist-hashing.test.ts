@@ -164,4 +164,233 @@ describe('ZobristHashing', () => {
     const m2 = new Map([['a', 2]])
     expect(z.hash(m1)).not.toBe(z.hash(m2))
   })
+
+  it('handles position at boundary', () => {
+    const z = new ZobristHashing({ positions: 10, pieces: 5 })
+    const state = new Map([[9, 4]])
+    const h = z.hash(state)
+    expect(h).toBeGreaterThanOrEqual(0)
+    expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+  })
+
+  it('handles pieceId at boundary', () => {
+    const z = new ZobristHashing({ positions: 10, pieces: 5 })
+    const state = new Map([[5, 4]])
+    const h = z.hash(state)
+    expect(h).toBeGreaterThanOrEqual(0)
+    expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+  })
+
+  it('handles state with many pieces', () => {
+    const z = new ZobristHashing({ positions: 100, pieces: 20 })
+    const state = new Map<number, number>()
+    for (let i = 0; i < 50; i++) {
+      state.set(i, i % 10)
+    }
+    const h = z.hash(state)
+    expect(h).toBeGreaterThanOrEqual(0)
+    expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+  })
+
+  it('movePiece with same from and to position cancels both XORs', () => {
+    const z = new ZobristHashing()
+    const h1 = z.hash(new Map())
+    const h2 = z.addToHash(h1, 5, 3)
+    const h3 = z.movePiece(h2, 5, 5, 3)
+    expect(h3).toBe(h2)
+  })
+
+  it('movePiece chain XORs correctly', () => {
+    const z = new ZobristHashing()
+    const h1 = z.hash(new Map())
+    const h2 = z.addToHash(h1, 0, 1)
+    const h3 = z.movePiece(h2, 0, 1, 1)
+    const h4 = z.movePiece(h3, 1, 2, 1)
+    const h5 = z.movePiece(h4, 2, 0, 1)
+    expect(h5).toBe(h2)
+  })
+
+  it('addToHash for out-of-range entry returns same hash', () => {
+    const z = new ZobristHashing({ positions: 10, pieces: 5 })
+    const h1 = z.hash(new Map())
+    const h2 = z.addToHash(h1, 100, 100)
+    expect(h2).toBe(h1)
+  })
+
+  it('multiple removeFromHash calls compose correctly', () => {
+    const z = new ZobristHashing()
+    const state = new Map([[0, 1], [1, 2], [2, 3]])
+    const h1 = z.hash(state)
+    let h2 = z.removeFromHash(h1, 0, 1)
+    h2 = z.removeFromHash(h2, 1, 2)
+    h2 = z.removeFromHash(h2, 2, 3)
+    expect(h2).toBe(0)
+  })
+
+  it('hash with zero pieceId works', () => {
+    const z = new ZobristHashing()
+    const state = new Map([[0, 0]])
+    const h = z.hash(state)
+    expect(h).toBeGreaterThanOrEqual(0)
+    expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+  })
+
+  it('hash with string key works', () => {
+    const z = new ZobristHashing<string>()
+    const state = new Map([['position1', 1], ['position2', 2]])
+    const h = z.hash(state)
+    expect(h).toBeGreaterThanOrEqual(0)
+    expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+  })
+
+  it('different string keys produce different hashes', () => {
+    const z = new ZobristHashing<string>()
+    const s1 = new Map([['abc', 1]])
+    const s2 = new Map([['def', 1]])
+    expect(z.hash(s1)).not.toBe(z.hash(s2))
+  })
+
+  it('same string key produces same hash', () => {
+    const z = new ZobristHashing<string>()
+    const s1 = new Map([['test', 1]])
+    const s2 = new Map([['test', 1]])
+    expect(z.hash(s1)).toBe(z.hash(s2))
+  })
+
+  it('stringToPosition maps consistently', () => {
+    const z = new ZobristHashing<string>({ positions: 10, pieces: 2 })
+    const s1 = new Map([['same', 1]])
+    const s2 = new Map([['same', 1]])
+    expect(z.hash(s1)).toBe(z.hash(s2))
+  })
+
+  it('hash with numeric and string keys works', () => {
+    const z1 = new ZobristHashing<number>()
+    const z2 = new ZobristHashing<string>()
+    const state1 = new Map([[0, 1], [1, 2]])
+    const state2 = new Map([['a', 1], ['b', 2]])
+    expect(z1.hash(state1)).toBeGreaterThanOrEqual(0)
+    expect(z2.hash(state2)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('getTableEntry returns non-zero for valid ranges', () => {
+    const z = new ZobristHashing({ positions: 50, pieces: 10 })
+    for (let i = 0; i < 50; i++) {
+      for (let j = 0; j < 10; j++) {
+        const val = z.getTableEntry(i, j)
+        expect(val).not.toBe(0)
+      }
+    }
+  })
+
+  it('getTableEntry returns 0 for out of bounds', () => {
+    const z = new ZobristHashing({ positions: 10, pieces: 5 })
+    expect(z.getTableEntry(10, 0)).toBe(0)
+    expect(z.getTableEntry(0, 5)).toBe(0)
+    expect(z.getTableEntry(-1, 0)).toBe(0)
+    expect(z.getTableEntry(0, -1)).toBe(0)
+  })
+
+  it('tableSize matches positions * pieces', () => {
+    const z = new ZobristHashing({ positions: 20, pieces: 8 })
+    expect(z.tableSize).toBe(160)
+  })
+
+  it('tableSize with default options is correct', () => {
+    const z = new ZobristHashing()
+    expect(z.tableSize).toBe(768)
+  })
+
+  it('hash is unsigned 32-bit integer', () => {
+    const z = new ZobristHashing()
+    const state = new Map([[0, 1], [1, 2], [2, 3], [3, 4]])
+    const h = z.hash(state)
+    expect(h).toBeGreaterThanOrEqual(0)
+    expect(h).toBeLessThan(4294967296)
+  })
+
+  it('multiple addToHash and removeFromHash maintain hash', () => {
+    const z = new ZobristHashing()
+    let h = z.hash(new Map())
+    h = z.addToHash(h, 0, 1)
+    h = z.addToHash(h, 1, 2)
+    h = z.addToHash(h, 2, 3)
+    h = z.removeFromHash(h, 1, 2)
+    h = z.removeFromHash(h, 2, 3)
+    h = z.removeFromHash(h, 0, 1)
+    expect(h).toBe(0)
+  })
+
+  it('different seeds produce different tables', () => {
+    const z1 = new ZobristHashing({ seed: 1, positions: 5, pieces: 3 })
+    const z2 = new ZobristHashing({ seed: 2, positions: 5, pieces: 3 })
+    const state = new Map([[0, 1]])
+    expect(z1.hash(state)).not.toBe(z2.hash(state))
+  })
+
+  it('hash is invariant to order of operations', () => {
+    const z = new ZobristHashing()
+    const h1 = z.hash(new Map())
+    const h2a = z.addToHash(h1, 0, 1)
+    const h2b = z.addToHash(h2a, 1, 2)
+    const h2c = z.addToHash(h2b, 2, 3)
+    const h3a = z.addToHash(h1, 2, 3)
+    const h3b = z.addToHash(h3a, 1, 2)
+    const h3c = z.addToHash(h3b, 0, 1)
+    expect(h2c).toBe(h3c)
+  })
+
+  it('handles large pieceId values', () => {
+    const z = new ZobristHashing({ positions: 10, pieces: 100 })
+    const state = new Map([[5, 99]])
+    const h = z.hash(state)
+    expect(h).toBeGreaterThanOrEqual(0)
+    expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+  })
+
+  it('handles large position values', () => {
+    const z = new ZobristHashing({ positions: 100, pieces: 10 })
+    const state = new Map([[99, 5]])
+    const h = z.hash(state)
+    expect(h).toBeGreaterThanOrEqual(0)
+    expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+  })
+
+  it('empty state hash with numeric keys is 0', () => {
+    const z = new ZobristHashing<number>()
+    expect(z.hash(new Map())).toBe(0)
+  })
+
+  it('empty state hash with string keys is 0', () => {
+    const z = new ZobristHashing<string>()
+    expect(z.hash(new Map())).toBe(0)
+  })
+
+  it('complex movePiece sequence works', () => {
+    const z = new ZobristHashing()
+    const h1 = z.hash(new Map())
+    let h = z.addToHash(h1, 0, 1)
+    h = z.addToHash(h, 1, 2)
+    h = z.movePiece(h, 0, 2, 1)
+    h = z.movePiece(h, 1, 3, 2)
+    h = z.removeFromHash(h, 2, 1)
+    h = z.removeFromHash(h, 3, 2)
+    expect(h).toBe(h1)
+  })
+
+  it('hash with duplicate positions overwrites', () => {
+    const z = new ZobristHashing()
+    const h1 = z.hash(new Map([[0, 1]]))
+    const h2 = z.hash(new Map([[0, 1], [0, 2]]))
+    const h3 = z.hash(new Map([[0, 2]]))
+    expect(h2).toBe(h3)
+  })
+
+  it('movePiece with non-existent piece adds to both positions', () => {
+    const z = new ZobristHashing()
+    const h1 = z.hash(new Map())
+    const h2 = z.movePiece(h1, 0, 1, 5)
+    const h3 = z.hash(new Map([[0, 5], [1, 5]]))
+    expect(h2).toBe(h3)
+  })
 })

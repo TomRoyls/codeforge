@@ -153,12 +153,182 @@ describe('calculateBackoff - edge cases', () => {
     expect(result).toBeGreaterThanOrEqual(100)
   })
 
-  it('calculateBackoff respects maxDelay', () => {
-    const result = calculateBackoff(100, 100, 1000)
-    expect(result).toBeLessThanOrEqual(1000)
+  it('calculateUniformBackoff throws on negative attempt', () => {
+    expect(() => calculateUniformBackoff(-1, 100)).toThrow(RangeError)
   })
 
-  it('calculateBackoff throws for negative attempt', () => {
-    expect(() => calculateBackoff(-1, 100, 1000)).toThrow()
+  it('calculateUniformBackoff throws on baseDelayMs < 1', () => {
+    expect(() => calculateUniformBackoff(0, 0)).toThrow(RangeError)
+  })
+
+  it('calculateUniformBackoff throws when maxDelayMs < baseDelayMs', () => {
+    expect(() => calculateUniformBackoff(0, 200, 100)).toThrow(RangeError)
+  })
+
+  it('full jitter with attempt 0 returns value in [0, baseDelay]', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(0, 100, 30000, 'full')
+      expect(result).toBeGreaterThanOrEqual(0)
+      expect(result).toBeLessThanOrEqual(100)
+    }
+  })
+
+  it('equal jitter with high attempt', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(10, 10, 100000, 'equal')
+      expect(result).toBeGreaterThanOrEqual(5120)
+      expect(result).toBeLessThanOrEqual(10240)
+    }
+  })
+
+  it('decorrelating jitter returns positive values', () => {
+    for (let i = 0; i < 100; i++) {
+      const result = calculateBackoff(0, 100, 30000, 'decorrelating')
+      expect(result).toBeGreaterThan(0)
+    }
+  })
+
+  it('full jitter can return very small values', () => {
+    let foundSmall = false
+    for (let i = 0; i < 1000; i++) {
+      const result = calculateBackoff(0, 1000, 30000, 'full')
+      if (result < 10) {
+        foundSmall = true
+        break
+      }
+    }
+    expect(foundSmall).toBe(true)
+  })
+
+  it('equal jitter never returns less than half of exponential delay', () => {
+    for (let i = 0; i < 100; i++) {
+      const result = calculateBackoff(3, 100, 30000, 'equal')
+      const halfDelay = 400
+      expect(result).toBeGreaterThanOrEqual(halfDelay)
+    }
+  })
+
+  it('decorrelating jitter with low base delay', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(3, 5, 1000, 'decorrelating')
+      expect(result).toBeGreaterThanOrEqual(0)
+      expect(result).toBeLessThanOrEqual(1000)
+    }
+  })
+
+  it('full jitter capped at maxDelayMs for large attempts', () => {
+    for (let i = 0; i < 50; i++) {
+      const result = calculateBackoff(100, 100, 500, 'full')
+      expect(result).toBeLessThanOrEqual(500)
+    }
+  })
+
+  it('equal jitter capped at maxDelayMs for large attempts', () => {
+    for (let i = 0; i < 50; i++) {
+      const result = calculateBackoff(100, 100, 500, 'equal')
+      expect(result).toBeLessThanOrEqual(500)
+    }
+  })
+
+  it('decorrelating jitter cap calculation is correct', () => {
+    for (let i = 0; i < 50; i++) {
+      const result = calculateBackoff(5, 100, 30000, 'decorrelating')
+      expect(result).toBeLessThanOrEqual(30000)
+    }
+  })
+
+  it('calculateUniformBackoff with various attempts', () => {
+    expect(calculateUniformBackoff(0, 100)).toBe(100)
+    expect(calculateUniformBackoff(1, 100)).toBe(200)
+    expect(calculateUniformBackoff(2, 100)).toBe(400)
+    expect(calculateUniformBackoff(3, 100)).toBe(800)
+    expect(calculateUniformBackoff(4, 100)).toBe(1600)
+  })
+
+  it('calculateBackoff full jitter produces varied results', () => {
+    const results = new Set<number>()
+    for (let i = 0; i < 100; i++) {
+      results.add(calculateBackoff(2, 100, 30000, 'full'))
+    }
+    expect(results.size).toBeGreaterThan(50)
+  })
+
+  it('calculateBackoff equal jitter produces varied results', () => {
+    const results = new Set<number>()
+    for (let i = 0; i < 100; i++) {
+      results.add(calculateBackoff(2, 100, 30000, 'equal'))
+    }
+    expect(results.size).toBeGreaterThan(50)
+  })
+
+  it('calculateBackoff with baseDelayMs equals maxDelayMs', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(0, 500, 500, 'full')
+      expect(result).toBeLessThanOrEqual(500)
+    }
+  })
+
+  it('calculateUniformBackoff with attempt 0 always returns baseDelay', () => {
+    expect(calculateUniformBackoff(0, 123)).toBe(123)
+    expect(calculateUniformBackoff(0, 456)).toBe(456)
+    expect(calculateUniformBackoff(0, 789)).toBe(789)
+  })
+
+  it('calculateBackoff decorrelating with very small maxDelay', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(1, 10, 15, 'decorrelating')
+      expect(result).toBeLessThanOrEqual(15)
+    }
+  })
+
+  it('calculateBackoff with attempt boundary', () => {
+    const results = []
+    for (let i = 0; i < 5; i++) {
+      results.push(calculateBackoff(0, 100, 30000))
+    }
+    expect(new Set(results).size).toBeGreaterThan(1)
+  })
+
+  it('calculateBackoff full jitter upper bound is exclusive', () => {
+    const results = []
+    for (let i = 0; i < 10000; i++) {
+      results.push(calculateBackoff(1, 100, 30000, 'full'))
+    }
+    const max = Math.max(...results)
+    expect(max).toBeLessThan(200)
+  })
+
+  it('calculateBackoff equal jitter upper bound is exclusive', () => {
+    const results = []
+    for (let i = 0; i < 10000; i++) {
+      results.push(calculateBackoff(1, 100, 30000, 'equal'))
+    }
+    const max = Math.max(...results)
+    expect(max).toBeLessThan(200)
+  })
+
+  it('calculateUniformBackoff exponential growth is correct', () => {
+    expect(calculateUniformBackoff(0, 2)).toBe(2)
+    expect(calculateUniformBackoff(1, 2)).toBe(4)
+    expect(calculateUniformBackoff(2, 2)).toBe(8)
+    expect(calculateUniformBackoff(3, 2)).toBe(16)
+    expect(calculateUniformBackoff(10, 2)).toBe(2048)
+  })
+
+  it('calculateBackoff with large baseDelayMs', () => {
+    for (let i = 0; i < 20; i++) {
+      const result = calculateBackoff(0, 10000, 30000, 'full')
+      expect(result).toBeGreaterThanOrEqual(0)
+      expect(result).toBeLessThanOrEqual(10000)
+    }
+  })
+
+  it('calculateBackoff decorrelating with attempt 1', () => {
+    const results = []
+    for (let i = 0; i < 50; i++) {
+      results.push(calculateBackoff(1, 100, 30000, 'decorrelating'))
+    }
+    const unique = new Set(results)
+    expect(unique.size).toBeGreaterThan(10)
   })
 })
