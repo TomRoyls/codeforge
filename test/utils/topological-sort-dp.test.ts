@@ -2,174 +2,386 @@ import { describe, expect, it } from 'vitest'
 import { TopologicalSortDP } from '../../src/utils/topological-sort-dp.js'
 
 describe('TopologicalSortDP', () => {
-  it('finds longest path in chain', () => {
-    const ts = new TopologicalSortDP(4)
-    ts.addEdge(0, 1)
-    ts.addEdge(1, 2)
-    ts.addEdge(2, 3)
-    expect(ts.longestPath()).toBe(3)
+  describe('longestPath', () => {
+    it('finds longest path in chain', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      ts.addEdge(2, 3)
+      expect(ts.longestPath()).toBe(3)
+    })
+
+    it('finds longest path in diamond', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 3)
+      expect(ts.longestPath()).toBe(2)
+    })
+
+    it('handles single node', () => {
+      const ts = new TopologicalSortDP(1)
+      expect(ts.longestPath()).toBe(0)
+    })
+
+    it('handles disconnected', () => {
+      const ts = new TopologicalSortDP(3)
+      expect(ts.longestPath()).toBe(0)
+    })
+
+    it('handles cycle', () => {
+      const ts = new TopologicalSortDP(3)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      ts.addEdge(2, 0)
+      expect(ts.longestPath()).toBe(-1)
+    })
+
+    it('handles complex DAG', () => {
+      const ts = new TopologicalSortDP(6)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 3)
+      ts.addEdge(3, 4)
+      ts.addEdge(3, 5)
+      expect(ts.longestPath()).toBe(3)
+    })
+
+    it('diamond DAG longest path', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 3)
+      expect(ts.longestPath()).toBe(2)
+    })
+
+    it('linear chain longest path', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      ts.addEdge(2, 3)
+      ts.addEdge(3, 4)
+      expect(ts.longestPath()).toBe(4)
+    })
+
+    it('handles two node DAG', () => {
+      const ts = new TopologicalSortDP(2)
+      ts.addEdge(0, 1)
+      expect(ts.longestPath()).toBe(1)
+    })
+
+    it('handles empty graph', () => {
+      const ts = new TopologicalSortDP(3)
+      expect(ts.longestPath()).toBe(0)
+    })
+
+    it('handles V shaped DAG', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 2)
+      ts.addEdge(2, 3)
+      ts.addEdge(2, 4)
+      expect(ts.longestPath()).toBe(2)
+    })
+
+    it('handles linear chain of 3', () => {
+      const ts = new TopologicalSortDP(3)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      expect(ts.longestPath()).toBe(2)
+    })
+
+    it('handles self-loop', () => {
+      const ts = new TopologicalSortDP(2)
+      ts.addEdge(0, 0)
+      expect(ts.longestPath()).toBe(-1)
+    })
+
+    it('handles multiple source nodes', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 3)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 3)
+      expect(ts.longestPath()).toBe(1)
+    })
+
+    it('handles multiple sink nodes', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(0, 3)
+      expect(ts.longestPath()).toBe(1)
+    })
+
+    it('handles longer chain', () => {
+      const ts = new TopologicalSortDP(10)
+      for (let i = 0; i < 9; i++) ts.addEdge(i, i + 1)
+      expect(ts.longestPath()).toBe(9)
+    })
+
+    it('handles binary tree DAG', () => {
+      const ts = new TopologicalSortDP(7)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(1, 4)
+      ts.addEdge(2, 5)
+      ts.addEdge(2, 6)
+      expect(ts.longestPath()).toBe(2)
+    })
+
+    it('handles fan-in DAG', () => {
+      const ts = new TopologicalSortDP(6)
+      ts.addEdge(0, 4)
+      ts.addEdge(1, 4)
+      ts.addEdge(2, 4)
+      ts.addEdge(3, 4)
+      ts.addEdge(4, 5)
+      expect(ts.longestPath()).toBe(2)
+    })
+
+    it('handles fan-out DAG', () => {
+      const ts = new TopologicalSortDP(6)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(0, 3)
+      ts.addEdge(0, 4)
+      ts.addEdge(0, 5)
+      expect(ts.longestPath()).toBe(1)
+    })
+
+    it('handles layered DAG', () => {
+      const ts = new TopologicalSortDP(9)
+      ts.addEdge(0, 3)
+      ts.addEdge(0, 4)
+      ts.addEdge(0, 5)
+      ts.addEdge(1, 3)
+      ts.addEdge(1, 4)
+      ts.addEdge(1, 5)
+      ts.addEdge(2, 3)
+      ts.addEdge(2, 4)
+      ts.addEdge(2, 5)
+      ts.addEdge(3, 6)
+      ts.addEdge(4, 6)
+      ts.addEdge(5, 6)
+      ts.addEdge(6, 7)
+      ts.addEdge(6, 8)
+      expect(ts.longestPath()).toBe(3)
+    })
   })
 
-  it('finds longest path in diamond', () => {
-    const ts = new TopologicalSortDP(4)
-    ts.addEdge(0, 1)
-    ts.addEdge(0, 2)
-    ts.addEdge(1, 3)
-    ts.addEdge(2, 3)
-    expect(ts.longestPath()).toBe(2)
+  describe('countPaths', () => {
+    it('counts paths in chain', () => {
+      const ts = new TopologicalSortDP(3)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      expect(ts.countPaths()).toBe(3)
+    })
+
+    it('counts paths in diamond', () => {
+      const ts = new TopologicalSortDP(3)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 2)
+      expect(ts.countPaths()).toBe(4)
+    })
+
+    it('diamond DAG path count', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 3)
+      expect(ts.countPaths()).toBe(5)
+    })
+
+    it('linear chain path count', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      ts.addEdge(2, 3)
+      ts.addEdge(3, 4)
+      expect(ts.countPaths()).toBe(5)
+    })
+
+    it('handles single node', () => {
+      const ts = new TopologicalSortDP(1)
+      expect(ts.countPaths()).toBe(1)
+    })
+
+    it('handles two node DAG', () => {
+      const ts = new TopologicalSortDP(2)
+      ts.addEdge(0, 1)
+      expect(ts.countPaths()).toBe(2)
+    })
+
+    it('handles empty graph', () => {
+      const ts = new TopologicalSortDP(3)
+      expect(ts.countPaths()).toBe(3)
+    })
+
+    it('handles disconnected nodes', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 1)
+      expect(ts.countPaths()).toBe(4)
+    })
+
+    it('handles multiple sources', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 4)
+      ts.addEdge(1, 4)
+      ts.addEdge(2, 4)
+      expect(ts.countPaths()).toBe(7)
+    })
+
+    it('handles DAG with branching', () => {
+      const ts = new TopologicalSortDP(6)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 4)
+      ts.addEdge(3, 5)
+      ts.addEdge(4, 5)
+      expect(ts.countPaths()).toBe(7)
+    })
+
+    it('handles linear chain of 10', () => {
+      const ts = new TopologicalSortDP(10)
+      for (let i = 0; i < 9; i++) ts.addEdge(i, i + 1)
+      expect(ts.countPaths()).toBe(10)
+    })
+
+    it('handles binary tree structure', () => {
+      const ts = new TopologicalSortDP(7)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(1, 4)
+      ts.addEdge(2, 5)
+      ts.addEdge(2, 6)
+      expect(ts.countPaths()).toBe(7)
+    })
+
+    it('handles dense DAG', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(0, 3)
+      ts.addEdge(0, 4)
+      ts.addEdge(1, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(1, 4)
+      ts.addEdge(2, 3)
+      ts.addEdge(2, 4)
+      ts.addEdge(3, 4)
+      expect(ts.countPaths()).toBe(16)
+    })
   })
 
-  it('handles single node', () => {
-    const ts = new TopologicalSortDP(1)
-    expect(ts.longestPath()).toBe(0)
-  })
+  describe('shortestPath', () => {
+    it('finds shortest path', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 3)
+      expect(ts.shortestPath(0, 3)).toBe(2)
+    })
 
-  it('handles disconnected', () => {
-    const ts = new TopologicalSortDP(3)
-    expect(ts.longestPath()).toBe(0)
-  })
+    it('shortest path same node', () => {
+      const ts = new TopologicalSortDP(3)
+      expect(ts.shortestPath(1, 1)).toBe(0)
+    })
 
-  it('counts paths in chain', () => {
-    const ts = new TopologicalSortDP(3)
-    ts.addEdge(0, 1)
-    ts.addEdge(1, 2)
-    expect(ts.countPaths()).toBe(3)
-  })
+    it('shortest path in chain', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      ts.addEdge(2, 3)
+      ts.addEdge(3, 4)
+      expect(ts.shortestPath(0, 4)).toBe(4)
+    })
 
-  it('counts paths in diamond', () => {
-    const ts = new TopologicalSortDP(3)
-    ts.addEdge(0, 1)
-    ts.addEdge(0, 2)
-    ts.addEdge(1, 2)
-    expect(ts.countPaths()).toBe(4)
-  })
+    it('shortest path direct edge', () => {
+      const ts = new TopologicalSortDP(3)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      expect(ts.shortestPath(0, 1)).toBe(1)
+    })
 
-  it('handles cycle in longest path', () => {
-    const ts = new TopologicalSortDP(3)
-    ts.addEdge(0, 1)
-    ts.addEdge(1, 2)
-    ts.addEdge(2, 0)
-    expect(ts.longestPath()).toBe(-1)
-  })
+    it('shortest path with multiple routes', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 3)
+      ts.addEdge(3, 4)
+      expect(ts.shortestPath(0, 4)).toBe(3)
+    })
 
-  it('finds shortest path', () => {
-    const ts = new TopologicalSortDP(4)
-    ts.addEdge(0, 1)
-    ts.addEdge(0, 2)
-    ts.addEdge(1, 3)
-    ts.addEdge(2, 3)
-    expect(ts.shortestPath(0, 3)).toBe(2)
-  })
+    it('shortest path unreachable', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(0, 1)
+      ts.addEdge(2, 3)
+      expect(ts.shortestPath(0, 3)).toBe(Infinity)
+    })
 
-  it('shortest path same node', () => {
-    const ts = new TopologicalSortDP(3)
-    expect(ts.shortestPath(1, 1)).toBe(0)
-  })
+    it('shortest path disconnected components', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 1)
+      ts.addEdge(1, 2)
+      ts.addEdge(3, 4)
+      expect(ts.shortestPath(0, 3)).toBe(Infinity)
+    })
 
-  it('handles complex DAG', () => {
-    const ts = new TopologicalSortDP(6)
-    ts.addEdge(0, 1)
-    ts.addEdge(0, 2)
-    ts.addEdge(1, 3)
-    ts.addEdge(2, 3)
-    ts.addEdge(3, 4)
-    ts.addEdge(3, 5)
-    expect(ts.longestPath()).toBe(3)
-  })
+    it('shortest path with no edges', () => {
+      const ts = new TopologicalSortDP(3)
+      expect(ts.shortestPath(0, 2)).toBe(Infinity)
+    })
 
-  it('diamond DAG path count', () => {
-    const ts = new TopologicalSortDP(4)
-    ts.addEdge(0, 1)
-    ts.addEdge(0, 2)
-    ts.addEdge(1, 3)
-    ts.addEdge(2, 3)
-    expect(ts.longestPath()).toBe(2)
-    expect(ts.countPaths()).toBe(5)
-  })
+    it('shortest path single node', () => {
+      const ts = new TopologicalSortDP(1)
+      expect(ts.shortestPath(0, 0)).toBe(0)
+    })
 
-  it('handles linear chain', () => {
-    const ts = new TopologicalSortDP(5)
-    ts.addEdge(0, 1)
-    ts.addEdge(1, 2)
-    ts.addEdge(2, 3)
-    ts.addEdge(3, 4)
-    expect(ts.longestPath()).toBe(4)
-    expect(ts.countPaths()).toBe(5)
-  })
+    it('shortest path different index', () => {
+      const ts = new TopologicalSortDP(4)
+      ts.addEdge(1, 2)
+      ts.addEdge(2, 3)
+      expect(ts.shortestPath(0, 3)).toBe(Infinity)
+    })
 
-  it('handles single node', () => {
-    const ts = new TopologicalSortDP(1)
-    expect(ts.longestPath()).toBe(0)
-    expect(ts.countPaths()).toBe(1)
-  })
+    it('shortest path complex DAG', () => {
+      const ts = new TopologicalSortDP(6)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(1, 3)
+      ts.addEdge(2, 3)
+      ts.addEdge(3, 4)
+      ts.addEdge(3, 5)
+      expect(ts.shortestPath(0, 5)).toBe(3)
+    })
 
-  it('handles two node DAG', () => {
-    const ts = new TopologicalSortDP(2)
-    ts.addEdge(0, 1)
-    expect(ts.longestPath()).toBe(1)
-    expect(ts.countPaths()).toBe(2)
-  })
+    it('shortest path via longer route', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 1)
+      ts.addEdge(0, 2)
+      ts.addEdge(0, 3)
+      ts.addEdge(1, 4)
+      ts.addEdge(2, 4)
+      ts.addEdge(3, 4)
+      expect(ts.shortestPath(0, 4)).toBe(2)
+    })
 
-  it('handles empty graph', () => {
-    const ts = new TopologicalSortDP(3)
-    expect(ts.longestPath()).toBe(0)
-    expect(ts.countPaths()).toBe(3)
-  })
-
-  it('handles V shaped DAG', () => {
-    const ts = new TopologicalSortDP(5)
-    ts.addEdge(0, 2)
-    ts.addEdge(1, 2)
-    ts.addEdge(2, 3)
-    ts.addEdge(2, 4)
-    expect(ts.longestPath()).toBe(2)
-  })
-
-  it('single node has zero longest path', () => {
-    const ts = new TopologicalSortDP(1)
-    expect(ts.longestPath()).toBe(0)
-  })
-
-  it('linear chain has correct longest path', () => {
-    const ts = new TopologicalSortDP(3)
-    ts.addEdge(0, 1)
-    ts.addEdge(1, 2)
-    expect(ts.longestPath()).toBe(2)
-  })
-
-  it('single node has longest path 0', () => {
-    const ts = new TopologicalSortDP(1)
-    expect(ts.longestPath()).toBe(0)
-  })
-
-  it('chain of 3 has longest path 2', () => {
-    const ts = new TopologicalSortDP(3)
-    ts.addEdge(0, 1)
-    ts.addEdge(1, 2)
-    expect(ts.longestPath()).toBe(2)
-  })
-
-  it('single node has longest path 0', () => {
-    const ts = new TopologicalSortDP(1)
-    expect(ts.longestPath()).toBe(0)
-  })
-
-  it('linear chain longest path', () => {
-    const ts = new TopologicalSortDP(3)
-    ts.addEdge(0, 1)
-    ts.addEdge(1, 2)
-    expect(ts.longestPath()).toBe(2)
-  })
-
-  it('single node has path 0', () => {
-    const ts = new TopologicalSortDP(1)
-    expect(ts.longestPath()).toBe(0)
-  })
-
-  it('chain has longest path n-1', () => {
-    const ts = new TopologicalSortDP(3)
-    ts.addEdge(0, 1)
-    ts.addEdge(1, 2)
-    expect(ts.longestPath()).toBe(2)
+    it('shortest path with multiple sources', () => {
+      const ts = new TopologicalSortDP(5)
+      ts.addEdge(0, 4)
+      ts.addEdge(1, 4)
+      ts.addEdge(2, 4)
+      expect(ts.shortestPath(0, 4)).toBe(1)
+    })
   })
 })

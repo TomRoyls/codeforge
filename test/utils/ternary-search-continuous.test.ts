@@ -93,17 +93,17 @@ describe('TernarySearchContinuous', () => {
     expect(x).toBeCloseTo(5, 1)
   })
 
-  it('minimizes quadratic', () => {
-    const x = TernarySearchContinuous.minimize((t) => (t - 3) * (t - 3), 0, 10)
+  it('minimizes quadratic with coefficient', () => {
+    const x = TernarySearchContinuous.minimize((t) => 2 * (t - 3) * (t - 3), 0, 10)
     expect(x).toBeCloseTo(3, 1)
   })
 
-  it('maximizes inverted quadratic', () => {
-    const x = TernarySearchContinuous.maximize((t) => -(t - 5) * (t - 5), 0, 10)
+  it('maximizes inverted quadratic with coefficient', () => {
+    const x = TernarySearchContinuous.maximize((t) => -0.5 * (t - 5) * (t - 5), 0, 10)
     expect(x).toBeCloseTo(5, 1)
   })
 
-  it('minimizes quadratic', () => {
+  it('minimizes quadratic with different offset', () => {
     const x = TernarySearchContinuous.minimize((t) => (t - 3) * (t - 3), 0, 10)
     expect(x).toBeCloseTo(3, 1)
   })
@@ -113,13 +113,155 @@ describe('TernarySearchContinuous', () => {
     expect(x).toBeCloseTo(3, 1)
   })
 
-  it('minimize quadratic', () => {
+  it('minimize quadratic with offset', () => {
     const x = TernarySearchContinuous.minimize((t) => (t - 2) * (t - 2), 0, 10)
     expect(x).toBeCloseTo(2, 1)
   })
 
-  it('maximize quadratic', () => {
+  it('maximize quadratic with offset', () => {
     const x = TernarySearchContinuous.maximize((t) => -(t - 2) * (t - 2), 0, 10)
     expect(x).toBeCloseTo(2, 1)
+  })
+
+  it('minimizes cubic function', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.pow(x - 1, 3) + 3, -1, 3)
+    expect(x).toBeCloseTo(-1, 1)
+  })
+
+  it('maximizes negative cubic', () => {
+    const x = TernarySearchContinuous.maximize((x) => -Math.pow(x - 2, 3) - 5, 0, 5)
+    expect(x).toBeCloseTo(0, 1)
+  })
+
+  it('minimizes absolute value', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.abs(x - 3.5), 0, 10)
+    expect(x).toBeCloseTo(3.5, 2)
+  })
+
+  it('maximizes negative absolute value', () => {
+    const x = TernarySearchContinuous.maximize((x) => -Math.abs(x - 7.2), 0, 15)
+    expect(x).toBeCloseTo(7.2, 2)
+  })
+
+  it('minimizes logarithmic', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.log(x), 0.1, 10)
+    expect(x).toBeCloseTo(0.1, 1)
+  })
+
+  it('maximizes logarithmic', () => {
+    const x = TernarySearchContinuous.maximize((x) => Math.log(x), 0.1, 10)
+    expect(x).toBeCloseTo(10, 1)
+  })
+
+  it('minimizes high power polynomial', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.pow(x - 4, 6), 0, 10)
+    expect(x).toBeCloseTo(4, 2)
+  })
+
+  it('maximizes inverted high power', () => {
+    const x = TernarySearchContinuous.maximize((x) => -Math.pow(x - 6, 8), 0, 15)
+    expect(x).toBeCloseTo(6, 2)
+  })
+
+  it('minimizes with very large range', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.pow(x - 100, 2), 0, 200)
+    expect(x).toBeCloseTo(100, 2)
+  })
+
+  it('maximizes with very large range', () => {
+    const x = TernarySearchContinuous.maximize((x) => -Math.pow(x + 50, 2), -100, 0)
+    expect(x).toBeCloseTo(-50, 2)
+  })
+
+  it('minimizes with small range near zero', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.pow(x - 0.001, 2), -0.01, 0.01)
+    expect(x).toBeCloseTo(0.001, 3)
+  })
+
+  it('maximizes with small range near zero', () => {
+    const x = TernarySearchContinuous.maximize((x) => -Math.pow(x - 0.005, 2), -0.01, 0.01)
+    expect(x).toBeCloseTo(0.005, 3)
+  })
+
+  it('minimizes quadratic at left boundary', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.pow(x + 1, 2), 0, 10)
+    expect(x).toBeCloseTo(0, 1)
+  })
+
+  it('maximizes inverted quadratic at right boundary', () => {
+    const x = TernarySearchContinuous.maximize((x) => -Math.pow(x - 9, 2), 0, 10)
+    expect(x).toBeCloseTo(9, 1)
+  })
+
+  it('minimizes with negative coefficient', () => {
+    const x = TernarySearchContinuous.minimize((x) => -0.5 * (x - 5) * (x - 5), 0, 10)
+    expect(x).toBeCloseTo(0, 1)
+  })
+
+  it('maximizes with positive coefficient', () => {
+    const x = TernarySearchContinuous.maximize((x) => 2 * (x - 5) * (x - 5), 0, 10)
+    expect(x).toBeCloseTo(0, 1)
+  })
+
+  it('minimizes asymmetric quadratic', () => {
+    const x = TernarySearchContinuous.minimize((x) => (x - 3.7) * (x - 3.7), 0, 10)
+    expect(x).toBeCloseTo(3.7, 3)
+  })
+
+  it('maximizes asymmetric inverted quadratic', () => {
+    const x = TernarySearchContinuous.maximize((x) => -(x - 6.3) * (x - 6.3), 0, 15)
+    expect(x).toBeCloseTo(6.3, 3)
+  })
+
+  it('minimizes sine in multiple periods', () => {
+    const x = TernarySearchContinuous.minimize(Math.sin, 0, Math.PI * 4)
+    expect(x).toBeCloseTo(3 * Math.PI / 2, 1)
+  })
+
+  it('maximizes cosine in multiple periods', () => {
+    const x = TernarySearchContinuous.maximize(Math.cos, -Math.PI, Math.PI * 2)
+    expect(x).toBeCloseTo(0, 1)
+  })
+
+  it('minimizes with zero range', () => {
+    const x = TernarySearchContinuous.minimize((x) => x * x, 5, 5)
+    expect(x).toBe(5)
+  })
+
+  it('maximizes with zero range', () => {
+    const x = TernarySearchContinuous.maximize((x) => -x * x, 5, 5)
+    expect(x).toBe(5)
+  })
+
+  it('minimizes with constant function', () => {
+    const x = TernarySearchContinuous.minimize(() => 42, -100, 100)
+    expect(x).toBeGreaterThanOrEqual(-100)
+    expect(x).toBeLessThanOrEqual(100)
+  })
+
+  it('maximizes with constant function', () => {
+    const x = TernarySearchContinuous.maximize(() => 99, -50, 50)
+    expect(x).toBeGreaterThanOrEqual(-50)
+    expect(x).toBeLessThanOrEqual(50)
+  })
+
+  it('minimizes with very high iterations', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.pow(x - 3.14159, 2), 0, 10, 500)
+    expect(x).toBeCloseTo(3.14159, 4)
+  })
+
+  it('maximizes with very high iterations', () => {
+    const x = TernarySearchContinuous.maximize((x) => -Math.pow(x - 2.71828, 2), 0, 10, 500)
+    expect(x).toBeCloseTo(2.71828, 4)
+  })
+
+  it('minimizes exponential shifted', () => {
+    const x = TernarySearchContinuous.minimize((x) => Math.exp(x - 3), -5, 5)
+    expect(x).toBeCloseTo(-5, 1)
+  })
+
+  it('maximizes negative exponential shifted', () => {
+    const x = TernarySearchContinuous.maximize((x) => -Math.exp(x + 2), -10, 0)
+    expect(x).toBeCloseTo(-10, 1)
   })
 })

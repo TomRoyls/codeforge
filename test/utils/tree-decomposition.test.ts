@@ -7,6 +7,17 @@ describe('TreeDecomposition', () => {
     expect(td.treewidth()).toBe(0)
   })
 
+  it('empty graph treewidth 0', () => {
+    const td = new TreeDecomposition(3)
+    expect(td.treewidth()).toBe(0)
+  })
+
+  it('single edge treewidth 1', () => {
+    const td = new TreeDecomposition(2)
+    td.addEdge(0, 1)
+    expect(td.treewidth()).toBe(1)
+  })
+
   it('tree treewidth 1', () => {
     const td = new TreeDecomposition(3)
     td.addEdge(0, 1)
@@ -46,6 +57,15 @@ describe('TreeDecomposition', () => {
     expect(td.treewidth()).toBe(1)
   })
 
+  it('diamond treewidth 2', () => {
+    const td = new TreeDecomposition(4)
+    td.addEdge(0, 1)
+    td.addEdge(0, 2)
+    td.addEdge(1, 3)
+    td.addEdge(2, 3)
+    expect(td.treewidth()).toBe(2)
+  })
+
   it('bags cover all vertices', () => {
     const td = new TreeDecomposition(4)
     td.addEdge(0, 1)
@@ -59,111 +79,322 @@ describe('TreeDecomposition', () => {
     expect(allVertices.size).toBe(4)
   })
 
-  it('empty graph treewidth 0', () => {
+  it('two isolated vertices treewidth 0', () => {
+    const td = new TreeDecomposition(2)
+    expect(td.treewidth()).toBe(0)
+  })
+
+  it('three isolated vertices treewidth 0', () => {
     const td = new TreeDecomposition(3)
     expect(td.treewidth()).toBe(0)
   })
 
-  it('single edge treewidth 1', () => {
-    const td = new TreeDecomposition(2)
+  it('two connected components treewidth 1', () => {
+    const td = new TreeDecomposition(4)
     td.addEdge(0, 1)
+    td.addEdge(2, 3)
     expect(td.treewidth()).toBe(1)
   })
 
-  it('diamond treewidth 2', () => {
-    const td = new TreeDecomposition(4)
+  it('K3 treewidth 2', () => {
+    const td = new TreeDecomposition(3)
     td.addEdge(0, 1)
+    td.addEdge(1, 2)
     td.addEdge(0, 2)
-    td.addEdge(1, 3)
-    td.addEdge(2, 3)
     expect(td.treewidth()).toBe(2)
   })
 
-  it('path graph low treewidth', () => {
+  it('C4 cycle treewidth 2', () => {
+    const td = new TreeDecomposition(4)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 0)
+    expect(td.treewidth()).toBe(2)
+  })
+
+  it('C5 cycle treewidth 2', () => {
     const td = new TreeDecomposition(5)
     td.addEdge(0, 1)
     td.addEdge(1, 2)
     td.addEdge(2, 3)
     td.addEdge(3, 4)
-    expect(td.treewidth()).toBeLessThanOrEqual(2)
+    td.addEdge(4, 0)
+    expect(td.treewidth()).toBe(2)
   })
 
-  it('K4 has higher treewidth', () => {
-    const td = new TreeDecomposition(4)
-    for (let i = 0; i < 4; i++)
-      for (let j = i + 1; j < 4; j++)
-        td.addEdge(i, j)
+  it('wheel graph treewidth 3', () => {
+    const td = new TreeDecomposition(5)
+    td.addEdge(0, 1)
+    td.addEdge(0, 2)
+    td.addEdge(0, 3)
+    td.addEdge(0, 4)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 4)
+    td.addEdge(4, 1)
     expect(td.treewidth()).toBe(3)
   })
 
-  it('handles single node', () => {
-    const td = new TreeDecomposition(1)
-    expect(td.treewidth()).toBe(0)
+  it('complete graph K5 treewidth 4', () => {
+    const td = new TreeDecomposition(5)
+    for (let i = 0; i < 5; i++)
+      for (let j = i + 1; j < 5; j++)
+        td.addEdge(i, j)
+    expect(td.treewidth()).toBe(4)
   })
 
-  it('handles triangle treewidth', () => {
+  it('path of 10 nodes treewidth 1', () => {
+    const td = new TreeDecomposition(10)
+    for (let i = 0; i < 9; i++) td.addEdge(i, i + 1)
+    expect(td.treewidth()).toBe(1)
+  })
+
+  it('star with many leaves treewidth 1', () => {
+    const td = new TreeDecomposition(10)
+    for (let i = 1; i < 10; i++) td.addEdge(0, i)
+    expect(td.treewidth()).toBe(1)
+  })
+
+  it('bipartite complete K3,3 treewidth 4', () => {
+    const td = new TreeDecomposition(6)
+    for (let i = 0; i < 3; i++)
+      for (let j = 3; j < 6; j++)
+        td.addEdge(i, j)
+    expect(td.treewidth()).toBe(4)
+  })
+
+  it('tree with degree 3 treewidth 1', () => {
+    const td = new TreeDecomposition(7)
+    td.addEdge(0, 1)
+    td.addEdge(0, 2)
+    td.addEdge(0, 3)
+    td.addEdge(1, 4)
+    td.addEdge(1, 5)
+    td.addEdge(2, 6)
+    expect(td.treewidth()).toBe(1)
+  })
+
+  it('house graph treewidth 2', () => {
+    const td = new TreeDecomposition(5)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 0)
+    td.addEdge(1, 4)
+    td.addEdge(2, 4)
+    expect(td.treewidth()).toBe(2)
+  })
+
+  it('octagon treewidth 4', () => {
+    const td = new TreeDecomposition(8)
+    for (let i = 0; i < 8; i++) {
+      td.addEdge(i, (i + 1) % 8)
+      td.addEdge(i, (i + 2) % 8)
+    }
+    expect(td.treewidth()).toBe(4)
+  })
+
+  it('ladder graph treewidth 2', () => {
+    const td = new TreeDecomposition(6)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 4)
+    td.addEdge(4, 5)
+    td.addEdge(0, 5)
+    td.addEdge(1, 4)
+    td.addEdge(2, 3)
+    expect(td.treewidth()).toBe(2)
+  })
+
+  it('grid 2x2 treewidth 2', () => {
+    const td = new TreeDecomposition(4)
+    td.addEdge(0, 1)
+    td.addEdge(1, 3)
+    td.addEdge(3, 2)
+    td.addEdge(2, 0)
+    td.addEdge(0, 3)
+    expect(td.treewidth()).toBe(2)
+  })
+
+  it('grid 2x3 treewidth 2', () => {
+    const td = new TreeDecomposition(6)
+    for (let i = 0; i < 3; i++) {
+      td.addEdge(i, i + 3)
+    }
+    for (let i = 0; i < 2; i++) {
+      td.addEdge(i, i + 1)
+      td.addEdge(i + 3, i + 4)
+    }
+    expect(td.treewidth()).toBe(2)
+  })
+
+  it('Petersen graph treewidth 4', () => {
+    const td = new TreeDecomposition(10)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 4)
+    td.addEdge(4, 0)
+    td.addEdge(5, 0)
+    td.addEdge(5, 2)
+    td.addEdge(6, 1)
+    td.addEdge(6, 3)
+    td.addEdge(7, 2)
+    td.addEdge(7, 4)
+    td.addEdge(8, 3)
+    td.addEdge(8, 0)
+    td.addEdge(9, 4)
+    td.addEdge(9, 1)
+    expect(td.treewidth()).toBe(4)
+  })
+
+  it('bags count equals vertex count', () => {
+    const td = new TreeDecomposition(5)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 4)
+    const bags = td.bags()
+    expect(bags.length).toBe(5)
+  })
+
+  it('bags for empty graph are single vertices', () => {
     const td = new TreeDecomposition(3)
+    const bags = td.bags()
+    expect(bags.length).toBe(3)
+    for (const bag of bags) {
+      expect(bag.length).toBe(1)
+    }
+  })
+
+  it('bags contain eliminated vertex', () => {
+    const td = new TreeDecomposition(3)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    const bags = td.bags()
+    for (const bag of bags) {
+      expect(bag.length).toBeGreaterThanOrEqual(1)
+    }
+  })
+
+  it('double edge is same as single edge', () => {
+    const td = new TreeDecomposition(2)
+    td.addEdge(0, 1)
+    td.addEdge(0, 1)
+    expect(td.treewidth()).toBe(1)
+  })
+
+  it('triangle plus isolated vertex treewidth 2', () => {
+    const td = new TreeDecomposition(4)
     td.addEdge(0, 1)
     td.addEdge(1, 2)
     td.addEdge(0, 2)
     expect(td.treewidth()).toBe(2)
   })
 
-  it('handles star graph treewidth', () => {
-    const td = new TreeDecomposition(4)
+  it('two triangles connected by edge treewidth 2', () => {
+    const td = new TreeDecomposition(6)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(0, 2)
+    td.addEdge(3, 4)
+    td.addEdge(4, 5)
+    td.addEdge(3, 5)
+    td.addEdge(0, 3)
+    expect(td.treewidth()).toBe(2)
+  })
+
+  it('complete bipartite K2,3 treewidth 3', () => {
+    const td = new TreeDecomposition(5)
+    for (let i = 0; i < 2; i++)
+      for (let j = 2; j < 5; j++)
+        td.addEdge(i, j)
+    expect(td.treewidth()).toBe(3)
+  })
+
+  it('binary tree of height 3 treewidth 1', () => {
+    const td = new TreeDecomposition(7)
     td.addEdge(0, 1)
     td.addEdge(0, 2)
+    td.addEdge(1, 3)
+    td.addEdge(1, 4)
+    td.addEdge(2, 5)
+    td.addEdge(2, 6)
+    expect(td.treewidth()).toBe(1)
+  })
+
+  it('path of 3 nodes treewidth 1', () => {
+    const td = new TreeDecomposition(3)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    expect(td.treewidth()).toBe(1)
+  })
+
+  it('path of 6 nodes treewidth 1', () => {
+    const td = new TreeDecomposition(6)
+    for (let i = 0; i < 5; i++) td.addEdge(i, i + 1)
+    expect(td.treewidth()).toBe(1)
+  })
+
+  it('path of 7 nodes treewidth 1', () => {
+    const td = new TreeDecomposition(7)
+    for (let i = 0; i < 6; i++) td.addEdge(i, i + 1)
+    expect(td.treewidth()).toBe(1)
+  })
+
+  it('treewidth is non-negative', () => {
+    const td = new TreeDecomposition(5)
+    expect(td.treewidth()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('treewidth increases with clique size', () => {
+    const td1 = new TreeDecomposition(3)
+    td1.addEdge(0, 1)
+    td1.addEdge(1, 2)
+    td1.addEdge(0, 2)
+    const td2 = new TreeDecomposition(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        td2.addEdge(i, j)
+    expect(td2.treewidth()).toBeGreaterThan(td1.treewidth())
+  })
+
+  it('C6 cycle treewidth 2', () => {
+    const td = new TreeDecomposition(6)
+    for (let i = 0; i < 6; i++) {
+      td.addEdge(i, (i + 1) % 6)
+    }
+    expect(td.treewidth()).toBe(2)
+  })
+
+  it('K3 with pendant treewidth 2', () => {
+    const td = new TreeDecomposition(4)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(0, 2)
     td.addEdge(0, 3)
-    expect(td.treewidth()).toBe(1)
+    expect(td.treewidth()).toBe(2)
   })
 
-  it('handles two nodes', () => {
-    const td = new TreeDecomposition(2)
+  it('two K3s treewidth 2', () => {
+    const td = new TreeDecomposition(6)
     td.addEdge(0, 1)
-    expect(td.treewidth()).toBe(1)
+    td.addEdge(1, 2)
+    td.addEdge(0, 2)
+    td.addEdge(3, 4)
+    td.addEdge(4, 5)
+    td.addEdge(3, 5)
+    expect(td.treewidth()).toBe(2)
   })
 
-  it('single node has treewidth 0', () => {
-    const td = new TreeDecomposition(1)
-    expect(td.treewidth()).toBe(0)
-  })
-
-  it('two nodes with edge has treewidth at least 1', () => {
-    const td = new TreeDecomposition(2)
+  it('treewidth of graph less than n-1', () => {
+    const td = new TreeDecomposition(5)
     td.addEdge(0, 1)
-    expect(td.treewidth()).toBeGreaterThanOrEqual(1)
-  })
-
-  it('single node has treewidth 0', () => {
-    const td = new TreeDecomposition(1)
-    expect(td.treewidth()).toBeGreaterThanOrEqual(0)
-  })
-
-  it('two node tree has treewidth at most 1', () => {
-    const td = new TreeDecomposition(2)
-    td.addEdge(0, 1)
-    expect(td.treewidth()).toBeLessThanOrEqual(1)
-  })
-
-  it('single node has treewidth 0', () => {
-    const td = new TreeDecomposition(1)
-    expect(td.treewidth()).toBe(0)
-  })
-
-  it('two nodes connected treewidth', () => {
-    const td = new TreeDecomposition(2)
-    td.addEdge(0, 1)
-    expect(td.treewidth()).toBeGreaterThanOrEqual(0)
-  })
-
-  it('single node has treewidth 0', () => {
-    const td = new TreeDecomposition(1)
-    expect(td.treewidth()).toBeGreaterThanOrEqual(0)
-  })
-
-  it('two node tree has treewidth 1', () => {
-    const td = new TreeDecomposition(2)
-    td.addEdge(0, 1)
-    expect(td.treewidth()).toBeGreaterThanOrEqual(1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 4)
+    expect(td.treewidth()).toBeLessThan(4)
   })
 })

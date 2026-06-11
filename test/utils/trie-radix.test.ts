@@ -46,7 +46,7 @@ describe('TrieRadix', () => {
     trie.insert('card')
     trie.insert('care')
     const words = trie.collectWords()
-    expect(words.sort()).toEqual(['car', 'card', 'care'].sort())
+    expect(words.sort()).toEqual(['car', 'card', 'care'])
   })
 
   it('collects words with prefix', () => {
@@ -55,8 +55,7 @@ describe('TrieRadix', () => {
     trie.insert('card')
     trie.insert('care')
     trie.insert('dog')
-    const words = trie.collectWords('car')
-    expect(words.sort()).toEqual(['car', 'card', 'care'].sort())
+    expect(trie.collectWords('car').sort()).toEqual(['car', 'card', 'care'])
   })
 
   it('handles empty trie', () => {
@@ -75,7 +74,7 @@ describe('TrieRadix', () => {
     expect(trie.search('c')).toBe(false)
   })
 
-  it('inserts duplicate word', () => {
+  it('inserts duplicate word produces single entry', () => {
     const trie = new TrieRadix()
     trie.insert('abc')
     trie.insert('abc')
@@ -87,7 +86,7 @@ describe('TrieRadix', () => {
     const trie = new TrieRadix()
     trie.insert('a')
     trie.insert('ab')
-    expect(trie.collectWords('').sort()).toEqual(['a', 'ab'].sort())
+    expect(trie.collectWords('').sort()).toEqual(['a', 'ab'])
   })
 
   it('handles long shared prefix split', () => {
@@ -107,13 +106,6 @@ describe('TrieRadix', () => {
     expect(trie.collectWords('xyz')).toEqual([])
   })
 
-  it('startsWith checks prefix', () => {
-    const trie = new TrieRadix()
-    trie.insert('hello')
-    expect(trie.startsWith('hel')).toBe(true)
-    expect(trie.startsWith('xyz')).toBe(false)
-  })
-
   it('handles empty string insert', () => {
     const trie = new TrieRadix()
     trie.insert('')
@@ -126,58 +118,263 @@ describe('TrieRadix', () => {
     trie.insert('cat')
     trie.insert('car')
     trie.insert('dog')
-    const words = trie.collectWords('').sort()
-    expect(words).toEqual(['car', 'cat', 'dog'])
+    expect(trie.collectWords('').sort()).toEqual(['car', 'cat', 'dog'])
   })
 
-  it('search checks word existence', () => {
+  it('insertion order does not affect results', () => {
     const trie = new TrieRadix()
-    trie.insert('hello')
-    expect(trie.search('hello')).toBe(true)
-    expect(trie.search('hell')).toBe(false)
+    trie.insert('care')
+    trie.insert('car')
+    trie.insert('card')
+    expect(trie.search('car')).toBe(true)
+    expect(trie.search('card')).toBe(true)
+    expect(trie.search('care')).toBe(true)
   })
 
-  it('handles empty string', () => {
+  it('handles many words with common prefix', () => {
     const trie = new TrieRadix()
-    trie.insert('')
-    expect(trie.search('')).toBe(true)
+    const words = ['test', 'testing', 'tested', 'tester', 'testers']
+    for (const w of words) trie.insert(w)
+    for (const w of words) expect(trie.search(w)).toBe(true)
+    expect(trie.search('tes')).toBe(false)
   })
 
-  it('startsWith checks prefix', () => {
+  it('startsWith true for partial edge match', () => {
     const trie = new TrieRadix()
-    trie.insert('hello')
-    expect(trie.startsWith('hel')).toBe(true)
-    expect(trie.startsWith('xyz')).toBe(false)
+    trie.insert('testing')
+    expect(trie.startsWith('te')).toBe(true)
+    expect(trie.startsWith('test')).toBe(true)
   })
 
-  it('search exact match', () => {
+  it('search returns false for partial match', () => {
     const trie = new TrieRadix()
-    trie.insert('hello')
-    expect(trie.search('hello')).toBe(true)
-    expect(trie.search('hell')).toBe(false)
+    trie.insert('testing')
+    expect(trie.search('test')).toBe(false)
+    expect(trie.search('testi')).toBe(false)
   })
 
-  it('startsWith returns true for prefix', () => {
+  it('handles words that are prefixes of each other', () => {
     const trie = new TrieRadix()
-    trie.insert('hello')
-    expect(trie.startsWith('hel')).toBe(true)
+    trie.insert('a')
+    trie.insert('ab')
+    trie.insert('abc')
+    trie.insert('abcd')
+    expect(trie.search('a')).toBe(true)
+    expect(trie.search('ab')).toBe(true)
+    expect(trie.search('abc')).toBe(true)
+    expect(trie.search('abcd')).toBe(true)
   })
 
-  it('startsWith returns false for absent prefix', () => {
+  it('collectWords with no prefix returns all', () => {
     const trie = new TrieRadix()
-    trie.insert('hello')
-    expect(trie.startsWith('xyz')).toBe(false)
+    trie.insert('alpha')
+    trie.insert('beta')
+    trie.insert('gamma')
+    expect(trie.collectWords().sort()).toEqual(['alpha', 'beta', 'gamma'])
   })
 
-  it('startsWith returns true for prefix', () => {
+  it('handles single word operations', () => {
     const trie = new TrieRadix()
-    trie.insert('hello')
-    expect(trie.startsWith('he')).toBe(true)
+    trie.insert('solo')
+    expect(trie.search('solo')).toBe(true)
+    expect(trie.search('sol')).toBe(false)
+    expect(trie.startsWith('sol')).toBe(true)
+    expect(trie.startsWith('solo')).toBe(true)
+    expect(trie.startsWith('solox')).toBe(false)
   })
 
-  it('startsWith returns false for non-prefix', () => {
+  it('handles digits in words', () => {
     const trie = new TrieRadix()
-    trie.insert('hello')
-    expect(trie.startsWith('xyz')).toBe(false)
+    trie.insert('abc123')
+    trie.insert('abc456')
+    expect(trie.search('abc123')).toBe(true)
+    expect(trie.search('abc456')).toBe(true)
+    expect(trie.search('abc')).toBe(false)
+    expect(trie.startsWith('abc')).toBe(true)
+  })
+
+  it('handles special characters', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello-world')
+    trie.insert('hello_world')
+    expect(trie.search('hello-world')).toBe(true)
+    expect(trie.search('hello_world')).toBe(true)
+  })
+
+  it('collectWords with partial prefix match', () => {
+    const trie = new TrieRadix()
+    trie.insert('apple')
+    trie.insert('application')
+    trie.insert('apply')
+    trie.insert('app')
+    const words = trie.collectWords('app')
+    expect(words.sort()).toEqual(['app', 'apple', 'application', 'apply'])
+  })
+
+  it('handles unicode characters', () => {
+    const trie = new TrieRadix()
+    trie.insert('café')
+    trie.insert('cafeteria')
+    expect(trie.search('café')).toBe(true)
+    expect(trie.search('cafeteria')).toBe(true)
+    expect(trie.startsWith('caf')).toBe(true)
+  })
+
+  it('case sensitive search', () => {
+    const trie = new TrieRadix()
+    trie.insert('Hello')
+    expect(trie.search('Hello')).toBe(true)
+    expect(trie.search('hello')).toBe(false)
+    expect(trie.search('HELLO')).toBe(false)
+  })
+
+  it('many insertions with different first chars', () => {
+    const trie = new TrieRadix()
+    trie.insert('apple')
+    trie.insert('banana')
+    trie.insert('cherry')
+    trie.insert('date')
+    trie.insert('elderberry')
+    expect(trie.collectWords().length).toBe(5)
+  })
+
+  it('search in empty trie returns false', () => {
+    const trie = new TrieRadix()
+    expect(trie.search('')).toBe(false)
+    expect(trie.search('a')).toBe(false)
+  })
+
+  it('startsWith in empty trie returns false for non-empty', () => {
+    const trie = new TrieRadix()
+    expect(trie.startsWith('a')).toBe(false)
+  })
+
+  it('startsWith empty string in empty trie returns true', () => {
+    const trie = new TrieRadix()
+    expect(trie.startsWith('')).toBe(true)
+  })
+
+  it('handles very long word', () => {
+    const trie = new TrieRadix()
+    const longWord = 'a'.repeat(1000)
+    trie.insert(longWord)
+    expect(trie.search(longWord)).toBe(true)
+    expect(trie.search('a'.repeat(999))).toBe(false)
+  })
+
+  it('insert many words collect all', () => {
+    const trie = new TrieRadix()
+    const words = ['alpha', 'beta', 'gamma', 'delta', 'epsilon']
+    for (const w of words) trie.insert(w)
+    expect(trie.collectWords().sort()).toEqual(words.sort())
+  })
+
+  it('split edge node correctly', () => {
+    const trie = new TrieRadix()
+    trie.insert('abcd')
+    trie.insert('abef')
+    expect(trie.search('abcd')).toBe(true)
+    expect(trie.search('abef')).toBe(true)
+    expect(trie.search('ab')).toBe(false)
+    expect(trie.startsWith('ab')).toBe(true)
+  })
+
+  it('three way split', () => {
+    const trie = new TrieRadix()
+    trie.insert('abc')
+    trie.insert('abd')
+    trie.insert('abe')
+    expect(trie.collectWords().sort()).toEqual(['abc', 'abd', 'abe'])
+  })
+
+  it('collectWords with exact word as prefix', () => {
+    const trie = new TrieRadix()
+    trie.insert('car')
+    trie.insert('card')
+    expect(trie.collectWords('car').sort()).toEqual(['car', 'card'])
+  })
+
+  it('handles overlapping insertions', () => {
+    const trie = new TrieRadix()
+    trie.insert('test')
+    trie.insert('te')
+    trie.insert('t')
+    expect(trie.search('t')).toBe(true)
+    expect(trie.search('te')).toBe(true)
+    expect(trie.search('test')).toBe(true)
+    expect(trie.search('tes')).toBe(false)
+  })
+
+  it('prefix search narrows results', () => {
+    const trie = new TrieRadix()
+    trie.insert('program')
+    trie.insert('programming')
+    trie.insert('programmer')
+    trie.insert('progress')
+    trie.insert('pro')
+    expect(trie.collectWords('pro').length).toBe(5)
+    const progWords = trie.collectWords('program')
+    expect(progWords.length).toBe(3)
+    expect(progWords.sort()).toEqual(['program', 'programmer', 'programming'])
+  })
+
+  it('empty string search after non-empty insert', () => {
+    const trie = new TrieRadix()
+    trie.insert('a')
+    expect(trie.search('')).toBe(false)
+  })
+
+  it('collectWords empty trie empty prefix', () => {
+    const trie = new TrieRadix()
+    expect(trie.collectWords()).toEqual([])
+    expect(trie.collectWords('')).toEqual([])
+  })
+
+  it('handles spaces in words', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello world')
+    trie.insert('hello there')
+    expect(trie.search('hello world')).toBe(true)
+    expect(trie.search('hello there')).toBe(true)
+    expect(trie.startsWith('hello ')).toBe(true)
+  })
+
+  it('collectWords returns only matching subtree', () => {
+    const trie = new TrieRadix()
+    trie.insert('car')
+    trie.insert('card')
+    trie.insert('dog')
+    trie.insert('door')
+    const carWords = trie.collectWords('car')
+    expect(carWords.sort()).toEqual(['car', 'card'])
+    const dogWords = trie.collectWords('do')
+    expect(dogWords.sort()).toEqual(['dog', 'door'])
+  })
+
+  it('insert same prefix then longer word', () => {
+    const trie = new TrieRadix()
+    trie.insert('test')
+    trie.insert('testing')
+    expect(trie.search('test')).toBe(true)
+    expect(trie.search('testing')).toBe(true)
+    expect(trie.startsWith('test')).toBe(true)
+  })
+
+  it('startsWith true when prefix equals word', () => {
+    const trie = new TrieRadix()
+    trie.insert('exact')
+    expect(trie.startsWith('exact')).toBe(true)
+    expect(trie.startsWith('exactl')).toBe(false)
+  })
+
+  it('multiple words share root edge', () => {
+    const trie = new TrieRadix()
+    trie.insert('international')
+    trie.insert('internal')
+    trie.insert('internet')
+    expect(trie.search('international')).toBe(true)
+    expect(trie.search('internal')).toBe(true)
+    expect(trie.search('internet')).toBe(true)
+    expect(trie.startsWith('intern')).toBe(true)
   })
 })

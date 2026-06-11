@@ -1,48 +1,113 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { TokenBucket2 } from '../../src/utils/token-bucket-2.js'
 
 describe('TokenBucket2', () => {
-  it('Constructor with defaults', () => {
+  it('constructor with defaults', () => {
     const bucket = new TokenBucket2(10, 5)
     expect(bucket.availableTokens).toBe(10)
     expect(bucket.refillRate).toBe(5)
     expect(bucket.capacity).toBe(10)
   })
 
-  it('Consume single token', () => {
+  it('constructor with initial tokens', () => {
+    const bucket = new TokenBucket2(10, 5, 3)
+    expect(bucket.availableTokens).toBe(3)
+  })
+
+  it('constructor throws for capacity < 1', () => {
+    expect(() => new TokenBucket2(0, 5)).toThrow('capacity must be at least 1')
+    expect(() => new TokenBucket2(-1, 5)).toThrow('capacity must be at least 1')
+  })
+
+  it('constructor throws for negative refillRate', () => {
+    expect(() => new TokenBucket2(10, -1)).toThrow('refillRate must be non-negative')
+  })
+
+  it('constructor throws for invalid initialTokens', () => {
+    expect(() => new TokenBucket2(10, 5, -1)).toThrow('initialTokens must be between 0 and capacity')
+    expect(() => new TokenBucket2(10, 5, 11)).toThrow('initialTokens must be between 0 and capacity')
+  })
+
+  it('consume single token', () => {
     const bucket = new TokenBucket2(10, 5)
     bucket.consume()
     expect(bucket.availableTokens).toBe(9)
   })
 
-  it('Consume multiple tokens', () => {
+  it('consume multiple tokens', () => {
     const bucket = new TokenBucket2(10, 5)
     bucket.consume(3)
     expect(bucket.availableTokens).toBe(7)
   })
 
-  it('TryConsume returns false when empty', () => {
+  it('tryConsume returns true when enough tokens', () => {
+    const bucket = new TokenBucket2(10, 5)
+    expect(bucket.tryConsume(5)).toBe(true)
+    expect(bucket.availableTokens).toBeCloseTo(5, 0)
+  })
+
+  it('tryConsume returns false when insufficient', () => {
     const bucket = new TokenBucket2(1, 5)
     bucket.consume()
-    const result = bucket.tryConsume()
-    expect(result).toBe(false)
+    expect(bucket.tryConsume()).toBe(false)
   })
 
-  it('WaitTime calculation', () => {
+  it('tryConsume returns false for exact deficit', () => {
+    const bucket = new TokenBucket2(5, 5)
+    bucket.consume(5)
+    expect(bucket.tryConsume(1)).toBe(false)
+  })
+
+  it('consume throws when insufficient', () => {
+    const bucket = new TokenBucket2(1, 5)
+    bucket.consume()
+    expect(() => bucket.consume()).toThrow()
+  })
+
+  it('consume zero tokens succeeds', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume(0)
+    expect(bucket.availableTokens).toBe(10)
+  })
+
+  it('waitTime returns 0 when enough tokens', () => {
+    const bucket = new TokenBucket2(10, 5)
+    expect(bucket.waitTime(5)).toBe(0)
+  })
+
+  it('waitTime returns positive when insufficient', () => {
     const bucket = new TokenBucket2(10, 10)
     bucket.consume(8)
-    const wait = bucket.waitTime(5)
-    expect(wait).toBeGreaterThan(0)
+    expect(bucket.waitTime(5)).toBeGreaterThan(0)
   })
 
-  it('Reserve returns wait time', () => {
+  it('waitTime returns Infinity with zero refillRate', () => {
+    const bucket = new TokenBucket2(10, 0)
+    bucket.consume(10)
+    expect(bucket.waitTime(1)).toBe(Infinity)
+  })
+
+  it('reserve returns 0 wait when enough tokens', () => {
+    const bucket = new TokenBucket2(10, 5)
+    const wait = bucket.reserve(5)
+    expect(wait).toBe(0)
+  })
+
+  it('reserve returns positive wait when insufficient', () => {
     const bucket = new TokenBucket2(10, 10)
     bucket.consume(8)
     const wait = bucket.reserve(5)
     expect(wait).toBeGreaterThanOrEqual(0)
   })
 
-  it('Refill adds tokens over time', () => {
+  it('reserve deducts tokens even when insufficient', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume(8)
+    bucket.reserve(5)
+    expect(bucket.availableTokens).toBeLessThan(0)
+  })
+
+  it('refill adds tokens over time', () => {
     vi.useFakeTimers()
     const bucket = new TokenBucket2(10, 10)
     bucket.consume(8)
@@ -53,7 +118,7 @@ describe('TokenBucket2', () => {
     vi.useRealTimers()
   })
 
-  it('Capacity limits tokens', () => {
+  it('capacity limits tokens after refill', () => {
     vi.useFakeTimers()
     const bucket = new TokenBucket2(10, 100)
     bucket.refill()
@@ -63,21 +128,15 @@ describe('TokenBucket2', () => {
     vi.useRealTimers()
   })
 
-  it('Consume throws when insufficient', () => {
-    const bucket = new TokenBucket2(1, 5)
-    bucket.consume()
-    expect(() => bucket.consume()).toThrow()
-  })
-
-  it('Multiple consume operations', () => {
+  it('multiple consume operations', () => {
     const bucket = new TokenBucket2(10, 5)
-    for (let i = 0; i < 5; i += 1) {
+    for (let i = 0; i < 5; i++) {
       bucket.consume()
     }
     expect(bucket.availableTokens).toBeCloseTo(5, 0)
   })
 
-  it('AvailableTokens updates correctly', () => {
+  it('availableTokens updates after each consume', () => {
     const bucket = new TokenBucket2(10, 5)
     bucket.consume(3)
     expect(bucket.availableTokens).toBeCloseTo(7, 0)
@@ -85,82 +144,146 @@ describe('TokenBucket2', () => {
     expect(bucket.availableTokens).toBeCloseTo(5, 0)
   })
 
-  it('Large burst consumption', () => {
+  it('large burst consumption', () => {
     const bucket = new TokenBucket2(100, 50)
-    const result = bucket.tryConsume(80)
-    expect(result).toBe(true)
+    expect(bucket.tryConsume(80)).toBe(true)
     expect(bucket.availableTokens).toBeCloseTo(20, 0)
   })
 
-  it('tryConsume returns true when enough tokens', () => {
+  it('bucket drains completely', () => {
     const bucket = new TokenBucket2(10, 5)
-    expect(bucket.tryConsume(5)).toBe(true)
-    expect(bucket.availableTokens).toBeCloseTo(5, 0)
+    bucket.consume(10)
+    expect(bucket.availableTokens).toBe(0)
   })
 
-  it('tryConsume returns false for exact deficit', () => {
-    const bucket = new TokenBucket2(5, 5)
-    bucket.consume(5)
-    expect(bucket.tryConsume(1)).toBe(false)
-  })
-
-  it('reserve with enough tokens returns 0 wait', () => {
-    const bucket = new TokenBucket2(10, 5)
-    const wait = bucket.reserve(5)
-    expect(wait).toBe(0)
-  })
-
-  it('consume reduces available tokens', () => {
-    const bucket = new TokenBucket2(10, 1)
-    bucket.consume(3)
-    expect(bucket.availableTokens).toBeLessThanOrEqual(7)
-  })
-
-  it('capacity is set correctly', () => {
-    const bucket = new TokenBucket2(100, 10)
-    expect(bucket.capacity).toBe(100)
-  })
-
-  it('tryConsume returns true when enough tokens', () => {
+  it('tryConsume with zero refillRate', () => {
     const bucket = new TokenBucket2(10, 0)
     expect(bucket.tryConsume(3)).toBe(true)
     expect(bucket.tryConsume(8)).toBe(false)
   })
 
-  it('bucket with tokens available', () => {
+  it('sequential consume and check', () => {
     const bucket = new TokenBucket2(10, 10)
     expect(bucket.tryConsume(5)).toBe(true)
     expect(bucket.tryConsume(5)).toBe(true)
     expect(bucket.tryConsume(1)).toBe(false)
   })
 
-  it('available tokens decreases after consume', () => {
-    const bucket = new TokenBucket2(10, 5)
-    bucket.consume(5)
-    expect(bucket.availableTokens).toBe(5)
+  it('refillRate is accessible', () => {
+    const bucket = new TokenBucket2(10, 42)
+    expect(bucket.refillRate).toBe(42)
   })
 
-  it('refill adds tokens over time', () => {
-    const bucket = new TokenBucket2(10, 5)
-    bucket.consume(5)
-    expect(bucket.availableTokens).toBe(5)
+  it('capacity is accessible', () => {
+    const bucket = new TokenBucket2(100, 10)
+    expect(bucket.capacity).toBe(100)
   })
 
-  it('consume reduces available tokens', () => {
+  it('lastRefillTime updates on access', () => {
     const bucket = new TokenBucket2(10, 5)
-    bucket.consume(10)
+    const t1 = bucket.lastRefillTime
+    expect(t1).toBeGreaterThan(0)
+  })
+
+  it('initial tokens 0', () => {
+    const bucket = new TokenBucket2(10, 5, 0)
     expect(bucket.availableTokens).toBe(0)
+    expect(bucket.tryConsume(1)).toBe(false)
   })
 
-  it('consume zero tokens succeeds', () => {
+  it('constructor with capacity 1', () => {
+    const bucket = new TokenBucket2(1, 1)
+    expect(bucket.tryConsume(1)).toBe(true)
+    expect(bucket.tryConsume(1)).toBe(false)
+  })
+
+  it('tryConsume default is 1 token', () => {
     const bucket = new TokenBucket2(10, 5)
-    bucket.consume(0)
+    bucket.tryConsume()
+    expect(bucket.availableTokens).toBe(9)
+  })
+
+  it('consume all then waitTime positive', () => {
+    const bucket = new TokenBucket2(5, 5)
+    bucket.consume(5)
+    expect(bucket.waitTime(1)).toBeGreaterThan(0)
+  })
+
+  it('refill method is callable directly', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.refill()
     expect(bucket.availableTokens).toBe(10)
   })
 
-  it('consume reduces tokens', () => {
+  it('tryConsume exact available', () => {
+    const bucket = new TokenBucket2(5, 5)
+    expect(bucket.tryConsume(5)).toBe(true)
+    expect(bucket.availableTokens).toBe(0)
+  })
+
+  it('tryConsume more than available fails', () => {
+    const bucket = new TokenBucket2(5, 5)
+    expect(bucket.tryConsume(6)).toBe(false)
+    expect(bucket.availableTokens).toBe(5)
+  })
+
+  it('consume partial then rest', () => {
     const bucket = new TokenBucket2(10, 5)
     bucket.consume(3)
-    expect(bucket.availableTokens).toBe(7)
+    bucket.consume(7)
+    expect(bucket.availableTokens).toBe(0)
+  })
+
+  it('multiple reserves accumulate', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.reserve(5)
+    bucket.reserve(3)
+    expect(bucket.availableTokens).toBeCloseTo(2, 0)
+  })
+
+  it('waitTime for exact tokens available', () => {
+    const bucket = new TokenBucket2(10, 5)
+    expect(bucket.waitTime(10)).toBe(0)
+  })
+
+  it('waitTime for more than capacity', () => {
+    const bucket = new TokenBucket2(5, 5)
+    expect(bucket.waitTime(10)).toBeGreaterThan(0)
+  })
+
+  it('initial tokens at capacity', () => {
+    const bucket = new TokenBucket2(10, 5, 10)
+    expect(bucket.availableTokens).toBe(10)
+  })
+
+  it('fake timer refill exact amount', () => {
+    vi.useFakeTimers()
+    const bucket = new TokenBucket2(100, 10)
+    bucket.consume(50)
+    vi.advanceTimersByTime(1000)
+    expect(bucket.availableTokens).toBeCloseTo(60, 0)
+    vi.useRealTimers()
+  })
+
+  it('fake timer refill caps at capacity', () => {
+    vi.useFakeTimers()
+    const bucket = new TokenBucket2(10, 100)
+    bucket.consume(5)
+    vi.advanceTimersByTime(10000)
+    expect(bucket.availableTokens).toBeLessThanOrEqual(10)
+    vi.useRealTimers()
+  })
+
+  it('consume half then check', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume(5)
+    expect(bucket.availableTokens).toBe(5)
+  })
+
+  it('large capacity works', () => {
+    const bucket = new TokenBucket2(1000000, 1000)
+    expect(bucket.tryConsume(999999)).toBe(true)
+    expect(bucket.tryConsume(2)).toBe(false)
+    expect(bucket.tryConsume(1)).toBe(true)
   })
 })

@@ -89,38 +89,217 @@ describe('TernarySearch', () => {
     expect(result.index).toBe(3)
   })
 
-  it('findMinInteger finds minimum', () => {
+  it('findMinInteger with quadratic', () => {
     const result = TernarySearch.findMinInteger((x) => (x - 7) * (x - 7), 0, 10)
     expect(result.index).toBe(7)
   })
 
-  it('findMaxInteger finds maximum', () => {
+  it('findMaxInteger with quadratic', () => {
     const result = TernarySearch.findMaxInteger((x) => -(x - 3) * (x - 3), 0, 10)
     expect(result.index).toBe(3)
   })
 
-  it('findMinInteger finds minimum', () => {
-    const result = TernarySearch.findMinInteger((x) => (x - 7) * (x - 7), 0, 10)
-    expect(result.index).toBe(7)
-  })
-
-  it('findMaxInteger finds maximum', () => {
-    const result = TernarySearch.findMaxInteger((x) => -(x - 3) * (x - 3), 0, 10)
-    expect(result.index).toBe(3)
-  })
-
-  it('findMinInteger finds minimum', () => {
+  it('findMinInteger with different offset', () => {
     const result = TernarySearch.findMinInteger((x) => (x - 5) * (x - 5), 0, 10)
     expect(result.index).toBe(5)
   })
 
-  it('findMaxInteger finds maximum', () => {
+  it('findMaxInteger with different offset', () => {
     const result = TernarySearch.findMaxInteger((x) => -(x - 3) * (x - 3), 0, 10)
     expect(result.index).toBe(3)
   })
 
-  it('findMinInteger finds minimum', () => {
+  it('findMinInteger with negative range', () => {
     const result = TernarySearch.findMinInteger((x) => (x - 3) * (x - 3), 0, 10)
     expect(result.index).toBe(3)
+  })
+
+  it('findMinInteger with small range', () => {
+    const result = TernarySearch.findMinInteger((x) => x * x, 0, 2)
+    expect(result.index).toBe(0)
+  })
+
+  it('findMin with cubic function', () => {
+    const x = TernarySearch.findMin((x) => x * x * x, -1, 1)
+    expect(x).toBeGreaterThanOrEqual(-1)
+    expect(x).toBeLessThanOrEqual(0)
+  })
+
+  it('findMax with cubic function', () => {
+    const x = TernarySearch.findMax((x) => -x * x * x, -1, 1)
+    expect(x).toBeGreaterThanOrEqual(-1)
+    expect(x).toBeLessThanOrEqual(1)
+  })
+
+  it('findMax with large range', () => {
+    const x = TernarySearch.findMax((x) => -(x - 1000) * (x - 1000), 0, 2000)
+    expect(x).toBeCloseTo(1000, 2)
+  })
+
+  it('findMin with large range', () => {
+    const x = TernarySearch.findMin((x) => (x + 500) * (x + 500), -1000, 0)
+    expect(x).toBeCloseTo(-500, 2)
+  })
+
+  it('findMax with small range', () => {
+    const x = TernarySearch.findMax((x) => -(x - 0.5) * (x - 0.5), 0, 1)
+    expect(x).toBeCloseTo(0.5, 3)
+  })
+
+  it('findMin with small range', () => {
+    const x = TernarySearch.findMin((x) => (x - 0.25) * (x - 0.25), 0, 0.5)
+    expect(x).toBeCloseTo(0.25, 3)
+  })
+
+  it('findMaxInteger returns correct value', () => {
+    const result = TernarySearch.findMaxInteger((x) => -(x - 10) * (x - 10) + 100, 0, 20)
+    expect(result.index).toBe(10)
+    expect(result.value).toBe(100)
+  })
+
+  it('findMinInteger returns correct value', () => {
+    const result = TernarySearch.findMinInteger((x) => (x + 2) * (x + 2), -10, 10)
+    expect(result.index).toBe(-2)
+    expect(result.value).toBe(0)
+  })
+
+  it('findMaxInteger with negative indices', () => {
+    const result = TernarySearch.findMaxInteger((x) => x, -10, -5)
+    expect(result.index).toBe(-5)
+  })
+
+  it('findMinInteger with negative indices', () => {
+    const result = TernarySearch.findMinInteger((x) => x, -10, -5)
+    expect(result.index).toBe(-10)
+  })
+
+  it('findMaxInteger with three element range', () => {
+    const result = TernarySearch.findMaxInteger((x) => -(x - 5) * (x - 5), 4, 6)
+    expect(result.index).toBe(5)
+  })
+
+  it('findMinInteger with three element range', () => {
+    const result = TernarySearch.findMinInteger((x) => (x - 5) * (x - 5), 4, 6)
+    expect(result.index).toBe(5)
+  })
+
+  it('findMaxInteger with linear function', () => {
+    const result = TernarySearch.findMaxInteger((x) => 2 * x + 3, 0, 10)
+    expect(result.index).toBe(10)
+  })
+
+  it('findMinInteger with linear decreasing function', () => {
+    const result = TernarySearch.findMinInteger((x) => -3 * x + 10, 0, 10)
+    expect(result.index).toBe(10)
+  })
+
+  it('findMinInteger with two element range', () => {
+    const result = TernarySearch.findMinInteger((x) => x * x, 0, 1)
+    expect(result.index).toBe(0)
+  })
+
+  it('findMaxInteger with two element range', () => {
+    const result = TernarySearch.findMaxInteger((x) => -x * x, 0, 1)
+    expect(result.index).toBe(0)
+  })
+
+  it('findMax with exponential decay', () => {
+    const x = TernarySearch.findMax((x) => Math.exp(-x), -10, 10)
+    expect(x).toBeLessThanOrEqual(0)
+  })
+
+  it('findMin with exponential growth', () => {
+    const x = TernarySearch.findMin((x) => Math.exp(x), -10, 10)
+    expect(x).toBeCloseTo(-10, 1)
+  })
+
+  it('findMax with sine wave', () => {
+    const x = TernarySearch.findMax(Math.sin, 0, Math.PI * 2)
+    expect(x).toBeCloseTo(Math.PI / 2, 1)
+  })
+
+  it('findMin with cosine wave', () => {
+    const x = TernarySearch.findMin(Math.cos, -Math.PI, Math.PI)
+    expect(Math.abs(x - Math.PI) < 0.01 || Math.abs(x + Math.PI) < 0.01).toBe(true)
+  })
+
+  it('findMaxInteger with constant function', () => {
+    const result = TernarySearch.findMaxInteger((x) => 5, 0, 10)
+    expect(result.value).toBe(5)
+  })
+
+  it('findMinInteger with constant function', () => {
+    const result = TernarySearch.findMinInteger((x) => 10, 0, 10)
+    expect(result.value).toBe(10)
+  })
+
+  it('findMaxInteger with peak at left', () => {
+    const result = TernarySearch.findMaxInteger((x) => -x, 0, 10)
+    expect(result.index).toBe(0)
+  })
+
+  it('findMinInteger with valley at left', () => {
+    const result = TernarySearch.findMinInteger((x) => x, 0, 10)
+    expect(result.index).toBe(0)
+  })
+
+  it('findMaxInteger with peak at right', () => {
+    const result = TernarySearch.findMaxInteger((x) => x, 0, 10)
+    expect(result.index).toBe(10)
+  })
+
+  it('findMinInteger with valley at right', () => {
+    const result = TernarySearch.findMinInteger((x) => -x, 0, 10)
+    expect(result.index).toBe(10)
+  })
+
+  it('findMin with quartic function', () => {
+    const x = TernarySearch.findMin((x) => Math.pow(x - 2, 4), 0, 10)
+    expect(x).toBeCloseTo(2, 2)
+  })
+
+  it('findMax with inverted quartic', () => {
+    const x = TernarySearch.findMax((x) => -Math.pow(x - 2, 4), 0, 10)
+    expect(x).toBeCloseTo(2, 2)
+  })
+
+  it('findMax with negative offset', () => {
+    const x = TernarySearch.findMax((x) => -(x + 5) * (x + 5), -10, 0)
+    expect(x).toBeCloseTo(-5, 3)
+  })
+
+  it('findMin with negative offset', () => {
+    const x = TernarySearch.findMin((x) => (x + 3) * (x + 3), -10, 0)
+    expect(x).toBeCloseTo(-3, 3)
+  })
+
+  it('findMaxInteger with wide range', () => {
+    const result = TernarySearch.findMaxInteger((x) => -(x - 50) * (x - 50), 0, 100)
+    expect(result.index).toBe(50)
+  })
+
+  it('findMinInteger with wide range', () => {
+    const result = TernarySearch.findMinInteger((x) => (x - 50) * (x - 50), 0, 100)
+    expect(result.index).toBe(50)
+  })
+
+  it('findMax with asymmetric function', () => {
+    const x = TernarySearch.findMax((x) => -(x - 1) * (x - 1) / 2, 0, 5)
+    expect(x).toBeCloseTo(1, 2)
+  })
+
+  it('findMin with asymmetric function', () => {
+    const x = TernarySearch.findMin((x) => 2 * (x - 4) * (x - 4), 0, 10)
+    expect(x).toBeCloseTo(4, 2)
+  })
+
+  it('findMaxInteger with negative to positive range', () => {
+    const result = TernarySearch.findMaxInteger((x) => -(x - 1) * (x - 1), -5, 10)
+    expect(result.index).toBe(1)
+  })
+
+  it('findMinInteger with negative to positive range', () => {
+    const result = TernarySearch.findMinInteger((x) => (x + 1) * (x + 1), -10, 5)
+    expect(result.index).toBe(-1)
   })
 })
