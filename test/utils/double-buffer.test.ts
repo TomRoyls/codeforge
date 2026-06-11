@@ -150,73 +150,253 @@ describe('DoubleBuffer', () => {
     expect(db.drainFront()).toEqual([])
   })
 
-  it('swap returns back buffer contents', () => {
-    const db = new DoubleBuffer<string>()
-    db.push('a')
-    db.push('b')
-    const swapped = db.swap()
-    expect(swapped).toEqual(['a', 'b'])
-    expect(db.frontBuffer).toEqual(['a', 'b'])
+  it('toString returns formatted', () => {
+    const db = new DoubleBuffer<number>()
+    expect(db.toString()).toBe('DoubleBuffer(front=0, back=0)')
+    db.push(1)
+    expect(db.toString()).toBe('DoubleBuffer(front=0, back=1)')
+    db.swap()
+    expect(db.toString()).toBe('DoubleBuffer(front=1, back=0)')
   })
 
-  it('pendingCount tracks back buffer', () => {
+  it('toJSON returns state', () => {
     const db = new DoubleBuffer<number>()
-    expect(db.pendingCount).toBe(0)
     db.push(1)
+    db.swap()
+    db.push(2)
+    const json = db.toJSON()
+    expect(json).toEqual({ front: [1], back: [2], swaps: 1 })
+  })
+
+  it('clone creates independent copy', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.swap()
+    db.push(2)
+    const copy = db.clone()
+    expect(copy.frontBuffer).toEqual([1])
+    expect(copy.backBuffer).toEqual([2])
+    expect(copy.totalSwaps).toBe(1)
+    copy.push(3)
     expect(db.pendingCount).toBe(1)
-    db.push(2)
-    expect(db.pendingCount).toBe(2)
-    db.swap()
-    expect(db.pendingCount).toBe(0)
+    expect(copy.pendingCount).toBe(2)
   })
 
-  it('swap with no pending data', () => {
-    const db = new DoubleBuffer<string>()
-    db.swap()
-    expect(db.pendingCount).toBe(0)
+  it('equals with identical state', () => {
+    const a = new DoubleBuffer<number>()
+    a.push(1)
+    a.swap()
+    const b = new DoubleBuffer<number>()
+    b.push(1)
+    b.swap()
+    expect(a.equals(b)).toBe(true)
   })
 
-  it('swap clears pending', () => {
+  it('equals with different swaps', () => {
+    const a = new DoubleBuffer<number>()
+    a.swap()
+    const b = new DoubleBuffer<number>()
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('equals with non-DoubleBuffer', () => {
     const db = new DoubleBuffer<number>()
-    db.push(1)
-    db.push(2)
-    db.swap()
-    expect(db.pendingCount).toBe(0)
+    expect(db.equals(null)).toBe(false)
+    expect(db.equals({})).toBe(false)
   })
 
-  it('swap twice returns to empty pending', () => {
+  it('clear preserves totalSwaps', () => {
     const db = new DoubleBuffer<number>()
-    db.push(1)
     db.swap()
-    db.push(2)
     db.swap()
-    expect(db.pendingCount).toBe(0)
+    expect(db.totalSwaps).toBe(2)
+    db.clear()
+    expect(db.totalSwaps).toBe(2)
   })
 
-  it('swap returns flushed items', () => {
+  it('consumeFront on empty does nothing', () => {
     const db = new DoubleBuffer<number>()
-    db.push(1)
-    db.push(2)
-    const items = db.swap()
-    expect(items).toEqual([1, 2])
-  })
-
-  it('empty swap returns empty array', () => {
-    const db = new DoubleBuffer<number>()
-    const items = db.swap()
+    const items: number[] = []
+    db.consumeFront((item) => items.push(item))
     expect(items).toEqual([])
   })
 
-  it('swap returns previously written items', () => {
+  it('consumeSwap on empty', () => {
+    const db = new DoubleBuffer<number>()
+    const items: number[] = []
+    db.consumeSwap((item) => items.push(item))
+    expect(items).toEqual([])
+    expect(db.totalSwaps).toBe(1)
+  })
+
+  it('pushMany with Set', () => {
+    const db = new DoubleBuffer<number>()
+    db.pushMany(new Set([1, 2, 3]))
+    expect(db.backBuffer).toEqual([1, 2, 3])
+  })
+
+  it('drainFront does not affect back buffer', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.swap()
+    db.push(2)
+    db.drainFront()
+    expect(db.backBuffer).toEqual([2])
+    expect(db.frontBuffer).toEqual([])
+  })
+
+  it('multiple swaps accumulate correctly', () => {
+    const db = new DoubleBuffer<number>()
+    for (let i = 0; i < 10; i++) {
+      db.push(i)
+      db.swap()
+    }
+    expect(db.totalSwaps).toBe(10)
+    expect(db.frontBuffer).toEqual([9])
+  })
+
+  it('readyCount after swap', () => {
     const db = new DoubleBuffer<number>()
     db.push(1)
     db.push(2)
-    const items = db.swap()
-    expect(items).toEqual([1, 2])
+    db.push(3)
+    db.swap()
+    expect(db.readyCount).toBe(3)
+    expect(db.pendingCount).toBe(0)
   })
 
-  it('swap on empty returns empty', () => {
+  it('handles string type', () => {
+    const db = new DoubleBuffer<string>()
+    db.push('hello')
+    db.push('world')
+    db.swap()
+    expect(db.frontBuffer).toEqual(['hello', 'world'])
+  })
+
+  it('handles object type', () => {
+    const db = new DoubleBuffer<{ v: number }>()
+    db.push({ v: 1 })
+    db.push({ v: 2 })
+    db.swap()
+    expect(db.frontBuffer.length).toBe(2)
+    expect(db.frontBuffer[0]!.v).toBe(1)
+  })
+
+  it('push after drain works', () => {
     const db = new DoubleBuffer<number>()
-    expect(db.swap()).toEqual([])
+    db.push(1)
+    db.swap()
+    db.drainFront()
+    db.push(2)
+    db.swap()
+    expect(db.frontBuffer).toEqual([2])
+  })
+
+  it('clear after swap clears front', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.swap()
+    expect(db.readyCount).toBe(1)
+    db.clear()
+    expect(db.readyCount).toBe(0)
+    expect(db.isEmpty).toBe(true)
+  })
+
+  it('clone of empty buffer', () => {
+    const db = new DoubleBuffer<number>()
+    const copy = db.clone()
+    expect(copy.isEmpty).toBe(true)
+    expect(copy.totalSwaps).toBe(0)
+  })
+
+  it('toJSON is a snapshot', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    const json = db.toJSON()
+    db.push(2)
+    expect(json.back).toEqual([1])
+    expect(db.backBuffer).toEqual([1, 2])
+  })
+
+  it('many items in single batch', () => {
+    const db = new DoubleBuffer<number>()
+    for (let i = 0; i < 100; i++) db.push(i)
+    db.swap()
+    expect(db.readyCount).toBe(100)
+    const items = db.drainFront()
+    expect(items.length).toBe(100)
+  })
+
+  it('interleaved push and consumeSwap', () => {
+    const db = new DoubleBuffer<number>()
+    const all: number[] = []
+    for (let i = 0; i < 5; i++) {
+      db.push(i)
+      db.consumeSwap((item) => all.push(item))
+    }
+    expect(all).toEqual([0, 1, 2, 3, 4])
+  })
+
+  it('swap overwrites previous front', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.swap()
+    expect(db.frontBuffer).toEqual([1])
+    db.push(2)
+    db.swap()
+    expect(db.frontBuffer).toEqual([2])
+  })
+
+  it('pendingCount increments with each push', () => {
+    const db = new DoubleBuffer<number>()
+    for (let i = 0; i < 5; i++) {
+      db.push(i)
+      expect(db.pendingCount).toBe(i + 1)
+    }
+  })
+
+  it('frontBuffer is readonly', () => {
+    const db = new DoubleBuffer<number>()
+    expect(Object.isFrozen(db.frontBuffer) || Array.isArray(db.frontBuffer)).toBe(true)
+  })
+
+  it('pushMany with empty array', () => {
+    const db = new DoubleBuffer<number>()
+    db.pushMany([])
+    expect(db.pendingCount).toBe(0)
+  })
+
+  it('pushMany with single item', () => {
+    const db = new DoubleBuffer<number>()
+    db.pushMany([42])
+    expect(db.backBuffer).toEqual([42])
+  })
+
+  it('drainFront then swap then drain', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.swap()
+    db.drainFront()
+    db.push(2)
+    db.push(3)
+    db.swap()
+    const drained = db.drainFront()
+    expect(drained).toEqual([2, 3])
+  })
+
+  it('consumeFront does not modify front buffer', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    db.swap()
+    db.consumeFront(() => {})
+    expect(db.readyCount).toBe(2)
+  })
+
+  it('swap returns reference to new front', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(10)
+    const swapped = db.swap()
+    expect(swapped).toBe(db.frontBuffer)
   })
 })

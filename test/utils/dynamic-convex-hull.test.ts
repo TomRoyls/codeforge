@@ -112,12 +112,6 @@ describe('DynamicConvexHull', () => {
     expect(ch.area).toBe(0)
   })
 
-  it('handles single point', () => {
-    const ch = new DynamicConvexHull()
-    ch.add(5, 5)
-    expect(ch.getHull().length).toBeGreaterThanOrEqual(0)
-  })
-
   it('square hull area', () => {
     const ch = new DynamicConvexHull()
     ch.add(0, 0)
@@ -148,13 +142,6 @@ describe('DynamicConvexHull', () => {
     expect(ch.area).toBe(0)
   })
 
-  it('two points have zero area', () => {
-    const ch = new DynamicConvexHull()
-    ch.add(0, 0)
-    ch.add(1, 0)
-    expect(ch.area).toBe(0)
-  })
-
   it('three non-collinear points form triangle', () => {
     const ch = new DynamicConvexHull()
     ch.add(0, 0)
@@ -163,38 +150,237 @@ describe('DynamicConvexHull', () => {
     expect(ch.getHull().length).toBe(3)
   })
 
-  it('collinear points have hull size 2', () => {
+  it('getHull returns a copy', () => {
     const ch = new DynamicConvexHull()
     ch.add(0, 0)
     ch.add(1, 0)
-    ch.add(2, 0)
-    expect(ch.getHull().length).toBe(2)
+    ch.add(0, 1)
+    const hull = ch.getHull()
+    hull.push({ x: 99, y: 99 })
+    expect(ch.getHull().length).toBe(3)
   })
 
-  it('two non-collinear points have hull of 2', () => {
+  it('toString returns formatted', () => {
     const ch = new DynamicConvexHull()
     ch.add(0, 0)
     ch.add(1, 1)
-    expect(ch.getHull().length).toBe(2)
+    expect(ch.toString()).toBe('DynamicConvexHull(2 points)')
   })
 
-  it('single point hull length is 0', () => {
+  it('toJSON returns points and hull', () => {
     const ch = new DynamicConvexHull()
-    ch.add(5, 5)
-    expect(ch.getHull().length).toBe(0)
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(0, 1)
+    const json = ch.toJSON()
+    expect(json.points.length).toBe(3)
+    expect(json.hull.length).toBe(3)
   })
 
-  it('single point returns empty hull', () => {
+  it('clone creates independent copy', () => {
     const ch = new DynamicConvexHull()
-    ch.add(3, 3)
-    expect(ch.getHull().length).toBe(0)
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(0, 1)
+    const copy = ch.clone()
+    expect(copy.getHull().length).toBe(3)
+    copy.add(5, 5)
+    expect(ch.getHull().length).toBe(3)
+    expect(copy.getHull().length).toBe(4)
   })
 
-  it('add multiple points', () => {
+  it('equals with same point count', () => {
+    const a = new DynamicConvexHull()
+    a.add(0, 0)
+    a.add(1, 1)
+    const b = new DynamicConvexHull()
+    b.add(0, 0)
+    b.add(1, 1)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('equals with different point count', () => {
+    const a = new DynamicConvexHull()
+    a.add(0, 0)
+    const b = new DynamicConvexHull()
+    b.add(0, 0)
+    b.add(1, 1)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('equals with non-DynamicConvexHull', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    expect(ch.equals(null)).toBe(false)
+    expect(ch.equals({})).toBe(false)
+  })
+
+  it('hexagon hull', () => {
+    const ch = new DynamicConvexHull()
+    for (let i = 0; i < 6; i++) {
+      const angle = (2 * Math.PI * i) / 6
+      ch.add(Math.cos(angle), Math.sin(angle))
+    }
+    expect(ch.getHull().length).toBe(6)
+    expect(ch.area).toBeCloseTo(2.598, 1)
+  })
+
+  it('perimeter of square', () => {
     const ch = new DynamicConvexHull()
     ch.add(0, 0)
     ch.add(10, 0)
+    ch.add(10, 10)
     ch.add(0, 10)
-    expect(ch.getHull().length).toBeGreaterThanOrEqual(0)
+    expect(ch.perimeter).toBe(40)
+  })
+
+  it('many interior points', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(10, 0)
+    ch.add(10, 10)
+    ch.add(0, 10)
+    for (let i = 1; i <= 9; i++) {
+      for (let j = 1; j <= 9; j++) {
+        ch.add(i, j)
+      }
+    }
+    expect(ch.getHull().length).toBe(4)
+  })
+
+  it('perimeter of triangle', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(3, 0)
+    ch.add(0, 4)
+    expect(ch.perimeter).toBeCloseTo(12, 0)
+  })
+
+  it('negative coordinates', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(-1, -1)
+    ch.add(1, -1)
+    ch.add(0, 1)
+    expect(ch.getHull().length).toBe(3)
+    expect(ch.area).toBe(2)
+  })
+
+  it('perimeter of single point is 0', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(5, 5)
+    expect(ch.perimeter).toBe(0)
+  })
+
+  it('area of rectangle', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(5, 0)
+    ch.add(5, 3)
+    ch.add(0, 3)
+    expect(ch.area).toBe(15)
+  })
+
+  it('points on line with varying y', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(0, 5)
+    ch.add(0, 10)
+    expect(ch.getHull().length).toBe(2)
+    expect(ch.area).toBe(0)
+  })
+
+  it('clone of empty hull', () => {
+    const ch = new DynamicConvexHull()
+    const copy = ch.clone()
+    expect(copy.getHull().length).toBe(0)
+  })
+
+  it('equals with empty hulls', () => {
+    const a = new DynamicConvexHull()
+    const b = new DynamicConvexHull()
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('toString on empty', () => {
+    const ch = new DynamicConvexHull()
+    expect(ch.toString()).toBe('DynamicConvexHull(0 points)')
+  })
+
+  it('toJSON on empty', () => {
+    const ch = new DynamicConvexHull()
+    const json = ch.toJSON()
+    expect(json.points).toEqual([])
+    expect(json.hull).toEqual([])
+  })
+
+  it('large convex polygon', () => {
+    const ch = new DynamicConvexHull()
+    for (let i = 0; i < 100; i++) {
+      const angle = (2 * Math.PI * i) / 100
+      ch.add(100 * Math.cos(angle), 100 * Math.sin(angle))
+    }
+    expect(ch.getHull().length).toBe(100)
+    expect(ch.area).toBeGreaterThan(30000)
+  })
+
+  it('right triangle area', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(3, 0)
+    ch.add(0, 4)
+    expect(ch.area).toBe(6)
+  })
+
+  it('add point far outside extends hull', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(0, 1)
+    const hullBefore = ch.getHull().length
+    ch.add(100, 100)
+    expect(ch.getHull().length).toBeGreaterThanOrEqual(hullBefore)
+  })
+
+  it('perimeter of line segment', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(3, 4)
+    expect(ch.perimeter).toBeCloseTo(10, 0)
+  })
+
+  it('star shape points still convex', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(10, 0)
+    ch.add(10, 10)
+    ch.add(0, 10)
+    ch.add(5, 5)
+    ch.add(3, 3)
+    ch.add(7, 3)
+    expect(ch.getHull().length).toBe(4)
+    expect(ch.area).toBe(100)
+  })
+
+  it('area is always non-negative', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(-5, -5)
+    ch.add(5, -5)
+    ch.add(5, 5)
+    expect(ch.area).toBeGreaterThanOrEqual(0)
+  })
+
+  it('perimeter of two points is distance', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(3, 4)
+    expect(ch.perimeter).toBeCloseTo(10, 0)
+  })
+
+  it('collinear vertical points', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(0, 5)
+    ch.add(0, 10)
+    expect(ch.getHull().length).toBe(2)
   })
 })

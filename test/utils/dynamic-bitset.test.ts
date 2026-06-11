@@ -108,15 +108,6 @@ describe('DynamicBitset', () => {
     expect(bs.get(10)).toBe(true)
   })
 
-  it('handles flip operation', () => {
-    const bs = new DynamicBitset(4)
-    bs.set(0)
-    bs.flip(0)
-    expect(bs.get(0)).toBe(false)
-    bs.flip(0)
-    expect(bs.get(0)).toBe(true)
-  })
-
   it('count tracks correctly after flip', () => {
     const bs = new DynamicBitset(4)
     bs.set(0)
@@ -125,56 +116,213 @@ describe('DynamicBitset', () => {
     expect(bs.count()).toBe(1)
   })
 
-  it('flip toggles bits', () => {
-    const bs = new DynamicBitset()
-    bs.set(0)
-    bs.flip(0)
-    expect(bs.get(0)).toBe(false)
+  it('clone preserves content', () => {
+    const bs = DynamicBitset.fromString('1010')
+    const copy = bs.clone()
+    expect(copy.toString()).toBe('1010')
+    expect(copy.length).toBe(bs.length)
   })
 
-  it('count returns number of set bits', () => {
-    const bs = new DynamicBitset(8)
-    bs.set(0)
-    bs.set(3)
-    bs.set(7)
-    expect(bs.count()).toBe(3)
+  it('equals with same content', () => {
+    const a = DynamicBitset.fromString('1100')
+    const b = DynamicBitset.fromString('1100')
+    expect(a.equals(b)).toBe(true)
   })
 
-  it('unset individual bits', () => {
-    const bs = new DynamicBitset(8)
-    bs.set(0)
-    bs.set(4)
-    bs.clear(0)
-    bs.clear(4)
-    expect(bs.count()).toBe(0)
+  it('equals with different content', () => {
+    const a = DynamicBitset.fromString('1100')
+    const b = DynamicBitset.fromString('1010')
+    expect(a.equals(b)).toBe(false)
   })
 
-  it('length property returns bitset length', () => {
-    const bs = new DynamicBitset(8)
-    expect(bs.length).toBe(8)
+  it('equals with non-DynamicBitset', () => {
+    const bs = new DynamicBitset(4)
+    expect(bs.equals(null)).toBe(false)
+    expect(bs.equals({})).toBe(false)
   })
 
-  it('count returns number of set bits', () => {
-    const bs = new DynamicBitset(8)
-    bs.set(0)
-    bs.set(3)
-    bs.set(7)
-    expect(bs.count()).toBe(3)
+  it('equals with different length', () => {
+    const a = DynamicBitset.fromString('1100')
+    const b = DynamicBitset.fromString('11000')
+    expect(a.equals(b)).toBe(false)
   })
 
-  it('unset bit has get false', () => {
-    const bs = new DynamicBitset()
-    expect(bs.get(10)).toBe(false)
+  it('toJSON returns string representation', () => {
+    const bs = DynamicBitset.fromString('1010')
+    expect(bs.toJSON()).toBe('1010')
   })
 
-  it('set then get returns true', () => {
-    const bs = new DynamicBitset()
-    bs.set(10, true)
+  it('flip extends length', () => {
+    const bs = new DynamicBitset(4)
+    bs.flip(10)
+    expect(bs.length).toBe(11)
     expect(bs.get(10)).toBe(true)
   })
 
-  it('get unset bit returns false', () => {
+  it('and with different lengths', () => {
+    const a = DynamicBitset.fromString('1111')
+    const b = DynamicBitset.fromString('110')
+    const result = a.and(b)
+    expect(result.get(0)).toBe(true)
+    expect(result.get(1)).toBe(true)
+  })
+
+  it('or with different lengths', () => {
+    const a = DynamicBitset.fromString('1100')
+    const b = DynamicBitset.fromString('001011')
+    const result = a.or(b)
+    expect(result.length).toBe(6)
+  })
+
+  it('xor with different lengths', () => {
+    const a = DynamicBitset.fromString('1100')
+    const b = DynamicBitset.fromString('11')
+    const result = a.xor(b)
+    expect(result.get(0)).toBe(false)
+    expect(result.get(1)).toBe(false)
+    expect(result.length).toBe(4)
+  })
+
+  it('not flips all bits', () => {
+    const bs = DynamicBitset.fromString('0000')
+    expect(bs.not().toString()).toBe('1111')
+  })
+
+  it('not of all ones is all zeros', () => {
+    const bs = DynamicBitset.fromString('1111')
+    expect(bs.not().toString()).toBe('0000')
+  })
+
+  it('clear beyond length does nothing', () => {
+    const bs = new DynamicBitset(4)
+    bs.clear(100)
+    expect(bs.count()).toBe(0)
+  })
+
+  it('set then clear then set', () => {
+    const bs = new DynamicBitset(8)
+    bs.set(3)
+    expect(bs.get(3)).toBe(true)
+    bs.clear(3)
+    expect(bs.get(3)).toBe(false)
+    bs.set(3)
+    expect(bs.get(3)).toBe(true)
+  })
+
+  it('fromString with all zeros', () => {
+    const bs = DynamicBitset.fromString('0000')
+    expect(bs.count()).toBe(0)
+    expect(bs.length).toBe(4)
+  })
+
+  it('fromString with all ones', () => {
+    const bs = DynamicBitset.fromString('1111')
+    expect(bs.count()).toBe(4)
+  })
+
+  it('fromString with empty string', () => {
+    const bs = DynamicBitset.fromString('')
+    expect(bs.length).toBe(0)
+    expect(bs.count()).toBe(0)
+  })
+
+  it('clone of empty bitset', () => {
     const bs = new DynamicBitset()
-    expect(bs.get(99)).toBe(false)
+    const copy = bs.clone()
+    expect(copy.length).toBe(0)
+    expect(copy.count()).toBe(0)
+  })
+
+  it('multiple sets on same bit', () => {
+    const bs = new DynamicBitset(8)
+    bs.set(3)
+    bs.set(3)
+    bs.set(3)
+    expect(bs.count()).toBe(1)
+    expect(bs.get(3)).toBe(true)
+  })
+
+  it('and of bitset with itself', () => {
+    const bs = DynamicBitset.fromString('1010')
+    expect(bs.and(bs).toString()).toBe('1010')
+  })
+
+  it('or of bitset with itself', () => {
+    const bs = DynamicBitset.fromString('1010')
+    expect(bs.or(bs).toString()).toBe('1010')
+  })
+
+  it('xor of bitset with itself is zero', () => {
+    const bs = DynamicBitset.fromString('1010')
+    expect(bs.xor(bs).toString()).toBe('0000')
+  })
+
+  it('set at boundary 32', () => {
+    const bs = new DynamicBitset(32)
+    bs.set(31)
+    expect(bs.get(31)).toBe(true)
+    expect(bs.get(0)).toBe(false)
+  })
+
+  it('set at index 32 crosses word boundary', () => {
+    const bs = new DynamicBitset(4)
+    bs.set(32)
+    expect(bs.get(32)).toBe(true)
+    expect(bs.get(31)).toBe(false)
+  })
+
+  it('count after many operations', () => {
+    const bs = new DynamicBitset(16)
+    bs.set(0)
+    bs.set(5)
+    bs.set(10)
+    bs.set(15)
+    expect(bs.count()).toBe(4)
+    bs.clear(5)
+    expect(bs.count()).toBe(3)
+    bs.flip(10)
+    expect(bs.count()).toBe(2)
+  })
+
+  it('toString on empty bitset', () => {
+    const bs = new DynamicBitset()
+    expect(bs.toString()).toBe('')
+  })
+
+  it('operations on single bit', () => {
+    const bs = new DynamicBitset(1)
+    bs.set(0)
+    expect(bs.get(0)).toBe(true)
+    expect(bs.count()).toBe(1)
+    bs.clear(0)
+    expect(bs.get(0)).toBe(false)
+    expect(bs.count()).toBe(0)
+  })
+
+  it('and with empty bitset', () => {
+    const a = DynamicBitset.fromString('1111')
+    const b = new DynamicBitset(0)
+    const result = a.and(b)
+    expect(result.length).toBe(0)
+  })
+
+  it('or with empty bitset', () => {
+    const a = DynamicBitset.fromString('1111')
+    const b = new DynamicBitset(0)
+    const result = a.or(b)
+    expect(result.toString()).toBe('1111')
+  })
+
+  it('large number of set and count', () => {
+    const bs = new DynamicBitset(100)
+    for (let i = 0; i < 100; i += 2) bs.set(i)
+    expect(bs.count()).toBe(50)
+  })
+
+  it('set at very high index', () => {
+    const bs = new DynamicBitset(4)
+    bs.set(10000)
+    expect(bs.get(10000)).toBe(true)
+    expect(bs.length).toBe(10001)
   })
 })
