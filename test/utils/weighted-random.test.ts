@@ -314,4 +314,58 @@ describe('WeightedRandom', () => {
     const sampler = new WeightedRandom()
     expect(() => sampler.build()).toThrow()
   })
+
+  it('adding multiple items with same value', () => {
+    const sampler = new WeightedRandom<string>()
+    sampler.add('duplicate', 2); sampler.add('duplicate', 3)
+    expect(sampler.size).toBe(2)
+    expect(sampler.totalWeight).toBe(5)
+    sampler.build()
+    const result = sampler.sample()
+    expect(result).toBe('duplicate')
+  })
+
+  it('distribution with very skewed weights', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('rare', 1); sampler.add('common', 999)
+    sampler.build()
+    let rareCount = 0
+    for (let i = 0; i < 1000; i++) {
+      if (sampler.sample() === 'rare') rareCount++
+    }
+    expect(rareCount).toBeLessThan(50)
+  })
+
+  it('clear followed by build throws', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', 1); sampler.build()
+    sampler.clear()
+    expect(() => sampler.build()).toThrow()
+  })
+
+  it('multiple builds without modification work correctly', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', 1); sampler.add('b', 2)
+    sampler.build()
+    sampler.build()
+    sampler.build()
+    expect(sampler.probability('a')).toBeCloseTo(1/3)
+    expect(sampler.probability('b')).toBeCloseTo(2/3)
+  })
+
+  it('handles weight very close to zero', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', Number.MIN_VALUE); sampler.add('b', 1)
+    sampler.build()
+    expect(sampler.size).toBe(2)
+    const result = sampler.sample()
+    expect(['a', 'b']).toContain(result)
+  })
+
+  it('sampleN with negative count returns empty array', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', 1); sampler.build()
+    const result = sampler.sampleN(-5)
+    expect(result).toEqual([])
+  })
 })

@@ -249,4 +249,127 @@ describe('SqrtDecomposition - large array performance', () => {
     expect(sd.rangeQuery(0, 50)).toBe(550)
     expect(sd.rangeQuery(50, 100)).toBe(1050)
   })
+
+  it('rangeQuery with l >= r returns 0', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    expect(sd.rangeQuery(3, 3)).toBe(0)
+    expect(sd.rangeQuery(4, 2)).toBe(0)
+  })
+
+  it('rangeAdd with l >= r does nothing', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.rangeAdd(3, 3, 10)
+    expect(sd.rangeQuery(0, 5)).toBe(15)
+    sd.rangeAdd(4, 2, 10)
+    expect(sd.rangeQuery(0, 5)).toBe(15)
+  })
+
+  it('rangeQuery with l < 0 clamps to 0', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    expect(sd.rangeQuery(-5, 3)).toBe(6)
+  })
+
+  it('rangeQuery with r > size clamps to size', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    expect(sd.rangeQuery(3, 10)).toBe(9)
+  })
+
+  it('rangeQuery with l < 0 and r > size clamps both', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    expect(sd.rangeQuery(-10, 100)).toBe(15)
+  })
+
+  it('rangeAdd with l < 0 clamps to 0', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.rangeAdd(-5, 2, 10)
+    expect(sd.toArray()).toEqual([11, 12, 3, 4, 5])
+  })
+
+  it('rangeAdd with r > size clamps to size', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.rangeAdd(3, 100, 10)
+    expect(sd.toArray()).toEqual([1, 2, 3, 14, 15])
+  })
+
+  it('rangeAdd with l < 0 and r > size clamps both', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.rangeAdd(-10, 100, 10)
+    expect(sd.toArray()).toEqual([11, 12, 13, 14, 15])
+  })
+
+  it('get after multiple range adds on same index', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.rangeAdd(0, 3, 5)
+    sd.rangeAdd(1, 4, 10)
+    expect(sd.get(2)).toBe(18)
+  })
+
+  it('pointUpdate to same value leaves array unchanged', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.pointUpdate(2, 3)
+    expect(sd.toArray()).toEqual([1, 2, 3, 4, 5])
+    expect(sd.rangeQuery(0, 5)).toBe(15)
+  })
+
+  it('toArray with pending lazy operations', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.rangeAdd(0, 3, 10)
+    expect(sd.toArray()).toEqual([11, 12, 13, 4, 5])
+  })
+
+  it('rangeQuery after toArray still works', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.rangeAdd(0, 3, 10)
+    sd.toArray()
+    expect(sd.rangeQuery(0, 5)).toBe(45)
+  })
+
+  it('toArray returns new array, not reference', () => {
+    const sd = new SqrtDecomposition([1, 2, 3])
+    const arr1 = sd.toArray()
+    const arr2 = sd.toArray()
+    arr1[0] = 999
+    expect(arr2[0]).toBe(1)
+  })
+
+  it('pointUpdate after rangeAdd on same index', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.rangeAdd(0, 5, 10)
+    sd.pointUpdate(2, 50)
+    expect(sd.get(2)).toBe(50)
+    expect(sd.rangeQuery(0, 5)).toBe(102)
+  })
+
+  it('rangeAdd after pointUpdate on same range', () => {
+    const sd = new SqrtDecomposition([1, 2, 3, 4, 5])
+    sd.pointUpdate(2, 10)
+    sd.rangeAdd(0, 5, 5)
+    expect(sd.get(2)).toBe(15)
+  })
+
+  it('get with negative index throws', () => {
+    const sd = new SqrtDecomposition([1, 2, 3])
+    expect(() => sd.get(-1)).toThrow(RangeError)
+  })
+
+  it('get with index >= size throws', () => {
+    const sd = new SqrtDecomposition([1, 2, 3])
+    expect(() => sd.get(3)).toThrow(RangeError)
+  })
+
+  it('rangeQuery on empty array returns 0', () => {
+    const sd = new SqrtDecomposition([])
+    expect(sd.rangeQuery(0, 0)).toBe(0)
+  })
+
+  it('toArray on empty array returns empty array', () => {
+    const sd = new SqrtDecomposition([])
+    expect(sd.toArray()).toEqual([])
+  })
+
+  it('rangeAdd on empty array does nothing', () => {
+    const sd = new SqrtDecomposition([])
+    sd.rangeAdd(0, 0, 10)
+    expect(sd.toArray()).toEqual([])
+  })
 })

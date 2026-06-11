@@ -396,4 +396,78 @@ describe('BinomialHeap equals', () => {
     const b = new BinomialHeap<number>()
     expect(a.equals(b)).toBe(true)
   })
+
+  it('handles float priorities', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(10, 1.5)
+    heap.insert(20, 2.7)
+    heap.insert(30, 0.3)
+
+    const result = heap.extractMin()
+    expect(result!.value).toBe(30)
+    expect(result!.priority).toBe(0.3)
+  })
+
+  it('handles very large number of elements', () => {
+    const heap = new BinomialHeap<number>()
+    for (let i = 0; i < 100; i++) {
+      heap.insert(i, i)
+    }
+    expect(heap.size).toBe(100)
+    const first = heap.extractMin()
+    expect(first!.value).toBe(0)
+  })
+
+  it('merge multiple heaps correctly', () => {
+    const heap1 = new BinomialHeap<number>()
+    heap1.insert(1, 10); heap1.insert(2, 20)
+
+    const heap2 = new BinomialHeap<number>()
+    heap2.insert(3, 15); heap2.insert(4, 25)
+
+    const heap3 = new BinomialHeap<number>()
+    heap3.insert(5, 5); heap3.insert(6, 30)
+
+    heap1.merge(heap2)
+    heap1.merge(heap3)
+
+    const min = heap1.extractMin()
+    expect(min!.value).toBe(5)
+  })
+
+  it('extractMin returns undefined after all elements extracted', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 1); heap.insert(2, 2); heap.insert(3, 3)
+    heap.extractMin()
+    heap.extractMin()
+    heap.extractMin()
+    const result = heap.extractMin()
+    expect(result).toBeUndefined()
+  })
+
+  it('clone with many elements maintains priority order', () => {
+    const heap = new BinomialHeap<number>()
+    const items = [100, 50, 75, 25, 10]
+    items.forEach(item => heap.insert(item, item))
+
+    const copy = heap.clone()
+
+    for (let i = 0; i < items.length; i++) {
+      const originalMin = heap.extractMin()!
+      const copyMin = copy.extractMin()!
+      expect(originalMin.value).toBe(copyMin.value)
+      expect(originalMin.priority).toBe(copyMin.priority)
+    }
+  })
+
+  it('merge with itself maintains structure', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 1); heap.insert(2, 2); heap.insert(3, 3)
+    const originalSize = heap.size
+    const originalPeek = heap.peek()!
+    heap.merge(heap.clone())
+    expect(heap.size).toBeGreaterThan(originalSize)
+    const newPeek = heap.peek()!
+    expect(newPeek.value).toBe(originalPeek.value)
+  })
 })

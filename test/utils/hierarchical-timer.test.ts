@@ -349,4 +349,63 @@ describe('HierarchicalTimer', () => {
     expect(node!.duration).toBeGreaterThanOrEqual(0)
     expect(node!.children).toEqual([])
   })
+
+  it('measure with multiple operations tracks correctly', () => {
+    const timer = new HierarchicalTimer()
+    timer.measure('op1', () => 1)
+    timer.measure('op2', () => 2)
+    timer.measure('op3', () => 3)
+    expect(timer.results.length).toBe(3)
+    expect(timer.results[0]!.name).toBe('op1')
+    expect(timer.results[1]!.name).toBe('op2')
+    expect(timer.results[2]!.name).toBe('op3')
+  })
+
+  it('measureAsync with multiple operations tracks correctly', async () => {
+    const timer = new HierarchicalTimer()
+    await timer.measureAsync('op1', async () => 1)
+    await timer.measureAsync('op2', async () => 2)
+    await timer.measureAsync('op3', async () => 3)
+    expect(timer.results.length).toBe(3)
+    expect(timer.results[0]!.name).toBe('op1')
+    expect(timer.results[1]!.name).toBe('op2')
+    expect(timer.results[2]!.name).toBe('op3')
+  })
+
+  it('multiple timers at same level', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('a')
+    timer.end('a')
+    timer.start('b')
+    timer.end('b')
+    timer.start('c')
+    timer.end('c')
+    expect(timer.results.length).toBe(3)
+  })
+
+  it('clone preserves enabled state', () => {
+    const timer1 = new HierarchicalTimer({ enabled: false })
+    const timer2 = timer1.clone()
+    timer2.start('test')
+    timer2.end('test')
+    expect(timer2.isEmpty).toBe(true)
+  })
+
+  it('format with empty timer returns empty string', () => {
+    const timer = new HierarchicalTimer()
+    expect(timer.format()).toBe('')
+  })
+
+  it('toJSON with empty timer returns empty array', () => {
+    const timer = new HierarchicalTimer()
+    const json = timer.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect((json as TimerNode[]).length).toBe(0)
+  })
+
+  it('flatDurations with empty timer returns empty map', () => {
+    const timer = new HierarchicalTimer()
+    const flat = timer.flatDurations
+    expect(flat.size).toBe(0)
+  })
 })

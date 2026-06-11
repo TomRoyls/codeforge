@@ -300,4 +300,156 @@ describe('PersistentDSU', () => {
     dsu.rollback(snap);
     expect(dsu.components).toBe(4);
   });
+
+  it('find throws on negative index', () => {
+    const dsu = new PersistentDSU(5);
+    expect(() => dsu.find(-1)).toThrow('Index out of bounds');
+  });
+
+  it('find throws on index >= length', () => {
+    const dsu = new PersistentDSU(5);
+    expect(() => dsu.find(5)).toThrow('Index out of bounds');
+  });
+
+  it('union throws on negative index', () => {
+    const dsu = new PersistentDSU(5);
+    expect(() => dsu.union(-1, 0)).toThrow('Index out of bounds');
+  });
+
+  it('union throws on index >= length', () => {
+    const dsu = new PersistentDSU(5);
+    expect(() => dsu.union(0, 5)).toThrow('Index out of bounds');
+  });
+
+  it('rollback throws on negative id', () => {
+    const dsu = new PersistentDSU(3);
+    expect(() => dsu.rollback(-1)).toThrow('Invalid snapshot ID');
+  });
+
+  it('rollback throws on non-existent id', () => {
+    const dsu = new PersistentDSU(3);
+    const id = dsu.snapshot();
+    expect(() => dsu.rollback(id + 1)).toThrow('Invalid snapshot ID');
+  });
+
+  it('find root after multiple unions', () => {
+    const dsu = new PersistentDSU(10);
+    dsu.union(0, 1);
+    dsu.union(2, 3);
+    dsu.union(4, 5);
+    expect(dsu.find(1)).toBe(dsu.find(0));
+    expect(dsu.find(3)).toBe(dsu.find(2));
+    expect(dsu.find(5)).toBe(dsu.find(4));
+  });
+
+  it('component size after find triggers path compression', () => {
+    const dsu = new PersistentDSU(5);
+    dsu.union(0, 1);
+    dsu.union(1, 2);
+    dsu.union(2, 3);
+    dsu.find(3);
+    expect(dsu.getSize(3)).toBe(4);
+  });
+
+  it('multiple snapshots do not interfere', () => {
+    const dsu = new PersistentDSU(4);
+    dsu.union(0, 1);
+    const snap1 = dsu.snapshot();
+    dsu.union(2, 3);
+    const snap2 = dsu.snapshot();
+    dsu.rollback(snap1);
+    expect(dsu.connected(0, 1)).toBe(true);
+    expect(dsu.connected(2, 3)).toBe(false);
+    dsu.union(2, 3);
+    const snap3 = dsu.snapshot();
+    expect(dsu.connected(2, 3)).toBe(true);
+  });
+
+  it('getComponent for each element returns same component', () => {
+    const dsu = new PersistentDSU(5);
+    dsu.union(0, 1);
+    dsu.union(1, 2);
+    const comp0 = dsu.getComponent(0).sort();
+    const comp1 = dsu.getComponent(1).sort();
+    const comp2 = dsu.getComponent(2).sort();
+    expect(comp0).toEqual(comp1);
+    expect(comp1).toEqual(comp2);
+  });
+
+  it('union skip when already connected', () => {
+    const dsu = new PersistentDSU(4);
+    dsu.union(0, 1);
+    const result1 = dsu.union(0, 1);
+    const result2 = dsu.union(1, 0);
+    expect(result1).toBe(false);
+    expect(result2).toBe(false);
+    expect(dsu.components).toBe(3);
+  });
+
+  it('find same element multiple times', () => {
+    const dsu = new PersistentDSU(5);
+    const root = dsu.find(2);
+    expect(dsu.find(2)).toBe(root);
+    expect(dsu.find(2)).toBe(root);
+    expect(dsu.find(2)).toBe(root);
+  });
+
+  it('find throws for out of bounds index', () => {
+    const dsu = new PersistentDSU(3);
+    expect(() => dsu.find(10)).toThrow();
+  });
+
+  it('union throws for out of bounds indices', () => {
+    const dsu = new PersistentDSU(3);
+    expect(() => dsu.union(0, 10)).toThrow();
+    expect(() => dsu.union(10, 0)).toThrow();
+  });
+
+  it('rollback throws for invalid snapshot id', () => {
+    const dsu = new PersistentDSU(3);
+    expect(() => dsu.rollback(5)).toThrow();
+    expect(() => dsu.rollback(-1)).toThrow();
+  });
+
+  it('getSize returns correct size after multiple unions', () => {
+    const dsu = new PersistentDSU(6);
+    dsu.union(0, 1);
+    dsu.union(2, 3);
+    dsu.union(0, 2);
+    expect(dsu.getSize(0)).toBe(4);
+    expect(dsu.getSize(4)).toBe(1);
+  });
+
+  it('getComponent returns all elements in same set', () => {
+    const dsu = new PersistentDSU(5);
+    dsu.union(0, 1);
+    dsu.union(2, 3);
+    dsu.union(0, 2);
+    const comp = dsu.getComponent(1).sort();
+    expect(comp).toEqual([0, 1, 2, 3]);
+  });
+
+  it('unionBatch with partial connections', () => {
+    const dsu = new PersistentDSU(6);
+    dsu.union(0, 1);
+    const merged = dsu.unionBatch([[0, 1], [2, 3], [3, 4], [1, 2]]);
+    expect(merged).toBe(3);
+    expect(dsu.components).toBe(2);
+  });
+
+  it('connected throws for out of bounds', () => {
+    const dsu = new PersistentDSU(3);
+    expect(() => dsu.connected(0, 10)).toThrow();
+  });
+
+  it('rollback to snapshot before union disconnects elements', () => {
+    const dsu = new PersistentDSU(3);
+    dsu.union(0, 1);
+    const snap = dsu.snapshot();
+    dsu.union(1, 2);
+    expect(dsu.connected(0, 2)).toBe(true);
+    dsu.rollback(snap);
+    expect(dsu.connected(0, 1)).toBe(true);
+    expect(dsu.connected(0, 2)).toBe(false);
+  });
 });

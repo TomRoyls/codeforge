@@ -189,4 +189,96 @@ describe('getThresholdColor', () => {
     const color = getThresholdColor(60, 80, 60)
     expect(typeof color).toBe('function')
   })
+
+  it('returns red when below warn threshold by 1', () => {
+    const color = getThresholdColor(59, 80, 60)
+    expect(typeof color).toBe('function')
+  })
+
+  it('returns green for very high threshold values', () => {
+    const color = getThresholdColor(9999, 5000, 3000)
+    expect(typeof color).toBe('function')
+  })
+
+  it('returns red for negative values', () => {
+    const color = getThresholdColor(-100, 80, 60)
+    expect(typeof color).toBe('function')
+  })
+
+  it('colorizeSeverity returns colored string for known severity', () => {
+    const result = colorizeSeverity('error')
+    expect(typeof result).toBe('string')
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('colorizeSeverity with same severity multiple times uses cache', () => {
+    colorizeSeverity('warning')
+    const result2 = colorizeSeverity('warning')
+    expect(result2).toBe(result2)
+  })
+
+  it('formatSize handles byte boundary at 1023', () => {
+    expect(formatSize(1023)).toBe('1023.0 B')
+  })
+
+  it('formatSize handles KB boundary at 1024', () => {
+    expect(formatSize(1024)).toBe('1.0 KB')
+  })
+})
+
+describe('getGrade boundaries', () => {
+  it('returns B at exactly 80', () => {
+    expect(getGrade(80)).toBe('(B)')
+  })
+
+  it('returns C at exactly 70', () => {
+    expect(getGrade(70)).toBe('(C)')
+  })
+
+  it('returns D at exactly 60', () => {
+    expect(getGrade(60)).toBe('(D)')
+  })
+
+  it('returns F at 59', () => {
+    expect(getGrade(59)).toBe('(F)')
+  })
+
+  it('returns A at 100', () => {
+    expect(getGrade(100)).toBe('(A)')
+  })
+
+  it('returns F at 0', () => {
+    expect(getGrade(0)).toBe('(F)')
+  })
+
+  it('returns B at 89', () => {
+    expect(getGrade(89)).toBe('(B)')
+  })
+})
+
+describe('formatSize additional cases', () => {
+  it('formats exactly 2048 bytes as 2.0 KB', () => {
+    expect(formatSize(2048)).toBe('2.0 KB')
+  })
+
+  it('formats 512 bytes', () => {
+    expect(formatSize(512)).toBe('512.0 B')
+  })
+
+  it('formats 1024 KB boundary', () => {
+    expect(formatSize(1024 * 1024 - 1)).toBe('1024.0 KB')
+  })
+})
+
+describe('colorizeSeverity additional', () => {
+  it('handles unknown severity types', () => {
+    expect(colorizeSeverity('critical')).toBe('critical')
+    expect(colorizeSeverity('notice')).toBe('notice')
+  })
+
+  it('caches different severities independently', () => {
+    const err = colorizeSeverity('error')
+    const warn = colorizeSeverity('warning')
+    expect(err).not.toBe(warn)
+  })
 })

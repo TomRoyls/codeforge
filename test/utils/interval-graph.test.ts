@@ -291,4 +291,158 @@ describe('IntervalGraph', () => {
     }
     expect(ig.isIntervalGraph()).toBe(true)
   })
+
+  it('maxOverlap with mixed overlapping and disjoint intervals', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 5)
+    ig.addInterval(10, 15)
+    ig.addInterval(3, 8)
+    ig.addInterval(12, 17)
+    ig.addInterval(4, 6)
+    expect(ig.maxOverlap()).toBe(3)
+  })
+
+  it('totalOverlap with disjoint intervals returns sum of lengths', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 2)
+    ig.addInterval(5, 8)
+    ig.addInterval(10, 15)
+    expect(ig.totalOverlap()).toBe(10)
+  })
+
+  it('totalOverlap with partially overlapping intervals', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 10)
+    ig.addInterval(5, 15)
+    ig.addInterval(10, 20)
+    expect(ig.totalOverlap()).toBe(30)
+  })
+
+  it('clone maintains isIntervalGraph result', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 5)
+    ig.addInterval(3, 8)
+    ig.addInterval(6, 10)
+    const c = ig.clone()
+    expect(c.isIntervalGraph()).toBe(ig.isIntervalGraph())
+  })
+
+  it('clone with large number of intervals', () => {
+    const ig = new IntervalGraph()
+    for (let i = 0; i < 100; i++) {
+      ig.addInterval(i, i + 2)
+    }
+    const c = ig.clone()
+    expect(c.toString()).toBe(ig.toString())
+    expect(c.equals(ig)).toBe(true)
+  })
+
+  it('equals returns true for graphs with same intervals added in different order', () => {
+    const ig1 = new IntervalGraph()
+    ig1.addInterval(0, 5)
+    ig1.addInterval(10, 15)
+    ig1.addInterval(5, 10)
+    const ig2 = new IntervalGraph()
+    ig2.addInterval(10, 15)
+    ig2.addInterval(0, 5)
+    ig2.addInterval(5, 10)
+    expect(ig1.equals(ig2)).toBe(false)
+  })
+
+  it('maxOverlap with floating point intervals', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0.5, 2.5)
+    ig.addInterval(1.5, 3.5)
+    ig.addInterval(2.0, 4.0)
+    expect(ig.maxOverlap()).toBe(3)
+  })
+
+  it('totalOverlap with floating point intervals', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0.5, 2.5)
+    ig.addInterval(1.0, 3.0)
+    expect(ig.totalOverlap()).toBe(4)
+  })
+
+  it('equals with identical floating point intervals', () => {
+    const ig1 = new IntervalGraph()
+    ig1.addInterval(0.5, 2.5)
+    const ig2 = new IntervalGraph()
+    ig2.addInterval(0.5, 2.5)
+    expect(ig1.equals(ig2)).toBe(true)
+  })
+
+  it('maxOverlap after adding and cloning', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 5)
+    const c = ig.clone()
+    c.addInterval(3, 8)
+    expect(ig.maxOverlap()).toBe(1)
+    expect(c.maxOverlap()).toBe(2)
+  })
+
+  it('totalOverlap changes after modifications to clone', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 5)
+    ig.addInterval(3, 8)
+    const c = ig.clone()
+    c.addInterval(6, 10)
+    expect(ig.totalOverlap()).toBeLessThan(c.totalOverlap())
+  })
+
+  it('toJSON preserves floating point precision', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0.123, 2.456)
+    const json = ig.toJSON() as number[][]
+    expect(json[0]![0]).toBe(0.123)
+    expect(json[0]![1]).toBe(2.456)
+  })
+
+  it('maxOverlap with intervals ending at same point', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 5)
+    ig.addInterval(2, 5)
+    ig.addInterval(4, 5)
+    expect(ig.maxOverlap()).toBe(3)
+  })
+
+  it('totalOverlap with intervals ending at same point', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 5)
+    ig.addInterval(2, 5)
+    ig.addInterval(4, 5)
+    expect(ig.totalOverlap()).toBe(9)
+  })
+
+  it('isIntervalGraph with two intervals always true', () => {
+    const ig = new IntervalGraph()
+    ig.addInterval(0, 10)
+    ig.addInterval(5, 15)
+    expect(ig.isIntervalGraph()).toBe(true)
+  })
+
+  it('maxOverlap with single element repeated many times', () => {
+    const ig = new IntervalGraph()
+    for (let i = 0; i < 20; i++) {
+      ig.addInterval(5, 5)
+    }
+    expect(ig.maxOverlap()).toBe(20)
+  })
+
+  it('totalOverlap with single element repeated many times', () => {
+    const ig = new IntervalGraph()
+    for (let i = 0; i < 20; i++) {
+      ig.addInterval(5, 5)
+    }
+    expect(ig.totalOverlap()).toBe(0)
+  })
+
+  it('clone empty and add intervals to both independently', () => {
+    const ig1 = new IntervalGraph()
+    const ig2 = ig1.clone()
+    ig1.addInterval(0, 5)
+    ig2.addInterval(10, 15)
+    expect(ig1.maxOverlap()).toBe(1)
+    expect(ig2.maxOverlap()).toBe(1)
+  })
 })
