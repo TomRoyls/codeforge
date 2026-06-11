@@ -5,6 +5,8 @@ describe('CentroidDecomposition', () => {
   it('handles single node', () => {
     const cd = new CentroidDecomposition(1)
     const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(1)
+    expect(depth.length).toBe(1)
     expect(parent[0]).toBe(0)
     expect(depth[0]).toBe(0)
   })
@@ -15,6 +17,32 @@ describe('CentroidDecomposition', () => {
     const { parent, depth } = cd.decompose()
     expect(parent.length).toBe(2)
     expect(depth.length).toBe(2)
+  })
+
+  it('handles three node chain', () => {
+    const cd = new CentroidDecomposition(3)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(3)
+    expect(depth.length).toBe(3)
+  })
+
+  it('handles triangle', () => {
+    const cd = new CentroidDecomposition(3)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(0, 2)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(3)
+    expect(depth.length).toBe(3)
+  })
+
+  it('handles disconnected nodes', () => {
+    const cd = new CentroidDecomposition(3)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(3)
+    expect(depth.length).toBe(3)
   })
 
   it('handles star graph', () => {
@@ -52,20 +80,22 @@ describe('CentroidDecomposition', () => {
     expect(depth.length).toBe(7)
   })
 
-  it('handles triangle', () => {
-    const cd = new CentroidDecomposition(3)
+  it('handles 4-node line', () => {
+    const cd = new CentroidDecomposition(4)
     cd.addEdge(0, 1)
     cd.addEdge(1, 2)
-    cd.addEdge(0, 2)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(3)
+    cd.addEdge(2, 3)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(4)
+    expect(depth.length).toBe(4)
   })
 
-  it('handles disconnected nodes', () => {
-    const cd = new CentroidDecomposition(3)
+  it('handles larger star tree', () => {
+    const cd = new CentroidDecomposition(10)
+    for (let i = 1; i < 10; i++) cd.addEdge(0, i)
     const { parent, depth } = cd.decompose()
-    expect(parent.length).toBe(3)
-    expect(depth.length).toBe(3)
+    expect(parent.length).toBe(10)
+    expect(depth.length).toBe(10)
   })
 
   it('depth increases along path', () => {
@@ -77,29 +107,10 @@ describe('CentroidDecomposition', () => {
     cd.addEdge(4, 5)
     cd.addEdge(5, 6)
     const { depth } = cd.decompose()
-    const maxDepth = Math.max(...depth)
-    expect(maxDepth).toBeGreaterThan(0)
+    expect(Math.max(...depth)).toBeGreaterThan(0)
   })
 
-  it('handles 4-node line', () => {
-    const cd = new CentroidDecomposition(4)
-    cd.addEdge(0, 1)
-    cd.addEdge(1, 2)
-    cd.addEdge(2, 3)
-    const { parent } = cd.decompose()
-    const uniqueParents = new Set(parent)
-    expect(uniqueParents.size).toBeGreaterThan(0)
-  })
-
-  it('handles larger tree', () => {
-    const cd = new CentroidDecomposition(10)
-    for (let i = 1; i < 10; i++) cd.addEdge(0, i)
-    const { parent, depth } = cd.decompose()
-    expect(parent.length).toBe(10)
-    expect(depth.length).toBe(10)
-  })
-
-  it('centroid has minimum max depth', () => {
+  it('centroid has bounded max depth', () => {
     const cd = new CentroidDecomposition(7)
     cd.addEdge(0, 1)
     cd.addEdge(1, 2)
@@ -108,112 +119,14 @@ describe('CentroidDecomposition', () => {
     cd.addEdge(4, 5)
     cd.addEdge(5, 6)
     const { depth } = cd.decompose()
-    const maxD = Math.max(...depth)
-    expect(maxD).toBeLessThan(7)
+    expect(Math.max(...depth)).toBeLessThan(7)
   })
 
-  it('handles binary tree decomposition', () => {
+  it('handles full binary tree', () => {
     const cd = new CentroidDecomposition(15)
     for (let i = 1; i < 15; i++) cd.addEdge(Math.floor((i - 1) / 2), i)
     const { parent } = cd.decompose()
     expect(parent.length).toBe(15)
-  })
-
-  it('handles star tree', () => {
-    const cd = new CentroidDecomposition(6)
-    for (let i = 1; i < 6; i++) cd.addEdge(0, i)
-    const { parent, depth } = cd.decompose()
-    expect(parent.length).toBe(6)
-    expect(depth.length).toBe(6)
-  })
-
-  it('handles single node', () => {
-    const cd = new CentroidDecomposition(1)
-    const { parent, depth } = cd.decompose()
-    expect(parent.length).toBe(1)
-    expect(depth.length).toBe(1)
-  })
-
-  it('handles two node tree', () => {
-    const cd = new CentroidDecomposition(2)
-    cd.addEdge(0, 1)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(2)
-  })
-
-  it('handles three node chain', () => {
-    const cd = new CentroidDecomposition(3)
-    cd.addEdge(0, 1)
-    cd.addEdge(1, 2)
-    const { parent, depth } = cd.decompose()
-    expect(parent.length).toBe(3)
-    expect(depth.length).toBe(3)
-  })
-
-  it('handles four node star', () => {
-    const cd = new CentroidDecomposition(5)
-    cd.addEdge(0, 1)
-    cd.addEdge(0, 2)
-    cd.addEdge(0, 3)
-    cd.addEdge(0, 4)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(5)
-  })
-
-  it('two node tree decomposes', () => {
-    const cd = new CentroidDecomposition(2)
-    cd.addEdge(0, 1)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(2)
-  })
-
-  it('single node tree', () => {
-    const cd = new CentroidDecomposition(1)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(1)
-  })
-
-  it('2-node tree decomposes', () => {
-    const cd = new CentroidDecomposition(2)
-    cd.addEdge(0, 1)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(2)
-  })
-
-  it('decompose on triangle', () => {
-    const cd = new CentroidDecomposition(3)
-    cd.addEdge(0, 1)
-    cd.addEdge(1, 2)
-    cd.addEdge(0, 2)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(3)
-  })
-
-  it('single node decompose', () => {
-    const cd = new CentroidDecomposition(1)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(1)
-  })
-
-  it('two nodes decomposes correctly', () => {
-    const cd = new CentroidDecomposition(2)
-    cd.addEdge(0, 1)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(2)
-  })
-
-  it('single node decompose', () => {
-    const cd = new CentroidDecomposition(1)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(1)
-  })
-
-  it('chain decomposes correctly', () => {
-    const cd = new CentroidDecomposition(3)
-    cd.addEdge(0, 1)
-    cd.addEdge(1, 2)
-    const { parent } = cd.decompose()
-    expect(parent.length).toBe(3)
   })
 
   it('star graph centroid is the center node', () => {
@@ -235,11 +148,10 @@ describe('CentroidDecomposition', () => {
     const cd = new CentroidDecomposition(n)
     for (let i = 0; i < n - 1; i++) cd.addEdge(i, i + 1)
     const { depth } = cd.decompose()
-    const maxDepth = Math.max(...depth)
-    expect(maxDepth).toBeLessThanOrEqual(Math.ceil(Math.log2(n)))
+    expect(Math.max(...depth)).toBeLessThanOrEqual(Math.ceil(Math.log2(n)))
   })
 
-  it('every node assigned exactly one parent in centroid tree', () => {
+  it('every node assigned exactly one parent', () => {
     const cd = new CentroidDecomposition(10)
     cd.addEdge(0, 1)
     cd.addEdge(1, 2)
@@ -270,24 +182,10 @@ describe('CentroidDecomposition', () => {
     cd.addEdge(2, 3)
     cd.addEdge(3, 4)
     const { depth } = cd.decompose()
-    const root = depth.indexOf(0)
-    expect(root).toBe(2)
-  })
-
-  it('triangle graph does not infinite loop', () => {
-    const cd = new CentroidDecomposition(3)
-    cd.addEdge(0, 1)
-    cd.addEdge(1, 2)
-    cd.addEdge(0, 2)
-    const { parent, depth } = cd.decompose()
-    expect(parent.length).toBe(3)
-    expect(depth.length).toBe(3)
-    const root = depth.indexOf(0)
-    expect(root).toBeGreaterThanOrEqual(0)
+    expect(depth.indexOf(0)).toBe(2)
   })
 
   it('handles graph with multiple cycles', () => {
-    // 0-1-2 triangle + node 3 connected to both 0 and 2
     const cd = new CentroidDecomposition(4)
     cd.addEdge(0, 1)
     cd.addEdge(1, 2)
@@ -297,5 +195,314 @@ describe('CentroidDecomposition', () => {
     const { parent, depth } = cd.decompose()
     expect(parent.length).toBe(4)
     expect(depth.length).toBe(4)
+  })
+
+  it('all depths are non-negative', () => {
+    const cd = new CentroidDecomposition(6)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(4, 5)
+    const { depth } = cd.decompose()
+    for (const d of depth) {
+      expect(d).toBeGreaterThanOrEqual(0)
+    }
+  })
+
+  it('root has depth 0', () => {
+    const cd = new CentroidDecomposition(8)
+    for (let i = 1; i < 8; i++) cd.addEdge(0, i)
+    const { depth } = cd.decompose()
+    expect(depth.filter(d => d === 0).length).toBe(1)
+  })
+
+  it('handles 6-node star', () => {
+    const cd = new CentroidDecomposition(6)
+    for (let i = 1; i < 6; i++) cd.addEdge(0, i)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(6)
+    expect(depth.length).toBe(6)
+  })
+
+  it('handles Y-shaped graph', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(1, 3)
+    cd.addEdge(3, 4)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(5)
+    expect(Math.max(...depth)).toBeGreaterThan(0)
+  })
+
+  it('handles complete graph K4', () => {
+    const cd = new CentroidDecomposition(4)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    cd.addEdge(0, 3)
+    cd.addEdge(1, 2)
+    cd.addEdge(1, 3)
+    cd.addEdge(2, 3)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(4)
+    expect(depth.length).toBe(4)
+  })
+
+  it('handles two-path graph', () => {
+    const cd = new CentroidDecomposition(6)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(4, 5)
+    const { parent } = cd.decompose()
+    expect(parent.length).toBe(6)
+  })
+
+  it('root parent is itself', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    cd.addEdge(0, 3)
+    cd.addEdge(0, 4)
+    const { parent, depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(parent[root]).toBe(root)
+  })
+
+  it('non-root depths are positive', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    const { depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    for (let i = 0; i < 5; i++) {
+      if (i !== root) {
+        expect(depth[i]).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('handles 20-node path', () => {
+    const n = 20
+    const cd = new CentroidDecomposition(n)
+    for (let i = 0; i < n - 1; i++) cd.addEdge(i, i + 1)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(n)
+    expect(Math.max(...depth)).toBeLessThan(n)
+  })
+
+  it('handles 31-node complete binary tree', () => {
+    const n = 31
+    const cd = new CentroidDecomposition(n)
+    for (let i = 1; i < n; i++) cd.addEdge(Math.floor((i - 1) / 2), i)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(n)
+    expect(Math.max(...depth)).toBeLessThan(Math.ceil(Math.log2(n)) + 1)
+  })
+
+  it('handles caterpillar graph', () => {
+    const cd = new CentroidDecomposition(7)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(1, 5)
+    cd.addEdge(3, 6)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(7)
+    expect(depth.length).toBe(7)
+  })
+
+  it('handles graph with isolated node', () => {
+    const cd = new CentroidDecomposition(4)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(4)
+    expect(depth.length).toBe(4)
+  })
+
+  it('handles 8-node star', () => {
+    const cd = new CentroidDecomposition(8)
+    for (let i = 1; i < 8; i++) cd.addEdge(0, i)
+    const { parent, depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(root).toBe(0)
+    for (let i = 1; i < 8; i++) {
+      expect(parent[i]).toBe(root)
+    }
+  })
+
+  it('centroid decomposition is deterministic', () => {
+    const cd1 = new CentroidDecomposition(6)
+    cd1.addEdge(0, 1)
+    cd1.addEdge(1, 2)
+    cd1.addEdge(2, 3)
+    cd1.addEdge(3, 4)
+    cd1.addEdge(4, 5)
+    const r1 = cd1.decompose()
+
+    const cd2 = new CentroidDecomposition(6)
+    cd2.addEdge(0, 1)
+    cd2.addEdge(1, 2)
+    cd2.addEdge(2, 3)
+    cd2.addEdge(3, 4)
+    cd2.addEdge(4, 5)
+    const r2 = cd2.decompose()
+
+    expect(r1.parent).toEqual(r2.parent)
+    expect(r1.depth).toEqual(r2.depth)
+  })
+
+  it('handles diamond graph', () => {
+    const cd = new CentroidDecomposition(4)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    cd.addEdge(1, 3)
+    cd.addEdge(2, 3)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(4)
+    expect(depth.length).toBe(4)
+  })
+
+  it('handles binary tree with one long branch', () => {
+    const cd = new CentroidDecomposition(7)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    cd.addEdge(1, 3)
+    cd.addEdge(1, 4)
+    cd.addEdge(4, 5)
+    cd.addEdge(5, 6)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(7)
+    expect(Math.max(...depth)).toBeLessThan(7)
+  })
+
+  it('handles graph where centroid is not node 0', () => {
+    const cd = new CentroidDecomposition(7)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(4, 5)
+    cd.addEdge(5, 6)
+    const { depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(root).toBeGreaterThan(0)
+    expect(root).toBeLessThan(7)
+  })
+
+  it('handles 3-star graph', () => {
+    const cd = new CentroidDecomposition(4)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    cd.addEdge(0, 3)
+    const { parent, depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(root).toBe(0)
+  })
+
+  it('handles 5-node cycle', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(4, 0)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(5)
+    expect(depth.length).toBe(5)
+  })
+
+  it('handles 6-node cycle', () => {
+    const cd = new CentroidDecomposition(6)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(4, 5)
+    cd.addEdge(5, 0)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(6)
+    expect(depth.length).toBe(6)
+  })
+
+  it('handles two triangles sharing an edge', () => {
+    const cd = new CentroidDecomposition(4)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(0, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(1, 3)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(4)
+    expect(depth.length).toBe(4)
+  })
+
+  it('decompose returns arrays of correct length', () => {
+    const n = 13
+    const cd = new CentroidDecomposition(n)
+    for (let i = 1; i < n; i++) cd.addEdge(i - 1, i)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(n)
+    expect(depth.length).toBe(n)
+  })
+
+  it('handles tree with depth 1 only', () => {
+    const cd = new CentroidDecomposition(3)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    const { depth } = cd.decompose()
+    expect(Math.max(...depth)).toBeLessThanOrEqual(1)
+  })
+
+  it('handles 50-node random tree', () => {
+    const n = 50
+    const cd = new CentroidDecomposition(n)
+    for (let i = 1; i < n; i++) cd.addEdge(i, Math.floor(Math.random() * i))
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(n)
+    expect(depth.length).toBe(n)
+    expect(Math.max(...depth)).toBeLessThan(n)
+  })
+
+  it('handles 100-node path', () => {
+    const n = 100
+    const cd = new CentroidDecomposition(n)
+    for (let i = 0; i < n - 1; i++) cd.addEdge(i, i + 1)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(n)
+    expect(Math.max(...depth)).toBeLessThanOrEqual(Math.ceil(Math.log2(n)))
+  })
+
+  it('handles double-star graph', () => {
+    const cd = new CentroidDecomposition(8)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    cd.addEdge(0, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(4, 5)
+    cd.addEdge(4, 6)
+    cd.addEdge(4, 7)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(8)
+    expect(depth.length).toBe(8)
+  })
+
+  it('handles complete bipartite K2,3', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 2)
+    cd.addEdge(0, 3)
+    cd.addEdge(0, 4)
+    cd.addEdge(1, 2)
+    cd.addEdge(1, 3)
+    cd.addEdge(1, 4)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(5)
+    expect(depth.length).toBe(5)
   })
 })
