@@ -2,80 +2,71 @@ import { describe, it, expect } from 'vitest'
 import { ARCCache } from '../../src/utils/arc-cache.js'
 
 describe('ARCCache', () => {
-  it('should throw RangeError when capacity is less than 1', () => {
+  it('throws RangeError when capacity is less than 1', () => {
     expect(() => new ARCCache(0)).toThrow(RangeError)
     expect(() => new ARCCache(-1)).toThrow(RangeError)
   })
 
-  it('should create cache with valid capacity', () => {
+  it('creates cache with valid capacity', () => {
     const cache = new ARCCache<string, number>(3)
     expect(cache.Capacity).toBe(3)
     expect(cache.size).toBe(0)
   })
 
-  it('should set and get values', () => {
+  it('sets and gets values', () => {
     const cache = new ARCCache<string, number>(3)
     cache.set('a', 1)
     expect(cache.get('a')).toBe(1)
   })
 
-  it('should return undefined for non-existent keys', () => {
-    const cache = new ARCCache<string, number>(3)
-    expect(cache.get('nonexistent')).toBeUndefined()
+  it('returns undefined for non-existent keys', () => {
+    expect(new ARCCache<string, number>(3).get('nonexistent')).toBeUndefined()
   })
 
-  it('should check if key exists', () => {
+  it('checks if key exists', () => {
     const cache = new ARCCache<string, number>(3)
     cache.set('a', 1)
     expect(cache.has('a')).toBe(true)
     expect(cache.has('b')).toBe(false)
   })
 
-  it('should delete existing keys', () => {
+  it('deletes existing keys', () => {
     const cache = new ARCCache<string, number>(3)
     cache.set('a', 1)
     expect(cache.delete('a')).toBe(true)
     expect(cache.has('a')).toBe(false)
   })
 
-  it('should return false when deleting non-existent keys', () => {
-    const cache = new ARCCache<string, number>(3)
-    expect(cache.delete('nonexistent')).toBe(false)
+  it('returns false when deleting non-existent keys', () => {
+    expect(new ARCCache<string, number>(3).delete('nonexistent')).toBe(false)
   })
 
-  it('should track size correctly', () => {
+  it('tracks size correctly', () => {
     const cache = new ARCCache<string, number>(3)
     expect(cache.size).toBe(0)
-    cache.set('a', 1)
-    expect(cache.size).toBe(1)
-    cache.set('b', 2)
-    expect(cache.size).toBe(2)
-    cache.delete('a')
-    expect(cache.size).toBe(1)
+    cache.set('a', 1); expect(cache.size).toBe(1)
+    cache.set('b', 2); expect(cache.size).toBe(2)
+    cache.delete('a'); expect(cache.size).toBe(1)
   })
 
-  it('should clear all entries', () => {
+  it('clears all entries', () => {
     const cache = new ARCCache<string, number>(3)
-    cache.set('a', 1)
-    cache.set('b', 2)
+    cache.set('a', 1); cache.set('b', 2)
     cache.clear()
     expect(cache.size).toBe(0)
     expect(cache.has('a')).toBe(false)
-    expect(cache.has('b')).toBe(false)
   })
 
-  it('should peek at values without affecting position', () => {
+  it('peeks at values without affecting position', () => {
     const cache = new ARCCache<string, number>(3)
     cache.set('a', 1)
     expect(cache.peek('a')).toBe(1)
     expect(cache.peek('nonexistent')).toBeUndefined()
   })
 
-  it('should return all keys', () => {
+  it('returns all keys', () => {
     const cache = new ARCCache<string, number>(3)
-    cache.set('a', 1)
-    cache.set('b', 2)
-    cache.set('c', 3)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
     const keys = cache.keys()
     expect(keys.length).toBe(3)
     expect(keys).toContain('a')
@@ -83,11 +74,9 @@ describe('ARCCache', () => {
     expect(keys).toContain('c')
   })
 
-  it('should return all values', () => {
+  it('returns all values', () => {
     const cache = new ARCCache<string, number>(3)
-    cache.set('a', 1)
-    cache.set('b', 2)
-    cache.set('c', 3)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
     const values = cache.values()
     expect(values.length).toBe(3)
     expect(values).toContain(1)
@@ -95,98 +84,216 @@ describe('ARCCache', () => {
     expect(values).toContain(3)
   })
 
-  it('should return all entries', () => {
+  it('returns all entries', () => {
     const cache = new ARCCache<string, number>(3)
-    cache.set('a', 1)
-    cache.set('b', 2)
+    cache.set('a', 1); cache.set('b', 2)
     const entries = cache.entries()
     expect(entries.length).toBe(2)
     expect(entries).toContainEqual(['a', 1])
     expect(entries).toContainEqual(['b', 2])
   })
 
-  it('should iterate over all entries with forEach', () => {
+  it('iterates with forEach', () => {
     const cache = new ARCCache<string, number>(3)
-    cache.set('a', 1)
-    cache.set('b', 2)
-    cache.set('c', 3)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
     const results: Array<[number, string]> = []
-    cache.forEach((value, key) => {
-      results.push([value, key])
-    })
+    cache.forEach((value, key) => results.push([value, key]))
     expect(results.length).toBe(3)
   })
 
-  it('should evict old entries when capacity exceeded', () => {
+  it('evicts old entries when capacity exceeded', () => {
     const cache = new ARCCache<string, number>(2)
-    cache.set('a', 1)
-    cache.set('b', 2)
-    cache.set('c', 3)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
     expect(cache.size).toBe(2)
   })
 
-  it('should update existing key in t2', () => {
+  it('updates existing key in t2', () => {
     const cache = new ARCCache<string, number>(3)
-    cache.set('a', 1)
-    cache.set('b', 2)
+    cache.set('a', 1); cache.set('b', 2)
     cache.get('a')
     cache.set('a', 10)
     expect(cache.get('a')).toBe(10)
   })
 
-  it('should promote key from t1 to t2 on update', () => {
+  it('promotes key from t1 to t2 on get', () => {
     const cache = new ARCCache<string, number>(3)
-    cache.set('a', 1)
-    cache.set('b', 2)
+    cache.set('a', 1); cache.set('b', 2)
     cache.get('a')
     cache.set('a', 10)
     expect(cache.get('a')).toBe(10)
   })
 
-  it('returns undefined for missing key', () => {
-    const cache = new ARCCache<string, number>(100)
-    expect(cache.get('nonexistent')).toBeUndefined()
+  it('toString contains capacity and size', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('a', 1)
+    const str = cache.toString()
+    expect(str).toContain('ARCCache')
+    expect(str).toContain('capacity=5')
+    expect(str).toContain('size=1')
   })
 
-  it('set and get returns value', () => {
-    const cache = new ARCCache<string, number>(10)
-    cache.set('key', 42)
-    expect(cache.get('key')).toBe(42)
+  it('toJSON returns structured data', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1)
+    const json = cache.toJSON() as { capacity: number; p: number; t1: Array<[string, number]> }
+    expect(json.capacity).toBe(3)
+    expect(json.p).toBe(0)
+    expect(json.t1.length).toBe(1)
   })
 
-  it('has returns true for cached key', () => {
-    const cache = new ARCCache<string, number>(10)
-    cache.set('x', 1)
-    expect(cache.has('x')).toBe(true)
-    expect(cache.has('y')).toBe(false)
+  it('clone produces equal cache', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1); cache.set('b', 2)
+    const cloned = cache.clone()
+    expect(cloned.equals(cache)).toBe(true)
   })
 
-  it('delete removes key', () => {
-    const cache = new ARCCache<string, number>(10)
-    cache.set('x', 1)
-    cache.delete('x')
-    expect(cache.has('x')).toBe(false)
+  it('clone produces independent copy', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1)
+    const cloned = cache.clone()
+    cloned.set('b', 2)
+    expect(cache.size).toBe(1)
+    expect(cloned.size).toBe(2)
   })
 
-  it('get returns undefined for missing key', () => {
-    const cache = new ARCCache<number>(3)
-    expect(cache.get('missing')).toBeUndefined()
+  it('equals returns false for different types', () => {
+    const cache = new ARCCache<string, number>(3)
+    expect(cache.equals(null)).toBe(false)
+    expect(cache.equals({})).toBe(false)
   })
 
-  it('set and get returns value', () => {
-    const cache = new ARCCache<number>(3)
-    cache.set('key', 42)
-    expect(cache.get('key')).toBe(42)
+  it('equals returns false for different capacity', () => {
+    const c1 = new ARCCache<string, number>(3)
+    const c2 = new ARCCache<string, number>(5)
+    expect(c1.equals(c2)).toBe(false)
   })
 
-  it('get returns undefined for missing key', () => {
-    const cache = new ARCCache<number>(3)
-    expect(cache.get('missing')).toBeUndefined()
+  it('equals returns false for different content', () => {
+    const c1 = new ARCCache<string, number>(3)
+    const c2 = new ARCCache<string, number>(3)
+    c1.set('a', 1)
+    expect(c1.equals(c2)).toBe(false)
   })
 
-  it('set and get roundtrip', () => {
-    const cache = new ARCCache<number>(3)
-    cache.set('key', 42)
-    expect(cache.get('key')).toBe(42)
+  it('handles capacity of 1', () => {
+    const cache = new ARCCache<string, number>(1)
+    cache.set('a', 1)
+    expect(cache.get('a')).toBe(1)
+    cache.set('b', 2)
+    expect(cache.size).toBeLessThanOrEqual(1)
+  })
+
+  it('re-get after delete returns undefined', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1)
+    cache.delete('a')
+    expect(cache.get('a')).toBeUndefined()
+  })
+
+  it('overwriting same key updates value', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1)
+    cache.set('a', 99)
+    expect(cache.get('a')).toBe(99)
+    expect(cache.size).toBe(1)
+  })
+
+  it('eviction maintains capacity', () => {
+    const cache = new ARCCache<string, number>(3)
+    for (let i = 0; i < 10; i++) cache.set(`key${i}`, i)
+    expect(cache.size).toBeLessThanOrEqual(3)
+  })
+
+  it('accessed items survive eviction longer', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
+    cache.get('a')
+    cache.set('d', 4)
+    expect(cache.has('a')).toBe(true)
+  })
+
+  it('peek does not affect recency', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
+    cache.peek('a')
+    expect(cache.peek('a')).toBe(1)
+  })
+
+  it('clear resets size to 0', () => {
+    const cache = new ARCCache<string, number>(5)
+    for (let i = 0; i < 5; i++) cache.set(`k${i}`, i)
+    cache.clear()
+    expect(cache.size).toBe(0)
+    expect(cache.keys().length).toBe(0)
+    expect(cache.values().length).toBe(0)
+  })
+
+  it('clear then set works', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1); cache.clear()
+    cache.set('b', 2)
+    expect(cache.get('b')).toBe(2)
+    expect(cache.size).toBe(1)
+  })
+
+  it('handles number keys', () => {
+    const cache = new ARCCache<number, string>(3)
+    cache.set(1, 'one'); cache.set(2, 'two')
+    expect(cache.get(1)).toBe('one')
+    expect(cache.get(2)).toBe('two')
+  })
+
+  it('handles object values', () => {
+    const cache = new ARCCache<string, object>(3)
+    const obj = { x: 1 }
+    cache.set('a', obj)
+    expect(cache.get('a')).toBe(obj)
+  })
+
+  it('entries returns key-value pairs', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('x', 10); cache.set('y', 20)
+    const entries = cache.entries()
+    expect(entries).toContainEqual(['x', 10])
+    expect(entries).toContainEqual(['y', 20])
+  })
+
+  it('forEach visits all entries', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
+    let sum = 0
+    cache.forEach(v => sum += v)
+    expect(sum).toBe(6)
+  })
+
+  it('re-inserting deleted key works', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1)
+    cache.delete('a')
+    cache.set('a', 2)
+    expect(cache.get('a')).toBe(2)
+  })
+
+  it('large capacity handles many items', () => {
+    const cache = new ARCCache<number, number>(100)
+    for (let i = 0; i < 200; i++) cache.set(i, i * 10)
+    expect(cache.size).toBeLessThanOrEqual(100)
+  })
+
+  it('values returns all current values', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('a', 10); cache.set('b', 20)
+    const vals = cache.values()
+    expect(vals).toContain(10)
+    expect(vals).toContain(20)
+  })
+
+  it('keys returns all current keys', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('x', 1); cache.set('y', 2)
+    const ks = cache.keys()
+    expect(ks).toContain('x')
+    expect(ks).toContain('y')
   })
 })

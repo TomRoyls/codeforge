@@ -104,4 +104,137 @@ describe('ZAlgorithm', () => {
   it('search finds match at start', () => {
     expect(ZAlgorithm.search('abcdef', 'abc')).toEqual([0])
   })
+
+  it('zFunction for repeated characters', () => {
+    const z = ZAlgorithm.zFunction('aaaa')
+    expect(z[0]).toBe(4)
+    expect(z[1]).toBe(3)
+    expect(z[2]).toBe(2)
+    expect(z[3]).toBe(1)
+  })
+
+  it('zFunction for alternating characters', () => {
+    const z = ZAlgorithm.zFunction('ababab')
+    expect(z[0]).toBe(6)
+    expect(z[2]).toBe(4)
+    expect(z[4]).toBe(2)
+  })
+
+  it('zFunction for increasing sequence', () => {
+    const z = ZAlgorithm.zFunction('abcde')
+    expect(z[0]).toBe(5)
+    expect(z[1]).toBe(0)
+    expect(z[2]).toBe(0)
+  })
+
+  it('search pattern at end', () => {
+    expect(ZAlgorithm.search('hello world', 'world')).toEqual([6])
+  })
+
+  it('search pattern in middle', () => {
+    expect(ZAlgorithm.search('hello world test', 'world')).toEqual([6])
+  })
+
+  it('search pattern longer than text', () => {
+    expect(ZAlgorithm.search('abc', 'abcdef')).toEqual([])
+  })
+
+  it('countOccurrences with no matches', () => {
+    expect(ZAlgorithm.countOccurrences('abcdef', 'xyz')).toBe(0)
+  })
+
+  it('countOccurrences with single match', () => {
+    expect(ZAlgorithm.countOccurrences('hello world', 'world')).toBe(1)
+  })
+
+  it('longestPrefixSuffix for palindrome', () => {
+    expect(ZAlgorithm.longestPrefixSuffix('aba')).toBe(1)
+  })
+
+  it('longestPrefixSuffix for empty string', () => {
+    expect(ZAlgorithm.longestPrefixSuffix('')).toBe(0)
+  })
+
+  it('longestPrefixSuffix for single character', () => {
+    expect(ZAlgorithm.longestPrefixSuffix('a')).toBe(0)
+  })
+
+  it('distinctSubstringCount for single char', () => {
+    expect(ZAlgorithm.distinctSubstringCount('a')).toBe(1)
+  })
+
+  it('distinctSubstringCount for empty string', () => {
+    expect(ZAlgorithm.distinctSubstringCount('')).toBe(0)
+  })
+
+  it('distinctSubstringCount for repeated chars', () => {
+    expect(ZAlgorithm.distinctSubstringCount('aaa')).toBe(3)
+  })
+
+  it('contains with empty pattern', () => {
+    expect(ZAlgorithm.contains('abc', '')).toBe(false)
+  })
+
+  it('contains with pattern at start', () => {
+    expect(ZAlgorithm.contains('abcdef', 'abc')).toBe(true)
+  })
+
+  it('search with overlapping matches', () => {
+    expect(ZAlgorithm.search('aaaa', 'aa')).toEqual([0, 1, 2])
+  })
+
+  it('zFunction handles spaces', () => {
+    const z = ZAlgorithm.zFunction('a b c')
+    expect(z[0]).toBe(5)
+  })
+
+  it('zFunction handles special characters', () => {
+    const z = ZAlgorithm.zFunction('a!@#')
+    expect(z[0]).toBe(4)
+  })
+
+  it('search case sensitive', () => {
+    expect(ZAlgorithm.search('Hello World', 'hello')).toEqual([])
+    expect(ZAlgorithm.search('Hello World', 'Hello')).toEqual([0])
+  })
+
+  it('longestPrefixSuffix for complex string', () => {
+    expect(ZAlgorithm.longestPrefixSuffix('abcabcabc')).toBe(6)
+  })
+
+  it('zFunction for prefix match', () => {
+    const z = ZAlgorithm.zFunction('abcabx')
+    expect(z[0]).toBe(6)
+    expect(z[3]).toBe(2)
+  })
+
+  it('countOccurrences with pattern equal to text', () => {
+    expect(ZAlgorithm.countOccurrences('abc', 'abc')).toBe(1)
+  })
+
+  it('search with single character pattern', () => {
+    expect(ZAlgorithm.search('abc', 'a')).toEqual([0])
+  })
+
+  it('search with single character repeated', () => {
+    expect(ZAlgorithm.search('aaa', 'a')).toEqual([0, 1, 2])
+  })
+
+  it('distinctSubstringCount for two chars', () => {
+    expect(ZAlgorithm.distinctSubstringCount('ab')).toBe(3)
+  })
+
+  it('longestPrefixSuffix no proper prefix suffix', () => {
+    expect(ZAlgorithm.longestPrefixSuffix('abcd')).toBe(0)
+  })
+
+  it('zFunction for all different characters', () => {
+    const z = ZAlgorithm.zFunction('abcdef')
+    expect(z[0]).toBe(6)
+    for (let i = 1; i < 6; i++) expect(z[i]).toBe(0)
+  })
+
+  it('search pattern appears once at end', () => {
+    expect(ZAlgorithm.search('prefixpattern', 'pattern')).toEqual([6])
+  })
 })

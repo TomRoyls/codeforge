@@ -124,4 +124,206 @@ describe('ZFunction', () => {
     const zf = new ZFunction('abcd')
     expect(zf.z.length).toBe(4)
   })
+
+  it('z array has correct first element', () => {
+    const zf = new ZFunction('test')
+    expect(zf.z[0]).toBe(4)
+  })
+
+  it('z array handles two character string', () => {
+    const zf = new ZFunction('ab')
+    expect(zf.z).toEqual([2, 0])
+  })
+
+  it('z array handles two same characters', () => {
+    const zf = new ZFunction('aa')
+    expect(zf.z).toEqual([2, 1])
+  })
+
+  it('z array for prefix matching suffix', () => {
+    const zf = new ZFunction('abcab')
+    expect(zf.z[0]).toBe(5)
+    expect(zf.z[3]).toBe(2)
+  })
+
+  it('search with empty text', () => {
+    const result = ZFunction.search('', 'abc')
+    expect(result).toEqual([])
+  })
+
+  it('search with empty pattern', () => {
+    const result = ZFunction.search('abc', '')
+    expect(result).toEqual([0, 1, 2])
+  })
+
+  it('search with both empty', () => {
+    const result = ZFunction.search('', '')
+    expect(result).toEqual([])
+  })
+
+  it('search finds overlapping matches', () => {
+    const result = ZFunction.search('aaaa', 'aa')
+    expect(result).toEqual([0, 1, 2])
+  })
+
+  it('search for single character multiple times', () => {
+    const result = ZFunction.search('abacada', 'a')
+    expect(result).toEqual([0, 2, 4, 6])
+  })
+
+  it('search with pattern containing space', () => {
+    const result = ZFunction.search('hello world hello world', 'hello ')
+    expect(result).toEqual([0, 12])
+  })
+
+  it('search with special characters in pattern', () => {
+    const result = ZFunction.search('test@test', '@')
+    expect(result).toEqual([4])
+  })
+
+  it('search handles very large text', () => {
+    const text = 'a'.repeat(10000) + 'xyz' + 'b'.repeat(5000)
+    const result = ZFunction.search(text, 'xyz')
+    expect(result).toEqual([10000])
+  })
+
+  it('findPeriod for empty string', () => {
+    expect(ZFunction.findPeriod('')).toBe(0)
+  })
+
+  it('findPeriod for two chars', () => {
+    expect(ZFunction.findPeriod('ab')).toBe(2)
+  })
+
+  it('findPeriod for repeated two char', () => {
+    expect(ZFunction.findPeriod('abab')).toBe(2)
+  })
+
+  it('findPeriod for repeated three char', () => {
+    expect(ZFunction.findPeriod('abcabc')).toBe(3)
+  })
+
+  it('findPeriod for partial repetition', () => {
+    expect(ZFunction.findPeriod('abcab')).toBe(5)
+  })
+
+  it('findPeriod for long repetition', () => {
+    expect(ZFunction.findPeriod('abababab')).toBe(2)
+  })
+
+  it('longestCommonPrefix for identical strings', () => {
+    expect(ZFunction.longestCommonPrefix('hello', 'hello')).toBe(5)
+  })
+
+  it('longestCommonPrefix for one char match', () => {
+    expect(ZFunction.longestCommonPrefix('a', 'ab')).toBe(1)
+  })
+
+  it('longestCommonPrefix for no match', () => {
+    expect(ZFunction.longestCommonPrefix('xyz', 'abc')).toBe(0)
+  })
+
+  it('longestCommonPrefix with empty first string', () => {
+    expect(ZFunction.longestCommonPrefix('', 'abc')).toBe(0)
+  })
+
+  it('longestCommonPrefix with empty second string', () => {
+    expect(ZFunction.longestCommonPrefix('abc', '')).toBe(0)
+  })
+
+  it('longestCommonPrefix with both empty', () => {
+    expect(ZFunction.longestCommonPrefix('', '')).toBe(0)
+  })
+
+  it('longestCommonPrefix with case difference', () => {
+    expect(ZFunction.longestCommonPrefix('Hello', 'hello')).toBe(0)
+  })
+
+  it('isSubstring with empty text', () => {
+    expect(ZFunction.isSubstring('', 'abc')).toBe(false)
+  })
+
+  it('isSubstring with empty pattern', () => {
+    expect(ZFunction.isSubstring('abc', '')).toBe(true)
+  })
+
+  it('isSubstring at beginning', () => {
+    expect(ZFunction.isSubstring('hello world', 'hello')).toBe(true)
+  })
+
+  it('isSubstring at end', () => {
+    expect(ZFunction.isSubstring('hello world', 'world')).toBe(true)
+  })
+
+  it('isSubstring in middle', () => {
+    expect(ZFunction.isSubstring('hello world', 'lo wo')).toBe(true)
+  })
+
+  it('isSubstring exact match', () => {
+    expect(ZFunction.isSubstring('test', 'test')).toBe(true)
+  })
+
+  it('countOccurrences with empty text', () => {
+    expect(ZFunction.countOccurrences('', 'a')).toBe(0)
+  })
+
+  it('countOccurrences with empty pattern', () => {
+    expect(ZFunction.countOccurrences('abc', '')).toBe(3)
+  })
+
+  it('countOccurrences single occurrence', () => {
+    expect(ZFunction.countOccurrences('hello world', 'hello')).toBe(1)
+  })
+
+  it('countOccurrences multiple non-overlapping', () => {
+    expect(ZFunction.countOccurrences('ab ab ab', 'ab')).toBe(3)
+  })
+
+  it('countOccurrences overlapping', () => {
+    expect(ZFunction.countOccurrences('aaaa', 'aa')).toBe(3)
+  })
+
+  it('distinctSubstrings for small n', () => {
+    expect(ZFunction.distinctSubstrings(3)).toBe(6)
+  })
+
+  it('distinctSubstrings for n=1', () => {
+    expect(ZFunction.distinctSubstrings(1)).toBe(1)
+  })
+
+  it('distinctSubstrings for n=0', () => {
+    expect(ZFunction.distinctSubstrings(0)).toBe(0)
+  })
+
+  it('distinctSubstrings for n=10', () => {
+    expect(ZFunction.distinctSubstrings(10)).toBe(55)
+  })
+
+  it('z array preserves s property', () => {
+    const zf = new ZFunction('test')
+    expect(zf.s).toBe('test')
+  })
+
+  it('z array for repeated pattern abab', () => {
+    const zf = new ZFunction('ababab')
+    expect(zf.z[2]).toBe(4)
+    expect(zf.z[4]).toBe(2)
+  })
+
+  it('z array for string ending with prefix', () => {
+    const zf = new ZFunction('abcabcab')
+    expect(zf.z[3]).toBe(5)
+  })
+
+  it('z array for aabaab', () => {
+    const zf = new ZFunction('aabaab')
+    expect(zf.z[3]).toBe(3)
+  })
+
+  it('z array all zeros except first', () => {
+    const zf = new ZFunction('zyxwv')
+    for (let i = 1; i < 5; i++) {
+      expect(zf.z[i]).toBe(0)
+    }
+  })
 })

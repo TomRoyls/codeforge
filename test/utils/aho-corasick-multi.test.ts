@@ -21,7 +21,7 @@ describe('AhoCorasickMulti', () => {
     expect(result.size).toBe(0)
   })
 
-  it('handles empty patterns', () => {
+  it('handles empty text', () => {
     const ac = new AhoCorasickMulti(['a', 'b'])
     const result = ac.search('')
     expect(result.size).toBe(0)
@@ -41,7 +41,7 @@ describe('AhoCorasickMulti', () => {
     expect(result.get(1)).toEqual([1, 3])
   })
 
-  it('handles prefix pattern', () => {
+  it('handles prefix pattern chain', () => {
     const ac = new AhoCorasickMulti(['a', 'ab', 'abc'])
     const result = ac.search('abc')
     expect(result.get(0)).toEqual([0])
@@ -86,78 +86,239 @@ describe('AhoCorasickMulti', () => {
     expect(result.size).toBe(0)
   })
 
-  it('handles single char pattern in empty text', () => {
-    const ac = new AhoCorasickMulti(['a'])
-    const result = ac.search('')
-    expect(result.size).toBe(0)
-  })
-
-  it('handles overlapping patterns', () => {
-    const ac = new AhoCorasickMulti(['ab', 'bc'])
-    const result = ac.search('abc')
-    expect(result.get(0)).toEqual([1])
-    expect(result.get(1)).toEqual([2])
-  })
-
-  it('handles pattern appearing multiple times', () => {
-    const ac = new AhoCorasickMulti(['aa'])
-    const result = ac.search('aaaa')
-    expect(result.get(0)).toEqual([1, 2, 3])
-  })
-
-  it('handles single character patterns', () => {
-    const ac = new AhoCorasickMulti(['a', 'b'])
-    const result = ac.search('ab')
-    expect(result.get(0)).toEqual([0])
-    expect(result.get(1)).toEqual([1])
-  })
-
-  it('no match returns empty or undefined', () => {
-    const ac = new AhoCorasickMulti(['xyz'])
-    const result = ac.search('abc')
-    expect(result.get(0)?.length ?? 0).toBe(0)
-  })
-
-  it('empty patterns returns empty', () => {
-    const ac = new AhoCorasickMulti([])
-    const result = ac.search('abc')
-    expect(result.size).toBe(0)
-  })
-
-  it('single pattern found in text', () => {
-    const ac = new AhoCorasickMulti(['abc'])
-    const result = ac.search('xabcyabcz')
-    expect(result.get(0)!.length).toBeGreaterThanOrEqual(2)
-  })
-
-  it('no match returns empty map', () => {
-    const ac = new AhoCorasickMulti(['xyz'])
-    const result = ac.search('abcdef')
-    expect(result.size).toBe(0)
-  })
-
-  it('search returns matches map', () => {
-    const ac = new AhoCorasickMulti(['ab', 'bc'])
-    const result = ac.search('abc')
-    expect(result.size).toBeGreaterThanOrEqual(1)
-  })
-
-  it('search with no patterns returns empty', () => {
-    const ac = new AhoCorasickMulti([])
-    const result = ac.search('abc')
-    expect(result.size).toBe(0)
-  })
-
-  it('single pattern match', () => {
-    const ac = new AhoCorasickMulti(['abc'])
-    const result = ac.search('xabcx')
-    expect(result.size).toBeGreaterThanOrEqual(1)
-    expect(result.get(0)!.length).toBeGreaterThanOrEqual(1)
-  })
-
   it('no match returns empty result', () => {
     const ac = new AhoCorasickMulti(['abc'])
     const result = ac.search('xyz')
     expect(result.get(0)).toBeUndefined()
+  })
+
+  it('finds pattern at start', () => {
+    const ac = new AhoCorasickMulti(['abc'])
+    const result = ac.search('abcdef')
+    expect(result.get(0)).toEqual([2])
+  })
+
+  it('toString returns state count', () => {
+    const ac = new AhoCorasickMulti(['abc', 'def'])
+    const str = ac.toString()
+    expect(str).toContain('AhoCorasickMulti')
+    expect(str).toContain('states=')
+  })
+
+  it('toJSON returns structured data', () => {
+    const ac = new AhoCorasickMulti(['ab'])
+    const json = ac.toJSON() as { stateCount: number; fail: number[]; output: number[][] }
+    expect(json.stateCount).toBeGreaterThan(0)
+    expect(json.fail).toBeInstanceOf(Array)
+    expect(json.output).toBeInstanceOf(Array)
+  })
+
+  it('clone produces equal automaton', () => {
+    const ac = new AhoCorasickMulti(['he', 'she', 'his'])
+    const cloned = ac.clone()
+    expect(cloned.equals(ac)).toBe(true)
+  })
+
+  it('clone produces independent copy', () => {
+    const ac = new AhoCorasickMulti(['abc'])
+    const cloned = ac.clone()
+    const r1 = ac.search('abc')
+    const r2 = cloned.search('abc')
+    expect(r1).toEqual(r2)
+  })
+
+  it('equals returns false for different types', () => {
+    const ac = new AhoCorasickMulti(['abc'])
+    expect(ac.equals(null)).toBe(false)
+    expect(ac.equals(undefined)).toBe(false)
+    expect(ac.equals({})).toBe(false)
+    expect(ac.equals('abc')).toBe(false)
+  })
+
+  it('equals returns false for different automata', () => {
+    const ac1 = new AhoCorasickMulti(['abc'])
+    const ac2 = new AhoCorasickMulti(['def'])
+    expect(ac1.equals(ac2)).toBe(false)
+  })
+
+  it('equals returns true for same patterns', () => {
+    const ac1 = new AhoCorasickMulti(['abc', 'def'])
+    const ac2 = new AhoCorasickMulti(['abc', 'def'])
+    expect(ac1.equals(ac2)).toBe(true)
+  })
+
+  it('finds pattern repeated many times', () => {
+    const ac = new AhoCorasickMulti(['ab'])
+    const text = 'ab'.repeat(100)
+    const result = ac.search(text)
+    expect(result.get(0)!.length).toBe(100)
+  })
+
+  it('handles suffix patterns', () => {
+    const ac = new AhoCorasickMulti(['c', 'bc', 'abc'])
+    const result = ac.search('abc')
+    expect(result.get(0)).toEqual([2])
+    expect(result.get(1)).toEqual([2])
+    expect(result.get(2)).toEqual([2])
+  })
+
+  it('handles one pattern being prefix of another', () => {
+    const ac = new AhoCorasickMulti(['a', 'ab', 'abc', 'abcd'])
+    const result = ac.search('abcd')
+    expect(result.get(0)).toEqual([0])
+    expect(result.get(1)).toEqual([1])
+    expect(result.get(2)).toEqual([2])
+    expect(result.get(3)).toEqual([3])
+  })
+
+  it('handles patterns with shared suffix', () => {
+    const ac = new AhoCorasickMulti(['abc', 'bc', 'c'])
+    const result = ac.search('abc')
+    expect(result.get(0)).toEqual([2])
+    expect(result.get(1)).toEqual([2])
+    expect(result.get(2)).toEqual([2])
+  })
+
+  it('handles single character text', () => {
+    const ac = new AhoCorasickMulti(['a'])
+    const result = ac.search('a')
+    expect(result.get(0)).toEqual([0])
+  })
+
+  it('handles single character text no match', () => {
+    const ac = new AhoCorasickMulti(['b'])
+    const result = ac.search('a')
+    expect(result.size).toBe(0)
+  })
+
+  it('handles unicode patterns', () => {
+    const ac = new AhoCorasickMulti(['日本'])
+    const result = ac.search('日本語日本')
+    expect(result.get(0)!.length).toBe(2)
+  })
+
+  it('handles many patterns', () => {
+    const patterns = Array.from({ length: 50 }, (_, i) => `pat${i}`)
+    const ac = new AhoCorasickMulti(patterns)
+    const result = ac.search('pat0pat25pat49')
+    expect(result.has(0)).toBe(true)
+    expect(result.has(25)).toBe(true)
+    expect(result.has(49)).toBe(true)
+  })
+
+  it('correctly identifies match positions', () => {
+    const ac = new AhoCorasickMulti(['ab'])
+    const result = ac.search('xabxab')
+    expect(result.get(0)).toEqual([2, 5])
+  })
+
+  it('handles pattern that is entire text', () => {
+    const ac = new AhoCorasickMulti(['hello'])
+    const result = ac.search('hello')
+    expect(result.get(0)).toEqual([4])
+  })
+
+  it('handles overlapping matches at same position', () => {
+    const ac = new AhoCorasickMulti(['a', 'aa', 'aaa'])
+    const result = ac.search('aaa')
+    expect(result.get(0)).toEqual([0, 1, 2])
+    expect(result.get(1)).toEqual([1, 2])
+    expect(result.get(2)).toEqual([2])
+  })
+
+  it('handles failure links correctly', () => {
+    const ac = new AhoCorasickMulti(['hers', 'his', 'she'])
+    const result = ac.search('ushers')
+    expect(result.has(0)).toBe(true)
+    expect(result.get(0)).toEqual([5])
+  })
+
+  it('search after no-match text still works', () => {
+    const ac = new AhoCorasickMulti(['abc'])
+    expect(ac.search('xyz').size).toBe(0)
+    const result = ac.search('abc')
+    expect(result.get(0)).toEqual([2])
+  })
+
+  it('handles digits in patterns', () => {
+    const ac = new AhoCorasickMulti(['123', '234'])
+    const result = ac.search('1234')
+    expect(result.get(0)).toEqual([2])
+    expect(result.get(1)).toEqual([3])
+  })
+
+  it('state count reflects trie structure', () => {
+    const ac1 = new AhoCorasickMulti(['a'])
+    const ac2 = new AhoCorasickMulti(['abc'])
+    const j1 = ac1.toJSON() as { stateCount: number }
+    const j2 = ac2.toJSON() as { stateCount: number }
+    expect(j2.stateCount).toBeGreaterThan(j1.stateCount)
+  })
+
+  it('handles case-sensitive patterns', () => {
+    const ac = new AhoCorasickMulti(['Ab', 'aB'])
+    const result = ac.search('xAbxaBx')
+    expect(result.has(0)).toBe(true)
+    expect(result.has(1)).toBe(true)
+  })
+
+  it('repeated search on same automaton', () => {
+    const ac = new AhoCorasickMulti(['ab'])
+    const r1 = ac.search('abab')
+    const r2 = ac.search('abab')
+    expect(r1).toEqual(r2)
+  })
+
+  it('handles pattern with special regex chars', () => {
+    const ac = new AhoCorasickMulti(['.', '*'])
+    const result = ac.search('.*')
+    expect(result.get(0)).toEqual([0])
+    expect(result.get(1)).toEqual([1])
+  })
+
+  it('multiple patterns found at same position', () => {
+    const ac = new AhoCorasickMulti(['ab', 'a'])
+    const result = ac.search('ab')
+    expect(result.get(0)).toEqual([1])
+    expect(result.get(1)).toEqual([0])
+  })
+
+  it('long text search is correct', () => {
+    const ac = new AhoCorasickMulti(['xy'])
+    const text = 'a'.repeat(1000) + 'xy' + 'b'.repeat(1000)
+    const result = ac.search(text)
+    expect(result.get(0)).toEqual([1001])
+  })
+
+  it('pattern found in middle of text', () => {
+    const ac = new AhoCorasickMulti(['mid'])
+    const result = ac.search('premidpost')
+    expect(result.get(0)).toEqual([5])
+  })
+
+  it('handles whitespace patterns', () => {
+    const ac = new AhoCorasickMulti([' ', '\t'])
+    const result = ac.search('a b\tc')
+    expect(result.get(0)).toEqual([1])
+    expect(result.get(1)).toEqual([3])
+  })
+
+  it('identical patterns produce same results', () => {
+    const ac = new AhoCorasickMulti(['ab', 'ab'])
+    const result = ac.search('abab')
+    expect(result.get(0)).toEqual([1, 3])
+    expect(result.get(1)).toEqual([1, 3])
+  })
+
+  it('handles newline in text', () => {
+    const ac = new AhoCorasickMulti(['ab'])
+    const result = ac.search('a\nbab')
+    expect(result.get(0)).toEqual([4])
+  })
+
+  it('search result positions are end indices', () => {
+    const ac = new AhoCorasickMulti(['abc'])
+    const result = ac.search('xyzabcdef')
+    expect(result.get(0)).toEqual([5])
   })
 })
