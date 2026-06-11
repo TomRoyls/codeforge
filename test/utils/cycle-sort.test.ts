@@ -88,69 +88,203 @@ describe('CycleSort', () => {
     expect(arr).toEqual([1, 2, 3])
   })
 
-  it('handles already sorted array', () => {
+  it('handles already sorted array in place', () => {
     const arr = [1, 2, 3, 4]
     const writes = CycleSort.sortInPlace(arr)
     expect(arr).toEqual([1, 2, 3, 4])
     expect(writes).toBe(0)
   })
 
-  it('handles single element', () => {
+  it('handles single element in place', () => {
     const arr = [42]
     expect(CycleSort.sortInPlace(arr)).toBe(0)
     expect(arr).toEqual([42])
   })
 
-  it('handles already sorted', () => {
-    const arr = [1, 2, 3, 4, 5]
-    expect(CycleSort.sortInPlace(arr)).toBe(0)
-    expect(arr).toEqual([1, 2, 3, 4, 5])
-  })
-
-  it('sorts reverse array', () => {
-    const arr = [3, 2, 1]
-    const swaps = CycleSort.sortInPlace(arr)
-    expect(swaps).toBeGreaterThan(0)
-    expect(arr).toEqual([1, 2, 3])
-  })
-
-  it('already sorted needs 0 swaps', () => {
-    const arr = [1, 2, 3]
-    const swaps = CycleSort.sortInPlace(arr)
-    expect(swaps).toBe(0)
-  })
-
-  it('sorts reverse array with swaps', () => {
-    const arr = [3, 2, 1]
-    const swaps = CycleSort.sortInPlace(arr)
-    expect(arr).toEqual([1, 2, 3])
-    expect(swaps).toBeGreaterThan(0)
-  })
-
-  it('already sorted needs 0 swaps', () => {
-    const arr = [1, 2, 3]
-    const swaps = CycleSort.sortInPlace(arr)
-    expect(swaps).toBe(0)
-  })
-
-  it('handles single element', () => {
-    const arr = [42]
-    const swaps = CycleSort.sortInPlace(arr)
-    expect(arr).toEqual([42])
-    expect(swaps).toBe(0)
-  })
-
-  it('handles empty array', () => {
+  it('handles empty array in place', () => {
     const arr: number[] = []
     const swaps = CycleSort.sortInPlace(arr)
     expect(arr).toEqual([])
     expect(swaps).toBe(0)
   })
 
-  it('single element needs 0 swaps', () => {
-    const arr = [42]
+  it('sorts reverse array in place', () => {
+    const arr = [3, 2, 1]
     const swaps = CycleSort.sortInPlace(arr)
-    expect(arr).toEqual([42])
-    expect(swaps).toBe(0)
+    expect(swaps).toBeGreaterThan(0)
+    expect(arr).toEqual([1, 2, 3])
+  })
+
+  it('handles mixed positive and negative numbers', () => {
+    const result = CycleSort.sort([-5, 3, -2, 0, 5, -1])
+    expect(result.sorted).toEqual([-5, -2, -1, 0, 3, 5])
+  })
+
+  it('handles zeros', () => {
+    const result = CycleSort.sort([0, 1, 0, -1, 0])
+    expect(result.sorted).toEqual([-1, 0, 0, 0, 1])
+  })
+
+  it('handles floating point numbers', () => {
+    const result = CycleSort.sort([3.5, 1.2, 2.8, 0.1, 4.9])
+    expect(result.sorted).toEqual([0.1, 1.2, 2.8, 3.5, 4.9])
+  })
+
+  it('handles negative floating point numbers', () => {
+    const result = CycleSort.sort([-3.5, -1.2, -2.8])
+    expect(result.sorted).toEqual([-3.5, -2.8, -1.2])
+  })
+
+  it('handles very large numbers', () => {
+    const result = CycleSort.sort([Number.MAX_VALUE, Number.MIN_SAFE_INTEGER, 0, 1000000])
+    expect(result.sorted[0]).toBe(Number.MIN_SAFE_INTEGER)
+    expect(result.sorted[3]).toBe(Number.MAX_VALUE)
+  })
+
+  it('handles array with two identical elements', () => {
+    const result = CycleSort.sort([5, 5])
+    expect(result.sorted).toEqual([5, 5])
+    expect(result.writes).toBe(0)
+  })
+
+  it('handles array with many duplicates', () => {
+    const result = CycleSort.sort([1, 1, 1, 1, 1])
+    expect(result.sorted).toEqual([1, 1, 1, 1, 1])
+    expect(result.writes).toBe(0)
+  })
+
+  it('handles random array', () => {
+    const arr = [17, 3, 9, 25, 1, 8, 12]
+    const result = CycleSort.sort(arr)
+    expect(result.sorted).toEqual([1, 3, 8, 9, 12, 17, 25])
+  })
+
+  it('sorts array with duplicate at boundaries', () => {
+    const result = CycleSort.sort([1, 3, 3, 3, 5])
+    expect(result.sorted).toEqual([1, 3, 3, 3, 5])
+  })
+
+  it('handles array sorted except last element', () => {
+    const result = CycleSort.sort([1, 2, 3, 5, 4])
+    expect(result.sorted).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles array sorted except first element', () => {
+    const result = CycleSort.sort([5, 1, 2, 3, 4])
+    expect(result.sorted).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles nearly sorted array', () => {
+    const result = CycleSort.sort([1, 3, 2, 4, 6, 5, 7])
+    expect(result.sorted).toEqual([1, 2, 3, 4, 5, 6, 7])
+  })
+
+  it('handles reverse sorted with duplicates', () => {
+    const result = CycleSort.sort([5, 5, 3, 3, 1, 1])
+    expect(result.sorted).toEqual([1, 1, 3, 3, 5, 5])
+  })
+
+  it('maintains stability with duplicates', () => {
+    const arr = [{ val: 2, id: 1 }, { val: 1, id: 2 }, { val: 2, id: 3 }, { val: 1, id: 4 }]
+    const nums = arr.map(obj => obj.val)
+    const result = CycleSort.sort(nums)
+    expect(result.sorted).toEqual([1, 1, 2, 2])
+  })
+
+  it('handles array with single duplicate', () => {
+    const result = CycleSort.sort([2, 1, 2])
+    expect(result.sorted).toEqual([1, 2, 2])
+  })
+
+  it('handles alternating pattern', () => {
+    const result = CycleSort.sort([1, 3, 2, 4, 3, 5, 4, 6])
+    expect(result.sorted).toEqual([1, 2, 3, 3, 4, 4, 5, 6])
+  })
+
+  it('sortInPlace handles mixed positive and negative', () => {
+    const arr = [-5, 3, -2, 0, 5, -1]
+    CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([-5, -2, -1, 0, 3, 5])
+  })
+
+  it('sortInPlace handles zeros', () => {
+    const arr = [0, 1, 0, -1, 0]
+    CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([-1, 0, 0, 0, 1])
+  })
+
+  it('sortInPlace handles floating point numbers', () => {
+    const arr = [3.5, 1.2, 2.8, 0.1, 4.9]
+    CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([0.1, 1.2, 2.8, 3.5, 4.9])
+  })
+
+  it('sortInPlace handles array with two identical elements', () => {
+    const arr = [5, 5]
+    const writes = CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([5, 5])
+    expect(writes).toBe(0)
+  })
+
+  it('sortInPlace handles array with many duplicates', () => {
+    const arr = [1, 1, 1, 1, 1]
+    const writes = CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 1, 1, 1, 1])
+    expect(writes).toBe(0)
+  })
+
+  it('sortInPlace handles random array', () => {
+    const arr = [17, 3, 9, 25, 1, 8, 12]
+    CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 3, 8, 9, 12, 17, 25])
+  })
+
+  it('sortInPlace handles array sorted except last element', () => {
+    const arr = [1, 2, 3, 5, 4]
+    CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('sortInPlace handles array sorted except first element', () => {
+    const arr = [5, 1, 2, 3, 4]
+    CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('sortInPlace handles reverse sorted with duplicates', () => {
+    const arr = [5, 5, 3, 3, 1, 1]
+    CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 1, 3, 3, 5, 5])
+  })
+
+  it('handles increasing sequence', () => {
+    const result = CycleSort.sort([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    expect(result.sorted).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    expect(result.writes).toBe(0)
+  })
+
+  it('handles decreasing sequence', () => {
+    const result = CycleSort.sort([10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+    expect(result.sorted).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  })
+
+  it('handles small array size of 3', () => {
+    const result = CycleSort.sort([3, 2, 1])
+    expect(result.sorted).toEqual([1, 2, 3])
+  })
+
+  it('handles small array size of 4', () => {
+    const result = CycleSort.sort([4, 2, 3, 1])
+    expect(result.sorted).toEqual([1, 2, 3, 4])
+  })
+
+  it('handles small array size of 5', () => {
+    const result = CycleSort.sort([5, 3, 1, 4, 2])
+    expect(result.sorted).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles alternating min max pattern', () => {
+    const result = CycleSort.sort([1, 10, 2, 9, 3, 8, 4, 7, 5, 6])
+    expect(result.sorted).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   })
 })

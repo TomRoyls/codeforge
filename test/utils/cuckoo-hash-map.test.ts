@@ -13,6 +13,16 @@ describe('CuckooHashMap', () => {
     expect(map.size).toBe(0)
   })
 
+  it('should create map with custom maxKicks', () => {
+    const map = new CuckooHashMap<string, number>({ maxKicks: 1000 })
+    expect(map.size).toBe(0)
+  })
+
+  it('should create map with both custom capacity and maxKicks', () => {
+    const map = new CuckooHashMap<string, number>({ capacity: 16, maxKicks: 200 })
+    expect(map.size).toBe(0)
+  })
+
   it('should set and get values', () => {
     const map = new CuckooHashMap<string, number>()
     map.set('key1', 100)
@@ -160,52 +170,236 @@ describe('CuckooHashMap', () => {
     expect(map.get('key4')).toBe(400)
   })
 
-  it('has returns true for existing key', () => {
-    const map = new CuckooHashMap<string, number>()
-    map.set('x', 10)
-    expect(map.has('x')).toBe(true)
-    expect(map.has('y')).toBe(false)
+  it('should handle number keys', () => {
+    const map = new CuckooHashMap<number, string>()
+    map.set(1, 'one')
+    map.set(2, 'two')
+    expect(map.get(1)).toBe('one')
+    expect(map.get(2)).toBe('two')
   })
 
-  it('delete removes key', () => {
-    const map = new CuckooHashMap<string, number>()
-    map.set('x', 10)
-    map.delete('x')
-    expect(map.has('x')).toBe(false)
+  it('should handle object values', () => {
+    const map = new CuckooHashMap<string, { id: number }>()
+    const obj1 = { id: 1 }
+    const obj2 = { id: 2 }
+    map.set('obj1', obj1)
+    map.set('obj2', obj2)
+    expect(map.get('obj1')).toEqual(obj1)
+    expect(map.get('obj2')).toEqual(obj2)
   })
 
-  it('size reflects element count', () => {
+  it('should handle array values', () => {
+    const map = new CuckooHashMap<string, number[]>()
+    const arr1 = [1, 2, 3]
+    const arr2 = [4, 5, 6]
+    map.set('arr1', arr1)
+    map.set('arr2', arr2)
+    expect(map.get('arr1')).toEqual(arr1)
+    expect(map.get('arr2')).toEqual(arr2)
+  })
+
+  it('should handle null and undefined values', () => {
+    const map = new CuckooHashMap<string, string | null | undefined>()
+    map.set('null', null)
+    map.set('undefined', undefined)
+    map.set('defined', 'value')
+    expect(map.get('null')).toBe(null)
+    expect(map.get('undefined')).toBe(undefined)
+    expect(map.get('defined')).toBe('value')
+  })
+
+  it('should handle boolean keys', () => {
+    const map = new CuckooHashMap<boolean, number>()
+    map.set(true, 1)
+    map.set(false, 0)
+    expect(map.get(true)).toBe(1)
+    expect(map.get(false)).toBe(0)
+  })
+
+  it('should handle zero as key', () => {
+    const map = new CuckooHashMap<number, string>()
+    map.set(0, 'zero')
+    expect(map.get(0)).toBe('zero')
+  })
+
+  it('should handle empty string as key', () => {
     const map = new CuckooHashMap<string, number>()
-    map.set('a', 1)
-    map.set('b', 2)
+    map.set('', 42)
+    expect(map.get('')).toBe(42)
+  })
+
+  it('should handle very long keys', () => {
+    const map = new CuckooHashMap<string, number>()
+    const longKey = 'a'.repeat(1000)
+    map.set(longKey, 42)
+    expect(map.get(longKey)).toBe(42)
+  })
+
+  it('should handle special characters in keys', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('key with spaces', 1)
+    map.set('key-with-dashes', 2)
+    map.set('key_with_underscores', 3)
+    map.set('key.with.dots', 4)
+    map.set('key@symbol', 5)
+    expect(map.get('key with spaces')).toBe(1)
+    expect(map.get('key-with-dashes')).toBe(2)
+    expect(map.get('key_with_underscores')).toBe(3)
+    expect(map.get('key.with.dots')).toBe(4)
+    expect(map.get('key@symbol')).toBe(5)
+  })
+
+  it('should handle numeric string keys differently from number keys', () => {
+    const map = new CuckooHashMap<string | number, number>()
+    map.set('123', 456)
+    map.set(123, 789)
+    expect(map.get('123')).toBe(456)
+    expect(map.get(123)).toBe(789)
+  })
+
+  it('should maintain size after update', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('key1', 100)
+    map.set('key2', 200)
+    map.set('key1', 300)
     expect(map.size).toBe(2)
   })
 
-  it('get returns value for existing key', () => {
-    const map = new CuckooHashMap<string, number>(16)
-    map.set('x', 42)
-    expect(map.get('x')).toBe(42)
+  it('should return empty keys array for empty map', () => {
+    const map = new CuckooHashMap<string, number>()
+    expect(map.keys()).toEqual([])
   })
 
-  it('has returns false for missing key', () => {
-    const map = new CuckooHashMap<string, number>(16)
-    expect(map.has('missing')).toBe(false)
+  it('should return empty values array for empty map', () => {
+    const map = new CuckooHashMap<string, number>()
+    expect(map.values()).toEqual([])
   })
 
-  it('set and get returns value', () => {
-    const map = new CuckooHashMap<string, number>(16)
-    map.set('key', 42)
-    expect(map.get('key')).toBe(42)
+  it('should return empty entries array for empty map', () => {
+    const map = new CuckooHashMap<string, number>()
+    expect(map.entries()).toEqual([])
   })
 
-  it('get returns undefined for missing key', () => {
-    const map = new CuckooHashMap<string, number>(16)
-    expect(map.get('missing')).toBeUndefined()
+  it('should not call forEach callback on empty map', () => {
+    const map = new CuckooHashMap<string, number>()
+    let called = false
+    map.forEach(() => {
+      called = true
+    })
+    expect(called).toBe(false)
   })
 
-  it('set and get roundtrip', () => {
-    const map = new CuckooHashMap<string, number>(16)
-    map.set('key', 42)
-    expect(map.get('key')).toBe(42)
+  it('should handle delete then set same key', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('key1', 100)
+    map.delete('key1')
+    map.set('key1', 200)
+    expect(map.get('key1')).toBe(200)
+    expect(map.size).toBe(1)
+  })
+
+  it('should handle multiple deletes', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('key1', 100)
+    map.set('key2', 200)
+    map.set('key3', 300)
+    map.delete('key1')
+    map.delete('key2')
+    expect(map.size).toBe(1)
+    expect(map.get('key3')).toBe(300)
+  })
+
+  it('should have zero load factor when empty', () => {
+    const map = new CuckooHashMap<string, number>()
+    expect(map.loadFactor).toBe(0)
+  })
+
+  it('should handle load factor near threshold', () => {
+    const map = new CuckooHashMap<string, number>({ capacity: 10 })
+    for (let i = 0; i < 17; i++) {
+      map.set(`key${i}`, i)
+    }
+    expect(map.size).toBe(17)
+    expect(map.loadFactor).toBeGreaterThan(0)
+    expect(map.loadFactor).toBeLessThan(1)
+  })
+
+  it('should handle duplicate keys in forEach iteration', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    const keys: string[] = []
+    map.forEach((_, key) => keys.push(key))
+    expect(keys).toHaveLength(2)
+    expect(new Set(keys)).toHaveLength(2)
+  })
+
+  it('should preserve iteration order for same keys', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    map.set('c', 3)
+    const keys1 = map.keys()
+    const keys2 = map.keys()
+    expect(keys1).toEqual(keys2)
+  })
+
+  it('should handle large number of sequential sets', () => {
+    const map = new CuckooHashMap<string, number>()
+    for (let i = 0; i < 100; i++) {
+      map.set(`key${i}`, i)
+    }
+    expect(map.size).toBe(100)
+    for (let i = 0; i < 100; i++) {
+      expect(map.get(`key${i}`)).toBe(i)
+    }
+  })
+
+  it('should handle alternating set and delete', () => {
+    const map = new CuckooHashMap<string, number>()
+    for (let i = 0; i < 10; i++) {
+      map.set(`key${i}`, i)
+      map.delete(`key${i}`)
+    }
+    expect(map.size).toBe(0)
+  })
+
+  it('should handle unicode keys', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('café', 1)
+    map.set('日本語', 2)
+    map.set('🎉', 3)
+    expect(map.get('café')).toBe(1)
+    expect(map.get('日本語')).toBe(2)
+    expect(map.get('🎉')).toBe(3)
+  })
+
+  it('should handle case-sensitive keys', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('Key', 1)
+    map.set('key', 2)
+    map.set('KEY', 3)
+    expect(map.size).toBe(3)
+    expect(map.get('Key')).toBe(1)
+    expect(map.get('key')).toBe(2)
+    expect(map.get('KEY')).toBe(3)
+  })
+
+  it('should return all keys after many operations', () => {
+    const map = new CuckooHashMap<string, number>()
+    for (let i = 0; i < 50; i++) {
+      map.set(`key${i}`, i)
+    }
+    const keys = map.keys()
+    expect(keys).toHaveLength(50)
+  })
+
+  it('should handle concurrent duplicate sets', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('key', 1)
+    map.set('key', 2)
+    map.set('key', 3)
+    expect(map.get('key')).toBe(3)
+    expect(map.size).toBe(1)
   })
 })
