@@ -2,80 +2,76 @@ import { describe, expect, it } from 'vitest'
 import { ModularDecomposition } from '../../src/utils/modular-decomposition.js'
 
 describe('ModularDecomposition', () => {
-  it('empty graph', () => {
+  it('empty graph returns no modules', () => {
     const md = new ModularDecomposition(0)
     expect(md.findModules()).toEqual([])
   })
 
-  it('single node', () => {
+  it('single node returns one module', () => {
     const md = new ModularDecomposition(1)
     expect(md.findModules()).toEqual([[0]])
   })
 
-  it('disconnected nodes are modules', () => {
+  it('two disconnected nodes form one module', () => {
+    const md = new ModularDecomposition(2)
+    expect(md.findModules()).toEqual([[0, 1]])
+  })
+
+  it('two connected nodes form one module', () => {
+    const md = new ModularDecomposition(2)
+    md.addEdge(0, 1)
+    expect(md.findModules()).toEqual([[0, 1]])
+  })
+
+  it('three disconnected nodes form one module', () => {
     const md = new ModularDecomposition(3)
     const modules = md.findModules()
     expect(modules.length).toBe(1)
-    expect(modules[0]!.length).toBe(3)
+    expect(modules[0]).toEqual([0, 1, 2])
   })
 
-  it('complete graph is one module', () => {
+  it('complete graph K3 is one module', () => {
     const md = new ModularDecomposition(3)
     md.addEdge(0, 1)
     md.addEdge(1, 2)
     md.addEdge(0, 2)
-    const modules = md.findModules()
-    expect(modules.length).toBe(1)
+    expect(md.findModules().length).toBe(1)
   })
 
-  it('path separates endpoints', () => {
+  it('path of 3 groups endpoints as module', () => {
     const md = new ModularDecomposition(3)
     md.addEdge(0, 1)
     md.addEdge(1, 2)
     expect(md.isModule(0, 2)).toBe(true)
   })
 
-  it('isModule check', () => {
+  it('star graph leaves form module', () => {
     const md = new ModularDecomposition(4)
     md.addEdge(0, 1)
     md.addEdge(0, 2)
     md.addEdge(0, 3)
     expect(md.isModule(1, 2)).toBe(true)
+    expect(md.isModule(1, 3)).toBe(true)
+    expect(md.isModule(2, 3)).toBe(true)
+  })
+
+  it('star center is not module with leaf', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(0, 3)
     expect(md.isModule(0, 1)).toBe(false)
   })
 
-  it('isStrongModule for complete', () => {
+  it('complete K4 is one module', () => {
     const md = new ModularDecomposition(4)
-    md.addEdge(0, 1)
-    md.addEdge(0, 2)
-    md.addEdge(0, 3)
-    expect(md.isStrongModule([1, 2, 3])).toBe(true)
-  })
-
-  it('moduleCount', () => {
-    const md = new ModularDecomposition(4)
-    md.addEdge(0, 1)
-    md.addEdge(0, 2)
-    md.addEdge(0, 3)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
-  })
-
-  it('single edge', () => {
-    const md = new ModularDecomposition(2)
-    md.addEdge(0, 1)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        md.addEdge(i, j)
     expect(md.moduleCount()).toBe(1)
   })
 
-  it('handles star center not module with leaves', () => {
-    const md = new ModularDecomposition(4)
-    md.addEdge(0, 1)
-    md.addEdge(0, 2)
-    md.addEdge(0, 3)
-    expect(md.isModule(0, 1)).toBe(false)
-    expect(md.isModule(1, 2)).toBe(true)
-  })
-
-  it('handles path of 4', () => {
+  it('path of 4 has multiple modules', () => {
     const md = new ModularDecomposition(4)
     md.addEdge(0, 1)
     md.addEdge(1, 2)
@@ -83,78 +79,275 @@ describe('ModularDecomposition', () => {
     expect(md.moduleCount()).toBeGreaterThanOrEqual(2)
   })
 
-  it('handles K4 all modules', () => {
-    const md = new ModularDecomposition(4)
-    for (let i = 0; i < 4; i++)
-      for (let j = i + 1; j < 4; j++)
-        md.addEdge(i, j)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
-  })
-
-  it('empty graph has modules', () => {
-    const md = new ModularDecomposition(3)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(0)
-  })
-
-  it('single node has modules', () => {
-    const md = new ModularDecomposition(1)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(0)
-  })
-
-  it('handles single edge two nodes', () => {
+  it('isModule for single edge two nodes', () => {
     const md = new ModularDecomposition(2)
     md.addEdge(0, 1)
     expect(md.isModule(0, 1)).toBe(true)
   })
 
-  it('handles path graph', () => {
+  it('isStrongModule for single vertex returns true', () => {
+    const md = new ModularDecomposition(3)
+    expect(md.isStrongModule([0])).toBe(true)
+  })
+
+  it('isStrongModule for empty array returns true', () => {
+    const md = new ModularDecomposition(3)
+    expect(md.isStrongModule([])).toBe(true)
+  })
+
+  it('isStrongModule for complete graph all vertices', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(0, 3)
+    md.addEdge(1, 2)
+    md.addEdge(1, 3)
+    md.addEdge(2, 3)
+    expect(md.isStrongModule([0, 1, 2, 3])).toBe(true)
+  })
+
+  it('isStrongModule for star leaves', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(0, 3)
+    expect(md.isStrongModule([1, 2, 3])).toBe(true)
+  })
+
+  it('isStrongModule fails for mixed adjacency', () => {
     const md = new ModularDecomposition(4)
     md.addEdge(0, 1)
     md.addEdge(1, 2)
     md.addEdge(2, 3)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(0)
+    expect(md.isStrongModule([0, 2])).toBe(false)
   })
 
-  it('handles single node', () => {
+  it('moduleCount for empty graph is 0', () => {
+    const md = new ModularDecomposition(0)
+    expect(md.moduleCount()).toBe(0)
+  })
+
+  it('moduleCount for single node is 1', () => {
     const md = new ModularDecomposition(1)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+    expect(md.moduleCount()).toBe(1)
   })
 
-  it('handles two nodes no edge', () => {
-    const md = new ModularDecomposition(2)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
-  })
-
-  it('single node has one module', () => {
-    const md = new ModularDecomposition(1)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
-  })
-
-  it('two nodes have modules', () => {
-    const md = new ModularDecomposition(2)
+  it('addEdge is bidirectional', () => {
+    const md = new ModularDecomposition(3)
     md.addEdge(0, 1)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+    expect(md.isModule(0, 1)).toBe(true)
+    expect(md.isModule(0, 2)).toBe(false)
+    expect(md.isModule(1, 2)).toBe(false)
   })
 
-  it('single node has one module', () => {
-    const md = new ModularDecomposition(1)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
-  })
-
-  it('two nodes with edge', () => {
-    const md = new ModularDecomposition(2)
+  it('findModules covers all vertices', () => {
+    const md = new ModularDecomposition(5)
     md.addEdge(0, 1)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+    md.addEdge(2, 3)
+    const modules = md.findModules()
+    const allVertices = modules.flat().sort()
+    expect(allVertices).toEqual([0, 1, 2, 3, 4])
   })
 
-  it('empty graph has modules', () => {
-    const md = new ModularDecomposition(1)
-    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
-  })
-
-  it('two node graph decomposition', () => {
-    const md = new ModularDecomposition(2)
+  it('findModules partitions vertices', () => {
+    const md = new ModularDecomposition(5)
     md.addEdge(0, 1)
+    md.addEdge(2, 3)
+    const modules = md.findModules()
+    const unique = new Set(modules.flat())
+    expect(unique.size).toBe(5)
+  })
+
+  it('5-node graph with mixed edges', () => {
+    const md = new ModularDecomposition(5)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(1, 2)
+    md.addEdge(3, 4)
+    const modules = md.findModules()
+    expect(modules.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('cycle of 4 nodes', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.addEdge(2, 3)
+    md.addEdge(3, 0)
     expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('bipartite K2,3', () => {
+    const md = new ModularDecomposition(5)
+    for (let i = 0; i < 2; i++)
+      for (let j = 2; j < 5; j++)
+        md.addEdge(i, j)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(2)
+  })
+
+  it('isModule with self is trivially true', () => {
+    const md = new ModularDecomposition(3)
+    md.addEdge(0, 1)
+    expect(md.isModule(0, 0)).toBe(true)
+  })
+
+  it('isModule on larger graph', () => {
+    const md = new ModularDecomposition(6)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(1, 2)
+    md.addEdge(3, 4)
+    md.addEdge(3, 5)
+    md.addEdge(4, 5)
+    expect(md.isModule(0, 1)).toBe(true)
+    expect(md.isModule(3, 4)).toBe(true)
+    expect(md.isModule(0, 3)).toBe(false)
+  })
+
+  it('isStrongModule for two disconnected cliques', () => {
+    const md = new ModularDecomposition(6)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(1, 2)
+    md.addEdge(3, 4)
+    md.addEdge(3, 5)
+    md.addEdge(4, 5)
+    expect(md.isStrongModule([0, 1, 2])).toBe(true)
+    expect(md.isStrongModule([3, 4, 5])).toBe(true)
+  })
+
+  it('findModules with all isolated vertices', () => {
+    const md = new ModularDecomposition(4)
+    const modules = md.findModules()
+    expect(modules.length).toBe(1)
+    expect(modules[0]!.length).toBe(4)
+  })
+
+  it('single edge in 4-node graph', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    const modules = md.findModules()
+    expect(modules.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('diamond graph', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(0, 3)
+    md.addEdge(1, 2)
+    md.addEdge(2, 3)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('isStrongModule for two vertices in clique', () => {
+    const md = new ModularDecomposition(3)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(1, 2)
+    expect(md.isStrongModule([0, 1])).toBe(true)
+  })
+
+  it('double edge addEdge is idempotent', () => {
+    const md = new ModularDecomposition(3)
+    md.addEdge(0, 1)
+    md.addEdge(0, 1)
+    expect(md.isModule(0, 1)).toBe(true)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('path of 5 nodes', () => {
+    const md = new ModularDecomposition(5)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.addEdge(2, 3)
+    md.addEdge(3, 4)
+    expect(md.isModule(0, 4)).toBe(false)
+    expect(md.isModule(0, 2)).toBe(false)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(2)
+  })
+
+  it('6-node line graph', () => {
+    const md = new ModularDecomposition(6)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.addEdge(2, 3)
+    md.addEdge(3, 4)
+    md.addEdge(4, 5)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(2)
+  })
+
+  it('triangle plus isolated', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.addEdge(0, 2)
+    const modules = md.findModules()
+    expect(modules.length).toBeGreaterThanOrEqual(1)
+    const all = modules.flat().sort()
+    expect(all).toEqual([0, 1, 2, 3])
+  })
+
+  it('two cliques connected by bridge', () => {
+    const md = new ModularDecomposition(6)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(1, 2)
+    md.addEdge(3, 4)
+    md.addEdge(3, 5)
+    md.addEdge(4, 5)
+    md.addEdge(2, 3)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('isModule returns true for symmetric pair in K3', () => {
+    const md = new ModularDecomposition(3)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.addEdge(0, 2)
+    expect(md.isModule(0, 1)).toBe(true)
+    expect(md.isModule(0, 2)).toBe(true)
+    expect(md.isModule(1, 2)).toBe(true)
+  })
+
+  it('isStrongModule for path endpoints fails', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.addEdge(2, 3)
+    expect(md.isStrongModule([0, 3])).toBe(false)
+  })
+
+  it('findModules returns sorted within modules', () => {
+    const md = new ModularDecomposition(5)
+    const modules = md.findModules()
+    for (const mod of modules) {
+      for (let i = 1; i < mod.length; i++) {
+        expect(mod[i]!).toBeGreaterThan(mod[i - 1]!)
+      }
+    }
+  })
+
+  it('large complete graph K8 is one module', () => {
+    const md = new ModularDecomposition(8)
+    for (let i = 0; i < 8; i++)
+      for (let j = i + 1; j < 8; j++)
+        md.addEdge(i, j)
+    expect(md.moduleCount()).toBe(1)
+  })
+
+  it('isStrongModule on graph with partial adjacency', () => {
+    const md = new ModularDecomposition(5)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(0, 3)
+    expect(md.isStrongModule([1, 2, 3])).toBe(true)
+  })
+
+  it('isModule with no edges in graph', () => {
+    const md = new ModularDecomposition(4)
+    expect(md.isModule(0, 1)).toBe(true)
+    expect(md.isModule(0, 2)).toBe(true)
+    expect(md.isModule(0, 3)).toBe(true)
   })
 })

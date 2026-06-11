@@ -94,22 +94,11 @@ describe('MaxBipartiteMatching', () => {
     expect(pairs).toContainEqual([1, 1])
   })
 
-  it('handles single edge', () => {
-    const m = new MaxBipartiteMatching(1, 1)
-    m.addEdge(0, 0)
-    expect(m.getMatchingSize()).toBe(1)
-  })
-
   it('handles 2x2 partial edges', () => {
     const m = new MaxBipartiteMatching(2, 2)
     m.addEdge(0, 0)
     m.addEdge(0, 1)
     expect(m.getMatchingSize()).toBe(1)
-  })
-
-  it('handles no edges', () => {
-    const m = new MaxBipartiteMatching(2, 2)
-    expect(m.getMatchingSize()).toBe(0)
   })
 
   it('handles K2,2 complete', () => {
@@ -121,47 +110,299 @@ describe('MaxBipartiteMatching', () => {
     expect(m.getMatchingSize()).toBe(2)
   })
 
-  it('handles no edges', () => {
-    const m = new MaxBipartiteMatching(2, 2)
-    expect(m.getMatchingSize()).toBe(0)
-  })
-
-  it('single edge matches', () => {
-    const m = new MaxBipartiteMatching(1, 1)
-    m.addEdge(0, 0)
-    expect(m.getMatchingSize()).toBe(1)
-  })
-
-  it('no edges gives zero matching', () => {
-    const m = new MaxBipartiteMatching(2, 2)
-    expect(m.getMatchingSize()).toBe(0)
-  })
-
   it('single edge gives matching 1', () => {
     const m = new MaxBipartiteMatching(1, 1)
     m.addEdge(0, 0)
     expect(m.getMatchingSize()).toBe(1)
   })
 
-  it('no edges has 0 matching', () => {
-    const m = new MaxBipartiteMatching(2, 2)
-    expect(m.getMatchingSize()).toBe(0)
+  it('matching size limited by smaller side', () => {
+    const m = new MaxBipartiteMatching(2, 5)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 2)
+    m.addEdge(1, 3)
+    m.addEdge(1, 4)
+    expect(m.getMatchingSize()).toBe(2)
   })
 
-  it('single edge matches', () => {
-    const m = new MaxBipartiteMatching(2, 2)
+  it('handles disjoint components', () => {
+    const m = new MaxBipartiteMatching(4, 4)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    m.addEdge(3, 3)
+    expect(m.getMatchingSize()).toBe(4)
+  })
+
+  it('alternating path optimization', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 1)
+    m.addEdge(1, 2)
+    m.addEdge(2, 2)
+    expect(m.getMatchingSize()).toBe(3)
+  })
+
+  it('handles multiple edges from same left node', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(0, 2)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    expect(m.getMatchingSize()).toBe(3)
+  })
+
+  it('handles multiple edges to same right node', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(1, 0)
+    m.addEdge(2, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 1)
+    m.addEdge(2, 1)
+    expect(m.getMatchingSize()).toBe(2)
+  })
+
+  it('no right nodes can be matched twice', () => {
+    const m = new MaxBipartiteMatching(3, 2)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 0)
+    m.addEdge(2, 1)
+    expect(m.getMatchingSize()).toBe(2)
+  })
+
+  it('handles chain graph', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 1)
+    m.addEdge(1, 2)
+    m.addEdge(2, 2)
+    expect(m.getMatchingSize()).toBe(3)
+  })
+
+  it('matching result contains unique left nodes', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    const pairs = m.maxMatching()
+    const leftNodes = pairs.map(p => p[0])
+    expect(new Set(leftNodes).size).toBe(3)
+  })
+
+  it('matching result contains unique right nodes', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    const pairs = m.maxMatching()
+    const rightNodes = pairs.map(p => p[1])
+    expect(new Set(rightNodes).size).toBe(3)
+  })
+
+  it('handles larger asymmetric graph', () => {
+    const m = new MaxBipartiteMatching(4, 6)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 2)
+    m.addEdge(1, 3)
+    m.addEdge(2, 4)
+    m.addEdge(2, 5)
+    m.addEdge(3, 0)
+    m.addEdge(3, 2)
+    m.addEdge(3, 4)
+    expect(m.getMatchingSize()).toBe(4)
+  })
+
+  it('handles sparse graph', () => {
+    const m = new MaxBipartiteMatching(5, 5)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    m.addEdge(3, 3)
+    m.addEdge(4, 4)
+    expect(m.getMatchingSize()).toBe(5)
+  })
+
+  it('handles dense graph with constraints', () => {
+    const m = new MaxBipartiteMatching(4, 4)
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        m.addEdge(i, j)
+      }
+    }
+    expect(m.getMatchingSize()).toBe(4)
+  })
+
+  it('handles 1x1 matching', () => {
+    const m = new MaxBipartiteMatching(1, 1)
     m.addEdge(0, 0)
     expect(m.getMatchingSize()).toBe(1)
   })
 
-  it('no edges has zero matching', () => {
-    const m = new MaxBipartiteMatching(2, 2)
+  it('handles 1x1 with no edge', () => {
+    const m = new MaxBipartiteMatching(1, 1)
     expect(m.getMatchingSize()).toBe(0)
   })
 
-  it('single edge matching size is 1', () => {
+  it('maxMatching returns empty array for no edges', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    expect(m.maxMatching()).toEqual([])
+  })
+
+  it('maxMatching returns correct structure', () => {
     const m = new MaxBipartiteMatching(2, 2)
     m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    const result = m.maxMatching()
+    expect(Array.isArray(result)).toBe(true)
+    expect(result.length).toBe(2)
+    expect(result[0]).toHaveLength(2)
+    expect(result[1]).toHaveLength(2)
+  })
+
+  it('handles disconnected graph components', () => {
+    const m = new MaxBipartiteMatching(4, 4)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    m.addEdge(3, 3)
+    expect(m.getMatchingSize()).toBe(4)
+  })
+
+  it('multiple maxMatching calls are consistent', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 1)
+    m.addEdge(1, 2)
+    m.addEdge(2, 2)
+    const result1 = m.getMatchingSize()
+    const result2 = m.getMatchingSize()
+    expect(result1).toBe(result2)
+  })
+
+  it('handles zero left and right', () => {
+    const m = new MaxBipartiteMatching(0, 0)
+    expect(m.getMatchingSize()).toBe(0)
+  })
+
+  it('handles large graph efficiently', () => {
+    const m = new MaxBipartiteMatching(10, 10)
+    for (let i = 0; i < 10; i++) {
+      m.addEdge(i, i)
+    }
+    expect(m.getMatchingSize()).toBe(10)
+  })
+
+  it('matching respects bipartite constraints', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 1)
+    m.addEdge(1, 2)
+    m.addEdge(2, 0)
+    m.addEdge(2, 2)
+    const pairs = m.maxMatching()
+    for (const [left, right] of pairs) {
+      expect(left).toBeGreaterThanOrEqual(0)
+      expect(left).toBeLessThan(3)
+      expect(right).toBeGreaterThanOrEqual(0)
+      expect(right).toBeLessThan(3)
+    }
+  })
+
+  it('finds maximum when multiple optimal solutions exist', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 0)
+    m.addEdge(1, 1)
+    const size = m.getMatchingSize()
+    expect(size).toBe(2)
+  })
+
+  it('handles 3x1 bottleneck', () => {
+    const m = new MaxBipartiteMatching(3, 1)
+    m.addEdge(0, 0)
+    m.addEdge(1, 0)
+    m.addEdge(2, 0)
     expect(m.getMatchingSize()).toBe(1)
+  })
+
+  it('handles 1x3 bottleneck', () => {
+    const m = new MaxBipartiteMatching(1, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(0, 2)
+    expect(m.getMatchingSize()).toBe(1)
+  })
+
+  it('handles 5x5 with alternating pattern', () => {
+    const m = new MaxBipartiteMatching(5, 5)
+    for (let i = 0; i < 5; i++) {
+      m.addEdge(i, i)
+      m.addEdge(i, (i + 1) % 5)
+    }
+    expect(m.getMatchingSize()).toBe(5)
+  })
+
+  it('matching pairs are valid edges', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 1)
+    m.addEdge(1, 2)
+    m.addEdge(2, 0)
+    m.addEdge(2, 2)
+    const pairs = m.maxMatching()
+    for (const [left, right] of pairs) {
+      expect(left).toBeGreaterThanOrEqual(0)
+      expect(left).toBeLessThan(3)
+      expect(right).toBeGreaterThanOrEqual(0)
+      expect(right).toBeLessThan(3)
+    }
+  })
+
+  it('handles diamond pattern', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 1)
+    m.addEdge(1, 2)
+    m.addEdge(2, 0)
+    m.addEdge(2, 2)
+    expect(m.getMatchingSize()).toBe(3)
+  })
+
+  it('single edge in larger graph', () => {
+    const m = new MaxBipartiteMatching(5, 5)
+    m.addEdge(2, 3)
+    expect(m.getMatchingSize()).toBe(1)
+  })
+
+  it('handles 4x3 rectangular graph', () => {
+    const m = new MaxBipartiteMatching(4, 3)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    m.addEdge(3, 0)
+    expect(m.getMatchingSize()).toBe(3)
+  })
+
+  it('handles 3x4 rectangular graph', () => {
+    const m = new MaxBipartiteMatching(3, 4)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    m.addEdge(0, 3)
+    expect(m.getMatchingSize()).toBe(3)
   })
 })

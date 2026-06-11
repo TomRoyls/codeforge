@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { LRUTTLCache } from '../../src/utils/lru-ttl-cache.js'
 
 describe('LRUTTLCache', () => {
@@ -54,6 +54,11 @@ describe('LRUTTLCache', () => {
     expect(cache.get('a')).toBeUndefined()
   })
 
+  it('delete returns false for missing key', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    expect(cache.delete('missing')).toBe(false)
+  })
+
   it('clear removes all entries', () => {
     const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
     cache.set('a', 1)
@@ -78,6 +83,11 @@ describe('LRUTTLCache', () => {
     cache.get('a')
     cache.get('missing')
     expect(cache.hitRate).toBeCloseTo(2 / 3)
+  })
+
+  it('hitRate is 0 when no operations', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    expect(cache.hitRate).toBe(0)
   })
 
   it('custom TTL per entry', () => {
@@ -108,8 +118,26 @@ describe('LRUTTLCache', () => {
     expect(() => new LRUTTLCache<string, number>({ maxSize: 0, defaultTTL: 100 })).toThrow()
   })
 
-  it('throws for invalid TTL', () => {
+  it('throws for negative maxSize', () => {
+    expect(() => new LRUTTLCache<string, number>({ maxSize: -1, defaultTTL: 100 })).toThrow()
+  })
+
+  it('throws for invalid TTL in constructor', () => {
     expect(() => new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 0 })).toThrow()
+  })
+
+  it('throws for negative TTL in constructor', () => {
+    expect(() => new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: -100 })).toThrow()
+  })
+
+  it('throws for invalid TTL in set', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    expect(() => cache.set('a', 1, 0)).toThrow()
+  })
+
+  it('throws for negative TTL in set', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    expect(() => cache.set('a', 1, -100)).toThrow()
   })
 
   it('get refreshes LRU position', () => {
@@ -130,50 +158,196 @@ describe('LRUTTLCache', () => {
     expect(cache.evictions).toBe(2)
   })
 
-  it('handles get for missing key', () => {
-    const cache = new LRUTTLCache<string, number>(3)
-    expect(cache.get('missing')).toBeUndefined()
+  it('eviction counter includes expired entries', () => {
+    vi.useFakeTimers()
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 100 })
+    cache.set('a', 1)
+    vi.advanceTimersByTime(150)
+    cache.get('a')
+    expect(cache.evictions).toBe(1)
+    vi.useRealTimers()
   })
 
-  it('set and get returns value', () => {
-    const cache = new LRUTTLCache<string, number>(3)
-    cache.set('a', 42)
-    expect(cache.get('a')).toBe(42)
+  it('toString returns formatted string', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 1000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.toString()).toBe('LRUTTLCache(2/5, ttl=1000)')
   })
 
-  it('has returns true for existing key', () => {
-    const cache = new LRUTTLCache<string, number>(3)
+  it('toString for empty cache', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 10, defaultTTL: 5000 })
+    expect(cache.toString()).toBe('LRUTTLCache(0/10, ttl=5000)')
+  })
+
+  it('toJSON returns array of key-value pairs', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    const json = cache.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect(json).toContainEqual(['a', 1])
+    expect(json).toContainEqual(['b', 2])
+  })
+
+  it('toJSON for empty cache returns empty array', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    expect(cache.toJSON()).toEqual([])
+  })
+
+  it('clone creates independent copy', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    const clone = cache.clone()
+    clone.set('c', 3)
+    expect(cache.get('c')).toBeUndefined()
+    expect(clone.get('a')).toBe(1)
+  })
+
+  it('clone preserves TTL and configuration', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 3, defaultTTL: 500 })
+    cache.set('a', 1)
+    const clone = cache.clone()
+    expect(clone.toString()).toBe('LRUTTLCache(1/3, ttl=500)')
+  })
+
+  it('clone returns true for equal caches', () => {
+    const cache1 = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache1.set('a', 1)
+    cache1.set('b', 2)
+    const cache2 = cache1.clone()
+    expect(cache1.equals(cache2)).toBe(true)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const cache1 = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache1.set('a', 1)
+    const cache2 = new LRUTTLCache<string, number>({ maxSize: 3, defaultTTL: 10000 })
+    cache2.set('a', 1)
+    expect(cache1.equals(cache2)).toBe(false)
+  })
+
+  it('equals returns false for different TTL', () => {
+    const cache1 = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 1000 })
+    const cache2 = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 5000 })
+    expect(cache1.equals(cache2)).toBe(false)
+  })
+
+  it('equals returns false for different content', () => {
+    const cache1 = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache1.set('a', 1)
+    const cache2 = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache2.set('a', 2)
+    expect(cache1.equals(cache2)).toBe(false)
+  })
+
+  it('equals returns false for non-cache objects', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    expect(cache.equals(null)).toBe(false)
+    expect(cache.equals({})).toBe(false)
+    expect(cache.equals(123)).toBe(false)
+  })
+
+  it('equals handles NaN values correctly', () => {
+    const cache1 = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache1.set('a', NaN)
+    const cache2 = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache2.set('a', NaN)
+    expect(cache1.equals(cache2)).toBe(true)
+  })
+
+  it('size counts only non-expired entries', () => {
+    vi.useFakeTimers()
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 100 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    vi.advanceTimersByTime(150)
+    expect(cache.size).toBe(0)
+    vi.useRealTimers()
+  })
+
+  it('size getter triggers eviction', () => {
+    vi.useFakeTimers()
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 100 })
+    cache.set('a', 1)
+    vi.advanceTimersByTime(150)
+    cache.size
+    expect(cache.evictions).toBe(1)
+    vi.useRealTimers()
+  })
+
+  it('handles object values', () => {
+    const cache = new LRUTTLCache<string, { x: number }>({ maxSize: 5, defaultTTL: 10000 })
+    cache.set('obj', { x: 42 })
+    expect(cache.get('obj')).toEqual({ x: 42 })
+  })
+
+  it('handles null values', () => {
+    const cache = new LRUTTLCache<string, null>({ maxSize: 5, defaultTTL: 10000 })
+    cache.set('null', null)
+    expect(cache.get('null')).toBe(null)
+  })
+
+  it('handles undefined values', () => {
+    const cache = new LRUTTLCache<string, undefined>({ maxSize: 5, defaultTTL: 10000 })
+    cache.set('undef', undefined)
+    expect(cache.get('undef')).toBe(undefined)
+  })
+
+  it('multiple gets increment hits correctly', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache.set('a', 1)
+    cache.get('a')
+    cache.get('a')
+    cache.get('a')
+    expect(cache.hits).toBe(3)
+    expect(cache.misses).toBe(0)
+  })
+
+  it('misses increment for expired entries', () => {
+    vi.useFakeTimers()
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 100 })
+    cache.set('a', 1)
+    vi.advanceTimersByTime(150)
+    cache.get('a')
+    expect(cache.misses).toBe(1)
+    vi.useRealTimers()
+  })
+
+  it('evicts expired entries when reaching maxSize', () => {
+    vi.useFakeTimers()
+    const cache = new LRUTTLCache<string, number>({ maxSize: 2, defaultTTL: 100 })
+    cache.set('a', 1)
+    vi.advanceTimersByTime(150)
+    cache.set('b', 2)
+    cache.set('c', 3)
+    expect(cache.size).toBe(2)
+    expect(cache.get('a')).toBeUndefined()
+    vi.useRealTimers()
+  })
+
+  it('preserves insertion order in toJSON', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.set('c', 3)
+    const json = cache.toJSON()
+    expect(json).toEqual([['a', 1], ['b', 2], ['c', 3]])
+  })
+
+  it('handles number keys', () => {
+    const cache = new LRUTTLCache<number, string>({ maxSize: 5, defaultTTL: 10000 })
+    cache.set(1, 'one')
+    cache.set(2, 'two')
+    expect(cache.get(1)).toBe('one')
+    expect(cache.get(2)).toBe('two')
+  })
+
+  it('has returns false for missing key', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 10000 })
     cache.set('a', 1)
     expect(cache.has('a')).toBe(true)
     expect(cache.has('b')).toBe(false)
-  })
-
-  it('delete removes key', () => {
-    const cache = new LRUTTLCache<string, number>(1000)
-    cache.set('x', 42)
-    cache.delete('x')
-    expect(cache.has('x')).toBe(false)
-  })
-
-  it('get returns undefined for missing key', () => {
-    const cache = new LRUTTLCache<string, number>(5, 1000)
-    expect(cache.get('missing')).toBeUndefined()
-  })
-
-  it('set and get roundtrip', () => {
-    const cache = new LRUTTLCache<string, number>(5, 60000)
-    cache.set('key', 42)
-    expect(cache.get('key')).toBe(42)
-  })
-
-  it('get returns undefined for missing key', () => {
-    const cache = new LRUTTLCache<string, number>(5, 60000)
-    expect(cache.get('missing')).toBeUndefined()
-  })
-
-  it('set and get roundtrip', () => {
-    const cache = new LRUTTLCache<string, number>(5, 60000)
-    cache.set('key', 42)
-    expect(cache.get('key')).toBe(42)
   })
 })

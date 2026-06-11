@@ -246,6 +246,15 @@ describe('LRUEvictionCache - iteration', () => {
     const cache = new LRUEvictionCache<string, number>(3)
     expect([...cache.entries()]).toEqual([])
   })
+
+  it('keys order changes after get', () => {
+    const cache = new LRUEvictionCache<string, number>(3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.set('c', 3)
+    cache.get('a')
+    expect([...cache.keys()]).toEqual(['b', 'c', 'a'])
+  })
 })
 
 describe('LRUEvictionCache - toString', () => {
@@ -296,6 +305,13 @@ describe('LRUEvictionCache - clone', () => {
     cache.delete('a')
     expect(clone.has('a')).toBe(true)
     expect(clone.has('b')).toBe(false)
+  })
+
+  it('clone has same capacity as original', () => {
+    const cache = new LRUEvictionCache<string, number>(7)
+    cache.set('a', 1)
+    const clone = cache.clone()
+    expect(clone.capacity).toBe(7)
   })
 })
 

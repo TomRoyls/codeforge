@@ -121,56 +121,288 @@ describe('MisraGries', () => {
     expect(mg.size).toBeLessThanOrEqual(2)
   })
 
-  it('getCount for unseen item is 0', () => {
+  it('handles string type parameters', () => {
     const mg = new MisraGries<string>(5)
-    mg.processBatch(['a'])
-    expect(mg.getCount('z')).toBe(0)
+    mg.process('apple')
+    mg.process('banana')
+    mg.process('apple')
+    expect(mg.getCount('apple')).toBe(2)
+    expect(mg.getCount('banana')).toBe(1)
   })
 
-  it('process single items via process', () => {
+  it('handles number type parameters', () => {
+    const mg = new MisraGries<number>(5)
+    mg.process(100)
+    mg.process(200)
+    mg.process(100)
+    expect(mg.getCount(100)).toBe(2)
+    expect(mg.getCount(200)).toBe(1)
+  })
+
+  it('handles mixed type items with strings', () => {
+    const mg = new MisraGries<string>(3)
+    mg.process('item1')
+    mg.process('item2')
+    mg.process('item1')
+    expect(mg.size).toBe(2)
+  })
+
+  it('top returns empty array initially', () => {
+    const mg = new MisraGries<string>(5)
+    const top = mg.top()
+    expect(top).toEqual([])
+  })
+
+  it('top returns correct structure', () => {
     const mg = new MisraGries<string>(3)
     mg.process('a')
     mg.process('a')
     mg.process('b')
-    expect(mg.getCount('a')).toBe(2)
-    expect(mg.getCount('b')).toBe(1)
+    const top = mg.top()
+    expect(top.length).toBeGreaterThan(0)
+    expect(top[0]).toHaveProperty('item')
+    expect(top[0]).toHaveProperty('count')
   })
 
-  it('empty stream has zero counts', () => {
+  it('handles large k value', () => {
+    const mg = new MisraGries<string>(1000)
+    for (let i = 0; i < 50; i++) {
+      mg.process(`item-${i}`)
+    }
+    expect(mg.size).toBe(50)
+  })
+
+  it('processBatch with Set', () => {
+    const mg = new MisraGries<number>(3)
+    const items = new Set([1, 2, 1, 3])
+    mg.processBatch(items)
+    expect(mg.getCount(1)).toBeGreaterThan(0)
+    expect(mg.getCount(2)).toBeGreaterThan(0)
+    expect(mg.getCount(3)).toBeGreaterThan(0)
+  })
+
+  it('processBatch with array-like', () => {
+    const mg = new MisraGries<number>(3)
+    const items = [1, 2, 1, 3]
+    mg.processBatch(items)
+    expect(mg.getCount(1)).toBe(2)
+  })
+
+  it('has returns false for unseen item', () => {
     const mg = new MisraGries<string>(3)
-    expect(mg.getCount('any')).toBe(0)
+    expect(mg.has('unseen')).toBe(false)
   })
 
-  it('tracks frequent items', () => {
+  it('has returns true for seen item', () => {
+    const mg = new MisraGries<string>(3)
+    mg.process('a')
+    expect(mg.has('a')).toBe(true)
+  })
+
+  it('reset clears all counters', () => {
+    const mg = new MisraGries<string>(5)
+    mg.processBatch(['a', 'b', 'c'])
+    mg.reset()
+    expect(mg.getCount('a')).toBe(0)
+    expect(mg.getCount('b')).toBe(0)
+    expect(mg.getCount('c')).toBe(0)
+  })
+
+  it('constructor throws for k=0', () => {
+    expect(() => new MisraGries<string>(0)).toThrow()
+  })
+
+  it('constructor throws for negative k', () => {
+    expect(() => new MisraGries<string>(-5)).toThrow()
+  })
+
+  it('constructor accepts k=1', () => {
+    const mg = new MisraGries<string>(1)
+    expect(mg.size).toBe(0)
+  })
+
+  it('constructor accepts large k', () => {
+    const mg = new MisraGries<string>(10000)
+    expect(mg.size).toBe(0)
+  })
+
+  it('size reflects number of tracked items', () => {
+    const mg = new MisraGries<string>(5)
+    mg.process('a')
+    expect(mg.size).toBe(1)
+    mg.process('b')
+    expect(mg.size).toBe(2)
+    mg.process('a')
+    expect(mg.size).toBe(2)
+  })
+
+  it('eviction removes items when k reached', () => {
     const mg = new MisraGries<string>(2)
     mg.process('a')
-    mg.process('a')
     mg.process('b')
-    expect(mg.getCount('a')).toBeGreaterThanOrEqual(2)
+    mg.process('c')
+    expect(mg.size).toBeLessThanOrEqual(2)
   })
 
-  it('getCount for unseen item is 0', () => {
+  it('counter increments on repeated items', () => {
+    const mg = new MisraGries<string>(5)
+    mg.process('x')
+    const count1 = mg.getCount('x')
+    mg.process('x')
+    const count2 = mg.getCount('x')
+    expect(count2).toBeGreaterThan(count1!)
+  })
+
+  it('tracks items with special characters', () => {
     const mg = new MisraGries<string>(3)
-    expect(mg.getCount('z')).toBe(0)
+    mg.process('item-with-dash')
+    mg.process('item_with_underscore')
+    mg.process('item.with.dot')
+    expect(mg.has('item-with-dash')).toBe(true)
+    expect(mg.has('item_with_underscore')).toBe(true)
+    expect(mg.has('item.with.dot')).toBe(true)
   })
 
-  it('process increases count for item', () => {
+  it('handles empty strings', () => {
+    const mg = new MisraGries<string>(3)
+    mg.process('')
+    mg.process('')
+    expect(mg.getCount('')).toBe(2)
+  })
+
+  it('handles zero as numeric value', () => {
+    const mg = new MisraGries<number>(3)
+    mg.process(0)
+    mg.process(0)
+    mg.process(1)
+    expect(mg.getCount(0)).toBe(2)
+    expect(mg.getCount(1)).toBe(1)
+  })
+
+  it('handles negative numbers', () => {
+    const mg = new MisraGries<number>(3)
+    mg.process(-1)
+    mg.process(-2)
+    mg.process(-1)
+    expect(mg.getCount(-1)).toBe(2)
+    expect(mg.getCount(-2)).toBe(1)
+  })
+
+  it('large batch processing', () => {
+    const mg = new MisraGries<number>(10)
+    const items: number[] = []
+    for (let i = 0; i < 1000; i++) {
+      items.push(i % 20)
+    }
+    mg.processBatch(items)
+    expect(mg.size).toBeGreaterThan(0)
+  })
+
+  it('processBatch with generator', () => {
+    const mg = new MisraGries<number>(3)
+    function* generateItems(): Iterable<number> {
+      yield 1
+      yield 2
+      yield 1
+      yield 3
+    }
+    mg.processBatch(generateItems())
+    expect(mg.getCount(1)).toBe(2)
+  })
+
+  it('top maintains descending order', () => {
+    const mg = new MisraGries<string>(10)
+    mg.processBatch(['a', 'a', 'a', 'b', 'b', 'c', 'd', 'e', 'f', 'g'])
+    const top = mg.top()
+    for (let i = 0; i < top.length - 1; i++) {
+      expect(top[i]!.count).toBeGreaterThanOrEqual(top[i + 1]!.count)
+    }
+  })
+
+  it('top with single item', () => {
+    const mg = new MisraGries<string>(3)
+    mg.process('only')
+    const top = mg.top()
+    expect(top.length).toBe(1)
+    expect(top[0]!.item).toBe('only')
+  })
+
+  it('frequent item survives many evictions', () => {
+    const mg = new MisraGries<string>(2)
+    for (let i = 0; i < 100; i++) {
+      mg.process('frequent')
+      mg.process(`rare${i}`)
+    }
+    expect(mg.has('frequent')).toBe(true)
+    expect(mg.getCount('frequent')).toBeGreaterThan(0)
+  })
+
+  it('getCount after reset returns 0', () => {
     const mg = new MisraGries<string>(3)
     mg.process('a')
-    mg.process('a')
-    expect(mg.getCount('a')).toBeGreaterThanOrEqual(1)
+    mg.reset()
+    expect(mg.getCount('a')).toBe(0)
   })
 
-  it('returns 0 for unseen element', () => {
-    const mg = new MisraGries(2)
+  it('has after reset returns false', () => {
+    const mg = new MisraGries<string>(3)
     mg.process('a')
-    expect(mg.getCount('z')).toBe(0)
+    mg.reset()
+    expect(mg.has('a')).toBe(false)
   })
 
-  it('process increases count of seen item', () => {
-    const mg = new MisraGries(2)
-    mg.process('a')
-    mg.process('a')
-    expect(mg.getCount('a')).toBeGreaterThanOrEqual(1)
+  it('size after reset is 0', () => {
+    const mg = new MisraGries<string>(5)
+    mg.processBatch(['a', 'b', 'c', 'd', 'e'])
+    mg.reset()
+    expect(mg.size).toBe(0)
+  })
+
+  it('top after reset is empty', () => {
+    const mg = new MisraGries<string>(5)
+    mg.processBatch(['a', 'b', 'c'])
+    mg.reset()
+    const top = mg.top()
+    expect(top).toEqual([])
+  })
+
+  it('processBatch after reset works', () => {
+    const mg = new MisraGries<string>(3)
+    mg.process('old')
+    mg.reset()
+    mg.processBatch(['new1', 'new2', 'new1'])
+    expect(mg.getCount('old')).toBe(0)
+    expect(mg.getCount('new1')).toBe(2)
+  })
+
+  it('handles items with same count in top', () => {
+    const mg = new MisraGries<string>(5)
+    mg.processBatch(['a', 'b', 'a', 'b'])
+    const top = mg.top()
+    expect(top.length).toBe(2)
+    expect(top[0]!.count).toBe(top[1]!.count)
+  })
+
+  it('small k with many distinct items', () => {
+    const mg = new MisraGries<string>(2)
+    for (let i = 0; i < 10; i++) {
+      mg.process(`item${i}`)
+    }
+    expect(mg.size).toBeLessThanOrEqual(2)
+  })
+
+  it('k equals number of items', () => {
+    const mg = new MisraGries<string>(3)
+    mg.processBatch(['a', 'b', 'c'])
+    expect(mg.size).toBe(3)
+    expect(mg.has('a')).toBe(true)
+    expect(mg.has('b')).toBe(true)
+    expect(mg.has('c')).toBe(true)
+  })
+
+  it('k greater than number of items', () => {
+    const mg = new MisraGries<string>(10)
+    mg.processBatch(['a', 'b', 'c'])
+    expect(mg.size).toBe(3)
   })
 })

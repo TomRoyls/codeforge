@@ -101,11 +101,6 @@ describe('MergeSortTree', () => {
     expect(mst.queryCountLessThan(0, 99, 50)).toBe(49)
   })
 
-  it('single element tree', () => {
-    const mst = new MergeSortTree([42])
-    expect(mst.queryKthSmallest(0, 0, 0)).toBe(42)
-  })
-
   it('queryCountLessThan for small range', () => {
     const mst = new MergeSortTree([1, 3, 2, 3, 4])
     expect(mst.queryCountLessThan(0, 2, 3)).toBe(2)
@@ -121,21 +116,148 @@ describe('MergeSortTree', () => {
     expect(mst).toBeDefined()
   })
 
-  it('querySorted returns sorted range', () => {
-    const mst = new MergeSortTree([3, 1, 2])
-    const result = mst.querySorted(0, 2)
-    expect(result).toEqual([1, 2, 3])
+  it('handles zero values', () => {
+    const mst = new MergeSortTree([0, 0, 0])
+    expect(mst.queryCountLessThan(0, 2, 0)).toBe(0)
+    expect(mst.queryCountLessThan(0, 2, 1)).toBe(3)
+    expect(mst.queryKthSmallest(0, 2, 0)).toBe(0)
   })
 
-  it('single element query', () => {
-    const mst = new MergeSortTree([5, 3, 1])
-    const result = mst.querySorted(1, 1)
-    expect(result).toEqual([3])
+  it('handles mixed positive and negative', () => {
+    const mst = new MergeSortTree([-5, 0, 5, -3, 2])
+    expect(mst.querySorted(0, 4)).toEqual([-5, -3, 0, 2, 5])
+    expect(mst.queryCountLessThan(0, 4, 0)).toBe(2)
   })
 
-  it('full range query returns sorted', () => {
+  it('queryCountInRange with exact bounds', () => {
+    const mst = new MergeSortTree([1, 3, 5, 7, 9])
+    expect(mst.queryCountInRange(0, 4, 3, 7)).toBe(3)
+  })
+
+  it('queryCountInRange with min value in range', () => {
+    const mst = new MergeSortTree([5, 10, 15, 20])
+    expect(mst.queryCountInRange(0, 3, 5, 15)).toBe(3)
+  })
+
+  it('queryCountInRange with max value in range', () => {
+    const mst = new MergeSortTree([5, 10, 15, 20])
+    expect(mst.queryCountInRange(0, 3, 10, 20)).toBe(3)
+  })
+
+  it('queryCountInRange with exact single value match', () => {
+    const mst = new MergeSortTree([1, 2, 3, 4, 5])
+    expect(mst.queryCountInRange(0, 4, 3, 3)).toBe(1)
+  })
+
+  it('handles repeated sub-array queries', () => {
+    const mst = new MergeSortTree([3, 1, 4, 1, 5, 9, 2, 6])
+    expect(mst.queryCountLessThan(0, 3, 2)).toBe(2)
+    expect(mst.queryCountLessThan(2, 5, 6)).toBe(3)
+    expect(mst.querySorted(3, 7)).toEqual([1, 2, 5, 6, 9])
+  })
+
+  it('kthSmallest on duplicates', () => {
+    const mst = new MergeSortTree([5, 2, 5, 1, 5, 3])
+    expect(mst.queryKthSmallest(0, 5, 0)).toBe(1)
+    expect(mst.queryKthSmallest(0, 5, 3)).toBe(5)
+    expect(mst.queryKthSmallest(0, 5, 5)).toBe(5)
+  })
+
+  it('handles array with all same values', () => {
+    const mst = new MergeSortTree([7, 7, 7, 7, 7])
+    expect(mst.querySorted(0, 4)).toEqual([7, 7, 7, 7, 7])
+    expect(mst.queryKthSmallest(0, 4, 2)).toBe(7)
+  })
+
+  it('querySorted returns empty array for invalid range', () => {
+    const mst = new MergeSortTree([1, 2, 3])
+    expect(mst.querySorted(2, 1)).toEqual([])
+  })
+
+  it('handles large single query', () => {
+    const arr = Array.from({ length: 1000 }, (_, i) => i)
+    const mst = new MergeSortTree(arr)
+    expect(mst.queryCountLessThan(0, 999, 500)).toBe(500)
+  })
+
+  it('queryCountInRange with reversed bounds returns 0', () => {
+    const mst = new MergeSortTree([1, 2, 3, 4, 5])
+    expect(mst.queryCountInRange(0, 4, 10, 5)).toBe(0)
+  })
+
+  it('handles very large values', () => {
+    const mst = new MergeSortTree([1000000, 2000000, 3000000])
+    expect(mst.queryCountLessThan(0, 2, 2500000)).toBe(2)
+    expect(mst.queryKthSmallest(0, 2, 1)).toBe(2000000)
+  })
+
+  it('querySorted on prefix', () => {
+    const mst = new MergeSortTree([9, 7, 5, 3, 1])
+    expect(mst.querySorted(0, 2)).toEqual([5, 7, 9])
+  })
+
+  it('querySorted on suffix', () => {
+    const mst = new MergeSortTree([9, 7, 5, 3, 1])
+    expect(mst.querySorted(2, 4)).toEqual([1, 3, 5])
+  })
+
+  it('kthSmallest at start of range', () => {
+    const mst = new MergeSortTree([10, 20, 30, 40, 50])
+    expect(mst.queryKthSmallest(1, 4, 0)).toBe(20)
+  })
+
+  it('kthSmallest at end of range', () => {
+    const mst = new MergeSortTree([10, 20, 30, 40, 50])
+    expect(mst.queryKthSmallest(1, 4, 3)).toBe(50)
+  })
+
+  it('handles alternating values', () => {
+    const mst = new MergeSortTree([1, 100, 2, 99, 3, 98])
+    expect(mst.querySorted(0, 5)).toEqual([1, 2, 3, 98, 99, 100])
+    expect(mst.queryCountLessThan(0, 5, 50)).toBe(3)
+  })
+
+  it('queryCountLessThan with equal threshold', () => {
+    const mst = new MergeSortTree([1, 2, 3, 4, 5])
+    expect(mst.queryCountLessThan(0, 4, 3)).toBe(2)
+  })
+
+  it('handles three elements', () => {
     const mst = new MergeSortTree([3, 1, 2])
-    const result = mst.querySorted(0, 2)
-    expect(result).toEqual([1, 2, 3])
+    expect(mst.querySorted(0, 2)).toEqual([1, 2, 3])
+    expect(mst.queryKthSmallest(0, 2, 1)).toBe(2)
+  })
+
+  it('querySorted on middle element only', () => {
+    const mst = new MergeSortTree([5, 10, 15, 20, 25])
+    expect(mst.querySorted(2, 2)).toEqual([15])
+  })
+
+  it('handles decreasing sequence', () => {
+    const mst = new MergeSortTree([5, 4, 3, 2, 1])
+    expect(mst.querySorted(0, 4)).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles increasing sequence', () => {
+    const mst = new MergeSortTree([1, 2, 3, 4, 5])
+    expect(mst.querySorted(0, 4)).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('queryCountInRange on large array with range', () => {
+    const arr = Array.from({ length: 200 }, (_, i) => i)
+    const mst = new MergeSortTree(arr)
+    expect(mst.queryCountInRange(0, 199, 50, 149)).toBe(100)
+  })
+
+  it('kthSmallest on large sub-range', () => {
+    const arr = Array.from({ length: 200 }, (_, i) => 200 - i)
+    const mst = new MergeSortTree(arr)
+    expect(mst.queryKthSmallest(50, 149, 25)).toBe(76)
+  })
+
+  it('handles array with single repeated value', () => {
+    const mst = new MergeSortTree([10])
+    expect(mst.querySorted(0, 0)).toEqual([10])
+    expect(mst.queryCountLessThan(0, 0, 10)).toBe(0)
   })
 })

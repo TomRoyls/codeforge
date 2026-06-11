@@ -161,23 +161,220 @@ describe('MergeSortedIterators', () => {
     expect(merger.toArray()).toEqual([1, 2, 3])
   })
 
-  it('merges two sorted iterators', () => {
-    const it1 = [1, 3, 5][Symbol.iterator]()
-    const it2 = [2, 4, 6][Symbol.iterator]()
-    const merger = new MergeSortedIterators([it1, it2])
-    expect(merger.toArray()).toEqual([1, 2, 3, 4, 5, 6])
-  })
-
   it('handles single empty iterator', () => {
     const it1 = [][Symbol.iterator]()
     const merger = new MergeSortedIterators([it1])
     expect(merger.toArray()).toEqual([])
   })
 
-  it('merges two sorted iterators', () => {
-    const it1 = [1, 3, 5][Symbol.iterator]()
-    const it2 = [2, 4, 6][Symbol.iterator]()
+  it('next returns done when exhausted', () => {
+    const it1 = [1][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1])
+    merger.next()
+    const result = merger.next()
+    expect(result.done).toBe(true)
+    expect(result.value).toBe(undefined)
+  })
+
+  it('Symbol.iterator returns iterable', () => {
+    const it1 = [1, 2][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1])
+    const iterator = merger[Symbol.iterator]()
+    expect(typeof iterator.next).toBe('function')
+    const first = iterator.next()
+    expect(first.done).toBe(false)
+    expect(first.value).toBe(1)
+  })
+
+  it('multiple empty iterators', () => {
+    const it1 = [][Symbol.iterator]()
+    const it2 = [][Symbol.iterator]()
+    const it3 = [][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2, it3])
+    expect(merger.activeSources).toBe(0)
+    expect(merger.toArray()).toEqual([])
+  })
+
+  it('all iterators empty', () => {
+    const it1 = [][Symbol.iterator]()
+    const it2 = [][Symbol.iterator]()
     const merger = new MergeSortedIterators([it1, it2])
-    expect(merger.toArray()).toEqual([1, 2, 3, 4, 5, 6])
+    const first = merger.next()
+    expect(first.done).toBe(true)
+  })
+
+  it('fromArrays with single array', () => {
+    const merger = MergeSortedIterators.fromArrays([[1, 2, 3]])
+    const result = merger.toArray()
+    expect(result).toEqual([1, 2, 3])
+  })
+
+  it('fromArrays with all empty arrays', () => {
+    const merger = MergeSortedIterators.fromArrays([[], [], []])
+    const result = merger.toArray()
+    expect(result).toEqual([])
+  })
+
+  it('fromArrays with custom compare', () => {
+    const compare = (a: number, b: number) => b - a
+    const merger = MergeSortedIterators.fromArrays([[3, 1], [4, 2]], compare)
+    const result = merger.toArray()
+    expect(result).toEqual([4, 3, 2, 1])
+  })
+
+  it('merge with empty iterables', () => {
+    const result = MergeSortedIterators.merge([], [])
+    expect(result).toEqual([])
+  })
+
+  it('merge with single element iterables', () => {
+    const result = MergeSortedIterators.merge([1], [2])
+    expect(result).toEqual([1, 2])
+  })
+
+  it('merge with strings descending', () => {
+    const compare = (a: string, b: string) => b.localeCompare(a)
+    const result = MergeSortedIterators.merge(['c', 'a'], ['d', 'b'], compare)
+    expect(result).toEqual(['d', 'c', 'b', 'a'])
+  })
+
+  it('handles duplicates across sources', () => {
+    const it1 = [1, 1, 2][Symbol.iterator]()
+    const it2 = [1, 2, 2][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result).toEqual([1, 1, 1, 2, 2, 2])
+  })
+
+  it('large datasets', () => {
+    const arr1 = Array.from({ length: 100 }, (_, i) => i * 2)
+    const arr2 = Array.from({ length: 100 }, (_, i) => i * 2 + 1)
+    const it1 = arr1[Symbol.iterator]()
+    const it2 = arr2[Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result.length).toBe(200)
+    expect(result[0]).toBe(0)
+    expect(result[199]).toBe(199)
+  })
+
+  it('many iterators', () => {
+    const iterators = [
+      [1, 10, 19][Symbol.iterator](),
+      [2, 11, 20][Symbol.iterator](),
+      [3, 12, 21][Symbol.iterator](),
+      [4, 13, 22][Symbol.iterator](),
+      [5, 14, 23][Symbol.iterator](),
+    ]
+    const merger = new MergeSortedIterators(iterators)
+    const result = merger.toArray()
+    expect(result).toEqual([1, 2, 3, 4, 5, 10, 11, 12, 13, 14, 19, 20, 21, 22, 23])
+  })
+
+  it('interleaved values', () => {
+    const it1 = [1, 4, 7][Symbol.iterator]()
+    const it2 = [2, 5, 8][Symbol.iterator]()
+    const it3 = [3, 6, 9][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2, it3])
+    const result = merger.toArray()
+    expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9])
+  })
+
+  it('all same values', () => {
+    const it1 = [5, 5, 5][Symbol.iterator]()
+    const it2 = [5, 5, 5][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result).toEqual([5, 5, 5, 5, 5, 5])
+  })
+
+  it('very large numbers', () => {
+    const it1 = [Number.MAX_SAFE_INTEGER - 2, Number.MAX_SAFE_INTEGER][Symbol.iterator]()
+    const it2 = [Number.MAX_SAFE_INTEGER - 1][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result).toEqual([Number.MAX_SAFE_INTEGER - 2, Number.MAX_SAFE_INTEGER - 1, Number.MAX_SAFE_INTEGER])
+  })
+
+  it('very small numbers', () => {
+    const it1 = [0.0001, 0.0003][Symbol.iterator]()
+    const it2 = [0.0002, 0.0004][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result).toEqual([0.0001, 0.0002, 0.0003, 0.0004])
+  })
+
+  it('handles custom objects with compare', () => {
+    const obj1 = { id: 1, name: 'a' }
+    const obj2 = { id: 2, name: 'b' }
+    const obj3 = { id: 3, name: 'c' }
+    const compare = (a: { id: number }, b: { id: number }) => a.id - b.id
+    const it1 = [obj1, obj3][Symbol.iterator]()
+    const it2 = [obj2][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2], compare)
+    const result = merger.toArray()
+    expect(result).toEqual([obj1, obj2, obj3])
+  })
+
+  it('three iterators merge', () => {
+    const it1 = [1, 4, 7][Symbol.iterator]()
+    const it2 = [2, 5, 8][Symbol.iterator]()
+    const it3 = [3, 6, 9][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2, it3])
+    const result = merger.toArray()
+    expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9])
+  })
+
+  it('handles one iterator exhausted early', () => {
+    const it1 = [1][Symbol.iterator]()
+    const it2 = [2, 3, 4, 5][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles Infinity values', () => {
+    const it1 = [1, Infinity][Symbol.iterator]()
+    const it2 = [2, 3][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result).toEqual([1, 2, 3, Infinity])
+  })
+
+  it('handles negative Infinity values', () => {
+    const it1 = [-Infinity, 1][Symbol.iterator]()
+    const it2 = [0, 2][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result).toEqual([-Infinity, 0, 1, 2])
+  })
+
+  it('merge with first iterable empty', () => {
+    const result = MergeSortedIterators.merge([], [1, 2, 3])
+    expect(result).toEqual([1, 2, 3])
+  })
+
+  it('merge with second iterable empty', () => {
+    const result = MergeSortedIterators.merge([1, 2, 3], [])
+    expect(result).toEqual([1, 2, 3])
+  })
+
+  it('fromArrays preserves sorted order', () => {
+    const merger = MergeSortedIterators.fromArrays([
+      [1, 5, 9],
+      [2, 6, 10],
+      [3, 7, 11],
+      [4, 8, 12],
+    ])
+    const result = merger.toArray()
+    expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+  })
+
+  it('handles mixed case strings', () => {
+    const it1 = ['A', 'C', 'E'][Symbol.iterator]()
+    const it2 = ['B', 'D', 'F'][Symbol.iterator]()
+    const merger = new MergeSortedIterators([it1, it2])
+    const result = merger.toArray()
+    expect(result).toEqual(['A', 'B', 'C', 'D', 'E', 'F'])
   })
 })

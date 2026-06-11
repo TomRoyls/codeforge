@@ -310,55 +310,80 @@ describe('MoAlgorithm', () => {
     expect(answers).toEqual([6, 9, 12])
   })
 
-  it('handles single query', () => {
-    const arr = [1, 2, 3, 4, 5]
-    const answers = MoAlgorithm.solve(
-      arr,
-      [{ l: 0, r: 4 }],
-      (state, idx) => { state.sum += arr[idx]! },
-      (state, idx) => { state.sum += arr[idx]! },
-      (state, idx) => { state.sum -= arr[idx]! },
-      (state, idx) => { state.sum -= arr[idx]! },
-      (state) => state.sum,
-      { sum: 0 },
-    )
-    expect(answers).toEqual([15])
-  })
-
-  it('handles single element array', () => {
-    const data = [42]
+  it('handles query with left/right properties', () => {
+    const data = [1, 2, 3]
+    const queries = [{ left: 0, right: 2 }]
     const state = { sum: 0 }
     const answers = MoAlgorithm.solve(
       data,
-      [{ l: 0, r: 0 }],
+      queries,
       (s, idx) => { s.sum += data[idx]! },
       (s, idx) => { s.sum += data[idx]! },
       (s, idx) => { s.sum -= data[idx]! },
       (s, idx) => { s.sum -= data[idx]! },
       (s) => s.sum,
-      state,
+      state
     )
-    expect(answers[0]).toBe(42)
+    expect(answers).toEqual([6])
   })
 
-  it('static solve with empty queries', () => {
+  it('handles mixed query formats (l/r and left/right)', () => {
+    const data = [1, 2, 3, 4]
+    const queries = [{ l: 0, r: 1 }, { left: 1, right: 2 }, { l: 2, r: 3 }]
+    const state = { sum: 0 }
     const answers = MoAlgorithm.solve(
-      [1, 2, 3],
-      [],
-      (s) => s,
-      (s, i) => { s += 0 },
-      (s, i) => { s += 0 },
-      0,
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
     )
-    expect(answers).toEqual([])
+    expect(answers).toEqual([3, 5, 7])
   })
 
-  it('single element query', () => {
-    const arr = [5]
-    const queries = [{ l: 0, r: 0 }]
+  it('handles min value query', () => {
+    const data = [5, 2, 8, 1, 9]
+    const queries = [{ l: 0, r: 4 }]
+    const state = { values: [] as number[] }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.values.push(data[idx]!); s.values.sort() },
+      (s, idx) => { s.values.push(data[idx]!); s.values.sort() },
+      (s, idx) => { s.values.splice(s.values.indexOf(data[idx]!), 1) },
+      (s, idx) => { s.values.splice(s.values.indexOf(data[idx]!), 1) },
+      (s) => s.values[0]!,
+      state
+    )
+    expect(answers[0]).toBe(1)
+  })
+
+  it('handles max value query', () => {
+    const data = [5, 2, 8, 1, 9]
+    const queries = [{ l: 0, r: 4 }]
+    const state = { values: [] as number[] }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.values.push(data[idx]!); s.values.sort() },
+      (s, idx) => { s.values.push(data[idx]!); s.values.sort() },
+      (s, idx) => { s.values.splice(s.values.indexOf(data[idx]!), 1) },
+      (s, idx) => { s.values.splice(s.values.indexOf(data[idx]!), 1) },
+      (s) => s.values[s.values.length - 1]!,
+      state
+    )
+    expect(answers[0]).toBe(9)
+  })
+
+  it('handles range count query', () => {
+    const data = [1, 2, 3, 4, 5]
+    const queries = [{ l: 1, r: 3 }]
     const state = { count: 0 }
     const answers = MoAlgorithm.solve(
-      arr,
+      data,
       queries,
       (s, idx) => { s.count++ },
       (s, idx) => { s.count++ },
@@ -367,61 +392,425 @@ describe('MoAlgorithm', () => {
       (s) => s.count,
       state
     )
-    expect(answers.length).toBe(1)
-    expect(answers[0]).toBe(1)
+    expect(answers[0]).toBe(3)
   })
 
-  it('empty queries returns empty answers', () => {
+  it('handles floating point numbers', () => {
+    const data = [1.5, 2.7, 3.3, 4.1]
+    const queries = [{ l: 0, r: 3 }]
+    const state = { sum: 0 }
     const answers = MoAlgorithm.solve(
-      [1, 2, 3],
-      [],
-      (state, idx) => { state.count += [1, 2, 3][idx]! },
-      (state, idx) => { state.count -= [1, 2, 3][idx]! },
-      (state) => state.count,
-      { count: 0 },
-    )
-    expect(answers).toEqual([])
-  })
-
-  it('single element sum query', () => {
-    const answers = MoAlgorithm.solve(
-      [10],
-      [{ l: 0, r: 0 }],
-      (state: { sum: number }, idx: number) => { state.sum += [10][idx]! },
-      (state: { sum: number }, idx: number) => { state.sum += [10][idx]! },
-      (state: { sum: number }, idx: number) => { state.sum -= [10][idx]! },
-      (state: { sum: number }, idx: number) => { state.sum -= [10][idx]! },
-      (state: { sum: number }) => state.sum,
-      { sum: 0 },
-    )
-    expect(answers).toEqual([10])
-  })
-
-  it('empty queries returns empty answers', () => {
-    const answers = MoAlgorithm.solve(
-      [1, 2, 3],
-      [],
-      {
-        add: () => {},
-        remove: () => {},
-        getAnswer: () => ({ sum: 0 }),
-      },
-      { sum: 0 },
-    )
-    expect(answers).toEqual([])
-  })
-
-  it('single element query returns value', () => {
-    const answers = MoAlgorithm.solve(
-      [42],
-      [{ left: 0, right: 0 }],
-      (s, idx) => { s.sum += 42 },
-      (s, idx) => { s.sum += 42 },
-      (s, idx) => { s.sum -= 42 },
-      (s, idx) => { s.sum -= 42 },
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
       (s) => s.sum,
-      { sum: 0 },
+      state
     )
-    expect(answers).toEqual([42])
+    expect(answers[0]).toBeCloseTo(11.6, 1)
+  })
+
+  it('handles identical elements', () => {
+    const data = [5, 5, 5, 5, 5]
+    const queries = [{ l: 0, r: 4 }, { l: 1, r: 3 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers[0]).toBe(25)
+    expect(answers[1]).toBe(15)
+  })
+
+  it('handles very large range', () => {
+    const data = Array.from({ length: 10000 }, (_, i) => i % 100)
+    const queries = [{ l: 0, r: 9999 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers[0]).toBeGreaterThan(0)
+  })
+
+  it('handles XOR query', () => {
+    const data = [1, 2, 3, 4]
+    const queries = [{ l: 0, r: 3 }]
+    const state = { xor: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.xor ^= data[idx]! },
+      (s, idx) => { s.xor ^= data[idx]! },
+      (s, idx) => { s.xor ^= data[idx]! },
+      (s, idx) => { s.xor ^= data[idx]! },
+      (s) => s.xor,
+      state
+    )
+    expect(answers[0]).toBe(4)
+  })
+
+  it('handles product query', () => {
+    const data = [2, 3, 4]
+    const queries = [{ l: 0, r: 2 }]
+    const state = { product: 1 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.product *= data[idx]! },
+      (s, idx) => { s.product *= data[idx]! },
+      (s, idx) => { s.product /= data[idx]! },
+      (s, idx) => { s.product /= data[idx]! },
+      (s) => s.product,
+      state
+    )
+    expect(answers[0]).toBe(24)
+  })
+
+  it('handles array state', () => {
+    const data = [1, 2, 3, 4]
+    const queries = [{ l: 0, r: 2 }]
+    const state = [] as number[]
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.push(data[idx]!) },
+      (s, idx) => { s.push(data[idx]!) },
+      (s, idx) => { s.shift() },
+      (s, idx) => { s.shift() },
+      (s) => s.reduce((a, b) => a + b, 0),
+      state
+    )
+    expect(answers[0]).toBe(6)
+  })
+
+  it('handles distinct element count', () => {
+    const data = [1, 2, 2, 3, 1]
+    const queries = [{ l: 0, r: 4 }]
+    const state = { count: new Map<number, number>() }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => {
+        const val = data[idx]!
+        s.count.set(val, (s.count.get(val) || 0) + 1)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.count.set(val, (s.count.get(val) || 0) + 1)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.count.set(val, s.count.get(val)! - 1)
+        if (s.count.get(val) === 0) s.count.delete(val)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.count.set(val, s.count.get(val)! - 1)
+        if (s.count.get(val) === 0) s.count.delete(val)
+      },
+      (s) => s.count.size,
+      state
+    )
+    expect(answers[0]).toBe(3)
+  })
+
+  it('handles mode element query', () => {
+    const data = [1, 2, 2, 3, 3, 3, 1]
+    const queries = [{ l: 0, r: 6 }]
+    const state = { freq: new Map<number, number>() }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, (s.freq.get(val) || 0) + 1)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, (s.freq.get(val) || 0) + 1)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, s.freq.get(val)! - 1)
+        if (s.freq.get(val) === 0) s.freq.delete(val)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, s.freq.get(val)! - 1)
+        if (s.freq.get(val) === 0) s.freq.delete(val)
+      },
+      (s) => {
+        let maxFreq = 0
+        let mode = 0
+        for (const [val, freq] of s.freq.entries()) {
+          if (freq > maxFreq) {
+            maxFreq = freq
+            mode = val
+          }
+        }
+        return mode
+      },
+      state
+    )
+    expect(answers[0]).toBe(3)
+  })
+
+  it('handles subarray length query', () => {
+    const data = [1, 2, 3, 4, 5]
+    const queries = [{ l: 1, r: 4 }, { l: 0, r: 2 }]
+    const state = { length: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.length++ },
+      (s, idx) => { s.length++ },
+      (s, idx) => { s.length-- },
+      (s, idx) => { s.length-- },
+      (s) => s.length,
+      state
+    )
+    expect(answers[0]).toBe(4)
+    expect(answers[1]).toBe(3)
+  })
+
+  it('handles average query', () => {
+    const data = [2, 4, 6, 8]
+    const queries = [{ l: 0, r: 3 }]
+    const state = { sum: 0, count: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]!; s.count++ },
+      (s, idx) => { s.sum += data[idx]!; s.count++ },
+      (s, idx) => { s.sum -= data[idx]!; s.count-- },
+      (s, idx) => { s.sum -= data[idx]!; s.count-- },
+      (s) => s.sum / s.count,
+      state
+    )
+    expect(answers[0]).toBe(5)
+  })
+
+  it('handles state with object properties', () => {
+    const data = [1, 2, 3]
+    const queries = [{ l: 0, r: 2 }]
+    const state = { min: Infinity, max: -Infinity }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => {
+        const val = data[idx]!
+        if (val < s.min) s.min = val
+        if (val > s.max) s.max = val
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        if (val < s.min) s.min = val
+        if (val > s.max) s.max = val
+      },
+      (s, idx) => { },
+      (s, idx) => { },
+      (s) => s.max - s.min,
+      state
+    )
+    expect(answers[0]).toBe(2)
+  })
+
+  it('handles query with same l and r', () => {
+    const data = [10, 20, 30]
+    const queries = [{ l: 1, r: 1 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers[0]).toBe(20)
+  })
+
+  it('handles reverse range query', () => {
+    const data = [10, 20, 30, 40, 50]
+    const queries = [{ l: 2, r: 4 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers[0]).toBe(120)
+  })
+
+  it('handles multiple sequential queries', () => {
+    const data = [1, 2, 3, 4, 5]
+    const queries = [
+      { l: 0, r: 0 },
+      { l: 0, r: 1 },
+      { l: 0, r: 2 },
+      { l: 0, r: 3 },
+      { l: 0, r: 4 },
+    ]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers).toEqual([1, 3, 6, 10, 15])
+  })
+
+  it('handles median approximation query', () => {
+    const data = [1, 2, 3, 4, 5]
+    const queries = [{ l: 0, r: 4 }]
+    const state = { values: [] as number[] }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.values.push(data[idx]!); s.values.sort() },
+      (s, idx) => { s.values.push(data[idx]!); s.values.sort() },
+      (s, idx) => { s.values.splice(s.values.indexOf(data[idx]!), 1) },
+      (s, idx) => { s.values.splice(s.values.indexOf(data[idx]!), 1) },
+      (s) => s.values[Math.floor(s.values.length / 2)]!,
+      state
+    )
+    expect(answers[0]).toBe(3)
+  })
+
+  it('handles frequency sum query', () => {
+    const data = [1, 2, 2, 3, 3, 3]
+    const queries = [{ l: 0, r: 5 }]
+    const state = { freq: new Map<number, number>() }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, (s.freq.get(val) || 0) + 1)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, (s.freq.get(val) || 0) + 1)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, s.freq.get(val)! - 1)
+        if (s.freq.get(val) === 0) s.freq.delete(val)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, s.freq.get(val)! - 1)
+        if (s.freq.get(val) === 0) s.freq.delete(val)
+      },
+      (s) => {
+        let sum = 0
+        for (const freq of s.freq.values()) {
+          sum += freq
+        }
+        return sum
+      },
+      state
+    )
+    expect(answers[0]).toBe(6)
+  })
+
+  it('handles decreasing range queries', () => {
+    const data = [1, 2, 3, 4, 5]
+    const queries = [{ l: 0, r: 4 }, { l: 0, r: 3 }, { l: 0, r: 2 }, { l: 0, r: 1 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers).toEqual([15, 10, 6, 3])
+  })
+
+  it('handles non-consecutive queries', () => {
+    const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const queries = [
+      { l: 0, r: 2 },
+      { l: 5, r: 7 },
+      { l: 2, r: 4 },
+      { l: 7, r: 9 },
+    ]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers).toEqual([6, 21, 12, 27])
+  })
+
+  it('handles state with nested objects', () => {
+    const data = [1, 2, 3]
+    const queries = [{ l: 0, r: 2 }]
+    const state = { stats: { sum: 0, count: 0 } }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.stats.sum += data[idx]!; s.stats.count++ },
+      (s, idx) => { s.stats.sum += data[idx]!; s.stats.count++ },
+      (s, idx) => { s.stats.sum -= data[idx]!; s.stats.count-- },
+      (s, idx) => { s.stats.sum -= data[idx]!; s.stats.count-- },
+      (s) => s.stats.sum / s.stats.count,
+      state
+    )
+    expect(answers[0]).toBe(2)
+  })
+
+  it('handles mixed positive and negative numbers', () => {
+    const data = [-5, 10, -3, 8, -1]
+    const queries = [{ l: 0, r: 4 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers[0]).toBe(9)
   })
 })
