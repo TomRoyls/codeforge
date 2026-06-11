@@ -153,4 +153,86 @@ describe('ModularArithmetic', () => {
       expect(ModularArithmetic.nCr(10, 3, 1000000007)).toBe(120)
     })
   })
+
+  it('mod with zero returns 0', () => {
+    expect(ModularArithmetic.mod(0, 7)).toBe(0)
+  })
+
+  it('add with negative numbers', () => {
+    expect(ModularArithmetic.add(-3, -4, 10)).toBe(3)
+  })
+
+  it('sub to zero', () => {
+    expect(ModularArithmetic.sub(5, 5, 7)).toBe(0)
+  })
+
+  it('mul with negative', () => {
+    expect(ModularArithmetic.mul(-3, 4, 5)).toBe(ModularArithmetic.mod(-12, 5))
+  })
+
+  it('mul with 1', () => {
+    expect(ModularArithmetic.mul(1, 7, 11)).toBe(7)
+  })
+
+  it('pow with base 0', () => {
+    expect(ModularArithmetic.pow(0, 5, 7)).toBe(0)
+  })
+
+  it('pow with base 1', () => {
+    expect(ModularArithmetic.pow(1, 1000, 7)).toBe(1)
+  })
+
+  it('pow large exponent', () => {
+    expect(ModularArithmetic.pow(2, 30, 1000000007)).toBe(1073741824)
+  })
+
+  it('extendedGcd of identical numbers', () => {
+    const result = ModularArithmetic.extendedGcd(12, 12)
+    expect(result.gcd).toBe(12)
+  })
+
+  it('extendedGcd of coprime', () => {
+    const result = ModularArithmetic.extendedGcd(7, 13)
+    expect(result.gcd).toBe(1)
+  })
+
+  it('modInverse of small number', () => {
+    const inv = ModularArithmetic.modInverse(2, 5)
+    expect(inv).not.toBeNull()
+    expect(ModularArithmetic.mul(2, inv!, 5)).toBe(1)
+  })
+
+  it('modInverse of self', () => {
+    const inv = ModularArithmetic.modInverse(7, 11)
+    expect(inv).not.toBeNull()
+    expect(ModularArithmetic.mul(7, inv!, 11)).toBe(1)
+  })
+
+  it('modDiv basic division', () => {
+    const result = ModularArithmetic.modDiv(10, 2, 7)
+    expect(result).not.toBeNull()
+    expect(result).toBe(5)
+  })
+
+  it('modDiv verifies result', () => {
+    const result = ModularArithmetic.modDiv(4, 3, 7)
+    expect(result).not.toBeNull()
+    expect(ModularArithmetic.mul(result!, 3, 7)).toBe(ModularArithmetic.mod(4, 7))
+  })
+
+  it('factorial of 1', () => {
+    expect(ModularArithmetic.factorial(1, 1000000007)).toBe(1)
+  })
+
+  it('factorial of larger number mod', () => {
+    expect(ModularArithmetic.factorial(6, 1000000007)).toBe(720)
+  })
+
+  it('nCr symmetry', () => {
+    expect(ModularArithmetic.nCr(10, 3, 1000000007)).toBe(ModularArithmetic.nCr(10, 7, 1000000007))
+  })
+
+  it('nCr C(1,1)', () => {
+    expect(ModularArithmetic.nCr(1, 1, 1000000007)).toBe(1)
+  })
 })

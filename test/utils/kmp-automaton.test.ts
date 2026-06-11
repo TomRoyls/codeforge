@@ -177,4 +177,90 @@ describe('KMPAutomaton', () => {
       expect(new KMPAutomaton('').equals(new KMPAutomaton(''))).toBe(true)
     })
   })
+
+  it('finds pattern with spaces', () => {
+    const kmp = new KMPAutomaton('hello world')
+    expect(kmp.search('test hello world test')).toEqual([5])
+  })
+
+  it('finds pattern at very start', () => {
+    const kmp = new KMPAutomaton('start')
+    expect(kmp.search('start middle end')).toEqual([0])
+  })
+
+  it('handles digits in pattern', () => {
+    const kmp = new KMPAutomaton('123')
+    expect(kmp.search('abc123def')).toEqual([3])
+  })
+
+  it('handles mixed case', () => {
+    const kmp = new KMPAutomaton('AbC')
+    expect(kmp.search('xabcy')).toEqual([])
+    expect(kmp.search('xAbCy')).toEqual([1])
+  })
+
+  it('finds all single char occurrences', () => {
+    const kmp = new KMPAutomaton('x')
+    expect(kmp.search('axbxcxdx')).toEqual([1, 3, 5, 7])
+  })
+
+  it('failure function for no-prefix-suffix pattern', () => {
+    const kmp = new KMPAutomaton('abcdef')
+    const fail = kmp.getFailure()
+    expect(fail[0]).toBe(-1)
+    expect(fail.every((v, i) => i === 0 || v === 0)).toBe(true)
+  })
+
+  it('failure function for all same chars', () => {
+    const kmp = new KMPAutomaton('aaaa')
+    const fail = kmp.getFailure()
+    expect(fail).toEqual([-1, 0, 1, 2, 3])
+  })
+
+  it('toJSON is serializable', () => {
+    const kmp = new KMPAutomaton('abc')
+    const json = kmp.toJSON() as Record<string, unknown>
+    expect(JSON.stringify(json)).toContain('abc')
+  })
+
+  it('clone with different patterns are not equal', () => {
+    const k1 = new KMPAutomaton('abc')
+    const k2 = new KMPAutomaton('def')
+    expect(k1.equals(k2)).toBe(false)
+  })
+
+  it('search on long text with no matches', () => {
+    const kmp = new KMPAutomaton('xyz')
+    const text = 'a'.repeat(1000) + 'b'.repeat(1000)
+    expect(kmp.search(text)).toEqual([])
+  })
+
+  it('search on long text with matches', () => {
+    const kmp = new KMPAutomaton('ab')
+    const text = 'ab'.repeat(100)
+    const result = kmp.search(text)
+    expect(result.length).toBe(100)
+    expect(result[0]).toBe(0)
+    expect(result[1]).toBe(2)
+  })
+
+  it('equals with same pattern but different instance', () => {
+    const k1 = new KMPAutomaton('test')
+    const k2 = new KMPAutomaton('test')
+    expect(k1).not.toBe(k2)
+    expect(k1.equals(k2)).toBe(true)
+  })
+
+  it('getFailure returns copy', () => {
+    const kmp = new KMPAutomaton('abc')
+    const fail1 = kmp.getFailure()
+    const fail2 = kmp.getFailure()
+    expect(fail1).toEqual(fail2)
+    expect(fail1).not.toBe(fail2)
+  })
+
+  it('handles pattern with repeated substring', () => {
+    const kmp = new KMPAutomaton('abab')
+    expect(kmp.search('abababab')).toEqual([0, 2, 4])
+  })
 })
