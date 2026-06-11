@@ -5,6 +5,19 @@ describe('CartesianProductGraph', () => {
   it('empty graphs', () => {
     const cg = new CartesianProductGraph(0, 0)
     expect(cg.productNodeCount()).toBe(0)
+    expect(cg.productEdgeCount()).toBe(0)
+  })
+
+  it('empty G1 with non-empty G2', () => {
+    const cg = new CartesianProductGraph(0, 3)
+    expect(cg.productNodeCount()).toBe(0)
+    expect(cg.productEdgeCount()).toBe(0)
+  })
+
+  it('non-empty G1 with empty G2', () => {
+    const cg = new CartesianProductGraph(3, 0)
+    expect(cg.productNodeCount()).toBe(0)
+    expect(cg.productEdgeCount()).toBe(0)
   })
 
   it('single node product', () => {
@@ -97,12 +110,6 @@ describe('CartesianProductGraph', () => {
     expect(cg.areAdjacent([0, 0], [2, 2])).toBe(false)
   })
 
-  it('single node graphs product', () => {
-    const cg = new CartesianProductGraph(1, 1)
-    expect(cg.productNodeCount()).toBe(1)
-    expect(cg.productEdgeCount()).toBe(0)
-  })
-
   it('1x2 product with edge', () => {
     const cg = new CartesianProductGraph(1, 2)
     cg.addEdgeG2(0, 1)
@@ -125,43 +132,245 @@ describe('CartesianProductGraph', () => {
     expect(cg.productEdgeCount()).toBe(4)
   })
 
-  it('single node graphs have 1 product node', () => {
-    const cg = new CartesianProductGraph(1, 1)
-    expect(cg.productNodeCount()).toBe(1)
+  it('asymmetric 3x2 graphs', () => {
+    const cg = new CartesianProductGraph(3, 2)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productNodeCount()).toBe(6)
+    expect(cg.productEdgeCount()).toBe(7)
   })
 
-  it('2x2 graphs have 4 product nodes', () => {
-    const cg = new CartesianProductGraph(2, 2)
+  it('asymmetric 2x3 graphs', () => {
+    const cg = new CartesianProductGraph(2, 3)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(1, 2)
+    expect(cg.productNodeCount()).toBe(6)
+  })
+
+  it('product degree with no edges', () => {
+    const cg = new CartesianProductGraph(3, 3)
+    expect(cg.productDegree(0, 0)).toBe(0)
+    expect(cg.productDegree(1, 1)).toBe(0)
+    expect(cg.productDegree(2, 2)).toBe(0)
+  })
+
+  it('product degree varies across nodes', () => {
+    const cg = new CartesianProductGraph(3, 3)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productDegree(0, 0)).toBe(2)
+    expect(cg.productDegree(1, 0)).toBe(2)
+    expect(cg.productDegree(0, 1)).toBe(2)
+    expect(cg.productDegree(2, 2)).toBe(0)
+  })
+
+  it('multiple edges in G1', () => {
+    const cg = new CartesianProductGraph(4, 2)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG1(2, 3)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productNodeCount()).toBe(8)
+  })
+
+  it('complete graph G1 x empty G2', () => {
+    const cg = new CartesianProductGraph(3, 1)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG1(0, 2)
+    expect(cg.productNodeCount()).toBe(3)
+    expect(cg.productEdgeCount()).toBe(3)
+  })
+
+  it('empty G1 x complete graph G2', () => {
+    const cg = new CartesianProductGraph(1, 3)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(1, 2)
+    cg.addEdgeG2(0, 2)
+    expect(cg.productNodeCount()).toBe(3)
+    expect(cg.productEdgeCount()).toBe(3)
+  })
+
+  it('cycle graph G1 x single node G2', () => {
+    const cg = new CartesianProductGraph(3, 1)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG1(2, 0)
+    expect(cg.productNodeCount()).toBe(3)
+    expect(cg.productEdgeCount()).toBe(3)
+  })
+
+  it('single node G1 x cycle graph G2', () => {
+    const cg = new CartesianProductGraph(1, 3)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(1, 2)
+    cg.addEdgeG2(2, 0)
+    expect(cg.productNodeCount()).toBe(3)
+    expect(cg.productEdgeCount()).toBe(3)
+  })
+
+  it('star graph G1 x single node G2', () => {
+    const cg = new CartesianProductGraph(4, 1)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(0, 2)
+    cg.addEdgeG1(0, 3)
     expect(cg.productNodeCount()).toBe(4)
+    expect(cg.productEdgeCount()).toBe(3)
   })
 
-  it('1x1 graph has 1 product node', () => {
-    const cg = new CartesianProductGraph(1, 1)
-    expect(cg.productNodeCount()).toBe(1)
-  })
-
-  it('2x2 graph has 4 product nodes', () => {
-    const cg = new CartesianProductGraph(2, 2)
+  it('single node G1 x star graph G2', () => {
+    const cg = new CartesianProductGraph(1, 4)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(0, 2)
+    cg.addEdgeG2(0, 3)
     expect(cg.productNodeCount()).toBe(4)
+    expect(cg.productEdgeCount()).toBe(3)
   })
 
-  it('1x1 graph has 1 product node', () => {
-    const cg = new CartesianProductGraph(1, 1)
-    expect(cg.productNodeCount()).toBe(1)
+  it('adjacency in both dimensions', () => {
+    const cg = new CartesianProductGraph(3, 3)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.areAdjacent([0, 0], [1, 1])).toBe(false)
+    expect(cg.areAdjacent([0, 0], [1, 0])).toBe(true)
+    expect(cg.areAdjacent([0, 0], [0, 1])).toBe(true)
   })
 
-  it('2x1 graph has 2 product nodes', () => {
-    const cg = new CartesianProductGraph(2, 1)
-    expect(cg.productNodeCount()).toBe(2)
+  it('degree calculation with multiple connections', () => {
+    const cg = new CartesianProductGraph(4, 4)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(0, 2)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(0, 2)
+    expect(cg.productDegree(0, 0)).toBe(4)
   })
 
-  it('1x1 graph has 1 product node', () => {
-    const cg = new CartesianProductGraph(1, 1)
-    expect(cg.productNodeCount()).toBe(1)
+  it('large graph product node count', () => {
+    const cg = new CartesianProductGraph(10, 10)
+    expect(cg.productNodeCount()).toBe(100)
   })
 
-  it('2x2 graph has 4 product nodes', () => {
+  it('large graph product edge count', () => {
+    const cg = new CartesianProductGraph(5, 5)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(1, 2)
+    expect(cg.productNodeCount()).toBe(25)
+  })
+
+  it('adding same edge twice', () => {
     const cg = new CartesianProductGraph(2, 2)
-    expect(cg.productNodeCount()).toBe(4)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(0, 1)
+    expect(cg.productEdgeCount()).toBe(2)
+  })
+
+  it('adding same edge twice in G2', () => {
+    const cg = new CartesianProductGraph(2, 2)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productEdgeCount()).toBe(4)
+  })
+
+  it('island nodes in G1', () => {
+    const cg = new CartesianProductGraph(4, 2)
+    cg.addEdgeG1(0, 1)
+    expect(cg.areAdjacent([2, 0], [3, 0])).toBe(false)
+    expect(cg.areAdjacent([2, 1], [3, 1])).toBe(false)
+  })
+
+  it('island nodes in G2', () => {
+    const cg = new CartesianProductGraph(2, 4)
+    cg.addEdgeG2(0, 1)
+    expect(cg.areAdjacent([0, 2], [0, 3])).toBe(false)
+    expect(cg.areAdjacent([1, 2], [1, 3])).toBe(false)
+  })
+
+  it('edge count with isolated nodes', () => {
+    const cg = new CartesianProductGraph(4, 4)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productEdgeCount()).toBe(8)
+  })
+
+  it('product node count increases with graph size', () => {
+    const cg2x2 = new CartesianProductGraph(2, 2)
+    const cg3x3 = new CartesianProductGraph(3, 3)
+    const cg4x4 = new CartesianProductGraph(4, 4)
+    expect(cg2x2.productNodeCount()).toBe(4)
+    expect(cg3x3.productNodeCount()).toBe(9)
+    expect(cg4x4.productNodeCount()).toBe(16)
+  })
+
+  it('adjacency for all combinations in 2x2', () => {
+    const cg = new CartesianProductGraph(2, 2)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.areAdjacent([0, 0], [1, 0])).toBe(true)
+    expect(cg.areAdjacent([0, 0], [0, 1])).toBe(true)
+    expect(cg.areAdjacent([0, 0], [1, 1])).toBe(false)
+    expect(cg.areAdjacent([1, 0], [0, 0])).toBe(true)
+    expect(cg.areAdjacent([1, 0], [1, 1])).toBe(true)
+    expect(cg.areAdjacent([1, 0], [0, 1])).toBe(false)
+    expect(cg.areAdjacent([0, 1], [0, 0])).toBe(true)
+    expect(cg.areAdjacent([0, 1], [1, 1])).toBe(true)
+    expect(cg.areAdjacent([0, 1], [1, 0])).toBe(false)
+    expect(cg.areAdjacent([1, 1], [1, 0])).toBe(true)
+    expect(cg.areAdjacent([1, 1], [0, 1])).toBe(true)
+    expect(cg.areAdjacent([1, 1], [0, 0])).toBe(false)
+  })
+
+  it('degree for all nodes in 2x2 with edges', () => {
+    const cg = new CartesianProductGraph(2, 2)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productDegree(0, 0)).toBe(2)
+    expect(cg.productDegree(1, 0)).toBe(2)
+    expect(cg.productDegree(0, 1)).toBe(2)
+    expect(cg.productDegree(1, 1)).toBe(2)
+  })
+
+  it('edge count for complete graph 3x3', () => {
+    const cg = new CartesianProductGraph(3, 3)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG1(0, 2)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(1, 2)
+    cg.addEdgeG2(0, 2)
+    expect(cg.productEdgeCount()).toBe(18)
+  })
+
+  it('path graph product edge count', () => {
+    const cg = new CartesianProductGraph(4, 4)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG1(2, 3)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(1, 2)
+    cg.addEdgeG2(2, 3)
+    expect(cg.productNodeCount()).toBe(16)
+  })
+
+  it('one-direction edge in G1', () => {
+    const cg = new CartesianProductGraph(3, 2)
+    cg.addEdgeG1(0, 1)
+    expect(cg.areAdjacent([0, 0], [1, 0])).toBe(true)
+    expect(cg.areAdjacent([1, 0], [0, 0])).toBe(true)
+    expect(cg.areAdjacent([0, 1], [1, 1])).toBe(true)
+    expect(cg.areAdjacent([1, 1], [0, 1])).toBe(true)
+  })
+
+  it('one-direction edge in G2', () => {
+    const cg = new CartesianProductGraph(2, 3)
+    cg.addEdgeG2(0, 1)
+    expect(cg.areAdjacent([0, 0], [0, 1])).toBe(true)
+    expect(cg.areAdjacent([0, 1], [0, 0])).toBe(true)
+    expect(cg.areAdjacent([1, 0], [1, 1])).toBe(true)
+    expect(cg.areAdjacent([1, 1], [1, 0])).toBe(true)
   })
 })

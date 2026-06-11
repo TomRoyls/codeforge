@@ -116,7 +116,7 @@ describe('BoyerMoore', () => {
     expect(results).toEqual([])
   })
 
-  it('should handle pattern at multiple positions', () => {
+  it('should find pattern at multiple positions', () => {
     const bm = new BoyerMoore('ab')
     const results = bm.search('abababab')
     expect(results).toEqual([0, 2, 4, 6])
@@ -134,21 +134,313 @@ describe('BoyerMoore', () => {
     expect(count).toBe(3)
   })
 
-  it('search returns positions', () => {
-    const bm = new BoyerMoore('ab')
-    const results = bm.search('ababab')
-    expect(results.length).toBe(3)
-  })
-
-  it('no match returns empty', () => {
-    const bm = new BoyerMoore('xyz')
-    const results = bm.search('abcdef')
-    expect(results.length).toBe(0)
-  })
-
-  it('finds match at beginning', () => {
+  it('should find match at beginning', () => {
     const bm = new BoyerMoore('abc')
     const results = bm.search('abcdef')
     expect(results).toEqual([0])
+  })
+
+  it('should handle pattern equals text', () => {
+    const bm = new BoyerMoore('hello')
+    const results = bm.search('hello')
+    expect(results).toEqual([0])
+  })
+
+  it('should handle pattern with spaces', () => {
+    const bm = new BoyerMoore('world')
+    const results = bm.search('hello world test')
+    expect(results).toEqual([6])
+  })
+
+  it('should handle pattern with numbers', () => {
+    const bm = new BoyerMoore('123')
+    const results = bm.search('test123test')
+    expect(results).toEqual([4])
+  })
+
+  it('should handle pattern with underscores', () => {
+    const bm = new BoyerMoore('_')
+    const results = bm.search('hello_world_test')
+    expect(results).toEqual([5, 11])
+  })
+
+  it('should handle pattern with hyphens', () => {
+    const bm = new BoyerMoore('-')
+    const results = bm.search('hello-world-test')
+    expect(results).toEqual([5, 11])
+  })
+
+  it('should handle pattern with dots', () => {
+    const bm = new BoyerMoore('.')
+    const results = bm.search('example.com')
+    expect(results).toEqual([7])
+  })
+
+  it('should handle pattern with colons', () => {
+    const bm = new BoyerMoore(':')
+    const results = bm.search('http://example')
+    expect(results).toEqual([4])
+  })
+
+  it('should handle pattern with commas', () => {
+    const bm = new BoyerMoore(',')
+    const results = bm.search('a,b,c')
+    expect(results).toEqual([1, 3])
+  })
+
+  it('should handle pattern with semicolons', () => {
+    const bm = new BoyerMoore(';')
+    const results = bm.search('item1;item2')
+    expect(results).toEqual([5])
+  })
+
+  it('should handle pattern with forward slash', () => {
+    const bm = new BoyerMoore('/')
+    const results = bm.search('path/to/file')
+    expect(results).toEqual([4, 7])
+  })
+
+  it('should handle pattern with backslash', () => {
+    const bm = new BoyerMoore('\\')
+    const results = bm.search('path\\to\\file')
+    expect(results).toEqual([4, 7])
+  })
+
+  it('should handle pattern with brackets', () => {
+    const bm = new BoyerMoore('[')
+    const results = bm.search('test[0]')
+    expect(results).toEqual([4])
+  })
+
+  it('should handle pattern with braces', () => {
+    const bm = new BoyerMoore('{')
+    const results = bm.search('test{0}')
+    expect(results).toEqual([4])
+  })
+
+  it('should handle pattern with parentheses', () => {
+    const bm = new BoyerMoore('(')
+    const results = bm.search('test(0)')
+    expect(results).toEqual([4])
+  })
+
+  it('should handle pattern with at sign', () => {
+    const bm = new BoyerMoore('@')
+    const results = bm.search('user@host')
+    expect(results).toEqual([4])
+  })
+
+  it('should handle pattern with hash', () => {
+    const bm = new BoyerMoore('#')
+    const results = bm.search('#comment')
+    expect(results).toEqual([0])
+  })
+
+  it('should handle pattern with dollar sign', () => {
+    const bm = new BoyerMoore('$')
+    const results = bm.search('$100')
+    expect(results).toEqual([0])
+  })
+
+  it('should handle pattern with percent', () => {
+    const bm = new BoyerMoore('%')
+    const results = bm.search('50%')
+    expect(results).toEqual([2])
+  })
+
+  it('should handle pattern with asterisk', () => {
+    const bm = new BoyerMoore('*')
+    const results = bm.search('test*')
+    expect(results).toEqual([4])
+  })
+
+  it('should handle pattern with plus', () => {
+    const bm = new BoyerMoore('+')
+    const results = bm.search('a+b')
+    expect(results).toEqual([1])
+  })
+
+  it('should handle pattern with equals', () => {
+    const bm = new BoyerMoore('=')
+    const results = bm.search('x=1')
+    expect(results).toEqual([1])
+  })
+
+  it('should handle pattern with question mark', () => {
+    const bm = new BoyerMoore('?')
+    const results = bm.search('what?')
+    expect(results).toEqual([4])
+  })
+
+  it('should handle pattern with exclamation', () => {
+    const bm = new BoyerMoore('!')
+    const results = bm.search('yes!')
+    expect(results).toEqual([3])
+  })
+
+  it('should handle pattern with ampersand', () => {
+    const bm = new BoyerMoore('&')
+    const results = bm.search('a&b')
+    expect(results).toEqual([1])
+  })
+
+  it('should handle pattern with pipe', () => {
+    const bm = new BoyerMoore('|')
+    const results = bm.search('a|b')
+    expect(results).toEqual([1])
+  })
+
+  it('should handle pattern with tilde', () => {
+    const bm = new BoyerMoore('~')
+    const results = bm.search('~/.bashrc')
+    expect(results).toEqual([0])
+  })
+
+  it('should handle pattern with backtick', () => {
+    const bm = new BoyerMoore('`')
+    const results = bm.search('`test`')
+    expect(results).toEqual([0, 5])
+  })
+
+  it('should handle pattern with single quote', () => {
+    const bm = new BoyerMoore("'")
+    const results = bm.search("'test'")
+    expect(results).toEqual([0, 5])
+  })
+
+  it('should handle pattern with double quote', () => {
+    const bm = new BoyerMoore('"')
+    const results = bm.search('"test"')
+    expect(results).toEqual([0, 5])
+  })
+
+  it('should handle empty string searchFirst', () => {
+    const bm = new BoyerMoore('test')
+    const first = bm.searchFirst('')
+    expect(first).toBe(-1)
+  })
+
+  it('should handle empty string contains', () => {
+    const bm = new BoyerMoore('test')
+    expect(bm.contains('')).toBe(false)
+  })
+
+  it('should handle empty string count', () => {
+    const bm = new BoyerMoore('test')
+    expect(bm.count('')).toBe(0)
+  })
+
+  it('should handle very long pattern', () => {
+    const longPattern = 'a'.repeat(100)
+    const bm = new BoyerMoore(longPattern)
+    const text = 'prefix' + longPattern + 'suffix'
+    const results = bm.search(text)
+    expect(results).toEqual([6])
+  })
+
+  it('should handle very long text', () => {
+    const bm = new BoyerMoore('test')
+    const longText = 'test'.repeat(1000)
+    const results = bm.search(longText)
+    expect(results.length).toBe(1000)
+  })
+
+  it('should handle pattern with newlines', () => {
+    const bm = new BoyerMoore('world')
+    const results = bm.search('hello\nworld')
+    expect(results).toEqual([6])
+  })
+
+  it('should handle pattern with tabs', () => {
+    const bm = new BoyerMoore('world')
+    const results = bm.search('hello\tworld')
+    expect(results).toEqual([6])
+  })
+
+  it('should handle pattern with emojis', () => {
+    const bm = new BoyerMoore('😊')
+    const results = bm.search('Hello 😊 world')
+    expect(results).toEqual([6])
+  })
+
+  it('should handle toString', () => {
+    const bm = new BoyerMoore('test')
+    expect(bm.toString()).toBe('BoyerMoore(pattern="test", caseSensitive=true)')
+  })
+
+  it('should handle toString with case insensitive', () => {
+    const bm = new BoyerMoore('test', { caseSensitive: false })
+    expect(bm.toString()).toBe('BoyerMoore(pattern="test", caseSensitive=false)')
+  })
+
+  it('should handle toJSON', () => {
+    const bm = new BoyerMoore('test')
+    const json = bm.toJSON()
+    expect(json).toEqual({ pattern: 'test', caseSensitive: true })
+  })
+
+  it('should handle toJSON with case insensitive', () => {
+    const bm = new BoyerMoore('test', { caseSensitive: false })
+    const json = bm.toJSON()
+    expect(json).toEqual({ pattern: 'test', caseSensitive: false })
+  })
+
+  it('should handle clone', () => {
+    const bm = new BoyerMoore('test')
+    const cloned = bm.clone()
+    expect(cloned.equals(bm)).toBe(true)
+    expect(cloned.search('test')).toEqual([0])
+  })
+
+  it('should handle clone with case insensitive', () => {
+    const bm = new BoyerMoore('test', { caseSensitive: false })
+    const cloned = bm.clone()
+    expect(cloned.equals(bm)).toBe(true)
+    expect(cloned.search('TEST')).toEqual([0])
+  })
+
+  it('should handle equals with same pattern', () => {
+    const bm1 = new BoyerMoore('test')
+    const bm2 = new BoyerMoore('test')
+    expect(bm1.equals(bm2)).toBe(true)
+  })
+
+  it('should handle equals with different pattern', () => {
+    const bm1 = new BoyerMoore('test')
+    const bm2 = new BoyerMoore('other')
+    expect(bm1.equals(bm2)).toBe(false)
+  })
+
+  it('should handle equals with different case sensitivity', () => {
+    const bm1 = new BoyerMoore('test', { caseSensitive: true })
+    const bm2 = new BoyerMoore('test', { caseSensitive: false })
+    expect(bm1.equals(bm2)).toBe(false)
+  })
+
+  it('should handle equals with non-BoyerMoore object', () => {
+    const bm = new BoyerMoore('test')
+    expect(bm.equals({ pattern: 'test' })).toBe(false)
+    expect(bm.equals(null)).toBe(false)
+    expect(bm.equals(undefined)).toBe(false)
+  })
+
+  it('should handle searchFirst returns -1 for no match', () => {
+    const bm = new BoyerMoore('xyz')
+    expect(bm.searchFirst('abc')).toBe(-1)
+  })
+
+  it('should handle searchFirst returns 0 for match at start', () => {
+    const bm = new BoyerMoore('abc')
+    expect(bm.searchFirst('abcdef')).toBe(0)
+  })
+
+  it('should handle contains returns true for match', () => {
+    const bm = new BoyerMoore('abc')
+    expect(bm.contains('xyzabcxyz')).toBe(true)
+  })
+
+  it('should handle contains returns false for no match', () => {
+    const bm = new BoyerMoore('xyz')
+    expect(bm.contains('abc')).toBe(false)
   })
 })

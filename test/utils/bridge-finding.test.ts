@@ -192,4 +192,321 @@ describe('BridgeFinding', () => {
     bf.addEdge(0, 1)
     expect(bf.findBridges().length).toBe(1)
   })
+
+  it('finds all bridges in tree of 4 nodes', () => {
+    const bf = new BridgeFinding(4)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(1, 3)
+    expect(bf.findBridges().length).toBe(3)
+  })
+
+  it('handles complete graph K3', () => {
+    const bf = new BridgeFinding(3)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    expect(bf.findBridges()).toEqual([])
+  })
+
+  it('handles diamond with bridge', () => {
+    const bf = new BridgeFinding(5)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    bf.addEdge(1, 3)
+    bf.addEdge(3, 4)
+    expect(bf.findBridges().length).toBe(2)
+  })
+
+  it('handles two triangles connected by vertex', () => {
+    const bf = new BridgeFinding(5)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    bf.addEdge(0, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 0)
+    expect(bf.findBridges().length).toBe(0)
+  })
+
+  it('handles path of 4 nodes', () => {
+    const bf = new BridgeFinding(4)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 3)
+    expect(bf.findBridges().length).toBe(3)
+  })
+
+  it('handles complete graph K5', () => {
+    const bf = new BridgeFinding(5)
+    for (let i = 0; i < 5; i++) {
+      for (let j = i + 1; j < 5; j++) {
+        bf.addEdge(i, j)
+      }
+    }
+    expect(bf.findBridges()).toEqual([])
+  })
+
+  it('finds bridge in line of 6', () => {
+    const bf = new BridgeFinding(6)
+    for (let i = 0; i < 5; i++) {
+      bf.addEdge(i, i + 1)
+    }
+    expect(bf.findBridges().length).toBe(5)
+  })
+
+  it('handles wheel graph', () => {
+    const bf = new BridgeFinding(5)
+    bf.addEdge(0, 1)
+    bf.addEdge(0, 2)
+    bf.addEdge(0, 3)
+    bf.addEdge(0, 4)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 1)
+    expect(bf.findBridges().length).toBe(0)
+  })
+
+  it('handles lollipop graph', () => {
+    const bf = new BridgeFinding(6)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 5)
+    bf.addEdge(5, 3)
+    expect(bf.findBridges().length).toBe(3)
+  })
+
+  it('handles binary tree', () => {
+    const bf = new BridgeFinding(7)
+    bf.addEdge(0, 1)
+    bf.addEdge(0, 2)
+    bf.addEdge(1, 3)
+    bf.addEdge(1, 4)
+    bf.addEdge(2, 5)
+    bf.addEdge(2, 6)
+    expect(bf.findBridges().length).toBe(6)
+  })
+
+  it('finds bridge between two cliques', () => {
+    const bf = new BridgeFinding(6)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 5)
+    bf.addEdge(5, 3)
+    expect(bf.findBridges()).toEqual([[2, 3]])
+  })
+
+  it('handles graph with multiple components', () => {
+    const bf = new BridgeFinding(8)
+    bf.addEdge(0, 1)
+    bf.addEdge(2, 3)
+    bf.addEdge(4, 5)
+    bf.addEdge(6, 7)
+    expect(bf.findBridges().length).toBe(4)
+  })
+
+  it('handles complete bipartite K3,3', () => {
+    const bf = new BridgeFinding(6)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 3; j < 6; j++) {
+        bf.addEdge(i, j)
+      }
+    }
+    expect(bf.findBridges()).toEqual([])
+  })
+
+  it('finds bridge in cycle with pendant', () => {
+    const bf = new BridgeFinding(5)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 0)
+    bf.addEdge(1, 4)
+    expect(bf.findBridges()).toEqual([[1, 4]])
+  })
+
+  it('handles cube graph', () => {
+    const bf = new BridgeFinding(8)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 0)
+    bf.addEdge(4, 5)
+    bf.addEdge(5, 6)
+    bf.addEdge(6, 7)
+    bf.addEdge(7, 4)
+    bf.addEdge(0, 4)
+    bf.addEdge(1, 5)
+    bf.addEdge(2, 6)
+    bf.addEdge(3, 7)
+    expect(bf.findBridges()).toEqual([])
+  })
+
+  it('handles two cycles sharing vertex', () => {
+    const bf = new BridgeFinding(7)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    bf.addEdge(0, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 5)
+    bf.addEdge(5, 3)
+    expect(bf.findBridges().length).toBe(1)
+  })
+
+  it('finds bridges in graph with cut-vertex', () => {
+    const bf = new BridgeFinding(6)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 3)
+    bf.addEdge(1, 4)
+    bf.addEdge(4, 5)
+    expect(bf.findBridges().length).toBeGreaterThan(1)
+  })
+
+  it('handles path with branch', () => {
+    const bf = new BridgeFinding(5)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 3)
+    bf.addEdge(2, 4)
+    expect(bf.findBridges().length).toBe(4)
+  })
+
+  it('finds all bridges in star graph with 6 nodes', () => {
+    const bf = new BridgeFinding(6)
+    for (let i = 1; i < 6; i++) {
+      bf.addEdge(0, i)
+    }
+    expect(bf.findBridges().length).toBe(5)
+  })
+
+  it('handles complete graph K6', () => {
+    const bf = new BridgeFinding(6)
+    for (let i = 0; i < 6; i++) {
+      for (let j = i + 1; j < 6; j++) {
+        bf.addEdge(i, j)
+      }
+    }
+    expect(bf.findBridges()).toEqual([])
+  })
+
+  it('handles graph with multiple isolated nodes', () => {
+    const bf = new BridgeFinding(5)
+    bf.addEdge(0, 1)
+    expect(bf.findBridges()).toEqual([[0, 1]])
+  })
+
+  it('finds bridge in complex graph', () => {
+    const bf = new BridgeFinding(7)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 5)
+    bf.addEdge(5, 6)
+    bf.addEdge(2, 5)
+    expect(bf.findBridges().length).toBeGreaterThan(0)
+  })
+
+  it('toString returns correct format', () => {
+    const bf = new BridgeFinding(5)
+    expect(bf.toString()).toBe('BridgeFinding(n=5)')
+  })
+
+  it('toString with single node', () => {
+    const bf = new BridgeFinding(1)
+    expect(bf.toString()).toBe('BridgeFinding(n=1)')
+  })
+
+  it('toJSON returns correct structure', () => {
+    const bf = new BridgeFinding(3)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    const json = bf.toJSON()
+    expect(json).toEqual({
+      n: 3,
+      adj: [[1], [0, 2], [1]]
+    })
+  })
+
+  it('toJSON with empty graph', () => {
+    const bf = new BridgeFinding(2)
+    const json = bf.toJSON()
+    expect(json).toEqual({
+      n: 2,
+      adj: [[], []]
+    })
+  })
+
+  it('clone creates identical instance', () => {
+    const bf = new BridgeFinding(3)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    const cloned = bf.clone()
+    expect(cloned.n).toBe(bf.n)
+    expect(cloned.findBridges()).toEqual(bf.findBridges())
+  })
+
+  it('clone is independent from original', () => {
+    const bf = new BridgeFinding(3)
+    bf.addEdge(0, 1)
+    const cloned = bf.clone()
+    cloned.addEdge(1, 2)
+    expect(bf.findBridges().length).not.toBe(cloned.findBridges().length)
+  })
+
+  it('equals returns true for identical graphs', () => {
+    const bf1 = new BridgeFinding(3)
+    const bf2 = new BridgeFinding(3)
+    bf1.addEdge(0, 1)
+    bf1.addEdge(1, 2)
+    bf2.addEdge(0, 1)
+    bf2.addEdge(1, 2)
+    expect(bf1.equals(bf2)).toBe(true)
+  })
+
+  it('equals returns false for different graphs', () => {
+    const bf1 = new BridgeFinding(2)
+    const bf2 = new BridgeFinding(3)
+    bf1.addEdge(0, 1)
+    bf2.addEdge(0, 1)
+    bf2.addEdge(1, 2)
+    expect(bf1.equals(bf2)).toBe(false)
+  })
+
+  it('equals returns false for non-BridgeFinding', () => {
+    const bf = new BridgeFinding(2)
+    bf.addEdge(0, 1)
+    expect(bf.equals({})).toBe(false)
+    expect(bf.equals(null)).toBe(false)
+  })
+
+  it('equals handles bridge order independence', () => {
+    const bf1 = new BridgeFinding(3)
+    const bf2 = new BridgeFinding(3)
+    bf1.addEdge(0, 1)
+    bf1.addEdge(1, 2)
+    bf2.addEdge(1, 2)
+    bf2.addEdge(0, 1)
+    expect(bf1.equals(bf2)).toBe(true)
+  })
+
+  it('finds bridges in graph with cycle and path', () => {
+    const bf = new BridgeFinding(6)
+    bf.addEdge(0, 1)
+    bf.addEdge(1, 2)
+    bf.addEdge(2, 0)
+    bf.addEdge(2, 3)
+    bf.addEdge(3, 4)
+    bf.addEdge(4, 5)
+    expect(bf.findBridges().length).toBe(3)
+  })
 })

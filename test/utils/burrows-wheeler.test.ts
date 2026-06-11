@@ -135,32 +135,191 @@ describe('BurrowsWheelerTransform', () => {
     expect(restored).toBe(original)
   })
 
-  it('transform of single char', () => {
-    const transformed = BurrowsWheelerTransform.transform('a')
-    expect(transformed.data).toBe('a')
-  })
-
   it('transform returns object with data and index', () => {
     const transformed = BurrowsWheelerTransform.transform('abc')
     expect(typeof transformed.data).toBe('string')
     expect(typeof transformed.index).toBe('number')
   })
 
-  it('transform of single char', () => {
-    const transformed = BurrowsWheelerTransform.transform('a')
-    expect(transformed.data).toBe('a')
-    expect(transformed.index).toBe(0)
+  it('should handle two characters reversed', () => {
+    const original = 'ba'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
   })
 
-  it('roundtrip banana', () => {
-    const transformed = BurrowsWheelerTransform.transform('banana')
-    const recovered = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
-    expect(recovered).toBe('banana')
+  it('should handle three characters with duplicates', () => {
+    const original = 'aab'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
   })
 
-  it('transform of single char roundtrips', () => {
-    const transformed = BurrowsWheelerTransform.transform('a')
-    const recovered = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
-    expect(recovered).toBe('a')
+  it('should handle three characters all same', () => {
+    const original = 'aaa'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle three characters mixed', () => {
+    const original = 'bac'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle four characters unique', () => {
+    const original = 'abcd'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle four characters with duplicates', () => {
+    const original = 'aabb'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle four characters alternating', () => {
+    const original = 'abab'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle five characters', () => {
+    const original = 'abcde'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle five characters palindrome', () => {
+    const original = 'abcba'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle five characters alternating', () => {
+    const original = 'abcab'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle six characters', () => {
+    const original = 'abcdef'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with many duplicates', () => {
+    const original = 'aaabbbccc'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with character range', () => {
+    const original = 'xyz'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with ascending pattern', () => {
+    const original = '12345'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with descending pattern', () => {
+    const original = '54321'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle all lowercase letters', () => {
+    const original = 'abcdefghijklmnopqrstuvwxyz'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle all uppercase letters', () => {
+    const original = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with tabs', () => {
+    const original = 'hello\tworld'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with punctuation', () => {
+    const original = 'hello,world!'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string at ASCII boundary', () => {
+    const original = '~\x7f'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with unicode characters', () => {
+    const original = 'héllo'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with repeated pattern', () => {
+    const original = 'abcabcabc'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with non-ASCII characters', () => {
+    const original = 'café'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with emojis', () => {
+    const original = 'hello🌍world'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle very long string', () => {
+    const original = 'a'.repeat(100)
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
+  })
+
+  it('should handle string with null character', () => {
+    const original = 'hello\x00world'
+    const transformed = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
+    expect(restored).toBe(original)
   })
 })
