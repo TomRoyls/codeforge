@@ -217,4 +217,258 @@ describe('MonotonicDeque', () => {
     expect(deque.front()).toBe(5)
     expect(deque.back()).toBe(4)
   })
+
+  it('handles large numbers', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(Number.MAX_SAFE_INTEGER)
+    deque.push(Number.MAX_SAFE_INTEGER - 1000)
+    expect(deque.front()).toBe(Number.MAX_SAFE_INTEGER - 1000)
+  })
+
+  it('handles floating point numbers in min mode', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(1.5)
+    deque.push(0.3)
+    deque.push(2.7)
+    expect(deque.front()).toBe(0.3)
+    expect(deque.back()).toBe(2.7)
+  })
+
+  it('handles floating point numbers in max mode', () => {
+    const deque = new MonotonicDeque<number>('max')
+    deque.push(1.5)
+    deque.push(2.7)
+    deque.push(0.3)
+    expect(deque.front()).toBe(2.7)
+    expect(deque.back()).toBe(0.3)
+  })
+
+  it('handles very small numbers', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(0.0001)
+    deque.push(0.00001)
+    deque.push(0.000001)
+    expect(deque.front()).toBe(0.000001)
+  })
+
+  it('maintains order with equal values after shift', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(5)
+    deque.push(5)
+    deque.shift()
+    expect(deque.front()).toBe(5)
+    expect(deque.size).toBe(1)
+  })
+
+  it('expireBefore removes all elements', () => {
+    const deque = new MonotonicDeque<number>()
+    const idx1 = deque.push(1)
+    const idx2 = deque.push(2)
+    const idx3 = deque.push(3)
+    deque.expireBefore(idx3 + 1)
+    expect(deque.size).toBe(0)
+    expect(deque.front()).toBeUndefined()
+  })
+
+  it('expireBefore with partial removal', () => {
+    const deque = new MonotonicDeque<number>()
+    deque.push(10)
+    deque.push(5)
+    const idx = deque.push(3)
+    deque.push(7)
+    deque.expireBefore(idx)
+    expect(deque.size).toBe(2)
+    expect(deque.front()).toBe(3)
+  })
+
+  it('handles consecutive equal pushes in max mode', () => {
+    const deque = new MonotonicDeque<number>('max')
+    deque.push(10)
+    deque.push(10)
+    deque.push(10)
+    expect(deque.front()).toBe(10)
+    expect(deque.size).toBe(3)
+  })
+
+  it('toArray returns independent copy', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(1)
+    deque.push(2)
+    const arr = deque.toArray()
+    arr.push(99)
+    expect(deque.size).toBe(2)
+    expect(arr.length).toBe(3)
+  })
+
+  it('handles rapid push-pop cycles', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(5)
+    deque.push(3)
+    deque.pop()
+    deque.push(2)
+    deque.push(1)
+    expect(deque.front()).toBe(1)
+  })
+
+  it('front and back same when size is 1', () => {
+    const deque = new MonotonicDeque<number>('max')
+    deque.push(10)
+    expect(deque.front()).toBe(10)
+    expect(deque.back()).toBe(10)
+  })
+
+  it('returns zero index on first push', () => {
+    const deque = new MonotonicDeque<number>()
+    const idx = deque.push(1)
+    expect(idx).toBe(0)
+  })
+
+  it('shift returns value and updates state', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(3)
+    deque.push(1)
+    deque.push(2)
+    const val = deque.shift()
+    expect(val).toBe(1)
+    expect(deque.front()).toBe(2)
+    expect(deque.size).toBe(1)
+  })
+
+  it('pop returns value and updates state', () => {
+    const deque = new MonotonicDeque<number>('max')
+    deque.push(5)
+    deque.push(3)
+    deque.push(7)
+    const val = deque.pop()
+    expect(val).toBe(7)
+    expect(deque.back()).toBeUndefined()
+    expect(deque.size).toBe(0)
+  })
+
+  it('handles alternating values in min mode', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(5)
+    deque.push(1)
+    deque.push(4)
+    deque.push(2)
+    deque.push(3)
+    expect(deque.front()).toBe(1)
+    expect(deque.back()).toBe(3)
+  })
+
+  it('handles alternating values in max mode', () => {
+    const deque = new MonotonicDeque<number>('max')
+    deque.push(1)
+    deque.push(5)
+    deque.push(2)
+    deque.push(4)
+    deque.push(3)
+    expect(deque.front()).toBe(5)
+    expect(deque.back()).toBe(3)
+  })
+
+  it('expireBefore after multiple shifts', () => {
+    const deque = new MonotonicDeque<number>()
+    deque.push(1)
+    deque.push(2)
+    deque.push(3)
+    deque.push(4)
+    deque.shift()
+    deque.shift()
+    deque.expireBefore(2)
+    expect(deque.size).toBe(2)
+  })
+
+  it('compacts correctly after expireBefore', () => {
+    const deque = new MonotonicDeque<number>()
+    for (let i = 0; i < 100; i++) {
+      deque.push(i)
+    }
+    deque.expireBefore(50)
+    expect(deque.size).toBe(50)
+    deque.push(200)
+    expect(deque.size).toBe(51)
+  })
+
+  it('handles object values with custom comparison', () => {
+    const deque = new MonotonicDeque<{ val: number }>()
+    deque.push({ val: 5 })
+    deque.push({ val: 3 })
+    deque.push({ val: 7 })
+    expect(deque.front()?.val).toBe(5)
+    expect(deque.back()?.val).toBe(7)
+  })
+
+  it('size getter reflects internal state after multiple ops', () => {
+    const deque = new MonotonicDeque<number>('min')
+    expect(deque.size).toBe(0)
+    deque.push(5)
+    expect(deque.size).toBe(1)
+    deque.push(3)
+    expect(deque.size).toBe(1)
+    deque.shift()
+    expect(deque.size).toBe(0)
+    deque.push(7)
+    expect(deque.size).toBe(1)
+    deque.pop()
+    expect(deque.size).toBe(0)
+  })
+
+  it('handles sequence ending with minimum', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(5)
+    deque.push(4)
+    deque.push(3)
+    deque.push(2)
+    deque.push(1)
+    expect(deque.front()).toBe(1)
+    expect(deque.size).toBe(1)
+  })
+
+  it('handles sequence ending with maximum', () => {
+    const deque = new MonotonicDeque<number>('max')
+    deque.push(1)
+    deque.push(2)
+    deque.push(3)
+    deque.push(4)
+    deque.push(5)
+    expect(deque.front()).toBe(5)
+    expect(deque.size).toBe(1)
+  })
+
+  it('back returns last valid element', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(5)
+    deque.push(1)
+    deque.push(4)
+    deque.push(2)
+    expect(deque.back()).toBe(2)
+  })
+
+  it('front returns first valid element', () => {
+    const deque = new MonotonicDeque<number>('max')
+    deque.push(3)
+    deque.push(7)
+    deque.push(5)
+    deque.push(6)
+    expect(deque.front()).toBe(7)
+  })
+
+  it('expireBefore preserves correct front after expiration', () => {
+    const deque = new MonotonicDeque<number>('min')
+    const idx1 = deque.push(10)
+    deque.push(5)
+    deque.push(8)
+    const idx4 = deque.push(3)
+    deque.expireBefore(idx1 + 2)
+    expect(deque.front()).toBe(3)
+  })
+
+  it('handles NaN values', () => {
+    const deque = new MonotonicDeque<number>()
+    deque.push(1)
+    deque.push(Number.NaN)
+    deque.push(2)
+    expect(deque.front()).toBe(1)
+  })
 })

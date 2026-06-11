@@ -72,39 +72,171 @@ describe('OddEvenSort', () => {
     expect(OddEvenSort.sort([3.14, 1.41, 2.72])).toEqual([1.41, 2.72, 3.14])
   })
 
-  it('handles empty array', () => {
-    expect(OddEvenSort.sort([])).toEqual([])
+  it('sortInPlace on empty array', () => {
+    const arr: number[] = []
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([])
   })
 
-  it('sorts already sorted', () => {
-    expect(OddEvenSort.sort([1, 2, 3, 4])).toEqual([1, 2, 3, 4])
+  it('sortInPlace on single element', () => {
+    const arr = [5]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([5])
   })
 
-  it('handles empty array', () => {
-    expect(OddEvenSort.sort([])).toEqual([])
+  it('sortInPlace on sorted array', () => {
+    const arr = [1, 2, 3, 4]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4])
   })
 
-  it('handles single element', () => {
-    expect(OddEvenSort.sort([42])).toEqual([42])
+  it('sortInPlace on reverse sorted', () => {
+    const arr = [4, 3, 2, 1]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4])
   })
 
-  it('handles already sorted', () => {
-    expect(OddEvenSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  it('sortWithComparator empty array', () => {
+    expect(OddEvenSort.sortWithComparator([], (a, b) => a - b)).toEqual([])
   })
 
-  it('handles reverse sorted', () => {
-    expect(OddEvenSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  it('sortWithComparator single element', () => {
+    expect(OddEvenSort.sortWithComparator([5], (a, b) => a - b)).toEqual([5])
   })
 
-  it('handles single element', () => {
-    expect(OddEvenSort.sort([42])).toEqual([42])
+  it('sortWithComparator objects by property', () => {
+    const obj = [{ x: 3 }, { x: 1 }, { x: 2 }]
+    const result = OddEvenSort.sortWithComparator(obj, (a, b) => a.x - b.x)
+    expect(result.map(o => o.x)).toEqual([1, 2, 3])
   })
 
-  it('handles empty array', () => {
-    expect(OddEvenSort.sort([])).toEqual([])
+  it('sortWithComparator does not modify original', () => {
+    const arr = [3, 1, 2]
+    OddEvenSort.sortWithComparator(arr, (a, b) => a - b)
+    expect(arr).toEqual([3, 1, 2])
   })
 
-  it('handles single element', () => {
-    expect(OddEvenSort.sort([42])).toEqual([42])
+  it('mixed positive and negative', () => {
+    expect(OddEvenSort.sort([3, -1, 0, -5, 2])).toEqual([-5, -1, 0, 2, 3])
+  })
+
+  it('handles zeros', () => {
+    expect(OddEvenSort.sort([0, 0, 1, 0])).toEqual([0, 0, 0, 1])
+  })
+
+  it('very small numbers', () => {
+    expect(OddEvenSort.sort([0.001, 0.0001, 0.01])).toEqual([0.0001, 0.001, 0.01])
+  })
+
+  it('large range of values', () => {
+    expect(OddEvenSort.sort([1000000, -1000000, 0])).toEqual([-1000000, 0, 1000000])
+  })
+
+  it('sort result length equals input length', () => {
+    const arr = [5, 3, 1, 4, 2]
+    expect(OddEvenSort.sort(arr).length).toBe(5)
+  })
+
+  it('sortInPlace with duplicates', () => {
+    const arr = [3, 1, 3, 2, 1]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 1, 2, 3, 3])
+  })
+
+  it('sortWithComparator with equal elements', () => {
+    const result = OddEvenSort.sortWithComparator([2, 2, 2], (a, b) => a - b)
+    expect(result).toEqual([2, 2, 2])
+  })
+
+  it('three elements unsorted', () => {
+    expect(OddEvenSort.sort([2, 3, 1])).toEqual([1, 2, 3])
+  })
+
+  it('sortWithComparator numbers ascending', () => {
+    const result = OddEvenSort.sortWithComparator([5, 2, 8, 1], (a, b) => a - b)
+    expect(result).toEqual([1, 2, 5, 8])
+  })
+
+  it('sortInPlace with negative numbers', () => {
+    const arr = [-3, 1, -2, 0]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([-3, -2, 0, 1])
+  })
+
+  it('sortWithComparator custom sort by absolute value', () => {
+    const result = OddEvenSort.sortWithComparator([-3, 1, -2], (a, b) => Math.abs(a) - Math.abs(b))
+    expect(result).toEqual([1, -2, -3])
+  })
+
+  it('sort large equal range', () => {
+    const arr = Array.from({ length: 100 }, () => 5)
+    expect(OddEvenSort.sort(arr)).toEqual(arr)
+  })
+
+  it('sort alternating high low', () => {
+    expect(OddEvenSort.sort([10, 1, 9, 2, 8, 3])).toEqual([1, 2, 3, 8, 9, 10])
+  })
+
+  it('sortInPlace large array', () => {
+    const arr = Array.from({ length: 200 }, (_, i) => 200 - i)
+    OddEvenSort.sortInPlace(arr)
+    for (let i = 1; i < arr.length; i++) {
+      expect(arr[i]!).toBeGreaterThanOrEqual(arr[i - 1]!)
+    }
+  })
+
+  it('sortWithComparator descending strings', () => {
+    const result = OddEvenSort.sortWithComparator(['a', 'c', 'b'], (a, b) => b.localeCompare(a))
+    expect(result).toEqual(['c', 'b', 'a'])
+  })
+
+  it('handles Infinity values', () => {
+    expect(OddEvenSort.sort([Infinity, 1, -Infinity])).toEqual([-Infinity, 1, Infinity])
+  })
+
+  it('sortInPlace returns void', () => {
+    const arr = [3, 1, 2]
+    const result = OddEvenSort.sortInPlace(arr)
+    expect(result).toBeUndefined()
+  })
+
+  it('sort returns new array', () => {
+    const arr = [3, 1, 2]
+    const sorted = OddEvenSort.sort(arr)
+    expect(sorted).not.toBe(arr)
+  })
+
+  it('sortWithComparator returns new array', () => {
+    const arr = [3, 1, 2]
+    const sorted = OddEvenSort.sortWithComparator(arr, (a, b) => a - b)
+    expect(sorted).not.toBe(arr)
+  })
+
+  it('two equal elements', () => {
+    expect(OddEvenSort.sort([5, 5])).toEqual([5, 5])
+  })
+
+  it('sortInPlace two elements reversed', () => {
+    const arr = [2, 1]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2])
+  })
+
+  it('sortWithComparator preserves stability for equals', () => {
+    const items = [{ k: 1, v: 'a' }, { k: 1, v: 'b' }, { k: 2, v: 'c' }]
+    const result = OddEvenSort.sortWithComparator(items, (a, b) => a.k - b.k)
+    expect(result[0]!.v).toBe('a')
+    expect(result[1]!.v).toBe('b')
+    expect(result[2]!.v).toBe('c')
+  })
+
+  it('sort array of length 4', () => {
+    expect(OddEvenSort.sort([4, 3, 2, 1])).toEqual([1, 2, 3, 4])
+  })
+
+  it('sortInPlace with floating point', () => {
+    const arr = [2.5, 1.1, 3.7]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([1.1, 2.5, 3.7])
   })
 })

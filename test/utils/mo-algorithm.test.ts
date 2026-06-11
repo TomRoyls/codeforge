@@ -813,4 +813,99 @@ describe('MoAlgorithm', () => {
     )
     expect(answers[0]).toBe(9)
   })
+
+  it('handles square sum query', () => {
+    const data = [1, 2, 3, 4]
+    const queries = [{ l: 0, r: 3 }]
+    const state = { sumSquares: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sumSquares += data[idx]! * data[idx]! },
+      (s, idx) => { s.sumSquares += data[idx]! * data[idx]! },
+      (s, idx) => { s.sumSquares -= data[idx]! * data[idx]! },
+      (s, idx) => { s.sumSquares -= data[idx]! * data[idx]! },
+      (s) => s.sumSquares,
+      state
+    )
+    expect(answers[0]).toBe(30)
+  })
+
+  it('handles variance calculation', () => {
+    const data = [2, 4, 4, 4, 5, 5, 7, 9]
+    const queries = [{ l: 0, r: 7 }]
+    const state = { sum: 0, sumSquares: 0, count: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => {
+        const val = data[idx]!
+        s.sum += val
+        s.sumSquares += val * val
+        s.count++
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.sum += val
+        s.sumSquares += val * val
+        s.count++
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.sum -= val
+        s.sumSquares -= val * val
+        s.count--
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.sum -= val
+        s.sumSquares -= val * val
+        s.count--
+      },
+      (s) => (s.sumSquares / s.count) - Math.pow(s.sum / s.count, 2),
+      state
+    )
+    expect(answers[0]).toBeCloseTo(4, 0)
+  })
+
+  it('handles count of elements greater than threshold', () => {
+    const data = [1, 5, 3, 7, 2, 9, 4]
+    const queries = [{ l: 0, r: 6 }]
+    const state = { aboveThreshold: 0 }
+    const threshold = 4
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { if (data[idx]! > threshold) s.aboveThreshold++ },
+      (s, idx) => { if (data[idx]! > threshold) s.aboveThreshold++ },
+      (s, idx) => { if (data[idx]! > threshold) s.aboveThreshold-- },
+      (s, idx) => { if (data[idx]! > threshold) s.aboveThreshold-- },
+      (s) => s.aboveThreshold,
+      state
+    )
+    expect(answers[0]).toBe(3)
+  })
+
+  it('handles cumulative sum query', () => {
+    const data = [1, 2, 3, 4, 5]
+    const queries = [
+      { l: 0, r: 0 },
+      { l: 0, r: 1 },
+      { l: 0, r: 2 },
+      { l: 0, r: 3 },
+      { l: 0, r: 4 },
+    ]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers).toEqual([1, 3, 6, 10, 15])
+  })
 })

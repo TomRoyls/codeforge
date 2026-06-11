@@ -83,48 +83,208 @@ describe('ModuloCombinatorics', () => {
     expect(mc.nCr(5, 0)).toBe(1)
   })
 
+  it('nCr(5,5) is 1', () => {
+    const mc = new ModuloCombinatorics(5)
+    expect(mc.nCr(5, 5)).toBe(1)
+  })
+
   it('nCr(5,2) is 10', () => {
-    const mc = new ModuloCombinatorics(1000003)
+    const mc = new ModuloCombinatorics(5)
     expect(mc.nCr(5, 2)).toBe(10)
   })
 
   it('nCr(10,0) is 1', () => {
-    const mc = new ModuloCombinatorics(1000003)
+    const mc = new ModuloCombinatorics(15)
     expect(mc.nCr(10, 0)).toBe(1)
   })
 
-  it('nCr(5,5) is 1', () => {
-    const mc = new ModuloCombinatorics(1000003)
-    expect(mc.nCr(5, 5)).toBe(1)
+  it('nPr handles k=1', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nPr(5, 1)).toBe(5)
+    expect(mc.nPr(10, 1)).toBe(10)
   })
 
-  it('nCr(5,0) is 1', () => {
-    const mc = new ModuloCombinatorics(1000003)
-    expect(mc.nCr(5, 0)).toBe(1)
+  it('nPr symmetry test', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nPr(5, 2)).not.toBe(mc.nPr(5, 3))
   })
 
-  it('nCr(5,5) is 1', () => {
-    const mc = new ModuloCombinatorics(1000003)
-    expect(mc.nCr(5, 5)).toBe(1)
+  it('nHr returns 0 for n=0', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nHr(0, 5)).toBe(mc.nCr(4, 5))
   })
 
-  it('nCr(5,0) is 1', () => {
-    const mc = new ModuloCombinatorics(1000003)
-    expect(mc.nCr(5, 0)).toBe(1)
+  it('nHr handles r=0', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nHr(5, 0)).toBe(mc.nCr(4, 0))
   })
 
-  it('nCr(5,5) is 1', () => {
-    const mc = new ModuloCombinatorics(1000003)
-    expect(mc.nCr(5, 5)).toBe(1)
+  it('nHr with small values', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nHr(2, 2)).toBe(mc.nCr(3, 2))
+    expect(mc.nHr(3, 1)).toBe(mc.nCr(3, 1))
   })
 
-  it('nCr(0,0) is 1', () => {
-    const mc = new ModuloCombinatorics(1000003)
-    expect(mc.nCr(0, 0)).toBe(1)
+  it('factorial is consistent across range', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.factorial(6)).toBe(720)
+    expect(mc.factorial(7)).toBe(5040)
   })
 
-  it('nCr(5,2) is 10', () => {
-    const mc = new ModuloCombinatorics(1000003)
+  it('nCr handles negative n', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nCr(-1, 0)).toBe(0)
+  })
+
+  it('nPr handles negative n', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nPr(-1, 0)).toBe(0)
+  })
+
+  it('nCr uses mod property', () => {
+    const mc = new ModuloCombinatorics(20, 1000000007)
     expect(mc.nCr(5, 2)).toBe(10)
+  })
+
+  it('nPr respects modulus', () => {
+    const mc = new ModuloCombinatorics(10, 1000000007)
+    expect(mc.nPr(5, 2)).toBe(20)
+  })
+
+  it('nHr with larger values', () => {
+    const mc = new ModuloCombinatorics(50)
+    expect(mc.nHr(10, 5)).toBe(mc.nCr(14, 5))
+  })
+
+  it('nCr returns integer modulo mod', () => {
+    const mc = new ModuloCombinatorics(20)
+    expect(Number.isInteger(mc.nCr(10, 5))).toBe(true)
+  })
+
+  it('nPr returns integer modulo mod', () => {
+    const mc = new ModuloCombinatorics(20)
+    expect(Number.isInteger(mc.nPr(10, 5))).toBe(true)
+  })
+
+  it('nHr is derived from nCr', () => {
+    const mc = new ModuloCombinatorics(30)
+    const n = 5, r = 3
+    expect(mc.nHr(n, r)).toBe(mc.nCr(n + r - 1, r))
+  })
+
+  it('handles mod as class property', () => {
+    const mc = new ModuloCombinatorics(10, 1009)
+    expect(mc.mod).toBe(1009)
+  })
+
+  it('nCr with r = n-1', () => {
+    const mc = new ModuloCombinatorics(20)
+    expect(mc.nCr(10, 9)).toBe(10)
+  })
+
+  it('nPr with r = n', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nPr(5, 5)).toBe(mc.factorial(5))
+  })
+
+  it('nHr with r > n', () => {
+    const mc = new ModuloCombinatorics(20)
+    expect(mc.nHr(3, 10)).toBe(mc.nCr(12, 10))
+  })
+
+  it('nCr boundary: n=1', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nCr(1, 0)).toBe(1)
+    expect(mc.nCr(1, 1)).toBe(1)
+    expect(mc.nCr(1, 2)).toBe(0)
+  })
+
+  it('nPr boundary: n=1', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nPr(1, 0)).toBe(1)
+    expect(mc.nPr(1, 1)).toBe(1)
+    expect(mc.nPr(1, 2)).toBe(0)
+  })
+
+  it('factorial at maxN', () => {
+    const maxN = 10
+    const mc = new ModuloCombinatorics(maxN)
+    expect(mc.factorial(maxN)).toBe(3628800)
+  })
+
+  it('nCr with symmetric values', () => {
+    const mc = new ModuloCombinatorics(20)
+    expect(mc.nCr(8, 2)).toBe(mc.nCr(8, 6))
+    expect(mc.nCr(12, 3)).toBe(mc.nCr(12, 9))
+  })
+
+  it('nHr consistency check', () => {
+    const mc = new ModuloCombinatorics(30)
+    expect(mc.nHr(4, 2)).toBe(10)
+  })
+
+  it('nPr permutation formula', () => {
+    const mc = new ModuloCombinatorics(15)
+    expect(mc.nPr(6, 3)).toBe(120)
+  })
+
+  it('large prime modulus', () => {
+    const mc = new ModuloCombinatorics(20, 1000000007)
+    expect(mc.nCr(10, 5)).toBeGreaterThan(0)
+    expect(mc.nCr(10, 5)).toBeLessThan(1000000007)
+  })
+
+  it('nCr cumulative property', () => {
+    const mc = new ModuloCombinatorics(20)
+    const n = 8, r = 3
+    const sum = mc.nCr(n - 1, r - 1) + mc.nCr(n - 1, r)
+    expect(sum % mc.mod).toBe(mc.nCr(n, r))
+  })
+
+  it('nPr formula: nPr = n!/(n-r)!', () => {
+    const mc = new ModuloCombinatorics(10)
+    const n = 7, r = 3
+    const expected = (mc.factorial(n) * mc.invFact[n - r]) % mc.mod
+    expect(mc.nPr(n, r)).toBe(expected)
+  })
+
+  it('nCr multiple r values for same n', () => {
+    const mc = new ModuloCombinatorics(15)
+    const n = 10
+    const results = [mc.nCr(n, 2), mc.nCr(n, 4), mc.nCr(n, 6)]
+    expect(results.every(v => v >= 0)).toBe(true)
+  })
+
+  it('nHr boundary case n=1,r=1', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nHr(1, 1)).toBe(1)
+  })
+
+  it('nCr with r close to n', () => {
+    const mc = new ModuloCombinatorics(20)
+    expect(mc.nCr(10, 8)).toBe(45)
+  })
+
+  it('nPr with small r', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nPr(8, 2)).toBe(56)
+  })
+
+  it('factorial sequence monotonic increasing', () => {
+    const mc = new ModuloCombinatorics(10)
+    for (let i = 1; i <= 9; i++) {
+      expect(mc.factorial(i + 1) % mc.mod).toBeGreaterThan(mc.factorial(i) % mc.mod)
+    }
+  })
+
+  it('nCr identity: C(n,0) + C(n,1) + ... + C(n,n) = 2^n', () => {
+    const mc = new ModuloCombinatorics(15)
+    const n = 5
+    let sum = 0
+    for (let r = 0; r <= n; r++) {
+      sum = (sum + mc.nCr(n, r)) % mc.mod
+    }
+    const powerOfTwo = mc.modPow(2, n, mc.mod)
+    expect(sum).toBe(powerOfTwo)
   })
 })

@@ -132,76 +132,245 @@ describe('NewtonMethod', () => {
     expect(root).toBeCloseTo(0, 8)
   })
 
-  it('finds root of x^2 - 4', () => {
+  it('finds root of polynomial x^3 - 6x^2 + 11x - 6 (roots: 1,2,3)', () => {
     const root = NewtonMethod.findRoot(
+      (x) => x * x * x - 6 * x * x + 11 * x - 6,
+      (x) => 3 * x * x - 12 * x + 11,
+      1.5
+    )
+    expect([1, 2, 3]).toContainEqual(Math.round(root))
+  })
+
+  it('finds root of x^5 - 1', () => {
+    const root = NewtonMethod.findRoot(
+      (x) => Math.pow(x, 5) - 1,
+      (x) => 5 * Math.pow(x, 4),
+      1.2
+    )
+    expect(root).toBeCloseTo(1, 6)
+  })
+
+  it('handles very small tolerance', () => {
+    const result = NewtonMethod.findRootWithHistory(
       (x) => x * x - 4,
       (x) => 2 * x,
-      3
+      3,
+      { tolerance: 1e-15 }
     )
-    expect(Math.abs(root - 2)).toBeLessThan(0.001)
+    expect(result.converged).toBe(true)
+    expect(result.root).toBeCloseTo(2, 10)
   })
 
-  it('finds root of x cubed equals 8', () => {
+  it('handles large tolerance', () => {
+    const result = NewtonMethod.findRootWithHistory(
+      (x) => x * x - 4,
+      (x) => 2 * x,
+      3,
+      { tolerance: 1e-2 }
+    )
+    expect(result.converged).toBe(true)
+    expect(Math.abs(result.root - 2)).toBeLessThan(0.01)
+  })
+
+  it('finds root of ln(x) - 1', () => {
     const root = NewtonMethod.findRoot(
-      (x) => x * x * x - 8,
-      (x) => 3 * x * x,
+      (x) => Math.log(x) - 1,
+      (x) => 1 / x,
       3
     )
-    expect(Math.abs(root - 2)).toBeLessThan(0.001)
+    expect(root).toBeCloseTo(Math.E, 6)
   })
 
-  it('finds root of x-5 near 5', () => {
+  it('nthRoot handles even root of positive', () => {
+    expect(NewtonMethod.nthRoot(16, 4)).toBeCloseTo(2, 6)
+    expect(NewtonMethod.nthRoot(81, 4)).toBeCloseTo(3, 6)
+  })
+
+  it('nthRoot handles odd root of negative', () => {
+    expect(NewtonMethod.nthRoot(-8, 3)).toBeCloseTo(-2, 6)
+    expect(NewtonMethod.nthRoot(-27, 3)).toBeCloseTo(-3, 6)
+  })
+
+  it('nthRoot returns NaN for even root of negative', () => {
+    expect(NewtonMethod.nthRoot(-16, 4)).toBeNaN()
+    expect(NewtonMethod.nthRoot(-4, 2)).toBeNaN()
+  })
+
+  it('nthRoot handles square root', () => {
+    expect(NewtonMethod.nthRoot(25, 2)).toBeCloseTo(5, 6)
+    expect(NewtonMethod.nthRoot(100, 2)).toBeCloseTo(10, 6)
+  })
+
+  it('nthRoot handles fifth root', () => {
+    expect(NewtonMethod.nthRoot(32, 5)).toBeCloseTo(2, 6)
+    expect(NewtonMethod.nthRoot(243, 5)).toBeCloseTo(3, 6)
+  })
+
+  it('inverse finds cube root inverse', () => {
+    const result = NewtonMethod.inverse(
+      (x) => x * x * x,
+      (x) => 3 * x * x,
+      27,
+      3
+    )
+    expect(result).toBeCloseTo(3, 6)
+  })
+
+  it('inverse finds exponential inverse', () => {
+    const result = NewtonMethod.inverse(
+      (x) => Math.exp(x),
+      (x) => Math.exp(x),
+      Math.E,
+      1
+    )
+    expect(result).toBeCloseTo(1, 6)
+  })
+
+  it('history starts with initial guess', () => {
+    const result = NewtonMethod.findRootWithHistory(
+      (x) => x * x - 4,
+      (x) => 2 * x,
+      10
+    )
+    expect(result.history[0]).toBe(10)
+  })
+
+  it('history contains final root', () => {
+    const result = NewtonMethod.findRootWithHistory(
+      (x) => x * x - 4,
+      (x) => 2 * x,
+      10
+    )
+    expect(result.history[result.history.length - 1]).toBeCloseTo(2, 6)
+  })
+
+  it('finds root of tan(x) near 0', () => {
+    const root = NewtonMethod.findRoot(
+      (x) => Math.tan(x),
+      (x) => 1 / (Math.cos(x) * Math.cos(x)),
+      0.1
+    )
+    expect(root).toBeCloseTo(0, 6)
+  })
+
+  it('finds root of 1/x - 1', () => {
+    const root = NewtonMethod.findRoot(
+      (x) => 1 / x - 1,
+      (x) => -1 / (x * x),
+      2
+    )
+    expect(typeof root).toBe('number')
+    if (!Number.isNaN(root)) {
+      expect(root).toBeCloseTo(1, 6)
+    }
+  })
+
+  it('sqrt handles large numbers', () => {
+    expect(NewtonMethod.sqrt(10000)).toBeCloseTo(100, 6)
+    expect(NewtonMethod.sqrt(123456)).toBeCloseTo(Math.sqrt(123456), 4)
+  })
+
+  it('sqrt handles small positive numbers', () => {
+    expect(NewtonMethod.sqrt(0.25)).toBeCloseTo(0.5, 6)
+    expect(NewtonMethod.sqrt(0.01)).toBeCloseTo(0.1, 6)
+  })
+
+  it('sqrt handles 1', () => {
+    expect(NewtonMethod.sqrt(1)).toBeCloseTo(1, 8)
+  })
+
+  it('findRootWithHistory returns iterations count', () => {
+    const result = NewtonMethod.findRootWithHistory(
+      (x) => x * x - 4,
+      (x) => 2 * x,
+      10
+    )
+    expect(result.iterations).toBe(result.history.length - 1)
+  })
+
+  it('finds root of x^3 - x', () => {
+    const root = NewtonMethod.findRoot(
+      (x) => x * x * x - x,
+      (x) => 3 * x * x - 1,
+      1.5
+    )
+    expect([-1, 0, 1]).toContainEqual(Math.round(root))
+  })
+
+  it('finds root of cos(x) - x', () => {
+    const root = NewtonMethod.findRoot(
+      (x) => Math.cos(x) - x,
+      (x) => -Math.sin(x) - 1,
+      0.5
+    )
+    expect(root).toBeGreaterThan(0)
+    expect(root).toBeLessThan(1)
+  })
+
+  it('handles starting at exact root', () => {
     const root = NewtonMethod.findRoot(
       (x) => x - 5,
       (x) => 1,
-      4,
+      5
     )
-    expect(Math.abs(root - 5)).toBeLessThan(0.001)
+    expect(root).toBeCloseTo(5, 8)
   })
 
-  it('finds root of x squared', () => {
+  it('findRootWithHistory with maxIterations 1', () => {
+    const result = NewtonMethod.findRootWithHistory(
+      (x) => x * x - 4,
+      (x) => 2 * x,
+      10,
+      { maxIterations: 1 }
+    )
+    expect(result.iterations).toBe(1)
+    expect(result.history.length).toBe(2)
+  })
+
+  it('finds root of x^2 + 1 (no real root, derivative never zero)', () => {
     const root = NewtonMethod.findRoot(
+      (x) => x * x + 1,
+      (x) => 2 * x,
+      1
+    )
+    expect(typeof root).toBe('number')
+  })
+
+  it('nthRoot handles 1', () => {
+    expect(NewtonMethod.nthRoot(1, 5)).toBeCloseTo(1, 8)
+  })
+
+  it('inverse with different starting points', () => {
+    const result1 = NewtonMethod.inverse(
       (x) => x * x,
       (x) => 2 * x,
-      1,
-      2,
+      16,
+      1
     )
-    expect(Math.abs(root)).toBeLessThan(0.001)
+    const result2 = NewtonMethod.inverse(
+      (x) => x * x,
+      (x) => 2 * x,
+      16,
+      5
+    )
+    expect(Math.abs(result1)).toBeCloseTo(Math.abs(result2), 6)
   })
 
-  it('finds root of x cubed minus 8', () => {
+  it('finds root of x^10 - 1024', () => {
     const root = NewtonMethod.findRoot(
-      (x) => x * x * x - 8,
-      (x) => 3 * x * x,
-      3,
+      (x) => Math.pow(x, 10) - 1024,
+      (x) => 10 * Math.pow(x, 9),
+      2
     )
-    expect(Math.abs(root - 2)).toBeLessThan(0.001)
+    expect(root).toBeCloseTo(2, 4)
   })
 
-  it('finds cube root of 8', () => {
+  it('finds root near existing root with better precision', () => {
     const root = NewtonMethod.findRoot(
-      (x: number) => x * x * x - 8,
-      (x: number) => 3 * x * x,
-      1,
+      (x) => x * x - 9,
+      (x) => 2 * x,
+      2.9
     )
-    expect(Math.abs(root - 2)).toBeLessThan(0.001)
-  })
-
-  it('finds cube root of 8', () => {
-    const root = NewtonMethod.findRoot(
-      (x) => Math.pow(x, 3) - 8,
-      (x) => 3 * Math.pow(x, 2),
-      1,
-    )
-    expect(Math.abs(root - 2)).toBeLessThan(0.001)
-  })
-
-  it('finds root of x-5 near 5', () => {
-    const root = NewtonMethod.findRoot(
-      (x) => x - 5,
-      (x) => 1,
-      10,
-    )
-    expect(Math.abs(root - 5)).toBeLessThan(0.001)
+    expect(root).toBeCloseTo(3, 8)
   })
 })

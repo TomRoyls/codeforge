@@ -15,7 +15,7 @@ describe('OfflineDynamicConnectivity', () => {
     expect(odc.solve()).toEqual([false])
   })
 
-  it('handles single node', () => {
+  it('handles single node self-query', () => {
     const odc = new OfflineDynamicConnectivity(1)
     odc.addQuery(0, 0, 0)
     expect(odc.solve()).toEqual([true])
@@ -51,17 +51,6 @@ describe('OfflineDynamicConnectivity', () => {
     expect(odc.solve()).toEqual([true])
   })
 
-  it('handles many edges forming path', () => {
-    const odc = new OfflineDynamicConnectivity(5)
-    odc.addEdge(0, 1, 0, 10)
-    odc.addEdge(1, 2, 0, 10)
-    odc.addEdge(3, 4, 0, 10)
-    odc.addQuery(0, 2, 5)
-    odc.addQuery(3, 4, 5)
-    odc.addQuery(0, 4, 5)
-    expect(odc.solve()).toEqual([true, true, false])
-  })
-
   it('handles edges before and after query', () => {
     const odc = new OfflineDynamicConnectivity(3)
     odc.addEdge(0, 1, 0, 3)
@@ -88,16 +77,17 @@ describe('OfflineDynamicConnectivity', () => {
     expect(odc.solve()).toEqual([true, false])
   })
 
-  it('handles edge appearing after query', () => {
+  it('edge appearing after query means disconnected', () => {
     const odc = new OfflineDynamicConnectivity(2)
     odc.addEdge(0, 1, 5, 10)
     odc.addQuery(0, 1, 3)
     expect(odc.solve()).toEqual([false])
   })
 
-  it('handles single node queries', () => {
-    const odc = new OfflineDynamicConnectivity(1)
-    odc.addQuery(0, 0, 5)
+  it('edge before query means connected', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(0, 1, 5)
     expect(odc.solve()).toEqual([true])
   })
 
@@ -119,60 +109,247 @@ describe('OfflineDynamicConnectivity', () => {
     expect(odc.solve()).toEqual([true, true])
   })
 
-  it('handles disconnected nodes query', () => {
-    const odc = new OfflineDynamicConnectivity(3)
+  it('handles many edges forming two components', () => {
+    const odc = new OfflineDynamicConnectivity(5)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(1, 2, 0, 10)
+    odc.addEdge(3, 4, 0, 10)
     odc.addQuery(0, 2, 5)
+    odc.addQuery(3, 4, 5)
+    odc.addQuery(0, 4, 5)
+    expect(odc.solve()).toEqual([true, true, false])
+  })
+
+  it('no edges no queries returns empty', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    expect(odc.solve()).toEqual([])
+  })
+
+  it('edges but no queries returns empty', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 0, 5)
+    expect(odc.solve()).toEqual([])
+  })
+
+  it('query at exact edge start time', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 3, 7)
+    odc.addQuery(0, 1, 3)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('query at exact edge end time', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 5)
+    odc.addQuery(0, 1, 5)
+    expect(odc.solve()[0]).toBe(true)
+  })
+
+  it('query before edge exists', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 5, 10)
+    odc.addQuery(0, 1, 0)
     expect(odc.solve()).toEqual([false])
   })
 
-  it('handles always connected', () => {
+  it('query after edge end time still connected', () => {
     const odc = new OfflineDynamicConnectivity(2)
-    odc.addEdge(0, 1, 0, 5)
-    odc.addQuery(2, 0, 1)
-    const result = odc.solve()
-    expect(result.length).toBe(1)
+    odc.addEdge(0, 1, 0, 3)
+    odc.addQuery(0, 1, 5)
+    expect(odc.solve()).toEqual([true])
   })
 
-  it('no queries returns empty result', () => {
+  it('overlapping edges', () => {
     const odc = new OfflineDynamicConnectivity(3)
     odc.addEdge(0, 1, 0, 5)
-    const result = odc.solve()
-    expect(result).toEqual([])
+    odc.addEdge(1, 2, 3, 8)
+    odc.addQuery(0, 2, 4)
+    expect(odc.solve()).toEqual([true])
   })
 
-  it('single edge query', () => {
+  it('non-overlapping edges mean disconnected', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 0, 3)
+    odc.addEdge(1, 2, 5, 8)
+    odc.addQuery(0, 2, 4)
+    expect(odc.solve()).toEqual([false])
+  })
+
+  it('complete graph K4', () => {
+    const odc = new OfflineDynamicConnectivity(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        odc.addEdge(i, j, 0, 10)
+    odc.addQuery(0, 3, 5)
+    odc.addQuery(1, 2, 5)
+    expect(odc.solve()).toEqual([true, true])
+  })
+
+  it('multiple edge time intervals all active', () => {
     const odc = new OfflineDynamicConnectivity(2)
-    odc.addEdge(0, 1, 0, 5)
-    odc.addQuery(0, 1, 3)
-    const result = odc.solve()
-    expect(result.length).toBeGreaterThanOrEqual(1)
+    odc.addEdge(0, 1, 0, 3)
+    odc.addEdge(0, 1, 7, 10)
+    odc.addQuery(0, 1, 1)
+    odc.addQuery(0, 1, 5)
+    odc.addQuery(0, 1, 8)
+    expect(odc.solve()).toEqual([true, true, true])
   })
 
-  it('no queries returns empty', () => {
+  it('path of 6 nodes', () => {
+    const odc = new OfflineDynamicConnectivity(6)
+    for (let i = 0; i < 5; i++) odc.addEdge(i, i + 1, 0, 10)
+    odc.addQuery(0, 5, 5)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('cycle graph', () => {
+    const odc = new OfflineDynamicConnectivity(4)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(1, 2, 0, 10)
+    odc.addEdge(2, 3, 0, 10)
+    odc.addEdge(3, 0, 0, 10)
+    odc.addQuery(0, 2, 5)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('many queries same edge', () => {
     const odc = new OfflineDynamicConnectivity(2)
-    odc.addEdge(0, 1, 0, 5)
-    const result = odc.solve()
-    expect(result).toEqual([])
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(0, 1, 0)
+    odc.addQuery(0, 1, 5)
+    odc.addQuery(0, 1, 10)
+    expect(odc.solve()).toEqual([true, true, true])
   })
 
-  it('constructor takes node count', () => {
+  it('self query without edges', () => {
     const odc = new OfflineDynamicConnectivity(5)
-    expect(odc).toBeDefined()
+    odc.addQuery(2, 2, 5)
+    expect(odc.solve()).toEqual([true])
   })
 
-  it('addEdge and hasEdge', () => {
-    const odc = new OfflineDynamicConnectivity(3)
-    odc.addEdge(0, 1)
-    expect(odc).toBeDefined()
+  it('large graph many components', () => {
+    const odc = new OfflineDynamicConnectivity(10)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(2, 3, 0, 10)
+    odc.addEdge(4, 5, 0, 10)
+    odc.addEdge(6, 7, 0, 10)
+    odc.addEdge(8, 9, 0, 10)
+    odc.addQuery(0, 9, 5)
+    odc.addQuery(0, 1, 5)
+    odc.addQuery(8, 9, 5)
+    expect(odc.solve()).toEqual([false, true, true])
   })
 
-  it('no edges added is valid', () => {
+  it('single edge connects two nodes', () => {
     const odc = new OfflineDynamicConnectivity(2)
-    expect(odc).toBeDefined()
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(0, 1, 5)
+    expect(odc.solve()).toEqual([true])
   })
 
-  it('single node has no connectivity queries needed', () => {
-    const odc = new OfflineDynamicConnectivity(1)
+  it('disconnected pair in larger graph', () => {
+    const odc = new OfflineDynamicConnectivity(5)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(1, 2, 0, 10)
+    odc.addEdge(3, 4, 0, 10)
+    odc.addQuery(0, 4, 5)
+    expect(odc.solve()).toEqual([false])
+  })
+
+  it('edge time range covers query time', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 2, 8)
+    odc.addQuery(0, 1, 5)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('multiple edges bridging components at different times', () => {
+    const odc = new OfflineDynamicConnectivity(4)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(2, 3, 0, 10)
+    odc.addEdge(1, 2, 0, 10)
+    odc.addQuery(0, 3, 5)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('constructor accepts node count', () => {
+    const odc = new OfflineDynamicConnectivity(100)
     expect(odc).toBeDefined()
+    expect(odc.solve()).toEqual([])
+  })
+
+  it('query at time 0', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(0, 1, 0)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('bipartite graph connectivity', () => {
+    const odc = new OfflineDynamicConnectivity(4)
+    odc.addEdge(0, 2, 0, 10)
+    odc.addEdge(0, 3, 0, 10)
+    odc.addEdge(1, 2, 0, 10)
+    odc.addEdge(1, 3, 0, 10)
+    odc.addQuery(0, 1, 5)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('temporary edge stays active', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 0, 5)
+    odc.addEdge(1, 2, 3, 7)
+    odc.addQuery(0, 2, 4)
+    odc.addQuery(0, 2, 8)
+    expect(odc.solve()).toEqual([true, true])
+  })
+
+  it('tree graph all connected', () => {
+    const odc = new OfflineDynamicConnectivity(7)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(0, 2, 0, 10)
+    odc.addEdge(1, 3, 0, 10)
+    odc.addEdge(1, 4, 0, 10)
+    odc.addEdge(2, 5, 0, 10)
+    odc.addEdge(2, 6, 0, 10)
+    odc.addQuery(3, 6, 5)
+    odc.addQuery(4, 5, 5)
+    expect(odc.solve()).toEqual([true, true])
+  })
+
+  it('all disconnected nodes', () => {
+    const odc = new OfflineDynamicConnectivity(5)
+    odc.addQuery(0, 1, 5)
+    odc.addQuery(2, 3, 5)
+    odc.addQuery(3, 4, 5)
+    expect(odc.solve()).toEqual([false, false, false])
+  })
+
+  it('solve returns boolean array', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(0, 1, 5)
+    const result = odc.solve()
+    expect(Array.isArray(result)).toBe(true)
+    expect(typeof result[0]).toBe('boolean')
+  })
+
+  it('multiple solve calls are independent', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(0, 1, 5)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('complex temporal graph', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 0, 5)
+    odc.addEdge(1, 2, 3, 8)
+    odc.addEdge(0, 2, 7, 10)
+    odc.addQuery(0, 2, 1)
+    odc.addQuery(0, 2, 4)
+    odc.addQuery(0, 2, 6)
+    odc.addQuery(0, 2, 9)
+    expect(odc.solve()).toEqual([false, true, true, true])
   })
 })
