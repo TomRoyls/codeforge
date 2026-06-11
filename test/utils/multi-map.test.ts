@@ -243,4 +243,154 @@ describe('MultiMap', () => {
     expect(key).toBe('a')
     expect(valueSet.size).toBe(2)
   })
+
+  it('add with no values does nothing', () => {
+    map.add('a')
+    expect(map.has('a')).toBe(false)
+  })
+
+  it('set with different types for values', () => {
+    const typed = new MultiMap<string, unknown>()
+    typed.set('a', 1)
+    typed.set('a', 'hello')
+    typed.set('a', true)
+    expect(typed.entryCount).toBe(3)
+    expect(typed.getValues('a')).toContain(1)
+    expect(typed.getValues('a')).toContain('hello')
+    expect(typed.getValues('a')).toContain(true)
+  })
+
+  it('deleteEntry on non-existent entry returns false', () => {
+    map.set('a', 1)
+    expect(map.deleteEntry('a', 99)).toBe(false)
+    expect(map.deleteEntry('z', 1)).toBe(false)
+  })
+
+  it('deleteEntry then re-add works', () => {
+    map.set('a', 1)
+    map.deleteEntry('a', 1)
+    expect(map.has('a')).toBe(false)
+    map.set('a', 2)
+    expect(map.hasEntry('a', 2)).toBe(true)
+    expect(map.entryCount).toBe(1)
+  })
+
+  it('clear on empty map does nothing', () => {
+    map.clear()
+    expect(map.isEmpty).toBe(true)
+    expect(map.entryCount).toBe(0)
+  })
+
+  it('keys returns unique keys only', () => {
+    map.add('a', 1, 2, 3)
+    map.add('b', 4)
+    const keys = map.keys()
+    expect(keys.length).toBe(2)
+  })
+
+  it('values returns all values across keys', () => {
+    map.add('x', 10, 20)
+    map.add('y', 30)
+    const vals = map.values()
+    expect(vals.length).toBe(3)
+    expect(vals).toContain(10)
+    expect(vals).toContain(20)
+    expect(vals).toContain(30)
+  })
+
+  it('entries includes all key-value pairs', () => {
+    map.add('p', 1)
+    map.add('q', 2, 3)
+    const ent = map.entries()
+    expect(ent.length).toBe(3)
+  })
+
+  it('forEach visits every entry', () => {
+    map.add('a', 1, 2)
+    map.add('b', 3)
+    let count = 0
+    map.forEach(() => { count++ })
+    expect(count).toBe(3)
+  })
+
+  it('clone after delete preserves remaining', () => {
+    map.add('a', 1, 2, 3)
+    map.deleteEntry('a', 2)
+    const clone = map.clone()
+    expect(clone.entryCount).toBe(2)
+    expect(clone.hasEntry('a', 1)).toBe(true)
+    expect(clone.hasEntry('a', 3)).toBe(true)
+    expect(clone.hasEntry('a', 2)).toBe(false)
+  })
+
+  it('invert with overlapping values', () => {
+    map.add('a', 1)
+    map.add('b', 1)
+    map.add('c', 2)
+    const inv = map.invert()
+    expect(inv.getValues(1)).toContain('a')
+    expect(inv.getValues(1)).toContain('b')
+    expect(inv.getValues(2)).toContain('c')
+  })
+
+  it('merge with empty map does nothing', () => {
+    map.add('a', 1)
+    const empty = new MultiMap<string, number>()
+    map.merge(empty)
+    expect(map.entryCount).toBe(1)
+  })
+
+  it('equals with empty maps', () => {
+    const other = new MultiMap<string, number>()
+    expect(map.equals(other)).toBe(true)
+  })
+
+  it('equals with different key counts', () => {
+    map.add('a', 1)
+    const other = new MultiMap<string, number>()
+    other.add('a', 1)
+    other.add('b', 2)
+    expect(map.equals(other)).toBe(false)
+  })
+
+  it('filterKeys returns empty when nothing matches', () => {
+    map.add('a', 1)
+    map.add('b', 2)
+    const filtered = map.filterKeys(() => false)
+    expect(filtered.isEmpty).toBe(true)
+  })
+
+  it('filterValues removes all values from a key', () => {
+    map.add('a', 1, 3, 5)
+    map.add('b', 2, 4)
+    const filtered = map.filterValues((v) => v % 2 === 0)
+    expect(filtered.has('a')).toBe(false)
+    expect(filtered.getValues('b')).toEqual([2, 4])
+  })
+
+  it('fromEntries with duplicate entries', () => {
+    const entries: Array<[string, number]> = [['a', 1], ['a', 1], ['a', 2]]
+    const result = MultiMap.fromEntries(entries)
+    expect(result.entryCount).toBe(2)
+    expect(result.getValues('a')).toContain(1)
+    expect(result.getValues('a')).toContain(2)
+  })
+
+  it('fromGroups with empty value arrays', () => {
+    const groups: Array<[string, number[]]> = [['a', []], ['b', [1]]]
+    const result = MultiMap.fromGroups(groups)
+    expect(result.has('a')).toBe(false)
+    expect(result.hasEntry('b', 1)).toBe(true)
+  })
+
+  it('number keys work correctly', () => {
+    const numMap = new MultiMap<number, string>()
+    numMap.set(1, 'a')
+    numMap.set(1, 'b')
+    numMap.set(2, 'c')
+    expect(numMap.keyCount).toBe(2)
+    expect(numMap.entryCount).toBe(3)
+    expect(numMap.getValues(1)).toContain('a')
+    expect(numMap.getValues(1)).toContain('b')
+  })
 })

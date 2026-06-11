@@ -255,4 +255,96 @@ describe('Error hierarchy', () => {
       }
     }
   })
+
+  it('CLIError can be caught with try-catch', () => {
+    let caught = false
+    try {
+      throw new CLIError('caught!')
+    } catch (e) {
+      caught = true
+      expect((e as CLIError).message).toBe('caught!')
+    }
+    expect(caught).toBe(true)
+  })
+
+  it('CLIError toJSON is serializable', () => {
+    const err = new CLIError('test', { code: 'E100', context: { a: 1 } })
+    const json = JSON.stringify(err.toJSON())
+    expect(json).toContain('E100')
+    expect(json).toContain('test')
+  })
+
+  it('CLIError with empty message', () => {
+    const err = new CLIError('')
+    expect(err.message).toBe('')
+    expect(err.code).toBe('E000')
+  })
+
+  it('CLIError configError with long message', () => {
+    const msg = 'a'.repeat(1000)
+    const err = CLIError.configError(msg)
+    expect(err.message).toBe(msg)
+    expect(err.code).toBe('E003')
+  })
+
+  it('CLIError fileNotFound with various paths', () => {
+    const err = CLIError.fileNotFound('./relative/path.ts')
+    expect(err.message).toContain('./relative/path.ts')
+    expect(err.suggestions.length).toBeGreaterThan(0)
+  })
+
+  it('SystemError with all options', () => {
+    const cause = new Error('root')
+    const err = new SystemError('msg', { code: 'E600', cause, context: { detail: 'x' } })
+    expect(err.code).toBe('E600')
+    expect(err.cause).toBe(cause)
+    expect(err.context).toEqual({ detail: 'x' })
+  })
+
+  it('SystemError with empty message', () => {
+    const err = new SystemError('')
+    expect(err.message).toBe('')
+    expect(err.code).toBe('E500')
+  })
+
+  it('SystemError toJSON is serializable', () => {
+    const err = new SystemError('test', { code: 'E501' })
+    const json = JSON.stringify(err.toJSON())
+    expect(json).toContain('E501')
+    expect(json).toContain('test')
+  })
+
+  it('SystemError ioError context includes operation', () => {
+    const cause = new Error('EACCES')
+    const err = SystemError.ioError('write config', cause)
+    expect(err.context.operation).toBe('write config')
+    expect(err.context.causeMessage).toBe('EACCES')
+  })
+
+  it('SystemError parseError context includes filePath', () => {
+    const cause = new Error('syntax')
+    const err = SystemError.parseError('src/main.ts', cause)
+    expect(err.context.filePath).toBe('src/main.ts')
+  })
+
+  it('SystemError without cause serializes correctly', () => {
+    const err = new SystemError('no cause')
+    const json = err.toJSON()
+    expect(json.cause).toBeUndefined()
+    expect(json.name).toBe('SystemError')
+  })
+
+  it('CLIError invalidInput with multiple suggestions', () => {
+    const err = CLIError.invalidInput('bad', ['a', 'b', 'c'])
+    expect(err.suggestions).toEqual(['a', 'b', 'c'])
+    expect(err.code).toBe('E001')
+  })
+
+  it('SystemError cause chain preserved', () => {
+    const root = new Error('root cause')
+    const mid = SystemError.ioError('read', root)
+    const err = new SystemError('wrapper', { cause: mid, code: 'E600' })
+    expect(err.cause).toBe(mid)
+    expect((err.cause as SystemError).cause).toBe(root)
+  })
 })

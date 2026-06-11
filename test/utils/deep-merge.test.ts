@@ -203,4 +203,104 @@ describe('deepMerge edge cases', () => {
   it('handles false override', () => {
     expect(deepMerge({ a: true }, { a: false })).toEqual({ a: false })
   })
+
+  it('merges four levels deep', () => {
+    const base = { a: { b: { c: { d: { e: 1 } } } } }
+    const override = { a: { b: { c: { d: { f: 2 } } } } }
+    expect(deepMerge(base, override)).toEqual({ a: { b: { c: { d: { e: 1, f: 2 } } } } })
+  })
+
+  it('merges sibling keys at same level', () => {
+    const base = { a: 1, b: 2, c: 3 }
+    const override = { d: 4, e: 5 }
+    expect(deepMerge(base, override)).toEqual({ a: 1, b: 2, c: 3, d: 4, e: 5 })
+  })
+
+  it('replaces array entirely when override is non-array', () => {
+    const base = { data: [1, 2, 3] }
+    const override = { data: { nested: true } }
+    expect(deepMerge(base, override)).toEqual({ data: { nested: true } })
+  })
+
+  it('handles nested null in override', () => {
+    const base = { a: { b: { c: 1 } } }
+    const override = { a: { b: null } }
+    expect(deepMerge(base, override)).toEqual({ a: { b: null } })
+  })
+
+  it('merges objects with numeric string keys', () => {
+    const base = { '1': 'a', '2': 'b' }
+    const override = { '2': 'c', '3': 'd' }
+    expect(deepMerge(base, override)).toEqual({ '1': 'a', '2': 'c', '3': 'd' })
+  })
+
+  it('handles object with Symbol-like keys', () => {
+    const base = { a: 1 }
+    const override = { b: 2 }
+    const result = deepMerge(base, override)
+    expect(result).toEqual({ a: 1, b: 2 })
+  })
+
+  it('maxDepth 3 stops merge at depth 3', () => {
+    const base = { a: { b: { c: { d: { e: 1 } } } } }
+    const override = { a: { b: { c: { d: { e: 2, f: 3 } } } } }
+    const result = deepMerge(base, override, { maxDepth: 3 })
+    expect(result).toEqual({ a: { b: { c: { d: { e: 2, f: 3 } } } } })
+  })
+
+  it('default maxDepth allows deep merging', () => {
+    const deep: Record<string, unknown> = { a: 1 }
+    let current = deep
+    for (let i = 0; i < 50; i++) {
+      current['a'] = { a: current['a'] }
+      current = current['a'] as Record<string, unknown>
+    }
+    const result = deepMerge({ x: deep }, { x: { b: 2 } })
+    expect((result.x as Record<string, unknown>).b).toBe(2)
+  })
+
+  it('handles empty array in override', () => {
+    const base = { items: [1, 2, 3] }
+    const override = { items: [] }
+    expect(deepMerge(base, override)).toEqual({ items: [] })
+  })
+
+  it('handles nested objects with array values', () => {
+    const base = { config: { tags: ['a', 'b'] } }
+    const override = { config: { tags: ['c'] } }
+    expect(deepMerge(base, override)).toEqual({ config: { tags: ['c'] } })
+  })
+
+  it('does not merge arrays element by element', () => {
+    const base = { arr: [1, 2, 3] }
+    const override = { arr: [4] }
+    expect(deepMerge(base, override)).toEqual({ arr: [4] })
+  })
+
+  it('handles multiple nested objects', () => {
+    const base = { a: { x: 1 }, b: { y: 2 } }
+    const override = { a: { z: 3 }, b: { w: 4 } }
+    expect(deepMerge(base, override)).toEqual({ a: { x: 1, z: 3 }, b: { y: 2, w: 4 } })
+  })
+
+  it('preserves object identity on unchanged base', () => {
+    const base = { a: 1, b: { c: 2 } }
+    const override = { d: 3 }
+    const result = deepMerge(base, override)
+    expect(result).toEqual({ a: 1, b: { c: 2 }, d: 3 })
+  })
+
+  it('override with empty nested object merges keeping base keys', () => {
+    const base = { a: { x: 1, y: 2 } }
+    const override = { a: {} }
+    expect(deepMerge(base, override)).toEqual({ a: { x: 1, y: 2 } })
+  })
+
+  it('handles Date objects as override', () => {
+    const date = new Date('2024-01-01')
+    const base = { a: 1 }
+    const override = { a: date }
+    const result = deepMerge(base, override)
+    expect(result.a).toBe(date)
+  })
 })

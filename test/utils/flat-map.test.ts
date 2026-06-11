@@ -260,4 +260,140 @@ describe('FlatMap', () => {
     expect(map1.get(1)).toBe('one')
     expect(map2.get(1)).toBe('uno')
   })
+
+  it('toString returns formatted string', () => {
+    const map = new FlatMap<number, string>()
+    expect(map.toString()).toBe('FlatMap(0)')
+    map.set(1, 'one')
+    expect(map.toString()).toBe('FlatMap(1)')
+  })
+
+  it('toJSON returns entries array', () => {
+    const map = new FlatMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    expect(map.toJSON()).toEqual([[1, 'a'], [2, 'b']])
+  })
+
+  it('clone creates independent copy', () => {
+    const map = new FlatMap<number, string>()
+    map.set(1, 'one')
+    map.set(2, 'two')
+    const clone = map.clone()
+    expect(clone.size).toBe(2)
+    expect(clone.get(1)).toBe('one')
+    clone.set(3, 'three')
+    expect(map.size).toBe(2)
+    expect(clone.size).toBe(3)
+  })
+
+  it('equals returns true for same content', () => {
+    const m1 = new FlatMap<number, string>()
+    const m2 = new FlatMap<number, string>()
+    m1.set(1, 'a')
+    m1.set(2, 'b')
+    m2.set(1, 'a')
+    m2.set(2, 'b')
+    expect(m1.equals(m2)).toBe(true)
+  })
+
+  it('equals returns false for different content', () => {
+    const m1 = new FlatMap<number, string>()
+    const m2 = new FlatMap<number, string>()
+    m1.set(1, 'a')
+    m2.set(1, 'b')
+    expect(m1.equals(m2)).toBe(false)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const m1 = new FlatMap<number, string>()
+    const m2 = new FlatMap<number, string>()
+    m1.set(1, 'a')
+    m1.set(2, 'b')
+    m2.set(1, 'a')
+    expect(m1.equals(m2)).toBe(false)
+  })
+
+  it('equals returns false for non-FlatMap', () => {
+    const map = new FlatMap<number, string>()
+    map.set(1, 'a')
+    expect(map.equals({})).toBe(false)
+    expect(map.equals(null)).toBe(false)
+  })
+
+  it('set many entries maintains sort order', () => {
+    const map = new FlatMap<number, string>()
+    for (let i = 20; i >= 1; i--) {
+      map.set(i, `val${i}`)
+    }
+    const keys = map.keys()
+    for (let i = 1; i < keys.length; i++) {
+      expect(keys[i]!).toBeGreaterThan(keys[i - 1]!)
+    }
+  })
+
+  it('delete from middle maintains order', () => {
+    const map = new FlatMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.set(3, 'c')
+    map.delete(2)
+    expect(map.keys()).toEqual([1, 3])
+    expect(map.size).toBe(2)
+  })
+
+  it('range with no matching keys returns empty', () => {
+    const map = new FlatMap<number, string>()
+    map.set(1, 'a')
+    map.set(10, 'b')
+    expect(map.range(3, 5)).toEqual([])
+  })
+
+  it('rangeInclusive includes end key', () => {
+    const map = new FlatMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.set(3, 'c')
+    map.set(4, 'd')
+    const range = map.rangeInclusive(2, 3)
+    expect(range).toEqual([[2, 'b'], [3, 'c']])
+  })
+
+  it('clear on empty map does nothing', () => {
+    const map = new FlatMap<number, string>()
+    map.clear()
+    expect(map.isEmpty).toBe(true)
+  })
+
+  it('forEach on empty map does nothing', () => {
+    const map = new FlatMap<number, string>()
+    let count = 0
+    map.forEach(() => { count++ })
+    expect(count).toBe(0)
+  })
+
+  it('atIndex returns first element', () => {
+    const map = new FlatMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    expect(map.atIndex(0)).toEqual([1, 'a'])
+  })
+
+  it('from with duplicate entries keeps last value', () => {
+    const entries: Array<[number, string]> = [[1, 'a'], [1, 'b'], [2, 'c']]
+    const map = FlatMap.from(entries)
+    expect(map.get(1)).toBe('b')
+    expect(map.size).toBe(2)
+  })
+
+  it('clone after delete preserves state', () => {
+    const map = new FlatMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.set(3, 'c')
+    map.delete(2)
+    const clone = map.clone()
+    expect(clone.size).toBe(2)
+    expect(clone.get(2)).toBeUndefined()
+  })
 })

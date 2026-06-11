@@ -236,4 +236,240 @@ describe('SparseBitSet', () => {
     expect(bs.size).toBe(1)
     expect(bs.memoryChunks).toBe(1)
   })
+
+  it('handles chunk boundary at 32', () => {
+    const bs = new SparseBitSet()
+    bs.set(31)
+    bs.set(32)
+    bs.set(33)
+    expect(bs.size).toBe(3)
+    expect(bs.get(31)).toBe(true)
+    expect(bs.get(32)).toBe(true)
+    expect(bs.get(33)).toBe(true)
+  })
+
+  it('handles very large bit indices', () => {
+    const bs = new SparseBitSet()
+    bs.set(100000)
+    bs.set(1000000)
+    bs.set(10000000)
+    expect(bs.size).toBe(3)
+    expect(bs.get(100000)).toBe(true)
+    expect(bs.get(1000000)).toBe(true)
+    expect(bs.get(10000000)).toBe(true)
+  })
+
+  it('handles set of bit 0', () => {
+    const bs = new SparseBitSet()
+    bs.set(0)
+    expect(bs.size).toBe(1)
+    expect(bs.get(0)).toBe(true)
+  })
+
+  it('handles clear of bit 0', () => {
+    const bs = new SparseBitSet()
+    bs.set(0)
+    bs.clear(0)
+    expect(bs.size).toBe(0)
+    expect(bs.get(0)).toBe(false)
+  })
+
+  it('flip of negative index does nothing', () => {
+    const bs = new SparseBitSet()
+    bs.flip(-1)
+    bs.flip(-100)
+    expect(bs.size).toBe(0)
+  })
+
+  it('nextSetBit handles negative from', () => {
+    const bs = new SparseBitSet()
+    bs.set(10)
+    expect(bs.nextSetBit(-5)).toBe(10)
+    expect(bs.nextSetBit(-1000)).toBe(10)
+  })
+
+  it('nextSetBit returns first set bit when from is 0', () => {
+    const bs = new SparseBitSet()
+    bs.set(0)
+    bs.set(10)
+    bs.set(20)
+    expect(bs.nextSetBit(0)).toBe(0)
+  })
+
+  it('nextSetBit returns -1 when starting beyond all set bits', () => {
+    const bs = new SparseBitSet()
+    bs.set(0)
+    bs.set(10)
+    bs.set(20)
+    expect(bs.nextSetBit(21)).toBe(-1)
+    expect(bs.nextSetBit(1000)).toBe(-1)
+  })
+
+  it('nextSetBit finds bit in first chunk', () => {
+    const bs = new SparseBitSet()
+    bs.set(5)
+    bs.set(10)
+    expect(bs.nextSetBit(3)).toBe(5)
+  })
+
+  it('nextSetBit finds bit in later chunk', () => {
+    const bs = new SparseBitSet()
+    bs.set(5)
+    bs.set(100)
+    bs.set(200)
+    expect(bs.nextSetBit(10)).toBe(100)
+  })
+
+  it('nextSetBit handles from exactly at set bit', () => {
+    const bs = new SparseBitSet()
+    bs.set(5)
+    bs.set(10)
+    expect(bs.nextSetBit(5)).toBe(5)
+    expect(bs.nextSetBit(10)).toBe(10)
+  })
+
+  it('toArray returns sorted bits', () => {
+    const bs = new SparseBitSet()
+    bs.set(100)
+    bs.set(0)
+    bs.set(50)
+    bs.set(75)
+    expect(bs.toArray()).toEqual([0, 50, 75, 100])
+  })
+
+  it('toArray handles bits across multiple chunks', () => {
+    const bs = new SparseBitSet()
+    bs.set(0)
+    bs.set(31)
+    bs.set(32)
+    bs.set(64)
+    bs.set(100)
+    expect(bs.toArray()).toEqual([0, 31, 32, 64, 100])
+  })
+
+  it('handles consecutive bits', () => {
+    const bs = new SparseBitSet()
+    bs.set(0)
+    bs.set(1)
+    bs.set(2)
+    bs.set(3)
+    bs.set(4)
+    expect(bs.size).toBe(5)
+    expect(bs.toArray()).toEqual([0, 1, 2, 3, 4])
+  })
+
+  it('handles alternating bits', () => {
+    const bs = new SparseBitSet()
+    bs.set(0)
+    bs.set(2)
+    bs.set(4)
+    bs.set(6)
+    bs.set(8)
+    expect(bs.size).toBe(5)
+    expect(bs.toArray()).toEqual([0, 2, 4, 6, 8])
+  })
+
+  it('set returns same result for duplicate sets', () => {
+    const bs = new SparseBitSet()
+    bs.set(5)
+    bs.set(5)
+    bs.set(5)
+    expect(bs.size).toBe(1)
+  })
+
+  it('clear returns same result for duplicate clears', () => {
+    const bs = new SparseBitSet()
+    bs.set(5)
+    bs.clear(5)
+    bs.clear(5)
+    expect(bs.size).toBe(0)
+  })
+
+  it('flip toggles bit multiple times', () => {
+    const bs = new SparseBitSet()
+    bs.flip(5)
+    expect(bs.get(5)).toBe(true)
+    bs.flip(5)
+    expect(bs.get(5)).toBe(false)
+    bs.flip(5)
+    expect(bs.get(5)).toBe(true)
+  })
+
+  it('and operation with identical sets', () => {
+    const bs1 = new SparseBitSet()
+    bs1.set(5)
+    bs1.set(10)
+    const bs2 = new SparseBitSet()
+    bs2.set(5)
+    bs2.set(10)
+    bs1.and(bs2)
+    expect(bs1.size).toBe(2)
+    expect(bs1.get(5)).toBe(true)
+    expect(bs1.get(10)).toBe(true)
+  })
+
+  it('and operation with disjoint sets', () => {
+    const bs1 = new SparseBitSet()
+    bs1.set(5)
+    bs1.set(10)
+    const bs2 = new SparseBitSet()
+    bs2.set(20)
+    bs2.set(30)
+    bs1.and(bs2)
+    expect(bs1.size).toBe(0)
+  })
+
+  it('or operation with identical sets', () => {
+    const bs1 = new SparseBitSet()
+    bs1.set(5)
+    bs1.set(10)
+    const bs2 = new SparseBitSet()
+    bs2.set(5)
+    bs2.set(10)
+    bs1.or(bs2)
+    expect(bs1.size).toBe(2)
+    expect(bs1.get(5)).toBe(true)
+    expect(bs1.get(10)).toBe(true)
+  })
+
+  it('or operation with disjoint sets', () => {
+    const bs1 = new SparseBitSet()
+    bs1.set(5)
+    bs1.set(10)
+    const bs2 = new SparseBitSet()
+    bs2.set(20)
+    bs2.set(30)
+    bs1.or(bs2)
+    expect(bs1.size).toBe(4)
+    expect(bs1.get(5)).toBe(true)
+    expect(bs1.get(10)).toBe(true)
+    expect(bs1.get(20)).toBe(true)
+    expect(bs1.get(30)).toBe(true)
+  })
+
+  it('xor operation with identical sets', () => {
+    const bs1 = new SparseBitSet()
+    bs1.set(5)
+    bs1.set(10)
+    const bs2 = new SparseBitSet()
+    bs2.set(5)
+    bs2.set(10)
+    bs1.xor(bs2)
+    expect(bs1.size).toBe(0)
+  })
+
+  it('xor operation with disjoint sets', () => {
+    const bs1 = new SparseBitSet()
+    bs1.set(5)
+    bs1.set(10)
+    const bs2 = new SparseBitSet()
+    bs2.set(20)
+    bs2.set(30)
+    bs1.xor(bs2)
+    expect(bs1.size).toBe(4)
+    expect(bs1.get(5)).toBe(true)
+    expect(bs1.get(10)).toBe(true)
+    expect(bs1.get(20)).toBe(true)
+    expect(bs1.get(30)).toBe(true)
+  })
 })

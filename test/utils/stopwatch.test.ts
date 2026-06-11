@@ -242,4 +242,159 @@ describe('StopWatch', () => {
     expect(counter).toBe(1)
     expect(duration).toBeGreaterThanOrEqual(1)
   })
+
+  it('multiple stop calls return 0 after first', () => {
+    const sw = new StopWatch()
+    sw.start()
+    const first = sw.stop()
+    expect(first).toBeGreaterThan(0)
+    const second = sw.stop()
+    expect(second).toBe(0)
+  })
+
+  it('lap after stop returns 0', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.stop()
+    const result = sw.lap('after-stop')
+    expect(result).toBe(0)
+  })
+
+  it('totalLapTime with multiple laps', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('a')
+    sw.lap('b')
+    sw.lap('c')
+    expect(sw.totalLapTime).toBeGreaterThan(0)
+    sw.stop()
+  })
+
+  it('averageLapTime with multiple laps', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('a')
+    sw.lap('b')
+    sw.lap('c')
+    expect(sw.averageLapTime).toBeGreaterThan(0)
+    expect(sw.averageLapTime).toBeLessThan(sw.totalLapTime + 1)
+    sw.stop()
+  })
+
+  it('longestLap with single lap returns that lap', () => {
+    const sw = new StopWatch()
+    sw.start()
+    const d = sw.lap('only')
+    const longest = sw.longestLap
+    expect(longest).not.toBeNull()
+    expect(longest!.duration).toBe(d)
+    expect(longest!.label).toBe('only')
+    sw.stop()
+  })
+
+  it('shortestLap with single lap returns that lap', () => {
+    const sw = new StopWatch()
+    sw.start()
+    const d = sw.lap('only')
+    const shortest = sw.shortestLap
+    expect(shortest).not.toBeNull()
+    expect(shortest!.duration).toBe(d)
+    expect(shortest!.label).toBe('only')
+    sw.stop()
+  })
+
+  it('formatResults with single lap', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('init')
+    const formatted = sw.formatResults()
+    expect(formatted).toContain('init')
+    expect(formatted).toContain('ms')
+    expect(formatted.split('\n').length).toBe(1)
+    sw.stop()
+  })
+
+  it('formatResults with multiple laps has multiple lines', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('step1')
+    sw.lap('step2')
+    sw.lap('step3')
+    const formatted = sw.formatResults()
+    expect(formatted.split('\n').length).toBe(3)
+    sw.stop()
+  })
+
+  it('reset after laps clears everything', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('a')
+    sw.lap('b')
+    sw.stop()
+    sw.reset()
+    expect(sw.lapCount).toBe(0)
+    expect(sw.elapsed).toBe(0)
+    expect(sw.totalLapTime).toBe(0)
+    expect(sw.longestLap).toBeNull()
+    expect(sw.shortestLap).toBeNull()
+  })
+
+  it('can start again after reset', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.stop()
+    sw.reset()
+    sw.start()
+    expect(sw.elapsed).toBeGreaterThan(0)
+    sw.stop()
+  })
+
+  it('lapResults returns readonly array', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('a')
+    expect(sw.lapResults.length).toBe(1)
+    expect(sw.lapResults[0]!.label).toBe('a')
+    expect(sw.lapResults[0]!.duration).toBeGreaterThanOrEqual(0)
+    sw.stop()
+  })
+
+  it('measureTime with throwing function', () => {
+    expect(() => measureTime(() => { throw new Error('boom') })).toThrow('boom')
+  })
+
+  it('measureTime with slow function', () => {
+    const { duration } = measureTime(() => {
+      let sum = 0
+      for (let i = 0; i < 1000000; i++) sum += i
+      return sum
+    })
+    expect(duration).toBeGreaterThanOrEqual(0)
+  })
+
+  it('measureTimeAsync with instant resolve', async () => {
+    const { result, duration } = await measureTimeAsync(async () => 99)
+    expect(result).toBe(99)
+    expect(duration).toBeGreaterThanOrEqual(0)
+  })
+
+  it('lap durations are non-negative', () => {
+    const sw = new StopWatch()
+    sw.start()
+    for (let i = 0; i < 10; i++) {
+      const d = sw.lap(`lap${i}`)
+      expect(d).toBeGreaterThanOrEqual(0)
+    }
+    sw.stop()
+  })
+
+  it('elapsed increases over time', () => {
+    const sw = new StopWatch()
+    sw.start()
+    const e1 = sw.elapsed
+    for (let i = 0; i < 100000; i++) { /* spin */ }
+    const e2 = sw.elapsed
+    expect(e2).toBeGreaterThanOrEqual(e1)
+    sw.stop()
+  })
 })
