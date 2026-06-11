@@ -76,43 +76,177 @@ describe('CountingSort', () => {
     expect(CountingSort.sort(arr)).toEqual([1, 2, 1000000])
   })
 
-  it('handles already sorted input', () => {
-    expect(CountingSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
+  it('handles two elements', () => {
+    expect(CountingSort.sort([2, 1])).toEqual([1, 2])
   })
 
-  it('handles reverse sorted input', () => {
-    expect(CountingSort.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5])
+  it('handles two equal elements', () => {
+    expect(CountingSort.sort([5, 5])).toEqual([5, 5])
   })
 
-  it('handles single element', () => {
-    expect(CountingSort.sort([42])).toEqual([42])
+  it('handles zeros', () => {
+    expect(CountingSort.sort([0, 0, 0])).toEqual([0, 0, 0])
   })
 
-  it('handles duplicates', () => {
-    expect(CountingSort.sort([3, 1, 2, 1])).toEqual([1, 1, 2, 3])
+  it('handles range of one value', () => {
+    expect(CountingSort.sort([5, 5, 5, 5])).toEqual([5, 5, 5, 5])
   })
 
-  it('handles empty array', () => {
-    expect(CountingSort.sort([])).toEqual([])
+  it('sortInPlace on empty array', () => {
+    const arr: number[] = []
+    expect(CountingSort.sortInPlace(arr)).toEqual([])
   })
 
-  it('sorts single element', () => {
-    expect(CountingSort.sort([42])).toEqual([42])
+  it('sortInPlace on single element', () => {
+    const arr = [42]
+    expect(CountingSort.sortInPlace(arr)).toEqual([42])
   })
 
-  it('sorts already sorted', () => {
-    expect(CountingSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  it('sortInPlace on already sorted', () => {
+    const arr = [1, 2, 3]
+    CountingSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
   })
 
-  it('handles single element', () => {
-    expect(CountingSort.sort([42])).toEqual([42])
+  it('sortInPlace on reverse sorted', () => {
+    const arr = [5, 4, 3, 2, 1]
+    CountingSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
   })
 
-  it('handles empty array', () => {
-    expect(CountingSort.sort([])).toEqual([])
+  it('sortInPlace with duplicates', () => {
+    const arr = [3, 1, 2, 1]
+    CountingSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 1, 2, 3])
   })
 
-  it('handles single element', () => {
-    expect(CountingSort.sort([5])).toEqual([5])
+  it('sortBy does not modify original', () => {
+    const items = [{ v: 3 }, { v: 1 }, { v: 2 }]
+    CountingSort.sortBy(items, (i) => i.v)
+    expect(items.map((i) => i.v)).toEqual([3, 1, 2])
+  })
+
+  it('sortBy with empty array', () => {
+    expect(CountingSort.sortBy([], (i: number) => i)).toEqual([])
+  })
+
+  it('sortBy with single element', () => {
+    const items = [{ v: 5 }]
+    expect(CountingSort.sortBy(items, (i) => i.v)).toEqual([{ v: 5 }])
+  })
+
+  it('sortBy with negative keys', () => {
+    const items = [{ v: -1 }, { v: -3 }, { v: -2 }]
+    const sorted = CountingSort.sortBy(items, (i) => i.v)
+    expect(sorted.map((i) => i.v)).toEqual([-3, -2, -1])
+  })
+
+  it('sortBy with min/max options', () => {
+    const items = [{ v: 3 }, { v: 1 }, { v: 2 }]
+    const sorted = CountingSort.sortBy(items, (i) => i.v, { min: 0, max: 5 })
+    expect(sorted.map((i) => i.v)).toEqual([1, 2, 3])
+  })
+
+  it('countFrequencies with single element', () => {
+    const freq = CountingSort.countFrequencies([5])
+    expect(freq.size).toBe(1)
+    expect(freq.get(5)).toBe(1)
+  })
+
+  it('countFrequencies with all duplicates', () => {
+    const freq = CountingSort.countFrequencies([3, 3, 3])
+    expect(freq.size).toBe(1)
+    expect(freq.get(3)).toBe(3)
+  })
+
+  it('countFrequencies with min/max options', () => {
+    const freq = CountingSort.countFrequencies([1, 2, 3], { min: 0, max: 5 })
+    expect(freq.get(1)).toBe(1)
+    expect(freq.get(2)).toBe(1)
+    expect(freq.get(3)).toBe(1)
+  })
+
+  it('countFrequencies returns Map', () => {
+    const freq = CountingSort.countFrequencies([1, 2, 2])
+    expect(freq).toBeInstanceOf(Map)
+  })
+
+  it('handles large array', () => {
+    const arr = Array.from({ length: 500 }, (_, i) => 500 - i)
+    const result = CountingSort.sort(arr)
+    for (let i = 1; i < result.length; i++) {
+      expect(result[i]!).toBeGreaterThanOrEqual(result[i - 1]!)
+    }
+  })
+
+  it('sort with min only option', () => {
+    const result = CountingSort.sort([3, 1, 2], { min: 0 })
+    expect(result).toEqual([1, 2, 3])
+  })
+
+  it('sort with max only option', () => {
+    const result = CountingSort.sort([3, 1, 2], { max: 10 })
+    expect(result).toEqual([1, 2, 3])
+  })
+
+  it('sortInPlace returns the same array reference', () => {
+    const arr = [3, 1, 2]
+    const result = CountingSort.sortInPlace(arr)
+    expect(result).toBe(arr)
+  })
+
+  it('handles consecutive integers', () => {
+    expect(CountingSort.sort([5, 3, 1, 4, 2])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles repeated consecutive integers', () => {
+    expect(CountingSort.sort([1, 1, 2, 2, 3, 3])).toEqual([1, 1, 2, 2, 3, 3])
+  })
+
+  it('sortBy with object values', () => {
+    const items = [{ name: 'c', v: 3 }, { name: 'a', v: 1 }, { name: 'b', v: 2 }]
+    const sorted = CountingSort.sortBy(items, (i) => i.v)
+    expect(sorted.map((i) => i.name)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('sortInPlace with large range falls back', () => {
+    const arr = [1, 1000000, 2]
+    CountingSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 1000000])
+  })
+
+  it('countFrequencies with negative numbers', () => {
+    const freq = CountingSort.countFrequencies([-1, -2, -1])
+    expect(freq.get(-2)).toBe(1)
+    expect(freq.get(-1)).toBe(2)
+  })
+
+  it('handles single zero', () => {
+    expect(CountingSort.sort([0])).toEqual([0])
+  })
+
+  it('handles mixed zeros and ones', () => {
+    expect(CountingSort.sort([1, 0, 1, 0, 1])).toEqual([0, 0, 1, 1, 1])
+  })
+
+  it('sortBy with duplicate keys preserves stable order', () => {
+    const items = [{ v: 1, id: 1 }, { v: 1, id: 2 }, { v: 2, id: 3 }]
+    const sorted = CountingSort.sortBy(items, (i) => i.v)
+    expect(sorted[0]!.id).toBe(1)
+    expect(sorted[1]!.id).toBe(2)
+    expect(sorted[2]!.id).toBe(3)
+  })
+
+  it('handles ten elements reverse', () => {
+    const arr = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+    expect(CountingSort.sort(arr)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  })
+
+  it('countFrequencies with min/max larger than actual range', () => {
+    const freq = CountingSort.countFrequencies([1, 2, 3], { min: -5, max: 10 })
+    expect(freq.get(1)).toBe(1)
+    expect(freq.get(2)).toBe(1)
+    expect(freq.get(3)).toBe(1)
+    expect(freq.get(0)).toBeUndefined()
   })
 })

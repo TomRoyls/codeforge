@@ -24,6 +24,24 @@ describe('ConsistentHashRing', () => {
     expect(ring.nodeCount).toBe(1)
   })
 
+  it('creates ring with one virtual node', () => {
+    const ring = new ConsistentHashRing(['node1'], 1)
+    expect(ring.nodeCount).toBe(1)
+    const node = ring.getNode('key')
+    expect(node).toBe('node1')
+  })
+
+  it('creates ring with zero virtual nodes', () => {
+    const ring = new ConsistentHashRing(['node1'], 0)
+    expect(ring.nodeCount).toBe(0)
+    expect(ring.getNode('key')).toBeUndefined()
+  })
+
+  it('creates ring with large virtual node count', () => {
+    const ring = new ConsistentHashRing(['node1'], 500)
+    expect(ring.nodeCount).toBe(1)
+  })
+
   it('adds node to empty ring', () => {
     const ring = new ConsistentHashRing([])
     ring.addNode('node1')
@@ -183,5 +201,120 @@ describe('ConsistentHashRing', () => {
     const ring = new ConsistentHashRing<string>(['a', 'b', 'c'])
     const node = ring.getNode('test-key')
     expect(['a', 'b', 'c']).toContain(node)
+  })
+
+  it('getNode handles empty string key', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    const node = ring.getNode('')
+    expect(['node1', 'node2']).toContain(node)
+  })
+
+  it('getNode handles key with special characters', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    const node = ring.getNode('key!@#$%^&*()')
+    expect(['node1', 'node2']).toContain(node)
+  })
+
+  it('getNode handles key with unicode characters', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    const node = ring.getNode('key🎉')
+    expect(['node1', 'node2']).toContain(node)
+  })
+
+  it('getNode handles key with spaces', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    const node = ring.getNode('key with spaces')
+    expect(['node1', 'node2']).toContain(node)
+  })
+
+  it('getNode handles very long key', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    const longKey = 'a'.repeat(10000)
+    const node = ring.getNode(longKey)
+    expect(['node1', 'node2']).toContain(node)
+  })
+
+  it('getNodes returns no duplicates', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2', 'node3'])
+    const nodes = ring.getNodes('key', 10)
+    const uniqueNodes = new Set(nodes)
+    expect(uniqueNodes.size).toBe(nodes.length)
+  })
+
+  it('getNodes returns at most count nodes', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2', 'node3'])
+    const nodes = ring.getNodes('key', 2)
+    expect(nodes.length).toBeLessThanOrEqual(2)
+  })
+
+  it('getNodes returns empty when count is zero', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    const nodes = ring.getNodes('key', 0)
+    expect(nodes).toEqual([])
+  })
+
+  it('getNodes handles count larger than available nodes', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    const nodes = ring.getNodes('key', 10)
+    expect(nodes.length).toBeLessThanOrEqual(2)
+  })
+
+  it('getNodes returns all available nodes when requested', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2', 'node3'])
+    const nodes = ring.getNodes('key', 10)
+    expect(nodes.length).toBe(3)
+    expect(new Set(nodes)).toEqual(new Set(['node1', 'node2', 'node3']))
+  })
+
+  it('getNodes returns distinct nodes', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    const nodes = ring.getNodes('key', 5)
+    expect(nodes).toEqual(expect.arrayContaining(['node1', 'node2']))
+  })
+
+  it('handles node names with special characters', () => {
+    const ring = new ConsistentHashRing(['node-1', 'node_2', 'node.3'])
+    expect(ring.nodeCount).toBe(3)
+    const node = ring.getNode('key')
+    expect(['node-1', 'node_2', 'node.3']).toContain(node)
+  })
+
+  it('handles node names with numbers', () => {
+    const ring = new ConsistentHashRing(['node123', 'node456'])
+    expect(ring.nodeCount).toBe(2)
+    const node = ring.getNode('key')
+    expect(['node123', 'node456']).toContain(node)
+  })
+
+  it('handles duplicate node additions correctly', () => {
+    const ring = new ConsistentHashRing(['node1'])
+    ring.addNode('node1')
+    ring.addNode('node1')
+    expect(ring.nodeCount).toBe(1)
+  })
+
+  it('handles removal of last node', () => {
+    const ring = new ConsistentHashRing(['only'])
+    ring.removeNode('only')
+    expect(ring.nodeCount).toBe(0)
+    expect(ring.getNode('key')).toBeUndefined()
+  })
+
+  it('handles large number of nodes', () => {
+    const nodes = Array.from({ length: 100 }, (_, i) => `node${i}`)
+    const ring = new ConsistentHashRing(nodes)
+    expect(ring.nodeCount).toBe(100)
+  })
+
+  it('handles different keys possibly mapping to different nodes', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2', 'node3'])
+    const nodes = new Set<string>()
+    for (let i = 0; i < 100; i++) {
+      const node = ring.getNode(`key${i}`)
+      if (node) {
+        nodes.add(node)
+      }
+    }
+    expect(nodes.size).toBeGreaterThan(1)
   })
 })

@@ -98,11 +98,6 @@ describe('CountedBloomFilter', () => {
     expect(bf.contains('4')).toBe(false)
   })
 
-  it('count returns zero for absent item', () => {
-    const bf = new CountedBloomFilter()
-    expect(bf.count('absent')).toBe(0)
-  })
-
   it('handles empty string key', () => {
     const bf = new CountedBloomFilter()
     bf.add('')
@@ -125,47 +120,243 @@ describe('CountedBloomFilter', () => {
     expect(bf.count('z')).toBeGreaterThanOrEqual(3)
   })
 
-  it('empty filter has zero count', () => {
-    const bf = new CountedBloomFilter(100)
-    expect(bf.count('missing')).toBe(0)
-  })
-
-  it('add and count returns positive', () => {
-    const bf = new CountedBloomFilter(100)
-    bf.add('hello')
-    expect(bf.count('hello')).toBeGreaterThan(0)
-  })
-
-  it('count for non-added item is 0', () => {
-    const bf = new CountedBloomFilter(100)
-    expect(bf.count('missing')).toBe(0)
-  })
-
   it('add increments count', () => {
     const bf = new CountedBloomFilter(100)
     bf.add('item')
     expect(bf.count('item')).toBeGreaterThan(0)
   })
 
-  it('count for absent item is 0', () => {
-    const bf = new CountedBloomFilter(100)
-    expect(bf.count('missing')).toBe(0)
-  })
-
-  it('add and count returns positive', () => {
-    const bf = new CountedBloomFilter(100)
-    bf.add('hello')
-    expect(bf.count('hello')).toBeGreaterThan(0)
-  })
-
-  it('count for missing item is 0', () => {
-    const bf = new CountedBloomFilter(100)
-    expect(bf.count('missing')).toBe(0)
-  })
-
   it('count after add is positive', () => {
     const bf = new CountedBloomFilter(100)
     bf.add('hello')
     expect(bf.count('hello')).toBeGreaterThan(0)
+  })
+
+  it('handles very long string keys', () => {
+    const bf = new CountedBloomFilter()
+    const longKey = 'a'.repeat(10000)
+    bf.add(longKey)
+    expect(bf.contains(longKey)).toBe(true)
+    expect(bf.remove(longKey)).toBe(true)
+    expect(bf.contains(longKey)).toBe(false)
+  })
+
+  it('handles special characters in keys', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('!@#$%^&*()')
+    bf.add('[]{};:,.<>?')
+    bf.add('"\'`')
+    expect(bf.contains('!@#$%^&*()')).toBe(true)
+    expect(bf.contains('[]{};:,.<>?')).toBe(true)
+    expect(bf.contains('"\'`')).toBe(true)
+  })
+
+  it('handles unicode characters in keys', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('日本語')
+    bf.add('한글')
+    bf.add('العربية')
+    bf.add('emoji😀🎉')
+    expect(bf.contains('日本語')).toBe(true)
+    expect(bf.contains('한글')).toBe(true)
+    expect(bf.contains('العربية')).toBe(true)
+    expect(bf.contains('emoji😀🎉')).toBe(true)
+  })
+
+  it('handles very small false positive rate', () => {
+    const bf = new CountedBloomFilter(100, 0.0001)
+    bf.add('test')
+    expect(bf.contains('test')).toBe(true)
+  })
+
+  it('handles large false positive rate', () => {
+    const bf = new CountedBloomFilter(100, 0.5)
+    bf.add('test')
+    expect(bf.contains('test')).toBe(true)
+  })
+
+  it('custom expected items and false positive rate', () => {
+    const bf = new CountedBloomFilter(5000, 0.001)
+    for (let i = 0; i < 100; i++) {
+      bf.add(`item${i}`)
+    }
+    expect(bf.contains('item50')).toBe(true)
+  })
+
+  it('add same item many times then remove all', () => {
+    const bf = new CountedBloomFilter()
+    for (let i = 0; i < 10; i++) {
+      bf.add('test')
+    }
+    for (let i = 0; i < 10; i++) {
+      expect(bf.remove('test')).toBe(true)
+    }
+    expect(bf.contains('test')).toBe(false)
+  })
+
+  it('interleaved add and remove operations', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('a')
+    bf.add('b')
+    bf.add('a')
+    bf.remove('a')
+    expect(bf.contains('a')).toBe(true)
+    bf.remove('a')
+    expect(bf.contains('a')).toBe(false)
+    expect(bf.contains('b')).toBe(true)
+  })
+
+  it('count decreases after remove', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('x')
+    bf.add('x')
+    const countBefore = bf.count('x')
+    bf.remove('x')
+    const countAfter = bf.count('x')
+    expect(countAfter).toBeLessThanOrEqual(countBefore)
+  })
+
+  it('multiple instances have independent state', () => {
+    const bf1 = new CountedBloomFilter()
+    const bf2 = new CountedBloomFilter()
+    bf1.add('test')
+    expect(bf1.contains('test')).toBe(true)
+    expect(bf2.contains('test')).toBe(false)
+    bf2.add('other')
+    expect(bf1.contains('other')).toBe(false)
+    expect(bf2.contains('other')).toBe(true)
+  })
+
+  it('remove from empty filter returns false', () => {
+    const bf = new CountedBloomFilter()
+    expect(bf.remove('anything')).toBe(false)
+  })
+
+  it('count returns zero after all items removed', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('test')
+    bf.add('test')
+    bf.remove('test')
+    bf.remove('test')
+    expect(bf.count('test')).toBe(0)
+  })
+
+  it('handles minimum expected items', () => {
+    const bf = new CountedBloomFilter(1, 0.01)
+    bf.add('test')
+    expect(bf.contains('test')).toBe(true)
+  })
+
+  it('handles large number of unique items', () => {
+    const bf = new CountedBloomFilter(10000, 0.01)
+    for (let i = 0; i < 1000; i++) {
+      bf.add(`item${i}`)
+    }
+    let found = 0
+    for (let i = 0; i < 1000; i++) {
+      if (bf.contains(`item${i}`)) found++
+    }
+    expect(found).toBe(1000)
+  })
+
+  it('re-add after complete removal', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('test')
+    bf.remove('test')
+    expect(bf.contains('test')).toBe(false)
+    bf.add('test')
+    expect(bf.contains('test')).toBe(true)
+  })
+
+  it('add with key containing only special characters', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('!!!@@@###')
+    expect(bf.contains('!!!@@@###')).toBe(true)
+    expect(bf.remove('!!!@@@###')).toBe(true)
+  })
+
+  it('remove with special character key', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('key-with-dash')
+    bf.add('key_with_underscore')
+    bf.add('key.with.dot')
+    expect(bf.remove('key-with-dash')).toBe(true)
+    expect(bf.remove('key_with_underscore')).toBe(true)
+    expect(bf.remove('key.with.dot')).toBe(true)
+  })
+
+  it('count behavior with hash collisions', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('abc')
+    bf.add('def')
+    bf.remove('abc')
+    expect(bf.count('def')).toBeGreaterThan(0)
+  })
+
+  it('add/remove cycle with different keys', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('key1')
+    bf.add('key2')
+    bf.remove('key1')
+    expect(bf.contains('key1')).toBe(false)
+    expect(bf.contains('key2')).toBe(true)
+    bf.add('key1')
+    expect(bf.contains('key1')).toBe(true)
+  })
+
+  it('count after partial removal', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('x')
+    bf.add('x')
+    bf.add('x')
+    bf.remove('x')
+    expect(bf.count('x')).toBeGreaterThanOrEqual(1)
+  })
+
+  it('handles key with spaces', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('key with spaces')
+    expect(bf.contains('key with spaces')).toBe(true)
+  })
+
+  it('handles key with newlines', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('key\nwith\nnewlines')
+    expect(bf.contains('key\nwith\nnewlines')).toBe(true)
+  })
+
+  it('handles key with tabs', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('key\twith\ttabs')
+    expect(bf.contains('key\twith\ttabs')).toBe(true)
+  })
+
+  it('handles case sensitivity', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('Test')
+    expect(bf.contains('Test')).toBe(true)
+    expect(bf.contains('test')).toBe(false)
+    expect(bf.contains('TEST')).toBe(false)
+  })
+
+  it('handles zero expected items with default', () => {
+    const bf = new CountedBloomFilter(0, 0.01)
+    bf.add('test')
+    expect(bf.contains('test')).toBe(true)
+  })
+
+  it('remove returns true only when item was added', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('present')
+    expect(bf.remove('present')).toBe(true)
+    expect(bf.remove('present')).toBe(false)
+    expect(bf.remove('never-added')).toBe(false)
+  })
+
+  it('handles keys with mixed unicode and special characters', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('key-日本語-123-!')
+    expect(bf.contains('key-日本語-123-!')).toBe(true)
+    expect(bf.remove('key-日本語-123-!')).toBe(true)
   })
 })
