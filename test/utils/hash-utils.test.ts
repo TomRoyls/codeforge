@@ -213,4 +213,132 @@ describe('hash64 - additional', () => {
     expect(Number.isFinite(h)).toBe(true)
     expect(h).toBeGreaterThanOrEqual(0)
   })
+
+  describe('hash64 - extended edge cases', () => {
+    it('handles maximum 32-bit signed int as seed', () => {
+      const h = hash64('test', 2147483647)
+      expect(Number.isFinite(h)).toBe(true)
+      expect(h).toBeGreaterThanOrEqual(0)
+    })
+
+    it('handles large negative seed', () => {
+      const h = hash64('test', -999999)
+      expect(Number.isFinite(h)).toBe(true)
+    })
+
+    it('hash64 with consecutive integers has different outputs', () => {
+      const hashes = new Set<number>()
+      for (let i = 0; i < 50; i++) {
+        hashes.add(hash64(`${i}`, 0))
+      }
+      expect(hashes.size).toBe(50)
+    })
+
+    it('hash64 with very large seed produces valid hash', () => {
+      const h = hash64('large-seed', Number.MAX_SAFE_INTEGER)
+      expect(Number.isFinite(h)).toBe(true)
+      expect(h).toBeGreaterThanOrEqual(0)
+    })
+
+    it('hash64 produces different hash for string with trailing space', () => {
+      const h1 = hash64('test', 0)
+      const h2 = hash64('test ', 0)
+      expect(h1).not.toBe(h2)
+    })
+
+    it('hash64 with only spaces', () => {
+      const h = hash64('   ', 0)
+      expect(Number.isFinite(h)).toBe(true)
+      expect(typeof h).toBe('number')
+    })
+
+    it('hash64 handles string with only newlines', () => {
+      const h = hash64('\n\n\n', 42)
+      expect(Number.isFinite(h)).toBe(true)
+    })
+  })
+
+  describe('fnv1a - extended edge cases', () => {
+    it('handles maximum 32-bit signed int as seed', () => {
+      const h = fnv1a('test', 2147483647)
+      expect(Number.isFinite(h)).toBe(true)
+      expect(h).toBeGreaterThanOrEqual(0)
+      expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+    })
+
+    it('handles large negative seed', () => {
+      const h = fnv1a('test', -999999)
+      expect(Number.isFinite(h)).toBe(true)
+      expect(h).toBeGreaterThanOrEqual(0)
+    })
+
+    it('fnv1a produces consistent hashes for case-sensitive input', () => {
+      const h1 = fnv1a('Test', 0)
+      const h2 = fnv1a('test', 0)
+      expect(h1).not.toBe(h2)
+    })
+
+    it('fnv1a with consecutive integers has different outputs', () => {
+      const hashes = new Set<number>()
+      for (let i = 0; i < 50; i++) {
+        hashes.add(fnv1a(`${i}`, 0))
+      }
+      expect(hashes.size).toBe(50)
+    })
+
+    it('fnv1a with very large seed produces valid hash', () => {
+      const h = fnv1a('large-seed', Number.MAX_SAFE_INTEGER)
+      expect(Number.isFinite(h)).toBe(true)
+      expect(h).toBeGreaterThanOrEqual(0)
+      expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+    })
+
+    it('fnv1a produces different hash for string with trailing space', () => {
+      const h1 = fnv1a('test', 0)
+      const h2 = fnv1a('test ', 0)
+      expect(h1).not.toBe(h2)
+    })
+
+    it('fnv1a with only spaces', () => {
+      const h = fnv1a('   ', 0)
+      expect(Number.isFinite(h)).toBe(true)
+      expect(h).toBeGreaterThanOrEqual(0)
+      expect(h).toBeLessThanOrEqual(0xFFFFFFFF)
+    })
+  })
+
+  describe('hash functions comparison', () => {
+    it('hash64 and fnv1a produce different outputs for same input', () => {
+      const inputs = ['test', 'hello', 'world', 'data', 'key']
+      for (const input of inputs) {
+        expect(hash64(input, 0)).not.toBe(fnv1a(input, 0))
+      }
+    })
+
+    it('both functions are deterministic across multiple calls', () => {
+      const inputs = ['a', 'b', 'c', 'd', 'e']
+      for (const input of inputs) {
+        const h1 = hash64(input, 123)
+        const h2 = hash64(input, 123)
+        expect(h1).toBe(h2)
+
+        const f1 = fnv1a(input, 123)
+        const f2 = fnv1a(input, 123)
+        expect(f1).toBe(f2)
+      }
+    })
+
+    it('both functions handle zero-length string', () => {
+      expect(typeof hash64('', 0)).toBe('number')
+      expect(typeof fnv1a('', 0)).toBe('number')
+    })
+
+    it('both functions handle single character strings', () => {
+      const chars = 'abcdefghijklmnopqrstuvwxyz'
+      for (const char of chars) {
+        expect(typeof hash64(char, 0)).toBe('number')
+        expect(typeof fnv1a(char, 0)).toBe('number')
+      }
+    })
+  })
 })

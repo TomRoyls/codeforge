@@ -410,4 +410,91 @@ describe('SparseMatrix - large sparse', () => {
       expect(c.get(i, i)).toBe(6)
     }
   })
+
+  it('handles decimal/float values', () => {
+    const m = SparseMatrix.fromDense([
+      [1.5, 0],
+      [0, 2.5],
+    ])
+    expect(m.get(0, 0)).toBeCloseTo(1.5)
+    expect(m.get(1, 1)).toBeCloseTo(2.5)
+    expect(m.density).toBeCloseTo(0.5)
+  })
+
+  it('scale with negative scalar', () => {
+    const m = SparseMatrix.fromDense([[1, 2], [3, 4]])
+    const s = m.scale(-1)
+    expect(s.toDense()).toEqual([[-1, -2], [-3, -4]])
+  })
+
+  it('scale with fractional scalar', () => {
+    const m = SparseMatrix.fromDense([[2, 4], [6, 8]])
+    const s = m.scale(0.5)
+    expect(s.toDense()).toEqual([[1, 2], [3, 4]])
+  })
+
+  it('multiply with empty result (orthogonal vectors)', () => {
+    const a = SparseMatrix.fromEntries(2, 3, [
+      [0, 0, 1],
+      [0, 1, 1],
+    ])
+    const b = SparseMatrix.fromEntries(3, 2, [
+      [0, 0, 1],
+      [1, 0, -1],
+    ])
+    const c = a.multiply(b)
+    expect(c.nnz).toBe(0)
+    expect(c.toDense()).toEqual([
+      [0, 0],
+      [0, 0],
+    ])
+  })
+
+  it('transpose of empty matrix', () => {
+    const m = new SparseMatrix(3, 2)
+    const t = m.transpose()
+    expect(t.rows).toBe(2)
+    expect(t.cols).toBe(3)
+    expect(t.nnz).toBe(0)
+  })
+
+  it('forEachNonZero skips zero values', () => {
+    const m = SparseMatrix.fromDense([
+      [1, 0, 3],
+      [0, 0, 0],
+    ])
+    const entries: [number, number, number][] = []
+    m.forEachNonZero((r, c, v) => entries.push([r, c, v]))
+    expect(entries).toHaveLength(2)
+    expect(entries).toContainEqual([0, 0, 1])
+    expect(entries).toContainEqual([0, 2, 3])
+  })
+
+  it('fromDense with all zeros creates empty matrix', () => {
+    const dense = [
+      [0, 0, 0],
+      [0, 0, 0],
+    ]
+    const m = SparseMatrix.fromDense(dense)
+    expect(m.nnz).toBe(0)
+    expect(m.density).toBe(0)
+  })
+
+  it('fromEntries with duplicate coordinates overwrites', () => {
+    const m = SparseMatrix.fromEntries(2, 2, [
+      [0, 0, 5],
+      [0, 0, 10],
+      [1, 1, 3],
+    ])
+    expect(m.nnz).toBe(2)
+    expect(m.get(0, 0)).toBe(10)
+    expect(m.get(1, 1)).toBe(3)
+  })
+
+  it('add with negative values', () => {
+    const a = SparseMatrix.fromDense([[5, -2]])
+    const b = SparseMatrix.fromDense([[-3, 4]])
+    const c = a.add(b)
+    expect(c.toDense()).toEqual([[2, 2]])
+  })
 })

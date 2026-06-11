@@ -20,20 +20,25 @@ describe('FlowPushRelabel', () => {
     expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(4)
   })
 
-  it('handles source = sink', () => {
+  it('handles source equals sink', () => {
     expect(FlowPushRelabel.maxFlow([], 0, 0, 1)).toBe(0)
   })
 
-  it('handles disconnected', () => {
-    expect(FlowPushRelabel.maxFlow([{ from: 0, to: 1, capacity: 5 }], 0, 2, 3)).toBe(0)
+  it('handles disconnected source and sink', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(0)
   })
 
   it('handles bottleneck', () => {
     const edges = [
       { from: 0, to: 1, capacity: 100 },
       { from: 1, to: 2, capacity: 1 },
+      { from: 2, to: 3, capacity: 100 },
     ]
-    expect(FlowPushRelabel.maxFlow(edges, 0, 2, 3)).toBe(1)
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(1)
   })
 
   it('handles reverse flow', () => {
@@ -86,7 +91,7 @@ describe('FlowPushRelabel', () => {
     expect(FlowPushRelabel.maxFlow(edges, 0, 5, 6)).toBe(20)
   })
 
-  it('handles diamond graph', () => {
+  it('handles diamond graph with larger capacities', () => {
     const edges = [
       { from: 0, to: 1, capacity: 10 },
       { from: 0, to: 2, capacity: 10 },
@@ -94,75 +99,6 @@ describe('FlowPushRelabel', () => {
       { from: 2, to: 3, capacity: 10 },
     ]
     expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(20)
-  })
-
-  it('handles source equals sink', () => {
-    expect(FlowPushRelabel.maxFlow([], 0, 0, 1)).toBe(0)
-  })
-
-  it('handles disconnected source and sink', () => {
-    const edges = [
-      { from: 0, to: 1, capacity: 5 },
-      { from: 2, to: 3, capacity: 5 },
-    ]
-    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(0)
-  })
-
-  it('handles bottleneck graph', () => {
-    const edges = [
-      { from: 0, to: 1, capacity: 100 },
-      { from: 1, to: 2, capacity: 1 },
-      { from: 2, to: 3, capacity: 100 },
-    ]
-    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(1)
-  })
-
-  it('handles parallel edges', () => {
-    const edges = [
-      { from: 0, to: 1, capacity: 3 },
-      { from: 0, to: 1, capacity: 7 },
-    ]
-    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(10)
-  })
-
-  it('handles single edge', () => {
-    const edges = [{ from: 0, to: 1, capacity: 5 }]
-    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(5)
-  })
-
-  it('no path gives zero flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 5 }]
-    expect(FlowPushRelabel.maxFlow(edges, 1, 0, 2)).toBe(0)
-  })
-
-  it('single edge max flow equals capacity', () => {
-    const edges = [{ from: 0, to: 1, capacity: 10 }]
-    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(10)
-  })
-
-  it('no path has zero flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 10 }]
-    expect(FlowPushRelabel.maxFlow(edges, 1, 0, 2)).toBe(0)
-  })
-
-  it('single edge flow equals capacity', () => {
-    const edges = [{ from: 0, to: 1, capacity: 5 }]
-    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(5)
-  })
-
-  it('no path yields zero flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 5 }]
-    expect(FlowPushRelabel.maxFlow(edges, 1, 0, 2)).toBe(0)
-  })
-
-  it('single edge flow equals capacity', () => {
-    const edges = [{ from: 0, to: 1, capacity: 10 }]
-    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(10)
-  })
-
-  it('no path yields zero flow', () => {
-    const edges = [{ from: 0, to: 1, capacity: 10 }]
-    expect(FlowPushRelabel.maxFlow(edges, 1, 0, 2)).toBe(0)
   })
 
   it('handles empty edge list', () => {
@@ -256,5 +192,221 @@ describe('FlowPushRelabel', () => {
       { from: 3, to: 4, capacity: 8 },
     ]
     expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(3)
+  })
+
+  it('handles unit capacity edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 1 },
+      { from: 1, to: 2, capacity: 1 },
+      { from: 0, to: 2, capacity: 1 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 2, 3)).toBe(2)
+  })
+
+  it('handles sink unreachable from source', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 3, to: 4, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(0)
+  })
+
+  it('handles multiple parallel edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 2 },
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 1, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
+
+  it('handles star topology', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 0, to: 3, capacity: 10 },
+      { from: 0, to: 4, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 5)).toBe(10)
+  })
+
+  it('handles mesh topology', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 1, to: 3, capacity: 10 },
+      { from: 2, to: 3, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(20)
+  })
+
+  it('handles very large number of nodes with no edges', () => {
+    expect(FlowPushRelabel.maxFlow([], 0, 99, 100)).toBe(0)
+  })
+
+  it('handles triangular path', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(10)
+  })
+
+  it('handles asymmetrical diamond', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 8 },
+      { from: 0, to: 2, capacity: 4 },
+      { from: 1, to: 3, capacity: 5 },
+      { from: 2, to: 3, capacity: 6 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(9)
+  })
+
+  it('handles complex multi-path', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 0, to: 3, capacity: 10 },
+      { from: 1, to: 4, capacity: 10 },
+      { from: 2, to: 4, capacity: 10 },
+      { from: 3, to: 4, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(30)
+  })
+
+  it('handles single edge with very large capacity', () => {
+    const edges = [{ from: 0, to: 1, capacity: Number.MAX_SAFE_INTEGER }]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 1, 2)
+    expect(flow).toBe(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles single edge with very small capacity', () => {
+    const edges = [{ from: 0, to: 1, capacity: 0.5 }]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(0.5)
+  })
+
+  it('handles mixed integer and float capacities', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5.5 },
+      { from: 1, to: 2, capacity: 3.2 },
+    ]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 2, 3)
+    expect(flow).toBe(3.2)
+  })
+
+  it('handles two parallel edges to different nodes', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 0, to: 2, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 3)).toBe(5)
+  })
+
+  it('handles source connected to all nodes', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 2, capacity: 4 },
+      { from: 0, to: 3, capacity: 5 },
+      { from: 1, to: 4, capacity: 3 },
+      { from: 2, to: 4, capacity: 4 },
+      { from: 3, to: 4, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(12)
+  })
+
+  it('handles single path with multiple bottlenecks', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 3, capacity: 7 },
+      { from: 3, to: 4, capacity: 3 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(3)
+  })
+
+  it('handles bidirectional flow with back edge', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 3, capacity: 10 },
+      { from: 3, to: 1, capacity: 2 },
+    ]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 3, 4)
+    expect(flow).toBe(5)
+  })
+
+  it('handles multiple self-loops ignored', () => {
+    const edges = [
+      { from: 0, to: 0, capacity: 100 },
+      { from: 1, to: 1, capacity: 100 },
+      { from: 0, to: 1, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(5)
+  })
+
+  it('handles negative capacity treated as zero', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: -5 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 2, to: 1, capacity: 10 },
+    ]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 1, 3)
+    expect(flow).toBe(10)
+  })
+
+  it('handles two-node graph with direct and indirect paths', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 0, to: 2, capacity: 3 },
+      { from: 2, to: 1, capacity: 4 },
+    ]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 1, 3)
+    expect(flow).toBe(8)
+  })
+
+  it('handles complex cycle', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+      { from: 3, to: 1, capacity: 2 },
+    ]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 3, 4)
+    expect(flow).toBe(5)
+  })
+
+  it('handles symmetric diamond', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 0, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 10 },
+      { from: 2, to: 3, capacity: 10 },
+      { from: 1, to: 2, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(20)
+  })
+
+  it('handles sink with multiple incoming paths from same node', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 0, to: 2, capacity: 5 },
+      { from: 0, to: 3, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 4)).toBe(5)
+  })
+
+  it('handles graph with intermediate node that can route both ways', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 10 },
+      { from: 1, to: 3, capacity: 10 },
+      { from: 2, to: 4, capacity: 8 },
+      { from: 3, to: 4, capacity: 7 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(10)
   })
 })

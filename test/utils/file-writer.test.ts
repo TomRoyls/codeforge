@@ -4,8 +4,6 @@ import * as path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { writeToFile, writeToFileAtomic } from '../../src/utils/file-writer.js'
 
-// ─── writeToFile ───
-
 describe('writeToFile', () => {
   const tmpDir = path.join(os.tmpdir(), 'codeforge-test-file-writer')
   let testFile: string
@@ -13,8 +11,8 @@ describe('writeToFile', () => {
   afterEach(() => {
     try {
       if (testFile) fs.unlinkSync(testFile)
-    } catch { /* ignore */ }
-    try { fs.rmSync(tmpDir, { recursive: true }) } catch { /* ignore */ }
+    } catch { }
+    try { fs.rmSync(tmpDir, { recursive: true }) } catch { }
   })
 
   it('writes content to file', () => {
@@ -35,9 +33,191 @@ describe('writeToFile', () => {
     writeToFile(testFile, 'second')
     expect(fs.readFileSync(testFile, 'utf8')).toBe('second')
   })
-})
 
-// ─── writeToFileAtomic ───
+  it('handles empty content', () => {
+    testFile = path.join(tmpDir, 'empty.txt')
+    writeToFile(testFile, '')
+    expect(fs.readFileSync(testFile, 'utf8')).toBe('')
+  })
+
+  it('handles unicode content', () => {
+    testFile = path.join(tmpDir, 'unicode.txt')
+    const content = '日本語 🎉 ñ é ü'
+    writeToFile(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
+  })
+
+  it('throws on invalid path', () => {
+    expect(() => writeToFile('/dev/null/impossible/path/file.txt', 'test')).toThrow()
+  })
+
+  it('handles large content', () => {
+    testFile = path.join(tmpDir, 'large.txt')
+    const content = 'x'.repeat(100_000)
+    writeToFile(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8').length).toBe(100_000)
+  })
+
+  it('handles multi-line content', () => {
+    testFile = path.join(tmpDir, 'multiline.txt')
+    const content = 'line1\nline2\nline3'
+    writeToFile(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
+  })
+
+  it('handles binary-like content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'binary.txt')
+    const content = Buffer.from([0, 1, 2, 255]).toString('utf8')
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles JSON content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'data.json')
+    const content = JSON.stringify({ key: 'value', arr: [1, 2, 3] }, null, 2)
+    writeToFile(fp, content)
+    expect(JSON.parse(fs.readFileSync(fp, 'utf8'))).toEqual({ key: 'value', arr: [1, 2, 3] })
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles single character', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'single.txt')
+    writeToFile(fp, 'a')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('a')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles newline characters', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'newlines.txt')
+    const content = 'line1\nline2\r\nline3'
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles mixed whitespace', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'whitespace.txt')
+    const content = '  spaces\ttabs\nnewlines\r'
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles numbers as strings', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'numbers.txt')
+    const content = '1234567890'
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles special ASCII characters', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'special.txt')
+    const content = '!@#$%^&*()_+-=[]{}|;:,.<>?'
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles very long single line', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'longline.txt')
+    const content = 'a'.repeat(10000)
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8').length).toBe(10000)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles content with null bytes', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'null.txt')
+    const content = 'before\u0000after'
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles content with BOM', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'bom.txt')
+    const content = '\uFEFFcontent with BOM'
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles emoji content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'emoji.txt')
+    const content = '😀😃😄😁😆😅😂🤣😊😇'
+    writeToFile(fp, content)
+    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('creates deep nested path', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'a', 'b', 'c', 'd', 'deep.txt')
+    writeToFile(fp, 'very deep')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('very deep')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles path with special characters in filename', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'file with spaces.txt')
+    writeToFile(fp, 'spaced path')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('spaced path')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles directory with dots in name', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'dir.with.dots', 'file.txt')
+    writeToFile(fp, 'dots')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('dots')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('overwrites from large to small', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'shrink.txt')
+    writeToFile(fp, 'a'.repeat(10000))
+    writeToFile(fp, 'b')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('b')
+    expect(fs.readFileSync(fp, 'utf8').length).toBe(1)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('overwrites from small to large', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'grow.txt')
+    writeToFile(fp, 'a')
+    writeToFile(fp, 'b'.repeat(10000))
+    expect(fs.readFileSync(fp, 'utf8')).toBe('b'.repeat(10000))
+    expect(fs.readFileSync(fp, 'utf8').length).toBe(10000)
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles repeated writes', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'repeated.txt')
+    for (let i = 0; i < 100; i++) {
+      writeToFile(fp, `iteration ${i}\n`)
+    }
+    const content = fs.readFileSync(fp, 'utf8')
+    expect(content.endsWith('\n')).toBe(true)
+    fs.rmSync(dir, { recursive: true })
+  })
+})
 
 describe('writeToFileAtomic', () => {
   const tmpDir = path.join(os.tmpdir(), 'codeforge-test-atomic')
@@ -46,8 +226,8 @@ describe('writeToFileAtomic', () => {
   afterEach(() => {
     try {
       if (testFile) fs.unlinkSync(testFile)
-    } catch { /* ignore */ }
-    try { fs.rmSync(tmpDir, { recursive: true }) } catch { /* ignore */ }
+    } catch { }
+    try { fs.rmSync(tmpDir, { recursive: true }) } catch { }
   })
 
   it('writes content atomically', () => {
@@ -77,183 +257,127 @@ describe('writeToFileAtomic', () => {
   })
 
   it('handles empty content', () => {
-    testFile = path.join(tmpDir, 'empty.txt')
-    writeToFile(testFile, '')
+    testFile = path.join(tmpDir, 'empty-atomic.txt')
+    writeToFileAtomic(testFile, '')
     expect(fs.readFileSync(testFile, 'utf8')).toBe('')
   })
 
   it('handles unicode content', () => {
-    testFile = path.join(tmpDir, 'unicode.txt')
-    const content = '日本語 🎉 ñ é ü'
-    writeToFile(testFile, content)
-    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
-  })
-
-  it('throws on invalid path', () => {
-    expect(() => writeToFile('/dev/null/impossible/path/file.txt', 'test')).toThrow()
-  })
-
-  it('atomic write handles unicode content', () => {
     testFile = path.join(tmpDir, 'unicode-atomic.txt')
     const content = '日本語 🎉 ñ é ü'
     writeToFileAtomic(testFile, content)
     expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
   })
 
-  it('atomic write handles empty content', () => {
-    testFile = path.join(tmpDir, 'empty-atomic.txt')
-    writeToFileAtomic(testFile, '')
-    expect(fs.readFileSync(testFile, 'utf8')).toBe('')
-  })
-
-  it('writeToFile handles large content', () => {
-    testFile = path.join(tmpDir, 'large.txt')
-    const content = 'x'.repeat(100_000)
-    writeToFile(testFile, content)
-    expect(fs.readFileSync(testFile, 'utf8').length).toBe(100_000)
-  })
-
-  it('atomic write handles large content', () => {
+  it('handles large content', () => {
     testFile = path.join(tmpDir, 'large-atomic.txt')
     const content = 'a'.repeat(50_000)
     writeToFileAtomic(testFile, content)
     expect(fs.readFileSync(testFile, 'utf8').length).toBe(50_000)
   })
 
-  it('writeToFile handles multi-line content', () => {
-    testFile = path.join(tmpDir, 'multiline.txt')
-    const content = 'line1\nline2\nline3'
-    writeToFile(testFile, content)
-    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
-  })
-
-  it('atomic write preserves exact content', () => {
+  it('preserves exact content', () => {
     testFile = path.join(tmpDir, 'exact.txt')
     const content = '{"key": "value", "num": 42}'
     writeToFileAtomic(testFile, content)
     expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
   })
 
-  it('writeToFile overwrites correctly', () => {
-    testFile = path.join(tmpDir, 'overwrite2.txt')
-    writeToFile(testFile, 'longer content here')
-    writeToFile(testFile, 'short')
-    expect(fs.readFileSync(testFile, 'utf8')).toBe('short')
-  })
-
-  it('writeToFileAtomic writes content', () => {
-    const testFile = path.join(tmpDir, 'atomic.txt')
-    writeToFileAtomic(testFile, 'atomic content')
-    expect(fs.readFileSync(testFile, 'utf8')).toBe('atomic content')
-  })
-
-  it('writeToFile overwrites content', () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const testFile = path.join(tmpDir, 'overwrite.txt')
-    writeToFile(testFile, 'first')
-    writeToFile(testFile, 'second')
-    expect(fs.readFileSync(testFile, 'utf8')).toBe('second')
-  })
-
-  it('writeToFile creates parent directories', () => {
-    const dir = path.join(os.tmpdir(), `fw-test-${Date.now()}`)
-    const fp = path.join(dir, 'nested', 'file.txt')
-    writeToFile(fp, 'deep')
-    expect(fs.readFileSync(fp, 'utf8')).toBe('deep')
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFileAtomic creates file', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'atomic.txt')
-    writeToFileAtomic(fp, 'atomic content')
-    expect(fs.readFileSync(fp, 'utf8')).toBe('atomic content')
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFile creates file with content', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'test.txt')
-    writeToFile(fp, 'hello')
-    expect(fs.readFileSync(fp, 'utf8')).toBe('hello')
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFile handles empty string', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'empty.txt')
-    writeToFile(fp, '')
-    expect(fs.readFileSync(fp, 'utf8')).toBe('')
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFile appends content', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'out.txt')
-    writeToFile(fp, 'hello')
-    writeToFile(fp, ' world')
-    expect(fs.readFileSync(fp, 'utf8')).toBe(' world')
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFileAtomic cleans up temp file', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'cleanup.txt')
-    writeToFileAtomic(fp, 'content')
-    const files = fs.readdirSync(dir).filter(f => f.endsWith('.tmp'))
-    expect(files.length).toBe(0)
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFile handles binary-like content', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'binary.txt')
-    const content = Buffer.from([0, 1, 2, 255]).toString('utf8')
-    writeToFile(fp, content)
-    expect(fs.readFileSync(fp, 'utf8')).toBe(content)
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFileAtomic handles special characters in path', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'file with spaces.txt')
-    writeToFileAtomic(fp, 'spaced path')
-    expect(fs.readFileSync(fp, 'utf8')).toBe('spaced path')
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFile creates deep nested path', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'a', 'b', 'c', 'd', 'deep.txt')
-    writeToFile(fp, 'very deep')
-    expect(fs.readFileSync(fp, 'utf8')).toBe('very deep')
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFileAtomic overwrites correctly', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'overwrite.txt')
-    writeToFileAtomic(fp, 'longer initial content')
-    writeToFileAtomic(fp, 'short')
-    expect(fs.readFileSync(fp, 'utf8')).toBe('short')
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFile handles JSON content', () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
-    const fp = path.join(dir, 'data.json')
-    const content = JSON.stringify({ key: 'value', arr: [1, 2, 3] }, null, 2)
-    writeToFile(fp, content)
-    expect(JSON.parse(fs.readFileSync(fp, 'utf8'))).toEqual({ key: 'value', arr: [1, 2, 3] })
-    fs.rmSync(dir, { recursive: true })
-  })
-
-  it('writeToFileAtomic handles JSON content', () => {
+  it('handles JSON content', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
     const fp = path.join(dir, 'data.json')
     const content = JSON.stringify({ a: 1 })
     writeToFileAtomic(fp, content)
     expect(JSON.parse(fs.readFileSync(fp, 'utf8'))).toEqual({ a: 1 })
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles single character', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'single.txt')
+    writeToFileAtomic(fp, 'x')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('x')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('handles tab characters', () => {
+    testFile = path.join(tmpDir, 'tabs-atomic.txt')
+    const content = 'col1\tcol2\tcol3'
+    writeToFileAtomic(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
+  })
+
+  it('handles mixed whitespace', () => {
+    testFile = path.join(tmpDir, 'whitespace-atomic.txt')
+    const content = '  spaces  \t\ttabs\t\n\nnewlines\n  '
+    writeToFileAtomic(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
+  })
+
+  it('handles very long filename', () => {
+    testFile = path.join(tmpDir, 'a'.repeat(200) + '.txt')
+    writeToFileAtomic(testFile, 'long filename test')
+    expect(fs.readFileSync(testFile, 'utf8')).toBe('long filename test')
+  })
+
+  it('creates deeply nested directories', () => {
+    testFile = path.join(tmpDir, 'a', 'b', 'c', 'd', 'e', 'deep.txt')
+    writeToFileAtomic(testFile, 'very deep')
+    expect(fs.readFileSync(testFile, 'utf8')).toBe('very deep')
+  })
+
+  it('overwrites from large to small', () => {
+    testFile = path.join(tmpDir, 'shrink-atomic.txt')
+    writeToFileAtomic(testFile, 'a'.repeat(10000))
+    writeToFileAtomic(testFile, 'b')
+    expect(fs.readFileSync(testFile, 'utf8')).toBe('b')
+    expect(fs.readFileSync(testFile, 'utf8').length).toBe(1)
+  })
+
+  it('overwrites from small to large', () => {
+    testFile = path.join(tmpDir, 'grow-atomic.txt')
+    writeToFileAtomic(testFile, 'a')
+    writeToFileAtomic(testFile, 'b'.repeat(10000))
+    expect(fs.readFileSync(testFile, 'utf8')).toBe('b'.repeat(10000))
+    expect(fs.readFileSync(testFile, 'utf8').length).toBe(10000)
+  })
+
+  it('handles null character in string', () => {
+    testFile = path.join(tmpDir, 'null-atomic.txt')
+    const content = 'before\u0000after'
+    writeToFileAtomic(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
+  })
+
+  it('handles emoji sequences', () => {
+    testFile = path.join(tmpDir, 'emoji-atomic.txt')
+    const content = '👨‍👩‍👧‍👦🎉🚀✨'
+    writeToFileAtomic(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
+  })
+
+  it('handles special unicode normalization', () => {
+    testFile = path.join(tmpDir, 'unicode-norm-atomic.txt')
+    const content = 'café\u0301'
+    writeToFileAtomic(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
+  })
+
+  it('handles RTL text', () => {
+    testFile = path.join(tmpDir, 'rtl-atomic.txt')
+    const content = 'مرحبا بالعالم'
+    writeToFileAtomic(testFile, content)
+    expect(fs.readFileSync(testFile, 'utf8')).toBe(content)
+  })
+
+  it('handles repeated atomic writes', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'repeated.txt')
+    for (let i = 0; i < 50; i++) {
+      writeToFileAtomic(fp, `atomic iteration ${i}\n`)
+    }
+    const content = fs.readFileSync(fp, 'utf8')
+    expect(content.endsWith('\n')).toBe(true)
     fs.rmSync(dir, { recursive: true })
   })
 })

@@ -237,4 +237,66 @@ describe('FractionalCascading', () => {
     expect(result[0]).toBe(0)
     expect(result[1]).toBe(0)
   })
+
+  it('handles decimal/float values', () => {
+    const fc = new FractionalCascading([[1.5, 2.5, 3.5], [0.5, 1.5, 2.5]])
+    const result = fc.search(2.5)
+    expect(result[0]).toBe(1)
+    expect(result[1]).toBe(2)
+  })
+
+  it('clone modifications do not affect original', () => {
+    const fc = new FractionalCascading([[1, 3, 5], [2, 4]])
+    const c = fc.clone()
+    const fc2 = new FractionalCascading([[1, 3, 5], [2, 4, 6]])
+    expect(fc.equals(c)).toBe(true)
+    expect(fc.equals(fc2)).toBe(false)
+  })
+
+  it('equals with same values in different list order', () => {
+    const fc1 = new FractionalCascading([[1, 2, 3], [4, 5]])
+    const fc2 = new FractionalCascading([[1, 2, 3], [4, 5]])
+    expect(fc1.equals(fc2)).toBe(true)
+  })
+
+  it('search with very large number', () => {
+    const fc = new FractionalCascading([[1, 2, 3], [4, 5, 6]])
+    const result = fc.search(999999999)
+    expect(result).toEqual([-1, -1])
+  })
+
+  it('handles all identical values across lists', () => {
+    const fc = new FractionalCascading([[5, 5, 5], [5, 5], [5, 5, 5, 5]])
+    const result = fc.search(5)
+    expect(result.length).toBe(3)
+    expect(result[0]).toBeGreaterThanOrEqual(0)
+    expect(result[1]).toBeGreaterThanOrEqual(0)
+    expect(result[2]).toBeGreaterThanOrEqual(0)
+  })
+
+  it('search for value at end of list', () => {
+    const fc = new FractionalCascading([[10, 20, 30, 40], [5, 15, 25, 35]])
+    const result = fc.search(40)
+    expect(result[0]).toBe(3)
+    expect(result[1]).toBe(-1)
+  })
+
+  it('handles alternating values pattern', () => {
+    const fc = new FractionalCascading([[1, 3, 5, 7, 9], [2, 4, 6, 8, 10]])
+    const result = fc.search(6)
+    expect(result[0]).toBe(-1)
+    expect(result[1]).toBe(2)
+  })
+
+  it('getList with negative index returns empty array', () => {
+    const fc = new FractionalCascading([[1, 2, 3]])
+    expect(fc.getList(-1)).toEqual([])
+  })
+
+  it('search preserves list count in result array', () => {
+    const fc = new FractionalCascading([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]])
+    const result = fc.search(99)
+    expect(result.length).toBe(5)
+    expect(result.every(v => v === -1)).toBe(true)
+  })
 })

@@ -364,3 +364,223 @@ describe('Matrix - dimension mismatch', () => {
     expect(() => a.subtract(b)).toThrow(RangeError)
   })
 })
+
+describe('Matrix - constructor edge cases', () => {
+  it('throws on zero rows', () => {
+    expect(() => new Matrix(0, 5)).toThrow(RangeError)
+  })
+
+  it('throws on zero cols', () => {
+    expect(() => new Matrix(5, 0)).toThrow(RangeError)
+  })
+
+  it('throws on negative rows', () => {
+    expect(() => new Matrix(-1, 5)).toThrow(RangeError)
+  })
+
+  it('throws on negative cols', () => {
+    expect(() => new Matrix(5, -1)).toThrow(RangeError)
+  })
+
+  it('constructs single element matrix', () => {
+    const m = new Matrix(1, 1, 42)
+    expect(m.rows).toBe(1)
+    expect(m.cols).toBe(1)
+    expect(m.get(0, 0)).toBe(42)
+  })
+
+  it('constructs with negative fill value', () => {
+    const m = new Matrix(2, 2, -5)
+    expect(m.get(0, 0)).toBe(-5)
+    expect(m.get(1, 1)).toBe(-5)
+  })
+})
+
+describe('Matrix - from2DArray edge cases', () => {
+  it('throws on empty outer array', () => {
+    expect(() => Matrix.from2DArray([])).toThrow(RangeError)
+  })
+
+  it('throws on empty inner array', () => {
+    expect(() => Matrix.from2DArray([[]])).toThrow(RangeError)
+  })
+
+  it('throws on jagged array', () => {
+    expect(() =>
+      Matrix.from2DArray([
+        [1, 2, 3],
+        [4, 5],
+      ])
+    ).toThrow(RangeError)
+  })
+
+  it('handles single row', () => {
+    const m = Matrix.from2DArray([[1, 2, 3]])
+    expect(m.rows).toBe(1)
+    expect(m.cols).toBe(3)
+    expect(m.get(0, 2)).toBe(3)
+  })
+
+  it('handles single column', () => {
+    const m = Matrix.from2DArray([[1], [2], [3]])
+    expect(m.rows).toBe(3)
+    expect(m.cols).toBe(1)
+    expect(m.get(2, 0)).toBe(3)
+  })
+})
+
+describe('Matrix - static factories edge cases', () => {
+  it('identity throws on size 0', () => {
+    expect(() => Matrix.identity(0)).toThrow(RangeError)
+  })
+
+  it('identity creates 1x1 matrix', () => {
+    const m = Matrix.identity(1)
+    expect(m.rows).toBe(1)
+    expect(m.cols).toBe(1)
+    expect(m.get(0, 0)).toBe(1)
+  })
+
+  it('zeros with non-default fill in constructor', () => {
+    const m = Matrix.zeros(2, 2)
+    const custom = new Matrix(2, 2, 5)
+    m.set(0, 0, 5)
+    m.set(0, 1, 5)
+    m.set(1, 0, 5)
+    m.set(1, 1, 5)
+    expect(m.equals(custom)).toBe(true)
+  })
+})
+
+describe('Matrix - get/set edge cases', () => {
+  it('set throws on negative row', () => {
+    const m = new Matrix(2, 2)
+    expect(() => m.set(-1, 0, 1)).toThrow(RangeError)
+  })
+
+  it('set throws on negative col', () => {
+    const m = new Matrix(2, 2)
+    expect(() => m.set(0, -1, 1)).toThrow(RangeError)
+  })
+
+  it('set throws on out of bounds row', () => {
+    const m = new Matrix(2, 2)
+    expect(() => m.set(2, 0, 1)).toThrow(RangeError)
+  })
+
+  it('set throws on out of bounds col', () => {
+    const m = new Matrix(2, 2)
+    expect(() => m.set(0, 2, 1)).toThrow(RangeError)
+  })
+
+  it('get with negative row throws', () => {
+    const m = new Matrix(2, 2)
+    expect(() => m.get(-1, 0)).toThrow(RangeError)
+  })
+
+  it('get with negative col throws', () => {
+    const m = new Matrix(2, 2)
+    expect(() => m.get(0, -1)).toThrow(RangeError)
+  })
+
+  it('set with negative values', () => {
+    const m = new Matrix(2, 2)
+    m.set(0, 0, -100)
+    m.set(1, 1, -0.5)
+    expect(m.get(0, 0)).toBe(-100)
+    expect(m.get(1, 1)).toBe(-0.5)
+  })
+})
+
+describe('Matrix - arithmetic edge cases', () => {
+  it('scale with zero', () => {
+    const m = Matrix.from2DArray([
+      [1, 2],
+      [3, 4],
+    ])
+    const result = m.scale(0)
+    expect(result.toArray()).toEqual([
+      [0, 0],
+      [0, 0],
+    ])
+  })
+
+  it('scale with negative', () => {
+    const m = Matrix.from2DArray([
+      [1, 2],
+      [3, 4],
+    ])
+    const result = m.scale(-2)
+    expect(result.toArray()).toEqual([
+      [-2, -4],
+      [-6, -8],
+    ])
+  })
+
+  it('multiply rectangular matrices', () => {
+    const a = Matrix.from2DArray([
+      [1, 2, 3],
+      [4, 5, 6],
+    ])
+    const b = Matrix.from2DArray([
+      [7, 8],
+      [9, 10],
+      [11, 12],
+    ])
+    const result = a.multiply(b)
+    expect(result.rows).toBe(2)
+    expect(result.cols).toBe(2)
+    expect(result.get(0, 0)).toBe(58)
+    expect(result.get(0, 1)).toBe(64)
+    expect(result.get(1, 0)).toBe(139)
+    expect(result.get(1, 1)).toBe(154)
+  })
+})
+
+describe('Matrix - determinant edge cases', () => {
+  it('1x1 determinant', () => {
+    const m = new Matrix(1, 1, 5)
+    expect(m.determinant()).toBe(5)
+  })
+
+  it('determinant of zeros matrix', () => {
+    const m = Matrix.zeros(3, 3)
+    expect(m.determinant()).toBe(0)
+  })
+
+  it('trace throws on non-square', () => {
+    const m = new Matrix(2, 3)
+    expect(() => m.trace()).toThrow(RangeError)
+  })
+})
+
+describe('Matrix - transpose edge cases', () => {
+  it('transpose of single element', () => {
+    const m = new Matrix(1, 1, 42)
+    const t = m.transpose()
+    expect(t.rows).toBe(1)
+    expect(t.cols).toBe(1)
+    expect(t.get(0, 0)).toBe(42)
+  })
+
+  it('transpose changes shape', () => {
+    const m = new Matrix(2, 3)
+    const t = m.transpose()
+    expect(t.rows).toBe(3)
+    expect(t.cols).toBe(2)
+  })
+})
+
+describe('Matrix - equality edge cases', () => {
+  it('equals with same dimensions different values', () => {
+    const a = new Matrix(2, 2, 1)
+    const b = new Matrix(2, 2, 2)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('equals with float comparison', () => {
+    const a = new Matrix(2, 2, 0.5)
+    const b = new Matrix(2, 2, 0.5)
+    expect(a.equals(b)).toBe(true)
+  })
+})

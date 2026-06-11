@@ -341,4 +341,152 @@ describe('IntervalMap', () => {
     ivs.push({ start: 99, end: 99, value: 'x' })
     expect(im.size).toBe(1)
   })
+
+  it('getMinStart returns undefined for empty map', () => {
+    const im = new IntervalMap<string>()
+    expect(im.getMinStart()).toBeUndefined()
+  })
+
+  it('getMinStart returns smallest start value', () => {
+    const im = new IntervalMap<string>()
+    im.set(10, 15, 'a')
+    im.set(0, 5, 'b')
+    im.set(20, 25, 'c')
+    expect(im.getMinStart()).toBe(0)
+  })
+
+  it('getMaxEnd returns undefined for empty map', () => {
+    const im = new IntervalMap<string>()
+    expect(im.getMaxEnd()).toBeUndefined()
+  })
+
+  it('getMaxEnd returns largest end value', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    im.set(10, 25, 'b')
+    im.set(5, 15, 'c')
+    expect(im.getMaxEnd()).toBe(25)
+    im.set(1, 30, 'd')
+    expect(im.getMaxEnd()).toBe(30)
+  })
+
+  it('isEmpty returns true for empty map', () => {
+    const im = new IntervalMap<string>()
+    expect(im.isEmpty).toBe(true)
+  })
+
+  it('isEmpty returns false for non-empty map', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    expect(im.isEmpty).toBe(false)
+  })
+
+  it('getRange returns values of intervals in range', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    im.set(10, 15, 'b')
+    im.set(20, 25, 'c')
+    const result = im.getRange(3, 22)
+    expect(result).toEqual(['a', 'b', 'c'])
+  })
+
+  it('delete removes interval containing point', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 10, 'a')
+    const deleted = im.delete(5)
+    expect(deleted).toBe(true)
+    expect(im.get(5)).toBeUndefined()
+    expect(im.size).toBe(0)
+  })
+
+  it('delete returns false for non-existent point', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 10, 'a')
+    const deleted = im.delete(20)
+    expect(deleted).toBe(false)
+    expect(im.size).toBe(1)
+  })
+
+  it('deleteRange returns count of removed intervals', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    im.set(10, 15, 'b')
+    im.set(20, 25, 'c')
+    const count = im.deleteRange(5, 20)
+    expect(count).toBe(3)
+    expect(im.size).toBe(0)
+  })
+
+  it('deleteRange with no overlap returns 0', () => {
+    const im = new IntervalMap<string>()
+    im.set(10, 15, 'a')
+    const count = im.deleteRange(0, 5)
+    expect(count).toBe(0)
+    expect(im.size).toBe(1)
+  })
+
+  it('forEach iterates over all intervals', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    im.set(10, 15, 'b')
+    const results: Array<{ start: number; end: number; value: string; index: number }> = []
+    im.forEach((iv, idx) => {
+      results.push({ start: iv.start, end: iv.end, value: iv.value, index: idx })
+    })
+    expect(results).toEqual([
+      { start: 0, end: 5, value: 'a', index: 0 },
+      { start: 10, end: 15, value: 'b', index: 1 },
+    ])
+  })
+
+  it('overlaps returns true for overlapping range', () => {
+    const im = new IntervalMap<string>()
+    im.set(5, 15, 'a')
+    expect(im.overlaps(10, 20)).toBe(true)
+  })
+
+  it('overlaps returns false for non-overlapping range', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    expect(im.overlaps(10, 15)).toBe(false)
+  })
+
+  it('overlaps returns false for empty map', () => {
+    const im = new IntervalMap<string>()
+    expect(im.overlaps(0, 10)).toBe(false)
+  })
+
+  it('Symbol.iterator iterates over intervals', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    im.set(10, 15, 'b')
+    const results = Array.from(im)
+    expect(results).toEqual([
+      { start: 0, end: 5, value: 'a' },
+      { start: 10, end: 15, value: 'b' },
+    ])
+  })
+
+  it('getAll returns copy of intervals', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    const ivs = im.getAll()
+    ivs.push({ start: 99, end: 99, value: 'x' })
+    expect(im.size).toBe(1)
+  })
+
+  it('equals with NaN values uses Object.is', () => {
+    const im1 = new IntervalMap<number>()
+    im1.set(0, 5, NaN)
+    const im2 = new IntervalMap<number>()
+    im2.set(0, 5, NaN)
+    expect(im1.equals(im2)).toBe(true)
+  })
+
+  it('get returns first matching interval for overlapping intervals', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 10, 'first')
+    im.set(5, 15, 'second')
+    expect(im.get(7)).toBe('first')
+  })
 })

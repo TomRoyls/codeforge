@@ -316,4 +316,207 @@ describe('SimdBitSet', () => {
     expect(result.get(0)).toBe(true)
     expect(result.get(5)).toBe(true)
   })
+
+  it('setRange handles full range', () => {
+    const bs = new SimdBitSet(15)
+    bs.setRange(0, 15)
+    for (let i = 0; i < 15; i++) {
+      expect(bs.get(i)).toBe(true)
+    }
+  })
+
+  it('setRange handles single element range', () => {
+    const bs = new SimdBitSet(10)
+    bs.setRange(5, 6)
+    expect(bs.get(5)).toBe(true)
+    expect(bs.get(4)).toBe(false)
+    expect(bs.get(6)).toBe(false)
+  })
+
+  it('clearRange handles full range', () => {
+    const bs = new SimdBitSet(12)
+    bs.setRange(0, 12)
+    bs.clearRange(0, 12)
+    for (let i = 0; i < 12; i++) {
+      expect(bs.get(i)).toBe(false)
+    }
+  })
+
+  it('clearRange handles single element range', () => {
+    const bs = new SimdBitSet(10)
+    bs.setRange(0, 10)
+    bs.clearRange(5, 6)
+    expect(bs.get(5)).toBe(false)
+    expect(bs.get(4)).toBe(true)
+    expect(bs.get(6)).toBe(true)
+  })
+
+  it('flipAll on empty bitset', () => {
+    const bs = new SimdBitSet(5)
+    bs.flipAll()
+    for (let i = 0; i < 5; i++) {
+      expect(bs.get(i)).toBe(true)
+    }
+  })
+
+  it('flipAll on partial bitset', () => {
+    const bs = new SimdBitSet(10)
+    bs.setRange(3, 7)
+    bs.flipAll()
+    for (let i = 0; i < 3; i++) {
+      expect(bs.get(i)).toBe(true)
+    }
+    for (let i = 3; i < 7; i++) {
+      expect(bs.get(i)).toBe(false)
+    }
+    for (let i = 7; i < 10; i++) {
+      expect(bs.get(i)).toBe(true)
+    }
+  })
+
+  it('and with different sizes (longer first)', () => {
+    const bs1 = new SimdBitSet(10)
+    const bs2 = new SimdBitSet(5)
+    bs1.set(0)
+    bs1.set(7)
+    bs2.set(0)
+    const result = bs1.and(bs2)
+    expect(result.length).toBe(5)
+    expect(result.get(0)).toBe(true)
+    expect(result.get(4)).toBe(false)
+  })
+
+  it('xor with different sizes (longer first)', () => {
+    const bs1 = new SimdBitSet(10)
+    const bs2 = new SimdBitSet(5)
+    bs1.set(0)
+    bs1.set(7)
+    bs2.set(0)
+    bs2.set(2)
+    const result = bs1.xor(bs2)
+    expect(result.length).toBe(10)
+    expect(result.get(0)).toBe(false)
+    expect(result.get(2)).toBe(true)
+    expect(result.get(7)).toBe(true)
+  })
+
+  it('popcount on all bits set', () => {
+    const bs = new SimdBitSet(8)
+    bs.setRange(0, 8)
+    expect(bs.popcount()).toBe(8)
+  })
+
+  it('popcount on large bitset', () => {
+    const bs = new SimdBitSet(100)
+    for (let i = 0; i < 100; i += 2) {
+      bs.set(i)
+    }
+    expect(bs.popcount()).toBe(50)
+  })
+
+  it('nextSetBit from beyond length', () => {
+    const bs = new SimdBitSet(10)
+    bs.set(5)
+    expect(bs.nextSetBit(15)).toBe(-1)
+  })
+
+  it('nextSetBit on word boundary', () => {
+    const bs = new SimdBitSet(64)
+    bs.set(31)
+    bs.set(32)
+    bs.set(63)
+    expect(bs.nextSetBit(0)).toBe(31)
+    expect(bs.nextSetBit(32)).toBe(32)
+    expect(bs.nextSetBit(33)).toBe(63)
+  })
+
+  it('nextClearBit on empty bitset', () => {
+    const bs = new SimdBitSet(10)
+    expect(bs.nextClearBit(0)).toBe(0)
+    expect(bs.nextClearBit(5)).toBe(5)
+  })
+
+  it('nextClearBit from beyond length', () => {
+    const bs = new SimdBitSet(10)
+    bs.setRange(0, 10)
+    expect(bs.nextClearBit(15)).toBe(10)
+  })
+
+  it('intersects with different sizes', () => {
+    const bs1 = new SimdBitSet(10)
+    const bs2 = new SimdBitSet(5)
+    bs1.set(3)
+    bs2.set(3)
+    expect(bs1.intersects(bs2)).toBe(true)
+  })
+
+  it('isSubsetOf with equal sets', () => {
+    const bs1 = new SimdBitSet(10)
+    const bs2 = new SimdBitSet(10)
+    bs1.set(3)
+    bs1.set(7)
+    bs2.set(3)
+    bs2.set(7)
+    expect(bs1.isSubsetOf(bs2)).toBe(true)
+  })
+
+  it('isSubsetOf with different sizes (subset)', () => {
+    const bs1 = new SimdBitSet(5)
+    const bs2 = new SimdBitSet(10)
+    bs1.set(0)
+    bs1.set(3)
+    bs2.set(0)
+    bs2.set(3)
+    bs2.set(7)
+    expect(bs1.isSubsetOf(bs2)).toBe(true)
+  })
+
+  it('isSubsetOf with different sizes (not subset)', () => {
+    const bs1 = new SimdBitSet(10)
+    const bs2 = new SimdBitSet(5)
+    bs1.set(7)
+    bs2.set(0)
+    bs2.set(3)
+    expect(bs1.isSubsetOf(bs2)).toBe(false)
+  })
+
+  it('fromArray filters invalid indices', () => {
+    const bs = SimdBitSet.fromArray([-1, 0, 2, 10, 20], 10)
+    expect(bs.get(0)).toBe(true)
+    expect(bs.get(2)).toBe(true)
+    expect(bs.get(10)).toBe(false)
+    expect(bs.popcount()).toBe(2)
+  })
+
+  it('fromArray with empty array', () => {
+    const bs = SimdBitSet.fromArray([], 10)
+    expect(bs.isEmpty()).toBe(true)
+    expect(bs.length).toBe(10)
+  })
+
+  it('fromString with empty string', () => {
+    const bs = SimdBitSet.fromString('')
+    expect(bs.isEmpty()).toBe(true)
+    expect(bs.length).toBe(0)
+  })
+
+  it('toString on empty bitset', () => {
+    const bs = new SimdBitSet(5)
+    expect(bs.toString()).toBe('00000')
+  })
+
+  it('equals with different sizes', () => {
+    const bs1 = new SimdBitSet(5)
+    const bs2 = new SimdBitSet(10)
+    bs1.set(0)
+    bs2.set(0)
+    expect(bs1.equals(bs2)).toBe(false)
+  })
+
+  it('clone maintains length', () => {
+    const bs1 = new SimdBitSet(7)
+    const bs2 = bs1.clone()
+    expect(bs2.length).toBe(7)
+    expect(bs2.isEmpty()).toBe(true)
+  })
 })

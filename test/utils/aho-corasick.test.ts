@@ -320,3 +320,107 @@ describe('AhoCorasick - failure link traversal', () => {
     expect(results).toEqual([{ pattern: 'abc', start: 5, end: 7 }])
   })
 })
+
+// ─── toString method ───────────────────────────────────────
+describe('AhoCorasick - toString', () => {
+  it('returns string representation with pattern count', () => {
+    const ac = new AhoCorasick(['a', 'b', 'c'])
+    expect(ac.toString()).toBe('AhoCorasick(patterns=3)')
+  })
+
+  it('toString works with empty patterns', () => {
+    const ac = new AhoCorasick([])
+    expect(ac.toString()).toBe('AhoCorasick(patterns=0)')
+  })
+
+  it('toString includes duplicate patterns in count', () => {
+    const ac = new AhoCorasick(['a', 'a', 'b'])
+    expect(ac.toString()).toBe('AhoCorasick(patterns=3)')
+  })
+})
+
+// ─── toJSON method ─────────────────────────────────────────
+describe('AhoCorasick - toJSON', () => {
+  it('returns copy of patterns array', () => {
+    const ac = new AhoCorasick(['cat', 'dog', 'bird'])
+    expect(ac.toJSON()).toEqual(['cat', 'dog', 'bird'])
+  })
+
+  it('toJSON returns new array instance', () => {
+    const ac = new AhoCorasick(['a'])
+    const json = ac.toJSON()
+    json.push('b')
+    expect(ac.patterns).toEqual(['a'])
+  })
+
+  it('toJSON includes duplicate patterns', () => {
+    const ac = new AhoCorasick(['x', 'x'])
+    expect(ac.toJSON()).toEqual(['x', 'x'])
+  })
+})
+
+// ─── clone method ───────────────────────────────────────────
+describe('AhoCorasick - clone', () => {
+  it('creates a new instance with same patterns', () => {
+    const ac = new AhoCorasick(['abc', 'def'])
+    const clone = ac.clone()
+    expect(clone.patterns).toEqual(['abc', 'def'])
+    expect(clone.patternCount).toBe(2)
+  })
+
+  it('clone produces same search results', () => {
+    const ac = new AhoCorasick(['he', 'she', 'his'])
+    const clone = ac.clone()
+    const text = 'ahishers'
+    expect(clone.search(text)).toEqual(ac.search(text))
+  })
+
+  it('clone is independent from original', () => {
+    const ac1 = new AhoCorasick(['a', 'b'])
+    const ac2 = ac1.clone()
+    // Both have same patterns
+    expect(ac2.patterns).toEqual(['a', 'b'])
+  })
+})
+
+// ─── equals method ──────────────────────────────────────────
+describe('AhoCorasick - equals', () => {
+  it('equals returns true for same instance', () => {
+    const ac = new AhoCorasick(['a', 'b'])
+    expect(ac.equals(ac)).toBe(true)
+  })
+
+  it('equals returns true for same patterns', () => {
+    const ac1 = new AhoCorasick(['cat', 'dog'])
+    const ac2 = new AhoCorasick(['cat', 'dog'])
+    expect(ac1.equals(ac2)).toBe(true)
+  })
+
+  it('equals returns false for different pattern counts', () => {
+    const ac1 = new AhoCorasick(['a'])
+    const ac2 = new AhoCorasick(['a', 'b'])
+    expect(ac1.equals(ac2)).toBe(false)
+  })
+
+  it('equals returns false for different pattern content', () => {
+    const ac1 = new AhoCorasick(['x', 'y'])
+    const ac2 = new AhoCorasick(['a', 'b'])
+    expect(ac1.equals(ac2)).toBe(false)
+  })
+
+  it('equals returns false for non-AhoCorasick objects', () => {
+    const ac = new AhoCorasick(['a'])
+    expect(ac.equals(null)).toBe(false)
+    expect(ac.equals(undefined)).toBe(false)
+    expect(ac.equals({})).toBe(false)
+    expect(ac.equals(['a'])).toBe(false)
+  })
+
+  it('equals respects duplicate patterns', () => {
+    const ac1 = new AhoCorasick(['a', 'a'])
+    const ac2 = new AhoCorasick(['a', 'a'])
+    const ac3 = new AhoCorasick(['a'])
+    expect(ac1.equals(ac2)).toBe(true)
+    expect(ac1.equals(ac3)).toBe(false)
+  })
+})

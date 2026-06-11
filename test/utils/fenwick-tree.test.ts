@@ -267,3 +267,108 @@ describe('FenwickTree - larger data', () => {
     expect(ft.rangeQuery(90, 99)).toBe(955)
   })
 })
+
+// ─── toString method ─────────────────────────────────────
+describe('FenwickTree - toString', () => {
+  it('returns JSON representation of internal tree', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3])
+    const str = ft.toString()
+    expect(() => JSON.parse(str)).not.toThrow()
+  })
+
+  it('toString for empty tree', () => {
+    const ft = new FenwickTree(0)
+    const str = ft.toString()
+    expect(() => JSON.parse(str)).not.toThrow()
+  })
+})
+
+// ─── toJSON method ───────────────────────────────────────
+describe('FenwickTree - toJSON', () => {
+  it('returns array with internal tree values', () => {
+    const ft = FenwickTree.fromArray([5, 10, 15])
+    const json = ft.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect(json.length).toBe(4)
+  })
+
+  it('toJSON for empty tree', () => {
+    const ft = new FenwickTree(0)
+    const json = ft.toJSON()
+    expect(json).toEqual([0])
+  })
+})
+
+// ─── equals method ───────────────────────────────────────
+describe('FenwickTree - equals', () => {
+  it('equals returns true for same instance', () => {
+    const ft = new FenwickTree(5)
+    expect(ft.equals(ft)).toBe(true)
+  })
+
+  it('equals returns true for identical trees', () => {
+    const ft1 = FenwickTree.fromArray([1, 2, 3])
+    const ft2 = FenwickTree.fromArray([1, 2, 3])
+    expect(ft1.equals(ft2)).toBe(true)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const ft1 = new FenwickTree(3)
+    const ft2 = new FenwickTree(5)
+    expect(ft1.equals(ft2)).toBe(false)
+  })
+
+  it('equals returns false for different values', () => {
+    const ft1 = FenwickTree.fromArray([1, 2, 3])
+    const ft2 = FenwickTree.fromArray([4, 5, 6])
+    expect(ft1.equals(ft2)).toBe(false)
+  })
+
+  it('equals returns false for non-FenwickTree objects', () => {
+    const ft = new FenwickTree(3)
+    expect(ft.equals(null)).toBe(false)
+    expect(ft.equals(undefined)).toBe(false)
+    expect(ft.equals({})).toBe(false)
+    expect(ft.equals([1, 2, 3])).toBe(false)
+  })
+
+  it('equals detects clones', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3])
+    const clone = ft.clone()
+    expect(ft.equals(clone)).toBe(true)
+  })
+
+  it('equals is not affected by updates', () => {
+    const ft1 = FenwickTree.fromArray([1, 2, 3])
+    const ft2 = FenwickTree.fromArray([1, 2, 3])
+    ft1.update(0, 100)
+    expect(ft1.equals(ft2)).toBe(false)
+  })
+})
+
+// ─── Large updates ───────────────────────────────────────
+describe('FenwickTree - large updates', () => {
+  it('handles many consecutive updates', () => {
+    const ft = new FenwickTree(10)
+    for (let i = 0; i < 10; i++) {
+      ft.update(i, i + 1)
+    }
+    expect(ft.query(9)).toBe(55)
+  })
+
+  it('handles large negative deltas', () => {
+    const ft = FenwickTree.fromArray([100, 200, 300])
+    ft.update(0, -100)
+    ft.update(1, -200)
+    expect(ft.pointQuery(0)).toBe(0)
+    expect(ft.pointQuery(1)).toBe(0)
+  })
+
+  it('handles very large positive values', () => {
+    const ft = new FenwickTree(3)
+    ft.update(0, 1000000)
+    ft.update(1, 2000000)
+    ft.update(2, 3000000)
+    expect(ft.query(2)).toBe(6000000)
+  })
+})

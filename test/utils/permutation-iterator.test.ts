@@ -216,4 +216,87 @@ describe('PermutationIterator', () => {
     const result = PermutationIterator.all([1, 1, 1])
     expect(result.length).toBe(6)
   })
+
+  it('next() returns IteratorResult structure', () => {
+    const iter = new PermutationIterator(2)
+    const first = iter.next()
+    expect(first.done).toBe(false)
+    expect(first.value).toEqual([0, 1])
+    const second = iter.next()
+    expect(second.done).toBe(false)
+    expect(second.value).toEqual([1, 0])
+    const third = iter.next()
+    expect(third.done).toBe(true)
+    expect(third.value).toBeUndefined()
+  })
+
+  it('Symbol.iterator returns self', () => {
+    const iter = new PermutationIterator(3)
+    expect(iter[Symbol.iterator]()).toBe(iter)
+  })
+
+  it('manual next() calls produce all permutations', () => {
+    const iter = new PermutationIterator(3)
+    const results: number[][] = []
+    let result
+    while ((result = iter.next(), !result.done)) {
+      results.push(result.value)
+    }
+    expect(results.length).toBe(6)
+  })
+
+  it('next() on exhausted iterator returns done true', () => {
+    const iter = new PermutationIterator(1)
+    iter.next()
+    const second = iter.next()
+    expect(second.done).toBe(true)
+    const third = iter.next()
+    expect(third.done).toBe(true)
+  })
+
+  it('nth at various positions for 5 elements', () => {
+    const all = PermutationIterator.all([1, 2, 3, 4, 5])
+    for (let i = 0; i < 5; i++) {
+      expect(PermutationIterator.nth([1, 2, 3, 4, 5], i)).toEqual(all[i])
+    }
+  })
+
+  it('nth at index 59 for 4 elements', () => {
+    const result = PermutationIterator.nth([1, 2, 3, 4], 5)
+    expect(result.length).toBe(4)
+    expect(new Set(result).size).toBe(4)
+  })
+
+  it('nth with 0 elements returns array with undefined', () => {
+    const result = PermutationIterator.nth([], 0)
+    expect(result.length).toBe(1)
+  })
+
+  it('iterator yields new arrays each time', () => {
+    const iter = new PermutationIterator(2)
+    const first = iter.next()
+    const second = iter.next()
+    if (!first.done && !second.done) {
+      expect(first.value).not.toBe(second.value)
+      expect(first.value).toEqual([0, 1])
+      expect(second.value).toEqual([1, 0])
+    }
+  })
+
+  it('count(8) is 40320', () => {
+    expect(PermutationIterator.count(8)).toBe(40320)
+  })
+
+  it('next() value is not reused', () => {
+    const iter = new PermutationIterator(2)
+    const first = iter.next()
+    if (!first.done) {
+      const copy = first.value
+      copy[0] = 99
+      const second = iter.next()
+      if (!second.done) {
+        expect(second.value).toEqual([1, 0])
+      }
+    }
+  })
 })

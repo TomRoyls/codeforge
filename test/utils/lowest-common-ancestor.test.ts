@@ -278,4 +278,174 @@ describe('LowestCommonAncestor', () => {
     expect(lca.distance(1, 1)).toBe(0)
     expect(lca.distance(2, 2)).toBe(0)
   })
+
+  it('handles custom root parameter', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 2)
+    expect(lca.query(2, 4)).toBe(2)
+    expect(lca.query(3, 4)).toBe(3)
+    expect(lca.getDepth(2)).toBe(0)
+    expect(lca.getDepth(4)).toBe(2)
+  })
+
+  it('handles star topology (all children of root)', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+      [1, []], [2, []], [3, []], [4, []], [5, []],
+      [6, []], [7, []], [8, []], [9, []], [10, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(1, 10)).toBe(0)
+    expect(lca.query(5, 6)).toBe(0)
+    expect(lca.distance(1, 10)).toBe(2)
+  })
+
+  it('handles tree with varying branch depths', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]],
+      [1, [3, 4, 5]],
+      [2, [6]],
+      [3, [7, 8]],
+      [4, []],
+      [5, []],
+      [6, []],
+      [7, []],
+      [8, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(7, 6)).toBe(0)
+    expect(lca.query(7, 4)).toBe(1)
+    expect(lca.query(7, 8)).toBe(3)
+    expect(lca.distance(7, 6)).toBe(5)
+  })
+
+  it('handles non-sequential node IDs', () => {
+    const adj = new Map<number, number[]>([
+      [10, [20, 30]],
+      [20, [40]],
+      [30, [50]],
+      [40, []],
+      [50, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 10)
+    expect(lca.query(40, 50)).toBe(10)
+    expect(lca.query(40, 20)).toBe(20)
+    expect(lca.distance(40, 50)).toBe(4)
+  })
+
+  it('toJSON contains expected structure', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]],
+      [1, []],
+      [2, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    const json = lca.toJSON()
+    expect(json).toHaveProperty('root', 0)
+    expect(json).toHaveProperty('nodeCount', 3)
+    expect(json).toHaveProperty('adj')
+    expect(json).toHaveProperty('depth')
+    expect(json).toHaveProperty('parent')
+  })
+
+  it('toJSON adj is array of entries', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]],
+      [1, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    const json = lca.toJSON() as any
+    expect(Array.isArray(json.adj)).toBe(true)
+    expect(json.adj.length).toBeGreaterThan(0)
+  })
+
+  it('clone preserves tree structure', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3]],
+      [1, [4, 5]],
+      [2, []],
+      [3, []],
+      [4, []],
+      [5, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    const cloned = lca.clone()
+    expect(cloned.query(4, 5)).toBe(1)
+    expect(cloned.query(4, 3)).toBe(0)
+    expect(cloned.getDepth(4)).toBe(2)
+  })
+
+  it('clone with different root preserves root', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 1)
+    const cloned = lca.clone()
+    expect(cloned.query(1, 2)).toBe(1)
+  })
+
+  it('equals returns false for same structure different root', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, []],
+    ])
+    const l1 = new LowestCommonAncestor(adj, 0)
+    const l2 = new LowestCommonAncestor(adj, 1)
+    expect(l1.equals(l2)).toBe(false)
+  })
+
+  it('equals checks depth equality', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, []],
+    ])
+    const l1 = new LowestCommonAncestor(adj, 0)
+    const l2 = new LowestCommonAncestor(adj, 0)
+    expect(l1.equals(l2)).toBe(true)
+  })
+
+  it('equals checks parent equality', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, []], [2, []],
+    ])
+    const l1 = new LowestCommonAncestor(adj, 0)
+    const l2 = new LowestCommonAncestor(adj, 0)
+    expect(l1.equals(l2)).toBe(true)
+  })
+
+  it('distance to root equals depth', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.distance(0, 3)).toBe(lca.getDepth(3))
+    expect(lca.distance(0, 2)).toBe(lca.getDepth(2))
+  })
+
+  it('handles tree with single deep branch', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, [5]],
+      [5, [6]], [6, [7]], [7, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(0, 7)).toBe(0)
+    expect(lca.distance(0, 7)).toBe(7)
+    expect(lca.getDepth(7)).toBe(7)
+  })
+
+  it('getDepth on non-existent node returns 0', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.getDepth(999)).toBe(0)
+  })
+
+  it('toString includes nodeCount and root', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3]], [1, []], [2, []], [3, []],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    const str = lca.toString()
+    expect(str).toContain('4')
+    expect(str).toContain('0')
+  })
 })
