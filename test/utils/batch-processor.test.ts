@@ -2,305 +2,797 @@ import { describe, it, expect, vi } from 'vitest'
 import { processBatch, processBatchSequential } from '../../src/utils/batch-processor.js'
 
 describe('batch-processor', () => {
-  it('processes all items successfully with default options', async () => {
-    const items = [1, 2, 3, 4, 5]
-    const handler = async (item: number) => item * 2
-    const result = await processBatch(items, handler)
+  describe('processBatch - basic functionality', () => {
+    it('processes all items successfully with default options', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const handler = async (item: number) => item * 2
+      const result = await processBatch(items, handler)
 
-    expect(result.isOk()).toBe(true)
-    if (!result.isOk()) return
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
 
-    const value = result.unwrap()
-    expect(value.successful).toEqual([2, 4, 6, 8, 10])
-    expect(value.failed).toHaveLength(0)
-    expect(value.total).toBe(5)
-    expect(value.durationMs).toBeGreaterThanOrEqual(0)
-  })
-
-  it('respects custom concurrency limit', async () => {
-    const items = [1, 2, 3, 4, 5]
-    let activeCount = 0
-    let maxActive = 0
-
-    const handler = async (item: number) => {
-      activeCount++
-      maxActive = Math.max(maxActive, activeCount)
-      await new Promise((resolve) => setTimeout(resolve, 10))
-      activeCount--
-      return item
-    }
-
-    await processBatch(items, handler, { concurrency: 2 })
-
-    expect(maxActive).toBeLessThanOrEqual(2)
-  })
-
-  it('continues on error by default', async () => {
-    const items = [1, 2, 3, 4, 5]
-    const handler = async (item: number) => {
-      if (item === 3) throw new Error('Failed on 3')
-      return item * 2
-    }
-
-    const result = await processBatch(items, handler, { continueOnError: true })
-
-    expect(result.isOk()).toBe(true)
-    if (!result.isOk()) return
-
-    const value = result.unwrap()
-    expect(value.successful).toHaveLength(4)
-    expect(value.failed).toHaveLength(1)
-    expect(value.failed[0]!.input).toBe(2)
-  })
-
-  it('stops on first error when continueOnError is false', async () => {
-    const items = [1, 2, 3, 4, 5]
-    const handler = async (item: number) => {
-      if (item === 3) throw new Error('Failed on 3')
-      return item * 2
-    }
-
-    const result = await processBatch(items, handler, { continueOnError: false })
-
-    expect(result.isOk()).toBe(false)
-
-    const json = result.toJSON()
-    expect(json.ok).toBe(false)
-    expect(json.error).toBeInstanceOf(Error)
-  })
-
-  it('calls onProgress callback with completion status', async () => {
-    const items = [1, 2, 3, 4, 5]
-    const progressCalls: Array<[number, number]> = []
-
-    const handler = async (item: number) => {
-      await new Promise((resolve) => setTimeout(resolve, 5))
-      return item
-    }
-
-    await processBatch(items, handler, {
-      onProgress: (completed, total) => {
-        progressCalls.push([completed, total])
-      },
+      const value = result.unwrap()
+      expect(value.successful).toEqual([2, 4, 6, 8, 10])
+      expect(value.failed).toHaveLength(0)
+      expect(value.total).toBe(5)
+      expect(value.durationMs).toBeGreaterThanOrEqual(0)
     })
 
-    expect(progressCalls).toHaveLength(5)
-    expect(progressCalls[0]![0]).toBe(1)
-    expect(progressCalls[0]![1]).toBe(5)
-    expect(progressCalls[4]![0]).toBe(5)
+    it('handles empty array', async () => {
+      const items: number[] = []
+      const handler = async (item: number) => item * 2
+      const result = await processBatch(items, handler)
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toHaveLength(0)
+      expect(value.failed).toHaveLength(0)
+      expect(value.total).toBe(0)
+    })
+
+    it('handles single item batch', async () => {
+      const result = await processBatch([42], async (x) => x * 10)
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+      expect(result.unwrap().successful).toEqual([420])
+      expect(result.unwrap().total).toBe(1)
+    })
+
+    it('passes correct index to handler', async () => {
+      const items = ['a', 'b', 'c']
+      const indices: number[] = []
+
+      const handler = async (item: string, index: number) => {
+        indices.push(index)
+        return item.toUpperCase()
+      }
+
+      await processBatch(items, handler)
+
+      expect(indices).toEqual([0, 1, 2])
+    })
+
+    it('handles mixed success and failure results', async () => {
+      const items = [1, 2, 3, 4, 5, 6]
+      const handler = async (item: number) => {
+        if (item % 2 === 0) throw new Error(`Even number: ${item}`)
+        return item * 10
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toEqual([10, 30, 50])
+      expect(value.failed).toHaveLength(3)
+    })
   })
 
-  it('handles empty array', async () => {
-    const items: number[] = []
-    const handler = async (item: number) => item * 2
-    const result = await processBatch(items, handler)
+  describe('processBatch - concurrency', () => {
+    it('respects custom concurrency limit', async () => {
+      const items = [1, 2, 3, 4, 5]
+      let activeCount = 0
+      let maxActive = 0
 
-    expect(result.isOk()).toBe(true)
-    if (!result.isOk()) return
+      const handler = async (item: number) => {
+        activeCount++
+        maxActive = Math.max(maxActive, activeCount)
+        await new Promise((resolve) => setTimeout(resolve, 10))
+        activeCount--
+        return item
+      }
 
-    const value = result.unwrap()
-    expect(value.successful).toHaveLength(0)
-    expect(value.failed).toHaveLength(0)
-    expect(value.total).toBe(0)
+      await processBatch(items, handler, { concurrency: 2 })
+
+      expect(maxActive).toBeLessThanOrEqual(2)
+    })
+
+    it('processes items with concurrency higher than item count', async () => {
+      const items = [1, 2]
+      const handler = async (item: number) => item * 2
+      const result = await processBatch(items, handler, { concurrency: 10 })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toEqual([2, 4])
+    })
+
+    it('respects concurrency of 1', async () => {
+      const items = [1, 2, 3]
+      let activeCount = 0
+      let maxActive = 0
+
+      const handler = async (item: number) => {
+        activeCount++
+        maxActive = Math.max(maxActive, activeCount)
+        await new Promise((resolve) => setTimeout(resolve, 5))
+        activeCount--
+        return item
+      }
+
+      await processBatch(items, handler, { concurrency: 1 })
+
+      expect(maxActive).toBe(1)
+    })
   })
 
-  it('passes correct index to handler', async () => {
-    const items = ['a', 'b', 'c']
-    const indices: number[] = []
+  describe('processBatch - error handling', () => {
+    it('continues on error by default', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const handler = async (item: number) => {
+        if (item === 3) throw new Error('Failed on 3')
+        return item * 2
+      }
 
-    const handler = async (item: string, index: number) => {
-      indices.push(index)
-      return item.toUpperCase()
-    }
+      const result = await processBatch(items, handler, { continueOnError: true })
 
-    await processBatch(items, handler)
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
 
-    expect(indices).toEqual([0, 1, 2])
+      const value = result.unwrap()
+      expect(value.successful).toHaveLength(4)
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.input).toBe(2)
+    })
+
+    it('stops on first error when continueOnError is false', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const handler = async (item: number) => {
+        if (item === 3) throw new Error('Failed on 3')
+        return item * 2
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: false })
+
+      expect(result.isOk()).toBe(false)
+
+      const json = result.toJSON()
+      expect(json.ok).toBe(false)
+      expect(json.error).toBeInstanceOf(Error)
+    })
+
+    it('returns error on failure when continueOnError is false', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw new Error('Specific error')
+        return item
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: false })
+
+      expect(result.isOk()).toBe(false)
+
+      const json = result.toJSON()
+      expect(json.ok).toBe(false)
+      expect(json.error).toBeInstanceOf(Error)
+    })
+
+    it('captures error messages in failed items', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw new Error('boom')
+        return item
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.error).toBeInstanceOf(Error)
+      expect(value.failed[0]!.error.message).toBe('boom')
+    })
+
+    it('handles non-Error exceptions', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw 'string error'
+        return item
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.error).toBe('string error')
+    })
+
+    it('handles null exceptions', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw null
+        return item
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.error).toBe(null)
+    })
   })
 
-  it('handles mixed success and failure results', async () => {
-    const items = [1, 2, 3, 4, 5, 6]
-    const handler = async (item: number) => {
-      if (item % 2 === 0) throw new Error(`Even number: ${item}`)
-      return item * 10
-    }
+  describe('processBatch - progress callback', () => {
+    it('calls onProgress callback with completion status', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const progressCalls: Array<[number, number]> = []
 
-    const result = await processBatch(items, handler, { continueOnError: true })
+      const handler = async (item: number) => {
+        await new Promise((resolve) => setTimeout(resolve, 5))
+        return item
+      }
 
-    expect(result.isOk()).toBe(true)
-    if (!result.isOk()) return
+      await processBatch(items, handler, {
+        onProgress: (completed, total) => {
+          progressCalls.push([completed, total])
+        },
+      })
 
-    const value = result.unwrap()
-    expect(value.successful).toEqual([10, 30, 50])
-    expect(value.failed).toHaveLength(3)
+      expect(progressCalls).toHaveLength(5)
+      expect(progressCalls[0]![0]).toBe(1)
+      expect(progressCalls[0]![1]).toBe(5)
+      expect(progressCalls[4]![0]).toBe(5)
+    })
+
+    it('onProgress called with correct total for empty array', async () => {
+      const items: number[] = []
+      let progressCalled = false
+
+      const handler = async (item: number) => item
+
+      await processBatch(items, handler, {
+        onProgress: (completed, total) => {
+          progressCalled = true
+          expect(total).toBe(0)
+        },
+      })
+
+      expect(progressCalled).toBe(false)
+    })
+
+    it('onProgress called with correct total for single item', async () => {
+      const items = [1]
+      const progressCalls: Array<[number, number]> = []
+
+      const handler = async (item: number) => item
+
+      await processBatch(items, handler, {
+        onProgress: (completed, total) => {
+          progressCalls.push([completed, total])
+        },
+      })
+
+      expect(progressCalls).toHaveLength(1)
+      expect(progressCalls[0]![1]).toBe(1)
+    })
   })
 
-  it('processes items with concurrency higher than item count', async () => {
-    const items = [1, 2]
-    const handler = async (item: number) => item * 2
-    const result = await processBatch(items, handler, { concurrency: 10 })
+  describe('processBatch - edge cases', () => {
+    it('handles readonly array input', async () => {
+      const items: readonly number[] = [1, 2, 3]
+      const handler = async (item: number) => item * 2
+      const result = await processBatch(items, handler)
 
-    expect(result.isOk()).toBe(true)
-    if (!result.isOk()) return
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
 
-    const value = result.unwrap()
-    expect(value.successful).toEqual([2, 4])
+      const value = result.unwrap()
+      expect(value.successful).toEqual([2, 4, 6])
+    })
+
+    it('handles handler returning different types', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 1) return 'one'
+        if (item === 2) return { value: 2 }
+        return [3]
+      }
+
+      const result = await processBatch(items, handler)
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful[0]).toBe('one')
+      expect(value.successful[1]).toEqual({ value: 2 })
+      expect(value.successful[2]).toEqual([3])
+    })
+
+    it('tracks duration correctly', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        await new Promise((resolve) => setTimeout(resolve, 10))
+        return item
+      }
+
+      const result = await processBatch(items, handler, { concurrency: 1 })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.durationMs).toBeGreaterThanOrEqual(25)
+    })
+
+    it('handles all items failing', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        throw new Error(`Failed on ${item}`)
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toHaveLength(0)
+      expect(value.failed).toHaveLength(3)
+    })
   })
 
-  it('returns error on failure when continueOnError is false', async () => {
-    const items = [1, 2, 3]
-    const handler = async (item: number) => {
-      if (item === 2) throw new Error('Specific error')
-      return item
-    }
+  describe('processBatchSequential - basic functionality', () => {
+    it('processes items in order', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const processedOrder: number[] = []
 
-    const result = await processBatch(items, handler, { continueOnError: false })
+      const handler = async (item: number) => {
+        processedOrder.push(item)
+        await new Promise((resolve) => setTimeout(resolve, 1))
+        return item * 2
+      }
 
-    expect(result.isOk()).toBe(false)
+      const result = await processBatchSequential(items, handler)
 
-    const json = result.toJSON()
-    expect(json.ok).toBe(false)
-    expect(json.error).toBeInstanceOf(Error)
+      expect(processedOrder).toEqual([1, 2, 3, 4, 5])
+      expect(result.successful).toEqual([2, 4, 6, 8, 10])
+      expect(result.failed).toHaveLength(0)
+    })
+
+    it('handles empty array', async () => {
+      const items: number[] = []
+      const handler = async (item: number) => item * 2
+      const result = await processBatchSequential(items, handler)
+
+      expect(result.successful).toHaveLength(0)
+      expect(result.failed).toHaveLength(0)
+      expect(result.total).toBe(0)
+    })
+
+    it('processBatchSequential with single item', async () => {
+      const result = await processBatchSequential([5], async (x) => x + 1)
+      expect(result.successful).toEqual([6])
+      expect(result.failed).toHaveLength(0)
+      expect(result.total).toBe(1)
+    })
+
+    it('records duration', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        await new Promise((resolve) => setTimeout(resolve, 5))
+        return item
+      }
+
+      const result = await processBatchSequential(items, handler)
+
+      expect(result.durationMs).toBeGreaterThanOrEqual(0)
+    })
   })
 
-  it('processBatchSequential processes items in order', async () => {
-    const items = [1, 2, 3, 4, 5]
-    const processedOrder: number[] = []
+  describe('processBatchSequential - error handling', () => {
+    it('stops on error when continueOnError is false', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const handler = async (item: number) => {
+        if (item === 3) throw new Error('Error at 3')
+        return item * 2
+      }
 
-    const handler = async (item: number) => {
-      processedOrder.push(item)
-      await new Promise((resolve) => setTimeout(resolve, 1))
-      return item * 2
-    }
+      const result = await processBatchSequential(items, handler, false)
 
-    const result = await processBatchSequential(items, handler)
+      expect(result.successful).toEqual([2, 4])
+      expect(result.failed).toHaveLength(1)
+      expect(result.failed[0]!.input).toBe(2)
+    })
 
-    expect(processedOrder).toEqual([1, 2, 3, 4, 5])
-    expect(result.successful).toEqual([2, 4, 6, 8, 10])
-    expect(result.failed).toHaveLength(0)
+    it('continues on error by default', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const handler = async (item: number) => {
+        if (item === 3) throw new Error('Error at 3')
+        return item * 2
+      }
+
+      const result = await processBatchSequential(items, handler, true)
+
+      expect(result.successful).toEqual([2, 4, 8, 10])
+      expect(result.failed).toHaveLength(1)
+      expect(result.failed[0]!.input).toBe(2)
+    })
+
+    it('handles non-Error exceptions', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw 'string error'
+        return item
+      }
+
+      const result = await processBatchSequential(items, handler, true)
+
+      expect(result.failed).toHaveLength(1)
+      expect(result.failed[0]!.error).toBe('string error')
+    })
+
+    it('handles all items failing', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        throw new Error(`Failed on ${item}`)
+      }
+
+      const result = await processBatchSequential(items, handler, true)
+
+      expect(result.successful).toHaveLength(0)
+      expect(result.failed).toHaveLength(3)
+    })
   })
 
-  it('processBatchSequential stops on error when continueOnError is false', async () => {
-    const items = [1, 2, 3, 4, 5]
-    const handler = async (item: number) => {
-      if (item === 3) throw new Error('Error at 3')
-      return item * 2
-    }
+  describe('processBatchSequential - edge cases', () => {
+    it('handles handler returning different types', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 1) return 'one'
+        if (item === 2) return { value: 2 }
+        return [3]
+      }
 
-    const result = await processBatchSequential(items, handler, false)
+      const result = await processBatchSequential(items, handler)
 
-    expect(result.successful).toEqual([2, 4])
-    expect(result.failed).toHaveLength(1)
-    expect(result.failed[0]!.input).toBe(2)
+      expect(result.successful[0]).toBe('one')
+      expect(result.successful[1]).toEqual({ value: 2 })
+      expect(result.successful[2]).toEqual([3])
+    })
+
+    it('passes correct index to handler', async () => {
+      const items = ['a', 'b', 'c']
+      const indices: number[] = []
+
+      const handler = async (item: string, index: number) => {
+        indices.push(index)
+        return item.toUpperCase()
+      }
+
+      await processBatchSequential(items, handler)
+
+      expect(indices).toEqual([0, 1, 2])
+    })
+
+    it('handles readonly array input', async () => {
+      const items: readonly number[] = [1, 2, 3]
+      const handler = async (item: number) => item * 2
+      const result = await processBatchSequential(items, handler)
+
+      expect(result.successful).toEqual([2, 4, 6])
+    })
+
+    it('handles concurrent modification of input array', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number, index: number) => {
+        return items[index]! * 2
+      }
+
+      const result = await processBatchSequential(items, handler)
+
+      expect(result.successful).toEqual([2, 4, 6])
+    })
   })
 
-  it('processBatchSequential continues on error by default', async () => {
-    const items = [1, 2, 3, 4, 5]
-    const handler = async (item: number) => {
-      if (item === 3) throw new Error('Error at 3')
-      return item * 2
-    }
+  describe('processBatch - additional edge cases', () => {
+    it('handles handler that throws undefined', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw undefined
+        return item
+      }
 
-    const result = await processBatchSequential(items, handler, true)
+      const result = await processBatch(items, handler, { continueOnError: true })
 
-    expect(result.successful).toEqual([2, 4, 8, 10])
-    expect(result.failed).toHaveLength(1)
-    expect(result.failed[0]!.input).toBe(2)
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.error).toBe(undefined)
+    })
+
+    it('handles handler that throws object', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw { code: 500, message: 'Server error' }
+        return item
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.error).toEqual({ code: 500, message: 'Server error' })
+    })
+
+    it('handles large batch with many items', async () => {
+      const items = Array.from({ length: 100 }, (_, i) => i)
+      const handler = async (item: number) => item * 2
+
+      const result = await processBatch(items, handler, { concurrency: 10 })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toHaveLength(100)
+      expect(value.successful[0]).toBe(0)
+      expect(value.successful[99]).toBe(198)
+    })
+
+    it('handles batch with all items succeeding', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const handler = async (item: number) => item * 10
+
+      const result = await processBatch(items, handler)
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toEqual([10, 20, 30, 40, 50])
+      expect(value.failed).toHaveLength(0)
+    })
+
+    it('handles batch with mixed success and failure and continueOnError false', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const handler = async (item: number) => {
+        if (item === 3) throw new Error('Error at 3')
+        return item * 2
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: false })
+
+      expect(result.isOk()).toBe(false)
+      expect(result.toJSON().ok).toBe(false)
+    })
+
+    it('handles handler returning Promise that rejects', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) return Promise.reject(new Error('Promise reject'))
+        return Promise.resolve(item)
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.error).toBeInstanceOf(Error)
+    })
+
+    it('handles handler returning null', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) return null
+        return item
+      }
+
+      const result = await processBatch(items, handler)
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful[0]).toBe(1)
+      expect(value.successful[1]).toBe(null)
+      expect(value.successful[2]).toBe(3)
+    })
+
+    it('handles handler returning undefined', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) return undefined
+        return item
+      }
+
+      const result = await processBatch(items, handler)
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful[0]).toBe(1)
+      expect(value.successful[1]).toBe(undefined)
+      expect(value.successful[2]).toBe(3)
+    })
+
+    it('processes items with concurrency of 0 (no workers)', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => item * 2
+
+      const result = await processBatch(items, handler, { concurrency: 0 })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toEqual([])
+    })
+
+    it('processes items with negative concurrency (no workers)', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => item * 2
+
+      const result = await processBatch(items, handler, { concurrency: -5 })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toEqual([])
+    })
+
+    it('handles batch where first item fails', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 1) throw new Error('First item error')
+        return item
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toEqual([2, 3])
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.input).toBe(0)
+    })
+
+    it('handles batch where last item fails', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 3) throw new Error('Last item error')
+        return item
+      }
+
+      const result = await processBatch(items, handler, { continueOnError: true })
+
+      expect(result.isOk()).toBe(true)
+      if (!result.isOk()) return
+
+      const value = result.unwrap()
+      expect(value.successful).toEqual([1, 2])
+      expect(value.failed).toHaveLength(1)
+      expect(value.failed[0]!.input).toBe(2)
+    })
   })
 
-  it('processBatchSequential handles empty array', async () => {
-    const items: number[] = []
-    const handler = async (item: number) => item * 2
-    const result = await processBatchSequential(items, handler)
+  describe('processBatchSequential - additional edge cases', () => {
+    it('handles handler that throws undefined', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw undefined
+        return item
+      }
 
-    expect(result.successful).toHaveLength(0)
-    expect(result.failed).toHaveLength(0)
-    expect(result.total).toBe(0)
-  })
+      const result = await processBatchSequential(items, handler, true)
 
-  it('processBatchSequential records duration', async () => {
-    const items = [1, 2, 3]
-    const handler = async (item: number) => {
-      await new Promise((resolve) => setTimeout(resolve, 5))
-      return item
-    }
+      expect(result.failed).toHaveLength(1)
+      expect(result.failed[0]!.error).toBe(undefined)
+    })
 
-    const result = await processBatchSequential(items, handler)
+    it('handles handler that throws object', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) throw { code: 500, message: 'Server error' }
+        return item
+      }
 
-    expect(result.durationMs).toBeGreaterThanOrEqual(0)
-  })
+      const result = await processBatchSequential(items, handler, true)
 
-  it('handles single item batch', async () => {
-    const result = await processBatch([42], async (x) => x * 10)
-    expect(result.isOk()).toBe(true)
-    if (!result.isOk()) return
-    expect(result.unwrap().successful).toEqual([420])
-    expect(result.unwrap().total).toBe(1)
-  })
+      expect(result.failed).toHaveLength(1)
+      expect(result.failed[0]!.error).toEqual({ code: 500, message: 'Server error' })
+    })
 
-  it('captures error messages in failed items', async () => {
-    const items = [1, 2, 3]
-    const handler = async (item: number) => {
-      if (item === 2) throw new Error('boom')
-      return item
-    }
+    it('handles large batch with many items', async () => {
+      const items = Array.from({ length: 50 }, (_, i) => i)
+      const handler = async (item: number) => item * 2
 
-    const result = await processBatch(items, handler, { continueOnError: true })
-    expect(result.isOk()).toBe(true)
-    if (!result.isOk()) return
+      const result = await processBatchSequential(items, handler)
 
-    const value = result.unwrap()
-    expect(value.failed).toHaveLength(1)
-    expect(value.failed[0]!.error).toBeInstanceOf(Error)
-    expect(value.failed[0]!.error.message).toBe('boom')
-  })
+      expect(result.successful).toHaveLength(50)
+      expect(result.successful[0]).toBe(0)
+      expect(result.successful[49]).toBe(98)
+    })
 
-  it('processBatchSequential with single item', async () => {
-    const result = await processBatchSequential([5], async (x) => x + 1)
-    expect(result.successful).toEqual([6])
-    expect(result.failed).toHaveLength(0)
-    expect(result.total).toBe(1)
-  })
+    it('handles batch with all items succeeding', async () => {
+      const items = [1, 2, 3, 4, 5]
+      const handler = async (item: number) => item * 10
 
-  it('processes empty batch', async () => {
-    const handler = async (x: number) => x * 2
-    const result = await processBatch([], handler)
-    expect(result.isOk()).toBe(true)
-  })
+      const result = await processBatchSequential(items, handler)
 
-  it('processes single item', async () => {
-    const handler = async (x: number) => x * 2
-    const result = await processBatch([3], handler)
-    expect(result.isOk()).toBe(true)
-  })
+      expect(result.successful).toEqual([10, 20, 30, 40, 50])
+      expect(result.failed).toHaveLength(0)
+    })
 
-  it('processes empty batch', async () => {
-    const handler = async (x: number) => x * 2
-    const result = await processBatch([], handler)
-    expect(result.isOk()).toBe(true)
-  })
+    it('handles batch where first item fails with continueOnError false', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 1) throw new Error('First item error')
+        return item
+      }
 
-  it('processBatch with single item returns doubled', async () => {
-    const handler = async (x: number) => x * 2
-    const result = await processBatch([5], handler)
-    expect(result.isOk()).toBe(true)
-  })
+      const result = await processBatchSequential(items, handler, false)
 
-  it('processBatch handles empty array', async () => {
-    const handler = async (x: number) => x * 2
-    const result = await processBatch([], handler)
-    expect(result.isOk()).toBe(true)
-  })
+      expect(result.successful).toHaveLength(0)
+      expect(result.failed).toHaveLength(1)
+      expect(result.failed[0]!.input).toBe(0)
+    })
 
-  it('processBatch with single item', async () => {
-    const handler = async (x: number) => x * 2
-    const result = await processBatch([5], handler)
-    expect(result.isOk()).toBe(true)
-  })
+    it('handles batch where last item fails with continueOnError false', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 3) throw new Error('Last item error')
+        return item
+      }
 
-  it('processBatch with empty array', async () => {
-    const handler = async (x: number) => x * 2
-    const result = await processBatch([], handler)
-    expect(result.isOk()).toBe(true)
+      const result = await processBatchSequential(items, handler, false)
+
+      expect(result.successful).toEqual([1, 2])
+      expect(result.failed).toHaveLength(1)
+      expect(result.failed[0]!.input).toBe(2)
+    })
+
+    it('handles handler returning null', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) return null
+        return item
+      }
+
+      const result = await processBatchSequential(items, handler)
+
+      expect(result.successful[0]).toBe(1)
+      expect(result.successful[1]).toBe(null)
+      expect(result.successful[2]).toBe(3)
+    })
+
+    it('handles handler returning undefined', async () => {
+      const items = [1, 2, 3]
+      const handler = async (item: number) => {
+        if (item === 2) return undefined
+        return item
+      }
+
+      const result = await processBatchSequential(items, handler)
+
+      expect(result.successful[0]).toBe(1)
+      expect(result.successful[1]).toBe(undefined)
+      expect(result.successful[2]).toBe(3)
+    })
   })
 })
