@@ -170,47 +170,7 @@ describe('BimodalMap', () => {
     expect(bm.size).toBe(2)
   })
 
-  it('has returns true for existing key', () => {
-    const bm = new BimodalMap<string, number>()
-    bm.set('a', 1)
-    expect(bm.has('a')).toBe(true)
-    expect(bm.has('b')).toBe(false)
-  })
 
-  it('delete removes key', () => {
-    const bm = new BimodalMap<string, number>()
-    bm.set('a', 1)
-    bm.delete('a')
-    expect(bm.has('a')).toBe(false)
-  })
-
-  it('size reflects element count', () => {
-    const bm = new BimodalMap<string, number>()
-    bm.set('a', 1)
-    bm.set('b', 2)
-    expect(bm.size).toBe(2)
-  })
-
-  it('has returns true for existing key', () => {
-    const bm = new BimodalMap<string, number>()
-    bm.set('a', 1)
-    expect(bm.has('a')).toBe(true)
-    expect(bm.has('b')).toBe(false)
-  })
-
-  it('delete removes entry', () => {
-    const bm = new BimodalMap<string, number>()
-    bm.set('a', 1)
-    bm.delete('a')
-    expect(bm.has('a')).toBe(false)
-  })
-
-  it('size reflects current entries', () => {
-    const bm = new BimodalMap<string, number>()
-    bm.set('a', 1)
-    bm.set('b', 2)
-    expect(bm.size).toBe(2)
-  })
 
   it('get returns undefined for missing key', () => {
     const bm = new BimodalMap<string, number>()
@@ -221,5 +181,330 @@ describe('BimodalMap', () => {
     const bm = new BimodalMap<string, number>()
     bm.set('key', 42)
     expect(bm.get('key')).toBe(42)
+  })
+
+  it('toString returns correct format', () => {
+    const bm = new BimodalMap<string, number>()
+    expect(bm.toString()).toBe('BimodalMap(size=0)')
+    bm.set('a', 1)
+    expect(bm.toString()).toBe('BimodalMap(size=1)')
+    bm.set('b', 2)
+    expect(bm.toString()).toBe('BimodalMap(size=2)')
+  })
+
+  it('toJSON returns array of entries', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    const json = bm.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect(json).toContainEqual(['a', 1])
+    expect(json).toContainEqual(['b', 2])
+  })
+
+  it('toJSON excludes deleted entries', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.freeze()
+    bm.delete('a')
+    const json = bm.toJSON()
+    expect(json).not.toContainEqual(['a', 1])
+    expect(json).toContainEqual(['b', 2])
+  })
+
+  it('clone creates independent copy', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.freeze()
+    const clone = bm.clone()
+    expect(clone.get('a')).toBe(1)
+    expect(clone.get('b')).toBe(2)
+    clone.set('c', 3)
+    expect(bm.has('c')).toBe(false)
+    expect(clone.has('c')).toBe(true)
+  })
+
+  it('clone with deleted entries', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.freeze()
+    bm.delete('a')
+    const clone = bm.clone()
+    expect(clone.has('a')).toBe(false)
+    expect(clone.get('a')).toBeUndefined()
+    expect(clone.get('b')).toBe(2)
+  })
+
+  it('equals returns true for identical maps', () => {
+    const bm1 = new BimodalMap<string, number>()
+    const bm2 = new BimodalMap<string, number>()
+    bm1.set('a', 1)
+    bm1.set('b', 2)
+    bm2.set('a', 1)
+    bm2.set('b', 2)
+    expect(bm1.equals(bm2)).toBe(true)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const bm1 = new BimodalMap<string, number>()
+    const bm2 = new BimodalMap<string, number>()
+    bm1.set('a', 1)
+    bm2.set('a', 1)
+    bm2.set('b', 2)
+    expect(bm1.equals(bm2)).toBe(false)
+  })
+
+  it('equals returns false for different values', () => {
+    const bm1 = new BimodalMap<string, number>()
+    const bm2 = new BimodalMap<string, number>()
+    bm1.set('a', 1)
+    bm2.set('a', 2)
+    expect(bm1.equals(bm2)).toBe(false)
+  })
+
+  it('equals returns false for non-BimodalMap', () => {
+    const bm = new BimodalMap<string, number>()
+    expect(bm.equals(null)).toBe(false)
+    expect(bm.equals(undefined)).toBe(false)
+    expect(bm.equals({})).toBe(false)
+    expect(bm.equals(new Map())).toBe(false)
+  })
+
+  it('handles number keys', () => {
+    const bm = new BimodalMap<number, string>()
+    bm.set(1, 'one')
+    bm.set(2, 'two')
+    bm.freeze()
+    expect(bm.get(1)).toBe('one')
+    expect(bm.get(2)).toBe('two')
+    expect(bm.has(1)).toBe(true)
+  })
+
+  it('handles object keys with same reference', () => {
+    const bm = new BimodalMap<object, number>()
+    const obj1 = { id: 1 }
+    const obj2 = { id: 1 }
+    bm.set(obj1, 100)
+    bm.set(obj2, 200)
+    expect(bm.get(obj1)).toBe(100)
+    expect(bm.get(obj2)).toBe(200)
+    expect(bm.size).toBe(2)
+  })
+
+  it('handles undefined values', () => {
+    const bm = new BimodalMap<string, number | undefined>()
+    bm.set('a', undefined)
+    expect(bm.get('a')).toBeUndefined()
+    expect(bm.has('a')).toBe(true)
+  })
+
+  it('handles null values', () => {
+    const bm = new BimodalMap<string, number | null>()
+    bm.set('a', null)
+    expect(bm.get('a')).toBe(null)
+    expect(bm.has('a')).toBe(true)
+  })
+
+  it('set overwrites existing value in same layer', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('a', 2)
+    expect(bm.get('a')).toBe(2)
+    expect(bm.size).toBe(1)
+  })
+
+  it('multiple sets and gets in sequence', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    expect(bm.get('a')).toBe(1)
+    bm.set('b', 2)
+    expect(bm.get('b')).toBe(2)
+    bm.set('c', 3)
+    expect(bm.get('c')).toBe(3)
+    bm.set('a', 10)
+    expect(bm.get('a')).toBe(10)
+    expect(bm.size).toBe(3)
+  })
+
+  it('freeze then delete all entries', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.set('c', 3)
+    bm.freeze()
+    bm.delete('a')
+    bm.delete('b')
+    bm.delete('c')
+    expect(bm.size).toBe(0)
+    expect(bm.isEmpty()).toBe(true)
+  })
+
+  it('freeze with no data', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.freeze()
+    expect(bm.size).toBe(0)
+    expect(bm.isEmpty()).toBe(true)
+    bm.set('a', 1)
+    expect(bm.size).toBe(1)
+  })
+
+  it('multiple freezes without data', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.freeze()
+    bm.freeze()
+    bm.freeze()
+    expect(bm.size).toBe(0)
+  })
+
+  it('delete from mutable layer before freeze', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.delete('a')
+    expect(bm.has('a')).toBe(false)
+    bm.freeze()
+    expect(bm.has('a')).toBe(false)
+  })
+
+  it('delete non-existent key before freeze', () => {
+    const bm = new BimodalMap<string, number>()
+    expect(bm.delete('missing')).toBe(false)
+    bm.set('a', 1)
+    expect(bm.delete('missing')).toBe(false)
+  })
+
+  it('delete then set same key in mutable layer', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.delete('a')
+    bm.set('a', 2)
+    expect(bm.get('a')).toBe(2)
+    expect(bm.size).toBe(1)
+  })
+
+  it('keys generator can be consumed multiple times', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    const keys1 = [...bm.keys()].sort()
+    const keys2 = [...bm.keys()].sort()
+    expect(keys1).toEqual(keys2)
+    expect(keys1).toEqual(['a', 'b'])
+  })
+
+  it('entries generator can be consumed multiple times', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    const entries1 = [...bm.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+    const entries2 = [...bm.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+    expect(entries1).toEqual(entries2)
+    expect(entries1).toEqual([['a', 1], ['b', 2]])
+  })
+
+  it('keys with empty map', () => {
+    const bm = new BimodalMap<string, number>()
+    const keys = [...bm.keys()]
+    expect(keys).toEqual([])
+  })
+
+  it('entries with empty map', () => {
+    const bm = new BimodalMap<string, number>()
+    const entries = [...bm.entries()]
+    expect(entries).toEqual([])
+  })
+
+  it('complex scenario with multiple operations', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.set('c', 3)
+    bm.freeze()
+    bm.delete('b')
+    bm.set('d', 4)
+    bm.set('c', 30)
+    expect(bm.get('a')).toBe(1)
+    expect(bm.get('b')).toBeUndefined()
+    expect(bm.get('c')).toBe(30)
+    expect(bm.get('d')).toBe(4)
+    expect(bm.size).toBe(3)
+  })
+
+  it('freeze preserves only non-deleted from frozen layer', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.set('c', 3)
+    bm.freeze()
+    bm.delete('a')
+    bm.set('d', 4)
+    bm.freeze()
+    expect(bm.has('a')).toBe(false)
+    expect(bm.get('b')).toBe(2)
+    expect(bm.get('c')).toBe(3)
+    expect(bm.get('d')).toBe(4)
+  })
+
+  it('get returns undefined for never-set key', () => {
+    const bm = new BimodalMap<string, number>()
+    expect(bm.get('never-set')).toBeUndefined()
+  })
+
+  it('get returns undefined for deleted key from mutable', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.delete('a')
+    expect(bm.get('a')).toBeUndefined()
+  })
+
+  it('set same key after delete and freeze', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.freeze()
+    bm.delete('a')
+    bm.set('a', 10)
+    bm.freeze()
+    expect(bm.get('a')).toBe(10)
+  })
+
+  it('size after multiple operations', () => {
+    const bm = new BimodalMap<string, number>()
+    expect(bm.size).toBe(0)
+    bm.set('a', 1)
+    expect(bm.size).toBe(1)
+    bm.set('b', 2)
+    expect(bm.size).toBe(2)
+    bm.freeze()
+    expect(bm.size).toBe(2)
+    bm.set('c', 3)
+    expect(bm.size).toBe(3)
+    bm.delete('a')
+    expect(bm.size).toBe(2)
+    bm.set('a', 10)
+    expect(bm.size).toBe(3)
+  })
+
+  it('isEmpty after various operations', () => {
+    const bm = new BimodalMap<string, number>()
+    expect(bm.isEmpty()).toBe(true)
+    bm.set('a', 1)
+    expect(bm.isEmpty()).toBe(false)
+    bm.delete('a')
+    expect(bm.isEmpty()).toBe(true)
+    bm.set('a', 1)
+    bm.set('b', 2)
+    expect(bm.isEmpty()).toBe(false)
+    bm.clear()
+    expect(bm.isEmpty()).toBe(true)
+  })
+
+  it('equals with different key types', () => {
+    const bm1 = new BimodalMap<string, number>()
+    const bm2 = new BimodalMap<number, string>()
+    bm1.set('1', 1)
+    bm2.set(1, '1')
+    expect(bm1.equals(bm2)).toBe(false)
   })
 })

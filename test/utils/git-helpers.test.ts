@@ -12,8 +12,6 @@ import {
   isGitRepository,
 } from '../../src/utils/git-helpers.js'
 
-// ─── Cache Management ───
-
 describe('git-helpers cache', () => {
   beforeEach(() => {
     clearGitCache()
@@ -24,11 +22,11 @@ describe('git-helpers cache', () => {
   })
 
   it('clearGitCache empties the cache', () => {
-    const before = getGitCacheStats()
+    isGitRepository(process.cwd())
+    expect(getGitCacheStats().size).toBeGreaterThan(0)
     clearGitCache()
-    const after = getGitCacheStats()
-    expect(after.size).toBe(0)
-    expect(after.keys).toEqual([])
+    expect(getGitCacheStats().size).toBe(0)
+    expect(getGitCacheStats().keys).toEqual([])
   })
 
   it('getGitCacheStats returns ttlMs of 5000', () => {
@@ -53,9 +51,31 @@ describe('git-helpers cache', () => {
     const stats = getGitCacheStats()
     expect(stats.size).toBeGreaterThan(0)
   })
-})
 
-// ─── isGitRepository ───
+  it('multiple calls add separate cache entries', () => {
+    clearGitCache()
+    isGitRepository(process.cwd())
+    getDefaultBranch(process.cwd())
+    expect(getGitCacheStats().size).toBeGreaterThanOrEqual(2)
+  })
+
+  it('cache entries have correct key prefixes', () => {
+    clearGitCache()
+    isGitRepository(process.cwd())
+    getStagedFiles(process.cwd())
+    getGitRoot(process.cwd())
+    const keys = getGitCacheStats().keys
+    expect(keys.some((k) => k.startsWith('isGitRepository:'))).toBe(true)
+    expect(keys.some((k) => k.startsWith('getStagedFiles:'))).toBe(true)
+    expect(keys.some((k) => k.startsWith('getGitRoot:'))).toBe(true)
+  })
+
+  it('clearGitCache on empty cache is safe', () => {
+    clearGitCache()
+    clearGitCache()
+    expect(getGitCacheStats().size).toBe(0)
+  })
+})
 
 describe('isGitRepository', () => {
   beforeEach(() => {
@@ -85,13 +105,25 @@ describe('isGitRepository', () => {
   it('caches the result', () => {
     clearGitCache()
     isGitRepository(process.cwd())
-    expect(getGitCacheStats().size).toBeGreaterThan(0)
     const keys = getGitCacheStats().keys
     expect(keys.some((k) => k.startsWith('isGitRepository:'))).toBe(true)
   })
-})
 
-// ─── getStagedFiles ───
+  it('returns boolean', () => {
+    const result = isGitRepository(process.cwd())
+    expect(typeof result).toBe('boolean')
+  })
+
+  it('returns same value on repeated calls', () => {
+    const first = isGitRepository(process.cwd())
+    const second = isGitRepository(process.cwd())
+    expect(first).toBe(second)
+  })
+
+  it('returns false for root directory', () => {
+    expect(isGitRepository('/')).toBe(false)
+  })
+})
 
 describe('getStagedFiles', () => {
   beforeEach(() => {
@@ -124,9 +156,18 @@ describe('getStagedFiles', () => {
     const second = getStagedFiles(process.cwd())
     expect(first).toEqual(second)
   })
-})
 
-// ─── getChangedFiles ───
+  it('returns empty array for non-existent directory', () => {
+    expect(getStagedFiles('/nonexistent/path')).toEqual([])
+  })
+
+  it('array elements are strings', () => {
+    const result = getStagedFiles(process.cwd())
+    for (const file of result) {
+      expect(typeof file).toBe('string')
+    }
+  })
+})
 
 describe('getChangedFiles', () => {
   beforeEach(() => {
@@ -160,9 +201,27 @@ describe('getChangedFiles', () => {
     const changedKey = keys.find((k) => k.startsWith('getChangedFiles:'))
     expect(changedKey).toContain('main')
   })
-})
 
-// ─── getDefaultBranch ───
+  it('different base refs create different cache keys', () => {
+    clearGitCache()
+    getChangedFiles('HEAD~1', process.cwd())
+    getChangedFiles('HEAD~5', process.cwd())
+    const keys = getGitCacheStats().keys
+    const changedKeys = keys.filter((k) => k.startsWith('getChangedFiles:'))
+    expect(changedKeys.length).toBe(2)
+  })
+
+  it('returns empty array for non-existent directory', () => {
+    expect(getChangedFiles('HEAD~1', '/nonexistent/path')).toEqual([])
+  })
+
+  it('array elements are strings', () => {
+    const result = getChangedFiles('HEAD~1', process.cwd())
+    for (const file of result) {
+      expect(typeof file).toBe('string')
+    }
+  })
+})
 
 describe('getDefaultBranch', () => {
   beforeEach(() => {
@@ -189,9 +248,21 @@ describe('getDefaultBranch', () => {
     const keys = getGitCacheStats().keys
     expect(keys.some((k) => k.startsWith('getDefaultBranch:'))).toBe(true)
   })
-})
 
-// ─── getGitRoot ───
+  it('returns "main" for non-existent directory', () => {
+    expect(getDefaultBranch('/nonexistent/path')).toBe('main')
+  })
+
+  it('returns same result on repeated calls', () => {
+    const first = getDefaultBranch(process.cwd())
+    const second = getDefaultBranch(process.cwd())
+    expect(first).toBe(second)
+  })
+
+  it('returns a string type', () => {
+    expect(typeof getDefaultBranch(process.cwd())).toBe('string')
+  })
+})
 
 describe('getGitRoot', () => {
   beforeEach(() => {
@@ -227,5 +298,16 @@ describe('getGitRoot', () => {
     const root = getGitRoot(process.cwd())
     expect(root).toBeTruthy()
     expect(root!.startsWith('/')).toBe(true)
+  })
+
+  it('returns same root for process.cwd() and resolve(".")', () => {
+    const root1 = getGitRoot(process.cwd())
+    clearGitCache()
+    const root2 = getGitRoot(resolve('.'))
+    expect(root1).toBe(root2)
+  })
+
+  it('returns null for root directory', () => {
+    expect(getGitRoot('/')).toBeNull()
   })
 })

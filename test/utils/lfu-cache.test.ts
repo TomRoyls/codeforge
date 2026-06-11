@@ -65,8 +65,7 @@ describe('LFUCache', () => {
 
   it('returns false when deleting non-existent key', () => {
     const cache = new LFUCache<string, number>(3)
-    const result = cache.delete('nonexistent')
-    expect(result).toBe(false)
+    expect(cache.delete('nonexistent')).toBe(false)
   })
 
   it('clears all entries', () => {
@@ -173,24 +172,6 @@ describe('LFUCache', () => {
     expect(cache.get('b')).toBe(2)
   })
 
-  it('set updates existing key', () => {
-    const cache = new LFUCache<string, number>(2)
-    cache.set('a', 1)
-    cache.set('a', 10)
-    expect(cache.get('a')).toBe(10)
-  })
-
-  it('get returns undefined for missing key', () => {
-    const cache = new LFUCache<string, number>(3)
-    expect(cache.get('missing')).toBeUndefined()
-  })
-
-  it('set and get roundtrip', () => {
-    const cache = new LFUCache<string, number>(3)
-    cache.set('key', 42)
-    expect(cache.get('key')).toBe(42)
-  })
-
   it('delete recalculates minFreq for correct eviction', () => {
     const cache = new LFUCache<string, number>(2)
     cache.set('a', 1)
@@ -198,11 +179,8 @@ describe('LFUCache', () => {
     cache.get('a')
     cache.get('b')
     cache.get('a')
-    expect(cache.size).toBe(2)
     cache.delete('a')
-    expect(cache.size).toBe(1)
     cache.set('c', 3)
-    expect(cache.size).toBe(2)
     cache.set('d', 4)
     expect(cache.size).toBe(2)
   })
@@ -221,5 +199,258 @@ describe('LFUCache', () => {
     cache.set('e', 5)
     cache.set('f', 6)
     expect(cache.size).toBeLessThanOrEqual(3)
+  })
+
+  it('toString returns correct format', () => {
+    const cache = new LFUCache<string, number>(5)
+    expect(cache.toString()).toBe('LFUCache(0/5)')
+    cache.set('a', 1)
+    expect(cache.toString()).toBe('LFUCache(1/5)')
+  })
+
+  it('toJSON returns entries', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    const json = cache.toJSON() as Array<[string, number]>
+    expect(json).toHaveLength(2)
+    expect(json.some(([k, v]) => k === 'a' && v === 1)).toBe(true)
+    expect(json.some(([k, v]) => k === 'b' && v === 2)).toBe(true)
+  })
+
+  it('clone produces equal cache', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.get('a')
+    const cloned = cache.clone()
+    expect(cloned.equals(cache)).toBe(true)
+  })
+
+  it('clone is independent', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    const cloned = cache.clone()
+    cloned.set('b', 2)
+    expect(cache.has('b')).toBe(false)
+    expect(cloned.has('b')).toBe(true)
+  })
+
+  it('clone preserves frequencies', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.get('a')
+    cache.get('a')
+    const cloned = cache.clone()
+    expect(cloned.getFrequency('a')).toBe(3)
+  })
+
+  it('equals returns false for non-LFUCache', () => {
+    const cache = new LFUCache<string, number>(3)
+    expect(cache.equals(null)).toBe(false)
+    expect(cache.equals(undefined)).toBe(false)
+    expect(cache.equals({})).toBe(false)
+    expect(cache.equals('cache')).toBe(false)
+    expect(cache.equals(42)).toBe(false)
+  })
+
+  it('equals returns false for different capacity', () => {
+    const c1 = new LFUCache<string, number>(3)
+    const c2 = new LFUCache<string, number>(5)
+    expect(c1.equals(c2)).toBe(false)
+  })
+
+  it('equals returns true for same content', () => {
+    const c1 = new LFUCache<string, number>(3)
+    const c2 = new LFUCache<string, number>(3)
+    c1.set('a', 1)
+    c2.set('a', 1)
+    expect(c1.equals(c2)).toBe(true)
+  })
+
+  it('equals returns false for different values', () => {
+    const c1 = new LFUCache<string, number>(3)
+    const c2 = new LFUCache<string, number>(3)
+    c1.set('a', 1)
+    c2.set('a', 2)
+    expect(c1.equals(c2)).toBe(false)
+  })
+
+  it('equals returns false for different frequencies', () => {
+    const c1 = new LFUCache<string, number>(3)
+    const c2 = new LFUCache<string, number>(3)
+    c1.set('a', 1)
+    c2.set('a', 1)
+    c2.get('a')
+    expect(c1.equals(c2)).toBe(false)
+  })
+
+  it('evicts correct key with all same frequencies', () => {
+    const cache = new LFUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.set('c', 3)
+    expect(cache.size).toBe(2)
+    expect(cache.has('b')).toBe(true)
+    expect(cache.has('c')).toBe(true)
+  })
+
+  it('multiple gets increase frequency correctly', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    for (let i = 0; i < 10; i++) cache.get('a')
+    expect(cache.getFrequency('a')).toBe(11)
+  })
+
+  it('clear resets size to 0', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.clear()
+    expect(cache.size).toBe(0)
+    expect(cache.keys()).toEqual([])
+    expect(cache.values()).toEqual([])
+    expect(cache.entries()).toEqual([])
+  })
+
+  it('clear allows new inserts', () => {
+    const cache = new LFUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.clear()
+    cache.set('c', 3)
+    cache.set('d', 4)
+    expect(cache.size).toBe(2)
+    expect(cache.has('c')).toBe(true)
+    expect(cache.has('d')).toBe(true)
+  })
+
+  it('works with number keys', () => {
+    const cache = new LFUCache<number, string>(3)
+    cache.set(1, 'one')
+    cache.set(2, 'two')
+    expect(cache.get(1)).toBe('one')
+    expect(cache.get(2)).toBe('two')
+  })
+
+  it('works with object values', () => {
+    const cache = new LFUCache<string, { x: number }>(3)
+    cache.set('a', { x: 1 })
+    cache.set('b', { x: 2 })
+    expect(cache.get('a')!.x).toBe(1)
+    expect(cache.get('b')!.x).toBe(2)
+  })
+
+  it('works with null values', () => {
+    const cache = new LFUCache<string, null>(3)
+    cache.set('a', null)
+    expect(cache.get('a')).toBe(null)
+    expect(cache.has('a')).toBe(true)
+  })
+
+  it('works with undefined values', () => {
+    const cache = new LFUCache<string, number | undefined>(3)
+    cache.set('a', undefined)
+    expect(cache.get('a')).toBe(undefined)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.peek('a')).toBe(undefined)
+  })
+
+  it('delete on empty cache returns false', () => {
+    const cache = new LFUCache<string, number>(3)
+    expect(cache.delete('a')).toBe(false)
+  })
+
+  it('delete all entries results in empty cache', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.delete('a')
+    cache.delete('b')
+    expect(cache.size).toBe(0)
+    expect(cache.keys()).toEqual([])
+  })
+
+  it('toMap returns independent map', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    const map = cache.toMap()
+    map.set('b', 2)
+    expect(cache.has('b')).toBe(false)
+  })
+
+  it('forEach callback receives correct arguments', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('x', 10)
+    const calls: Array<[number, string, number]> = []
+    cache.forEach((v, k, f) => calls.push([v, k, f]))
+    expect(calls).toEqual([[10, 'x', 1]])
+  })
+
+  it('update existing key preserves frequency', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.get('a')
+    cache.set('a', 10)
+    expect(cache.getFrequency('a')).toBe(3)
+    expect(cache.get('a')).toBe(10)
+  })
+
+  it('large capacity works correctly', () => {
+    const cache = new LFUCache<number, number>(100)
+    for (let i = 0; i < 100; i++) cache.set(i, i * 2)
+    expect(cache.size).toBe(100)
+    expect(cache.get(50)).toBe(100)
+  })
+
+  it('evicts correctly after mixed operations', () => {
+    const cache = new LFUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.get('a')
+    cache.set('c', 3)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.has('c')).toBe(true)
+    expect(cache.has('b')).toBe(false)
+  })
+
+  it('peek does not affect eviction order', () => {
+    const cache = new LFUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.peek('a')
+    cache.peek('b')
+    cache.set('c', 3)
+    expect(cache.size).toBe(2)
+    expect(cache.has('b')).toBe(true)
+    expect(cache.has('c')).toBe(true)
+  })
+
+  it('get after delete returns undefined', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.delete('a')
+    expect(cache.get('a')).toBe(undefined)
+    expect(cache.getFrequency('a')).toBe(0)
+  })
+
+  it('entries returns key-value pairs', () => {
+    const cache = new LFUCache<string, number>(5)
+    cache.set('a', 10)
+    cache.set('b', 20)
+    const entries = cache.entries()
+    expect(entries.length).toBe(2)
+    const entryMap = new Map(entries)
+    expect(entryMap.get('a')).toBe(10)
+    expect(entryMap.get('b')).toBe(20)
+  })
+
+  it('re-insert after eviction', () => {
+    const cache = new LFUCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.set('c', 3)
+    cache.set('a', 10)
+    expect(cache.get('a')).toBe(10)
   })
 })

@@ -123,56 +123,6 @@ describe('HashMapOpen', () => {
     expect(map.has('a')).toBe(false)
   })
 
-  it('handles update existing key', () => {
-    const map = new HashMapOpen<string, number>()
-    map.set('a', 1)
-    map.set('a', 2)
-    expect(map.get('a')).toBe(2)
-    expect(map.size).toBe(1)
-  })
-
-  it('delete reduces size', () => {
-    const map = new HashMapOpen<string, number>()
-    map.set('a', 1)
-    map.set('b', 2)
-    map.delete('a')
-    expect(map.size).toBe(1)
-    expect(map.get('a')).toBeUndefined()
-  })
-
-  it('has returns false for missing key', () => {
-    const map = new HashMapOpen<string, number>()
-    expect(map.has('missing')).toBe(false)
-  })
-
-  it('set and get work', () => {
-    const map = new HashMapOpen<string, number>()
-    map.set('key', 42)
-    expect(map.get('key')).toBe(42)
-  })
-
-  it('get returns undefined for missing key', () => {
-    const map = new HashMapOpen<string, number>()
-    expect(map.get('missing')).toBeUndefined()
-  })
-
-  it('set and get roundtrip', () => {
-    const map = new HashMapOpen<string, number>()
-    map.set('key', 42)
-    expect(map.get('key')).toBe(42)
-  })
-
-  it('get returns undefined for missing key', () => {
-    const map = new HashMapOpen<string, number>()
-    expect(map.get('missing')).toBeUndefined()
-  })
-
-  it('set and get roundtrip', () => {
-    const map = new HashMapOpen<string, number>()
-    map.set('key', 42)
-    expect(map.get('key')).toBe(42)
-  })
-
   it('handles heavy delete+insert without infinite loop', () => {
     const map = new HashMapOpen<number, string>(8, 0.75)
     for (let i = 0; i < 6; i++) map.set(i, `val${i}`)
@@ -185,5 +135,266 @@ describe('HashMapOpen', () => {
       expect(map.get(i)).toBeUndefined()
       expect(map.get(i + 100)).toBe(`val${i + 100}`)
     }
+  })
+
+  it('toString returns size', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    expect(map.toString()).toBe('HashMapOpen(2)')
+  })
+
+  it('toString with empty map', () => {
+    const map = new HashMapOpen<string, number>()
+    expect(map.toString()).toBe('HashMapOpen(0)')
+  })
+
+  it('toJSON returns entries array', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    const json = map.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect(json).toHaveLength(2)
+    expect(json).toContainEqual(['a', 1])
+    expect(json).toContainEqual(['b', 2])
+  })
+
+  it('toJSON with empty map', () => {
+    const map = new HashMapOpen<string, number>()
+    expect(map.toJSON()).toEqual([])
+  })
+
+  it('clone creates independent copy', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    const clone = map.clone()
+    clone.set('c', 3)
+    expect(map.size).toBe(2)
+    expect(clone.size).toBe(3)
+    expect(clone.get('a')).toBe(1)
+    expect(map.has('c')).toBe(false)
+  })
+
+  it('clone with empty map', () => {
+    const map = new HashMapOpen<string, number>()
+    const clone = map.clone()
+    expect(clone.size).toBe(0)
+    expect(map).not.toBe(clone)
+  })
+
+  it('equals returns true for identical maps', () => {
+    const map1 = new HashMapOpen<string, number>()
+    const map2 = new HashMapOpen<string, number>()
+    map1.set('a', 1)
+    map1.set('b', 2)
+    map2.set('a', 1)
+    map2.set('b', 2)
+    expect(map1.equals(map2)).toBe(true)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const map1 = new HashMapOpen<string, number>()
+    const map2 = new HashMapOpen<string, number>()
+    map1.set('a', 1)
+    expect(map1.equals(map2)).toBe(false)
+  })
+
+  it('equals returns false for different values', () => {
+    const map1 = new HashMapOpen<string, number>()
+    const map2 = new HashMapOpen<string, number>()
+    map1.set('a', 1)
+    map2.set('a', 2)
+    expect(map1.equals(map2)).toBe(false)
+  })
+
+  it('equals returns false for non-HashMap', () => {
+    const map = new HashMapOpen<string, number>()
+    expect(map.equals({})).toBe(false)
+    expect(map.equals(null)).toBe(false)
+    expect(map.equals(undefined)).toBe(false)
+  })
+
+  it('custom initial capacity', () => {
+    const map = new HashMapOpen<number, number>(32)
+    map.set(1, 100)
+    expect(map.get(1)).toBe(100)
+  })
+
+  it('custom load factor', () => {
+    const map = new HashMapOpen<number, number>(4, 0.5)
+    map.set(1, 1)
+    map.set(2, 2)
+    expect(map.size).toBe(2)
+  })
+
+  it('handles boolean keys', () => {
+    const map = new HashMapOpen<boolean, string>()
+    map.set(true, 'yes')
+    map.set(false, 'no')
+    expect(map.get(true)).toBe('yes')
+    expect(map.get(false)).toBe('no')
+  })
+
+  it('handles null and undefined keys', () => {
+    const map = new HashMapOpen<string | null | undefined, number>()
+    map.set(null, 1)
+    map.set(undefined, 2)
+    expect(map.get(null)).toBe(1)
+    expect(map.get(undefined)).toBe(2)
+  })
+
+  it('multiple deletes of same key', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    expect(map.delete('a')).toBe(true)
+    expect(map.delete('a')).toBe(false)
+    expect(map.size).toBe(0)
+  })
+
+  it('clear on empty map', () => {
+    const map = new HashMapOpen<string, number>()
+    map.clear()
+    expect(map.size).toBe(0)
+  })
+
+  it('clear multiple times', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.clear()
+    map.clear()
+    map.clear()
+    expect(map.size).toBe(0)
+  })
+
+  it('set after clear', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.clear()
+    map.set('b', 2)
+    expect(map.size).toBe(1)
+    expect(map.get('b')).toBe(2)
+    expect(map.get('a')).toBeUndefined()
+  })
+
+  it('keys returns array of correct type', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    const keys = map.keys()
+    expect(Array.isArray(keys)).toBe(true)
+    expect(keys[0]).toBe('a')
+  })
+
+  it('values returns array of correct values', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    const values = map.values()
+    expect(Array.isArray(values)).toBe(true)
+    expect(values).toContain(1)
+    expect(values).toContain(2)
+  })
+
+  it('entries contains correct key-value pairs', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    const entries = map.entries()
+    expect(entries).toContainEqual(['a', 1])
+    expect(entries).toContainEqual(['b', 2])
+  })
+
+  it('handles large number of entries', () => {
+    const map = new HashMapOpen<number, number>()
+    for (let i = 0; i < 1000; i++) {
+      map.set(i, i * 2)
+    }
+    expect(map.size).toBe(1000)
+    expect(map.get(500)).toBe(1000)
+  })
+
+  it('handles special characters as keys', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('key with spaces', 1)
+    map.set('key\nwith\nnewlines', 2)
+    map.set('key\twith\ttabs', 3)
+    expect(map.get('key with spaces')).toBe(1)
+    expect(map.get('key\nwith\nnewlines')).toBe(2)
+    expect(map.get('key\twith\ttabs')).toBe(3)
+  })
+
+  it('handles object stringification for keys', () => {
+    const map = new HashMapOpen<object, string>()
+    const obj1 = { a: 1 }
+    const obj2 = { a: 1 }
+    map.set(obj1, 'first')
+    expect(map.get(obj1)).toBe('first')
+    expect(map.get(obj2)).toBeUndefined()
+  })
+
+  it('handles array keys', () => {
+    const map = new HashMapOpen<number[], string>()
+    const arr1 = [1, 2]
+    const arr2 = [1, 2]
+    map.set(arr1, 'first')
+    expect(map.get(arr1)).toBe('first')
+    expect(map.get(arr2)).toBeUndefined()
+  })
+
+  it('equals handles empty maps', () => {
+    const map1 = new HashMapOpen<string, number>()
+    const map2 = new HashMapOpen<string, number>()
+    expect(map1.equals(map2)).toBe(true)
+  })
+
+  it('equals handles same instance', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    expect(map.equals(map)).toBe(true)
+  })
+
+  it('clone preserves capacity and load factor', () => {
+    const map = new HashMapOpen<number, number>(32, 0.5)
+    map.set(1, 100)
+    const clone = map.clone()
+    clone.set(2, 200)
+    expect(clone.get(1)).toBe(100)
+    expect(clone.get(2)).toBe(200)
+  })
+
+  it('handles consecutive deletes', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    map.set('c', 3)
+    expect(map.delete('a')).toBe(true)
+    expect(map.delete('b')).toBe(true)
+    expect(map.delete('c')).toBe(true)
+    expect(map.size).toBe(0)
+  })
+
+  it('handles get after many operations', () => {
+    const map = new HashMapOpen<number, number>()
+    for (let i = 0; i < 50; i++) {
+      map.set(i, i * 2)
+    }
+    for (let i = 0; i < 50; i += 2) {
+      map.delete(i)
+    }
+    for (let i = 1; i < 50; i += 2) {
+      expect(map.get(i)).toBe(i * 2)
+    }
+  })
+
+  it('handles resize after delete', () => {
+    const map = new HashMapOpen<number, number>(4, 0.75)
+    for (let i = 0; i < 6; i++) map.set(i, i)
+    map.delete(0)
+    map.delete(1)
+    for (let i = 6; i < 15; i++) {
+      map.set(i, i)
+    }
+    expect(map.size).toBe(13)
   })
 })

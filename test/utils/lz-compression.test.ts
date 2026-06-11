@@ -148,5 +148,174 @@ describe('LZCompression', () => {
       const ratio = LZCompression.compressRatio('a')
       expect(ratio).toBeGreaterThan(0)
     })
+
+    it('ratio decreases with more repetition', () => {
+      const ratio1 = LZCompression.compressRatio('ab'.repeat(10))
+      const ratio2 = LZCompression.compressRatio('ab'.repeat(100))
+      expect(ratio2).toBeLessThan(ratio1)
+    })
+
+    it('handles ratio for binary data', () => {
+      const data = '\x00\x01'.repeat(50)
+      const ratio = LZCompression.compressRatio(data)
+      expect(ratio).toBeGreaterThan(0)
+    })
+
+    it('ratio for completely unique data', () => {
+      const data = 'abcdefghijklmnopqrstuvwxyz'
+      const ratio = LZCompression.compressRatio(data)
+      expect(ratio).toBeGreaterThan(0)
+    })
+  })
+
+  describe('edge cases', () => {
+    it('handles single space', () => {
+      const data = ' '
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles only spaces', () => {
+      const data = '     '
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles tab characters', () => {
+      const data = '\t\t\t'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles mixed whitespace', () => {
+      const data = ' \t\n \t\n'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles very short pattern', () => {
+      const data = 'abab'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles pattern starting mid-sequence', () => {
+      const data = 'xyzabcabc'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles pattern at end', () => {
+      const data = 'xyzabcabc'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles zero offset in tokens', () => {
+      const data = 'a'
+      const tokens = LZCompression.compress(data)
+      expect(tokens[0]!.offset).toBe(0)
+    })
+
+    it('handles zero length in tokens', () => {
+      const data = 'a'
+      const tokens = LZCompression.compress(data)
+      expect(tokens[0]!.length).toBe(0)
+    })
+
+    it('handles empty next char for last token', () => {
+      const data = 'abc'
+      const tokens = LZCompression.compress(data)
+      expect(tokens.length).toBeGreaterThan(0)
+    })
+
+    it('compresses with maximum window size', () => {
+      const data = 'a'.repeat(4100)
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles pattern longer than window', () => {
+      const base = 'abcd'.repeat(1024)
+      const data = base + 'abcd'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles very long string', () => {
+      const data = 'hello world '.repeat(500)
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles unicode surrogate pairs', () => {
+      const data = '😀😀😀'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles mixed unicode and ascii', () => {
+      const data = 'hello世界hello世界'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles compression with no previous context', () => {
+      const data = 'abcdefghijklmnopqrstuvwxyz'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles pattern that overlaps search window', () => {
+      const data = 'a'.repeat(200) + 'b' + 'a'.repeat(200)
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+
+    it('handles zero bytes in middle of string', () => {
+      const data = 'abc\x00def\x00ghi'
+      const tokens = LZCompression.compress(data)
+      expect(LZCompression.decompress(tokens)).toBe(data)
+    })
+  })
+
+  describe('decompress edge cases', () => {
+    it('handles tokens with zero offset', () => {
+      const tokens = [{ offset: 0, length: 0, next: 'a' }]
+      expect(LZCompression.decompress(tokens)).toBe('a')
+    })
+
+    it('handles tokens with zero length', () => {
+      const tokens = [
+        { offset: 0, length: 0, next: 'a' },
+        { offset: 1, length: 0, next: 'b' }
+      ]
+      expect(LZCompression.decompress(tokens)).toBe('ab')
+    })
+
+    it('handles tokens with empty next', () => {
+      const tokens = [
+        { offset: 0, length: 0, next: 'a' },
+        { offset: 1, length: 1, next: '' }
+      ]
+      expect(LZCompression.decompress(tokens)).toBe('aa')
+    })
+
+    it('handles back reference with small offset', () => {
+      const tokens = [
+        { offset: 0, length: 0, next: 'a' },
+        { offset: 1, length: 1, next: '' }
+      ]
+      expect(LZCompression.decompress(tokens)).toBe('aa')
+    })
+
+    it('handles back reference with large offset', () => {
+      const result = 'a'.repeat(100)
+      const tokens = [
+        { offset: 0, length: 0, next: 'a' },
+        { offset: 1, length: 99, next: '' }
+      ]
+      expect(LZCompression.decompress(tokens)).toBe(result)
+    })
   })
 })

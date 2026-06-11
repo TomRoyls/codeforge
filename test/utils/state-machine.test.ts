@@ -311,4 +311,368 @@ describe('StateMachine', () => {
     sm.send('stop')
     expect(sm.getState()).toBe('stopped')
   })
+
+  it('handles multiple onEnter callbacks for same state', () => {
+    const calls: string[] = []
+    const config1: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }],
+      onEnter: { running: () => calls.push('enter-running-1') }
+    }
+    const config2: StateConfig<State, Event> = {
+      ...config1,
+      onEnter: { running: () => calls.push('enter-running-2') }
+    }
+    const sm = new StateMachine(config1)
+    const sm2 = new StateMachine(config2)
+    calls.length = 0
+    sm.send('start')
+    sm2.send('start')
+    expect(calls).toContain('enter-running-1')
+    expect(calls).toContain('enter-running-2')
+  })
+
+  it('handles multiple onExit callbacks for same state', () => {
+    const calls: string[] = []
+    const config1: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }],
+      onExit: { idle: () => calls.push('exit-idle-1') }
+    }
+    const config2: StateConfig<State, Event> = {
+      ...config1,
+      onExit: { idle: () => calls.push('exit-idle-2') }
+    }
+    const sm = new StateMachine(config1)
+    const sm2 = new StateMachine(config2)
+    calls.length = 0
+    sm.send('start')
+    sm2.send('start')
+    expect(calls).toContain('exit-idle-1')
+    expect(calls).toContain('exit-idle-2')
+  })
+
+  it('executes onExit before onEnter', () => {
+    const order: string[] = []
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }],
+      onExit: { idle: () => order.push('exit') },
+      onEnter: { running: () => order.push('enter') }
+    }
+    const sm = new StateMachine(config)
+    order.length = 0
+    sm.send('start')
+    expect(order).toEqual(['exit', 'enter'])
+  })
+
+  it('handles guard that throws', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running', guard: () => { throw new Error('guard error') } }]
+    }
+    const sm = new StateMachine(config)
+    expect(() => sm.send('start')).toThrow('guard error')
+    expect(sm.getState()).toBe('idle')
+  })
+
+  it('handles guard with side effects', () => {
+    let sideEffect = 0
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running', guard: () => { sideEffect++; return true } }]
+    }
+    const sm = new StateMachine(config)
+    sm.send('start')
+    expect(sideEffect).toBe(1)
+    expect(sm.getState()).toBe('running')
+  })
+
+  it('logs transition history with timestamps', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'start', to: 'running' },
+        { from: 'running', event: 'stop', to: 'stopped' }
+      ]
+    }
+    const sm = new StateMachine(config)
+    const beforeStart = Date.now()
+    sm.send('start')
+    const afterStart = Date.now()
+    const history = sm.getHistory()
+    expect(history).toHaveLength(1)
+    expect(history[0]!.timestamp).toBeGreaterThanOrEqual(beforeStart)
+    expect(history[0]!.timestamp).toBeLessThanOrEqual(afterStart)
+  })
+
+  it('handles multiple resets', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }]
+    }
+    const sm = new StateMachine(config)
+    sm.send('start')
+    expect(sm.getState()).toBe('running')
+    sm.reset()
+    expect(sm.getState()).toBe('idle')
+    sm.send('start')
+    expect(sm.getState()).toBe('running')
+    sm.reset()
+    expect(sm.getState()).toBe('idle')
+  })
+
+  it('gets available events with guards', () => {
+    let guardValue = true
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'start', to: 'running', guard: () => guardValue },
+        { from: 'idle', event: 'stop', to: 'stopped' }
+      ]
+    }
+    const sm = new StateMachine(config)
+    expect(sm.getAvailableEvents()).toHaveLength(2)
+    guardValue = false
+    expect(sm.getAvailableEvents()).toEqual(['stop'])
+  })
+
+  it('handles empty transitions array', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: []
+    }
+    const sm = new StateMachine(config)
+    expect(sm.getAvailableEvents()).toHaveLength(0)
+    expect(sm.isFinalState()).toBe(false)
+    sm.send('start')
+    expect(sm.getState()).toBe('idle')
+  })
+
+  it('checks isFinalState with guards', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'start', to: 'running', guard: () => false }
+      ]
+    }
+    const sm = new StateMachine(config)
+    expect(sm.isFinalState()).toBe(true)
+  })
+
+  it('callbacks receive correct state parameter', () => {
+    let receivedState: State | undefined
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'start', to: 'running' },
+        { from: 'running', event: 'stop', to: 'stopped' }
+      ],
+      onExit: { idle: (s) => { receivedState = s } },
+      onEnter: { running: (s) => { receivedState = s } }
+    }
+    const sm = new StateMachine(config)
+    sm.send('start')
+    expect(receivedState).toBe('running')
+  })
+
+  it('handles self-transitions', () => {
+    let exitCalled = false
+    let enterCalled = false
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'tick', to: 'idle' }
+      ],
+      onExit: { idle: () => { exitCalled = true } },
+      onEnter: { idle: () => { enterCalled = true } }
+    }
+    const sm = new StateMachine(config)
+    sm.send('tick')
+    expect(sm.getState()).toBe('idle')
+    expect(exitCalled).toBe(true)
+    expect(enterCalled).toBe(true)
+  })
+
+  it('handles complex guard logic', () => {
+    let counter = 0
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'start', to: 'running', guard: () => counter++ < 2 }
+      ]
+    }
+    const sm = new StateMachine(config)
+    expect(sm.send('start')).toBe('running')
+    expect(sm.send('pause')).toBe('running')
+    sm.reset()
+    counter = 0
+    expect(sm.send('start')).toBe('running')
+    expect(sm.send('pause')).toBe('running')
+  })
+
+  it('handles multiple events with same name from different states', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'stop', to: 'stopped' },
+        { from: 'running', event: 'stop', to: 'stopped' },
+        { from: 'idle', event: 'start', to: 'running' }
+      ]
+    }
+    const sm = new StateMachine(config)
+    expect(sm.send('stop')).toBe('stopped')
+    sm.reset()
+    sm.send('start')
+    expect(sm.send('stop')).toBe('stopped')
+  })
+
+  it('handles state machine with no initial transitions', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'stopped',
+      transitions: [
+        { from: 'running', event: 'pause', to: 'paused' }
+      ]
+    }
+    const sm = new StateMachine(config)
+    expect(sm.getAvailableEvents()).toHaveLength(0)
+    expect(sm.isFinalState()).toBe(true)
+  })
+
+  it('history copy is independent', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }]
+    }
+    const sm = new StateMachine(config)
+    sm.send('start')
+    const history1 = sm.getHistory()
+    sm.send('pause')
+    const history2 = sm.getHistory()
+    expect(history1).toHaveLength(1)
+    expect(history2).toHaveLength(1)
+  })
+
+  it('handles large number of transitions', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }]
+    }
+    const sm = new StateMachine(config)
+    for (let i = 0; i < 100; i++) {
+      sm.reset()
+      sm.send('start')
+    }
+    expect(sm.transitionCount).toBe(1)
+  })
+
+  it('transition count after multiple failed transitions', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running', guard: () => false }]
+    }
+    const sm = new StateMachine(config)
+    sm.send('start')
+    sm.send('start')
+    sm.send('start')
+    expect(sm.transitionCount).toBe(0)
+  })
+
+  it('isState with non-existent state', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: []
+    }
+    const sm = new StateMachine(config)
+    expect(sm.isState('running' as State)).toBe(false)
+    expect(sm.isState('paused' as State)).toBe(false)
+    expect(sm.isState('idle')).toBe(true)
+  })
+
+  it('canSend returns false for non-existent event', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }]
+    }
+    const sm = new StateMachine(config)
+    expect(sm.canSend('resume' as Event)).toBe(false)
+  })
+
+  it('handles callbacks on reset with no transitions', () => {
+    let exitCalled = false
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [],
+      onExit: { idle: () => { exitCalled = true } }
+    }
+    const sm = new StateMachine(config)
+    sm.reset()
+    expect(exitCalled).toBe(true)
+  })
+
+  it('handles multiple transitions from same state', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'start', to: 'running' },
+        { from: 'idle', event: 'stop', to: 'stopped' },
+        { from: 'idle', event: 'pause', to: 'paused' }
+      ]
+    }
+    const sm = new StateMachine(config)
+    expect(sm.getAvailableEvents()).toHaveLength(3)
+  })
+
+  it('handles transition count after successful and failed transitions', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [
+        { from: 'idle', event: 'start', to: 'running' },
+        { from: 'idle', event: 'stop', to: 'stopped', guard: () => false }
+      ]
+    }
+    const sm = new StateMachine(config)
+    expect(sm.transitionCount).toBe(0)
+    sm.send('start')
+    expect(sm.transitionCount).toBe(1)
+    sm.send('stop')
+    expect(sm.transitionCount).toBe(1)
+  })
+
+  it('handles history after multiple resets', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }]
+    }
+    const sm = new StateMachine(config)
+    sm.send('start')
+    sm.reset()
+    sm.send('start')
+    const history = sm.getHistory()
+    expect(history).toHaveLength(1)
+  })
+
+  it('handles state machine with only initial state', () => {
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: []
+    }
+    const sm = new StateMachine(config)
+    expect(sm.getState()).toBe('idle')
+    expect(sm.getAvailableEvents()).toHaveLength(0)
+    expect(sm.isFinalState()).toBe(false)
+  })
+
+  it('handles callbacks during reset when in non-initial state', () => {
+    let exitCalled = false
+    const config: StateConfig<State, Event> = {
+      initial: 'idle',
+      transitions: [{ from: 'idle', event: 'start', to: 'running' }],
+      onExit: { running: () => { exitCalled = true } }
+    }
+    const sm = new StateMachine(config)
+    sm.send('start')
+    sm.reset()
+    expect(exitCalled).toBe(true)
+  })
 })
