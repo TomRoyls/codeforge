@@ -31,6 +31,18 @@ describe('escapeXml', () => {
   it('escapes all special chars together', () => {
     expect(escapeXml('<a href="x&y">\'z\'</a>')).toBe('&lt;a href=&quot;x&amp;y&quot;&gt;&apos;z&apos;&lt;/a&gt;')
   })
+
+  it('handles string with no special chars', () => {
+    expect(escapeXml('plain text 123')).toBe('plain text 123')
+  })
+
+  it('escapes consecutive special chars', () => {
+    expect(escapeXml('<<>>')).toBe('&lt;&lt;&gt;&gt;')
+  })
+
+  it('escapes only ampersand in mixed string', () => {
+    expect(escapeXml('tom&jerry')).toBe('tom&amp;jerry')
+  })
 })
 
 // ─── escapeHtml ───────────────────────────────────────────
@@ -55,6 +67,22 @@ describe('escapeHtml', () => {
 
   it('leaves normal text unchanged', () => {
     expect(escapeHtml('hello world')).toBe('hello world')
+  })
+
+  it('escapes double quotes', () => {
+    expect(escapeHtml('"hello"')).toBe('&quot;hello&quot;')
+  })
+
+  it('escapes greater than', () => {
+    expect(escapeHtml('a>b')).toBe('a&gt;b')
+  })
+
+  it('handles multiple ampersands', () => {
+    expect(escapeHtml('a&b&c&d')).toBe('a&amp;b&amp;c&amp;d')
+  })
+
+  it('escapes complex HTML attribute', () => {
+    expect(escapeHtml('<div class="test">')).toBe('&lt;div class=&quot;test&quot;&gt;')
   })
 })
 
@@ -99,15 +127,38 @@ describe('escapeMarkdown', () => {
     expect(escapeMarkdown('a\\b')).toContain('\\')
   })
 
-  it('escapes asterisk', () => {
-    expect(escapeMarkdown('*bold*')).toContain('\\*')
+  it('escapes underscore', () => {
+    expect(escapeMarkdown('hello_world')).toContain('\\_')
   })
 
-  it('escapes brackets', () => {
-    expect(escapeMarkdown('[link]')).toContain('\\[')
+  it('escapes hash heading', () => {
+    expect(escapeMarkdown('# heading')).toContain('\\#')
   })
 
-  it('escapes asterisks', () => {
-    expect(escapeMarkdown('*bold*')).toContain('\\*')
+  it('escapes greater than', () => {
+    expect(escapeMarkdown('a>b')).toContain('\\>')
+  })
+
+  it('escapes multiple special chars in sequence', () => {
+    const result = escapeMarkdown('#*_`|[]')
+    expect(result).toContain('\\#')
+    expect(result).toContain('\\*')
+    expect(result).toContain('\\`')
+    expect(result).toContain('\\|')
+  })
+
+  it('round-trip: escaped markdown is different from original', () => {
+    const original = '**bold** and `code`'
+    const escaped = escapeMarkdown(original)
+    expect(escaped).not.toBe(original)
+    expect(escaped.length).toBeGreaterThan(original.length)
+  })
+
+  it('escapes angle bracket in markdown', () => {
+    expect(escapeMarkdown('a<b')).toContain('\\<')
+  })
+
+  it('does not escape parenthesis by default', () => {
+    expect(escapeMarkdown('(text)')).toBe('(text)')
   })
 })

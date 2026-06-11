@@ -175,4 +175,210 @@ describe('KahnAlgorithm', () => {
     kahn.addEdge(1, 0)
     expect(kahn.sort()).toBeNull()
   })
+
+  describe('constructor', () => {
+    it('handles zero nodes', () => {
+      const kahn = new KahnAlgorithm(0)
+      expect(kahn.sort()).toEqual([])
+    })
+
+    it('handles single node', () => {
+      const kahn = new KahnAlgorithm(1)
+      expect(kahn.sort()).toEqual([0])
+    })
+
+    it('handles large number of nodes', () => {
+      const kahn = new KahnAlgorithm(100)
+      expect(kahn.sort()).not.toBeNull()
+      expect(kahn.sort()!.length).toBe(100)
+    })
+  })
+
+  describe('addEdge', () => {
+    it('allows adding multiple edges from same source', () => {
+      const kahn = new KahnAlgorithm(4)
+      kahn.addEdge(0, 1)
+      kahn.addEdge(0, 2)
+      kahn.addEdge(0, 3)
+      const result = kahn.sort()
+      expect(result).not.toBeNull()
+      expect(result![0]).toBe(0)
+    })
+
+    it('allows adding duplicate edges', () => {
+      const kahn = new KahnAlgorithm(3)
+      kahn.addEdge(0, 1)
+      kahn.addEdge(0, 1)
+      const result = kahn.sort()
+      expect(result).not.toBeNull()
+    })
+
+    it('handles edges in any order', () => {
+      const kahn = new KahnAlgorithm(3)
+      kahn.addEdge(1, 2)
+      kahn.addEdge(0, 1)
+      const result = kahn.sort()
+      expect(result).toEqual([0, 1, 2])
+    })
+  })
+
+  describe('toString', () => {
+    it('returns correct string representation', () => {
+      const kahn = new KahnAlgorithm(5)
+      expect(kahn.toString()).toBe('KahnAlgorithm(5)')
+    })
+
+    it('works for empty graph', () => {
+      const kahn = new KahnAlgorithm(0)
+      expect(kahn.toString()).toBe('KahnAlgorithm(0)')
+    })
+
+    it('works for single node', () => {
+      const kahn = new KahnAlgorithm(1)
+      expect(kahn.toString()).toBe('KahnAlgorithm(1)')
+    })
+  })
+
+  describe('toJSON', () => {
+    it('returns valid JSON structure', () => {
+      const kahn = new KahnAlgorithm(3)
+      kahn.addEdge(0, 1)
+      kahn.addEdge(1, 2)
+      const json = kahn.toJSON() as { n: number; adj: number[][] }
+      expect(json.n).toBe(3)
+      expect(json.adj).toHaveLength(3)
+      expect(json.adj[0]).toContain(1)
+      expect(json.adj[1]).toContain(2)
+    })
+
+    it('returns correct structure for empty graph', () => {
+      const kahn = new KahnAlgorithm(0)
+      const json = kahn.toJSON() as { n: number; adj: number[][] }
+      expect(json.n).toBe(0)
+      expect(json.adj).toEqual([])
+    })
+  })
+
+  describe('clone', () => {
+    it('creates independent copy', () => {
+      const kahn = new KahnAlgorithm(3)
+      kahn.addEdge(0, 1)
+      const clone = kahn.clone()
+      clone.addEdge(1, 2)
+      expect(kahn.sort()).not.toBeNull()
+      expect(clone.sort()).not.toBeNull()
+      expect(kahn.toString()).toBe(clone.toString())
+    })
+
+    it('clone produces same sort result', () => {
+      const kahn = new KahnAlgorithm(4)
+      kahn.addEdge(0, 1)
+      kahn.addEdge(1, 2)
+      kahn.addEdge(2, 3)
+      const clone = kahn.clone()
+      expect(kahn.sort()).toEqual(clone.sort())
+    })
+
+    it('clone of cyclic graph is also cyclic', () => {
+      const kahn = new KahnAlgorithm(2)
+      kahn.addEdge(0, 1)
+      kahn.addEdge(1, 0)
+      const clone = kahn.clone()
+      expect(kahn.sort()).toBeNull()
+      expect(clone.sort()).toBeNull()
+    })
+  })
+
+  describe('equals', () => {
+    it('returns true for identical graphs', () => {
+      const kahn1 = new KahnAlgorithm(3)
+      kahn1.addEdge(0, 1)
+      kahn1.addEdge(1, 2)
+      const kahn2 = new KahnAlgorithm(3)
+      kahn2.addEdge(0, 1)
+      kahn2.addEdge(1, 2)
+      expect(kahn1.equals(kahn2)).toBe(true)
+    })
+
+    it('returns false for different sizes', () => {
+      const kahn1 = new KahnAlgorithm(3)
+      const kahn2 = new KahnAlgorithm(4)
+      expect(kahn1.equals(kahn2)).toBe(false)
+    })
+
+    it('returns false for different edge structures', () => {
+      const kahn1 = new KahnAlgorithm(3)
+      kahn1.addEdge(0, 1)
+      const kahn2 = new KahnAlgorithm(3)
+      kahn2.addEdge(0, 2)
+      expect(kahn1.equals(kahn2)).toBe(false)
+    })
+
+    it('returns false for non-KahnAlgorithm objects', () => {
+      const kahn = new KahnAlgorithm(3)
+      expect(kahn.equals(null)).toBe(false)
+      expect(kahn.equals({})).toBe(false)
+      expect(kahn.equals('string')).toBe(false)
+    })
+
+    it('is reflexive', () => {
+      const kahn = new KahnAlgorithm(3)
+      kahn.addEdge(0, 1)
+      expect(kahn.equals(kahn)).toBe(true)
+    })
+  })
+
+  describe('boundary conditions', () => {
+    it('handles graph with all edges from one node', () => {
+      const kahn = new KahnAlgorithm(5)
+      for (let i = 1; i < 5; i++) {
+        kahn.addEdge(0, i)
+      }
+      const result = kahn.sort()
+      expect(result).not.toBeNull()
+      expect(result![0]).toBe(0)
+    })
+
+    it('handles graph with all edges to one node', () => {
+      const kahn = new KahnAlgorithm(5)
+      for (let i = 0; i < 4; i++) {
+        kahn.addEdge(i, 4)
+      }
+      const result = kahn.sort()
+      expect(result).not.toBeNull()
+      expect(result![4]).toBe(4)
+    })
+
+    it('handles completely disconnected graph', () => {
+      const kahn = new KahnAlgorithm(10)
+      const result = kahn.sort()
+      expect(result).not.toBeNull()
+      expect(result!.length).toBe(10)
+    })
+
+    it('handles binary tree structure', () => {
+      const kahn = new KahnAlgorithm(7)
+      kahn.addEdge(0, 1)
+      kahn.addEdge(0, 2)
+      kahn.addEdge(1, 3)
+      kahn.addEdge(1, 4)
+      kahn.addEdge(2, 5)
+      kahn.addEdge(2, 6)
+      const result = kahn.sort()
+      expect(result).not.toBeNull()
+      expect(result![0]).toBe(0)
+    })
+
+    it('handles multiple independent chains', () => {
+      const kahn = new KahnAlgorithm(6)
+      kahn.addEdge(0, 1)
+      kahn.addEdge(2, 3)
+      kahn.addEdge(4, 5)
+      const result = kahn.sort()
+      expect(result).not.toBeNull()
+      expect(result!.indexOf(0)).toBeLessThan(result!.indexOf(1))
+      expect(result!.indexOf(2)).toBeLessThan(result!.indexOf(3))
+      expect(result!.indexOf(4)).toBeLessThan(result!.indexOf(5))
+    })
+  })
 })

@@ -24,6 +24,38 @@ describe('LCS', () => {
     it('handles single common char', () => {
       expect(LCS.length('abc', 'cde')).toBe(1)
     })
+
+    it('handles prefix LCS', () => {
+      expect(LCS.length('abcdef', 'abc')).toBe(3)
+    })
+
+    it('handles suffix LCS', () => {
+      expect(LCS.length('abcdef', 'def')).toBe(3)
+    })
+
+    it('handles middle LCS', () => {
+      expect(LCS.length('abcdef', 'cde')).toBe(3)
+    })
+
+    it('handles string with all same characters', () => {
+      expect(LCS.length('aaaaa', 'aaa')).toBe(3)
+    })
+
+    it('handles one string containing the other', () => {
+      expect(LCS.length('abc', 'abcdef')).toBe(3)
+    })
+
+    it('handles long strings', () => {
+      const a = 'abcdefghij'.repeat(10)
+      const b = 'jihgfedcba'.repeat(10)
+      const length = LCS.length(a, b)
+      expect(length).toBeGreaterThan(0)
+      expect(length).toBeLessThanOrEqual(100)
+    })
+
+    it('handles unicode characters', () => {
+      expect(LCS.length('café', 'café')).toBe(4)
+    })
   })
 
   describe('solve', () => {
@@ -50,12 +82,58 @@ describe('LCS', () => {
       expect(LCS.solve('a', 'a')).toBe('a')
       expect(LCS.solve('a', 'b')).toBe('')
     })
+
+    it('finds LCS with multiple possibilities', () => {
+      const result = LCS.solve('AGGTAB', 'GXTXAYB')
+      expect(result.length).toBe(4)
+      expect(result).toBe('GTAB')
+    })
+
+    it('handles prefix LCS', () => {
+      expect(LCS.solve('abcdef', 'abc')).toBe('abc')
+    })
+
+    it('handles suffix LCS', () => {
+      expect(LCS.solve('abcdef', 'def')).toBe('def')
+    })
+
+    it('handles middle LCS', () => {
+      expect(LCS.solve('abcdef', 'cde')).toBe('cde')
+    })
+
+    it('handles repeated characters', () => {
+      const result = LCS.solve('aabbbcc', 'abbc')
+      expect(result).toBe('abbc')
+    })
+
+    it('handles one string containing the other', () => {
+      expect(LCS.solve('abc', 'abcdef')).toBe('abc')
+    })
+
+    it('handles palindrome LCS', () => {
+      const result = LCS.solve('racecar', 'carrace')
+      expect(result.length).toBeGreaterThan(0)
+      expect(result.length).toBeLessThanOrEqual(7)
+    })
+
+    it('handles string with spaces', () => {
+      const result = LCS.solve('hello world', 'world hello')
+      expect(result).toBe('world')
+    })
+
+    it('handles string with special characters', () => {
+      const result = LCS.solve('test@email.com', 'test-user@email.com')
+      expect(result).toBe('test@email.com')
+    })
   })
 
   describe('solveArray', () => {
     it('finds LCS of number arrays', () => {
       const result = LCS.solveArray([1, 2, 3, 4], [2, 4, 3])
       expect(result.length).toBe(2)
+    })
+
+    it('returns full array for identical arrays', () => {
       expect(LCS.solveArray([1, 2, 3], [1, 2, 3])).toEqual([1, 2, 3])
     })
 
@@ -69,6 +147,39 @@ describe('LCS', () => {
 
     it('handles empty arrays', () => {
       expect(LCS.solveArray([], [1, 2])).toEqual([])
+      expect(LCS.solveArray([1, 2], [])).toEqual([])
+      expect(LCS.solveArray([], [])).toEqual([])
+    })
+
+    it('handles array with duplicates', () => {
+      expect(LCS.solveArray([1, 2, 2, 3], [2, 2, 1])).toEqual([2, 2])
+    })
+
+    it('handles array with all same elements', () => {
+      expect(LCS.solveArray([5, 5, 5], [5, 5])).toEqual([5, 5])
+    })
+
+    it('handles string arrays', () => {
+      expect(LCS.solveArray(['a', 'b', 'c'], ['b', 'a'])).toEqual(['b'])
+    })
+
+    it('handles mixed type arrays', () => {
+      expect(LCS.solveArray([1, 'a', 2], ['a', 1])).toEqual(['a'])
+    })
+
+    it('handles one array containing the other', () => {
+      expect(LCS.solveArray([1, 2, 3], [0, 1, 2, 3, 4])).toEqual([1, 2, 3])
+    })
+
+    it('handles arrays with negative numbers', () => {
+      expect(LCS.solveArray([-1, -2, -3], [-3, -1])).toEqual([-3])
+    })
+
+    it('handles large arrays', () => {
+      const arr1 = Array.from({ length: 50 }, (_, i) => i)
+      const arr2 = Array.from({ length: 50 }, (_, i) => i * 2)
+      const result = LCS.solveArray(arr1, arr2)
+      expect(result.length).toBe(25)
     })
   })
 
@@ -94,25 +205,95 @@ describe('LCS', () => {
     it('similarity of same string is 1', () => {
       expect(LCS.similarity('abc', 'abc')).toBe(1)
     })
+
+    it('returns 0.5 for half match', () => {
+      expect(LCS.similarity('ab', 'ac')).toBeCloseTo(0.5, 4)
+    })
+
+    it('handles one empty string', () => {
+      expect(LCS.similarity('abc', '')).toBe(0)
+      expect(LCS.similarity('', 'abc')).toBe(0)
+    })
+
+    it('handles different lengths', () => {
+      expect(LCS.similarity('a', 'ab')).toBeCloseTo(0.5, 4)
+    })
+
+    it('handles very similar strings', () => {
+      expect(LCS.similarity('kitten', 'sitting')).toBeGreaterThan(0.5)
+    })
+
+    it('handles completely different strings', () => {
+      expect(LCS.similarity('abcdef', 'ghijkl')).toBe(0)
+    })
   })
 
-  it('length of empty strings is 0', () => {
-    expect(LCS.length('', '')).toBe(0)
+  describe('edge cases', () => {
+    it('length of empty strings is 0', () => {
+      expect(LCS.length('', '')).toBe(0)
+    })
+
+    it('length of abc and abc is 3', () => {
+      expect(LCS.length('abc', 'abc')).toBe(3)
+    })
+
+    it('identical strings have full length', () => {
+      expect(LCS.length('abc', 'abc')).toBe(3)
+    })
+
+    it('completely different strings have 0 LCS', () => {
+      expect(LCS.length('abc', 'xyz')).toBe(0)
+    })
+
+    it('handles single character strings', () => {
+      expect(LCS.length('a', 'a')).toBe(1)
+      expect(LCS.length('a', 'b')).toBe(0)
+    })
+
+    it('handles strings with only one match', () => {
+      expect(LCS.length('abcdef', 'xay')).toBe(1)
+    })
+
+    it('handles whitespace characters', () => {
+      expect(LCS.length('a b c', 'abc')).toBe(3)
+    })
+
+    it('handles case sensitivity', () => {
+      expect(LCS.length('ABC', 'abc')).toBe(0)
+    })
+
+    it('handles null byte character', () => {
+      expect(LCS.length('a\x00b', 'a\x00b')).toBe(3)
+    })
   })
 
-  it('length of abc and abc is 3', () => {
-    expect(LCS.length('abc', 'abc')).toBe(3)
-  })
+  describe('integration tests', () => {
+    it('handles complex real-world strings', () => {
+      const a = 'The quick brown fox'
+      const b = 'A quick brown dog'
+      const result = LCS.solve(a, b)
+      expect(result.length).toBeGreaterThan(0)
+      expect(result).toContain('quick')
+      expect(result).toContain('brown')
+      expect(typeof result).toBe('string')
+    })
 
-  it('length of empty strings is 0', () => {
-    expect(LCS.length('', '')).toBe(0)
-  })
+    it('handles DNA sequences', () => {
+      const a = 'AGCTAGCTAGCT'
+      const b = 'AGCTTAGCT'
+      expect(LCS.length(a, b)).toBeGreaterThan(0)
+      expect(LCS.length(a, b)).toBeLessThanOrEqual(12)
+    })
 
-  it('identical strings have full length', () => {
-    expect(LCS.length('abc', 'abc')).toBe(3)
-  })
+    it('handles repeated patterns', () => {
+      const a = 'abcabcabc'
+      const b = 'abcabc'
+      expect(LCS.length(a, b)).toBe(6)
+    })
 
-  it('completely different strings have 0 LCS', () => {
-    expect(LCS.length('abc', 'xyz')).toBe(0)
+    it('handles string with numbers', () => {
+      expect(LCS.length('a1b2c3', '1b2c3d')).toBeGreaterThan(0)
+      expect(LCS.length('a1b2c3', '1b2c3d')).toBeLessThanOrEqual(6)
+    })
   })
 })

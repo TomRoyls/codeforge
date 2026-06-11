@@ -122,4 +122,85 @@ describe('IntegerPartition', () => {
   it('count of 4 is 5', () => {
     expect(IntegerPartition.count(4)).toBe(5)
   })
+
+  it('count of 0 is 1', () => {
+    expect(IntegerPartition.count(0)).toBe(1)
+  })
+
+  it('count of negative is 0', () => {
+    expect(IntegerPartition.count(-1)).toBe(0)
+  })
+
+  it('count of 15 matches OEIS A000041', () => {
+    expect(IntegerPartition.count(15)).toBe(176)
+  })
+
+  it('generate(3) returns correct partitions', () => {
+    expect(IntegerPartition.generate(3)).toEqual([[3], [2, 1], [1, 1, 1]])
+  })
+
+  it('generate(5) returns 7 partitions', () => {
+    expect(IntegerPartition.generate(5).length).toBe(7)
+  })
+
+  it('all parts are positive in partitions', () => {
+    for (const partition of IntegerPartition.generate(8)) {
+      for (const part of partition) {
+        expect(part).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('generateDistinct of 7', () => {
+    const result = IntegerPartition.generateDistinct(7)
+    expect(result.length).toBe(5)
+    for (const p of result) {
+      expect(new Set(p).size).toBe(p.length)
+      expect(p.reduce((a, b) => a + b, 0)).toBe(7)
+    }
+  })
+
+  it('generateDistinct of 1', () => {
+    expect(IntegerPartition.generateDistinct(1)).toEqual([[1]])
+  })
+
+  it('generateDistinct of 2', () => {
+    expect(IntegerPartition.generateDistinct(2)).toEqual([[2]])
+  })
+
+  it('generateFixedLength of 6 into 2 parts', () => {
+    const result = IntegerPartition.generateFixedLength(6, 2)
+    for (const p of result) {
+      expect(p.length).toBe(2)
+      expect(p.reduce((a, b) => a + b, 0)).toBe(6)
+    }
+  })
+
+  it('generateFixedLength of 4 into 4 parts', () => {
+    const result = IntegerPartition.generateFixedLength(4, 4)
+    expect(result).toEqual([[1, 1, 1, 1]])
+  })
+
+  it('generateFixedLength of 5 into 1 part', () => {
+    expect(IntegerPartition.generateFixedLength(5, 1)).toEqual([[5]])
+  })
+
+  it('generateFixedLength of 3 into 5 parts is empty', () => {
+    expect(IntegerPartition.generateFixedLength(3, 5)).toEqual([])
+  })
+
+  it('generateDistinct parts are sorted ascending', () => {
+    const result = IntegerPartition.generateDistinct(8)
+    for (const p of result) {
+      for (let i = 1; i < p.length; i++) {
+        expect(p[i]!).toBeGreaterThan(p[i - 1]!)
+      }
+    }
+  })
+
+  it('generate count matches for larger n', () => {
+    for (let n = 1; n <= 15; n++) {
+      expect(IntegerPartition.generate(n).length).toBe(IntegerPartition.count(n))
+    }
+  })
 })

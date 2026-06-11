@@ -235,4 +235,110 @@ describe('IntervalMap', () => {
     im.set(0, 5, 'hello')
     expect(im.get(10)).toBeUndefined()
   })
+
+  it('toString returns descriptive string', () => {
+    const im = new IntervalMap<string>()
+    expect(im.toString()).toBe('IntervalMap(0)')
+    im.set(0, 5, 'a')
+    expect(im.toString()).toBe('IntervalMap(1)')
+  })
+
+  it('toJSON returns intervals array', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    im.set(10, 15, 'b')
+    const json = im.toJSON()
+    expect(json).toEqual([
+      { start: 0, end: 5, value: 'a' },
+      { start: 10, end: 15, value: 'b' },
+    ])
+  })
+
+  it('clone creates independent copy', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    const c = im.clone()
+    expect(c.size).toBe(1)
+    expect(c.get(2)).toBe('a')
+    im.clear()
+    expect(c.size).toBe(1)
+  })
+
+  it('equals returns true for identical maps', () => {
+    const im1 = new IntervalMap<string>()
+    im1.set(0, 5, 'a')
+    const im2 = new IntervalMap<string>()
+    im2.set(0, 5, 'a')
+    expect(im1.equals(im2)).toBe(true)
+  })
+
+  it('equals returns false for different intervals', () => {
+    const im1 = new IntervalMap<string>()
+    im1.set(0, 5, 'a')
+    const im2 = new IntervalMap<string>()
+    im2.set(0, 10, 'a')
+    expect(im1.equals(im2)).toBe(false)
+  })
+
+  it('equals returns false for different values', () => {
+    const im1 = new IntervalMap<string>()
+    im1.set(0, 5, 'a')
+    const im2 = new IntervalMap<string>()
+    im2.set(0, 5, 'b')
+    expect(im1.equals(im2)).toBe(false)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const im1 = new IntervalMap<string>()
+    im1.set(0, 5, 'a')
+    const im2 = new IntervalMap<string>()
+    expect(im1.equals(im2)).toBe(false)
+  })
+
+  it('equals returns false for non-IntervalMap', () => {
+    const im = new IntervalMap<string>()
+    expect(im.equals(null)).toBe(false)
+    expect(im.equals({})).toBe(false)
+  })
+
+  it('single-point interval works', () => {
+    const im = new IntervalMap<string>()
+    im.set(5, 5, 'point')
+    expect(im.get(5)).toBe('point')
+    expect(im.get(4)).toBeUndefined()
+    expect(im.get(6)).toBeUndefined()
+  })
+
+  it('handles negative ranges', () => {
+    const im = new IntervalMap<string>()
+    im.set(-10, -5, 'neg')
+    expect(im.get(-7)).toBe('neg')
+    expect(im.get(-10)).toBe('neg')
+    expect(im.get(-5)).toBe('neg')
+    expect(im.get(0)).toBeUndefined()
+  })
+
+  it('getInterval with partial overlap', () => {
+    const im = new IntervalMap<string>()
+    im.set(5, 15, 'a')
+    const result = im.getInterval(10, 20)
+    expect(result.length).toBe(1)
+    expect(result[0]!.value).toBe('a')
+  })
+
+  it('remove all intervals', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    im.set(10, 15, 'b')
+    im.remove(0, 20)
+    expect(im.size).toBe(0)
+  })
+
+  it('getAllIntervals returns copy', () => {
+    const im = new IntervalMap<string>()
+    im.set(0, 5, 'a')
+    const ivs = im.getAllIntervals()
+    ivs.push({ start: 99, end: 99, value: 'x' })
+    expect(im.size).toBe(1)
+  })
 })

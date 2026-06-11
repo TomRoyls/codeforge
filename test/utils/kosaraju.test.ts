@@ -158,4 +158,183 @@ describe('KosarajuSCC', () => {
     const sccs = KosarajuSCC.findSCCs(adj)
     expect(sccs.length).toBe(2)
   })
+
+  it('empty graph returns empty array', () => {
+    const sccs = KosarajuSCC.findSCCs(new Map())
+    expect(sccs).toEqual([])
+    expect(sccs.length).toBe(0)
+  })
+
+  it('large cycle of 10 nodes forms single SCC', () => {
+    const adj = new Map<number, number[]>()
+    for (let i = 0; i < 10; i++) {
+      adj.set(i, [(i + 1) % 10])
+    }
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+    expect(sccs[0]!.length).toBe(10)
+  })
+
+  it('three node self-loops are separate SCCs', () => {
+    const adj = new Map<number, number[]>([
+      [0, [0]], [1, [1]], [2, [2]],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(3)
+  })
+
+  it('diamond DAG has 4 SCCs', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3]], [2, [3]], [3, []],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(4)
+  })
+
+  it('complete graph of 3 nodes is one SCC', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [0, 2]], [2, [0, 1]],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+    expect(sccs[0]!.length).toBe(3)
+  })
+
+  it('graph with sink node returns proper SCC count', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, []], [2, []],
+    ])
+    expect(KosarajuSCC.countSCCs(adj)).toBe(3)
+  })
+
+  it('graph with source node returns proper SCC count', () => {
+    const adj = new Map<number, number[]>([
+      [0, []], [1, [0]], [2, [0]],
+    ])
+    expect(KosarajuSCC.countSCCs(adj)).toBe(3)
+  })
+
+  it('bidirectional edge forms SCC', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]], [2, []],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(2)
+  })
+
+  it('SCC with self-loop and outgoing edge', () => {
+    const adj = new Map<number, number[]>([
+      [0, [0, 1]], [1, []],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(2)
+    expect(sccs.some(scc => scc.includes(0))).toBe(true)
+  })
+
+  it('complex graph with multiple SCCs returns correct count', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2, 3]], [2, [0]], [3, [4]], [4, [3]],
+    ])
+    expect(KosarajuSCC.countSCCs(adj)).toBe(2)
+  })
+
+  it('condensation of DAG is same DAG', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, []],
+    ])
+    const dag = KosarajuSCC.condensation(adj)
+    expect(dag.size).toBe(3)
+  })
+
+  it('condensation removes internal edges within SCC', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]], [2, []],
+    ])
+    const dag = KosarajuSCC.condensation(adj)
+    expect(dag.size).toBe(2)
+  })
+
+  it('condensation with multiple SCCs creates proper edges', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]], [2, [3]], [3, [2]], [0, [2]],
+    ])
+    const dag = KosarajuSCC.condensation(adj)
+    expect(dag.size).toBeGreaterThanOrEqual(2)
+    expect(dag.size).toBeLessThanOrEqual(3)
+  })
+
+  it('isStronglyConnected for single node returns true', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(KosarajuSCC.isStronglyConnected(adj)).toBe(true)
+  })
+
+  it('isStronglyConnected for empty graph returns true', () => {
+    expect(KosarajuSCC.isStronglyConnected(new Map())).toBe(true)
+  })
+
+  it('isStronglyConnected for two nodes with no edges returns false', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, []]])
+    expect(KosarajuSCC.isStronglyConnected(adj)).toBe(false)
+  })
+
+  it('isStronglyConnected for graph with sink returns false', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]], [2, [3]], [3, [2]],
+    ])
+    expect(KosarajuSCC.isStronglyConnected(adj)).toBe(false)
+  })
+
+  it('node with only incoming edges forms separate SCC', () => {
+    const adj = new Map<number, number[]>([
+      [0, [2]], [1, [2]], [2, []],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(3)
+  })
+
+  it('node with only outgoing edges forms separate SCC', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, []], [2, []],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(3)
+  })
+
+  it('SCC detection with negative node IDs', () => {
+    const adj = new Map<number, number[]>([
+      [-1, [-2]], [-2, [-3]], [-3, [-1]],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+    expect(sccs[0]!.sort((a, b) => a - b)).toEqual([-3, -2, -1])
+  })
+
+  it('SCC detection with non-consecutive node IDs', () => {
+    const adj = new Map<number, number[]>([
+      [5, [10]], [10, [15]], [15, [5]],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+    expect(sccs[0]!.sort((a, b) => a - b)).toEqual([5, 10, 15])
+  })
+
+  it('handles graph with isolated self-loop node', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]], [2, [2]],
+    ])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(2)
+  })
+
+  it('countSCCs for empty graph returns 0', () => {
+    expect(KosarajuSCC.countSCCs(new Map())).toBe(0)
+  })
+
+  it('condensation of single SCC has no edges', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]],
+    ])
+    const dag = KosarajuSCC.condensation(adj)
+    expect(dag.get(0)).toEqual([])
+  })
 })
