@@ -178,8 +178,182 @@ describe('CompactIntSet', () => {
     expect(set.toArray()).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
   })
 
-  it('empty set has size 0', () => {
-    const set = new CompactIntSet()
+  it('adds value before existing', () => {
+    const set = new CompactIntSet([5, 10])
+    set.add(2)
+    expect(set.toArray()).toEqual([2, 5, 10])
+  })
+
+  it('adds value between existing', () => {
+    const set = new CompactIntSet([1, 10])
+    set.add(5)
+    expect(set.toArray()).toEqual([1, 5, 10])
+  })
+
+  it('adds value after existing', () => {
+    const set = new CompactIntSet([1, 5])
+    set.add(10)
+    expect(set.toArray()).toEqual([1, 5, 10])
+  })
+
+  it('creates set from unsorted array', () => {
+    const set = new CompactIntSet([10, 5, 1])
+    expect(set.toArray()).toEqual([1, 5, 10])
+  })
+
+  it('creates set from duplicate array', () => {
+    const set = new CompactIntSet([1, 1, 5, 5])
+    expect(set.size).toBe(2)
+    expect(set.toArray()).toEqual([1, 5])
+  })
+
+  it('creates set from empty array', () => {
+    const set = new CompactIntSet([])
     expect(set.size).toBe(0)
+    expect(set.toArray()).toEqual([])
+  })
+
+  it('delete all values results in empty set', () => {
+    const set = new CompactIntSet([1, 2, 3])
+    set.delete(1)
+    set.delete(2)
+    set.delete(3)
+    expect(set.size).toBe(0)
+    expect(set.toArray()).toEqual([])
+  })
+
+  it('delete middle value preserves order', () => {
+    const set = new CompactIntSet([1, 5, 10])
+    set.delete(5)
+    expect(set.toArray()).toEqual([1, 10])
+  })
+
+  it('delete first value', () => {
+    const set = new CompactIntSet([1, 5, 10])
+    set.delete(1)
+    expect(set.toArray()).toEqual([5, 10])
+  })
+
+  it('delete last value', () => {
+    const set = new CompactIntSet([1, 5, 10])
+    set.delete(10)
+    expect(set.toArray()).toEqual([1, 5])
+  })
+
+  it('union with identical sets', () => {
+    const a = new CompactIntSet([1, 2, 3])
+    const b = new CompactIntSet([1, 2, 3])
+    const result = a.union(b)
+    expect(result.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('union returns new set', () => {
+    const a = new CompactIntSet([1])
+    const b = new CompactIntSet([2])
+    const result = a.union(b)
+    expect(result).not.toBe(a)
+    expect(result).not.toBe(b)
+  })
+
+  it('intersection with identical sets', () => {
+    const a = new CompactIntSet([1, 2, 3])
+    const b = new CompactIntSet([1, 2, 3])
+    const result = a.intersection(b)
+    expect(result.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('intersection returns new set', () => {
+    const a = new CompactIntSet([1, 2])
+    const b = new CompactIntSet([2, 3])
+    const result = a.intersection(b)
+    expect(result).not.toBe(a)
+    expect(result).not.toBe(b)
+  })
+
+  it('handles zero value', () => {
+    const set = new CompactIntSet()
+    set.add(0)
+    expect(set.has(0)).toBe(true)
+    expect(set.size).toBe(1)
+  })
+
+  it('handles single value operations', () => {
+    const set = new CompactIntSet()
+    set.add(42)
+    expect(set.has(42)).toBe(true)
+    set.delete(42)
+    expect(set.has(42)).toBe(false)
+    expect(set.size).toBe(0)
+  })
+
+  it('handles large number of values', () => {
+    const set = new CompactIntSet()
+    for (let i = 0; i < 100; i++) {
+      set.add(i * 10)
+    }
+    expect(set.size).toBe(100)
+    expect(set.has(0)).toBe(true)
+    expect(set.has(990)).toBe(true)
+    expect(set.has(500)).toBe(true)
+  })
+
+  it('byteLength increases with larger values', () => {
+    const small = new CompactIntSet([1, 2, 3])
+    const large = new CompactIntSet([100000, 200000, 300000])
+    expect(large.byteLength).toBeGreaterThan(small.byteLength)
+  })
+
+  it('union of two empty sets is empty', () => {
+    const a = new CompactIntSet()
+    const b = new CompactIntSet()
+    const result = a.union(b)
+    expect(result.toArray()).toEqual([])
+    expect(result.size).toBe(0)
+  })
+
+  it('intersection of two empty sets is empty', () => {
+    const a = new CompactIntSet()
+    const b = new CompactIntSet()
+    const result = a.intersection(b)
+    expect(result.toArray()).toEqual([])
+    expect(result.size).toBe(0)
+  })
+
+  it('union with overlapping ranges', () => {
+    const a = new CompactIntSet([1, 2, 3, 4, 5])
+    const b = new CompactIntSet([3, 4, 5, 6, 7])
+    const result = a.union(b)
+    expect(result.toArray()).toEqual([1, 2, 3, 4, 5, 6, 7])
+  })
+
+  it('intersection with overlapping ranges', () => {
+    const a = new CompactIntSet([1, 2, 3, 4, 5])
+    const b = new CompactIntSet([3, 4, 5, 6, 7])
+    const result = a.intersection(b)
+    expect(result.toArray()).toEqual([3, 4, 5])
+  })
+
+  it('add after delete works correctly', () => {
+    const set = new CompactIntSet([1, 5, 10])
+    set.delete(5)
+    set.add(5)
+    expect(set.toArray()).toEqual([1, 5, 10])
+    expect(set.size).toBe(3)
+  })
+
+  it('has returns false for zero in empty set', () => {
+    const set = new CompactIntSet()
+    expect(set.has(0)).toBe(false)
+  })
+
+  it('multiple adds and deletes maintain correctness', () => {
+    const set = new CompactIntSet()
+    set.add(1)
+    set.add(2)
+    set.add(3)
+    set.delete(2)
+    set.add(4)
+    set.delete(1)
+    expect(set.toArray()).toEqual([3, 4])
   })
 })

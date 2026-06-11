@@ -165,4 +165,169 @@ describe('CircularSuffixArray', () => {
     const csa = new CircularSuffixArray('abcd')
     expect(csa.index(0)).toBeGreaterThanOrEqual(0)
   })
+
+  it('handles unicode characters', () => {
+    const csa = new CircularSuffixArray('héllo')
+    expect(csa.length).toBe(5)
+    expect(csa.first()).toBeDefined()
+    expect(csa.last()).toBeDefined()
+  })
+
+  it('handles emojis', () => {
+    const csa = new CircularSuffixArray('🎉🎊')
+    expect(csa.length).toBe(4)
+  })
+
+  it('handles mixed unicode and ASCII', () => {
+    const csa = new CircularSuffixArray('a日本b')
+    expect(csa.length).toBe(4)
+  })
+
+  it('sorts correctly for all same character', () => {
+    const csa = new CircularSuffixArray('xxxxx')
+    expect(csa.length).toBe(5)
+    for (let i = 0; i < csa.length; i++) {
+      expect(csa.index(i)).toBe(i)
+    }
+  })
+
+  it('handles whitespace characters', () => {
+    const csa = new CircularSuffixArray('a b c')
+    expect(csa.length).toBe(5)
+  })
+
+  it('handles tabs and newlines', () => {
+    const csa = new CircularSuffixArray('a\tb\nc')
+    expect(csa.length).toBe(5)
+  })
+
+  it('rank works for empty string', () => {
+    const csa = new CircularSuffixArray('')
+    expect(csa.rank(0)).toBe(-1)
+  })
+
+  it('index returns undefined for empty string', () => {
+    const csa = new CircularSuffixArray('')
+    expect(csa.index(0)).toBeUndefined()
+  })
+
+  it('first and last work for two characters', () => {
+    const csa = new CircularSuffixArray('ab')
+    expect(csa.first()).toBeDefined()
+    expect(csa.last()).toBeDefined()
+  })
+
+  it('handles descending order string', () => {
+    const csa = new CircularSuffixArray('dcba')
+    expect(csa.length).toBe(4)
+  })
+
+  it('handles alternating pattern', () => {
+    const csa = new CircularSuffixArray('ababab')
+    expect(csa.length).toBe(6)
+  })
+
+  it('handles palindrome', () => {
+    const csa = new CircularSuffixArray('racecar')
+    expect(csa.length).toBe(7)
+  })
+
+  it('handles very long string', () => {
+    const longStr = 'a'.repeat(1000)
+    const csa = new CircularSuffixArray(longStr)
+    expect(csa.length).toBe(1000)
+  })
+
+  it('indices are permutation of 0 to length-1', () => {
+    const csa = new CircularSuffixArray('testing')
+    const indices = new Set<number>()
+    for (let i = 0; i < csa.length; i++) {
+      const idx = csa.index(i)!
+      expect(idx).toBeGreaterThanOrEqual(0)
+      expect(idx).toBeLessThan(csa.length)
+      indices.add(idx)
+    }
+    expect(indices.size).toBe(csa.length)
+  })
+
+  it('rank returns -1 for all out of range indices', () => {
+    const csa = new CircularSuffixArray('test')
+    expect(csa.rank(-100)).toBe(-1)
+    expect(csa.rank(-1)).toBe(-1)
+    expect(csa.rank(4)).toBe(-1)
+    expect(csa.rank(100)).toBe(-1)
+  })
+
+  it('handles string with only spaces', () => {
+    const csa = new CircularSuffixArray('     ')
+    expect(csa.length).toBe(5)
+  })
+
+  it('sorts correctly for alphabet string', () => {
+    const csa = new CircularSuffixArray('abcdefghijklmnopqrstuvwxyz')
+    expect(csa.length).toBe(26)
+  })
+
+  it('sorts correctly for reverse alphabet', () => {
+    const csa = new CircularSuffixArray('zyxwvutsrqponmlkjihgfedcba')
+    expect(csa.length).toBe(26)
+  })
+
+  it('handles string starting with space', () => {
+    const csa = new CircularSuffixArray(' hello')
+    expect(csa.length).toBe(6)
+  })
+
+  it('handles string ending with space', () => {
+    const csa = new CircularSuffixArray('hello ')
+    expect(csa.length).toBe(6)
+  })
+
+  it('rank for all valid indices returns unique values', () => {
+    const csa = new CircularSuffixArray('example')
+    const ranks = new Set<number>()
+    for (let i = 0; i < csa.length; i++) {
+      ranks.add(csa.rank(i))
+    }
+    expect(ranks.size).toBe(csa.length)
+  })
+
+  it('handles string with punctuation', () => {
+    const csa = new CircularSuffixArray('hello,world!')
+    expect(csa.length).toBe(12)
+  })
+
+  it('handles string with numbers', () => {
+    const csa = new CircularSuffixArray('test123')
+    expect(csa.length).toBe(7)
+  })
+
+  it('handles mixed case string', () => {
+    const csa = new CircularSuffixArray('HeLLoWoRLD')
+    expect(csa.length).toBe(10)
+  })
+
+  it('first and last are different for varied string', () => {
+    const csa = new CircularSuffixArray('banana')
+    expect(csa.first()).not.toBe(csa.last())
+  })
+
+  it('handles string with one repeated character', () => {
+    const csa = new CircularSuffixArray('aaaaab')
+    expect(csa.length).toBe(6)
+  })
+
+  it('sorts suffixes lexicographically', () => {
+    const csa = new CircularSuffixArray('baba')
+    const result = []
+    for (let i = 0; i < csa.length; i++) {
+      result.push(csa.index(i))
+    }
+    expect(result).toEqual([1, 3, 0, 2])
+  })
+
+  it('handles string with zero character', () => {
+    const csa = new CircularSuffixArray('a\x00b')
+    expect(csa.length).toBe(3)
+  })
 })

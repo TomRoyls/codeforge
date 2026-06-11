@@ -152,4 +152,167 @@ describe('ClosestPair', () => {
     const result = ClosestPair.find([{ x: 0, y: 0 }, { x: 3, y: 4 }])
     expect(result).not.toBeNull()
   })
+
+  it('distance works with large coordinates', () => {
+    const dist = ClosestPair.distance({ x: 1000000, y: 1000000 }, { x: 1000003, y: 1000004 })
+    expect(dist).toBeCloseTo(5, 8)
+  })
+
+  it('distance works with decimal coordinates', () => {
+    const dist = ClosestPair.distance({ x: 1.5, y: 2.5 }, { x: 2.5, y: 3.5 })
+    expect(dist).toBeCloseTo(Math.sqrt(2), 8)
+  })
+
+  it('handles very small distance', () => {
+    const points = [{ x: 0, y: 0 }, { x: 0.0001, y: 0 }]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(0.0001, 8)
+  })
+
+  it('finds closest in L-shaped arrangement', () => {
+    const points = [
+      { x: 0, y: 0 }, { x: 0, y: 10 },
+      { x: 10, y: 10 }, { x: 10, y: 0 },
+    ]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(10, 8)
+  })
+
+  it('handles points in diagonal line', () => {
+    const points = [
+      { x: 0, y: 0 }, { x: 1, y: 1 },
+      { x: 2, y: 2 }, { x: 3, y: 3 },
+    ]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(Math.sqrt(2), 8)
+  })
+
+  it('handles three collinear points with equal spacing', () => {
+    const points = [{ x: 0, y: 0 }, { x: 5, y: 0 }, { x: 10, y: 0 }]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(5, 8)
+  })
+
+  it('finds closest pair in circle arrangement', () => {
+    const points: { x: number; y: number }[] = []
+    for (let i = 0; i < 8; i++) {
+      const angle = (i * Math.PI) / 4
+      points.push({ x: Math.cos(angle), y: Math.sin(angle) })
+    }
+    const result = ClosestPair.find(points)
+    expect(result).not.toBeNull()
+    expect(result!.distance).toBeLessThan(1)
+  })
+
+  it('handles points with negative x', () => {
+    const points = [{ x: -5, y: 0 }, { x: -3, y: 0 }, { x: -1, y: 0 }]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(2, 8)
+  })
+
+  it('handles points with negative y', () => {
+    const points = [{ x: 0, y: -5 }, { x: 0, y: -3 }, { x: 0, y: -1 }]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(2, 8)
+  })
+
+  it('handles all four quadrants', () => {
+    const points = [
+      { x: 1, y: 1 }, { x: -1, y: 1 },
+      { x: -1, y: -1 }, { x: 1, y: -1 },
+    ]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(2, 8)
+  })
+
+  it('bruteForce finds closest in 3 points', () => {
+    const points = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 10, y: 10 }]
+    const result = ClosestPair.bruteForce(points)
+    expect(result!.distance).toBeCloseTo(1, 8)
+  })
+
+  it('bruteForce handles 4 points', () => {
+    const points = [
+      { x: 0, y: 0 }, { x: 1, y: 0 },
+      { x: 0, y: 1 }, { x: 1, y: 1 },
+    ]
+    const result = ClosestPair.bruteForce(points)
+    expect(result!.distance).toBeCloseTo(1, 8)
+  })
+
+  it('find and bruteForce agree on random points', () => {
+    const points: { x: number; y: number }[] = []
+    for (let i = 0; i < 20; i++) {
+      points.push({ x: Math.random() * 100, y: Math.random() * 100 })
+    }
+    const findResult = ClosestPair.find(points)!
+    const bruteResult = ClosestPair.bruteForce(points)!
+    expect(findResult.distance).toBeCloseTo(bruteResult.distance, 8)
+  })
+
+  it('handles points with large coordinates', () => {
+    const x = 1000000
+    const points = [{ x, y: 0 }, { x: x + 1, y: 0 }, { x: x + 10, y: 0 }]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(1, 8)
+  })
+
+  it('minDistance handles two close points among distant ones', () => {
+    const points = [
+      { x: 0, y: 0 }, { x: 1000, y: 0 },
+      { x: 0.001, y: 0 }, { x: 2000, y: 0 },
+    ]
+    expect(ClosestPair.minDistance(points)).toBeCloseTo(0.001, 8)
+  })
+
+  it('distance is symmetric', () => {
+    const p1 = { x: 3, y: 4 }
+    const p2 = { x: 0, y: 0 }
+    const dist1 = ClosestPair.distance(p1, p2)
+    const dist2 = ClosestPair.distance(p2, p1)
+    expect(dist1).toBe(dist2)
+  })
+
+  it('distance satisfies triangle inequality', () => {
+    const p1 = { x: 0, y: 0 }
+    const p2 = { x: 3, y: 4 }
+    const p3 = { x: 6, y: 8 }
+    const d12 = ClosestPair.distance(p1, p2)
+    const d23 = ClosestPair.distance(p2, p3)
+    const d13 = ClosestPair.distance(p1, p3)
+    expect(d12 + d23).toBeGreaterThanOrEqual(d13 - 0.0001)
+  })
+
+  it('handles points with same x and different y', () => {
+    const points = [{ x: 5, y: 0 }, { x: 5, y: 0.1 }, { x: 5, y: 10 }]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(0.1, 8)
+  })
+
+  it('handles points with same y and different x', () => {
+    const points = [{ x: 0, y: 5 }, { x: 0.1, y: 5 }, { x: 10, y: 5 }]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(0.1, 8)
+  })
+
+  it('finds closest in tightly clustered group', () => {
+    const points: { x: number; y: number }[] = []
+    for (let i = 0; i < 10; i++) {
+      points.push({ x: Math.random() * 0.01, y: Math.random() * 0.01 })
+    }
+    points.push({ x: 100, y: 100 })
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeLessThan(0.02)
+  })
+
+  it('handles points on unit circle', () => {
+    const points: { x: number; y: number }[] = []
+    for (let i = 0; i < 5; i++) {
+      const angle = (i * 2 * Math.PI) / 5
+      points.push({ x: Math.cos(angle), y: Math.sin(angle) })
+    }
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeGreaterThan(0)
+    expect(result!.distance).toBeLessThan(2)
+  })
 })
