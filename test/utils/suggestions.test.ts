@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { RULE_SUGGESTIONS } from '../../src/utils/suggestions.js'
 
-// ─── Structure ───
-
 describe('RULE_SUGGESTIONS structure', () => {
   it('is a non-empty object', () => {
     expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(50)
@@ -15,126 +13,221 @@ describe('RULE_SUGGESTIONS structure', () => {
       expect(rule.length).toBeGreaterThan(0)
     }
   })
-})
 
-// ─── Known Rules ───
-
-describe('RULE_SUGGESTIONS known rules', () => {
-  it('has noConsoleLog suggestion', () => {
-    expect(RULE_SUGGESTIONS.noConsoleLog).toBeDefined()
-    expect(RULE_SUGGESTIONS.noConsoleLog).toContain('logging')
-  })
-
-  it('has noEval suggestion', () => {
-    expect(RULE_SUGGESTIONS.noEval).toBeDefined()
-    expect(RULE_SUGGESTIONS.noEval).toContain('eval')
-  })
-
-  it('has preferConst suggestion', () => {
-    expect(RULE_SUGGESTIONS.preferConst).toBeDefined()
-    expect(RULE_SUGGESTIONS.preferConst).toContain('const')
-  })
-
-  it('has eqEqEq suggestion', () => {
-    expect(RULE_SUGGESTIONS.eqEqEq).toBeDefined()
-    expect(RULE_SUGGESTIONS.eqEqEq).toContain('===')
-  })
-
-  it('has noExplicitAny suggestion', () => {
-    expect(RULE_SUGGESTIONS.noExplicitAny).toBeDefined()
-    expect(RULE_SUGGESTIONS.noExplicitAny).toContain('any')
-  })
-
-  it('has noDuplicateCode suggestion', () => {
-    expect(RULE_SUGGESTIONS.noDuplicateCode).toBeDefined()
-    expect(RULE_SUGGESTIONS.noDuplicateCode).toContain('duplicated')
-  })
-
-  it('has noVar suggestion', () => {
-    expect(RULE_SUGGESTIONS.noVar).toBeDefined()
-    expect(RULE_SUGGESTIONS.noVar).toContain('let')
-  })
-
-  it('has noFallthrough suggestion', () => {
-    expect(RULE_SUGGESTIONS.noFallthrough).toBeDefined()
-    expect(RULE_SUGGESTIONS.noFallthrough).toContain('break')
-  })
-
-  it('has preferTemplate suggestion', () => {
-    expect(RULE_SUGGESTIONS.preferTemplate).toBeDefined()
-    expect(RULE_SUGGESTIONS.preferTemplate).toContain('template')
-  })
-
-  it('has noUnsafeRegex suggestion', () => {
-    expect(RULE_SUGGESTIONS.noUnsafeRegex).toBeDefined()
-    expect(RULE_SUGGESTIONS.noUnsafeRegex).toContain('backtracking')
-  })
-
-  it('has consistent return type for all entries', () => {
-    for (const [rule, suggestion] of Object.entries(RULE_SUGGESTIONS)) {
-      expect(typeof rule).toBe('string')
-      expect(typeof suggestion).toBe('string')
+  it('all suggestions are at least 10 chars', () => {
+    for (const suggestion of Object.values(RULE_SUGGESTIONS)) {
       expect(suggestion.length).toBeGreaterThan(10)
     }
   })
 
-  it('has maxFileSize suggestion', () => {
-    expect(RULE_SUGGESTIONS.maxFileSize).toBeDefined()
-    expect(RULE_SUGGESTIONS.maxFileSize).toContain('Split')
-  })
-
-  it('has noExplicitAny suggestion', () => {
-    expect(RULE_SUGGESTIONS.noExplicitAny).toBeDefined()
-    expect(typeof RULE_SUGGESTIONS.noExplicitAny).toBe('string')
-  })
-
-  it('suggestions do not contain empty strings', () => {
-    for (const [key, val] of Object.entries(RULE_SUGGESTIONS)) {
-      expect(val.trim().length).toBeGreaterThan(0)
-    }
-  })
-
-  it('all rule IDs are non-empty strings', () => {
-    for (const key of Object.keys(RULE_SUGGESTIONS)) {
-      expect(key.length).toBeGreaterThan(0)
-    }
-  })
-
-  it('RULE_SUGGESTIONS has at least 1 entry', () => {
-    expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(0)
-  })
-
-  it('RULE_SUGGESTIONS entries are strings', () => {
-    const values = Object.values(RULE_SUGGESTIONS)
-    for (const v of values) {
-      expect(typeof v).toBe('string')
-    }
-  })
-
-  it('has valid rule keys', () => {
-    for (const key of Object.keys(RULE_SUGGESTIONS)) {
-      expect(typeof key).toBe('string')
-      expect(key.length).toBeGreaterThan(0)
-    }
-  })
-
-  it('RULE_SUGGESTIONS keys are unique', () => {
+  it('keys are unique', () => {
     const keys = Object.keys(RULE_SUGGESTIONS)
     expect(new Set(keys).size).toBe(keys.length)
   })
 
-  it('RULE_SUGGESTIONS is non-empty', () => {
-    expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(0)
+  it('no empty string values', () => {
+    for (const val of Object.values(RULE_SUGGESTIONS)) {
+      expect(val.trim().length).toBeGreaterThan(0)
+    }
   })
 
-  it('RULE_SUGGESTIONS has valid structure', () => {
-    const keys = Object.keys(RULE_SUGGESTIONS)
-    const first = RULE_SUGGESTIONS[keys[0]!]
-    expect(first).toBeDefined()
+  it('has at least 100 entries', () => {
+    expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(100)
   })
 
-  it('RULE_SUGGESTIONS has at least one entry', () => {
-    const keys = Object.keys(RULE_SUGGESTIONS)
-    expect(keys.length).toBeGreaterThanOrEqual(1)
+  it('all values are strings', () => {
+    for (const v of Object.values(RULE_SUGGESTIONS)) {
+      expect(typeof v).toBe('string')
+    }
+  })
+
+  it('all keys are strings', () => {
+    for (const k of Object.keys(RULE_SUGGESTIONS)) {
+      expect(typeof k).toBe('string')
+    }
+  })
+})
+
+describe('RULE_SUGGESTIONS known rules', () => {
+  it('has noConsoleLog suggestion', () => {
+    expect(RULE_SUGGESTIONS.noConsoleLog).toContain('logging')
+  })
+
+  it('has noEval suggestion', () => {
+    expect(RULE_SUGGESTIONS.noEval).toContain('eval')
+  })
+
+  it('has preferConst suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferConst).toContain('const')
+  })
+
+  it('has eqEqEq suggestion', () => {
+    expect(RULE_SUGGESTIONS.eqEqEq).toContain('===')
+  })
+
+  it('has noExplicitAny suggestion', () => {
+    expect(RULE_SUGGESTIONS.noExplicitAny).toContain('any')
+  })
+
+  it('has noDuplicateCode suggestion', () => {
+    expect(RULE_SUGGESTIONS.noDuplicateCode).toContain('duplicated')
+  })
+
+  it('has noVar suggestion', () => {
+    expect(RULE_SUGGESTIONS.noVar).toContain('let')
+  })
+
+  it('has noFallthrough suggestion', () => {
+    expect(RULE_SUGGESTIONS.noFallthrough).toContain('break')
+  })
+
+  it('has preferTemplate suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferTemplate).toContain('template')
+  })
+
+  it('has noUnsafeRegex suggestion', () => {
+    expect(RULE_SUGGESTIONS.noUnsafeRegex).toContain('backtracking')
+  })
+
+  it('has maxFileSize suggestion', () => {
+    expect(RULE_SUGGESTIONS.maxFileSize).toContain('Split')
+  })
+
+  it('has noDebugger suggestion', () => {
+    expect(RULE_SUGGESTIONS.noDebugger).toBeDefined()
+    expect(RULE_SUGGESTIONS.noDebugger!.length).toBeGreaterThan(10)
+  })
+
+  it('has noBitwise suggestion', () => {
+    expect(RULE_SUGGESTIONS.noBitwise).toBeDefined()
+    expect(RULE_SUGGESTIONS.noBitwise).toContain('bitwise')
+  })
+
+  it('has preferArrowCallback suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferArrowCallback).toContain('arrow')
+  })
+
+  it('has noUnreachable suggestion', () => {
+    expect(RULE_SUGGESTIONS.noUnreachable).toBeDefined()
+  })
+
+  it('has noEmpty suggestion', () => {
+    expect(RULE_SUGGESTIONS.noEmpty).toBeDefined()
+  })
+
+  it('has useIsnan suggestion', () => {
+    expect(RULE_SUGGESTIONS.useIsnan).toContain('isNaN')
+  })
+
+  it('has noUnusedVars suggestion', () => {
+    expect(RULE_SUGGESTIONS.noUnusedVars).toBeDefined()
+  })
+
+  it('has preferNullishCoalescing suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferNullishCoalescing).toContain('??')
+  })
+
+  it('has preferOptionalChain suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferOptionalChain).toContain('?.')
+  })
+
+  it('has noNonNullAssertion suggestion', () => {
+    expect(RULE_SUGGESTIONS.noNonNullAssertion).toBeDefined()
+  })
+
+  it('has noParamReassign suggestion', () => {
+    expect(RULE_SUGGESTIONS.noParamReassign).toBeDefined()
+  })
+
+  it('has requireAwait suggestion', () => {
+    expect(RULE_SUGGESTIONS.requireAwait).toContain('await')
+  })
+
+  it('has consistentTypeExports suggestion', () => {
+    expect(RULE_SUGGESTIONS.consistentTypeExports).toBeDefined()
+  })
+
+  it('has curly suggestion', () => {
+    expect(RULE_SUGGESTIONS.curly).toBeDefined()
+  })
+
+  it('has objectShorthand suggestion', () => {
+    expect(RULE_SUGGESTIONS.objectShorthand).toBeDefined()
+  })
+
+  it('has preferArrayFlat suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferArrayFlat).toBeDefined()
+  })
+
+  it('has noRedeclare suggestion', () => {
+    expect(RULE_SUGGESTIONS.noRedeclare).toBeDefined()
+  })
+
+  it('has noDupeKeys suggestion', () => {
+    expect(RULE_SUGGESTIONS.noDupeKeys).toBeDefined()
+  })
+
+  it('has noDuplicateCase suggestion', () => {
+    expect(RULE_SUGGESTIONS.noDuplicateCase).toBeDefined()
+  })
+
+  it('has noShadow suggestion', () => {
+    expect(RULE_SUGGESTIONS.noShadow).toBeDefined()
+  })
+
+  it('has noThrowLiteral suggestion', () => {
+    expect(RULE_SUGGESTIONS.noThrowLiteral).toContain('Error')
+  })
+
+  it('has preferAsyncAwait suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferAsyncAwait).toBeDefined()
+  })
+
+  it('has noStringConcat suggestion', () => {
+    expect(RULE_SUGGESTIONS.noStringConcat).toBeDefined()
+  })
+
+  it('has noUnusedPrivateMembers suggestion', () => {
+    expect(RULE_SUGGESTIONS.noUnusedPrivateMembers).toBeDefined()
+  })
+
+  it('has noLoopFunc suggestion', () => {
+    expect(RULE_SUGGESTIONS.noLoopFunc).toBeDefined()
+  })
+
+  it('has maxUnionSize suggestion', () => {
+    expect(RULE_SUGGESTIONS.maxUnionSize).toBeDefined()
+  })
+
+  it('has explicitModuleBoundaryTypes suggestion', () => {
+    expect(RULE_SUGGESTIONS.explicitModuleBoundaryTypes).toBeDefined()
+  })
+
+  it('has sortKeys suggestion', () => {
+    expect(RULE_SUGGESTIONS.sortKeys).toBeDefined()
+  })
+
+  it('has preferSpread suggestion', () => {
+    expect(RULE_SUGGESTIONS.preferSpread).toBeDefined()
+  })
+
+  it('has noUnsafeReturn suggestion', () => {
+    expect(RULE_SUGGESTIONS.noUnsafeReturn).toBeDefined()
+  })
+
+  it('has noNestedTernary suggestion', () => {
+    expect(RULE_SUGGESTIONS.noNestedTernary).toBeDefined()
+  })
+
+  it('has noAlert suggestion', () => {
+    expect(RULE_SUGGESTIONS.noAlert).toContain('alert')
+  })
+
+  it('has noConstantCondition suggestion', () => {
+    expect(RULE_SUGGESTIONS.noConstantCondition).toBeDefined()
+  })
+
+  it('has noControlRegex suggestion', () => {
+    expect(RULE_SUGGESTIONS.noControlRegex).toBeDefined()
   })
 })

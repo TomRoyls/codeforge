@@ -126,4 +126,124 @@ describe('SlidingWindowMin', () => {
   it('solve single element', () => {
     expect(SlidingWindowMin.solve([5], 1)).toEqual([5])
   })
+
+  it('handles long decreasing sequence', () => {
+    expect(SlidingWindowMin.solve([5, 4, 3, 2, 1], 3)).toEqual([3, 2, 1])
+  })
+
+  it('handles equal values in window', () => {
+    expect(SlidingWindowMin.solve([3, 3, 3, 3], 2)).toEqual([3, 3, 3])
+  })
+
+  it('handles values at window boundary', () => {
+    expect(SlidingWindowMin.solve([1, 5, 2, 5, 3], 3)).toEqual([1, 2, 2])
+  })
+
+  it('handles large window size', () => {
+    expect(SlidingWindowMin.solve([1, 2, 3, 4, 5], 10)).toEqual([])
+  })
+
+  it('handles minimum at different positions', () => {
+    const swm = new SlidingWindowMin(3)
+    swm.push(5)
+    swm.push(1)
+    expect(swm.push(3)).toBe(1)
+    expect(swm.push(2)).toBe(1)
+    expect(swm.push(4)).toBe(2)
+  })
+
+  it('handles rapid value changes', () => {
+    const swm = new SlidingWindowMin(2)
+    expect(swm.push(100)).toBeUndefined()
+    expect(swm.push(1)).toBe(1)
+    expect(swm.push(100)).toBe(1)
+    expect(swm.push(2)).toBe(2)
+  })
+
+  it('handles multiple identical minimums', () => {
+    const swm = new SlidingWindowMin(3)
+    swm.push(2)
+    swm.push(1)
+    swm.push(1)
+    expect(swm.getMin()).toBe(1)
+  })
+
+  it('getMin after window slides past minimum', () => {
+    const swm = new SlidingWindowMin(2)
+    swm.push(1)
+    swm.push(2)
+    expect(swm.getMin()).toBe(1)
+    swm.push(3)
+    expect(swm.getMin()).toBe(2)
+  })
+
+  it('handles all values equal', () => {
+    const swm = new SlidingWindowMin(3)
+    swm.push(5)
+    swm.push(5)
+    swm.push(5)
+    expect(swm.push(5)).toBe(5)
+  })
+
+  it('handles pattern min-high-min', () => {
+    expect(SlidingWindowMin.solve([1, 10, 2, 10, 3], 3)).toEqual([1, 2, 2])
+  })
+
+  it('handles decreasing then increasing', () => {
+    expect(SlidingWindowMin.solve([5, 4, 3, 4, 5], 3)).toEqual([3, 3, 3])
+  })
+
+  it('handles increasing then decreasing', () => {
+    expect(SlidingWindowMin.solve([1, 2, 3, 2, 1], 3)).toEqual([1, 2, 1])
+  })
+
+  it('handles array shorter than window', () => {
+    expect(SlidingWindowMin.solve([1, 2], 5)).toEqual([])
+  })
+
+  it('handles window equal to array length', () => {
+    expect(SlidingWindowMin.solve([3, 1, 4, 2], 4)).toEqual([1])
+  })
+
+  it('handles alternating min and max', () => {
+    expect(SlidingWindowMin.solve([1, 100, 2, 100, 3], 2)).toEqual([1, 2, 2, 3])
+  })
+
+  it('handles values with zero', () => {
+    expect(SlidingWindowMin.solve([5, 0, 3, 0, 7], 2)).toEqual([0, 0, 0, 0])
+  })
+
+  it('handles repeated values', () => {
+    expect(SlidingWindowMin.solve([1, 1, 2, 2, 1, 1], 3)).toEqual([1, 1, 1, 1])
+  })
+
+  it('handles long sequence', () => {
+    const data = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
+    expect(SlidingWindowMin.solve(data, 3)).toEqual([1, 1, 1, 1, 2, 2, 2, 3])
+  })
+
+  it('handles minimum slides out while duplicate remains', () => {
+    const swm = new SlidingWindowMin(3)
+    swm.push(1)
+    swm.push(2)
+    swm.push(1)
+    expect(swm.push(3)).toBe(1)
+    expect(swm.push(4)).toBe(1)
+  })
+
+  it('handles index tracking correctly', () => {
+    const swm = new SlidingWindowMin(2)
+    expect(swm.push(5)).toBeUndefined()
+    expect(swm.push(3)).toBe(3)
+    expect(swm.push(1)).toBe(1)
+    expect(swm.push(4)).toBe(1)
+  })
+
+  it('solve with all same value returns that value', () => {
+    expect(SlidingWindowMin.solve([7, 7, 7, 7, 7], 2)).toEqual([7, 7, 7, 7])
+  })
+
+  it('handles window size 1 with solve', () => {
+    expect(SlidingWindowMin.solve([5, 3, 7, 2], 1)).toEqual([5, 3, 7, 2])
+  })
 })

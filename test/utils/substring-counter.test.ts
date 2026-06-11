@@ -3,13 +3,11 @@ import { SubstringCounter } from '../../src/utils/substring-counter.js'
 
 describe('SubstringCounter', () => {
   it('counts overlapping occurrences', () => {
-    const sc = new SubstringCounter('aaa')
-    expect(sc.countNaive('aa')).toBe(2)
+    expect(new SubstringCounter('aaa').countNaive('aa')).toBe(2)
   })
 
   it('counts non-overlapping occurrences', () => {
-    const sc = new SubstringCounter('aaa')
-    expect(sc.countNonOverlapping('aa')).toBe(1)
+    expect(new SubstringCounter('aaa').countNonOverlapping('aa')).toBe(1)
   })
 
   it('returns 0 for empty substring', () => {
@@ -19,8 +17,7 @@ describe('SubstringCounter', () => {
   })
 
   it('returns 0 for missing substring', () => {
-    const sc = new SubstringCounter('abcdef')
-    expect(sc.countNaive('xyz')).toBe(0)
+    expect(new SubstringCounter('abcdef').countNaive('xyz')).toBe(0)
   })
 
   it('counts single char occurrences', () => {
@@ -36,8 +33,7 @@ describe('SubstringCounter', () => {
   })
 
   it('countAllOf returns map', () => {
-    const sc = new SubstringCounter('abcabc')
-    const counts = sc.countAllOf(['ab', 'bc', 'xyz'])
+    const counts = new SubstringCounter('abcabc').countAllOf(['ab', 'bc', 'xyz'])
     expect(counts.get('ab')).toBe(2)
     expect(counts.get('bc')).toBe(2)
     expect(counts.get('xyz')).toBe(0)
@@ -51,8 +47,7 @@ describe('SubstringCounter', () => {
   })
 
   it('countChar returns 0 for multi-char', () => {
-    const sc = new SubstringCounter('abc')
-    expect(sc.countChar('ab')).toBe(0)
+    expect(new SubstringCounter('abc').countChar('ab')).toBe(0)
   })
 
   it('length and getText work', () => {
@@ -68,8 +63,7 @@ describe('SubstringCounter', () => {
   })
 
   it('handles whole string match', () => {
-    const sc = new SubstringCounter('hello')
-    expect(sc.countNaive('hello')).toBe(1)
+    expect(new SubstringCounter('hello').countNaive('hello')).toBe(1)
   })
 
   it('handles empty text', () => {
@@ -79,8 +73,7 @@ describe('SubstringCounter', () => {
   })
 
   it('countAllOf with empty array', () => {
-    const sc = new SubstringCounter('abc')
-    expect(sc.countAllOf([]).size).toBe(0)
+    expect(new SubstringCounter('abc').countAllOf([]).size).toBe(0)
   })
 
   it('case sensitive matching', () => {
@@ -89,48 +82,149 @@ describe('SubstringCounter', () => {
     expect(sc.countNaive('Hello')).toBe(1)
   })
 
-  it('overlapping substrings', () => {
-    const sc = new SubstringCounter('aaa')
-    expect(sc.countNaive('aa')).toBe(2)
+  it('countChar on empty text returns 0', () => {
+    expect(new SubstringCounter('').countChar('a')).toBe(0)
   })
 
-  it('count single char', () => {
-    const sc = new SubstringCounter('abcabc')
-    expect(sc.countNaive('a')).toBe(2)
+  it('contains on empty text returns false', () => {
+    expect(new SubstringCounter('').contains('a')).toBe(false)
   })
 
-  it('count non-existent substring', () => {
-    const sc = new SubstringCounter('hello')
-    expect(sc.countNaive('xyz')).toBe(0)
+  it('contains empty string returns true', () => {
+    expect(new SubstringCounter('abc').contains('')).toBe(true)
   })
 
-  it('count single char occurrences', () => {
-    const sc = new SubstringCounter('aaa')
-    expect(sc.countNaive('a')).toBe(3)
+  it('length of empty text is 0', () => {
+    expect(new SubstringCounter('').length).toBe(0)
   })
 
-  it('count in empty string', () => {
-    const sc = new SubstringCounter('')
-    expect(sc.countNaive('a')).toBe(0)
+  it('getText returns original text', () => {
+    const text = 'the quick brown fox'
+    expect(new SubstringCounter(text).getText()).toBe(text)
   })
 
-  it('count exact match returns 1', () => {
-    const sc = new SubstringCounter('abc')
+  it('countNaive with single char text', () => {
+    expect(new SubstringCounter('a').countNaive('a')).toBe(1)
+    expect(new SubstringCounter('a').countNaive('b')).toBe(0)
+  })
+
+  it('countNonOverlapping with single char text', () => {
+    expect(new SubstringCounter('a').countNonOverlapping('a')).toBe(1)
+    expect(new SubstringCounter('a').countNonOverlapping('b')).toBe(0)
+  })
+
+  it('countNaive substring longer than text returns 0', () => {
+    expect(new SubstringCounter('ab').countNaive('abc')).toBe(0)
+  })
+
+  it('countNonOverlapping substring longer than text returns 0', () => {
+    expect(new SubstringCounter('ab').countNonOverlapping('abc')).toBe(0)
+  })
+
+  it('countAllOf with multiple matches', () => {
+    const sc = new SubstringCounter('abcabcabc')
+    const counts = sc.countAllOf(['abc', 'bca', 'cab'])
+    expect(counts.get('abc')).toBe(3)
+    expect(counts.get('bca')).toBe(2)
+    expect(counts.get('cab')).toBe(2)
+  })
+
+  it('countChar counts all occurrences of character', () => {
+    expect(new SubstringCounter('aaaa').countChar('a')).toBe(4)
+  })
+
+  it('countChar with empty string arg returns 0', () => {
+    expect(new SubstringCounter('abc').countChar('')).toBe(0)
+  })
+
+  it('handles unicode characters', () => {
+    const sc = new SubstringCounter('café')
+    expect(sc.length).toBe(4)
+    expect(sc.countChar('é')).toBe(1)
+  })
+
+  it('handles special regex characters literally', () => {
+    const sc = new SubstringCounter('a.b')
+    expect(sc.countNaive('.')).toBe(1)
+    expect(sc.countNaive('a.b')).toBe(1)
+  })
+
+  it('nonOverlapping vs naive for aaaa', () => {
+    const sc = new SubstringCounter('aaaa')
+    expect(sc.countNaive('aa')).toBe(3)
+    expect(sc.countNonOverlapping('aa')).toBe(2)
+  })
+
+  it('countNaive with overlapping pattern ababa', () => {
+    const sc = new SubstringCounter('ababa')
+    expect(sc.countNaive('aba')).toBe(2)
+    expect(sc.countNonOverlapping('aba')).toBe(1)
+  })
+
+  it('countNaive counts at start and end', () => {
+    const sc = new SubstringCounter('abcab')
+    expect(sc.countNaive('ab')).toBe(2)
+  })
+
+  it('countChar on string with only that char', () => {
+    expect(new SubstringCounter('zzzz').countChar('z')).toBe(4)
+  })
+
+  it('countNaive on long repeated string', () => {
+    const sc = new SubstringCounter('ab'.repeat(50))
+    expect(sc.countNaive('ab')).toBe(50)
+    expect(sc.countNonOverlapping('ab')).toBe(50)
+  })
+
+  it('contains with partial match returns true', () => {
+    expect(new SubstringCounter('hello world').contains('llo w')).toBe(true)
+  })
+
+  it('countNaive returns 0 for single char not in text', () => {
+    expect(new SubstringCounter('abc').countNaive('z')).toBe(0)
+  })
+
+  it('countNonOverlapping returns 0 for single char not in text', () => {
+    expect(new SubstringCounter('abc').countNonOverlapping('z')).toBe(0)
+  })
+
+  it('getText preserves whitespace', () => {
+    const sc = new SubstringCounter('  spaces  ')
+    expect(sc.getText()).toBe('  spaces  ')
+    expect(sc.length).toBe(10)
+  })
+
+  it('countChar returns 0 for empty string input', () => {
+    expect(new SubstringCounter('abc').countChar('')).toBe(0)
+  })
+
+  it('countAllOf with single item', () => {
+    const counts = new SubstringCounter('abcabc').countAllOf(['abc'])
+    expect(counts.size).toBe(1)
+    expect(counts.get('abc')).toBe(2)
+  })
+
+  it('handles newline characters', () => {
+    const sc = new SubstringCounter('a\nb\nc')
+    expect(sc.countNaive('\n')).toBe(2)
+    expect(sc.countChar('\n')).toBe(2)
+  })
+
+  it('handles tab characters', () => {
+    const sc = new SubstringCounter('a\tb\tc')
+    expect(sc.countNaive('\t')).toBe(2)
+    expect(sc.countChar('\t')).toBe(2)
+  })
+
+  it('substring at exact boundaries', () => {
+    const sc = new SubstringCounter('abcde')
     expect(sc.countNaive('abc')).toBe(1)
+    expect(sc.countNaive('cde')).toBe(1)
+    expect(sc.countNaive('bcd')).toBe(1)
   })
 
-  it('count no match returns 0', () => {
-    const sc = new SubstringCounter('xyz')
-    expect(sc.countNaive('abcdef')).toBe(0)
-  })
-
-  it('count exact match returns 1', () => {
-    const sc = new SubstringCounter('abc')
-    expect(sc.countNaive('abc')).toBeGreaterThanOrEqual(1)
-  })
-
-  it('count no match returns 0', () => {
-    const sc = new SubstringCounter('xyz')
-    expect(sc.countNaive('abc')).toBe(0)
+  it('countAllOf returns correct map type', () => {
+    const counts = new SubstringCounter('abc').countAllOf(['a', 'b'])
+    expect(counts).toBeInstanceOf(Map)
   })
 })

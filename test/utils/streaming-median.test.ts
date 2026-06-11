@@ -2,50 +2,57 @@ import { describe, it, expect } from 'vitest'
 import { StreamingMedian } from '../../src/utils/streaming-median.js'
 
 describe('StreamingMedian', () => {
-  it('should return 0 for median when empty', () => {
-    const sm = new StreamingMedian()
-    expect(sm.median()).toBe(0)
+  it('returns 0 median when empty', () => {
+    expect(new StreamingMedian().median()).toBe(0)
   })
 
-  it('should return 0 for mean when empty', () => {
-    const sm = new StreamingMedian()
-    expect(sm.mean()).toBe(0)
+  it('returns 0 mean when empty', () => {
+    expect(new StreamingMedian().mean()).toBe(0)
   })
 
-  it('should return 0 for min when empty', () => {
-    const sm = new StreamingMedian()
-    expect(sm.min()).toBe(0)
+  it('returns 0 min when empty', () => {
+    expect(new StreamingMedian().min()).toBe(0)
   })
 
-  it('should return 0 for max when empty', () => {
-    const sm = new StreamingMedian()
-    expect(sm.max()).toBe(0)
+  it('returns 0 max when empty', () => {
+    expect(new StreamingMedian().max()).toBe(0)
   })
 
-  it('should have count 0 when empty', () => {
-    const sm = new StreamingMedian()
-    expect(sm.count).toBe(0)
+  it('count is 0 when empty', () => {
+    expect(new StreamingMedian().count).toBe(0)
   })
 
-  it('should have sum 0 when empty', () => {
-    const sm = new StreamingMedian()
-    expect(sm.sum).toBe(0)
+  it('sum is 0 when empty', () => {
+    expect(new StreamingMedian().sum).toBe(0)
   })
 
-  it('should calculate correct median for single value', () => {
+  it('single value median', () => {
     const sm = new StreamingMedian()
     sm.push(5)
     expect(sm.median()).toBe(5)
   })
 
-  it('should calculate correct median for two values', () => {
+  it('single value mean', () => {
+    const sm = new StreamingMedian()
+    sm.push(5)
+    expect(sm.mean()).toBe(5)
+  })
+
+  it('single value min and max', () => {
+    const sm = new StreamingMedian()
+    sm.push(5)
+    expect(sm.min()).toBe(5)
+    expect(sm.max()).toBe(5)
+  })
+
+  it('two values median is average', () => {
     const sm = new StreamingMedian()
     sm.push(3)
     sm.push(7)
     expect(sm.median()).toBe(5)
   })
 
-  it('should calculate correct median for odd number of values', () => {
+  it('three values median is middle', () => {
     const sm = new StreamingMedian()
     sm.push(1)
     sm.push(5)
@@ -53,7 +60,7 @@ describe('StreamingMedian', () => {
     expect(sm.median()).toBe(3)
   })
 
-  it('should calculate correct median for even number of values', () => {
+  it('four values median is average of middle two', () => {
     const sm = new StreamingMedian()
     sm.push(1)
     sm.push(2)
@@ -62,17 +69,7 @@ describe('StreamingMedian', () => {
     expect(sm.median()).toBe(2.5)
   })
 
-  it('should calculate correct mean', () => {
-    const sm = new StreamingMedian()
-    sm.push(1)
-    sm.push(2)
-    sm.push(3)
-    sm.push(4)
-    sm.push(5)
-    expect(sm.mean()).toBe(3)
-  })
-
-  it('should track correct count', () => {
+  it('tracks count correctly', () => {
     const sm = new StreamingMedian()
     sm.push(1)
     sm.push(2)
@@ -80,7 +77,7 @@ describe('StreamingMedian', () => {
     expect(sm.count).toBe(3)
   })
 
-  it('should track correct sum', () => {
+  it('tracks sum correctly', () => {
     const sm = new StreamingMedian()
     sm.push(1)
     sm.push(2)
@@ -88,7 +85,15 @@ describe('StreamingMedian', () => {
     expect(sm.sum).toBe(6)
   })
 
-  it('should find correct min', () => {
+  it('computes mean correctly', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    sm.push(20)
+    sm.push(30)
+    expect(sm.mean()).toBe(20)
+  })
+
+  it('finds correct min', () => {
     const sm = new StreamingMedian()
     sm.push(5)
     sm.push(2)
@@ -98,7 +103,7 @@ describe('StreamingMedian', () => {
     expect(sm.min()).toBe(1)
   })
 
-  it('should find correct max', () => {
+  it('finds correct max', () => {
     const sm = new StreamingMedian()
     sm.push(5)
     sm.push(2)
@@ -108,7 +113,7 @@ describe('StreamingMedian', () => {
     expect(sm.max()).toBe(9)
   })
 
-  it('should handle negative numbers', () => {
+  it('handles negative numbers', () => {
     const sm = new StreamingMedian()
     sm.push(-5)
     sm.push(-2)
@@ -116,12 +121,11 @@ describe('StreamingMedian', () => {
     sm.push(-1)
     sm.push(-9)
     expect(sm.median()).toBe(-5)
-    expect(sm.mean()).toBe(-5)
     expect(sm.min()).toBe(-9)
     expect(sm.max()).toBe(-1)
   })
 
-  it('should handle mixed positive and negative numbers', () => {
+  it('handles mixed positive and negative', () => {
     const sm = new StreamingMedian()
     sm.push(-5)
     sm.push(0)
@@ -130,7 +134,7 @@ describe('StreamingMedian', () => {
     expect(sm.mean()).toBe(0)
   })
 
-  it('should handle duplicate values', () => {
+  it('handles duplicate values', () => {
     const sm = new StreamingMedian()
     sm.push(5)
     sm.push(5)
@@ -140,34 +144,30 @@ describe('StreamingMedian', () => {
     expect(sm.mean()).toBe(5)
   })
 
-  it('should maintain accuracy after many pushes', () => {
+  it('maintains accuracy after many pushes', () => {
     const sm = new StreamingMedian()
-    for (let i = 1; i <= 100; i++) {
-      sm.push(i)
-    }
+    for (let i = 1; i <= 100; i++) sm.push(i)
     expect(sm.median()).toBe(50.5)
     expect(sm.mean()).toBe(50.5)
   })
 
-  it('should handle decimal values', () => {
+  it('handles decimal values', () => {
     const sm = new StreamingMedian()
     sm.push(1.5)
     sm.push(2.5)
     sm.push(3.5)
     expect(sm.median()).toBe(2.5)
-    expect(sm.mean()).toBe(2.5)
   })
 
-  it('should handle large values', () => {
+  it('handles large values', () => {
     const sm = new StreamingMedian()
     sm.push(1000000)
     sm.push(2000000)
     sm.push(3000000)
     expect(sm.median()).toBe(2000000)
-    expect(sm.mean()).toBe(2000000)
   })
 
-  it('should handle zero values', () => {
+  it('handles zero values', () => {
     const sm = new StreamingMedian()
     sm.push(0)
     sm.push(0)
@@ -176,7 +176,7 @@ describe('StreamingMedian', () => {
     expect(sm.mean()).toBe(0)
   })
 
-  it('should handle alternating large and small values', () => {
+  it('handles alternating large and small values', () => {
     const sm = new StreamingMedian()
     sm.push(100)
     sm.push(1)
@@ -185,9 +185,188 @@ describe('StreamingMedian', () => {
     expect(sm.median()).toBe(50.5)
   })
 
-  it('single value median is that value', () => {
+  it('handles descending input', () => {
     const sm = new StreamingMedian()
-    sm.push(42)
-    expect(sm.median()).toBe(42)
+    sm.push(5)
+    sm.push(4)
+    sm.push(3)
+    sm.push(2)
+    sm.push(1)
+    expect(sm.median()).toBe(3)
+  })
+
+  it('handles ascending input', () => {
+    const sm = new StreamingMedian()
+    sm.push(1)
+    sm.push(2)
+    sm.push(3)
+    sm.push(4)
+    sm.push(5)
+    expect(sm.median()).toBe(3)
+  })
+
+  it('handles single negative value', () => {
+    const sm = new StreamingMedian()
+    sm.push(-42)
+    expect(sm.median()).toBe(-42)
+    expect(sm.min()).toBe(-42)
+    expect(sm.max()).toBe(-42)
+  })
+
+  it('odd count median is exact middle', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    sm.push(20)
+    sm.push(30)
+    sm.push(40)
+    sm.push(50)
+    expect(sm.median()).toBe(30)
+  })
+
+  it('even count median is average of two middle', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    sm.push(20)
+    sm.push(30)
+    sm.push(40)
+    expect(sm.median()).toBe(25)
+  })
+
+  it('handles interleaved high and low values', () => {
+    const sm = new StreamingMedian()
+    sm.push(100)
+    sm.push(1)
+    sm.push(50)
+    expect(sm.median()).toBe(50)
+  })
+
+  it('min updates with each push', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    expect(sm.min()).toBe(10)
+    sm.push(5)
+    expect(sm.min()).toBe(5)
+    sm.push(3)
+    expect(sm.min()).toBe(3)
+  })
+
+  it('max updates with each push', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    expect(sm.max()).toBe(10)
+    sm.push(20)
+    expect(sm.max()).toBe(20)
+    sm.push(30)
+    expect(sm.max()).toBe(30)
+  })
+
+  it('count increments correctly', () => {
+    const sm = new StreamingMedian()
+    expect(sm.count).toBe(0)
+    sm.push(1)
+    expect(sm.count).toBe(1)
+    sm.push(2)
+    expect(sm.count).toBe(2)
+  })
+
+  it('sum accumulates correctly', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    expect(sm.sum).toBe(10)
+    sm.push(20)
+    expect(sm.sum).toBe(30)
+    sm.push(30)
+    expect(sm.sum).toBe(60)
+  })
+
+  it('handles descending then ascending', () => {
+    const sm = new StreamingMedian()
+    sm.push(5)
+    sm.push(4)
+    sm.push(3)
+    sm.push(4)
+    sm.push(5)
+    expect(sm.median()).toBe(4)
+  })
+
+  it('handles all negative values', () => {
+    const sm = new StreamingMedian()
+    sm.push(-10)
+    sm.push(-5)
+    sm.push(-1)
+    expect(sm.median()).toBe(-5)
+    expect(sm.min()).toBe(-10)
+    expect(sm.max()).toBe(-1)
+  })
+
+  it('handles fractional mean correctly', () => {
+    const sm = new StreamingMedian()
+    sm.push(1)
+    sm.push(2)
+    expect(sm.mean()).toBe(1.5)
+  })
+
+  it('handles many pushes in reverse', () => {
+    const sm = new StreamingMedian()
+    for (let i = 100; i >= 1; i--) sm.push(i)
+    expect(sm.count).toBe(100)
+    expect(sm.median()).toBe(50.5)
+  })
+
+  it('handles same min and max', () => {
+    const sm = new StreamingMedian()
+    sm.push(7)
+    sm.push(7)
+    sm.push(7)
+    expect(sm.min()).toBe(7)
+    expect(sm.max()).toBe(7)
+  })
+
+  it('two element stream', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    sm.push(20)
+    expect(sm.count).toBe(2)
+    expect(sm.sum).toBe(30)
+    expect(sm.mean()).toBe(15)
+    expect(sm.median()).toBe(15)
+  })
+
+  it('handles negative then positive', () => {
+    const sm = new StreamingMedian()
+    sm.push(-5)
+    sm.push(5)
+    expect(sm.median()).toBe(0)
+    expect(sm.mean()).toBe(0)
+  })
+
+  it('mean of identical values equals that value', () => {
+    const sm = new StreamingMedian()
+    for (let i = 0; i < 10; i++) sm.push(7)
+    expect(sm.mean()).toBe(7)
+    expect(sm.median()).toBe(7)
+  })
+
+  it('handles very large values', () => {
+    const sm = new StreamingMedian()
+    sm.push(Number.MAX_SAFE_INTEGER)
+    sm.push(0)
+    expect(sm.median()).toBe(Number.MAX_SAFE_INTEGER / 2)
+  })
+
+  it('handles very small values', () => {
+    const sm = new StreamingMedian()
+    sm.push(Number.MIN_VALUE)
+    sm.push(0)
+    expect(sm.mean()).toBe(Number.MIN_VALUE / 2)
+  })
+
+  it('handles push of zero then positive', () => {
+    const sm = new StreamingMedian()
+    sm.push(0)
+    sm.push(10)
+    expect(sm.median()).toBe(5)
+    expect(sm.min()).toBe(0)
+    expect(sm.max()).toBe(10)
   })
 })

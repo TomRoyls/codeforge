@@ -197,4 +197,195 @@ describe('SlidingWindowStats', () => {
     sw.push(30)
     expect(sw.mean).toBe(20)
   })
+
+  it('handles zero values', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(0)
+    sw.push(0)
+    sw.push(0)
+    expect(sw.mean).toBe(0)
+    expect(sw.variance).toBe(0)
+  })
+
+  it('handles mixed positive and negative', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(-5)
+    sw.push(0)
+    sw.push(5)
+    expect(sw.mean).toBe(0)
+    expect(sw.min).toBe(-5)
+    expect(sw.max).toBe(5)
+  })
+
+  it('clear resets to initial state', () => {
+    const sw = new SlidingWindowStats(5)
+    sw.push(1)
+    sw.push(2)
+    sw.push(3)
+    sw.clear()
+    expect(sw.count).toBe(0)
+    expect(sw.mean).toBe(0)
+    expect(sw.variance).toBe(0)
+    expect(sw.min).toBe(0)
+    expect(sw.max).toBe(0)
+    expect(sw.total).toBe(0)
+  })
+
+  it('toArray is independent of internal state', () => {
+    const sw = new SlidingWindowStats(2)
+    sw.push(1)
+    sw.push(2)
+    const arr = sw.toArray()
+    arr.push(3)
+    expect(sw.toArray()).toEqual([1, 2])
+  })
+
+  it('handles large values', () => {
+    const sw = new SlidingWindowStats(2)
+    sw.push(1e10)
+    sw.push(2e10)
+    expect(sw.mean).toBe(1.5e10)
+  })
+
+  it('handles very small values', () => {
+    const sw = new SlidingWindowStats(2)
+    sw.push(0.001)
+    sw.push(0.003)
+    expect(sw.mean).toBeCloseTo(0.002)
+  })
+
+  it('stddev handles constant values', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(5)
+    sw.push(5)
+    sw.push(5)
+    expect(sw.stddev).toBe(0)
+  })
+
+  it('stddev is sqrt of variance', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(1)
+    sw.push(2)
+    sw.push(3)
+    expect(sw.stddev).toBeCloseTo(Math.sqrt(sw.variance))
+  })
+
+  it('handles decimal values', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(1.5)
+    sw.push(2.5)
+    sw.push(3.5)
+    expect(sw.mean).toBeCloseTo(2.5)
+  })
+
+  it('clear followed by new values works', () => {
+    const sw = new SlidingWindowStats(2)
+    sw.push(100)
+    sw.push(200)
+    sw.clear()
+    sw.push(10)
+    sw.push(20)
+    expect(sw.mean).toBe(15)
+  })
+
+  it('total updates correctly with slides', () => {
+    const sw = new SlidingWindowStats(2)
+    sw.push(10)
+    sw.push(20)
+    expect(sw.total).toBe(30)
+    sw.push(30)
+    expect(sw.total).toBe(50)
+  })
+
+  it('variance with two values', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(0)
+    sw.push(10)
+    expect(sw.variance).toBe(50)
+  })
+
+  it('stddev with two values', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(0)
+    sw.push(10)
+    expect(sw.stddev).toBeCloseTo(7.0710678118654755)
+  })
+
+  it('handles identical sliding values', () => {
+    const sw = new SlidingWindowStats(2)
+    sw.push(5)
+    sw.push(5)
+    sw.push(5)
+    sw.push(5)
+    expect(sw.mean).toBe(5)
+    expect(sw.variance).toBe(0)
+  })
+
+  it('min max with single element', () => {
+    const sw = new SlidingWindowStats(5)
+    sw.push(42)
+    expect(sw.min).toBe(42)
+    expect(sw.max).toBe(42)
+  })
+
+  it('isFull returns false after clear', () => {
+    const sw = new SlidingWindowStats(2)
+    sw.push(1)
+    sw.push(2)
+    expect(sw.isFull).toBe(true)
+    sw.clear()
+    expect(sw.isFull).toBe(false)
+  })
+
+  it('toArray empty for new instance', () => {
+    const sw = new SlidingWindowStats(5)
+    expect(sw.toArray()).toEqual([])
+  })
+
+  it('handles alternating high and low values', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(100)
+    sw.push(1)
+    sw.push(100)
+    expect(sw.mean).toBeCloseTo(67)
+    expect(sw.min).toBe(1)
+    expect(sw.max).toBe(100)
+  })
+
+  it('variance increases with range', () => {
+    const sw1 = new SlidingWindowStats(3)
+    sw1.push(1)
+    sw1.push(2)
+    sw1.push(3)
+    const sw2 = new SlidingWindowStats(3)
+    sw2.push(1)
+    sw2.push(50)
+    sw2.push(100)
+    expect(sw2.variance).toBeGreaterThan(sw1.variance)
+  })
+
+  it('mean of all same values is that value', () => {
+    const sw = new SlidingWindowStats(4)
+    sw.push(7)
+    sw.push(7)
+    sw.push(7)
+    sw.push(7)
+    expect(sw.mean).toBe(7)
+  })
+
+  it('handles window size 1 correctly', () => {
+    const sw = new SlidingWindowStats(1)
+    sw.push(15)
+    expect(sw.mean).toBe(15)
+    expect(sw.variance).toBe(0)
+    expect(sw.count).toBe(1)
+  })
+
+  it('total matches sum of pushes', () => {
+    const sw = new SlidingWindowStats(3)
+    sw.push(10)
+    sw.push(20)
+    sw.push(30)
+    expect(sw.total).toBe(60)
+  })
 })

@@ -212,11 +212,205 @@ describe('SlidingWindowMedian', () => {
     expect(swm.max()).toBe(10)
   })
 
-  it('multiple values median', () => {
+  it('handles large window size', () => {
+    const swm = new SlidingWindowMedian(100)
+    for (let i = 0; i < 10; i++) {
+      swm.push(i)
+    }
+    expect(swm.size).toBe(10)
+    expect(swm.median()).toBeCloseTo(4.5)
+  })
+
+  it('handles percentile 0 returns minimum', () => {
+    const swm = new SlidingWindowMedian(5)
+    swm.push(10)
+    swm.push(20)
+    swm.push(30)
+    swm.push(40)
+    swm.push(50)
+    expect(swm.percentile(0)).toBe(10)
+  })
+
+  it('handles percentile 100 returns maximum', () => {
+    const swm = new SlidingWindowMedian(5)
+    swm.push(10)
+    swm.push(20)
+    swm.push(30)
+    swm.push(40)
+    swm.push(50)
+    expect(swm.percentile(100)).toBe(50)
+  })
+
+  it('handles percentile 50 for even window', () => {
+    const swm = new SlidingWindowMedian(4)
+    swm.push(10)
+    swm.push(20)
+    swm.push(30)
+    swm.push(40)
+    expect(swm.percentile(50)).toBe(20)
+  })
+
+  it('handles percentile 50 for odd window', () => {
+    const swm = new SlidingWindowMedian(5)
+    swm.push(10)
+    swm.push(20)
+    swm.push(30)
+    swm.push(40)
+    swm.push(50)
+    expect(swm.percentile(50)).toBe(30)
+  })
+
+  it('handles mean with negative numbers', () => {
     const swm = new SlidingWindowMedian(3)
+    swm.push(-5)
+    swm.push(0)
+    swm.push(5)
+    expect(swm.mean()).toBe(0)
+  })
+
+  it('handles min with all negative numbers', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(-5)
+    swm.push(-3)
+    swm.push(-1)
+    expect(swm.min()).toBe(-5)
+  })
+
+  it('handles max with all negative numbers', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(-5)
+    swm.push(-3)
+    swm.push(-1)
+    expect(swm.max()).toBe(-1)
+  })
+
+  it('handles sliding window with all duplicates', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(7)
+    swm.push(7)
+    swm.push(7)
+    expect(swm.median()).toBe(7)
+    expect(swm.min()).toBe(7)
+    expect(swm.max()).toBe(7)
+  })
+
+  it('handles very small decimal values', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(0.001)
+    swm.push(0.002)
+    swm.push(0.003)
+    expect(swm.median()).toBeCloseTo(0.002)
+  })
+
+  it('handles very large values', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(1000000)
+    swm.push(2000000)
+    swm.push(3000000)
+    expect(swm.median()).toBe(2000000)
+  })
+
+  it('handles median when window is not yet full', () => {
+    const swm = new SlidingWindowMedian(5)
+    swm.push(1)
+    swm.push(2)
+    expect(swm.median()).toBe(1.5)
+    swm.push(3)
+    expect(swm.median()).toBe(2)
+  })
+
+  it('handles mean when window is not yet full', () => {
+    const swm = new SlidingWindowMedian(5)
+    swm.push(10)
+    swm.push(20)
+    swm.push(30)
+    expect(swm.mean()).toBe(20)
+  })
+
+  it('handles percentile when window is not yet full', () => {
+    const swm = new SlidingWindowMedian(5)
     swm.push(1)
     swm.push(2)
     swm.push(3)
-    expect(swm.median()).toBe(2)
+    expect(swm.percentile(50)).toBe(2)
+  })
+
+  it('handles mixed positive and negative values', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(-10)
+    swm.push(0)
+    swm.push(10)
+    expect(swm.median()).toBe(0)
+    expect(swm.min()).toBe(-10)
+    expect(swm.max()).toBe(10)
+  })
+
+  it('handles median for window size 2', () => {
+    const swm = new SlidingWindowMedian(2)
+    swm.push(1)
+    swm.push(2)
+    expect(swm.median()).toBe(1.5)
+    swm.push(3)
+    expect(swm.median()).toBe(2.5)
+  })
+
+  it('handles window with repeated values after sliding', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(1)
+    swm.push(1)
+    swm.push(2)
+    expect(swm.median()).toBe(1)
+    swm.push(1)
+    expect(swm.median()).toBe(1)
+  })
+
+  it('handles zero as a value', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(0)
+    swm.push(0)
+    swm.push(0)
+    expect(swm.median()).toBe(0)
+    expect(swm.mean()).toBe(0)
+  })
+
+  it('handles mean of large window', () => {
+    const swm = new SlidingWindowMedian(1000)
+    for (let i = 1; i <= 100; i++) {
+      swm.push(i)
+    }
+    expect(swm.mean()).toBeCloseTo(50.5)
+  })
+
+  it('handles complex sliding pattern', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(5)
+    swm.push(1)
+    swm.push(9)
+    swm.push(3)
+    swm.push(7)
+    expect(swm.median()).toBe(7)
+    expect(swm.min()).toBe(3)
+    expect(swm.max()).toBe(9)
+  })
+
+  it('handles median stability over multiple slides', () => {
+    const swm = new SlidingWindowMedian(4)
+    swm.push(1)
+    swm.push(2)
+    swm.push(3)
+    swm.push(4)
+    expect(swm.median()).toBe(2.5)
+    swm.push(2)
+    swm.push(3)
+    expect(swm.median()).toBe(3)
+  })
+
+  it('handles percentile with exact boundary', () => {
+    const swm = new SlidingWindowMedian(4)
+    swm.push(1)
+    swm.push(2)
+    swm.push(3)
+    swm.push(4)
+    expect(swm.percentile(50)).toBe(2)
   })
 })

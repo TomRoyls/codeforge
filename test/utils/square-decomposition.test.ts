@@ -69,11 +69,6 @@ describe('SquareDecomposition', () => {
     expect(sd.get(2)).toBe(10)
   })
 
-  it('handles single element', () => {
-    const sd = new SquareDecomposition([42])
-    expect(sd.query(0, 0)).toBe(42)
-  })
-
   it('handles update then query', () => {
     const sd = new SquareDecomposition([1, 2, 3])
     sd.update(1, 10)
@@ -133,5 +128,158 @@ describe('SquareDecomposition', () => {
   it('query single element', () => {
     const sd = new SquareDecomposition([5, 10, 15])
     expect(sd.query(1, 1)).toBe(10)
+  })
+
+  it('handles negative numbers', () => {
+    const sd = new SquareDecomposition([-1, -2, -3, -4, -5])
+    expect(sd.query(0, 4)).toBe(-15)
+  })
+
+  it('handles mixed positive and negative', () => {
+    const sd = new SquareDecomposition([-5, 10, -3, 8, -2])
+    expect(sd.query(0, 4)).toBe(8)
+  })
+
+  it('handles zero values', () => {
+    const sd = new SquareDecomposition([0, 0, 0, 0, 0])
+    expect(sd.query(0, 4)).toBe(0)
+  })
+
+  it('update to zero', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    sd.update(2, 0)
+    expect(sd.get(2)).toBe(0)
+    expect(sd.query(0, 4)).toBe(12)
+  })
+
+  it('update to negative', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    sd.update(2, -10)
+    expect(sd.get(2)).toBe(-10)
+    expect(sd.query(0, 4)).toBe(2)
+  })
+
+  it('update first element', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    sd.update(0, 100)
+    expect(sd.get(0)).toBe(100)
+    expect(sd.query(0, 4)).toBe(114)
+  })
+
+  it('update last element', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    sd.update(4, 100)
+    expect(sd.get(4)).toBe(100)
+    expect(sd.query(0, 4)).toBe(110)
+  })
+
+  it('update with same value', () => {
+    const sd = new SquareDecomposition([1, 2, 3])
+    sd.update(1, 2)
+    expect(sd.get(1)).toBe(2)
+    expect(sd.query(0, 2)).toBe(6)
+  })
+
+  it('multiple updates in sequence', () => {
+    const sd = new SquareDecomposition([1, 2, 3])
+    sd.update(0, 10)
+    sd.update(1, 20)
+    sd.update(2, 30)
+    expect(sd.query(0, 2)).toBe(60)
+  })
+
+  it('query after multiple updates', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    sd.update(0, 10)
+    sd.update(2, 30)
+    sd.update(4, 50)
+    expect(sd.query(0, 4)).toBe(96)
+  })
+
+  it('handles block size of 1', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5], 1)
+    expect(sd.query(0, 4)).toBe(15)
+    sd.update(2, 10)
+    expect(sd.query(0, 4)).toBe(22)
+  })
+
+  it('handles block size larger than array', () => {
+    const sd = new SquareDecomposition([1, 2, 3], 10)
+    expect(sd.query(0, 2)).toBe(6)
+    sd.update(1, 10)
+    expect(sd.query(0, 2)).toBe(14)
+  })
+
+  it('handles array length not perfect square', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5, 6, 7])
+    expect(sd.length).toBe(7)
+    expect(sd.query(0, 6)).toBe(28)
+  })
+
+  it('toArray returns independent copy', () => {
+    const sd = new SquareDecomposition([1, 2, 3])
+    const arr = sd.toArray()
+    arr[0] = 999
+    expect(sd.get(0)).toBe(1)
+    expect(sd.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('toArray after updates', () => {
+    const sd = new SquareDecomposition([1, 2, 3])
+    sd.update(1, 20)
+    expect(sd.toArray()).toEqual([1, 20, 3])
+  })
+
+  it('query with two elements', () => {
+    const sd = new SquareDecomposition([5, 10, 15])
+    expect(sd.query(0, 1)).toBe(15)
+    expect(sd.query(1, 2)).toBe(25)
+  })
+
+  it('handles large values', () => {
+    const sd = new SquareDecomposition([1000000, 2000000, 3000000])
+    expect(sd.query(0, 2)).toBe(6000000)
+  })
+
+  it('query boundary first two', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    expect(sd.query(0, 1)).toBe(3)
+  })
+
+  it('query boundary last two', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    expect(sd.query(3, 4)).toBe(9)
+  })
+
+  it('handles array with two elements', () => {
+    const sd = new SquareDecomposition([10, 20])
+    expect(sd.query(0, 1)).toBe(30)
+    sd.update(0, 100)
+    expect(sd.query(0, 1)).toBe(120)
+  })
+
+  it('handles array with three elements', () => {
+    const sd = new SquareDecomposition([10, 20, 30])
+    expect(sd.query(0, 2)).toBe(60)
+    sd.update(1, 50)
+    expect(sd.query(0, 2)).toBe(90)
+  })
+
+  it('update middle element', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    sd.update(2, 100)
+    expect(sd.query(1, 3)).toBe(106)
+  })
+
+  it('query with negative range boundaries', () => {
+    const sd = new SquareDecomposition([1, 2, 3])
+    expect(sd.query(0, 0)).toBe(1)
+  })
+
+  it('handles block size of 3', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)
+    expect(sd.query(0, 8)).toBe(45)
+    sd.update(4, 50)
+    expect(sd.query(0, 8)).toBe(90)
   })
 })

@@ -27,21 +27,19 @@ describe('StrongConnectivityContraction', () => {
     expect(scc.hasCycle()).toBe(false)
   })
 
-  it('contracts to single component', () => {
+  it('contracts cycle to single component', () => {
     const scc = new StrongConnectivityContraction(3)
     scc.addEdge(0, 1)
     scc.addEdge(1, 2)
     scc.addEdge(2, 0)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(1)
+    expect(scc.contract().componentCount).toBe(1)
   })
 
   it('contracts DAG to 3 components', () => {
     const scc = new StrongConnectivityContraction(3)
     scc.addEdge(0, 1)
     scc.addEdge(1, 2)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(3)
+    expect(scc.contract().componentCount).toBe(3)
   })
 
   it('partial cycle', () => {
@@ -50,8 +48,7 @@ describe('StrongConnectivityContraction', () => {
     scc.addEdge(1, 2)
     scc.addEdge(2, 0)
     scc.addEdge(2, 3)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(2)
+    expect(scc.contract().componentCount).toBe(2)
   })
 
   it('DAG edges in contraction', () => {
@@ -63,9 +60,7 @@ describe('StrongConnectivityContraction', () => {
   })
 
   it('isolated nodes are separate components', () => {
-    const scc = new StrongConnectivityContraction(3)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(3)
+    expect(new StrongConnectivityContraction(3).contract().componentCount).toBe(3)
   })
 
   it('two cycles share no edges in DAG', () => {
@@ -87,12 +82,11 @@ describe('StrongConnectivityContraction', () => {
     scc.addEdge(2, 3)
     scc.addEdge(3, 4)
     expect(scc.hasCycle()).toBe(false)
-    const { dag } = scc.contract()
-    const totalEdges = dag.reduce((sum, arr) => sum + arr.length, 0)
+    const totalEdges = scc.contract().dag.reduce((sum, arr) => sum + arr.length, 0)
     expect(totalEdges).toBe(4)
   })
 
-  it('handles two SCCs with edge between', () => {
+  it('two SCCs with edge between', () => {
     const scc = new StrongConnectivityContraction(4)
     scc.addEdge(0, 1)
     scc.addEdge(1, 0)
@@ -104,88 +98,251 @@ describe('StrongConnectivityContraction', () => {
     expect(dag[0]!.length + dag[1]!.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('handles single node', () => {
-    const scc = new StrongConnectivityContraction(1)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(1)
+  it('single node has one component', () => {
+    expect(new StrongConnectivityContraction(1).contract().componentCount).toBe(1)
   })
 
-  it('handles two nodes no edge', () => {
-    const scc = new StrongConnectivityContraction(2)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(2)
+  it('two nodes no edge are two components', () => {
+    expect(new StrongConnectivityContraction(2).contract().componentCount).toBe(2)
   })
 
-  it('handles complete graph is one component', () => {
+  it('complete graph is one component', () => {
     const scc = new StrongConnectivityContraction(3)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 0)
-    scc.addEdge(1, 2)
-    scc.addEdge(2, 1)
-    scc.addEdge(0, 2)
-    scc.addEdge(2, 0)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(1)
+    scc.addEdge(0, 1); scc.addEdge(1, 0)
+    scc.addEdge(1, 2); scc.addEdge(2, 1)
+    scc.addEdge(0, 2); scc.addEdge(2, 0)
+    expect(scc.contract().componentCount).toBe(1)
   })
 
-  it('handles self loop is one component', () => {
+  it('self-loop node plus disconnected node', () => {
     const scc = new StrongConnectivityContraction(2)
     scc.addEdge(0, 0)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(2)
+    expect(scc.contract().componentCount).toBe(2)
   })
 
-  it('disconnected nodes form separate components', () => {
-    const scc = new StrongConnectivityContraction(3)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(3)
-  })
-
-  it('single node has one component', () => {
-    const scc = new StrongConnectivityContraction(1)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(1)
-  })
-
-  it('two nodes with edge form one component', () => {
-    const scc = new StrongConnectivityContraction(2)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 0)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(1)
-  })
-
-  it('two disconnected nodes have 2 components', () => {
-    const scc = new StrongConnectivityContraction(2)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(2)
-  })
-
-  it('single node has one component', () => {
-    const scc = new StrongConnectivityContraction(1)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(1)
-  })
-
-  it('two nodes with cycle have one component', () => {
-    const scc = new StrongConnectivityContraction(2)
-    scc.addEdge(0, 1)
-    scc.addEdge(1, 0)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(1)
-  })
-
-  it('DAG has each node as own SCC', () => {
+  it('component array assigns correct component', () => {
     const scc = new StrongConnectivityContraction(3)
     scc.addEdge(0, 1)
     scc.addEdge(1, 2)
-    const { componentCount } = scc.contract()
-    expect(componentCount).toBe(3)
+    const { component } = scc.contract()
+    expect(component.length).toBe(3)
+    expect(new Set(component).size).toBe(3)
   })
 
-  it('single node is one component', () => {
-    const scc = new StrongConnectivityContraction(1)
+  it('cycle nodes share same component', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    scc.addEdge(2, 0)
+    const { component } = scc.contract()
+    expect(component[0]).toBe(component[1])
+    expect(component[1]).toBe(component[2])
+  })
+
+  it('DAG component IDs are unique', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    scc.addEdge(2, 3)
+    const { component } = scc.contract()
+    expect(new Set(component).size).toBe(4)
+  })
+
+  it('three-node cycle with outgoing edge', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 0)
+    scc.addEdge(0, 3)
+    const { componentCount, dag } = scc.contract()
+    expect(componentCount).toBe(2)
+    const totalEdges = dag.reduce((s, a) => s + a.length, 0)
+    expect(totalEdges).toBeGreaterThanOrEqual(1)
+  })
+
+  it('five-node chain has no cycle', () => {
+    const scc = new StrongConnectivityContraction(5)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 3); scc.addEdge(3, 4)
+    expect(scc.hasCycle()).toBe(false)
+  })
+
+  it('five-node chain has 5 components', () => {
+    const scc = new StrongConnectivityContraction(5)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 3); scc.addEdge(3, 4)
+    expect(scc.contract().componentCount).toBe(5)
+  })
+
+  it('two separate self-loops', () => {
+    const scc = new StrongConnectivityContraction(2)
+    scc.addEdge(0, 0)
+    scc.addEdge(1, 1)
+    expect(scc.hasCycle()).toBe(true)
+    expect(scc.contract().componentCount).toBe(2)
+  })
+
+  it('single edge no cycle', () => {
+    const scc = new StrongConnectivityContraction(2)
+    scc.addEdge(0, 1)
+    expect(scc.hasCycle()).toBe(false)
+  })
+
+  it('DAG contraction preserves edge count', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1)
+    scc.addEdge(0, 2)
+    scc.addEdge(1, 2)
+    const totalEdges = scc.contract().dag.reduce((s, a) => s + a.length, 0)
+    expect(totalEdges).toBe(3)
+  })
+
+  it('large cycle contracts to one component', () => {
+    const scc = new StrongConnectivityContraction(10)
+    for (let i = 0; i < 9; i++) scc.addEdge(i, i + 1)
+    scc.addEdge(9, 0)
+    expect(scc.contract().componentCount).toBe(1)
+    expect(scc.hasCycle()).toBe(true)
+  })
+
+  it('component array has correct length', () => {
+    const scc = new StrongConnectivityContraction(5)
+    const { component } = scc.contract()
+    expect(component.length).toBe(5)
+  })
+
+  it('dag array has componentCount entries', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    const { dag, componentCount } = scc.contract()
+    expect(dag.length).toBe(componentCount)
+  })
+
+  it('empty graph has n components', () => {
+    expect(new StrongConnectivityContraction(4).contract().componentCount).toBe(4)
+  })
+
+  it('two interlinked cycles', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 1); scc.addEdge(1, 0)
+    scc.addEdge(2, 3); scc.addEdge(3, 2)
+    scc.addEdge(1, 2); scc.addEdge(2, 1)
+    expect(scc.contract().componentCount).toBe(1)
+  })
+
+  it('cycle with two tails', () => {
+    const scc = new StrongConnectivityContraction(5)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 0)
+    scc.addEdge(0, 3)
+    scc.addEdge(0, 4)
+    expect(scc.contract().componentCount).toBe(3)
+  })
+
+  it('multiple parallel edges', () => {
+    const scc = new StrongConnectivityContraction(2)
+    scc.addEdge(0, 1)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 0)
+    expect(scc.contract().componentCount).toBe(1)
+  })
+
+  it('hasCycle returns true for back edge', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 3); scc.addEdge(3, 1)
+    expect(scc.hasCycle()).toBe(true)
+  })
+
+  it('diamond DAG has no cycle', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 1); scc.addEdge(0, 2); scc.addEdge(1, 3); scc.addEdge(2, 3)
+    expect(scc.hasCycle()).toBe(false)
+    expect(scc.contract().componentCount).toBe(4)
+  })
+
+  it('component IDs are sequential', () => {
+    const scc = new StrongConnectivityContraction(3)
+    const { component } = scc.contract()
+    const ids = [...new Set(component)].sort()
+    expect(ids).toEqual([0, 1, 2])
+  })
+
+  it('graph with bidirectional edge forms cycle', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1); scc.addEdge(1, 0)
+    scc.addEdge(1, 2)
+    expect(scc.hasCycle()).toBe(true)
     const { componentCount } = scc.contract()
-    expect(componentCount).toBe(1)
+    expect(componentCount).toBe(2)
+  })
+
+  it('no edges all isolated', () => {
+    const scc = new StrongConnectivityContraction(5)
+    const { componentCount, component } = scc.contract()
+    expect(componentCount).toBe(5)
+    expect(new Set(component).size).toBe(5)
+  })
+
+  it('single edge between two nodes', () => {
+    const scc = new StrongConnectivityContraction(2)
+    scc.addEdge(0, 1)
+    const { componentCount, dag } = scc.contract()
+    expect(componentCount).toBe(2)
+    const totalEdges = dag.reduce((s, a) => s + a.length, 0)
+    expect(totalEdges).toBe(1)
+  })
+
+  it('three-node cycle has one DAG node with no edges', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 0)
+    const { dag } = scc.contract()
+    expect(dag.length).toBe(1)
+    expect(dag[0]!.length).toBe(0)
+  })
+
+  it('V-shaped graph (two edges from source)', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1); scc.addEdge(0, 2)
+    const { componentCount, dag } = scc.contract()
+    expect(componentCount).toBe(3)
+    const totalEdges = dag.reduce((s, a) => s + a.length, 0)
+    expect(totalEdges).toBe(2)
+  })
+
+  it('cycle with extra incoming edge', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 0)
+    scc.addEdge(3, 0)
+    const { componentCount, dag } = scc.contract()
+    expect(componentCount).toBe(2)
+    const totalEdges = dag.reduce((s, a) => s + a.length, 0)
+    expect(totalEdges).toBeGreaterThanOrEqual(1)
+  })
+
+  it('two nodes both have self-loops', () => {
+    const scc = new StrongConnectivityContraction(2)
+    scc.addEdge(0, 0); scc.addEdge(1, 1)
+    expect(scc.hasCycle()).toBe(true)
+    expect(scc.contract().componentCount).toBe(2)
+  })
+
+  it('six node chain', () => {
+    const scc = new StrongConnectivityContraction(6)
+    for (let i = 0; i < 5; i++) scc.addEdge(i, i + 1)
+    expect(scc.hasCycle()).toBe(false)
+    expect(scc.contract().componentCount).toBe(6)
+  })
+
+  it('reverse chain is also a DAG', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(3, 2); scc.addEdge(2, 1); scc.addEdge(1, 0)
+    expect(scc.hasCycle()).toBe(false)
+    expect(scc.contract().componentCount).toBe(4)
+  })
+
+  it('component array values within range', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 3)
+    const { component, componentCount } = scc.contract()
+    for (const c of component) {
+      expect(c).toBeGreaterThanOrEqual(0)
+      expect(c).toBeLessThan(componentCount)
+    }
   })
 })
