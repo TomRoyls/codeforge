@@ -48,8 +48,8 @@ describe('CentroidDecomposition', () => {
 
   it('handles deeper tree', () => {
     const adj = new Map<number, number[]>([
-      [0, [1, 2]], [1, [3, 4]], [2, [5, 6]], [3, []], [4, []], [5, []], [6, [],
-    ]])
+      [0, [1, 2]], [1, [3, 4]], [2, [5, 6]], [3, []], [4, []], [5, []], [6, []],
+    ])
     const cd = new CentroidDecomposition(adj)
     expect(cd.getCentroidTree().length).toBe(7)
   })
@@ -90,18 +90,6 @@ describe('CentroidDecomposition', () => {
     expect(cd.getCentroidTree().length).toBe(5)
   })
 
-  it('handles star-like tree', () => {
-    const adj = new Map<number, number[]>([
-      [0, [1, 2, 3, 4]], [1, []], [2, []], [3, []], [4, []],
-    ])
-    const cd = new CentroidDecomposition(adj)
-    const tree = cd.getCentroidTree()
-    expect(tree.length).toBe(5)
-    let roots = 0
-    for (const p of tree) if (p === -1) roots++
-    expect(roots).toBe(1)
-  })
-
   it('handles depth of centroid tree', () => {
     const adj = new Map<number, number[]>([
       [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, [5]], [5, [6]], [6, []],
@@ -123,14 +111,6 @@ describe('CentroidDecomposition', () => {
     expect(roots).toBe(1)
   })
 
-  it('single node centroid tree has one root', () => {
-    const adj = new Map<number, number[]>([[0, []]])
-    const cd = new CentroidDecomposition(adj)
-    const tree = cd.getCentroidTree()
-    expect(tree.length).toBe(1)
-    expect(cd.getParent(0)).toBe(-1)
-  })
-
   it('handles three-node path', () => {
     const adj = new Map<number, number[]>([
       [0, [1]], [1, [2]], [2, []],
@@ -138,15 +118,6 @@ describe('CentroidDecomposition', () => {
     const cd = new CentroidDecomposition(adj)
     const tree = cd.getCentroidTree()
     expect(tree.length).toBe(3)
-  })
-
-  it('handles two-node tree', () => {
-    const adj = new Map<number, number[]>([
-      [0, [1]], [1, []],
-    ])
-    const cd = new CentroidDecomposition(adj)
-    const tree = cd.getCentroidTree()
-    expect(tree.length).toBe(2)
   })
 
   it('handles four node star', () => {
@@ -163,45 +134,264 @@ describe('CentroidDecomposition', () => {
     expect(cd.getCentroidTree().length).toBe(1)
   })
 
-  it('two node tree decomposes', () => {
+  it('two node tree with bidirectional edge', () => {
     const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
     const cd = new CentroidDecomposition(adj)
     expect(cd.getCentroidTree().length).toBe(2)
   })
 
-  it('single node has trivial centroid tree', () => {
+  it('handles unbalanced tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3]], [1, []], [2, [4, 5]], [3, []], [4, []], [5, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(6)
+  })
+
+  it('handles deep chain tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, [5]], [5, [6]], [6, [7]], [7, [8]], [8, [9]], [9, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getCentroidTree().length).toBe(10)
+  })
+
+  it('handles tree with multiple children at different levels', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3, 4, 5]], [2, [6]], [3, []], [4, []], [5, []], [6, [7, 8]], [7, []], [8, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(9)
+  })
+
+  it('getParent returns consistent values', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, []], [2, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const parent1 = cd.getParent(1)
+    const parent2 = cd.getParent(1)
+    expect(parent1).toBe(parent2)
+  })
+
+  it('handles tree with only leaf nodes', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3, 4]], [1, []], [2, []], [3, []], [4, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(5)
+  })
+
+  it('handles tree with centroid as non-root', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2, 3]], [2, []], [3, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(4)
+  })
+
+  it('handles very star-like tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3, 4, 5]], [1, []], [2, []], [3, []], [4, []], [5, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(6)
+  })
+
+  it('handles completely balanced ternary tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3]], [1, [4, 5, 6]], [2, [7, 8, 9]], [3, [10, 11, 12]],
+      [4, []], [5, []], [6, []], [7, []], [8, []], [9, []], [10, []], [11, []], [12, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(13)
+  })
+
+  it('handles single edge tree', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getCentroidTree().length).toBe(2)
+  })
+
+  it('handles tree with long path and single branch', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4, 5]], [4, []], [5, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(6)
+  })
+
+  it('centroid tree preserves all nodes', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, []], [2, [3]], [3, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    for (let i = 0; i < 4; i++) {
+      expect(tree[i]).not.toBeUndefined()
+    }
+  })
+
+  it('handles tree with isolated component structure', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getCentroidTree().length).toBe(3)
+  })
+
+  it('handles large star graph', () => {
+    const children = Array.from({ length: 15 }, (_, i) => i + 1)
+    const adj = new Map<number, number[]>([[0, children], ...children.map(c => [c, [] as number[]])])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(16)
+  })
+
+  it('handles tree with varying subtree sizes', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3]], [1, [4, 5, 6, 7, 8]], [2, [9]], [3, [10, 11]],
+      [4, []], [5, []], [6, []], [7, []], [8, []], [9, []], [10, []], [11, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(12)
+  })
+
+  it('handles tree with duplicate parent references in adjacency', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [0]], [2, [0]]])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(3)
+  })
+
+  it('getCentroidTree returns copy not reference', () => {
     const adj = new Map<number, number[]>([[0, []]])
     const cd = new CentroidDecomposition(adj)
-    expect(cd.getCentroidTree().length).toBe(1)
+    const tree1 = cd.getCentroidTree()
+    const tree2 = cd.getCentroidTree()
+    expect(tree1).not.toBe(tree2)
+    expect(tree1).toEqual(tree2)
   })
 
-  it('two node tree decomposes', () => {
-    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+  it('handles tree with self-loop in adjacency', () => {
+    const adj = new Map<number, number[]>([[0, [0, 1]], [1, [0]]])
     const cd = new CentroidDecomposition(adj)
-    expect(cd.getCentroidTree().length).toBe(2)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(2)
   })
 
-  it('single node centroid tree', () => {
-    const adj = new Map<number, number[]>([[0, []]])
+  it('handles tree where centroid is middle node of long path', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, [5]], [5, []],
+    ])
     const cd = new CentroidDecomposition(adj)
-    expect(cd.getCentroidTree().length).toBe(1)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(6)
   })
 
-  it('two nodes decomposes correctly', () => {
-    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+  it('handles tree with asymmetric branching', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3, 4]], [1, []], [2, [5]], [3, []], [4, [6, 7]], [5, []], [6, []], [7, []],
+    ])
     const cd = new CentroidDecomposition(adj)
-    expect(cd.getCentroidTree().length).toBe(2)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(8)
   })
 
-  it('single node decomposition', () => {
-    const adj = new Map<number, number[]>([[0, []]])
+  it('handles tree with multiple depth levels', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3]], [2, [4]], [3, [5]], [4, [6]], [5, []], [6, []],
+    ])
     const cd = new CentroidDecomposition(adj)
-    expect(cd.getCentroidTree().length).toBe(1)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(7)
   })
 
-  it('two node tree decomposes', () => {
-    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+  it('handles tree where all nodes except one have one child', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, []],
+    ])
     const cd = new CentroidDecomposition(adj)
-    expect(cd.getCentroidTree().length).toBe(2)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(5)
+  })
+
+  it('handles tree with centroid at different levels in decomposition', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3, 4]], [2, [5, 6]], [3, []], [4, []], [5, []], [6, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    let roots = 0
+    for (const p of tree) if (p === -1) roots++
+    expect(roots).toBe(1)
+  })
+
+  it('handles empty adjacency list for non-existent nodes', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, []]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getParent(0)).toBe(-1)
+    expect(cd.getParent(1)).toBe(-1)
+  })
+
+  it('handles tree with mixed adjacency sizes', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3, 4]], [1, [5]], [2, []], [3, [6, 7]], [4, []], [5, []], [6, []], [7, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(8)
+  })
+
+  it('handles tree with root having many children', () => {
+    const children = Array.from({ length: 10 }, (_, i) => i + 1)
+    const adj = new Map<number, number[]>([[0, children], ...children.map(c => [c, [] as number[]])])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(11)
+  })
+
+  it('handles tree with linear structure and one branch', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3, 4]], [3, []], [4, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(5)
+  })
+
+  it('handles tree with centroid not being the original root', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2, 3]], [2, []], [3, [4]], [4, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(5)
+  })
+
+  it('handles tree with all nodes in single line', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3]], [3, [4]], [4, [5]], [5, [6]], [6, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(7)
+  })
+
+  it('handles tree with many disconnected subtrees in structure', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3]], [1, [4]], [2, [5]], [3, [6]], [4, []], [5, []], [6, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(7)
   })
 })

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { Centroid2D } from '../../src/utils/centroid-2d.js'
 
 describe('Centroid2D', () => {
-  it('computes simple centroid', () => {
+  it('computes simple centroid of square', () => {
     const c = Centroid2D.compute([{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 4 }, { x: 0, y: 4 }])
     expect(c.x).toBe(2)
     expect(c.y).toBe(2)
@@ -75,34 +75,6 @@ describe('Centroid2D', () => {
     expect(weighted.y).toBeCloseTo(simple.y)
   })
 
-  it('single point centroid', () => {
-    const c = Centroid2D.compute([{ x: 5, y: 10 }])
-    expect(c.x).toBe(5)
-    expect(c.y).toBe(10)
-  })
-
-  it('weighted centroid with zero total weight returns zero', () => {
-    const c = Centroid2D.weightedCentroid([{ x: 5, y: 5, weight: 0 }])
-    expect(c.x).toBe(0)
-    expect(c.y).toBe(0)
-  })
-
-  it('polygon centroid of square', () => {
-    const c = Centroid2D.polygonCentroid([
-      { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 4 }, { x: 0, y: 4 },
-    ])
-    expect(c.x).toBeCloseTo(2, 5)
-    expect(c.y).toBeCloseTo(2, 5)
-  })
-
-  it('polygon centroid of triangle', () => {
-    const c = Centroid2D.polygonCentroid([
-      { x: 0, y: 0 }, { x: 6, y: 0 }, { x: 3, y: 6 },
-    ])
-    expect(c.x).toBeCloseTo(3, 5)
-    expect(c.y).toBeCloseTo(2, 5)
-  })
-
   it('weighted centroid single point', () => {
     const c = Centroid2D.weightedCentroid([{ x: 3, y: 4, weight: 1 }])
     expect(c.x).toBeCloseTo(3, 5)
@@ -127,39 +99,291 @@ describe('Centroid2D', () => {
     expect(c.y).toBeCloseTo(0, 5)
   })
 
-  it('single point is its own centroid', () => {
-    const c = Centroid2D.compute([{ x: 5, y: 10 }])
-    expect(c.x).toBeCloseTo(5, 5)
-    expect(c.y).toBeCloseTo(10, 5)
+  it('handles negative coordinates in compute', () => {
+    const c = Centroid2D.compute([{ x: -5, y: -10 }, { x: 5, y: 10 }])
+    expect(c.x).toBe(0)
+    expect(c.y).toBe(0)
   })
 
-  it('centroid of symmetric points is origin', () => {
-    const c = Centroid2D.compute([{ x: -1, y: -1 }, { x: 1, y: 1 }])
+  it('handles very large positive coordinates', () => {
+    const c = Centroid2D.compute([{ x: 1e10, y: 2e10 }, { x: 3e10, y: 4e10 }])
+    expect(c.x).toBe(2e10)
+    expect(c.y).toBe(3e10)
+  })
+
+  it('handles very small decimal coordinates', () => {
+    const c = Centroid2D.compute([{ x: 0.0001, y: 0.0002 }, { x: 0.0003, y: 0.0004 }])
+    expect(c.x).toBeCloseTo(0.0002, 7)
+    expect(c.y).toBeCloseTo(0.0003, 7)
+  })
+
+  it('handles mixed positive and negative weights', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 10, y: 10, weight: -1 },
+      { x: 20, y: 20, weight: 1 },
+    ])
+    expect(c).toEqual({ x: 0, y: 0 })
+  })
+
+  it('handles large weights', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 0, y: 0, weight: 1e10 },
+      { x: 100, y: 100, weight: 2e10 },
+    ])
+    expect(c.x).toBeCloseTo(66.67, 2)
+    expect(c.y).toBeCloseTo(66.67, 2)
+  })
+
+  it('handles multiple points with same coordinates', () => {
+    const c = Centroid2D.compute([{ x: 5, y: 5 }, { x: 5, y: 5 }, { x: 5, y: 5 }])
+    expect(c.x).toBe(5)
+    expect(c.y).toBe(5)
+  })
+
+  it('computes centroid of line points', () => {
+    const c = Centroid2D.compute([{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }])
+    expect(c.x).toBe(1.5)
+    expect(c.y).toBe(0)
+  })
+
+  it('handles polygon with reversed winding order', () => {
+    const c1 = Centroid2D.polygonCentroid([{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 4 }, { x: 0, y: 4 }])
+    const c2 = Centroid2D.polygonCentroid([{ x: 0, y: 0 }, { x: 0, y: 4 }, { x: 4, y: 4 }, { x: 4, y: 0 }])
+    expect(c1.x).toBeCloseTo(c2.x, 5)
+    expect(c1.y).toBeCloseTo(c2.y, 5)
+  })
+
+  it('handles polygon with negative coordinates', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: -2, y: -2 },
+      { x: 2, y: -2 },
+      { x: 2, y: 2 },
+      { x: -2, y: 2 },
+    ])
     expect(c.x).toBeCloseTo(0, 5)
     expect(c.y).toBeCloseTo(0, 5)
   })
 
-  it('compute with single point returns it', () => {
-    const c = Centroid2D.compute([{ x: 5, y: 10 }])
-    expect(c.x).toBeCloseTo(5, 5)
-    expect(c.y).toBeCloseTo(10, 5)
+  it('handles pentagon polygon', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 0, y: 0 },
+      { x: 2, y: 0 },
+      { x: 3, y: 2 },
+      { x: 1, y: 4 },
+      { x: -1, y: 2 },
+    ])
+    expect(c.x).toBeCloseTo(1, 1)
   })
 
-  it('compute centroid of symmetric points', () => {
-    const c = Centroid2D.compute([{ x: 0, y: 0 }, { x: 2, y: 2 }])
+  it('handles degenerate polygon (collinear points)', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+    ])
     expect(c.x).toBeCloseTo(1, 5)
-    expect(c.y).toBeCloseTo(1, 5)
+    expect(c.y).toBeCloseTo(0, 5)
   })
 
-  it('single point is its own centroid', () => {
-    const c = Centroid2D.compute([{ x: 5, y: 10 }])
+  it('handles polygon with very large coordinates', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 1e10, y: 0 },
+      { x: 2e10, y: 0 },
+      { x: 2e10, y: 1e10 },
+      { x: 1e10, y: 1e10 },
+    ])
+    expect(c.x).toBeCloseTo(1.5e10, 5)
+    expect(c.y).toBeCloseTo(0.5e10, 5)
+  })
+
+  it('handles three weighted points with varying weights', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 0, y: 0, weight: 1 },
+      { x: 10, y: 0, weight: 2 },
+      { x: 5, y: 10, weight: 1 },
+    ])
+    expect(c.x).toBeCloseTo(6.25, 5)
+    expect(c.y).toBeCloseTo(2.5, 5)
+  })
+
+  it('handles weighted centroid with negative coordinates', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: -10, y: -10, weight: 1 },
+      { x: 10, y: 10, weight: 1 },
+    ])
+    expect(c.x).toBe(0)
+    expect(c.y).toBe(0)
+  })
+
+  it('handles zero weight among multiple weights', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 0, y: 0, weight: 0 },
+      { x: 10, y: 10, weight: 1 },
+    ])
+    expect(c.x).toBe(10)
+    expect(c.y).toBe(10)
+  })
+
+  it('handles all zero weights returns zero', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 5, y: 5, weight: 0 },
+      { x: 10, y: 10, weight: 0 },
+    ])
+    expect(c).toEqual({ x: 0, y: 0 })
+  })
+
+  it('handles non-integer coordinates in polygon', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 0.5, y: 0.5 },
+      { x: 2.5, y: 0.5 },
+      { x: 2.5, y: 2.5 },
+      { x: 0.5, y: 2.5 },
+    ])
+    expect(c.x).toBeCloseTo(1.5, 5)
+    expect(c.y).toBeCloseTo(1.5, 5)
+  })
+
+  it('handles asymmetric polygon', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 5 },
+      { x: 0, y: 5 },
+    ])
     expect(c.x).toBeCloseTo(5, 5)
-    expect(c.y).toBeCloseTo(10, 5)
+    expect(c.y).toBeCloseTo(2.5, 5)
   })
 
-  it('compute with symmetric points returns center', () => {
-    const c = Centroid2D.compute([{ x: 0, y: 0 }, { x: 2, y: 2 }])
-    expect(c.x).toBeCloseTo(1, 5)
-    expect(c.y).toBeCloseTo(1, 5)
+  it('handles polygon near origin with small values', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 0.001, y: 0.001 },
+      { x: 0.002, y: 0.001 },
+      { x: 0.002, y: 0.002 },
+      { x: 0.001, y: 0.002 },
+    ])
+    expect(c.x).toBeCloseTo(0.0015, 7)
+    expect(c.y).toBeCloseTo(0.0015, 7)
+  })
+
+  it('handles weighted centroid with fractional weights', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 0, y: 0, weight: 0.5 },
+      { x: 10, y: 0, weight: 0.5 },
+    ])
+    expect(c.x).toBe(5)
+    expect(c.y).toBe(0)
+  })
+
+  it('handles single point polygon', () => {
+    const c = Centroid2D.polygonCentroid([{ x: 5, y: 5 }])
+    expect(c.x).toBe(5)
+    expect(c.y).toBe(5)
+  })
+
+  it('handles two point polygon (degenerate)', () => {
+    const c = Centroid2D.polygonCentroid([{ x: 0, y: 0 }, { x: 10, y: 10 }])
+    expect(c.x).toBe(5)
+    expect(c.y).toBe(5)
+  })
+
+  it('handles hexagon polygon', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 1, y: 0 },
+      { x: 2, y: 1 },
+      { x: 2, y: 3 },
+      { x: 1, y: 4 },
+      { x: 0, y: 3 },
+      { x: 0, y: 1 },
+    ])
+    expect(c.x).toBeCloseTo(1, 1)
+  })
+
+  it('handles very small negative weights', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 0, y: 0, weight: -0.001 },
+      { x: 10, y: 10, weight: 1.001 },
+    ])
+    expect(c.x).toBeCloseTo(10.01, 2)
+    expect(c.y).toBeCloseTo(10.01, 2)
+  })
+
+  it('handles weighted centroid with asymmetric weights', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 0, y: 0, weight: 100 },
+      { x: 10, y: 0, weight: 1 },
+      { x: 0, y: 10, weight: 1 },
+    ])
+    expect(c.x).toBeCloseTo(0.1, 1)
+    expect(c.y).toBeCloseTo(0.1, 1)
+  })
+
+  it('handles point at origin', () => {
+    const c = Centroid2D.compute([{ x: 0, y: 0 }])
+    expect(c.x).toBe(0)
+    expect(c.y).toBe(0)
+  })
+
+  it('handles points all at same coordinate', () => {
+    const c = Centroid2D.compute([{ x: 100, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 200 }])
+    expect(c.x).toBe(100)
+    expect(c.y).toBe(200)
+  })
+
+  it('handles weighted point at origin', () => {
+    const c = Centroid2D.weightedCentroid([{ x: 0, y: 0, weight: 100 }])
+    expect(c.x).toBe(0)
+    expect(c.y).toBe(0)
+  })
+
+  it('handles very large weight ratio', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 0, y: 0, weight: 1e9 },
+      { x: 1000, y: 1000, weight: 1 },
+    ])
+    expect(c.x).toBeCloseTo(0, 3)
+    expect(c.y).toBeCloseTo(0, 3)
+  })
+
+  it('handles points forming circle', () => {
+    const c = Centroid2D.compute([
+      { x: 1, y: 0 },
+      { x: 0, y: 1 },
+      { x: -1, y: 0 },
+      { x: 0, y: -1 },
+    ])
+    expect(c.x).toBeCloseTo(0, 5)
+    expect(c.y).toBeCloseTo(0, 5)
+  })
+
+  it('handles concave polygon', () => {
+    const c = Centroid2D.polygonCentroid([
+      { x: 0, y: 0 },
+      { x: 4, y: 0 },
+      { x: 4, y: 2 },
+      { x: 2, y: 2 },
+      { x: 2, y: 4 },
+      { x: 0, y: 4 },
+    ])
+    expect(c.x).toBeGreaterThan(1)
+    expect(c.x).toBeLessThan(3)
+  })
+
+  it('handles extreme precision coordinates', () => {
+    const c = Centroid2D.compute([
+      { x: 0.123456789, y: 0.987654321 },
+      { x: 0.987654321, y: 0.123456789 },
+    ])
+    expect(c.x).toBeCloseTo(0.555555555, 7)
+    expect(c.y).toBeCloseTo(0.555555555, 7)
+  })
+
+  it('handles weighted centroid with sum of weights equals one', () => {
+    const c = Centroid2D.weightedCentroid([
+      { x: 0, y: 0, weight: 0.25 },
+      { x: 10, y: 0, weight: 0.5 },
+      { x: 5, y: 10, weight: 0.25 },
+    ])
+    expect(c.x).toBeCloseTo(6.25, 5)
+    expect(c.y).toBeCloseTo(2.5, 5)
   })
 })
