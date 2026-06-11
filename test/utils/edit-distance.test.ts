@@ -40,6 +40,30 @@ describe('EditDistance', () => {
       expect(EditDistance.levenshtein('a', 'b')).toBe(1)
       expect(EditDistance.levenshtein('a', 'a')).toBe(0)
     })
+
+    it('multiple insertions', () => {
+      expect(EditDistance.levenshtein('', 'abcdef')).toBe(6)
+    })
+
+    it('all different characters', () => {
+      expect(EditDistance.levenshtein('abc', 'xyz')).toBe(3)
+    })
+
+    it('prefix match', () => {
+      expect(EditDistance.levenshtein('abcdef', 'abc')).toBe(3)
+    })
+
+    it('suffix match', () => {
+      expect(EditDistance.levenshtein('xyzabc', 'abc')).toBe(3)
+    })
+
+    it('middle substitution', () => {
+      expect(EditDistance.levenshtein('abcde', 'abXde')).toBe(1)
+    })
+
+    it('reversal distance', () => {
+      expect(EditDistance.levenshtein('abc', 'cba')).toBe(2)
+    })
   })
 
   describe('damerauLevenshtein', () => {
@@ -55,10 +79,28 @@ describe('EditDistance', () => {
     it('handles empty strings', () => {
       expect(EditDistance.damerauLevenshtein('', '')).toBe(0)
       expect(EditDistance.damerauLevenshtein('abc', '')).toBe(3)
+      expect(EditDistance.damerauLevenshtein('', 'xyz')).toBe(3)
     })
 
     it('computes mixed operations', () => {
       expect(EditDistance.damerauLevenshtein('ca', 'abc')).toBe(3)
+    })
+
+    it('transposition vs substitution', () => {
+      expect(EditDistance.damerauLevenshtein('ab', 'ba')).toBeLessThan(EditDistance.levenshtein('ab', 'ba'))
+    })
+
+    it('double transposition', () => {
+      expect(EditDistance.damerauLevenshtein('abcd', 'badc')).toBeLessThanOrEqual(2)
+    })
+
+    it('single char', () => {
+      expect(EditDistance.damerauLevenshtein('a', 'a')).toBe(0)
+      expect(EditDistance.damerauLevenshtein('a', 'b')).toBe(1)
+    })
+
+    it('identical returns 0', () => {
+      expect(EditDistance.damerauLevenshtein('abcdef', 'abcdef')).toBe(0)
     })
   })
 
@@ -77,6 +119,26 @@ describe('EditDistance', () => {
 
     it('throws for different lengths', () => {
       expect(() => EditDistance.hamming('ab', 'abc')).toThrow()
+    })
+
+    it('counts all differences', () => {
+      expect(EditDistance.hamming('aaaa', 'bbbb')).toBe(4)
+    })
+
+    it('counts half differences', () => {
+      expect(EditDistance.hamming('aabb', 'bbaa')).toBe(4)
+    })
+
+    it('empty strings have distance 0', () => {
+      expect(EditDistance.hamming('', '')).toBe(0)
+    })
+
+    it('single char match', () => {
+      expect(EditDistance.hamming('a', 'a')).toBe(0)
+    })
+
+    it('single char mismatch', () => {
+      expect(EditDistance.hamming('a', 'b')).toBe(1)
     })
   })
 
@@ -98,21 +160,69 @@ describe('EditDistance', () => {
       expect(sim).toBeGreaterThan(0)
       expect(sim).toBeLessThan(1)
     })
+
+    it('returns 0 when one empty other not', () => {
+      expect(EditDistance.normalizedLevenshtein('', 'abc')).toBe(0)
+      expect(EditDistance.normalizedLevenshtein('abc', '')).toBe(0)
+    })
+
+    it('single char match is 1', () => {
+      expect(EditDistance.normalizedLevenshtein('a', 'a')).toBe(1)
+    })
+
+    it('single char mismatch is 0', () => {
+      expect(EditDistance.normalizedLevenshtein('a', 'b')).toBe(0)
+    })
+
+    it('longer strings partial match', () => {
+      const sim = EditDistance.normalizedLevenshtein('abcdefgh', 'abcdefxy')
+      expect(sim).toBeCloseTo(0.75)
+    })
+
+    it('symmetry', () => {
+      const a = EditDistance.normalizedLevenshtein('abc', 'xyz')
+      const b = EditDistance.normalizedLevenshtein('xyz', 'abc')
+      expect(a).toBe(b)
+    })
   })
 
-  it('distance from empty string is length', () => {
-    expect(EditDistance.levenshtein('', 'abc')).toBe(3)
+  it('distance is symmetric', () => {
+    expect(EditDistance.levenshtein('abc', 'xyz')).toBe(EditDistance.levenshtein('xyz', 'abc'))
   })
 
-  it('identical strings have distance 0', () => {
-    expect(EditDistance.levenshtein('abc', 'abc')).toBe(0)
+  it('triangle inequality', () => {
+    const dAB = EditDistance.levenshtein('abc', 'bcd')
+    const dBC = EditDistance.levenshtein('bcd', 'cde')
+    const dAC = EditDistance.levenshtein('abc', 'cde')
+    expect(dAC).toBeLessThanOrEqual(dAB + dBC)
   })
 
-  it('empty strings have distance 0', () => {
-    expect(EditDistance.levenshtein('', '')).toBe(0)
+  it('hamming with binary strings', () => {
+    expect(EditDistance.hamming('0101', '1010')).toBe(4)
   })
 
-  it('single char substitution', () => {
-    expect(EditDistance.levenshtein('a', 'b')).toBe(1)
+  it('levenshtein handles unicode', () => {
+    expect(EditDistance.levenshtein('café', 'cafe')).toBe(1)
+  })
+
+  it('damerauLevenshtein vs levenshtein', () => {
+    const dl = EditDistance.damerauLevenshtein('ab', 'ba')
+    const lev = EditDistance.levenshtein('ab', 'ba')
+    expect(dl).toBeLessThanOrEqual(lev)
+  })
+
+  it('normalized similarity for close strings', () => {
+    const sim = EditDistance.normalizedLevenshtein('kitten', 'kitten')
+    expect(sim).toBe(1)
+  })
+
+  it('levenshtein for palindrome detection', () => {
+    expect(EditDistance.levenshtein('abc', 'cba')).toBe(2)
+  })
+
+  it('large string distance', () => {
+    const a = 'a'.repeat(100)
+    const b = 'b'.repeat(100)
+    expect(EditDistance.levenshtein(a, b)).toBe(100)
   })
 })

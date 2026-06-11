@@ -121,25 +121,6 @@ describe('DiscreteSampler', () => {
     }
   })
 
-  it('handles single item', () => {
-    const sampler = new DiscreteSampler([1], [10])
-    const result = sampler.sample()
-    expect(result).toBe(0)
-  })
-
-  it('sample with equal weights', () => {
-    const sampler = new DiscreteSampler([0, 1], [1, 1])
-    const result = sampler.sample()
-    expect(result === 0 || result === 1).toBe(true)
-  })
-
-  it('sample always returns valid index', () => {
-    const sampler = new DiscreteSampler([1])
-    for (let i = 0; i < 10; i++) {
-      expect(sampler.sample()).toBe(0)
-    }
-  })
-
   it('constructor takes weights array', () => {
     const sampler = new DiscreteSampler([1, 1])
     for (let i = 0; i < 10; i++) {
@@ -149,11 +130,6 @@ describe('DiscreteSampler', () => {
     }
   })
 
-  it('single item always samples 0', () => {
-    const sampler = new DiscreteSampler([1])
-    expect(sampler.sample()).toBe(0)
-  })
-
   it('two items returns valid index', () => {
     const sampler = new DiscreteSampler([1, 1])
     const result = sampler.sample()
@@ -161,15 +137,304 @@ describe('DiscreteSampler', () => {
     expect(result).toBeLessThanOrEqual(1)
   })
 
+  it('handles fractional weights', () => {
+    const sampler = new DiscreteSampler([0.5, 0.5, 1])
+    const samples = sampler.sampleN(100)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(3)
+    }
+  })
+
+  it('handles very small fractional weights', () => {
+    const sampler = new DiscreteSampler([0.001, 0.002, 0.003])
+    const samples = sampler.sampleN(50)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(3)
+    }
+  })
+
+  it('handles negative weights', () => {
+    const sampler = new DiscreteSampler([-1, 2, 3])
+    const samples = sampler.sampleN(50)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(3)
+    }
+  })
+
+  it('handles mixed positive and negative weights', () => {
+    const sampler = new DiscreteSampler([-5, -2, 10])
+    const samples = sampler.sampleN(50)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(3)
+    }
+  })
+
+  it('handles very large number of items', () => {
+    const weights = Array(1000).fill(1)
+    const sampler = new DiscreteSampler(weights)
+    const samples = sampler.sampleN(100)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(1000)
+    }
+  })
+
+  it('handles exponential weights', () => {
+    const weights = [1, 2, 4, 8, 16]
+    const sampler = new DiscreteSampler(weights)
+    const samples = sampler.sampleN(100)
+    const countLast = samples.filter(x => x === 4).length
+    const countFirst = samples.filter(x => x === 0).length
+    expect(countLast).toBeGreaterThan(countFirst)
+  })
+
+  it('sampleN handles negative count', () => {
+    const sampler = new DiscreteSampler([1, 1, 1])
+    const samples = sampler.sampleN(-1)
+    expect(samples.length).toBe(0)
+  })
+
+  it('handles all weights zero', () => {
+    const sampler = new DiscreteSampler([0, 0, 0, 0])
+    const samples = sampler.sampleN(50)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(4)
+    }
+  })
+
+  it('handles one non-zero weight among zeros', () => {
+    const sampler = new DiscreteSampler([0, 0, 5, 0])
+    const samples = sampler.sampleN(100)
+    const count2 = samples.filter(x => x === 2).length
+    expect(count2).toBeGreaterThan(80)
+  })
+
   it('sample with single item always returns 0', () => {
     const sampler = new DiscreteSampler([1])
     expect(sampler.sample()).toBe(0)
   })
 
-  it('sample with equal weights returns valid index', () => {
+  it('sample with single heavy weight item', () => {
+    const sampler = new DiscreteSampler([100])
+    const samples = sampler.sampleN(10)
+    expect(samples.every(x => x === 0)).toBe(true)
+  })
+
+  it('handles extremely large weights', () => {
+    const sampler = new DiscreteSampler([Number.MAX_SAFE_INTEGER, 1])
+    const samples = sampler.sampleN(50)
+    const count0 = samples.filter(x => x === 0).length
+    expect(count0).toBeGreaterThan(40)
+  })
+
+  it('handles infinity weights', () => {
+    const sampler = new DiscreteSampler([Infinity, 1])
+    const samples = sampler.sampleN(50)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(2)
+    }
+  })
+
+  it('handles NaN weights', () => {
+    const sampler = new DiscreteSampler([NaN, 1, 2])
+    const samples = sampler.sampleN(50)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(3)
+    }
+  })
+
+  it('sampleN with count 1 returns single item array', () => {
+    const sampler = new DiscreteSampler([1, 2, 3])
+    const samples = sampler.sampleN(1)
+    expect(samples.length).toBe(1)
+    expect(samples[0]).toBeGreaterThanOrEqual(0)
+    expect(samples[0]).toBeLessThan(3)
+  })
+
+  it('sampleN with very large count', () => {
+    const sampler = new DiscreteSampler([1, 2, 3])
+    const samples = sampler.sampleN(100000)
+    expect(samples.length).toBe(100000)
+  })
+
+  it('handles weights with decimal points', () => {
+    const sampler = new DiscreteSampler([0.1, 0.2, 0.3, 0.4])
+    const samples = sampler.sampleN(100)
+    const count3 = samples.filter(x => x === 3).length
+    const count0 = samples.filter(x => x === 0).length
+    expect(count3).toBeGreaterThan(count0)
+  })
+
+  it('handles weights that sum to 1', () => {
+    const sampler = new DiscreteSampler([0.25, 0.25, 0.5])
+    const samples = sampler.sampleN(100)
+    const count2 = samples.filter(x => x === 2).length
+    const count0 = samples.filter(x => x === 0).length
+    expect(count2).toBeGreaterThan(count0)
+  })
+
+  it('handles uniform distribution over large range', () => {
+    const weights = Array(100).fill(1)
+    const sampler = new DiscreteSampler(weights)
+    const samples = sampler.sampleN(1000)
+    const counts = Array(100).fill(0)
+    for (const s of samples) {
+      counts[s]!++
+    }
+    const minCount = Math.min(...counts)
+    const maxCount = Math.max(...counts)
+    expect(maxCount - minCount).toBeLessThan(30)
+  })
+
+  it('handles weights with zero and positive mix', () => {
+    const sampler = new DiscreteSampler([0, 1, 0, 2, 0])
+    const samples = sampler.sampleN(100)
+    const count1 = samples.filter(x => x === 1).length
+    const count3 = samples.filter(x => x === 3).length
+    expect(count1 + count3).toBeGreaterThan(80)
+  })
+
+  it('sample returns integer', () => {
+    const sampler = new DiscreteSampler([1, 2, 3])
+    const sample = sampler.sample()
+    expect(Number.isInteger(sample)).toBe(true)
+  })
+
+  it('sampleN returns array of integers', () => {
+    const sampler = new DiscreteSampler([1, 2, 3])
+    const samples = sampler.sampleN(10)
+    for (const sample of samples) {
+      expect(Number.isInteger(sample)).toBe(true)
+    }
+  })
+
+  it('handles monotonic decreasing weights', () => {
+    const weights = [10, 5, 2, 1]
+    const sampler = new DiscreteSampler(weights)
+    const samples = sampler.sampleN(100)
+    const count0 = samples.filter(x => x === 0).length
+    const count3 = samples.filter(x => x === 3).length
+    expect(count0).toBeGreaterThan(count3)
+  })
+
+  it('handles monotonic increasing weights', () => {
+    const weights = [1, 2, 5, 10]
+    const sampler = new DiscreteSampler(weights)
+    const samples = sampler.sampleN(100)
+    const count0 = samples.filter(x => x === 0).length
+    const count3 = samples.filter(x => x === 3).length
+    expect(count3).toBeGreaterThan(count0)
+  })
+
+  it('handles alternating weights', () => {
+    const weights = [1, 10, 1, 10, 1]
+    const sampler = new DiscreteSampler(weights)
+    const samples = sampler.sampleN(100)
+    const countOdd = samples.filter(x => x === 1 || x === 3).length
+    const countEven = samples.filter(x => x === 0 || x === 2 || x === 4).length
+    expect(countOdd).toBeGreaterThan(countEven)
+  })
+
+  it('handles all identical non-zero weights', () => {
+    const sampler = new DiscreteSampler([5, 5, 5, 5, 5])
+    const samples = sampler.sampleN(1000)
+    const counts = Array(5).fill(0)
+    for (const s of samples) {
+      counts[s]!++
+    }
+    const minCount = Math.min(...counts)
+    const maxCount = Math.max(...counts)
+    expect(maxCount - minCount).toBeLessThan(100)
+  })
+
+  it('handles very small positive weights', () => {
+    const sampler = new DiscreteSampler([0.0001, 0.0002, 0.0003])
+    const samples = sampler.sampleN(50)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+      expect(sample).toBeLessThan(3)
+    }
+  })
+
+  it('handles weights that sum to very small number', () => {
+    const sampler = new DiscreteSampler([0.0001, 0.0002, 0.0003])
+    const samples = sampler.sampleN(50)
+    const count2 = samples.filter(x => x === 2).length
+    const count0 = samples.filter(x => x === 0).length
+    expect(count2).toBeGreaterThan(count0)
+  })
+
+  it('sample never returns negative index', () => {
+    const sampler = new DiscreteSampler([1, 2, 3])
+    const samples = sampler.sampleN(100)
+    for (const sample of samples) {
+      expect(sample).toBeGreaterThanOrEqual(0)
+    }
+  })
+
+  it('sample never returns index equal to array length', () => {
+    const sampler = new DiscreteSampler([1, 2, 3])
+    const samples = sampler.sampleN(100)
+    for (const sample of samples) {
+      expect(sample).toBeLessThan(3)
+    }
+  })
+
+  it('handles symmetric weights around center', () => {
+    const weights = [1, 5, 10, 5, 1]
+    const sampler = new DiscreteSampler(weights)
+    const samples = sampler.sampleN(100)
+    const count2 = samples.filter(x => x === 2).length
+    const count0 = samples.filter(x => x === 0).length
+    expect(count2).toBeGreaterThan(count0)
+  })
+
+  it('handles extremely small weight difference', () => {
+    const sampler = new DiscreteSampler([1, 1.000000001])
+    const samples = sampler.sampleN(100)
+    const count1 = samples.filter(x => x === 1).length
+    const count0 = samples.filter(x => x === 0).length
+    expect(count1 + count0).toBe(100)
+  })
+
+  it('sample with Math.random returning 0', () => {
+    const randomSpy = vi.spyOn(Math, 'random')
+    randomSpy.mockReturnValue(0)
+    const sampler = new DiscreteSampler([1, 2, 3])
+    const sample = sampler.sample()
+    expect(sample).toBeGreaterThanOrEqual(0)
+    expect(sample).toBeLessThan(3)
+    randomSpy.mockRestore()
+  })
+
+  it('sample with Math.random returning close to 1', () => {
+    const randomSpy = vi.spyOn(Math, 'random')
+    randomSpy.mockReturnValue(0.999999)
+    const sampler = new DiscreteSampler([1, 2, 3])
+    const sample = sampler.sample()
+    expect(sample).toBeGreaterThanOrEqual(0)
+    expect(sample).toBeLessThan(3)
+    randomSpy.mockRestore()
+  })
+
+  it('sampleN handles fractional count by treating as integer', () => {
     const sampler = new DiscreteSampler([1, 1, 1])
-    const result = sampler.sample()
-    expect(result).toBeGreaterThanOrEqual(0)
-    expect(result).toBeLessThan(3)
+    const samples = sampler.sampleN(10.5)
+    expect(samples.length).toBe(10)
+  })
+
+  it('handles weights with scientific notation', () => {
+    const sampler = new DiscreteSampler([1e10, 2e10, 3e10])
+    const samples = sampler.sampleN(50)
+    const count2 = samples.filter(x => x === 2).length
+    const count0 = samples.filter(x => x === 0).length
+    expect(count2).toBeGreaterThan(count0)
   })
 })

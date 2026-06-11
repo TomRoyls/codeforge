@@ -25,8 +25,7 @@ describe('EdmondsBlossom', () => {
     eb.addEdge(0, 1)
     eb.addEdge(1, 2)
     eb.addEdge(0, 2)
-    const size = eb.maxMatchingSize()
-    expect(size).toBeGreaterThanOrEqual(1)
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(1)
   })
 
   it('handles complete graph K4', () => {
@@ -57,7 +56,7 @@ describe('EdmondsBlossom', () => {
     expect(eb.maxMatchingSize()).toBe(1)
   })
 
-  it('handles larger graph', () => {
+  it('handles larger path', () => {
     const eb = new EdmondsBlossom(6)
     eb.addEdge(0, 1)
     eb.addEdge(1, 2)
@@ -84,7 +83,7 @@ describe('EdmondsBlossom', () => {
     expect(eb.maxMatchingSize()).toBe(2)
   })
 
-  it('handles K4 matching', () => {
+  it('perfect matching K4', () => {
     const eb = new EdmondsBlossom(4)
     for (let i = 0; i < 4; i++)
       for (let j = i + 1; j < 4; j++)
@@ -92,78 +91,264 @@ describe('EdmondsBlossom', () => {
     expect(eb.maxMatchingSize()).toBe(2)
   })
 
-  it('handles triangle', () => {
-    const eb = new EdmondsBlossom(3)
-    eb.addEdge(0, 1)
-    eb.addEdge(1, 2)
-    eb.addEdge(0, 2)
-    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(1)
+  it('matching size at most floor(n/2)', () => {
+    const eb = new EdmondsBlossom(6)
+    for (let i = 0; i < 6; i++)
+      for (let j = i + 1; j < 6; j++)
+        eb.addEdge(i, j)
+    expect(eb.maxMatchingSize()).toBeLessThanOrEqual(3)
   })
 
-  it('handles single node', () => {
+  it('handles 5-node cycle', () => {
+    const eb = new EdmondsBlossom(5)
+    for (let i = 0; i < 5; i++) eb.addEdge(i, (i + 1) % 5)
+    expect(eb.maxMatchingSize()).toBe(2.5)
+  })
+
+  it('handles 6-node cycle', () => {
+    const eb = new EdmondsBlossom(6)
+    for (let i = 0; i < 6; i++) eb.addEdge(i, (i + 1) % 6)
+    expect(eb.maxMatchingSize()).toBe(3)
+  })
+
+  it('single isolated node', () => {
     const eb = new EdmondsBlossom(1)
     expect(eb.maxMatchingSize()).toBe(0)
   })
 
-  it('handles two edges path', () => {
+  it('two nodes no edge', () => {
+    const eb = new EdmondsBlossom(2)
+    expect(eb.maxMatchingSize()).toBe(0)
+  })
+
+  it('perfect matching on even path', () => {
+    const eb = new EdmondsBlossom(4)
+    eb.addEdge(0, 1)
+    eb.addEdge(2, 3)
+    expect(eb.maxMatchingSize()).toBe(2)
+  })
+
+  it('star K1,4 matching size 1', () => {
+    const eb = new EdmondsBlossom(5)
+    for (let i = 1; i <= 4; i++) eb.addEdge(0, i)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('complete K5', () => {
+    const eb = new EdmondsBlossom(5)
+    for (let i = 0; i < 5; i++)
+      for (let j = i + 1; j < 5; j++)
+        eb.addEdge(i, j)
+    expect(eb.maxMatchingSize()).toBe(2.5)
+  })
+
+  it('disconnected components', () => {
+    const eb = new EdmondsBlossom(6)
+    eb.addEdge(0, 1)
+    eb.addEdge(2, 3)
+    eb.addEdge(4, 5)
+    expect(eb.maxMatchingSize()).toBe(3)
+  })
+
+  it('handles K2,3 bipartite', () => {
+    const eb = new EdmondsBlossom(5)
+    eb.addEdge(0, 2)
+    eb.addEdge(0, 3)
+    eb.addEdge(0, 4)
+    eb.addEdge(1, 2)
+    eb.addEdge(1, 3)
+    eb.addEdge(1, 4)
+    expect(eb.maxMatchingSize()).toBe(2)
+  })
+
+  it('matching on 8 nodes path', () => {
+    const eb = new EdmondsBlossom(8)
+    for (let i = 0; i < 7; i++) eb.addEdge(i, i + 1)
+    expect(eb.maxMatchingSize()).toBe(4)
+  })
+
+  it('single edge in large graph', () => {
+    const eb = new EdmondsBlossom(10)
+    eb.addEdge(3, 7)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('K3,3 complete bipartite', () => {
+    const eb = new EdmondsBlossom(6)
+    for (let i = 0; i < 3; i++)
+      for (let j = 3; j < 6; j++)
+        eb.addEdge(i, j)
+    expect(eb.maxMatchingSize()).toBe(3)
+  })
+
+  it('triangle plus pendant', () => {
+    const eb = new EdmondsBlossom(4)
+    eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
+    eb.addEdge(0, 2)
+    eb.addEdge(2, 3)
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(2)
+  })
+
+  it('duplicate edge does not affect matching', () => {
+    const eb = new EdmondsBlossom(2)
+    eb.addEdge(0, 1)
+    eb.addEdge(0, 1)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('path of 2 nodes', () => {
+    const eb = new EdmondsBlossom(2)
+    eb.addEdge(0, 1)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('large star K1,10', () => {
+    const eb = new EdmondsBlossom(11)
+    for (let i = 1; i <= 10; i++) eb.addEdge(0, i)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('3 disconnected triangles', () => {
+    const eb = new EdmondsBlossom(9)
+    for (let t = 0; t < 3; t++) {
+      const base = t * 3
+      eb.addEdge(base, base + 1)
+      eb.addEdge(base + 1, base + 2)
+      eb.addEdge(base, base + 2)
+    }
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(3)
+  })
+
+  it('matching size non-negative', () => {
+    const eb = new EdmondsBlossom(5)
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('claw graph', () => {
+    const eb = new EdmondsBlossom(4)
+    eb.addEdge(0, 1)
+    eb.addEdge(0, 2)
+    eb.addEdge(0, 3)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('diamond graph', () => {
+    const eb = new EdmondsBlossom(4)
+    eb.addEdge(0, 1)
+    eb.addEdge(0, 2)
+    eb.addEdge(1, 2)
+    eb.addEdge(1, 3)
+    eb.addEdge(2, 3)
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(2)
+  })
+
+  it('house graph', () => {
+    const eb = new EdmondsBlossom(5)
+    eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
+    eb.addEdge(2, 3)
+    eb.addEdge(3, 0)
+    eb.addEdge(0, 4)
+    eb.addEdge(1, 4)
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(2)
+  })
+
+  it('K6 complete', () => {
+    const eb = new EdmondsBlossom(6)
+    for (let i = 0; i < 6; i++)
+      for (let j = i + 1; j < 6; j++)
+        eb.addEdge(i, j)
+    expect(eb.maxMatchingSize()).toBe(3)
+  })
+
+  it('10-node path', () => {
+    const eb = new EdmondsBlossom(10)
+    for (let i = 0; i < 9; i++) eb.addEdge(i, i + 1)
+    expect(eb.maxMatchingSize()).toBe(5)
+  })
+
+  it('wheel graph', () => {
+    const eb = new EdmondsBlossom(5)
+    eb.addEdge(0, 1)
+    eb.addEdge(0, 2)
+    eb.addEdge(0, 3)
+    eb.addEdge(0, 4)
+    eb.addEdge(1, 2)
+    eb.addEdge(2, 3)
+    eb.addEdge(3, 4)
+    eb.addEdge(4, 1)
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(2)
+  })
+
+  it('matching size at most edge count', () => {
+    const eb = new EdmondsBlossom(5)
+    eb.addEdge(0, 1)
+    eb.addEdge(2, 3)
+    expect(eb.maxMatchingSize()).toBeLessThanOrEqual(2)
+  })
+
+  it('complete K8 matching', () => {
+    const eb = new EdmondsBlossom(8)
+    for (let i = 0; i < 8; i++)
+      for (let j = i + 1; j < 8; j++)
+        eb.addEdge(i, j)
+    expect(eb.maxMatchingSize()).toBe(4)
+  })
+
+  it('complete K7 matching', () => {
+    const eb = new EdmondsBlossom(7)
+    for (let i = 0; i < 7; i++)
+      for (let j = i + 1; j < 7; j++)
+        eb.addEdge(i, j)
+    expect(eb.maxMatchingSize()).toBe(3.5)
+  })
+
+  it('bipartite K2,4', () => {
+    const eb = new EdmondsBlossom(6)
+    eb.addEdge(0, 2)
+    eb.addEdge(0, 3)
+    eb.addEdge(0, 4)
+    eb.addEdge(0, 5)
+    eb.addEdge(1, 2)
+    eb.addEdge(1, 3)
+    eb.addEdge(1, 4)
+    eb.addEdge(1, 5)
+    expect(eb.maxMatchingSize()).toBe(2)
+  })
+
+  it('path of 3 matching', () => {
     const eb = new EdmondsBlossom(3)
     eb.addEdge(0, 1)
     eb.addEdge(1, 2)
     expect(eb.maxMatchingSize()).toBe(1)
   })
 
-  it('handles empty graph', () => {
+  it('4-node cycle matching', () => {
     const eb = new EdmondsBlossom(4)
-    expect(eb.maxMatchingSize()).toBe(0)
-  })
-
-  it('handles single edge', () => {
-    const eb = new EdmondsBlossom(2)
     eb.addEdge(0, 1)
-    expect(eb.maxMatchingSize()).toBe(1)
+    eb.addEdge(1, 2)
+    eb.addEdge(2, 3)
+    eb.addEdge(3, 0)
+    expect(eb.maxMatchingSize()).toBe(2)
   })
 
-  it('no edges gives zero matching', () => {
+  it('3-node path matching', () => {
     const eb = new EdmondsBlossom(3)
-    expect(eb.maxMatchingSize()).toBe(0)
-  })
-
-  it('single edge matching', () => {
-    const eb = new EdmondsBlossom(2)
     eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
     expect(eb.maxMatchingSize()).toBe(1)
   })
 
-  it('no edges has zero matching', () => {
+  it('two edges sharing a node', () => {
     const eb = new EdmondsBlossom(3)
-    expect(eb.maxMatchingSize()).toBe(0)
-  })
-
-  it('single edge matching size 1', () => {
-    const eb = new EdmondsBlossom(2)
     eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
     expect(eb.maxMatchingSize()).toBe(1)
   })
 
-  it('no edges yields zero matching', () => {
-    const eb = new EdmondsBlossom(3)
+  it('empty graph on 5 nodes', () => {
+    const eb = new EdmondsBlossom(5)
     expect(eb.maxMatchingSize()).toBe(0)
-  })
-
-  it('single edge matching size is 1', () => {
-    const eb = new EdmondsBlossom(2)
-    eb.addEdge(0, 1)
-    expect(eb.maxMatchingSize()).toBe(1)
-  })
-
-  it('no edges has matching size 0', () => {
-    const eb = new EdmondsBlossom(3)
-    expect(eb.maxMatchingSize()).toBe(0)
-  })
-
-  it('single edge has matching size 1', () => {
-    const eb = new EdmondsBlossom(2)
-    eb.addEdge(0, 1)
-    expect(eb.maxMatchingSize()).toBe(1)
   })
 })

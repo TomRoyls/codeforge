@@ -115,37 +115,12 @@ describe('DijkstraFibonacci', () => {
     expect(dist[3]).toBe(9)
   })
 
-  it('handles disconnected', () => {
+  it('handles disconnected components', () => {
     const edges = [
       { from: 0, to: 1, weight: 5 },
       { from: 2, to: 3, weight: 3 },
     ]
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
-    expect(dist[1]).toBe(5)
-    expect(dist[2]).toBe(Infinity)
-  })
-
-  it('handles single node', () => {
-    const dist = DijkstraFibonacci.shortestPath([], 0, 1)
-    expect(dist[0]).toBe(0)
-  })
-
-  it('handles linear chain', () => {
-    const edges = [
-      { from: 0, to: 1, weight: 1 },
-      { from: 1, to: 2, weight: 1 },
-      { from: 2, to: 3, weight: 1 },
-    ]
-    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
-    expect(dist[3]).toBe(3)
-  })
-
-  it('handles self loop ignored', () => {
-    const edges = [
-      { from: 0, to: 1, weight: 5 },
-      { from: 1, to: 1, weight: 1 },
-    ]
-    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
     expect(dist[1]).toBe(5)
     expect(dist[2]).toBe(Infinity)
   })
@@ -162,44 +137,349 @@ describe('DijkstraFibonacci', () => {
     expect(dist[2]).toBe(Infinity)
   })
 
-  it('single node has zero distance to itself', () => {
-    const edges: { from: number; to: number; weight: number }[] = []
-    const dist = DijkstraFibonacci.shortestPath(edges, 0, 1)
-    expect(dist[0]).toBe(0)
-  })
-
-  it('two node path', () => {
-    const edges = [{ from: 0, to: 1, weight: 5 }]
-    const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
-    expect(dist[1]).toBe(5)
-  })
-
-  it('unreachable node has Infinity distance', () => {
-    const edges = [{ from: 0, to: 1, weight: 5 }]
-    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
-    expect(dist[2]).toBe(Infinity)
-  })
-
   it('returns zero distance to source', () => {
     const edges = [{ from: 0, to: 1, weight: 3 }]
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
     expect(dist[0]).toBe(0)
   })
 
-  it('disconnected node has Infinity distance', () => {
-    const edges = [{ from: 0, to: 1, weight: 3 }]
-    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
-    expect(dist[2]).toBe(Infinity)
+  it('handles all zero weights', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 0 },
+      { from: 1, to: 2, weight: 0 },
+      { from: 2, to: 3, weight: 0 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[3]).toBe(0)
   })
 
-  it('source distance is zero', () => {
-    const edges = [{ from: 0, to: 1, weight: 5 }]
+  it('handles star topology', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 0, to: 2, weight: 2 },
+      { from: 0, to: 3, weight: 3 },
+      { from: 0, to: 4, weight: 4 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
+    expect(dist[1]).toBe(1)
+    expect(dist[2]).toBe(2)
+    expect(dist[3]).toBe(3)
+    expect(dist[4]).toBe(4)
+  })
+
+  it('handles multiple edges between same nodes', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 5 },
+      { from: 0, to: 1, weight: 2 },
+      { from: 1, to: 2, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[1]).toBe(2)
+    expect(dist[2]).toBe(3)
+  })
+
+  it('handles cyclic graph', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 1 },
+      { from: 2, to: 0, weight: 1 },
+      { from: 0, to: 3, weight: 10 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[1]).toBe(1)
+    expect(dist[2]).toBe(2)
+    expect(dist[3]).toBe(10)
+  })
+
+  it('handles very large weights', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1000000 },
+      { from: 1, to: 2, weight: 2000000 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[2]).toBe(3000000)
+  })
+
+  it('handles very small weights', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 0.1 },
+      { from: 1, to: 2, weight: 0.2 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[1]).toBe(0.1)
+    expect(dist[2]).toBeCloseTo(0.3, 10)
+  })
+
+  it('handles path through all nodes', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 1 },
+      { from: 2, to: 3, weight: 1 },
+      { from: 3, to: 4, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
+    expect(dist[4]).toBe(4)
+  })
+
+  it('handles directed graph with reverse edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 0, weight: 10 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
+    expect(dist[1]).toBe(1)
+  })
+
+  it('handles source at end', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 2, 3)
+    expect(dist[0]).toBe(Infinity)
+    expect(dist[1]).toBe(Infinity)
+    expect(dist[2]).toBe(0)
+  })
+
+  it('handles source in middle', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 1 },
+      { from: 2, to: 3, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 1, 4)
+    expect(dist[0]).toBe(Infinity)
+    expect(dist[1]).toBe(0)
+    expect(dist[2]).toBe(1)
+    expect(dist[3]).toBe(2)
+  })
+
+  it('handles all nodes unreachable except source', () => {
+    const edges = []
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 10)
+    expect(dist[0]).toBe(0)
+    for (let i = 1; i < 10; i++) {
+      expect(dist[i]).toBe(Infinity)
+    }
+  })
+
+  it('handles complete graph', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 0, to: 2, weight: 2 },
+      { from: 1, to: 2, weight: 3 },
+      { from: 1, to: 0, weight: 4 },
+      { from: 2, to: 0, weight: 5 },
+      { from: 2, to: 1, weight: 6 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[1]).toBe(1)
+    expect(dist[2]).toBe(2)
+  })
+
+  it('handles bidirectional edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 3 },
+      { from: 1, to: 0, weight: 4 },
+      { from: 1, to: 2, weight: 2 },
+      { from: 2, to: 1, weight: 5 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[1]).toBe(3)
+    expect(dist[2]).toBe(5)
+  })
+
+  it('handles large number of nodes', () => {
+    const edges: { from: number; to: number; weight: number }[] = []
+    for (let i = 0; i < 99; i++) {
+      edges.push({ from: i, to: i + 1, weight: 1 })
+    }
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 100)
+    expect(dist[99]).toBe(99)
+  })
+
+  it('handles single very long path', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 100 },
+      { from: 1, to: 2, weight: 200 },
+      { from: 2, to: 3, weight: 300 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[3]).toBe(600)
+  })
+
+  it('handles path with varying weights', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 100 },
+      { from: 2, to: 3, weight: 1 },
+      { from: 0, to: 3, weight: 200 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[3]).toBe(102)
+  })
+
+  it('handles multiple zero weight edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 0 },
+      { from: 0, to: 2, weight: 0 },
+      { from: 1, to: 3, weight: 5 },
+      { from: 2, to: 3, weight: 10 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[1]).toBe(0)
+    expect(dist[2]).toBe(0)
+    expect(dist[3]).toBe(5)
+  })
+
+  it('handles graph with multiple components', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 2, to: 3, weight: 1 },
+      { from: 4, to: 5, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 6)
+    expect(dist[1]).toBe(1)
+    expect(dist[2]).toBe(Infinity)
+    expect(dist[3]).toBe(Infinity)
+    expect(dist[4]).toBe(Infinity)
+    expect(dist[5]).toBe(Infinity)
+  })
+
+  it('handles self loops on all nodes', () => {
+    const edges = [
+      { from: 0, to: 0, weight: 10 },
+      { from: 1, to: 1, weight: 20 },
+      { from: 0, to: 1, weight: 5 },
+    ]
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
     expect(dist[0]).toBe(0)
+    expect(dist[1]).toBe(5)
   })
 
-  it('single node distance is 0', () => {
-    const dist = DijkstraFibonacci.shortestPath([], 0, 1)
+  it('handles disconnected node at end', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
+    expect(dist[2]).toBe(2)
+    expect(dist[3]).toBe(Infinity)
+    expect(dist[4]).toBe(Infinity)
+  })
+
+  it('handles chain with alternative paths', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 10 },
+      { from: 1, to: 2, weight: 10 },
+      { from: 0, to: 2, weight: 5 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[1]).toBe(10)
+    expect(dist[2]).toBe(5)
+  })
+
+  it('handles multiple edges to same node with different weights', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 10 },
+      { from: 0, to: 1, weight: 5 },
+      { from: 0, to: 1, weight: 8 },
+      { from: 1, to: 2, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[1]).toBe(5)
+    expect(dist[2]).toBe(6)
+  })
+
+  it('handles sparse graph', () => {
+    const edges = [{ from: 0, to: 9, weight: 100 }]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 10)
+    expect(dist[9]).toBe(100)
+    for (let i = 1; i < 9; i++) {
+      expect(dist[i]).toBe(Infinity)
+    }
+  })
+
+  it('handles dense graph', () => {
+    const edges: { from: number; to: number; weight: number }[] = []
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        if (i !== j) {
+          edges.push({ from: i, to: j, weight: Math.abs(i - j) })
+        }
+      }
+    }
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
+    expect(dist[4]).toBe(4)
+  })
+
+  it('handles tree structure', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 0, to: 2, weight: 1 },
+      { from: 1, to: 3, weight: 1 },
+      { from: 1, to: 4, weight: 1 },
+      { from: 2, to: 5, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 6)
+    expect(dist[3]).toBe(2)
+    expect(dist[4]).toBe(2)
+    expect(dist[5]).toBe(2)
+  })
+
+  it('handles mesh network', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 0, to: 2, weight: 1 },
+      { from: 1, to: 2, weight: 1 },
+      { from: 1, to: 3, weight: 1 },
+      { from: 2, to: 3, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[3]).toBe(2)
+  })
+
+  it('handles no edges but multiple nodes', () => {
+    const dist = DijkstraFibonacci.shortestPath([], 0, 20)
     expect(dist[0]).toBe(0)
+    expect(dist[19]).toBe(Infinity)
+  })
+
+  it('handles single large capacity edge', () => {
+    const edges = [{ from: 0, to: 1, weight: Number.MAX_SAFE_INTEGER / 2 }]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 2)
+    expect(dist[1]).toBe(Number.MAX_SAFE_INTEGER / 2)
+  })
+
+  it('handles equal weights throughout', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 5 },
+      { from: 1, to: 2, weight: 5 },
+      { from: 2, to: 3, weight: 5 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[3]).toBe(15)
+  })
+
+  it('handles increasing weights', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 2 },
+      { from: 2, to: 3, weight: 3 },
+      { from: 3, to: 4, weight: 4 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
+    expect(dist[4]).toBe(10)
+  })
+
+  it('handles decreasing weights', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 4 },
+      { from: 1, to: 2, weight: 3 },
+      { from: 2, to: 3, weight: 2 },
+      { from: 3, to: 4, weight: 1 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
+    expect(dist[4]).toBe(10)
   })
 })

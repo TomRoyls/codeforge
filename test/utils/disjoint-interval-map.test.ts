@@ -204,4 +204,374 @@ describe('DisjointIntervalMap', () => {
     map.set(0, 10, 'a')
     expect(map.get(20)).toBeUndefined()
   })
+
+  it('handles negative interval boundaries', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(-10, -5, 'negative')
+    expect(map.get(-7)).toBe('negative')
+    expect(map.get(-11)).toBeUndefined()
+    expect(map.get(-4)).toBeUndefined()
+  })
+
+  it('handles large intervals', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(0, 1000000, 'large')
+    expect(map.get(500000)).toBe('large')
+    expect(map.get(1000000)).toBe('large')
+    expect(map.get(1000001)).toBeUndefined()
+  })
+
+  it('handles single-point intervals (lo === hi)', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(5, 5, 'single')
+    expect(map.get(5)).toBe('single')
+    expect(map.get(4)).toBeUndefined()
+    expect(map.get(6)).toBeUndefined()
+  })
+
+  it('merges with overlapping intervals', () => {
+    const map1 = new DisjointIntervalMap<string>()
+    const map2 = new DisjointIntervalMap<string>()
+    map1.set(1, 5, 'a')
+    map2.set(3, 7, 'b')
+    map1.merge(map2)
+    expect(map1.get(4)).toBe('b')
+    expect(map1.size).toBe(1)
+  })
+
+  it('merges with non-overlapping intervals', () => {
+    const map1 = new DisjointIntervalMap<string>()
+    const map2 = new DisjointIntervalMap<string>()
+    map1.set(1, 3, 'a')
+    map2.set(10, 15, 'b')
+    map1.merge(map2)
+    expect(map1.get(2)).toBe('a')
+    expect(map1.get(12)).toBe('b')
+    expect(map1.size).toBe(2)
+  })
+
+  it('deletes entire map', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    map.set(10, 15, 'b')
+    const deleted = map.delete(-100, 1000)
+    expect(deleted).toBe(2)
+    expect(map.isEmpty()).toBe(true)
+  })
+
+  it('deletes non-existent range returns 0', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    const deleted = map.delete(100, 200)
+    expect(deleted).toBe(0)
+    expect(map.size).toBe(1)
+  })
+
+  it('split on non-existent point does nothing', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'test')
+    map.split(10)
+    expect(map.size).toBe(1)
+    expect(map.get(3)).toBe('test')
+  })
+
+  it('split at interval boundaries', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'test')
+    map.split(1)
+    map.split(5)
+    expect(map.size).toBe(1)
+    expect(map.get(3)).toBe('test')
+  })
+
+  it('multiple consecutive splits', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 10, 'test')
+    map.split(4)
+    map.split(7)
+    expect(map.get(2)).toBe('test')
+    expect(map.get(4)).toBeUndefined()
+    expect(map.get(5)).toBe('test')
+    expect(map.get(7)).toBeUndefined()
+    expect(map.get(8)).toBe('test')
+  })
+
+  it('getInterval on exact boundaries', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'test')
+    expect(map.getInterval(1)).toEqual({ lo: 1, hi: 5, value: 'test' })
+    expect(map.getInterval(5)).toEqual({ lo: 1, hi: 5, value: 'test' })
+  })
+
+  it('findOverlapping with no matches', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    const overlapping = map.findOverlapping(10, 15)
+    expect(overlapping).toHaveLength(0)
+  })
+
+  it('findOverlapping with exact match', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    const overlapping = map.findOverlapping(1, 5)
+    expect(overlapping).toHaveLength(1)
+    expect(overlapping[0]!.value).toBe('a')
+  })
+
+  it('findOverlapping with partial overlap', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(5, 10, 'a')
+    const overlapping = map.findOverlapping(8, 15)
+    expect(overlapping).toHaveLength(1)
+    expect(overlapping[0]!.lo).toBe(5)
+    expect(overlapping[0]!.hi).toBe(10)
+  })
+
+  it('toString returns string representation', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    expect(map.toString()).toBe('DisjointIntervalMap(1 entries)')
+  })
+
+  it('toJSON returns array of intervals', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 3, 'a')
+    const json = map.toJSON()
+    expect(json).toEqual([{ lo: 1, hi: 3, value: 'a' }])
+  })
+
+  it('equals with same map', () => {
+    const map1 = new DisjointIntervalMap<string>()
+    map1.set(1, 3, 'a')
+    const map2 = new DisjointIntervalMap<string>()
+    map2.set(1, 3, 'a')
+    expect(map1.equals(map2)).toBe(true)
+  })
+
+  it('equals with different maps', () => {
+    const map1 = new DisjointIntervalMap<string>()
+    map1.set(1, 3, 'a')
+    const map2 = new DisjointIntervalMap<string>()
+    map2.set(1, 3, 'b')
+    expect(map1.equals(map2)).toBe(false)
+  })
+
+  it('equals with non-DisjointIntervalMap returns false', () => {
+    const map = new DisjointIntervalMap<string>()
+    expect(map.equals({})).toBe(false)
+    expect(map.equals(null)).toBe(false)
+    expect(map.equals(undefined)).toBe(false)
+  })
+
+  it('setting same interval twice replaces value', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'first')
+    map.set(1, 5, 'second')
+    expect(map.get(3)).toBe('second')
+    expect(map.size).toBe(1)
+  })
+
+  it('handles zero value', () => {
+    const map = new DisjointIntervalMap<number>()
+    map.set(1, 5, 0)
+    expect(map.get(3)).toBe(0)
+  })
+
+  it('handles undefined value', () => {
+    const map = new DisjointIntervalMap<undefined>()
+    map.set(1, 5, undefined)
+    expect(map.get(3)).toBeUndefined()
+    expect(map.has(3)).toBe(false)
+  })
+
+  it('totalCovered on empty map returns 0', () => {
+    const map = new DisjointIntervalMap<string>()
+    expect(map.totalCovered()).toBe(0)
+  })
+
+  it('coversRange on empty map returns false', () => {
+    const map = new DisjointIntervalMap<string>()
+    expect(map.coversRange(1, 5)).toBe(false)
+  })
+
+  it('forEach on empty map does nothing', () => {
+    const map = new DisjointIntervalMap<string>()
+    let called = false
+    map.forEach(() => { called = true })
+    expect(called).toBe(false)
+  })
+
+  it('clone of empty map', () => {
+    const map = new DisjointIntervalMap<string>()
+    const clone = map.clone()
+    expect(clone.isEmpty()).toBe(true)
+    expect(clone.size).toBe(0)
+  })
+
+  it('merge with empty map', () => {
+    const map1 = new DisjointIntervalMap<string>()
+    const map2 = new DisjointIntervalMap<string>()
+    map1.set(1, 3, 'a')
+    map1.merge(map2)
+    expect(map1.get(2)).toBe('a')
+    expect(map1.size).toBe(1)
+  })
+
+  it('split on empty map does nothing', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.split(5)
+    expect(map.size).toBe(0)
+  })
+
+  it('handles many intervals', () => {
+    const map = new DisjointIntervalMap<number>()
+    for (let i = 0; i < 10; i++) {
+      map.set(i * 10, i * 10 + 5, i)
+    }
+    expect(map.size).toBe(10)
+    expect(map.get(25)).toBe(2)
+  })
+
+  it('interval with negative value', () => {
+    const map = new DisjointIntervalMap<number>()
+    map.set(1, 5, -42)
+    expect(map.get(3)).toBe(-42)
+  })
+
+  it('multiple gets on same point', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'test')
+    expect(map.get(3)).toBe('test')
+    expect(map.get(3)).toBe('test')
+    expect(map.get(3)).toBe('test')
+  })
+
+  it('multiple has checks', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'test')
+    expect(map.has(3)).toBe(true)
+    expect(map.has(3)).toBe(true)
+    expect(map.has(10)).toBe(false)
+    expect(map.has(10)).toBe(false)
+  })
+
+  it('deletion boundary cases', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    map.set(10, 15, 'b')
+    const deleted = map.delete(5, 10)
+    expect(deleted).toBe(2)
+    expect(map.get(1)).toBeUndefined()
+    expect(map.get(5)).toBeUndefined()
+    expect(map.get(10)).toBeUndefined()
+    expect(map.get(12)).toBeUndefined()
+  })
+
+  it('findOverlapping with range covering everything', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    map.set(10, 15, 'b')
+    const overlapping = map.findOverlapping(-100, 1000)
+    expect(overlapping).toHaveLength(2)
+  })
+
+  it('findOverlapping with single point', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    const overlapping = map.findOverlapping(3, 3)
+    expect(overlapping).toHaveLength(1)
+    expect(overlapping[0]!.value).toBe('a')
+  })
+
+  it('covers with boundary points', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'test')
+    expect(map.covers(1)).toBe(true)
+    expect(map.covers(5)).toBe(true)
+  })
+
+  it('coversRange with single point', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'test')
+    expect(map.coversRange(3, 3)).toBe(true)
+    expect(map.coversRange(10, 10)).toBe(false)
+  })
+
+  it('forEach callback arguments are correct', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 3, 'a')
+    map.set(5, 7, 'b')
+    const results: Array<[number, number, string]> = []
+    map.forEach((lo, hi, value) => {
+      results.push([lo, hi, value])
+    })
+    expect(results).toEqual([[1, 3, 'a'], [5, 7, 'b']])
+  })
+
+  it('size property getter', () => {
+    const map = new DisjointIntervalMap<string>()
+    expect(map.size).toBe(0)
+    map.set(1, 5, 'a')
+    expect(map.size).toBe(1)
+  })
+
+  it('size after operations', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'a')
+    map.set(10, 15, 'b')
+    expect(map.size).toBe(2)
+    map.delete(1, 5)
+    expect(map.size).toBe(1)
+    map.set(20, 25, 'c')
+    expect(map.size).toBe(2)
+  })
+
+  it('merge replacing existing values', () => {
+    const map1 = new DisjointIntervalMap<string>()
+    const map2 = new DisjointIntervalMap<string>()
+    map1.set(1, 5, 'old')
+    map2.set(3, 7, 'new')
+    map1.merge(map2)
+    expect(map1.get(4)).toBe('new')
+    expect(map1.get(1)).toBeUndefined()
+  })
+
+  it('split creating single-point intervals', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 3, 'test')
+    map.split(2)
+    expect(map.get(1)).toBe('test')
+    expect(map.get(2)).toBeUndefined()
+    expect(map.get(3)).toBe('test')
+  })
+
+  it('complex overlapping scenarios', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 10, 'a')
+    map.set(5, 15, 'b')
+    map.set(12, 20, 'c')
+    expect(map.get(3)).toBeUndefined()
+    expect(map.get(7)).toBeUndefined()
+    expect(map.get(14)).toBe('c')
+    expect(map.get(17)).toBe('c')
+  })
+
+  it('negative point queries', () => {
+    const map = new DisjointIntervalMap<string>()
+    map.set(1, 5, 'test')
+    expect(map.get(-5)).toBeUndefined()
+    expect(map.get(-100)).toBeUndefined()
+  })
+
+  it('very large interval boundaries', () => {
+    const map = new DisjointIntervalMap<string>()
+    const lo = -1000000
+    const hi = 1000000
+    map.set(lo, hi, 'massive')
+    expect(map.get(0)).toBe('massive')
+    expect(map.get(lo)).toBe('massive')
+    expect(map.get(hi)).toBe('massive')
+    expect(map.get(lo - 1)).toBeUndefined()
+    expect(map.get(hi + 1)).toBeUndefined()
+  })
 })

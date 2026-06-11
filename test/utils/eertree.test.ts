@@ -65,48 +65,22 @@ describe('Eertree', () => {
     expect(pals.length).toBeGreaterThan(0)
   })
 
-  it('handles long palindrome', () => {
+  it('abacaba has many palindromes', () => {
     const tree = Eertree.build('abacaba')
     const pals = tree.getPalindromes()
     expect(pals.length).toBeGreaterThanOrEqual(4)
   })
 
-  it('single char has palindrome', () => {
+  it('single char palindrome list', () => {
     const tree = Eertree.build('x')
-    expect(tree.getPalindromes().length).toBeGreaterThanOrEqual(1)
+    expect(tree.getPalindromes()).toContain('x')
   })
 
-  it('handles empty string', () => {
-    const tree = Eertree.build('')
-    expect(tree.getPalindromes().length).toBe(0)
-  })
-
-  it('handles repeated characters', () => {
+  it('repeated characters palindromes', () => {
     const tree = Eertree.build('aaa')
-    const pals = tree.getPalindromes()
-    expect(pals.length).toBeGreaterThanOrEqual(2)
     expect(tree.hasPalindrome('a')).toBe(true)
     expect(tree.hasPalindrome('aa')).toBe(true)
-  })
-
-  it('handles empty string', () => {
-    const tree = Eertree.build('')
-    expect(tree.getPalindromes().length).toBe(0)
-  })
-
-  it('handles single character', () => {
-    const tree = Eertree.build('a')
-    expect(tree.getPalindromes()).toContain('a')
-  })
-
-  it('handles empty string', () => {
-    const tree = Eertree.build('')
-    expect(tree.getPalindromes()).toEqual([])
-  })
-
-  it('single character has one palindrome', () => {
-    const tree = Eertree.build('a')
-    expect(tree.getPalindromes().length).toBe(1)
+    expect(tree.hasPalindrome('aaa')).toBe(true)
   })
 
   it('aa has two palindromes', () => {
@@ -116,26 +90,202 @@ describe('Eertree', () => {
 
   it('empty string has no palindromes', () => {
     const tree = Eertree.build('')
-    expect(tree.getPalindromes().length).toBe(0)
+    expect(tree.getPalindromes()).toEqual([])
+    expect(tree.nodeCount).toBe(0)
   })
 
-  it('single char has one palindrome', () => {
+  it('detects single char palindromes', () => {
+    const tree = Eertree.build('abcd')
+    expect(tree.hasPalindrome('a')).toBe(true)
+    expect(tree.hasPalindrome('b')).toBe(true)
+    expect(tree.hasPalindrome('c')).toBe(true)
+    expect(tree.hasPalindrome('d')).toBe(true)
+  })
+
+  it('aba detects aba palindrome', () => {
+    const tree = Eertree.build('aba')
+    expect(tree.hasPalindrome('aba')).toBe(true)
+    expect(tree.nodeCount).toBe(3)
+  })
+
+  it('abcba detects odd palindrome', () => {
+    const tree = Eertree.build('abcba')
+    expect(tree.hasPalindrome('abcba')).toBe(true)
+    expect(tree.hasPalindrome('bcb')).toBe(true)
+  })
+
+  it('addChar incremental building', () => {
+    const tree = new Eertree()
+    tree.addChar('a')
+    expect(tree.nodeCount).toBe(1)
+    tree.addChar('b')
+    expect(tree.nodeCount).toBe(2)
+    tree.addChar('a')
+    expect(tree.nodeCount).toBeGreaterThanOrEqual(3)
+  })
+
+  it('all same character string', () => {
+    const tree = Eertree.build('aaaa')
+    expect(tree.hasPalindrome('a')).toBe(true)
+    expect(tree.hasPalindrome('aa')).toBe(true)
+    expect(tree.hasPalindrome('aaa')).toBe(true)
+    expect(tree.hasPalindrome('aaaa')).toBe(true)
+  })
+
+  it('non-palindromic string has single chars', () => {
+    const tree = Eertree.build('abcdef')
+    expect(tree.nodeCount).toBe(6)
+    for (const c of 'abcdef') {
+      expect(tree.hasPalindrome(c)).toBe(true)
+    }
+  })
+
+  it('addChar returns consistent node ids', () => {
+    const tree = new Eertree()
+    const ids = new Set<number>()
+    for (const ch of 'abc') ids.add(tree.addChar(ch))
+    expect(ids.size).toBe(3)
+  })
+
+  it('long palindrome string', () => {
+    const s = 'abcdefghgfedcba'
+    const tree = Eertree.build(s)
+    expect(tree.hasPalindrome(s)).toBe(true)
+  })
+
+  it('getPalindromes includes all single chars', () => {
+    const tree = Eertree.build('abc')
+    const pals = tree.getPalindromes()
+    expect(pals).toContain('a')
+    expect(pals).toContain('b')
+    expect(pals).toContain('c')
+  })
+
+  it('nodeCount for abba', () => {
+    const tree = Eertree.build('abba')
+    expect(tree.nodeCount).toBe(4)
+  })
+
+  it('hasPalindrome for single char', () => {
     const tree = Eertree.build('a')
-    expect(tree.getPalindromes().length).toBe(1)
+    expect(tree.hasPalindrome('a')).toBe(true)
+    expect(tree.hasPalindrome('b')).toBe(false)
   })
 
-  it('empty string has no palindromes', () => {
+  it('double char palindrome', () => {
+    const tree = Eertree.build('bb')
+    expect(tree.hasPalindrome('b')).toBe(true)
+    expect(tree.hasPalindrome('bb')).toBe(true)
+    expect(tree.nodeCount).toBe(2)
+  })
+
+  it('overlapping palindromes', () => {
+    const tree = Eertree.build('abaaba')
+    expect(tree.hasPalindrome('aba')).toBe(true)
+    expect(tree.hasPalindrome('baab')).toBe(true)
+    expect(tree.hasPalindrome('abaaba')).toBe(true)
+  })
+
+  it('getPalindromes on empty returns empty', () => {
     const tree = Eertree.build('')
-    expect(tree.getPalindromes().length).toBe(0)
+    expect(tree.getPalindromes()).toEqual([])
   })
 
-  it('single char has one palindrome', () => {
-    const tree = Eertree.build('a')
-    expect(tree.getPalindromes().length).toBe(1)
+  it('getPalindromes on single char', () => {
+    const tree = Eertree.build('z')
+    expect(tree.getPalindromes()).toEqual(['z'])
   })
 
-  it('aa has palindromes a and aa', () => {
-    const tree = Eertree.build('aa')
-    expect(tree.getPalindromes().length).toBe(2)
+  it('rebuild same string same result', () => {
+    const t1 = Eertree.build('abcba')
+    const t2 = Eertree.build('abcba')
+    expect(t1.nodeCount).toBe(t2.nodeCount)
+    expect(t1.getPalindromes()).toEqual(t2.getPalindromes())
+  })
+
+  it('abcabc palindromes', () => {
+    const tree = Eertree.build('abcabc')
+    expect(tree.hasPalindrome('a')).toBe(true)
+    expect(tree.hasPalindrome('b')).toBe(true)
+    expect(tree.hasPalindrome('c')).toBe(true)
+  })
+
+  it('detects two char palindrome', () => {
+    const tree = Eertree.build('cc')
+    expect(tree.hasPalindrome('cc')).toBe(true)
+  })
+
+  it('palindrome in middle of string', () => {
+    const tree = Eertree.build('xabax')
+    expect(tree.hasPalindrome('aba')).toBe(true)
+    expect(tree.hasPalindrome('xabax')).toBe(true)
+  })
+
+  it('long repeated string', () => {
+    const tree = Eertree.build('abababab')
+    expect(tree.hasPalindrome('a')).toBe(true)
+    expect(tree.hasPalindrome('b')).toBe(true)
+    expect(tree.hasPalindrome('aba')).toBe(true)
+    expect(tree.hasPalindrome('bab')).toBe(true)
+  })
+
+  it('numeric characters', () => {
+    const tree = Eertree.build('12321')
+    expect(tree.hasPalindrome('232')).toBe(true)
+    expect(tree.hasPalindrome('12321')).toBe(true)
+  })
+
+  it('nodeCount is non-negative', () => {
+    const tree = Eertree.build('')
+    expect(tree.nodeCount).toBeGreaterThanOrEqual(0)
+  })
+
+  it('addChar for same char twice', () => {
+    const tree = new Eertree()
+    tree.addChar('x')
+    tree.addChar('x')
+    expect(tree.hasPalindrome('x')).toBe(true)
+    expect(tree.hasPalindrome('xx')).toBe(true)
+  })
+
+  it('getPalindromes for abba', () => {
+    const tree = Eertree.build('abba')
+    const pals = tree.getPalindromes()
+    expect(pals).toContain('a')
+    expect(pals).toContain('b')
+    expect(pals).toContain('bb')
+    expect(pals).toContain('abba')
+  })
+
+  it('mixed case characters', () => {
+    const tree = Eertree.build('aA')
+    expect(tree.hasPalindrome('a')).toBe(true)
+    expect(tree.hasPalindrome('A')).toBe(true)
+  })
+
+  it('palindromic substring not full string', () => {
+    const tree = Eertree.build('xabay')
+    expect(tree.hasPalindrome('aba')).toBe(true)
+    expect(tree.hasPalindrome('xabay')).toBe(false)
+  })
+
+  it('single char nodeCount is 1', () => {
+    const tree = Eertree.build('q')
+    expect(tree.nodeCount).toBe(1)
+  })
+
+  it('repeated same character long string', () => {
+    const tree = Eertree.build('zzzz')
+    expect(tree.hasPalindrome('z')).toBe(true)
+    expect(tree.hasPalindrome('zz')).toBe(true)
+    expect(tree.hasPalindrome('zzz')).toBe(true)
+    expect(tree.hasPalindrome('zzzz')).toBe(true)
+  })
+
+  it('palindrome at string boundaries', () => {
+    const tree = Eertree.build('racecar')
+    expect(tree.hasPalindrome('racecar')).toBe(true)
+    expect(tree.hasPalindrome('aceca')).toBe(true)
+    expect(tree.hasPalindrome('cec')).toBe(true)
   })
 })

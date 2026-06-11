@@ -136,11 +136,6 @@ describe('DisjointInterval', () => {
     expect(di.covers(0, 6)).toBe(false)
   })
 
-  it('empty interval covers nothing', () => {
-    const di = new DisjointInterval()
-    expect(di.covers(0, 1)).toBe(false)
-  })
-
   it('add then covers returns true', () => {
     const di = new DisjointInterval()
     di.add(0, 5)
@@ -169,5 +164,236 @@ describe('DisjointInterval', () => {
     const di = new DisjointInterval()
     di.add(0, 10)
     expect(di.covers(0, 10)).toBe(true)
+  })
+
+  it('add interval with negative numbers', () => {
+    const di = new DisjointInterval()
+    di.add(-5, -1)
+    expect(di.getIntervals()).toEqual([[-5, -1]])
+  })
+
+  it('contains with negative numbers', () => {
+    const di = new DisjointInterval()
+    di.add(-5, -1)
+    expect(di.contains(-3)).toBe(true)
+    expect(di.contains(0)).toBe(false)
+  })
+
+  it('merges intervals with negative numbers', () => {
+    const di = new DisjointInterval()
+    di.add(-5, -1)
+    di.add(0, 3)
+    expect(di.getIntervals()).toEqual([[-5, 3]])
+  })
+
+  it('remove with negative numbers', () => {
+    const di = new DisjointInterval()
+    di.add(-5, 5)
+    di.remove(-2, 2)
+    expect(di.getIntervals()).toEqual([[-5, -3], [3, 5]])
+  })
+
+  it('totalCovered with negative numbers', () => {
+    const di = new DisjointInterval()
+    di.add(-5, -1)
+    di.add(1, 5)
+    expect(di.totalCovered()).toBe(10)
+  })
+
+  it('add single point interval', () => {
+    const di = new DisjointInterval()
+    di.add(5, 5)
+    expect(di.getIntervals()).toEqual([[5, 5]])
+  })
+
+  it('contains single point', () => {
+    const di = new DisjointInterval()
+    di.add(5, 5)
+    expect(di.contains(5)).toBe(true)
+    expect(di.contains(4)).toBe(false)
+  })
+
+  it('remove single point from interval', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(5, 5)
+    expect(di.contains(5)).toBe(false)
+  })
+
+  it('totalCovered counts single points correctly', () => {
+    const di = new DisjointInterval()
+    di.add(5, 5)
+    expect(di.totalCovered()).toBe(1)
+  })
+
+  it('covers with single point', () => {
+    const di = new DisjointInterval()
+    di.add(5, 5)
+    expect(di.covers(5, 5)).toBe(true)
+    expect(di.covers(5, 6)).toBe(false)
+  })
+
+  it('remove from left edge of interval', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(0, 3)
+    expect(di.getIntervals()).toEqual([[4, 10]])
+  })
+
+  it('remove from right edge of interval', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(7, 10)
+    expect(di.getIntervals()).toEqual([[0, 6]])
+  })
+
+  it('remove entire interval', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(0, 10)
+    expect(di.count).toBe(0)
+  })
+
+  it('remove multiple intervals at once', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    di.add(10, 15)
+    di.add(20, 25)
+    di.remove(3, 12)
+    expect(di.getIntervals()).toEqual([[0, 2], [13, 15], [20, 25]])
+  })
+
+  it('add interval that connects multiple intervals', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    di.add(10, 15)
+    di.add(5, 10)
+    expect(di.getIntervals()).toEqual([[0, 15]])
+  })
+
+  it('add interval that partially overlaps first interval', () => {
+    const di = new DisjointInterval()
+    di.add(10, 20)
+    di.add(15, 25)
+    expect(di.getIntervals()).toEqual([[10, 25]])
+  })
+
+  it('add interval that partially overlaps last interval', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.add(5, 15)
+    expect(di.getIntervals()).toEqual([[0, 15]])
+  })
+
+  it('add interval between two intervals', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    di.add(15, 20)
+    di.add(7, 12)
+    expect(di.count).toBe(3)
+  })
+
+  it('remove with invalid range does nothing', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(5, 3)
+    expect(di.getIntervals()).toEqual([[0, 10]])
+  })
+
+  it('covers empty range', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    expect(di.covers(5, 5)).toBe(true)
+  })
+
+  it('contains with large positive numbers', () => {
+    const di = new DisjointInterval()
+    di.add(1000000, 1000005)
+    expect(di.contains(1000002)).toBe(true)
+  })
+
+  it('add interval with large range', () => {
+    const di = new DisjointInterval()
+    di.add(0, 1000000)
+    expect(di.getIntervals()).toEqual([[0, 1000000]])
+  })
+
+  it('totalCovered with large range', () => {
+    const di = new DisjointInterval()
+    di.add(0, 1000000)
+    expect(di.totalCovered()).toBe(1000001)
+  })
+
+  it('multiple consecutive adds merge into one', () => {
+    const di = new DisjointInterval()
+    di.add(0, 2)
+    di.add(3, 5)
+    di.add(6, 8)
+    di.add(9, 11)
+    expect(di.getIntervals().length).toBeLessThanOrEqual(4)
+  })
+
+  it('remove creates three intervals from one', () => {
+    const di = new DisjointInterval()
+    di.add(0, 20)
+    di.remove(5, 10)
+    expect(di.getIntervals()).toEqual([[0, 4], [11, 20]])
+  })
+
+  it('covers with multiple intervals', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    di.add(10, 15)
+    expect(di.covers(0, 5)).toBe(true)
+    expect(di.covers(10, 15)).toBe(true)
+    expect(di.covers(0, 15)).toBe(false)
+  })
+
+  it('contains at interval boundary', () => {
+    const di = new DisjointInterval()
+    di.add(5, 10)
+    expect(di.contains(5)).toBe(true)
+    expect(di.contains(10)).toBe(true)
+  })
+
+  it('remove at interval boundary', () => {
+    const di = new DisjointInterval()
+    di.add(5, 10)
+    di.remove(5, 5)
+    expect(di.contains(5)).toBe(false)
+  })
+
+  it('add duplicate intervals', () => {
+    const di = new DisjointInterval()
+    di.add(0, 5)
+    di.add(0, 5)
+    expect(di.getIntervals()).toEqual([[0, 5]])
+  })
+
+  it('remove from empty set', () => {
+    const di = new DisjointInterval()
+    di.remove(0, 5)
+    expect(di.count).toBe(0)
+  })
+
+  it('totalCovered after multiple removes', () => {
+    const di = new DisjointInterval()
+    di.add(0, 20)
+    di.remove(5, 10)
+    di.remove(15, 15)
+    expect(di.totalCovered()).toBe(14)
+  })
+
+  it('handles zero length interval in remove', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    di.remove(5, 4)
+    expect(di.getIntervals()).toEqual([[0, 10]])
+  })
+
+  it('covers returns true when l > r if range is covered', () => {
+    const di = new DisjointInterval()
+    di.add(0, 10)
+    expect(di.covers(8, 5)).toBe(true)
   })
 })
