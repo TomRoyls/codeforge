@@ -400,4 +400,17 @@ describe('Centroid2D', () => {
     expect(c.x).toBeCloseTo(4 / 3, 3)
     expect(c.y).toBeCloseTo(4 / 3, 3)
   })
+
+  it('should handle single point', () => {
+    const c = Centroid2D.compute([{ x: 5, y: 10 }])
+    expect(c.x).toBeCloseTo(5)
+    expect(c.y).toBeCloseTo(10)
+  })
+
+  it('should handle collinear points', () => {
+    const points = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }]
+    const c = Centroid2D.compute(points)
+    expect(c.x).toBeCloseTo(1)
+    expect(c.y).toBeCloseTo(1)
+  })
 })

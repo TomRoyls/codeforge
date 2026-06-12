@@ -481,4 +481,19 @@ describe('DancingLinks', () => {
     const solutions = dl.solve()
     expect(solutions.length).toBe(1)
   })
+
+  it('should handle impossible constraint', () => {
+    const dl = new DancingLinks(3)
+    dl.addRow(0, [0])
+    dl.addRow(1, [0])
+    const solutions = dl.solve()
+    expect(solutions.length).toBe(0)
+  })
+
+  it('should handle two columns', () => {
+    const dl = new DancingLinks(2)
+    dl.addRow(0, [0, 1])
+    const solutions = dl.solve()
+    expect(solutions.length).toBe(1)
+  })
 })

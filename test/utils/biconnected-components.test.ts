@@ -452,4 +452,24 @@ describe('BiconnectedComponents', () => {
     const articulation = bc.findArticulationPoints()
     expect(articulation.length).toBe(0)
   })
+
+  it('should handle two-component graph', () => {
+    const bc = new BiconnectedComponents(6)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(3, 4)
+    bc.addEdge(4, 5)
+    const comps = bc.findComponents()
+    expect(comps.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('should handle star with center articulation', () => {
+    const bc = new BiconnectedComponents(5)
+    bc.addEdge(0, 1)
+    bc.addEdge(0, 2)
+    bc.addEdge(0, 3)
+    bc.addEdge(0, 4)
+    const articulation = bc.findArticulationPoints()
+    expect(articulation).toContain(0)
+  })
 })

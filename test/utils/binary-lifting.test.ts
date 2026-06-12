@@ -415,4 +415,23 @@ describe('BinaryLifting', () => {
     expect(bl.getDepth(1)).toBe(1)
     expect(bl.getDepth(2)).toBe(2)
   })
+
+  it('should get parent', () => {
+    const adj = [[1, 2], [0], [0]]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.getParent(1)).toBe(0)
+    expect(bl.getParent(2)).toBe(0)
+  })
+
+  it('should compute kth ancestor', () => {
+    const adj = [[1], [2], [3], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(3, 2)).toBe(1)
+  })
+
+  it('should return -1 for invalid ancestor', () => {
+    const adj = [[1], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(1, 5)).toBe(-1)
+  })
 })

@@ -402,4 +402,16 @@ describe('CountedBloomFilter', () => {
     expect(bf.contains('keep2')).toBe(true)
     expect(bf.contains('remove-me')).toBe(false)
   })
+
+  it('should report count for items', () => {
+    const bf = new CountedBloomFilter(100, 0.01)
+    bf.add('test')
+    bf.add('test')
+    expect(bf.count('test')).toBeGreaterThanOrEqual(2)
+  })
+
+  it('should report 0 count for missing items', () => {
+    const bf = new CountedBloomFilter(100, 0.01)
+    expect(bf.count('missing')).toBe(0)
+  })
 })

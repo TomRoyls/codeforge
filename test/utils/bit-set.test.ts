@@ -415,4 +415,29 @@ describe('BitSet - large scale', () => {
     bs.clearRange(2, 6)
     expect(bs.get(4)).toBe(0)
   })
+
+  it('should handle flip operation', () => {
+    const bs = new BitSet(8)
+    bs.set(0)
+    bs.flip(0)
+    expect(bs.get(0)).toBe(0)
+    bs.flip(0)
+    expect(bs.get(0)).toBe(1)
+  })
+
+  it('should handle has method', () => {
+    const bs = new BitSet(8)
+    expect(bs.has(0)).toBe(false)
+    bs.set(0)
+    expect(bs.has(0)).toBe(true)
+  })
+
+  it('should convert to array', () => {
+    const bs = new BitSet(8)
+    bs.set(1)
+    bs.set(3)
+    const arr = bs.toArray()
+    expect(arr).toContain(1)
+    expect(arr).toContain(3)
+  })
 })

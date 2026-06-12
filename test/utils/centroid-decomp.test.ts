@@ -443,4 +443,16 @@ describe('CentroidDecomposition', () => {
     const tree = cd.getCentroidTree()
     expect(tree.length).toBe(8)
   })
+
+  it('should handle path graph', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0, 2]], [2, [1]]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getCentroidTree().length).toBe(3)
+  })
+
+  it('should handle star graph', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2, 3, 4]], [1, [0]], [2, [0]], [3, [0]], [4, [0]]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getCentroidTree().length).toBe(5)
+  })
 })

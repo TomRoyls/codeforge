@@ -238,4 +238,16 @@ describe('BinaryExponentiation', () => {
   it('handles powerNoMod with base 0', () => {
     expect(BinaryExponentiation.powerNoMod(0n, 5n)).toBe(0n)
   })
+
+  it('handles power with modulus', () => {
+    expect(BinaryExponentiation.power(2n, 10n, 1000n)).toBe(24n)
+  })
+
+  it('handles power of one', () => {
+    expect(BinaryExponentiation.powerNoMod(1n, 1000000n)).toBe(1n)
+  })
+
+  it('handles zero exponent', () => {
+    expect(BinaryExponentiation.powerNoMod(5n, 0n)).toBe(1n)
+  })
 })

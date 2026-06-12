@@ -233,4 +233,13 @@ describe('Collatz', () => {
       expect(Collatz.maxValue(i)).toBeGreaterThanOrEqual(i)
     }
   })
+
+  it('should compute sequence for 1', () => {
+    expect(Collatz.sequence(1)).toEqual([1])
+  })
+
+  it('should verify sequence reaches 1', () => {
+    const seq = Collatz.sequence(27)
+    expect(seq[seq.length - 1]).toBe(1)
+  })
 })

@@ -361,4 +361,14 @@ describe('ConsistentHashRing', () => {
     })
     expect(changed.length).toBeLessThan(100 * 0.2)
   })
+
+  it('should return undefined for empty ring', () => {
+    const ring = new ConsistentHashRing([])
+    expect(ring.getNode('key')).toBeUndefined()
+  })
+
+  it('should add multiple nodes', () => {
+    const ring = new ConsistentHashRing(['a', 'b', 'c'])
+    expect(ring.nodeCount).toBe(3)
+  })
 })

@@ -239,4 +239,12 @@ describe('CountingInversions', () => {
   it('should handle single element', () => {
     expect(CountingInversions.count([42])).toBe(0)
   })
+
+  it('should handle already sorted array', () => {
+    expect(CountingInversions.count([1, 2, 3, 4, 5])).toBe(0)
+  })
+
+  it('should handle reverse sorted array', () => {
+    expect(CountingInversions.count([5, 4, 3, 2, 1])).toBe(10)
+  })
 })
