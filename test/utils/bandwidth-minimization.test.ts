@@ -401,4 +401,47 @@ describe('BandwidthMinimization', () => {
       expect(bm.bandwidth()).toBeGreaterThanOrEqual(1)
     })
   })
+
+  it('should handle single node', () => {
+    const bm = new BandwidthMinimization(1)
+    expect(bm.bandwidth()).toBe(0)
+  })
+
+  it('should handle path graph', () => {
+    const bm = new BandwidthMinimization(4)
+    bm.addEdge(0, 1)
+    bm.addEdge(1, 2)
+    bm.addEdge(2, 3)
+    expect(bm.bandwidth()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should handle star graph', () => {
+    const bm = new BandwidthMinimization(5)
+    bm.addEdge(0, 1)
+    bm.addEdge(0, 2)
+    bm.addEdge(0, 3)
+    bm.addEdge(0, 4)
+    expect(bm.bandwidth()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should handle complete graph', () => {
+    const bm = new BandwidthMinimization(3)
+    bm.addEdge(0, 1)
+    bm.addEdge(1, 2)
+    bm.addEdge(0, 2)
+    expect(bm.bandwidth()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should handle disconnected graph', () => {
+    const bm = new BandwidthMinimization(4)
+    bm.addEdge(0, 1)
+    bm.addEdge(2, 3)
+    expect(bm.bandwidth()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('should handle two nodes', () => {
+    const bm = new BandwidthMinimization(2)
+    bm.addEdge(0, 1)
+    expect(bm.bandwidth()).toBe(1)
+  })
 })

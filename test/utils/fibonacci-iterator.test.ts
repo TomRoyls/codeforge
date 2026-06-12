@@ -285,4 +285,39 @@ describe('FibonacciIterator', () => {
   it('nth handles edge case 3', () => {
     expect(FibonacciIterator.nth(3)).toBe(2n)
   })
+
+  it('should iterate fibonacci sequence', () => {
+    const iter = new FibonacciIterator()
+    expect(iter.next().value).toBe(0n)
+    expect(iter.next().value).toBe(1n)
+    expect(iter.next().value).toBe(1n)
+    expect(iter.next().value).toBe(2n)
+  })
+
+  it('should return 0n for nth(0)', () => {
+    expect(FibonacciIterator.nth(0)).toBe(0n)
+  })
+
+  it('should return 1n for nth(1)', () => {
+    expect(FibonacciIterator.nth(1)).toBe(1n)
+  })
+
+  it('should compute large fibonacci', () => {
+    const f = FibonacciIterator.nth(50)
+    expect(f).toBeGreaterThan(0n)
+  })
+
+  it('should be iterable', () => {
+    const iter = new FibonacciIterator()
+    let count = 0
+    for (const _ of iter) {
+      count++
+      if (count >= 10) break
+    }
+    expect(count).toBe(10)
+  })
+
+  it('should compute nth(10)', () => {
+    expect(FibonacciIterator.nth(10)).toBe(55n)
+  })
 })

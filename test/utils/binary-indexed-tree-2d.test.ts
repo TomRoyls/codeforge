@@ -345,4 +345,43 @@ describe('BinaryIndexedTree2D', () => {
     const clone = bit.clone()
     expect(clone.query(2, 2)).toBe(0)
   })
+
+  it('should handle single cell', () => {
+    const bit = new BinaryIndexedTree2D(1, 1)
+    bit.update(0, 0, 5)
+    expect(bit.query(0, 0)).toBe(5)
+  })
+
+  it('should sum range correctly', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(0, 0, 1)
+    bit.update(1, 1, 2)
+    bit.update(2, 2, 3)
+    expect(bit.rangeQuery(0, 0, 2, 2)).toBe(6)
+  })
+
+  it('should handle fromGrid', () => {
+    const grid = [[1, 2], [3, 4]]
+    const bit = BinaryIndexedTree2D.fromGrid(grid)
+    expect(bit.rangeQuery(0, 0, 1, 1)).toBe(10)
+  })
+
+  it('should report rows and cols', () => {
+    const bit = new BinaryIndexedTree2D(3, 5)
+    expect(bit.rows).toBe(3)
+    expect(bit.cols).toBe(5)
+  })
+
+  it('should handle multiple updates', () => {
+    const bit = new BinaryIndexedTree2D(2, 2)
+    bit.update(0, 0, 10)
+    bit.update(0, 0, 5)
+    expect(bit.query(0, 0)).toBe(15)
+  })
+
+  it('should handle range query with single cell', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(1, 1, 42)
+    expect(bit.rangeQuery(1, 1, 1, 1)).toBe(42)
+  })
 })

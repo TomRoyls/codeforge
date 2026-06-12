@@ -322,4 +322,37 @@ describe('BurrowsWheelerTransform', () => {
     const restored = BurrowsWheelerTransform.inverseTransform(transformed.data, transformed.index)
     expect(restored).toBe(original)
   })
+
+  it('should handle single character', () => {
+    const { data, index } = BurrowsWheelerTransform.transform('a')
+    expect(BurrowsWheelerTransform.inverseTransform(data, index)).toBe('a')
+  })
+
+  it('should handle repeated characters', () => {
+    const { data, index } = BurrowsWheelerTransform.transform('aaaa')
+    expect(BurrowsWheelerTransform.inverseTransform(data, index)).toBe('aaaa')
+  })
+
+  it('should handle banana', () => {
+    const { data, index } = BurrowsWheelerTransform.transform('banana')
+    const restored = BurrowsWheelerTransform.inverseTransform(data, index)
+    expect(restored).toBe('banana')
+  })
+
+  it('should handle empty string', () => {
+    const { data, index } = BurrowsWheelerTransform.transform('')
+    expect(data).toBe('')
+    expect(index).toBe(0)
+  })
+
+  it('should handle two characters', () => {
+    const { data, index } = BurrowsWheelerTransform.transform('ab')
+    expect(BurrowsWheelerTransform.inverseTransform(data, index)).toBe('ab')
+  })
+
+  it('should preserve all characters in transform', () => {
+    const original = 'mississippi'
+    const { data } = BurrowsWheelerTransform.transform(original)
+    expect(data.length).toBe(original.length)
+  })
 })

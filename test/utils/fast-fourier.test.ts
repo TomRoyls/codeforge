@@ -309,4 +309,38 @@ describe('FastFourierTransform', () => {
     const result = FastFourierTransform.multiplyPolynomials([1, 0, 2, 0, 3], [2, 0, 1])
     expect(result).toEqual([2, 0, 5, 0, 8, 0, 3])
   })
+
+  it('should multiply polynomials', () => {
+    const result = FastFourierTransform.multiplyPolynomials([1, 1], [1, -1])
+    expect(result[0]).toBeCloseTo(1)
+    expect(result[1]).toBeCloseTo(0)
+    expect(result[2]).toBeCloseTo(-1)
+  })
+
+  it('should handle identity multiplication', () => {
+    const result = FastFourierTransform.multiplyPolynomials([1], [1])
+    expect(result[0]).toBeCloseTo(1)
+  })
+
+  it('should multiply by zero', () => {
+    const result = FastFourierTransform.multiplyPolynomials([0], [5])
+    expect(result[0]).toBeCloseTo(0)
+  })
+
+  it('should handle quadratic multiplication', () => {
+    const result = FastFourierTransform.multiplyPolynomials([1, 2], [3, 4])
+    expect(result).toHaveLength(3)
+    expect(result[0]).toBeCloseTo(3)
+  })
+
+  it('should handle empty polynomial', () => {
+    const result = FastFourierTransform.multiplyPolynomials([], [1])
+    expect(result).toEqual([])
+  })
+
+  it('should multiply higher degree', () => {
+    const result = FastFourierTransform.multiplyPolynomials([1, 0, 1], [1, 0, 1])
+    expect(result).toHaveLength(5)
+    expect(result[0]).toBeCloseTo(1)
+  })
 })

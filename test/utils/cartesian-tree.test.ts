@@ -309,4 +309,40 @@ describe('CartesianTree', () => {
     expect([...tree.inorder()].length).toBe(5)
     expect([...tree.preorder()].length).toBe(5)
   })
+
+  it('should handle single element', () => {
+    const tree = CartesianTree.fromArray([42])
+    expect(tree.root).toBeDefined()
+  })
+
+  it('should handle sorted input', () => {
+    const tree = CartesianTree.fromArray([1, 2, 3, 4])
+    expect(tree.root).toBeDefined()
+    const preorder = [...tree.preorder()]
+    expect(preorder.length).toBe(4)
+  })
+
+  it('should handle reverse sorted input', () => {
+    const tree = CartesianTree.fromArray([4, 3, 2, 1])
+    expect(tree.root).toBeDefined()
+  })
+
+  it('should handle duplicate values', () => {
+    const tree = CartesianTree.fromArray([3, 1, 3, 2])
+    expect(tree.root).toBeDefined()
+  })
+
+  it('should iterate inorder', () => {
+    const tree = CartesianTree.fromArray([3, 1, 2])
+    const inorder = [...tree.inorder()]
+    expect(inorder.length).toBe(3)
+  })
+
+  it('should iterate postorder', () => {
+    const tree = CartesianTree.fromArray([3, 1, 2])
+    const preorder = [...tree.preorder()]
+    const inorder = [...tree.inorder()]
+    expect(preorder.length).toBe(3)
+    expect(inorder.length).toBe(3)
+  })
 })

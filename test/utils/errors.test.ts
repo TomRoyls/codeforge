@@ -375,4 +375,35 @@ describe('Error hierarchy', () => {
     expect(err.context.value).toBe('[object Object]')
     expect(err.code).toBe('E004')
   })
+
+  it('should create config error', () => {
+    const err = CLIError.configError('bad config')
+    expect(err).toBeInstanceOf(CLIError)
+    expect(err.message).toContain('bad config')
+  })
+
+  it('should create config validation error', () => {
+    const err = CLIError.configValidation('key', 'value', 'invalid')
+    expect(err).toBeInstanceOf(CLIError)
+  })
+
+  it('should create file not found error', () => {
+    const err = CLIError.fileNotFound('/missing.txt')
+    expect(err).toBeInstanceOf(CLIError)
+  })
+
+  it('should create invalid input error', () => {
+    const err = CLIError.invalidInput('bad input')
+    expect(err).toBeInstanceOf(CLIError)
+  })
+
+  it('should create IO error', () => {
+    const err = SystemError.ioError('write file', new Error('disk full'))
+    expect(err).toBeInstanceOf(SystemError)
+  })
+
+  it('should create parse error', () => {
+    const err = SystemError.parseError('file.ts', new Error('syntax'))
+    expect(err).toBeInstanceOf(SystemError)
+  })
 })

@@ -325,4 +325,56 @@ describe('DynamicBitset', () => {
     expect(bs.get(10000)).toBe(true)
     expect(bs.length).toBe(10001)
   })
+
+  it('should flip bits', () => {
+    const bs = new DynamicBitset(10)
+    bs.set(5)
+    expect(bs.get(5)).toBe(true)
+    bs.flip(5)
+    expect(bs.get(5)).toBe(false)
+  })
+
+  it('should count set bits', () => {
+    const bs = new DynamicBitset(10)
+    bs.set(0)
+    bs.set(5)
+    bs.set(9)
+    expect(bs.count()).toBe(3)
+  })
+
+  it('should perform AND operation', () => {
+    const bs1 = new DynamicBitset(8)
+    bs1.set(0)
+    bs1.set(1)
+    const bs2 = new DynamicBitset(8)
+    bs2.set(1)
+    bs2.set(2)
+    const result = bs1.and(bs2)
+    expect(result.get(0)).toBe(false)
+    expect(result.get(1)).toBe(true)
+  })
+
+  it('should create from string', () => {
+    const bs = DynamicBitset.fromString('1010')
+    expect(bs.get(0)).toBe(true)
+    expect(bs.get(1)).toBe(false)
+    expect(bs.get(2)).toBe(true)
+  })
+
+  it('should handle OR operation', () => {
+    const bs1 = new DynamicBitset(8)
+    bs1.set(0)
+    const bs2 = new DynamicBitset(8)
+    bs2.set(1)
+    const result = bs1.or(bs2)
+    expect(result.get(0)).toBe(true)
+    expect(result.get(1)).toBe(true)
+  })
+
+  it('should convert to string', () => {
+    const bs = new DynamicBitset(4)
+    bs.set(0)
+    bs.set(2)
+    expect(bs.toString()).toContain('1')
+  })
 })

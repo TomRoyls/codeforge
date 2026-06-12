@@ -249,4 +249,33 @@ describe('CountingSort', () => {
     expect(freq.get(3)).toBe(1)
     expect(freq.get(0)).toBeUndefined()
   })
+
+  it('should sort negative numbers', () => {
+    expect(CountingSort.sort([-1, -3, -2])).toEqual([-3, -2, -1])
+  })
+
+  it('should sort with custom range', () => {
+    expect(CountingSort.sort([5, 3, 5, 1, 3])).toEqual([1, 3, 3, 5, 5])
+  })
+
+  it('should handle single element', () => {
+    expect(CountingSort.sort([42])).toEqual([42])
+  })
+
+  it('should handle all same elements', () => {
+    expect(CountingSort.sort([7, 7, 7])).toEqual([7, 7, 7])
+  })
+
+  it('should return frequency map', () => {
+    const freq = CountingSort.countFrequencies([1, 2, 2, 3])
+    expect(freq.get(1)).toBe(1)
+    expect(freq.get(2)).toBe(2)
+    expect(freq.get(3)).toBe(1)
+  })
+
+  it('should sort in place', () => {
+    const arr = [3, 1, 2]
+    CountingSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+  })
 })
