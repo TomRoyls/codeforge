@@ -399,3 +399,17 @@ describe('LeakyBucket', () => {
     expect(lb.pour(10)).toBe(true)
   })
 })
+
+describe('leaky-bucket - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

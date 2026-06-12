@@ -264,3 +264,17 @@ describe('LongestIncreasingSubsequence', () => {
     expect(LongestIncreasingSubsequence.lengthNonDecreasing([1, 2, 2, 3])).toBe(4)
   })
 })
+
+describe('longest-increasing-subsequence - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

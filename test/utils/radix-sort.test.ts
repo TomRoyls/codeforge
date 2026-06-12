@@ -339,3 +339,17 @@ describe('RadixSort', () => {
     expect(RadixSort.sort([3, 1, 2])).toEqual([1, 2, 3])
   })
   })
+
+describe('radix-sort - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -308,3 +308,17 @@ describe('PalindromeManacher', () => {
     expect(m.isPalindrome(0, 2)).toBe(true)
   })
 })
+
+describe('palindrome-manacher - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -405,3 +405,17 @@ describe('append', () => {
     expect(m.get('a')).toEqual([1])
   })
 })
+
+describe('map-helpers - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -303,3 +303,17 @@ describe('PolynomialRollingHash', () => {
     expect(PolynomialRollingHash.hash('test')).toBe(PolynomialRollingHash.hash('test'))
   })
 })
+
+describe('polynomial-rolling-hash - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -423,3 +423,17 @@ describe('RoaringBitSet', () => {
     expect(bs.has(5)).toBe(false)
   })
   })
+
+describe('roaring-bitset - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

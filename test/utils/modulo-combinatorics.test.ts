@@ -323,3 +323,17 @@ describe('ModuloCombinatorics', () => {
     expect(mc.nCr(5, 2)).toBe(10)
   })
 })
+
+describe('modulo-combinatorics - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

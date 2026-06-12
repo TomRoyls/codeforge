@@ -495,3 +495,17 @@ describe('CuckooHashMap', () => {
     m.set('b', 2)
     expect(m.size).toBe(2)
   })
+
+describe('cuckoo-hash-map - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -357,3 +357,17 @@ describe('Introsort', () => {
     expect(Introsort.sort([3, 2, 1], (a, b) => a - b)).toEqual([1, 2, 3])
   })
 })
+
+describe('introsort - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

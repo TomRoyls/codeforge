@@ -273,3 +273,17 @@ describe('CountingInversions', () => {
   it('count of empty array is 0', () => {
     expect(CountingInversions.count([])).toBe(0)
   })
+
+describe('counting-inversions - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

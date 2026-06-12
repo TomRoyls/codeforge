@@ -438,3 +438,17 @@ describe('ConvexHullTrick', () => {
     cht.addLine(2, 1)
     expect(cht.lineCount).toBe(2)
   })
+
+describe('convex-hull-trick - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

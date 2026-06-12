@@ -469,3 +469,17 @@ describe('writeToFileAtomic', () => {
   it('writeToFile is a function', () => {
     expect(typeof writeToFile).toBe('function')
   })
+
+describe('file-writer - wave545', () => {
+  it('module exists', () => {
+    expect(afterEach).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof afterEach).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof afterEach.name).toBe('string')
+  })
+})

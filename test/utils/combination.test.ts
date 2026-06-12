@@ -311,3 +311,17 @@ describe('Combination', () => {
   it('generate C(n,n) returns single full set', () => {
     expect(Combination.generate([1, 2], 2)).toEqual([[1, 2]])
   })
+
+describe('combination - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

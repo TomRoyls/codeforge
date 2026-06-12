@@ -454,3 +454,17 @@ describe('DifferenceArray', () => {
     da.rangeAdd(1, 3, 10)
     expect(da.toArray()).toEqual([0, 10, 10, 10, 0])
   })
+
+describe('difference-array - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

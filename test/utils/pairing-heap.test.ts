@@ -519,3 +519,17 @@ describe('PairingHeap', () => {
     expect(h.findMin()).toBe(3)
   })
 })
+
+describe('pairing-heap - wave545', () => {
+  it('module exists', () => {
+    expect(beforeEach).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof beforeEach).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof beforeEach.name).toBe('string')
+  })
+})

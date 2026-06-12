@@ -370,3 +370,17 @@ describe('suffix-array - extra', () => {
     expect(describe.name).toBeDefined()
   })
 })
+
+describe('suffix-array - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

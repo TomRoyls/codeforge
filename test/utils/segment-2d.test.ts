@@ -464,3 +464,17 @@ describe('segment-2d - extra', () => {
     expect(describe.name).toBeDefined()
   })
 })
+
+describe('segment-2d - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

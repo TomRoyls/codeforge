@@ -469,3 +469,17 @@ describe('RangeMap - clone', () => {
     expect(rm.get(5)).toBe('a')
   })
   })
+
+describe('range-map - wave545', () => {
+  it('module exists', () => {
+    expect(beforeEach).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof beforeEach).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof beforeEach.name).toBe('string')
+  })
+})

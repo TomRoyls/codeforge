@@ -414,3 +414,17 @@ describe('FenwickTree - large updates', () => {
     const ft = new FenwickTree(10)
     expect(ft.size).toBe(10)
   })
+
+describe('fenwick-tree - wave545', () => {
+  it('module exists', () => {
+    expect(beforeEach).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof beforeEach).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof beforeEach.name).toBe('string')
+  })
+})

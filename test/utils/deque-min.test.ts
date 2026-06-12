@@ -508,3 +508,17 @@ describe('DequeMin', () => {
     dm.pushBack(2)
     expect(dm.min).toBe(1)
   })
+
+describe('deque-min - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

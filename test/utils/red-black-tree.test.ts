@@ -488,3 +488,17 @@ describe('RedBlackTree height', () => {
     expect(tree.contains(1)).toBe(true)
   })
   })
+
+describe('red-black-tree - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

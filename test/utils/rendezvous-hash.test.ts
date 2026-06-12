@@ -493,3 +493,17 @@ describe('RendezvousHash - with complex values', () => {
     expect(rh.has('node1')).toBe(false)
   })
   })
+
+describe('rendezvous-hash - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

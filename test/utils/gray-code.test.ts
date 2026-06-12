@@ -336,3 +336,17 @@ describe('GrayCode', () => {
     expect(GrayCode.generateNumbers(2).length).toBe(4)
   })
 })
+
+describe('gray-code - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

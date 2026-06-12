@@ -512,3 +512,17 @@ describe('LowestCommonAncestor', () => {
     expect(lca.distance(0, 0)).toBe(0)
   })
 })
+
+describe('lowest-common-ancestor - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

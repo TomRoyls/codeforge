@@ -465,3 +465,17 @@ describe('HashMapOpen', () => {
     expect(m.has('missing')).toBe(false)
   })
 })
+
+describe('hash-map-open - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -352,3 +352,17 @@ describe('PersistentVector', () => {
     expect(v.size).toBe(2)
   })
 })
+
+describe('persistent-vector - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

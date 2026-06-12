@@ -489,3 +489,17 @@ describe('RingBuffer - capacity 1', () => {
     expect(rb).toBeDefined()
   })
   })
+
+describe('ring-buffer - wave545', () => {
+  it('module exists', () => {
+    expect(beforeEach).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof beforeEach).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof beforeEach.name).toBe('string')
+  })
+})

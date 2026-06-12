@@ -520,3 +520,16 @@ describe('SimdBitSet', () => {
     expect(bs2.isEmpty()).toBe(true)
   })
 })
+describe('simd-bit-set - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

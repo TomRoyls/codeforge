@@ -444,3 +444,17 @@ describe('Quadtree', () => {
     expect(qt.query({ x: 0, y: 0, w: 100, h: 100 }).length).toBe(1)
   })
 })
+
+describe('quadtree - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

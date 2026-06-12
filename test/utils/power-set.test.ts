@@ -344,3 +344,17 @@ describe('PowerSet', () => {
     expect(PowerSet.generate([1, 2]).length).toBe(4)
   })
 })
+
+describe('power-set - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

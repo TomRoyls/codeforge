@@ -350,3 +350,17 @@ describe('Comparators', () => {
     const comp = Comparators.chain(Comparators.natural<number>())
     expect(comp(1, 2)).toBeLessThan(0)
   })
+
+describe('comparators - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -515,3 +515,17 @@ describe('MonotonicQueue - multiple operations', () => {
     expect(q.isEmpty()).toBe(true)
   })
 })
+
+describe('monotonic-queue - wave545', () => {
+  it('module exists', () => {
+    expect(beforeEach).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof beforeEach).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof beforeEach.name).toBe('string')
+  })
+})

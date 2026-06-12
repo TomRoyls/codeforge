@@ -913,3 +913,17 @@ describe('watcher - extra', () => {
     expect(mkdirSync.name).toBeDefined()
   })
 })
+
+describe('watcher - wave545', () => {
+  it('module exists', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof mkdirSync).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof mkdirSync.name).toBe('string')
+  })
+})

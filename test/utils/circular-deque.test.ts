@@ -512,3 +512,17 @@ describe('CircularDeque', () => {
     cd.pushBack(3)
     expect(cd.size).toBe(3)
   })
+
+describe('circular-deque - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

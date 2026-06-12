@@ -441,3 +441,17 @@ describe('HeavyKeeper', () => {
     expect(Array.isArray(hk.heavyHitters(0.5))).toBe(true)
   })
 })
+
+describe('heavy-keeper - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

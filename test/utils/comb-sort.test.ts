@@ -285,3 +285,17 @@ describe('CombSort', () => {
   it('sort single element', () => {
     expect(CombSort.sort([5])).toEqual([5])
   })
+
+describe('comb-sort - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

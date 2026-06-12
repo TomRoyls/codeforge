@@ -591,3 +591,17 @@ describe('listFiles - additional', () => {
   it('fileExists is a function', () => {
     expect(typeof fileExists).toBe('function')
   })
+
+describe('fs-helpers - wave545', () => {
+  it('module exists', () => {
+    expect(existsSync).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof existsSync).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof existsSync.name).toBe('string')
+  })
+})

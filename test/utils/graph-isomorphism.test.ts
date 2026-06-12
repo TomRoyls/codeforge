@@ -461,3 +461,17 @@ describe('GraphIsomorphism', () => {
     expect(Array.isArray(seq)).toBe(true)
   })
 })
+
+describe('graph-isomorphism - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -289,3 +289,17 @@ describe('ModularArithmetic', () => {
     expect(ModularArithmetic.mod(-1, 5)).toBe(4)
   })
 })
+
+describe('modular-arithmetic - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

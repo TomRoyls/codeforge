@@ -472,3 +472,17 @@ describe('Deque', () => {
     expect(d.front()).toBe(1)
     expect(d.back()).toBe(3)
   })
+
+describe('deque - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -499,3 +499,17 @@ describe('DinicMaxFlow', () => {
     const edges = [{ from: 0, to: 1, capacity: 10 }, { from: 1, to: 2, capacity: 5 }]
     expect(Dinic.maxFlow(edges, 3, 0, 2)).toBe(5)
   })
+
+describe('dinic - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

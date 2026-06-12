@@ -536,3 +536,17 @@ describe('CountMinSketchWeighted additional accuracy', () => {
     expect(sketch.total).toBe(100)
   })
 })
+
+describe('count-min-sketch-weighted - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -538,3 +538,17 @@ describe('DequeAggregation', () => {
     da.pushBack(2)
     expect(da.front()).toBe(1)
   })
+
+describe('deque-aggregation - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

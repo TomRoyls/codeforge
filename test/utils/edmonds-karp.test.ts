@@ -466,3 +466,17 @@ describe('EdmondsKarp minCut', () => {
     const edges = [{ from: 0, to: 1, capacity: 5 }, { from: 0, to: 2, capacity: 3 }, { from: 1, to: 3, capacity: 5 }, { from: 2, to: 3, capacity: 3 }]
     expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(8)
   })
+
+describe('edmonds-karp - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

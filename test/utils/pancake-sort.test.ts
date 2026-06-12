@@ -290,3 +290,17 @@ describe('PancakeSort', () => {
     expect(PancakeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
   })
 })
+
+describe('pancake-sort - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

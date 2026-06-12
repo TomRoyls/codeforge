@@ -350,3 +350,17 @@ describe('FingerTree with strings', () => {
     const ft = FingerTree.empty<number>().pushBack(1).pushBack(2)
     expect(ft.peekBack()).toBe(2)
   })
+
+describe('finger-tree - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

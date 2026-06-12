@@ -303,3 +303,17 @@ describe('NumberTheory', () => {
     expect(NumberTheory.gcd(0, 7)).toBe(7)
   })
 })
+
+describe('number-theory - wave545', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

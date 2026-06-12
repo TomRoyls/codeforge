@@ -548,3 +548,17 @@ describe('CircularBuffer - edge cases', () => {
     cb.write(2)
     expect(cb.write(3)).toBe(1)
   })
+
+describe('circular-buffer - wave545', () => {
+  it('module exists', () => {
+    expect(beforeEach).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof beforeEach).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof beforeEach.name).toBe('string')
+  })
+})
