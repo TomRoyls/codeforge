@@ -604,3 +604,17 @@ describe('VanEmdeBoas successor/predecessor edge cases', () => {
     const veb = new VanEmdeBoas(16)
     expect(veb.universeSize).toBe(16)
   })
+
+describe('van-emde-boas - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

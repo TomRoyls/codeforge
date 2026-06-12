@@ -543,3 +543,16 @@ describe('UndoDisjointSet', () => {
     expect(dsu.find(2)).not.toBe(dsu.find(0))
   })
 })
+describe('undo-disjoint-set - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

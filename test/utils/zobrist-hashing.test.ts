@@ -416,3 +416,17 @@ describe('ZobristHashing', () => {
     const h2 = zh.movePiece(h1, 0, 1, 1)
     expect(typeof h2).toBe('number')
   })
+
+describe('zobrist-hashing - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

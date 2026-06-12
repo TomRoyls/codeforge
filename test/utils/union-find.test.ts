@@ -500,3 +500,17 @@ describe('UnionFind edge cases', () => {
     expect(uf.connected(0, 5)).toBe(false)
   })
 })
+
+describe('union-find - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

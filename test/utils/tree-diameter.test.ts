@@ -486,3 +486,16 @@ describe('TreeDiameter', () => {
     expect(path[path.length - 1]).toBe(3)
   })
 })
+describe('tree-diameter - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

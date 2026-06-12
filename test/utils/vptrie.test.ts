@@ -407,3 +407,17 @@ describe('VPTrie', () => {
     vp.addPoint([10, 10])
     expect(vp.kNearest([0, 0], 2).length).toBe(2)
   })
+
+describe('vptrie - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

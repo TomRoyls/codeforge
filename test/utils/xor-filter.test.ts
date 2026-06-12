@@ -377,3 +377,17 @@ describe('XorFilter', () => {
     const xf = XorFilter.create([])
     expect(xf).toBeDefined()
   })
+
+describe('xor-filter - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

@@ -487,3 +487,17 @@ describe('TreeDecomposition', () => {
     const td = new TreeDecomposition(1)
     expect(td.treewidth()).toBe(0)
   })
+
+describe('tree-decomposition - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

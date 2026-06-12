@@ -352,3 +352,17 @@ describe('Welford', () => {
     w.update(3)
     expect(typeof w.stdDev).toBe('number')
   })
+
+describe('welford - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

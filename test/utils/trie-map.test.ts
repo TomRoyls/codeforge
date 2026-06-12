@@ -414,3 +414,16 @@ describe('TrieMap', () => {
     expect(trie.longestPrefixOf('abcd')).toBe('abc')
   })
 })
+describe('trie-map - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

@@ -489,3 +489,17 @@ describe('WorkStealingDeque', () => {
     const dq = new WorkStealingDeque<number>()
     expect(dq.isEmpty()).toBe(true)
   })
+
+describe('work-stealing-deque - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

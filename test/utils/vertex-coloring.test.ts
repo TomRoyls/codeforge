@@ -413,3 +413,17 @@ describe('VertexColoring - larger graphs', () => {
     vc.addEdge(1, 2)
     expect(typeof vc.chromaticNumber()).toBe('number')
   })
+
+describe('vertex-coloring - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

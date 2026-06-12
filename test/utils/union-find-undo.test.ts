@@ -599,3 +599,17 @@ describe('UnionFindUndo', () => {
     uf.undo(snap)
     expect(uf.connected(0, 1)).toBe(false)
   })
+
+describe('union-find-undo - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

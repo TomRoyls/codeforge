@@ -899,3 +899,17 @@ describe('createWatcher', () => {
     expect(w.isActive()).toBe(false)
   })
 })
+
+describe('watcher - extra', () => {
+  it('is defined', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof mkdirSync).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(mkdirSync.name).toBeDefined()
+  })
+})

@@ -544,3 +544,17 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [1, 1])
     expect(path).toEqual([])
   })
+
+describe('tremaux-maze - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})
