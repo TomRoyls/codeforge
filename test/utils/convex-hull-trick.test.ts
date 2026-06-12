@@ -420,3 +420,21 @@ describe('ConvexHullTrick', () => {
     expect(cht.query(5)).toBe(25)
   })
 })
+
+  it('query with no lines returns Infinity', () => {
+    const cht = new ConvexHullTrick(true)
+    expect(cht.query(0)).toBe(Infinity)
+  })
+
+  it('single line query', () => {
+    const cht = new ConvexHullTrick(true)
+    cht.addLine(2, 1)
+    expect(cht.query(3)).toBe(7)
+  })
+
+  it('lineCount tracks lines', () => {
+    const cht = new ConvexHullTrick(true)
+    cht.addLine(1, 0)
+    cht.addLine(2, 1)
+    expect(cht.lineCount).toBe(2)
+  })

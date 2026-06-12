@@ -409,3 +409,21 @@ describe('CountingBloomFilter2 stats', () => {
     expect(f.filterSize).toBeGreaterThanOrEqual(64)
   })
 })
+
+  it('contains returns false for non-added', () => {
+    const bf = new CountingBloomFilter2(100)
+    expect(bf.contains('missing')).toBe(false)
+  })
+
+  it('add and contains', () => {
+    const bf = new CountingBloomFilter2(100)
+    bf.add('test')
+    expect(bf.contains('test')).toBe(true)
+  })
+
+  it('remove works', () => {
+    const bf = new CountingBloomFilter2(100)
+    bf.add('item')
+    bf.remove('item')
+    expect(bf.contains('item')).toBe(false)
+  })

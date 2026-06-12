@@ -334,3 +334,19 @@ describe('Comparators', () => {
     expect([...arr].sort(Comparators.byStringLength)).toEqual(['a', 'bb', 'ccc'])
   })
 })
+
+  it('natural sorts ascending', () => {
+    const comp = Comparators.natural<number>()
+    expect(comp(1, 2)).toBeLessThan(0)
+    expect(comp(2, 1)).toBeGreaterThan(0)
+  })
+
+  it('reverse sorts descending', () => {
+    const comp = Comparators.reverse<number>()
+    expect(comp(1, 2)).toBeGreaterThan(0)
+  })
+
+  it('chain combines comparators', () => {
+    const comp = Comparators.chain(Comparators.natural<number>())
+    expect(comp(1, 2)).toBeLessThan(0)
+  })

@@ -406,3 +406,21 @@ describe('CountingBloomFilter edge cases', () => {
     expect(bf.has('x')).toBe(true)
   })
 })
+
+  it('has returns false for non-added', () => {
+    const bf = new CountingBloomFilter(100)
+    expect(bf.has('missing')).toBe(false)
+  })
+
+  it('add and has', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('test')
+    expect(bf.has('test')).toBe(true)
+  })
+
+  it('remove works', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('item')
+    bf.remove('item')
+    expect(bf.has('item')).toBe(false)
+  })

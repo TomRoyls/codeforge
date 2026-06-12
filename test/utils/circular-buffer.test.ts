@@ -529,3 +529,22 @@ describe('CircularBuffer - edge cases', () => {
     expect(buf.isFull()).toBe(true)
   })
 })
+
+  it('read from empty returns undefined', () => {
+    const cb = new CircularBuffer<number>(5)
+    expect(cb.read()).toBeUndefined()
+  })
+
+  it('peek returns oldest without removing', () => {
+    const cb = new CircularBuffer<number>(5)
+    cb.write(1)
+    cb.write(2)
+    expect(cb.peek()).toBe(1)
+  })
+
+  it('write returns overwritten value', () => {
+    const cb = new CircularBuffer<number>(2)
+    cb.write(1)
+    cb.write(2)
+    expect(cb.write(3)).toBe(1)
+  })

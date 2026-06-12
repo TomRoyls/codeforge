@@ -490,3 +490,25 @@ describe('CircularDeque', () => {
     expect(deque.front()).toBe(5)
   })
 })
+
+  it('pushFront and popFront', () => {
+    const cd = new CircularDeque<number>(5)
+    cd.pushFront(1)
+    cd.pushFront(2)
+    expect(cd.popFront()).toBe(2)
+  })
+
+  it('pushBack and popBack', () => {
+    const cd = new CircularDeque<number>(5)
+    cd.pushBack(1)
+    cd.pushBack(2)
+    expect(cd.popBack()).toBe(2)
+  })
+
+  it('size tracks count', () => {
+    const cd = new CircularDeque<number>(5)
+    cd.pushBack(1)
+    cd.pushBack(2)
+    cd.pushBack(3)
+    expect(cd.size).toBe(3)
+  })

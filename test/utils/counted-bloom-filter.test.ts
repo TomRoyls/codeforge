@@ -436,3 +436,20 @@ describe('CountedBloomFilter', () => {
     expect(bf.remove('never-added')).toBe(false)
   })
 })
+  it('contains returns false for non-added', () => {
+    const bf = new CountedBloomFilter(100)
+    expect(bf.contains('missing')).toBe(false)
+  })
+
+  it('add and contains', () => {
+    const bf = new CountedBloomFilter(100)
+    bf.add('test')
+    expect(bf.contains('test')).toBe(true)
+  })
+
+  it('remove allows deletion', () => {
+    const bf = new CountedBloomFilter(100)
+    bf.add('item')
+    bf.remove('item')
+    expect(bf.contains('item')).toBe(false)
+  })

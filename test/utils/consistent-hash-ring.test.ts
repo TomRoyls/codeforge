@@ -392,3 +392,20 @@ describe('ConsistentHashRing', () => {
     }
   })
 })
+  it('getNode returns node for key', () => {
+    const chr = new ConsistentHashRing(['a', 'b', 'c'])
+    const node = chr.getNode('some-key')
+    expect(['a', 'b', 'c']).toContain(node)
+  })
+
+  it('addNode adds node', () => {
+    const chr = new ConsistentHashRing(['a'])
+    chr.addNode('b')
+    expect(chr.getNode('key')).toBeDefined()
+  })
+
+  it('removeNode removes node', () => {
+    const chr = new ConsistentHashRing(['a', 'b'])
+    chr.removeNode('a')
+    expect(chr.getNode('key')).toBe('b')
+  })

@@ -255,3 +255,15 @@ describe('Collatz', () => {
     expect(Collatz.maxValue(7)).toBeGreaterThanOrEqual(7)
   })
 })
+  it('sequence of 1 is [1]', () => {
+    expect(Collatz.sequence(1)).toEqual([1])
+  })
+
+  it('steps of 6 is 8', () => {
+    expect(Collatz.steps(6)).toBe(8)
+  })
+
+  it('sequence ends at 1', () => {
+    const seq = Collatz.sequence(7)
+    expect(seq[seq.length - 1]).toBe(1)
+  })

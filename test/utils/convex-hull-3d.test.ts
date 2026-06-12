@@ -509,3 +509,25 @@ describe('ConvexHull3D', () => {
     expect(ch.convexHullVolume()).toBe(0)
   })
 })
+
+  it('boundingBox of single point', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(1, 2, 3)
+    const bb = ch.boundingBox()
+    expect(bb.min).toEqual([1, 2, 3])
+    expect(bb.max).toEqual([1, 2, 3])
+  })
+
+  it('convexHullVolume of few points', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(1, 0, 0)
+    ch.addPoint(0, 1, 0)
+    ch.addPoint(0, 0, 1)
+    expect(ch.convexHullVolume()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('empty hull returns 0 volume', () => {
+    const ch = new ConvexHull3D()
+    expect(ch.convexHullVolume()).toBe(0)
+  })

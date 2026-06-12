@@ -394,3 +394,23 @@ describe('CompactIntSet', () => {
     expect(set.has(-5)).toBe(false)
   })
 })
+
+  it('has returns false for missing', () => {
+    const cis = new CompactIntSet()
+    expect(cis.has(5)).toBe(false)
+  })
+
+  it('add and has', () => {
+    const cis = new CompactIntSet()
+    cis.add(3)
+    cis.add(7)
+    expect(cis.has(3)).toBe(true)
+    expect(cis.has(7)).toBe(true)
+  })
+
+  it('size tracks count', () => {
+    const cis = new CompactIntSet()
+    cis.add(1)
+    cis.add(2)
+    expect(cis.size).toBe(2)
+  })

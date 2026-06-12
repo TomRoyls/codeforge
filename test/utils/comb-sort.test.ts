@@ -273,3 +273,15 @@ describe('CombSort', () => {
     expect(CombSort.sort([42])).toEqual([42])
   })
 })
+
+  it('sort empty array', () => {
+    expect(CombSort.sort([])).toEqual([])
+  })
+
+  it('sortWithComparator descending', () => {
+    expect(CombSort.sortWithComparator([3, 1, 2], (a, b) => b - a)).toEqual([3, 2, 1])
+  })
+
+  it('sort single element', () => {
+    expect(CombSort.sort([5])).toEqual([5])
+  })

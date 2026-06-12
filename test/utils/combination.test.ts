@@ -299,3 +299,15 @@ describe('Combination', () => {
     expect(result).toEqual([['x', 'x', 'x']])
   })
 })
+  it('generate returns empty for k=0', () => {
+    expect(Combination.generate([1, 2, 3], 0)).toEqual([[]])
+  })
+
+  it('generate C(3,2)', () => {
+    const result = Combination.generate([1, 2, 3], 2)
+    expect(result).toEqual([[1, 2], [1, 3], [2, 3]])
+  })
+
+  it('generate C(n,n) returns single full set', () => {
+    expect(Combination.generate([1, 2], 2)).toEqual([[1, 2]])
+  })

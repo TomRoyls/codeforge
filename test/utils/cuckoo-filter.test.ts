@@ -442,3 +442,21 @@ describe('CuckooFilter edge cases', () => {
     expect(cf.size).toBe(2)
   })
 })
+
+  it('contains returns false for missing', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    expect(cf.contains('missing')).toBe(false)
+  })
+
+  it('insert and contains', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('hello')
+    expect(cf.contains('hello')).toBe(true)
+  })
+
+  it('remove removes item', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('item')
+    expect(cf.remove('item')).toBe(true)
+    expect(cf.contains('item')).toBe(false)
+  })

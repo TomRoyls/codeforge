@@ -501,3 +501,19 @@ describe('CircuitBreaker - additional edge cases', () => {
     expect(cb.getState()).toBe('open')
   })
 })
+
+  it('canAttempt returns true when closed', () => {
+    const cb = new CircuitBreaker({ failureThreshold: 3, resetTimeoutMs: 1000 })
+    expect(cb.canAttempt()).toBe(true)
+  })
+
+  it('execute resolves on success', async () => {
+    const cb = new CircuitBreaker({ failureThreshold: 3, resetTimeoutMs: 1000 })
+    const result = await cb.execute(() => Promise.resolve(42))
+    expect(result).toBe(42)
+  })
+
+  it('execute rejects on failure', async () => {
+    const cb = new CircuitBreaker({ failureThreshold: 3, resetTimeoutMs: 1000 })
+    await expect(cb.execute(() => Promise.reject(new Error('fail')))).rejects.toThrow('fail')
+  })

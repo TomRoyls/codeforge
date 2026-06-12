@@ -485,3 +485,21 @@ describe('ClosestPairBrute', () => {
     expect(cp.findClosest()!.distance).toBe(0)
   })
 })
+  it('findClosest with no points returns null', () => {
+    const cp = new ClosestPairBrute()
+    expect(cp.findClosest()).toBeNull()
+  })
+
+  it('findClosest with one point returns null', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    expect(cp.findClosest()).toBeNull()
+  })
+
+  it('findClosest with two points', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(3, 4)
+    const result = cp.findClosest()
+    expect(result?.distance).toBe(5)
+  })

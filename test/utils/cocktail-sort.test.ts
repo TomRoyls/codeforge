@@ -268,3 +268,14 @@ describe('CocktailSort', () => {
     expect(CocktailSort.sort([42])).toEqual([42])
   })
 })
+  it('sort empty array', () => {
+    expect(CocktailSort.sort([])).toEqual([])
+  })
+
+  it('sort single element', () => {
+    expect(CocktailSort.sort([42])).toEqual([42])
+  })
+
+  it('sort already sorted', () => {
+    expect(CocktailSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  })

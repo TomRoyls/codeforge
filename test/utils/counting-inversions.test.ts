@@ -261,3 +261,15 @@ describe('CountingInversions', () => {
     expect(CountingInversions.count([42])).toBe(0)
   })
 })
+
+  it('count of sorted array is 0', () => {
+    expect(CountingInversions.count([1, 2, 3, 4])).toBe(0)
+  })
+
+  it('count of reversed array', () => {
+    expect(CountingInversions.count([4, 3, 2, 1])).toBe(6)
+  })
+
+  it('count of empty array is 0', () => {
+    expect(CountingInversions.count([])).toBe(0)
+  })

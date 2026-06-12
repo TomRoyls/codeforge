@@ -336,4 +336,19 @@ describe('ChineseRemainderTheorem', () => {
     expect(result).not.toBeNull()
     expect(result!.remainder % 5).toBe(2)
   })
+
+  it('solve with congruences', () => {
+    const result = ChineseRemainderTheorem.solve([[2, 3], [3, 5], [2, 7]])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 3).toBe(2)
+  })
+
+  it('solve with arrays', () => {
+    const result = ChineseRemainderTheorem.solve([2, 3], [3, 5])
+    expect(result).not.toBeNull()
+  })
+
+  it('solve with no congruences returns null', () => {
+    expect(ChineseRemainderTheorem.solve([])).toBeNull()
+  })
 })
