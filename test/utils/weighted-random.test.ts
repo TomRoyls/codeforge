@@ -419,4 +419,39 @@ describe('WeightedRandom', () => {
     sampler.add('a', 1); sampler.build()
     expect(sampler.sampleMultiple(0)).toEqual([])
   })
+
+  it('probability returns correct value', () => {
+    const sampler = new WeightedRandom<string>()
+    sampler.add('a', 3)
+    sampler.add('b', 7)
+    sampler.build()
+    expect(sampler.probability('a')).toBeCloseTo(0.3, 5)
+    expect(sampler.probability('b')).toBeCloseTo(0.7, 5)
+  })
+
+  it('clear removes all items', () => {
+    const sampler = new WeightedRandom<string>()
+    sampler.add('x', 1)
+    sampler.clear()
+    sampler.build()
+    expect(sampler.sample()).toBeUndefined()
+  })
+
+  it('sampleN returns correct count', () => {
+    const sampler = new WeightedRandom<number>()
+    sampler.add(1, 1)
+    sampler.add(2, 1)
+    sampler.build()
+    const samples = sampler.sampleN(5)
+    expect(samples.length).toBe(5)
+  })
+
+  it('single item always sampled', () => {
+    const sampler = new WeightedRandom<string>()
+    sampler.add('only', 1)
+    sampler.build()
+    for (let i = 0; i < 10; i++) {
+      expect(sampler.sample()).toBe('only')
+    }
+  })
 })

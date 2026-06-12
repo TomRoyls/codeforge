@@ -451,4 +451,38 @@ describe('TreeDiameter', () => {
     td.addEdge(0, 1)
     expect(td.findDiameter()).toBe(1)
   })
+
+  it('findDiameterPath returns correct path length', () => {
+    const td = new TreeDiameter(5)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    td.addEdge(3, 4)
+    const path = td.findDiameterPath()
+    expect(path.length).toBe(5)
+  })
+
+  it('single node has diameter 0', () => {
+    const td = new TreeDiameter(1)
+    expect(td.findDiameter()).toBe(0)
+  })
+
+  it('star graph has diameter 2', () => {
+    const td = new TreeDiameter(5)
+    td.addEdge(0, 1)
+    td.addEdge(0, 2)
+    td.addEdge(0, 3)
+    td.addEdge(0, 4)
+    expect(td.findDiameter()).toBe(2)
+  })
+
+  it('findDiameterPath endpoints are leaves', () => {
+    const td = new TreeDiameter(4)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(2, 3)
+    const path = td.findDiameterPath()
+    expect(path[0]).toBe(0)
+    expect(path[path.length - 1]).toBe(3)
+  })
 })

@@ -383,4 +383,34 @@ describe('XorLinkedList', () => {
       expect(list.size).toBe(i + 1)
     }
   })
+
+  it('toArrayReverse returns elements in reverse', () => {
+    const list = new XorLinkedList<number>()
+    list.pushBack(1)
+    list.pushBack(2)
+    list.pushBack(3)
+    expect(list.toArrayReverse()).toEqual([3, 2, 1])
+  })
+
+  it('get returns correct element', () => {
+    const list = new XorLinkedList<string>()
+    list.pushBack('a')
+    list.pushBack('b')
+    list.pushBack('c')
+    expect(list.get(0)).toBe('a')
+    expect(list.get(2)).toBe('c')
+  })
+
+  it('get returns undefined for out of bounds', () => {
+    const list = new XorLinkedList<number>()
+    list.pushBack(1)
+    expect(list.get(5)).toBeUndefined()
+  })
+
+  it('pushFront adds to beginning', () => {
+    const list = new XorLinkedList<number>()
+    list.pushFront(2)
+    list.pushFront(1)
+    expect(list.toArray()).toEqual([1, 2])
+  })
 })

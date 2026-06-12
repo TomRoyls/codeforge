@@ -416,4 +416,28 @@ describe('XorFilter', () => {
       expect(typeof filter.has('other')).toBe('boolean')
     })
   })
+
+  it('handles large item set', () => {
+    const items = Array.from({ length: 100 }, (_, i) => `item-${i}`)
+    const filter = new XorFilter(items)
+    for (const item of items) {
+      expect(filter.has(item)).toBe(true)
+    }
+  })
+
+  it('empty filter returns false for any query', () => {
+    const filter = new XorFilter([])
+    expect(filter.has('anything')).toBe(false)
+  })
+
+  it('custom number of hashes', () => {
+    const filter = new XorFilter(['a', 'b', 'c'], 5)
+    expect(filter.has('a')).toBe(true)
+    expect(filter.has('b')).toBe(true)
+  })
+
+  it('single item', () => {
+    const filter = new XorFilter(['solo'])
+    expect(filter.has('solo')).toBe(true)
+  })
 })

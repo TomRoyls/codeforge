@@ -508,4 +508,38 @@ describe('UndoDisjointSet', () => {
     expect(dsu.connected(4, 5)).toBe(false)
     expect(dsu.connected(5, 6)).toBe(false)
   })
+
+  it('snapshot and rollback restore state', () => {
+    const dsu = new UndoDisjointSet(4)
+    const snap = dsu.snapshot()
+    dsu.union(0, 1)
+    expect(dsu.connected(0, 1)).toBe(true)
+    dsu.rollback(snap)
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
+
+  it('undo reverses last union', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    dsu.undo()
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
+
+  it('multiple snapshots at different points', () => {
+    const dsu = new UndoDisjointSet(4)
+    const s1 = dsu.snapshot()
+    dsu.union(0, 1)
+    const s2 = dsu.snapshot()
+    dsu.union(2, 3)
+    dsu.rollback(s2)
+    expect(dsu.connected(0, 1)).toBe(true)
+    expect(dsu.connected(2, 3)).toBe(false)
+  })
+
+  it('find returns representative', () => {
+    const dsu = new UndoDisjointSet(3)
+    dsu.union(0, 1)
+    expect(dsu.find(0)).toBe(dsu.find(1))
+    expect(dsu.find(2)).not.toBe(dsu.find(0))
+  })
 })

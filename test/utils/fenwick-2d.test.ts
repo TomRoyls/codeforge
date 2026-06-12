@@ -188,6 +188,30 @@ describe('FenwickTree2D', () => {
     expect(ft.rangeQuery(0, 0, 1, 1)).toBe(10);
   });
 
+  it('point query with single update', () => {
+    const ft = new FenwickTree2D(3, 3);
+    ft.update(2, 2, 42);
+    expect(ft.query(2, 2)).toBe(42);
+  });
+
+  it('negative delta subtracts', () => {
+    const ft = new FenwickTree2D(2, 2);
+    ft.update(0, 0, 10);
+    ft.update(0, 0, -4);
+    expect(ft.query(0, 0)).toBe(6);
+  });
+
+  it('rangeQuery on 1x1 grid', () => {
+    const ft = new FenwickTree2D(1, 1);
+    ft.update(0, 0, 5);
+    expect(ft.rangeQuery(0, 0, 0, 0)).toBe(5);
+  });
+
+  it('query on empty tree returns 0', () => {
+    const ft = new FenwickTree2D(2, 2);
+    expect(ft.query(0, 0)).toBe(0);
+  });
+
   it('multiple updates accumulate', () => {
     const ft = new FenwickTree2D(2, 2);
     ft.update(0, 0, 5);

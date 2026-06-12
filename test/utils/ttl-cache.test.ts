@@ -443,4 +443,32 @@ describe('TTLCache keys & values', () => {
     expect(cache.delete('a')).toBe(true)
     expect(cache.has('a')).toBe(false)
   })
+
+  it('peek returns value without refreshing TTL', () => {
+    const cache = new TTLCache<string, number>({ ttl: 100 })
+    cache.set('x', 42)
+    expect(cache.peek('x')).toBe(42)
+  })
+
+  it('clear empties all entries', () => {
+    const cache = new TTLCache<string, number>({ ttl: 1000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.clear()
+    expect(cache.isEmpty).toBe(true)
+  })
+
+  it('size tracks number of entries', () => {
+    const cache = new TTLCache<string, number>({ ttl: 1000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.size).toBe(2)
+  })
+
+  it('delete removes entry', () => {
+    const cache = new TTLCache<string, number>({ ttl: 1000 })
+    cache.set('x', 10)
+    expect(cache.delete('x')).toBe(true)
+    expect(cache.has('x')).toBe(false)
+  })
 })

@@ -467,4 +467,40 @@ describe('TwoSAT', () => {
     const trues = sol.filter(v => v).length
     expect(trues).toBeGreaterThanOrEqual(2)
   })
+
+  it('all variables same value is satisfiable', () => {
+    const ts = new TwoSAT(3)
+    ts.addClause(0, false, 1, false)
+    ts.addClause(1, false, 2, false)
+    ts.addClause(0, false, 2, false)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    if (result) {
+      const allTrue = result.every(v => v)
+      const allFalse = result.every(v => !v)
+      expect(allTrue || allFalse).toBe(true)
+    }
+  })
+
+  it('empty instance with no clauses is satisfiable', () => {
+    const ts = new TwoSAT(5)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    expect(result!.length).toBe(5)
+  })
+
+  it('single variable contradiction', () => {
+    const ts = new TwoSAT(1)
+    ts.addClause(0, false, 0, false)
+    ts.addClause(0, true, 0, true)
+    expect(ts.solve()).toBeNull()
+  })
+
+  it('large chain is satisfiable', () => {
+    const ts = new TwoSAT(30)
+    for (let i = 0; i < 29; i++) {
+      ts.addClause(i, false, i + 1, false)
+    }
+    expect(ts.solve()).not.toBeNull()
+  })
 })

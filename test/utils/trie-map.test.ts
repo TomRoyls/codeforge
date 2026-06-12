@@ -382,4 +382,35 @@ describe('TrieMap', () => {
     expect(trie.size).toBe(1)
     expect(trie.get('x')).toBe(4)
   })
+
+  it('hasPrefix returns true for existing prefix', () => {
+    const trie = new TrieMap<number>()
+    trie.set('hello', 1)
+    expect(trie.hasPrefix('hel')).toBe(true)
+    expect(trie.hasPrefix('xyz')).toBe(false)
+  })
+
+  it('valuesWithPrefix returns correct values', () => {
+    const trie = new TrieMap<number>()
+    trie.set('car', 1)
+    trie.set('cat', 2)
+    trie.set('dog', 3)
+    expect(trie.valuesWithPrefix('ca').sort()).toEqual([1, 2])
+  })
+
+  it('entriesWithPrefix returns pairs', () => {
+    const trie = new TrieMap<number>()
+    trie.set('ab', 1)
+    trie.set('ac', 2)
+    const entries = trie.entriesWithPrefix('a')
+    expect(entries.length).toBe(2)
+  })
+
+  it('longestPrefixOf finds longest matching prefix', () => {
+    const trie = new TrieMap<number>()
+    trie.set('a', 1)
+    trie.set('ab', 2)
+    trie.set('abc', 3)
+    expect(trie.longestPrefixOf('abcd')).toBe('abc')
+  })
 })

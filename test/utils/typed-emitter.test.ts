@@ -469,4 +469,44 @@ describe('TypedEventEmitter', () => {
     emitter.emit('count', 3)
     expect(count).toBe(32)
   })
+
+  it('once listener fires only once', () => {
+    const emitter = new TypedEmitter<{ click: number }>()
+    let count = 0
+    emitter.once('click', () => { count++ })
+    emitter.emit('click', 1)
+    emitter.emit('click', 2)
+    expect(count).toBe(1)
+  })
+
+  it('off removes listener', () => {
+    const emitter = new TypedEmitter<{ data: string }>()
+    let count = 0
+    const listener = () => { count++ }
+    emitter.on('data', listener)
+    emitter.emit('data', 'a')
+    emitter.off('data', listener)
+    emitter.emit('data', 'b')
+    expect(count).toBe(1)
+  })
+
+  it('on returns unsubscribe function', () => {
+    const emitter = new TypedEmitter<{ x: number }>()
+    let count = 0
+    const unsub = emitter.on('x', () => { count++ })
+    emitter.emit('x', 1)
+    unsub()
+    emitter.emit('x', 2)
+    expect(count).toBe(1)
+  })
+
+  it('multiple listeners on same event', () => {
+    const emitter = new TypedEmitter<{ e: void }>()
+    let a = 0, b = 0
+    emitter.on('e', () => { a++ })
+    emitter.on('e', () => { b++ })
+    emitter.emit('e', undefined as unknown as void)
+    expect(a).toBe(1)
+    expect(b).toBe(1)
+  })
 })

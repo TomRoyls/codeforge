@@ -473,4 +473,43 @@ describe('TreeHash', () => {
     const h = th.hash(0)
     expect(typeof h).toBe('bigint')
   })
+
+  it('isIsomorphic detects same trees', () => {
+    const t1 = new TreeHash(3)
+    t1.addEdge(0, 1)
+    t1.addEdge(0, 2)
+    const t2 = new TreeHash(3)
+    t2.addEdge(0, 1)
+    t2.addEdge(0, 2)
+    expect(t1.isIsomorphic(t2, 0, 0)).toBe(true)
+  })
+
+  it('findCenter returns center nodes', () => {
+    const th = new TreeHash(5)
+    th.addEdge(0, 1)
+    th.addEdge(1, 2)
+    th.addEdge(2, 3)
+    th.addEdge(3, 4)
+    const centers = th.findCenter()
+    expect(centers.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('rootedHash returns bigint', () => {
+    const th = new TreeHash(3)
+    th.addEdge(0, 1)
+    th.addEdge(0, 2)
+    expect(typeof th.rootedHash()).toBe('bigint')
+  })
+
+  it('different trees have different hashes', () => {
+    const t1 = new TreeHash(4)
+    t1.addEdge(0, 1)
+    t1.addEdge(1, 2)
+    t1.addEdge(2, 3)
+    const t2 = new TreeHash(4)
+    t2.addEdge(0, 1)
+    t2.addEdge(0, 2)
+    t2.addEdge(0, 3)
+    expect(t1.hash(0)).not.toBe(t2.hash(0))
+  })
 })

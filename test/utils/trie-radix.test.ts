@@ -428,4 +428,33 @@ describe('TrieRadix', () => {
     expect(trie.startsWith('hi')).toBe(true)
     expect(trie.startsWith('hii')).toBe(false)
   })
+
+  it('collectWords returns all words', () => {
+    const trie = new TrieRadix()
+    trie.insert('car')
+    trie.insert('card')
+    trie.insert('care')
+    const words = trie.collectWords()
+    expect(words.sort()).toEqual(['car', 'card', 'care'])
+  })
+
+  it('collectWords with prefix filters', () => {
+    const trie = new TrieRadix()
+    trie.insert('apple')
+    trie.insert('application')
+    trie.insert('banana')
+    const words = trie.collectWords('app')
+    expect(words.length).toBe(2)
+  })
+
+  it('insert with value retrieves correctly', () => {
+    const trie = new TrieRadix()
+    trie.insert('hello', 'world')
+    expect(trie.search('hello')).toBe(true)
+  })
+
+  it('empty trie has no words', () => {
+    const trie = new TrieRadix()
+    expect(trie.collectWords()).toEqual([])
+  })
 })
