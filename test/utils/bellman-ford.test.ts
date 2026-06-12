@@ -490,4 +490,34 @@ describe('BellmanFord', () => {
     const result = BellmanFord.shortestPath(edges, 2, 0)
     expect(result.hasNegativeCycle).toBe(true)
   })
+
+  it('handles disconnected graph', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const result = BellmanFord.shortestPath(edges, 3, 0)
+    expect(result.distances.get(2)).toBe(Infinity)
+  })
+
+  it('single node graph', () => {
+    const result = BellmanFord.shortestPath([], 1, 0)
+    expect(result.distances.get(0)).toBe(0)
+    expect(result.hasNegativeCycle).toBe(false)
+  })
+
+  it('graph with zero-weight edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 0 },
+      { from: 1, to: 2, weight: 5 },
+    ]
+    const result = BellmanFord.shortestPath(edges, 3, 0)
+    expect(result.distances.get(1)).toBe(0)
+    expect(result.distances.get(2)).toBe(5)
+  })
+
+  it('self-loop with negative weight creates cycle', () => {
+    const edges = [
+      { from: 0, to: 0, weight: -1 },
+    ]
+    const result = BellmanFord.shortestPath(edges, 1, 0)
+    expect(result.hasNegativeCycle).toBe(true)
+  })
 })

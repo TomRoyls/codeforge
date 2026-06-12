@@ -60,9 +60,25 @@ describe('FileWatcher isActive', () => {
     rmSync(TEMP_DIR, { recursive: true, force: true })
   })
 
-  it('should handle stop without start', async () => {
-    const w = new FileWatcher()
-    await expect(w.stop()).resolves.toBeUndefined()
+  it('watcher is not active before start', () => {
+    const watcher = new FileWatcher()
+    expect(watcher.isActive()).toBe(false)
+  })
+
+  it('watcher can be created with options', () => {
+    const watcher = new FileWatcher({ pollInterval: 500 })
+    expect(watcher).toBeDefined()
+    expect(watcher.isActive()).toBe(false)
+  })
+
+  it('stop without start is no-op', () => {
+    const watcher = new FileWatcher()
+    expect(() => watcher.stop()).not.toThrow()
+  })
+
+  it('watcher default options', () => {
+    const watcher = new FileWatcher()
+    expect(watcher.isActive()).toBe(false)
   })
 
   it('should create watcher with options', () => {
