@@ -351,4 +351,15 @@ describe('RateLimiter', () => {
     const rl2 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
     expect(rl1.equals(rl2)).toBe(true)
   })
+
+  it('should report available tokens', () => {
+    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.getAvailableTokens()).toBe(10)
+  })
+
+  it('should get stats', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    const stats = rl.getStats()
+    expect(stats).toBeDefined()
+  })
 })

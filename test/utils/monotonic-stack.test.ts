@@ -322,4 +322,13 @@ describe('MonotonicStack', () => {
   it('nextGreaterElements with all same returns -1', () => {
     expect(MonotonicStack.nextGreaterElements([3, 3, 3])).toEqual([-1, -1, -1])
   })
+
+  it('should find previous smaller elements', () => {
+    const result = MonotonicStack.previousSmallerElements([2, 1, 3])
+    expect(result.length).toBe(3)
+  })
+
+  it('should handle empty array', () => {
+    expect(MonotonicStack.nextGreaterElements([])).toEqual([])
+  })
 })

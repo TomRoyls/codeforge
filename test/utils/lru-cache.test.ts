@@ -393,4 +393,18 @@ describe('LRUCache - equals', () => {
     expect(cache.equals({})).toBe(false)
     expect(cache.equals(null)).toBe(false)
   })
+
+  it('should handle delete', () => {
+    const cache = new LRUCache<string, number>(3)
+    cache.set('a', 1)
+    expect(cache.delete('a')).toBe(true)
+    expect(cache.get('a')).toBeUndefined()
+  })
+
+  it('should list keys', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect([...cache.keys()].length).toBe(2)
+  })
 })

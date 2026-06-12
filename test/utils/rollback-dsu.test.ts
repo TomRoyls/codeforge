@@ -405,4 +405,17 @@ describe('RollbackDSU', () => {
     expect(s1).toBe(1)
     expect(s2).toBe(2)
   })
+
+  it('should handle empty rollback', () => {
+    const dsu = new RollbackDSU(3)
+    dsu.union(0, 1)
+    dsu.rollback(0)
+    expect(dsu.connected(0, 1)).toBe(true)
+  })
+
+  it('should get size', () => {
+    const dsu = new RollbackDSU(3)
+    dsu.union(0, 1)
+    expect(dsu.componentSize(0)).toBe(2)
+  })
 })

@@ -305,4 +305,15 @@ describe('Comparators', () => {
     expect(cmp('ab', 'abc')).toBeLessThan(0)
     expect(cmp('abc', 'ab')).toBeGreaterThan(0)
   })
+
+  it('should chain comparators', () => {
+    const cmp = Comparators.chain<number>((a, b) => a - b)
+    expect(cmp(1, 2)).toBeLessThan(0)
+  })
+
+  it('should create boolean comparator', () => {
+    const cmp = Comparators.boolean()
+    expect(cmp(true, false)).toBeLessThan(0)
+    expect(cmp(false, true)).toBeGreaterThan(0)
+  })
 })

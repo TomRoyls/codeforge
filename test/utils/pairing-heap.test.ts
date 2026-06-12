@@ -458,5 +458,21 @@ describe('PairingHeap', () => {
       expect(heap.peek()).toBe(1)
       expect(heap.size).toBe(2)
     })
+
+    it('should merge heaps', () => {
+      const h1 = new PairingHeap<number>()
+      h1.insert(5)
+      const h2 = new PairingHeap<number>()
+      h2.insert(3)
+      h1.merge(h2)
+      expect(h1.peek()).toBe(3)
+    })
+
+    it('should handle isEmpty', () => {
+      const heap = new PairingHeap<number>()
+      expect(heap.isEmpty()).toBe(true)
+      heap.insert(1)
+      expect(heap.isEmpty()).toBe(false)
+    })
   })
 })

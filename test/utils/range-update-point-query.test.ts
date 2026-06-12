@@ -363,4 +363,16 @@ describe('RangeUpdatePointQuery', () => {
     const rq = new RangeUpdatePointQuery(7)
     expect(rq.length).toBe(7)
   })
+
+  it('should handle single update', () => {
+    const rq = new RangeUpdatePointQuery(5)
+    rq.addRange(0, 4, 10)
+    expect(rq.get(2)).toBe(10)
+  })
+
+  it('should handle point updates', () => {
+    const rq = new RangeUpdatePointQuery(3)
+    rq.addPoint(1, 5)
+    expect(rq.get(1)).toBe(5)
+  })
 })

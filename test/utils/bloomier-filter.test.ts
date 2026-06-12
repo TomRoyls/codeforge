@@ -490,4 +490,16 @@ describe('BloomierFilter stats additional', () => {
     expect(stats.hashCount).toBe(0)
     expect(stats.falsePositiveRate).toBe(0)
   })
+
+  it('should handle empty filter', () => {
+    const bf = new BloomierFilter<string, number>([], new Map())
+    expect(bf).toBeDefined()
+  })
+
+  it('should handle single lookup', () => {
+    const entries = new Map([['a', 1]])
+    const bf = BloomierFilter.create(entries)
+    expect(bf.has('a')).toBe(true)
+    expect(bf.get('a')).toBe(1)
+  })
 })

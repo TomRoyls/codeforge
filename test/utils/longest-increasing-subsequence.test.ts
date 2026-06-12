@@ -231,4 +231,12 @@ describe('LongestIncreasingSubsequence', () => {
   it('should find non-decreasing length', () => {
     expect(LongestIncreasingSubsequence.lengthNonDecreasing([1, 2, 2, 3])).toBe(4)
   })
+
+  it('should handle empty find', () => {
+    expect(LongestIncreasingSubsequence.find([])).toEqual([])
+  })
+
+  it('should find length of identical elements', () => {
+    expect(LongestIncreasingSubsequence.length([5, 5, 5])).toBe(1)
+  })
 })

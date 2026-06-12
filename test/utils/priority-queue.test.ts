@@ -527,4 +527,22 @@ describe('PriorityQueue - size consistency', () => {
     expect(pq.peek()).toBe(3)
     expect(pq.size).toBe(2)
   })
+
+  it('should dequeue in order', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.dequeue()).toBe(1)
+    expect(pq.dequeue()).toBe(2)
+    expect(pq.dequeue()).toBe(3)
+  })
+
+  it('should handle toArray', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(1)
+    pq.enqueue(2)
+    const arr = pq.toArray()
+    expect(arr.length).toBe(2)
+  })
 })

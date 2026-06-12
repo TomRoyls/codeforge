@@ -290,4 +290,14 @@ describe('path-utils', () => {
     const result = resolvePath('./src/.../utils')
     expect(typeof result).toBe('string')
   })
+
+  it('should handle empty path', () => {
+    const result = resolvePath('')
+    expect(typeof result).toBe('string')
+  })
+
+  it('should handle root path', () => {
+    const result = resolvePath('/')
+    expect(typeof result).toBe('string')
+  })
 })

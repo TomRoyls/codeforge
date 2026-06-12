@@ -392,4 +392,14 @@ describe('MergeSortedIterators', () => {
     ])
     expect(iter.toArray()).toEqual([1, 2])
   })
+
+  it('should handle single iterator', () => {
+    const iter = new MergeSortedIterators<number>([[1, 2, 3][Symbol.iterator]()])
+    expect(iter.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('should handle different lengths', () => {
+    const iter = new MergeSortedIterators<number>([[1, 5][Symbol.iterator](), [2, 3, 4][Symbol.iterator]()])
+    expect(iter.toArray()).toEqual([1, 2, 3, 4, 5])
+  })
 })

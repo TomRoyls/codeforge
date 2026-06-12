@@ -402,4 +402,18 @@ describe('PlanarCheck', () => {
         pc.addEdge(i, j)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('should handle single node', () => {
+    const pc = new PlanarCheck(1)
+    expect(pc.isPlanar()).toBe(true)
+  })
+
+  it('should handle tree as planar', () => {
+    const pc = new PlanarCheck(5)
+    pc.addEdge(0, 1)
+    pc.addEdge(0, 2)
+    pc.addEdge(1, 3)
+    pc.addEdge(1, 4)
+    expect(pc.isPlanar()).toBe(true)
+  })
 })

@@ -392,4 +392,20 @@ describe('LRUEvictionCache - equals', () => {
     cache.set('x', 10)
     expect(typeof cache.toString()).toBe('string')
   })
+
+  it('should evict oldest entry', () => {
+    const cache = new LRUEvictionCache<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.set('c', 3)
+    expect(cache.get('a')).toBeUndefined()
+    expect(cache.get('b')).toBe(2)
+  })
+
+  it('should update existing key', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('x', 1)
+    cache.set('x', 2)
+    expect(cache.get('x')).toBe(2)
+  })
 })

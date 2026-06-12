@@ -238,4 +238,12 @@ describe('PigeonholeSort', () => {
   it('handles range equal to array length', () => {
     expect(PigeonholeSort.sort([0, 1, 2, 3, 4])).toEqual([0, 1, 2, 3, 4])
   })
+
+  it('handles negative numbers', () => {
+    expect(PigeonholeSort.sort([-2, -1, 0, 1, 2])).toEqual([-2, -1, 0, 1, 2])
+  })
+
+  it('handles single element', () => {
+    expect(PigeonholeSort.sort([42])).toEqual([42])
+  })
 })

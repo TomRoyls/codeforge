@@ -471,4 +471,18 @@ describe('MonotonicDeque', () => {
     deque.push(2)
     expect(deque.front()).toBe(1)
   })
+
+  it('should report back element', () => {
+    const deque = new MonotonicDeque()
+    deque.push(1)
+    deque.push(3)
+    expect(deque.back()).toBe(3)
+  })
+
+  it('should report size', () => {
+    const deque = new MonotonicDeque()
+    deque.push(1)
+    deque.push(2)
+    expect(deque.size).toBe(2)
+  })
 })

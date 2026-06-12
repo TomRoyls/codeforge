@@ -377,4 +377,19 @@ describe('PersistentQueue', () => {
     const q = PersistentQueue.create<number>()
     expect(q.peek()).toBeUndefined()
   })
+
+  it('should report size', () => {
+    const q = PersistentQueue.create<number>()
+    const q2 = q.enqueue(1)
+    const q3 = q2.enqueue(2)
+    expect(q3.size).toBe(2)
+  })
+
+  it('should handle enqueue and dequeue', () => {
+    const q = PersistentQueue.create<number>()
+    const q2 = q.enqueue(10)
+    const { queue: q3, value } = q2.dequeue()!
+    expect(value).toBe(10)
+    expect(q3.size).toBe(0)
+  })
 })
