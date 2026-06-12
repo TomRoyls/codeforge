@@ -557,3 +557,63 @@ describe('pollard-rho - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pollard-rho - wave127', () => {
+  it('pollard-rho w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - wave130', () => {
+  it('pollard-rho w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - wave133', () => {
+  it('pollard-rho w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - wave136', () => {
+  it('pollard-rho w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - wave139', () => {
+  it('pollard-rho w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

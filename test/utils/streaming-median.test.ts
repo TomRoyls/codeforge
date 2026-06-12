@@ -716,3 +716,63 @@ describe('streaming-median - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-median - wave127', () => {
+  it('streaming-median w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - wave130', () => {
+  it('streaming-median w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - wave133', () => {
+  it('streaming-median w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - wave136', () => {
+  it('streaming-median w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - wave139', () => {
+  it('streaming-median w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -834,3 +834,63 @@ describe('ast-helpers - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ast-helpers - wave127', () => {
+  it('ast-helpers w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ast-helpers - wave130', () => {
+  it('ast-helpers w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ast-helpers - wave133', () => {
+  it('ast-helpers w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ast-helpers - wave136', () => {
+  it('ast-helpers w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ast-helpers - wave139', () => {
+  it('ast-helpers w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

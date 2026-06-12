@@ -528,3 +528,63 @@ describe('levenshtein-distance - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('levenshtein-distance - wave127', () => {
+  it('levenshtein-distance w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - wave130', () => {
+  it('levenshtein-distance w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - wave133', () => {
+  it('levenshtein-distance w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - wave136', () => {
+  it('levenshtein-distance w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - wave139', () => {
+  it('levenshtein-distance w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

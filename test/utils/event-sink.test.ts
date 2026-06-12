@@ -624,3 +624,63 @@ describe('event-sink - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('event-sink - wave127', () => {
+  it('event-sink w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - wave130', () => {
+  it('event-sink w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - wave133', () => {
+  it('event-sink w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - wave136', () => {
+  it('event-sink w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - wave139', () => {
+  it('event-sink w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

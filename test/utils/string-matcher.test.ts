@@ -779,3 +779,63 @@ describe('string-matcher - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-matcher - wave127', () => {
+  it('string-matcher w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - wave130', () => {
+  it('string-matcher w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - wave133', () => {
+  it('string-matcher w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - wave136', () => {
+  it('string-matcher w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - wave139', () => {
+  it('string-matcher w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

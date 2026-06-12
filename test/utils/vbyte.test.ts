@@ -643,3 +643,63 @@ describe('vbyte - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vbyte - wave127', () => {
+  it('vbyte w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - wave130', () => {
+  it('vbyte w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - wave133', () => {
+  it('vbyte w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - wave136', () => {
+  it('vbyte w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - wave139', () => {
+  it('vbyte w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

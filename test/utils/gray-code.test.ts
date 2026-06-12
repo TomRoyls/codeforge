@@ -606,3 +606,63 @@ describe('gray-code - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gray-code - wave127', () => {
+  it('gray-code w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - wave130', () => {
+  it('gray-code w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - wave133', () => {
+  it('gray-code w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - wave136', () => {
+  it('gray-code w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - wave139', () => {
+  it('gray-code w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

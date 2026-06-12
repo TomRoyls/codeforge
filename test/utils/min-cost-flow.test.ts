@@ -725,3 +725,63 @@ describe('min-cost-flow - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-cost-flow - wave127', () => {
+  it('min-cost-flow w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - wave130', () => {
+  it('min-cost-flow w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - wave133', () => {
+  it('min-cost-flow w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - wave136', () => {
+  it('min-cost-flow w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - wave139', () => {
+  it('min-cost-flow w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

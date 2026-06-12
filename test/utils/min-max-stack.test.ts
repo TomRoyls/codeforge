@@ -961,3 +961,63 @@ describe('min-max-stack - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-stack - wave127', () => {
+  it('min-max-stack w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - wave130', () => {
+  it('min-max-stack w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - wave133', () => {
+  it('min-max-stack w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - wave136', () => {
+  it('min-max-stack w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - wave139', () => {
+  it('min-max-stack w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

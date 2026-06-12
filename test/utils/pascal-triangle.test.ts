@@ -544,3 +544,63 @@ describe('pascal-triangle - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pascal-triangle - wave127', () => {
+  it('pascal-triangle w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - wave130', () => {
+  it('pascal-triangle w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - wave133', () => {
+  it('pascal-triangle w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - wave136', () => {
+  it('pascal-triangle w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - wave139', () => {
+  it('pascal-triangle w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

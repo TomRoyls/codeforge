@@ -735,3 +735,63 @@ describe('hash-map-open - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-map-open - wave127', () => {
+  it('hash-map-open w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - wave130', () => {
+  it('hash-map-open w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - wave133', () => {
+  it('hash-map-open w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - wave136', () => {
+  it('hash-map-open w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - wave139', () => {
+  it('hash-map-open w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

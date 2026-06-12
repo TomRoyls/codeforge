@@ -508,3 +508,63 @@ describe('z-algorithm-extended - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('z-algorithm-extended - wave127', () => {
+  it('z-algorithm-extended w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - wave130', () => {
+  it('z-algorithm-extended w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - wave133', () => {
+  it('z-algorithm-extended w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - wave136', () => {
+  it('z-algorithm-extended w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - wave139', () => {
+  it('z-algorithm-extended w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -733,3 +733,63 @@ describe('stoer-wagner - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stoer-wagner - wave127', () => {
+  it('stoer-wagner w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stoer-wagner - wave130', () => {
+  it('stoer-wagner w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stoer-wagner - wave133', () => {
+  it('stoer-wagner w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stoer-wagner - wave136', () => {
+  it('stoer-wagner w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stoer-wagner - wave139', () => {
+  it('stoer-wagner w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

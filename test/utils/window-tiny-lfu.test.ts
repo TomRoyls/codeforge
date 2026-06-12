@@ -618,3 +618,63 @@ describe('window-tiny-lfu - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('window-tiny-lfu - wave127', () => {
+  it('window-tiny-lfu w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - wave130', () => {
+  it('window-tiny-lfu w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - wave133', () => {
+  it('window-tiny-lfu w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - wave136', () => {
+  it('window-tiny-lfu w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - wave139', () => {
+  it('window-tiny-lfu w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

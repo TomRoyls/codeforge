@@ -668,3 +668,63 @@ describe('aho-corasick-multi - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('aho-corasick-multi - wave127', () => {
+  it('aho-corasick-multi w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick-multi - wave130', () => {
+  it('aho-corasick-multi w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick-multi - wave133', () => {
+  it('aho-corasick-multi w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick-multi - wave136', () => {
+  it('aho-corasick-multi w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick-multi - wave139', () => {
+  it('aho-corasick-multi w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

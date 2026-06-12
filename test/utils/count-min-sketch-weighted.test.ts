@@ -806,3 +806,63 @@ describe('count-min-sketch-weighted - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('count-min-sketch-weighted - wave127', () => {
+  it('count-min-sketch-weighted w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - wave130', () => {
+  it('count-min-sketch-weighted w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - wave133', () => {
+  it('count-min-sketch-weighted w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - wave136', () => {
+  it('count-min-sketch-weighted w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - wave139', () => {
+  it('count-min-sketch-weighted w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

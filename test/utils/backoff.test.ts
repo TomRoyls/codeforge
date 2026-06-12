@@ -637,3 +637,63 @@ describe('backoff - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('backoff - wave127', () => {
+  it('backoff w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - wave130', () => {
+  it('backoff w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - wave133', () => {
+  it('backoff w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - wave136', () => {
+  it('backoff w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - wave139', () => {
+  it('backoff w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

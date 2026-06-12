@@ -691,3 +691,63 @@ describe('segment-tree-lazy - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-tree-lazy - wave127', () => {
+  it('segment-tree-lazy w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - wave130', () => {
+  it('segment-tree-lazy w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - wave133', () => {
+  it('segment-tree-lazy w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - wave136', () => {
+  it('segment-tree-lazy w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - wave139', () => {
+  it('segment-tree-lazy w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

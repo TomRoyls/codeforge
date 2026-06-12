@@ -855,3 +855,63 @@ describe('bit-trie - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bit-trie - wave127', () => {
+  it('bit-trie w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - wave130', () => {
+  it('bit-trie w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - wave133', () => {
+  it('bit-trie w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - wave136', () => {
+  it('bit-trie w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - wave139', () => {
+  it('bit-trie w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

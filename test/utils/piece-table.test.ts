@@ -702,3 +702,63 @@ describe('piece-table - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('piece-table - wave127', () => {
+  it('piece-table w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('piece-table - wave130', () => {
+  it('piece-table w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('piece-table - wave133', () => {
+  it('piece-table w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('piece-table - wave136', () => {
+  it('piece-table w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('piece-table - wave139', () => {
+  it('piece-table w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

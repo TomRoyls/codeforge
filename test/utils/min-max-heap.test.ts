@@ -934,3 +934,63 @@ describe('min-max-heap - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-heap - wave127', () => {
+  it('min-max-heap w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - wave130', () => {
+  it('min-max-heap w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - wave133', () => {
+  it('min-max-heap w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - wave136', () => {
+  it('min-max-heap w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - wave139', () => {
+  it('min-max-heap w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

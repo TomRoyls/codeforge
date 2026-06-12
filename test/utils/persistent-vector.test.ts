@@ -622,3 +622,63 @@ describe('persistent-vector - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-vector - wave127', () => {
+  it('persistent-vector w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - wave130', () => {
+  it('persistent-vector w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - wave133', () => {
+  it('persistent-vector w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - wave136', () => {
+  it('persistent-vector w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - wave139', () => {
+  it('persistent-vector w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

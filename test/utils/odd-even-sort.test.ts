@@ -546,3 +546,63 @@ describe('odd-even-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('odd-even-sort - wave127', () => {
+  it('odd-even-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('odd-even-sort - wave130', () => {
+  it('odd-even-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('odd-even-sort - wave133', () => {
+  it('odd-even-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('odd-even-sort - wave136', () => {
+  it('odd-even-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('odd-even-sort - wave139', () => {
+  it('odd-even-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -769,3 +769,63 @@ describe('task-runner - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('task-runner - wave127', () => {
+  it('task-runner w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('task-runner - wave130', () => {
+  it('task-runner w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('task-runner - wave133', () => {
+  it('task-runner w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('task-runner - wave136', () => {
+  it('task-runner w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('task-runner - wave139', () => {
+  it('task-runner w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

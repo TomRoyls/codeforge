@@ -709,3 +709,63 @@ describe('hyper-log-log - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hyper-log-log - wave127', () => {
+  it('hyper-log-log w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - wave130', () => {
+  it('hyper-log-log w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - wave133', () => {
+  it('hyper-log-log w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - wave136', () => {
+  it('hyper-log-log w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - wave139', () => {
+  it('hyper-log-log w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

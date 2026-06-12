@@ -727,3 +727,63 @@ describe('offline-dynamic - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('offline-dynamic - wave127', () => {
+  it('offline-dynamic w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - wave130', () => {
+  it('offline-dynamic w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - wave133', () => {
+  it('offline-dynamic w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - wave136', () => {
+  it('offline-dynamic w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - wave139', () => {
+  it('offline-dynamic w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

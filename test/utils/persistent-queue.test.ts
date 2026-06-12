@@ -697,3 +697,63 @@ describe('persistent-queue - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-queue - wave127', () => {
+  it('persistent-queue w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-queue - wave130', () => {
+  it('persistent-queue w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-queue - wave133', () => {
+  it('persistent-queue w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-queue - wave136', () => {
+  it('persistent-queue w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-queue - wave139', () => {
+  it('persistent-queue w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

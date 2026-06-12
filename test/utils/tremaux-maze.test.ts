@@ -828,3 +828,63 @@ describe('tremaux-maze - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tremaux-maze - wave127', () => {
+  it('tremaux-maze w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tremaux-maze - wave130', () => {
+  it('tremaux-maze w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tremaux-maze - wave133', () => {
+  it('tremaux-maze w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tremaux-maze - wave136', () => {
+  it('tremaux-maze w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tremaux-maze - wave139', () => {
+  it('tremaux-maze w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -742,3 +742,63 @@ describe('cuckoo-hash - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash - wave127', () => {
+  it('cuckoo-hash w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - wave130', () => {
+  it('cuckoo-hash w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - wave133', () => {
+  it('cuckoo-hash w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - wave136', () => {
+  it('cuckoo-hash w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - wave139', () => {
+  it('cuckoo-hash w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

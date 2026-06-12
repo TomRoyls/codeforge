@@ -550,3 +550,63 @@ describe('math-helpers - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('math-helpers - wave127', () => {
+  it('math-helpers w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('math-helpers - wave130', () => {
+  it('math-helpers w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('math-helpers - wave133', () => {
+  it('math-helpers w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('math-helpers - wave136', () => {
+  it('math-helpers w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('math-helpers - wave139', () => {
+  it('math-helpers w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

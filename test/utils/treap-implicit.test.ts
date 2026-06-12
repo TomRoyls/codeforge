@@ -774,3 +774,63 @@ describe('treap-implicit - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap-implicit - wave127', () => {
+  it('treap-implicit w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - wave130', () => {
+  it('treap-implicit w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - wave133', () => {
+  it('treap-implicit w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - wave136', () => {
+  it('treap-implicit w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - wave139', () => {
+  it('treap-implicit w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

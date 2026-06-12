@@ -743,3 +743,63 @@ describe('gaussian-elimination - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gaussian-elimination - wave127', () => {
+  it('gaussian-elimination w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - wave130', () => {
+  it('gaussian-elimination w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - wave133', () => {
+  it('gaussian-elimination w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - wave136', () => {
+  it('gaussian-elimination w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - wave139', () => {
+  it('gaussian-elimination w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

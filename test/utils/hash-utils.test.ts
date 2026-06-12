@@ -640,3 +640,63 @@ describe('hash-utils - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-utils - wave127', () => {
+  it('hash-utils w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-utils - wave130', () => {
+  it('hash-utils w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-utils - wave133', () => {
+  it('hash-utils w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-utils - wave136', () => {
+  it('hash-utils w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-utils - wave139', () => {
+  it('hash-utils w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

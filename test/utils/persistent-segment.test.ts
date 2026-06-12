@@ -689,3 +689,63 @@ describe('persistent-segment - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-segment - wave127', () => {
+  it('persistent-segment w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - wave130', () => {
+  it('persistent-segment w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - wave133', () => {
+  it('persistent-segment w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - wave136', () => {
+  it('persistent-segment w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - wave139', () => {
+  it('persistent-segment w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

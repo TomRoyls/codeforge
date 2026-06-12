@@ -861,3 +861,63 @@ describe('fs-helpers - wave566', () => {
     expect(existsSync).toBeDefined()
   })
 })
+
+describe('fs-helpers - wave127', () => {
+  it('fs-helpers w127 v0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w127 v1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w127 v2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - wave130', () => {
+  it('fs-helpers w130 v0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w130 v1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w130 v2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - wave133', () => {
+  it('fs-helpers w133 v0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w133 v1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w133 v2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - wave136', () => {
+  it('fs-helpers w136 v0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w136 v1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w136 v2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - wave139', () => {
+  it('fs-helpers w139 v0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w139 v1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w139 v2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})

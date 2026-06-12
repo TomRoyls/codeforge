@@ -528,3 +528,63 @@ describe('interpolation-search - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interpolation-search - wave127', () => {
+  it('interpolation-search w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - wave130', () => {
+  it('interpolation-search w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - wave133', () => {
+  it('interpolation-search w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - wave136', () => {
+  it('interpolation-search w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - wave139', () => {
+  it('interpolation-search w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

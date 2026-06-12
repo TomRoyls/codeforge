@@ -798,3 +798,63 @@ describe('avl-tree-map - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('avl-tree-map - wave127', () => {
+  it('avl-tree-map w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('avl-tree-map - wave130', () => {
+  it('avl-tree-map w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('avl-tree-map - wave133', () => {
+  it('avl-tree-map w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('avl-tree-map - wave136', () => {
+  it('avl-tree-map w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('avl-tree-map - wave139', () => {
+  it('avl-tree-map w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

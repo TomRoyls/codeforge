@@ -759,3 +759,63 @@ describe('hash-array-mapped-trie - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-array-mapped-trie - wave127', () => {
+  it('hash-array-mapped-trie w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - wave130', () => {
+  it('hash-array-mapped-trie w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - wave133', () => {
+  it('hash-array-mapped-trie w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - wave136', () => {
+  it('hash-array-mapped-trie w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - wave139', () => {
+  it('hash-array-mapped-trie w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

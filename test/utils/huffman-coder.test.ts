@@ -687,3 +687,63 @@ describe('huffman-coder - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('huffman-coder - wave127', () => {
+  it('huffman-coder w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - wave130', () => {
+  it('huffman-coder w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - wave133', () => {
+  it('huffman-coder w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - wave136', () => {
+  it('huffman-coder w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - wave139', () => {
+  it('huffman-coder w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

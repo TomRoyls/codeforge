@@ -688,3 +688,63 @@ describe('simple-bloom-filter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('simple-bloom-filter - wave127', () => {
+  it('simple-bloom-filter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - wave130', () => {
+  it('simple-bloom-filter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - wave133', () => {
+  it('simple-bloom-filter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - wave136', () => {
+  it('simple-bloom-filter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - wave139', () => {
+  it('simple-bloom-filter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

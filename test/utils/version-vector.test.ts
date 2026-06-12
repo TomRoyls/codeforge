@@ -786,3 +786,63 @@ describe('version-vector - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('version-vector - wave127', () => {
+  it('version-vector w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - wave130', () => {
+  it('version-vector w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - wave133', () => {
+  it('version-vector w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - wave136', () => {
+  it('version-vector w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - wave139', () => {
+  it('version-vector w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

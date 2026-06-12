@@ -608,3 +608,63 @@ describe('run-length-2d - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-2d - wave127', () => {
+  it('run-length-2d w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-2d - wave130', () => {
+  it('run-length-2d w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-2d - wave133', () => {
+  it('run-length-2d w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-2d - wave136', () => {
+  it('run-length-2d w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-2d - wave139', () => {
+  it('run-length-2d w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

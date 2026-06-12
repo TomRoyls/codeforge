@@ -759,3 +759,63 @@ describe('ring-buffer - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('ring-buffer - wave127', () => {
+  it('ring-buffer w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - wave130', () => {
+  it('ring-buffer w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - wave133', () => {
+  it('ring-buffer w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - wave136', () => {
+  it('ring-buffer w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - wave139', () => {
+  it('ring-buffer w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

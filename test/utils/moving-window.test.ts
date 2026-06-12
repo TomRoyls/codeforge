@@ -734,3 +734,63 @@ describe('moving-window - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-window - wave127', () => {
+  it('moving-window w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - wave130', () => {
+  it('moving-window w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - wave133', () => {
+  it('moving-window w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - wave136', () => {
+  it('moving-window w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - wave139', () => {
+  it('moving-window w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

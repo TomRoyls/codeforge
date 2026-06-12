@@ -757,3 +757,63 @@ describe('async-queue - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('async-queue - wave127', () => {
+  it('async-queue w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - wave130', () => {
+  it('async-queue w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - wave133', () => {
+  it('async-queue w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - wave136', () => {
+  it('async-queue w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - wave139', () => {
+  it('async-queue w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

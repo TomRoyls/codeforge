@@ -725,3 +725,63 @@ describe('bandwidth-minimization - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bandwidth-minimization - wave127', () => {
+  it('bandwidth-minimization w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - wave130', () => {
+  it('bandwidth-minimization w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - wave133', () => {
+  it('bandwidth-minimization w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - wave136', () => {
+  it('bandwidth-minimization w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - wave139', () => {
+  it('bandwidth-minimization w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

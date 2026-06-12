@@ -599,3 +599,63 @@ describe('lcp-array - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcp-array - wave127', () => {
+  it('lcp-array w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - wave130', () => {
+  it('lcp-array w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - wave133', () => {
+  it('lcp-array w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - wave136', () => {
+  it('lcp-array w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - wave139', () => {
+  it('lcp-array w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

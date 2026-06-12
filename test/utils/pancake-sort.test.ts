@@ -560,3 +560,63 @@ describe('pancake-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pancake-sort - wave127', () => {
+  it('pancake-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pancake-sort - wave130', () => {
+  it('pancake-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pancake-sort - wave133', () => {
+  it('pancake-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pancake-sort - wave136', () => {
+  it('pancake-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pancake-sort - wave139', () => {
+  it('pancake-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

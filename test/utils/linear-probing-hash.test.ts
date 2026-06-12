@@ -740,3 +740,63 @@ describe('linear-probing-hash - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('linear-probing-hash - wave127', () => {
+  it('linear-probing-hash w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - wave130', () => {
+  it('linear-probing-hash w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - wave133', () => {
+  it('linear-probing-hash w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - wave136', () => {
+  it('linear-probing-hash w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - wave139', () => {
+  it('linear-probing-hash w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

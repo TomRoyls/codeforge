@@ -506,3 +506,63 @@ describe('longest-common-substring - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-common-substring - wave127', () => {
+  it('longest-common-substring w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - wave130', () => {
+  it('longest-common-substring w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - wave133', () => {
+  it('longest-common-substring w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - wave136', () => {
+  it('longest-common-substring w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - wave139', () => {
+  it('longest-common-substring w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

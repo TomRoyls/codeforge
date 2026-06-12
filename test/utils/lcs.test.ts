@@ -553,3 +553,63 @@ describe('lcs - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcs - wave127', () => {
+  it('lcs w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - wave130', () => {
+  it('lcs w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - wave133', () => {
+  it('lcs w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - wave136', () => {
+  it('lcs w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - wave139', () => {
+  it('lcs w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

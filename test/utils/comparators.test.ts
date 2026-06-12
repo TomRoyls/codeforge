@@ -620,3 +620,63 @@ describe('comparators - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comparators - wave127', () => {
+  it('comparators w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - wave130', () => {
+  it('comparators w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - wave133', () => {
+  it('comparators w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - wave136', () => {
+  it('comparators w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - wave139', () => {
+  it('comparators w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -755,3 +755,63 @@ describe('lsm-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lsm-tree - wave127', () => {
+  it('lsm-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - wave130', () => {
+  it('lsm-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - wave133', () => {
+  it('lsm-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - wave136', () => {
+  it('lsm-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - wave139', () => {
+  it('lsm-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

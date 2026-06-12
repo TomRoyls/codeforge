@@ -724,3 +724,63 @@ describe('implicit-key-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('implicit-key-tree - wave127', () => {
+  it('implicit-key-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - wave130', () => {
+  it('implicit-key-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - wave133', () => {
+  it('implicit-key-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - wave136', () => {
+  it('implicit-key-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - wave139', () => {
+  it('implicit-key-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

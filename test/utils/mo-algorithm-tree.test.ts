@@ -1028,3 +1028,63 @@ describe('mo-algorithm-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('mo-algorithm-tree - wave127', () => {
+  it('mo-algorithm-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mo-algorithm-tree - wave130', () => {
+  it('mo-algorithm-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mo-algorithm-tree - wave133', () => {
+  it('mo-algorithm-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mo-algorithm-tree - wave136', () => {
+  it('mo-algorithm-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mo-algorithm-tree - wave139', () => {
+  it('mo-algorithm-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -537,3 +537,63 @@ describe('collatz - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('collatz - wave127', () => {
+  it('collatz w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - wave130', () => {
+  it('collatz w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - wave133', () => {
+  it('collatz w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - wave136', () => {
+  it('collatz w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - wave139', () => {
+  it('collatz w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

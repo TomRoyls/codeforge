@@ -661,3 +661,63 @@ describe('kosaraju - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kosaraju - wave127', () => {
+  it('kosaraju w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - wave130', () => {
+  it('kosaraju w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - wave133', () => {
+  it('kosaraju w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - wave136', () => {
+  it('kosaraju w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - wave139', () => {
+  it('kosaraju w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

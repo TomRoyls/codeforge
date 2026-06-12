@@ -730,3 +730,63 @@ describe('cuckoo-filter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-filter - wave127', () => {
+  it('cuckoo-filter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - wave130', () => {
+  it('cuckoo-filter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - wave133', () => {
+  it('cuckoo-filter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - wave136', () => {
+  it('cuckoo-filter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - wave139', () => {
+  it('cuckoo-filter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

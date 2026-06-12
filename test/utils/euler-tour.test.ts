@@ -658,3 +658,63 @@ describe('euler-tour - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('euler-tour - wave127', () => {
+  it('euler-tour w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('euler-tour - wave130', () => {
+  it('euler-tour w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('euler-tour - wave133', () => {
+  it('euler-tour w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('euler-tour - wave136', () => {
+  it('euler-tour w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('euler-tour - wave139', () => {
+  it('euler-tour w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

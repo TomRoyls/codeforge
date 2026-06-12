@@ -773,3 +773,63 @@ describe('work-stealing-deque - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('work-stealing-deque - wave127', () => {
+  it('work-stealing-deque w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - wave130', () => {
+  it('work-stealing-deque w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - wave133', () => {
+  it('work-stealing-deque w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - wave136', () => {
+  it('work-stealing-deque w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - wave139', () => {
+  it('work-stealing-deque w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

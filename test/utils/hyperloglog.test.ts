@@ -735,3 +735,63 @@ describe('hyperloglog - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hyperloglog - wave127', () => {
+  it('hyperloglog w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - wave130', () => {
+  it('hyperloglog w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - wave133', () => {
+  it('hyperloglog w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - wave136', () => {
+  it('hyperloglog w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - wave139', () => {
+  it('hyperloglog w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

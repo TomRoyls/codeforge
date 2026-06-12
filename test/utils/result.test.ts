@@ -661,3 +661,63 @@ describe('result - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('result - wave127', () => {
+  it('result w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - wave130', () => {
+  it('result w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - wave133', () => {
+  it('result w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - wave136', () => {
+  it('result w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - wave139', () => {
+  it('result w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

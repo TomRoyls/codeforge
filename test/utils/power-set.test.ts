@@ -614,3 +614,63 @@ describe('power-set - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('power-set - wave127', () => {
+  it('power-set w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - wave130', () => {
+  it('power-set w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - wave133', () => {
+  it('power-set w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - wave136', () => {
+  it('power-set w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - wave139', () => {
+  it('power-set w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

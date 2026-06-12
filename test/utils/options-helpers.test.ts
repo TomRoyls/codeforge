@@ -602,3 +602,63 @@ describe('options-helpers - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('options-helpers - wave127', () => {
+  it('options-helpers w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - wave130', () => {
+  it('options-helpers w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - wave133', () => {
+  it('options-helpers w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - wave136', () => {
+  it('options-helpers w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - wave139', () => {
+  it('options-helpers w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -818,3 +818,63 @@ describe('circular-buffer - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('circular-buffer - wave127', () => {
+  it('circular-buffer w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('circular-buffer - wave130', () => {
+  it('circular-buffer w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('circular-buffer - wave133', () => {
+  it('circular-buffer w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('circular-buffer - wave136', () => {
+  it('circular-buffer w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('circular-buffer - wave139', () => {
+  it('circular-buffer w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

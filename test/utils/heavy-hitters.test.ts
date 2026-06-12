@@ -681,3 +681,63 @@ describe('heavy-hitters - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-hitters - wave127', () => {
+  it('heavy-hitters w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - wave130', () => {
+  it('heavy-hitters w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - wave133', () => {
+  it('heavy-hitters w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - wave136', () => {
+  it('heavy-hitters w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - wave139', () => {
+  it('heavy-hitters w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

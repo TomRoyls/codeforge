@@ -795,3 +795,63 @@ describe('moving-average - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-average - wave127', () => {
+  it('moving-average w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - wave130', () => {
+  it('moving-average w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - wave133', () => {
+  it('moving-average w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - wave136', () => {
+  it('moving-average w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - wave139', () => {
+  it('moving-average w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

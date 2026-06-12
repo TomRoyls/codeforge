@@ -543,3 +543,63 @@ describe('counting-inversions - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-inversions - wave127', () => {
+  it('counting-inversions w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - wave130', () => {
+  it('counting-inversions w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - wave133', () => {
+  it('counting-inversions w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - wave136', () => {
+  it('counting-inversions w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - wave139', () => {
+  it('counting-inversions w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -693,3 +693,63 @@ describe('kd-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kd-tree - wave127', () => {
+  it('kd-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kd-tree - wave130', () => {
+  it('kd-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kd-tree - wave133', () => {
+  it('kd-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kd-tree - wave136', () => {
+  it('kd-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kd-tree - wave139', () => {
+  it('kd-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

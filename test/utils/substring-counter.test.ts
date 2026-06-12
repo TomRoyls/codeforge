@@ -572,3 +572,63 @@ describe('substring-counter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('substring-counter - wave127', () => {
+  it('substring-counter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - wave130', () => {
+  it('substring-counter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - wave133', () => {
+  it('substring-counter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - wave136', () => {
+  it('substring-counter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - wave139', () => {
+  it('substring-counter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

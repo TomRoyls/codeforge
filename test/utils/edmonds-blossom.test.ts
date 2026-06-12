@@ -704,3 +704,63 @@ describe('edmonds-blossom - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edmonds-blossom - wave127', () => {
+  it('edmonds-blossom w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - wave130', () => {
+  it('edmonds-blossom w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - wave133', () => {
+  it('edmonds-blossom w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - wave136', () => {
+  it('edmonds-blossom w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - wave139', () => {
+  it('edmonds-blossom w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

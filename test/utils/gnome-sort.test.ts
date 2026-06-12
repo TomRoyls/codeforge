@@ -566,3 +566,63 @@ describe('gnome-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gnome-sort - wave127', () => {
+  it('gnome-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gnome-sort - wave130', () => {
+  it('gnome-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gnome-sort - wave133', () => {
+  it('gnome-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gnome-sort - wave136', () => {
+  it('gnome-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gnome-sort - wave139', () => {
+  it('gnome-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

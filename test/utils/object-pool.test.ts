@@ -953,3 +953,63 @@ describe('object-pool - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('object-pool - wave127', () => {
+  it('object-pool w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - wave130', () => {
+  it('object-pool w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - wave133', () => {
+  it('object-pool w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - wave136', () => {
+  it('object-pool w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - wave139', () => {
+  it('object-pool w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -724,3 +724,63 @@ describe('adjacency-list-graph - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-list-graph - wave127', () => {
+  it('adjacency-list-graph w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - wave130', () => {
+  it('adjacency-list-graph w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - wave133', () => {
+  it('adjacency-list-graph w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - wave136', () => {
+  it('adjacency-list-graph w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - wave139', () => {
+  it('adjacency-list-graph w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

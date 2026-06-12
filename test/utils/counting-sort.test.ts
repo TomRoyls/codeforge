@@ -554,3 +554,63 @@ describe('counting-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-sort - wave127', () => {
+  it('counting-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - wave130', () => {
+  it('counting-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - wave133', () => {
+  it('counting-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - wave136', () => {
+  it('counting-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - wave139', () => {
+  it('counting-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

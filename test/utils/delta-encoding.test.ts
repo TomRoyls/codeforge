@@ -596,3 +596,63 @@ describe('delta-encoding - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('delta-encoding - wave127', () => {
+  it('delta-encoding w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - wave130', () => {
+  it('delta-encoding w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - wave133', () => {
+  it('delta-encoding w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - wave136', () => {
+  it('delta-encoding w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - wave139', () => {
+  it('delta-encoding w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

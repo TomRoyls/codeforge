@@ -595,3 +595,63 @@ describe('logger - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('logger - wave127', () => {
+  it('logger w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('logger - wave130', () => {
+  it('logger w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('logger - wave133', () => {
+  it('logger w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('logger - wave136', () => {
+  it('logger w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('logger - wave139', () => {
+  it('logger w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

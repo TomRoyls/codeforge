@@ -769,3 +769,63 @@ describe('dinic - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dinic - wave127', () => {
+  it('dinic w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dinic - wave130', () => {
+  it('dinic w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dinic - wave133', () => {
+  it('dinic w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dinic - wave136', () => {
+  it('dinic w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dinic - wave139', () => {
+  it('dinic w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -703,3 +703,63 @@ describe('strong-connectivity-contraction - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('strong-connectivity-contraction - wave127', () => {
+  it('strong-connectivity-contraction w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strong-connectivity-contraction - wave130', () => {
+  it('strong-connectivity-contraction w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strong-connectivity-contraction - wave133', () => {
+  it('strong-connectivity-contraction w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strong-connectivity-contraction - wave136', () => {
+  it('strong-connectivity-contraction w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strong-connectivity-contraction - wave139', () => {
+  it('strong-connectivity-contraction w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

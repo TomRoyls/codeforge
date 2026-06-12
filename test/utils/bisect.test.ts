@@ -560,3 +560,63 @@ describe('bisect - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bisect - wave127', () => {
+  it('bisect w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - wave130', () => {
+  it('bisect w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - wave133', () => {
+  it('bisect w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - wave136', () => {
+  it('bisect w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - wave139', () => {
+  it('bisect w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

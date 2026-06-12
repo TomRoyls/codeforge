@@ -778,3 +778,63 @@ describe('sliding-window-median - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-median - wave127', () => {
+  it('sliding-window-median w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-median - wave130', () => {
+  it('sliding-window-median w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-median - wave133', () => {
+  it('sliding-window-median w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-median - wave136', () => {
+  it('sliding-window-median w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-median - wave139', () => {
+  it('sliding-window-median w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

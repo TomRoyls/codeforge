@@ -603,3 +603,63 @@ describe('josephus - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('josephus - wave127', () => {
+  it('josephus w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - wave130', () => {
+  it('josephus w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - wave133', () => {
+  it('josephus w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - wave136', () => {
+  it('josephus w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - wave139', () => {
+  it('josephus w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

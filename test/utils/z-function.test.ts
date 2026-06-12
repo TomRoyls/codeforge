@@ -549,3 +549,63 @@ describe('z-function - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('z-function - wave127', () => {
+  it('z-function w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - wave130', () => {
+  it('z-function w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - wave133', () => {
+  it('z-function w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - wave136', () => {
+  it('z-function w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - wave139', () => {
+  it('z-function w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

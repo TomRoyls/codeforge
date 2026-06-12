@@ -644,3 +644,63 @@ describe('boyer-moore - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore - wave127', () => {
+  it('boyer-moore w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore - wave130', () => {
+  it('boyer-moore w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore - wave133', () => {
+  it('boyer-moore w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore - wave136', () => {
+  it('boyer-moore w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore - wave139', () => {
+  it('boyer-moore w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

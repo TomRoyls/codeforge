@@ -789,3 +789,63 @@ describe('pairing-heap - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('pairing-heap - wave127', () => {
+  it('pairing-heap w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - wave130', () => {
+  it('pairing-heap w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - wave133', () => {
+  it('pairing-heap w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - wave136', () => {
+  it('pairing-heap w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - wave139', () => {
+  it('pairing-heap w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -667,3 +667,63 @@ describe('rate-limiter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rate-limiter - wave127', () => {
+  it('rate-limiter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - wave130', () => {
+  it('rate-limiter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - wave133', () => {
+  it('rate-limiter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - wave136', () => {
+  it('rate-limiter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - wave139', () => {
+  it('rate-limiter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

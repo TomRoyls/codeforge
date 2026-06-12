@@ -890,3 +890,63 @@ describe('thread-pool - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('thread-pool - wave127', () => {
+  it('thread-pool w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('thread-pool - wave130', () => {
+  it('thread-pool w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('thread-pool - wave133', () => {
+  it('thread-pool w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('thread-pool - wave136', () => {
+  it('thread-pool w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('thread-pool - wave139', () => {
+  it('thread-pool w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

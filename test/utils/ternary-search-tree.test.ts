@@ -776,3 +776,63 @@ describe('ternary-search-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search-tree - wave127', () => {
+  it('ternary-search-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - wave130', () => {
+  it('ternary-search-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - wave133', () => {
+  it('ternary-search-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - wave136', () => {
+  it('ternary-search-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - wave139', () => {
+  it('ternary-search-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

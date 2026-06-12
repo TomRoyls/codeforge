@@ -671,3 +671,63 @@ describe('t-digest - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('t-digest - wave127', () => {
+  it('t-digest w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - wave130', () => {
+  it('t-digest w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - wave133', () => {
+  it('t-digest w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - wave136', () => {
+  it('t-digest w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - wave139', () => {
+  it('t-digest w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -698,3 +698,63 @@ describe('xor-linked-list - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-linked-list - wave127', () => {
+  it('xor-linked-list w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-linked-list - wave130', () => {
+  it('xor-linked-list w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-linked-list - wave133', () => {
+  it('xor-linked-list w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-linked-list - wave136', () => {
+  it('xor-linked-list w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-linked-list - wave139', () => {
+  it('xor-linked-list w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

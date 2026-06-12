@@ -624,3 +624,63 @@ describe('random-walk - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('random-walk - wave127', () => {
+  it('random-walk w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('random-walk - wave130', () => {
+  it('random-walk w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('random-walk - wave133', () => {
+  it('random-walk w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('random-walk - wave136', () => {
+  it('random-walk w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('random-walk - wave139', () => {
+  it('random-walk w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

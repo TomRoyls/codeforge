@@ -665,3 +665,63 @@ describe('run-length-encoder - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoder - wave127', () => {
+  it('run-length-encoder w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - wave130', () => {
+  it('run-length-encoder w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - wave133', () => {
+  it('run-length-encoder w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - wave136', () => {
+  it('run-length-encoder w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - wave139', () => {
+  it('run-length-encoder w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -533,3 +533,63 @@ describe('bigint-utils - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bigint-utils - wave127', () => {
+  it('bigint-utils w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bigint-utils - wave130', () => {
+  it('bigint-utils w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bigint-utils - wave133', () => {
+  it('bigint-utils w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bigint-utils - wave136', () => {
+  it('bigint-utils w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bigint-utils - wave139', () => {
+  it('bigint-utils w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

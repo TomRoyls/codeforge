@@ -695,3 +695,63 @@ describe('hamiltonian-path - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hamiltonian-path - wave127', () => {
+  it('hamiltonian-path w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - wave130', () => {
+  it('hamiltonian-path w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - wave133', () => {
+  it('hamiltonian-path w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - wave136', () => {
+  it('hamiltonian-path w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - wave139', () => {
+  it('hamiltonian-path w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

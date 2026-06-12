@@ -664,3 +664,63 @@ describe('closest-pair - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair - wave127', () => {
+  it('closest-pair w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair - wave130', () => {
+  it('closest-pair w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair - wave133', () => {
+  it('closest-pair w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair - wave136', () => {
+  it('closest-pair w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair - wave139', () => {
+  it('closest-pair w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

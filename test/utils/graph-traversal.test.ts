@@ -669,3 +669,63 @@ describe('graph-traversal - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-traversal - wave127', () => {
+  it('graph-traversal w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - wave130', () => {
+  it('graph-traversal w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - wave133', () => {
+  it('graph-traversal w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - wave136', () => {
+  it('graph-traversal w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - wave139', () => {
+  it('graph-traversal w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

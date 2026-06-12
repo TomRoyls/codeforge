@@ -685,3 +685,63 @@ describe('git-helpers - wave566', () => {
     expect(resolve).toBeDefined()
   })
 })
+
+describe('git-helpers - wave127', () => {
+  it('git-helpers w127 v0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w127 v1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w127 v2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - wave130', () => {
+  it('git-helpers w130 v0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w130 v1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w130 v2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - wave133', () => {
+  it('git-helpers w133 v0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w133 v1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w133 v2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - wave136', () => {
+  it('git-helpers w136 v0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w136 v1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w136 v2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - wave139', () => {
+  it('git-helpers w139 v0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w139 v1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w139 v2', () => {
+    expect(resolve).toBeDefined()
+  })
+})

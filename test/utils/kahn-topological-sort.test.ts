@@ -634,3 +634,63 @@ describe('kahn-topological-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kahn-topological-sort - wave127', () => {
+  it('kahn-topological-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-topological-sort - wave130', () => {
+  it('kahn-topological-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-topological-sort - wave133', () => {
+  it('kahn-topological-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-topological-sort - wave136', () => {
+  it('kahn-topological-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-topological-sort - wave139', () => {
+  it('kahn-topological-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

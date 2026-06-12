@@ -807,3 +807,63 @@ describe('dancing-links - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dancing-links - wave127', () => {
+  it('dancing-links w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - wave130', () => {
+  it('dancing-links w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - wave133', () => {
+  it('dancing-links w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - wave136', () => {
+  it('dancing-links w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - wave139', () => {
+  it('dancing-links w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

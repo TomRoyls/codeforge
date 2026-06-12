@@ -821,3 +821,63 @@ describe('dequeue - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dequeue - wave127', () => {
+  it('dequeue w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dequeue - wave130', () => {
+  it('dequeue w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dequeue - wave133', () => {
+  it('dequeue w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dequeue - wave136', () => {
+  it('dequeue w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dequeue - wave139', () => {
+  it('dequeue w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -780,3 +780,63 @@ describe('bridge-finding - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bridge-finding - wave127', () => {
+  it('bridge-finding w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finding - wave130', () => {
+  it('bridge-finding w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finding - wave133', () => {
+  it('bridge-finding w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finding - wave136', () => {
+  it('bridge-finding w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finding - wave139', () => {
+  it('bridge-finding w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

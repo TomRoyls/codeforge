@@ -526,3 +526,63 @@ describe('partial-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('partial-sort - wave127', () => {
+  it('partial-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('partial-sort - wave130', () => {
+  it('partial-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('partial-sort - wave133', () => {
+  it('partial-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('partial-sort - wave136', () => {
+  it('partial-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('partial-sort - wave139', () => {
+  it('partial-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

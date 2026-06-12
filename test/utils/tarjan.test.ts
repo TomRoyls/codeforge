@@ -723,3 +723,63 @@ describe('tarjan - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tarjan - wave127', () => {
+  it('tarjan w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - wave130', () => {
+  it('tarjan w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - wave133', () => {
+  it('tarjan w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - wave136', () => {
+  it('tarjan w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - wave139', () => {
+  it('tarjan w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

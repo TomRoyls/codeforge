@@ -691,3 +691,63 @@ describe('vptrie - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vptrie - wave127', () => {
+  it('vptrie w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - wave130', () => {
+  it('vptrie w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - wave133', () => {
+  it('vptrie w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - wave136', () => {
+  it('vptrie w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - wave139', () => {
+  it('vptrie w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

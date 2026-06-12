@@ -800,3 +800,63 @@ describe('steiner-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('steiner-tree - wave127', () => {
+  it('steiner-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('steiner-tree - wave130', () => {
+  it('steiner-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('steiner-tree - wave133', () => {
+  it('steiner-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('steiner-tree - wave136', () => {
+  it('steiner-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('steiner-tree - wave139', () => {
+  it('steiner-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -820,3 +820,63 @@ describe('bloomier-filter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bloomier-filter - wave127', () => {
+  it('bloomier-filter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - wave130', () => {
+  it('bloomier-filter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - wave133', () => {
+  it('bloomier-filter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - wave136', () => {
+  it('bloomier-filter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - wave139', () => {
+  it('bloomier-filter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

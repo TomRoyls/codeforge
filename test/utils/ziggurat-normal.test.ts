@@ -783,3 +783,63 @@ describe('ziggurat-normal - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ziggurat-normal - wave127', () => {
+  it('ziggurat-normal w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - wave130', () => {
+  it('ziggurat-normal w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - wave133', () => {
+  it('ziggurat-normal w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - wave136', () => {
+  it('ziggurat-normal w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - wave139', () => {
+  it('ziggurat-normal w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

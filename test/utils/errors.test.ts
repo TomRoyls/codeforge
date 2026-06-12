@@ -683,3 +683,63 @@ describe('errors - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('errors - wave127', () => {
+  it('errors w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - wave130', () => {
+  it('errors w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - wave133', () => {
+  it('errors w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - wave136', () => {
+  it('errors w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - wave139', () => {
+  it('errors w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

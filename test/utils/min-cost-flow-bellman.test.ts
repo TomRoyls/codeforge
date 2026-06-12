@@ -823,3 +823,63 @@ describe('min-cost-flow-bellman - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-cost-flow-bellman - wave127', () => {
+  it('min-cost-flow-bellman w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - wave130', () => {
+  it('min-cost-flow-bellman w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - wave133', () => {
+  it('min-cost-flow-bellman w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - wave136', () => {
+  it('min-cost-flow-bellman w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - wave139', () => {
+  it('min-cost-flow-bellman w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

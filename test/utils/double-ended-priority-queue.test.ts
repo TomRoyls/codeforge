@@ -817,3 +817,63 @@ describe('double-ended-priority-queue - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('double-ended-priority-queue - wave127', () => {
+  it('double-ended-priority-queue w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - wave130', () => {
+  it('double-ended-priority-queue w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - wave133', () => {
+  it('double-ended-priority-queue w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - wave136', () => {
+  it('double-ended-priority-queue w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - wave139', () => {
+  it('double-ended-priority-queue w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

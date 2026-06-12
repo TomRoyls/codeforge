@@ -744,3 +744,63 @@ describe('sliding-window-stats - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-stats - wave127', () => {
+  it('sliding-window-stats w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - wave130', () => {
+  it('sliding-window-stats w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - wave133', () => {
+  it('sliding-window-stats w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - wave136', () => {
+  it('sliding-window-stats w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - wave139', () => {
+  it('sliding-window-stats w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

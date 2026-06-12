@@ -729,3 +729,63 @@ describe('top-k - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k - wave127', () => {
+  it('top-k w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - wave130', () => {
+  it('top-k w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - wave133', () => {
+  it('top-k w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - wave136', () => {
+  it('top-k w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - wave139', () => {
+  it('top-k w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

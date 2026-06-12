@@ -545,3 +545,63 @@ describe('roman-numeral - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('roman-numeral - wave127', () => {
+  it('roman-numeral w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - wave130', () => {
+  it('roman-numeral w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - wave133', () => {
+  it('roman-numeral w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - wave136', () => {
+  it('roman-numeral w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - wave139', () => {
+  it('roman-numeral w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

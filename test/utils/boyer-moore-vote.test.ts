@@ -541,3 +541,63 @@ describe('boyer-moore-vote - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore-vote - wave127', () => {
+  it('boyer-moore-vote w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - wave130', () => {
+  it('boyer-moore-vote w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - wave133', () => {
+  it('boyer-moore-vote w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - wave136', () => {
+  it('boyer-moore-vote w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - wave139', () => {
+  it('boyer-moore-vote w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

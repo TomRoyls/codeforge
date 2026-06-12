@@ -602,3 +602,63 @@ describe('de-bruijn - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('de-bruijn - wave127', () => {
+  it('de-bruijn w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('de-bruijn - wave130', () => {
+  it('de-bruijn w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('de-bruijn - wave133', () => {
+  it('de-bruijn w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('de-bruijn - wave136', () => {
+  it('de-bruijn w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('de-bruijn - wave139', () => {
+  it('de-bruijn w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

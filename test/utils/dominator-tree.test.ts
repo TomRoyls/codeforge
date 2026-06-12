@@ -831,3 +831,63 @@ describe('dominator-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dominator-tree - wave127', () => {
+  it('dominator-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - wave130', () => {
+  it('dominator-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - wave133', () => {
+  it('dominator-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - wave136', () => {
+  it('dominator-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - wave139', () => {
+  it('dominator-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

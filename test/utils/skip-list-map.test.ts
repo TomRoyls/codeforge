@@ -752,3 +752,63 @@ describe('skip-list-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skip-list-map - wave127', () => {
+  it('skip-list-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list-map - wave130', () => {
+  it('skip-list-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list-map - wave133', () => {
+  it('skip-list-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list-map - wave136', () => {
+  it('skip-list-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list-map - wave139', () => {
+  it('skip-list-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

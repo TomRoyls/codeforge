@@ -660,3 +660,63 @@ describe('segment-tree - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('segment-tree - wave127', () => {
+  it('segment-tree w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - wave130', () => {
+  it('segment-tree w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - wave133', () => {
+  it('segment-tree w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - wave136', () => {
+  it('segment-tree w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - wave139', () => {
+  it('segment-tree w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

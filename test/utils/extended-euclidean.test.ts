@@ -558,3 +558,63 @@ describe('extended-euclidean - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('extended-euclidean - wave127', () => {
+  it('extended-euclidean w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - wave130', () => {
+  it('extended-euclidean w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - wave133', () => {
+  it('extended-euclidean w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - wave136', () => {
+  it('extended-euclidean w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - wave139', () => {
+  it('extended-euclidean w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

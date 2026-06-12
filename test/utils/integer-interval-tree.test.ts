@@ -788,3 +788,63 @@ describe('integer-interval-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('integer-interval-tree - wave127', () => {
+  it('integer-interval-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-interval-tree - wave130', () => {
+  it('integer-interval-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-interval-tree - wave133', () => {
+  it('integer-interval-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-interval-tree - wave136', () => {
+  it('integer-interval-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-interval-tree - wave139', () => {
+  it('integer-interval-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

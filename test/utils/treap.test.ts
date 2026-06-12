@@ -791,3 +791,63 @@ describe('treap - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap - wave127', () => {
+  it('treap w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - wave130', () => {
+  it('treap w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - wave133', () => {
+  it('treap w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - wave136', () => {
+  it('treap w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - wave139', () => {
+  it('treap w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

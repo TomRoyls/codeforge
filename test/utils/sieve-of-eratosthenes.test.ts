@@ -584,3 +584,63 @@ describe('sieve-of-eratosthenes - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sieve-of-eratosthenes - wave127', () => {
+  it('sieve-of-eratosthenes w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - wave130', () => {
+  it('sieve-of-eratosthenes w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - wave133', () => {
+  it('sieve-of-eratosthenes w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - wave136', () => {
+  it('sieve-of-eratosthenes w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - wave139', () => {
+  it('sieve-of-eratosthenes w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

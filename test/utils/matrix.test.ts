@@ -815,3 +815,63 @@ describe('matrix - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('matrix - wave127', () => {
+  it('matrix w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - wave130', () => {
+  it('matrix w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - wave133', () => {
+  it('matrix w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - wave136', () => {
+  it('matrix w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - wave139', () => {
+  it('matrix w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

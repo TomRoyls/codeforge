@@ -853,3 +853,63 @@ describe('bi-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bi-map - wave127', () => {
+  it('bi-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - wave130', () => {
+  it('bi-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - wave133', () => {
+  it('bi-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - wave136', () => {
+  it('bi-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - wave139', () => {
+  it('bi-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

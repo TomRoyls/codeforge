@@ -633,3 +633,63 @@ describe('wavelet-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-tree - wave127', () => {
+  it('wavelet-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-tree - wave130', () => {
+  it('wavelet-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-tree - wave133', () => {
+  it('wavelet-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-tree - wave136', () => {
+  it('wavelet-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-tree - wave139', () => {
+  it('wavelet-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

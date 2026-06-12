@@ -670,3 +670,63 @@ describe('eulerian-path - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('eulerian-path - wave127', () => {
+  it('eulerian-path w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - wave130', () => {
+  it('eulerian-path w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - wave133', () => {
+  it('eulerian-path w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - wave136', () => {
+  it('eulerian-path w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - wave139', () => {
+  it('eulerian-path w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

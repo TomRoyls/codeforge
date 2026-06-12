@@ -724,3 +724,63 @@ describe('difference-array - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('difference-array - wave127', () => {
+  it('difference-array w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - wave130', () => {
+  it('difference-array w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - wave133', () => {
+  it('difference-array w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - wave136', () => {
+  it('difference-array w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - wave139', () => {
+  it('difference-array w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

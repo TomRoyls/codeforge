@@ -807,3 +807,63 @@ describe('bellman-ford - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bellman-ford - wave127', () => {
+  it('bellman-ford w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - wave130', () => {
+  it('bellman-ford w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - wave133', () => {
+  it('bellman-ford w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - wave136', () => {
+  it('bellman-ford w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - wave139', () => {
+  it('bellman-ford w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

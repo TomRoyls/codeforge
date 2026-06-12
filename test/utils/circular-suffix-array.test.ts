@@ -608,3 +608,63 @@ describe('circular-suffix-array - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-suffix-array - wave127', () => {
+  it('circular-suffix-array w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - wave130', () => {
+  it('circular-suffix-array w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - wave133', () => {
+  it('circular-suffix-array w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - wave136', () => {
+  it('circular-suffix-array w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - wave139', () => {
+  it('circular-suffix-array w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

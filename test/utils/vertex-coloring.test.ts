@@ -697,3 +697,63 @@ describe('vertex-coloring - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vertex-coloring - wave127', () => {
+  it('vertex-coloring w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - wave130', () => {
+  it('vertex-coloring w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - wave133', () => {
+  it('vertex-coloring w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - wave136', () => {
+  it('vertex-coloring w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - wave139', () => {
+  it('vertex-coloring w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

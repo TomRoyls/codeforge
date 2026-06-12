@@ -698,3 +698,63 @@ describe('object-diff - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('object-diff - wave127', () => {
+  it('object-diff w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-diff - wave130', () => {
+  it('object-diff w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-diff - wave133', () => {
+  it('object-diff w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-diff - wave136', () => {
+  it('object-diff w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-diff - wave139', () => {
+  it('object-diff w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

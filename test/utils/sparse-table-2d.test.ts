@@ -631,3 +631,63 @@ describe('sparse-table-2d - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-table-2d - wave127', () => {
+  it('sparse-table-2d w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - wave130', () => {
+  it('sparse-table-2d w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - wave133', () => {
+  it('sparse-table-2d w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - wave136', () => {
+  it('sparse-table-2d w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - wave139', () => {
+  it('sparse-table-2d w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

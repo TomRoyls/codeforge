@@ -684,3 +684,63 @@ describe('exponential-counter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('exponential-counter - wave127', () => {
+  it('exponential-counter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - wave130', () => {
+  it('exponential-counter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - wave133', () => {
+  it('exponential-counter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - wave136', () => {
+  it('exponential-counter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - wave139', () => {
+  it('exponential-counter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

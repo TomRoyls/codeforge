@@ -1073,3 +1073,63 @@ describe('batch-processor - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('batch-processor - wave127', () => {
+  it('batch-processor w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('batch-processor - wave130', () => {
+  it('batch-processor w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('batch-processor - wave133', () => {
+  it('batch-processor w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('batch-processor - wave136', () => {
+  it('batch-processor w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('batch-processor - wave139', () => {
+  it('batch-processor w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

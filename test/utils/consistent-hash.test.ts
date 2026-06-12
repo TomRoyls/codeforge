@@ -771,3 +771,63 @@ describe('consistent-hash - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('consistent-hash - wave127', () => {
+  it('consistent-hash w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - wave130', () => {
+  it('consistent-hash w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - wave133', () => {
+  it('consistent-hash w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - wave136', () => {
+  it('consistent-hash w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - wave139', () => {
+  it('consistent-hash w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

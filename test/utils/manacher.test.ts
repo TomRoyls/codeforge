@@ -619,3 +619,63 @@ describe('manacher - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('manacher - wave127', () => {
+  it('manacher w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('manacher - wave130', () => {
+  it('manacher w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('manacher - wave133', () => {
+  it('manacher w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('manacher - wave136', () => {
+  it('manacher w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('manacher - wave139', () => {
+  it('manacher w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

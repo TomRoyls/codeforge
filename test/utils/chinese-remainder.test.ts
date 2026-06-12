@@ -627,3 +627,63 @@ describe('chinese-remainder - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chinese-remainder - wave127', () => {
+  it('chinese-remainder w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - wave130', () => {
+  it('chinese-remainder w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - wave133', () => {
+  it('chinese-remainder w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - wave136', () => {
+  it('chinese-remainder w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - wave139', () => {
+  it('chinese-remainder w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

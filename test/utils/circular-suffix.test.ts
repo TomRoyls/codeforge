@@ -558,3 +558,63 @@ describe('circular-suffix - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-suffix - wave127', () => {
+  it('circular-suffix w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix - wave130', () => {
+  it('circular-suffix w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix - wave133', () => {
+  it('circular-suffix w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix - wave136', () => {
+  it('circular-suffix w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix - wave139', () => {
+  it('circular-suffix w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

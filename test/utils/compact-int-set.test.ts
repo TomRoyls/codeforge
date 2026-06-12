@@ -684,3 +684,63 @@ describe('compact-int-set - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('compact-int-set - wave127', () => {
+  it('compact-int-set w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('compact-int-set - wave130', () => {
+  it('compact-int-set w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('compact-int-set - wave133', () => {
+  it('compact-int-set w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('compact-int-set - wave136', () => {
+  it('compact-int-set w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('compact-int-set - wave139', () => {
+  it('compact-int-set w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

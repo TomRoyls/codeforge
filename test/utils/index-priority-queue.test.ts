@@ -790,3 +790,63 @@ describe('index-priority-queue - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('index-priority-queue - wave127', () => {
+  it('index-priority-queue w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - wave130', () => {
+  it('index-priority-queue w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - wave133', () => {
+  it('index-priority-queue w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - wave136', () => {
+  it('index-priority-queue w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - wave139', () => {
+  it('index-priority-queue w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

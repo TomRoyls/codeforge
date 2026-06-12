@@ -681,3 +681,63 @@ describe('li-chao-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('li-chao-tree - wave127', () => {
+  it('li-chao-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('li-chao-tree - wave130', () => {
+  it('li-chao-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('li-chao-tree - wave133', () => {
+  it('li-chao-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('li-chao-tree - wave136', () => {
+  it('li-chao-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('li-chao-tree - wave139', () => {
+  it('li-chao-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

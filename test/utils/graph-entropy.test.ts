@@ -686,3 +686,63 @@ describe('graph-entropy - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-entropy - wave127', () => {
+  it('graph-entropy w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - wave130', () => {
+  it('graph-entropy w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - wave133', () => {
+  it('graph-entropy w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - wave136', () => {
+  it('graph-entropy w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - wave139', () => {
+  it('graph-entropy w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

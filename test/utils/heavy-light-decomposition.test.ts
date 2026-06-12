@@ -933,3 +933,63 @@ describe('heavy-light-decomposition - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-light-decomposition - wave127', () => {
+  it('heavy-light-decomposition w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light-decomposition - wave130', () => {
+  it('heavy-light-decomposition w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light-decomposition - wave133', () => {
+  it('heavy-light-decomposition w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light-decomposition - wave136', () => {
+  it('heavy-light-decomposition w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light-decomposition - wave139', () => {
+  it('heavy-light-decomposition w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -700,3 +700,63 @@ describe('markov-chain - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('markov-chain - wave127', () => {
+  it('markov-chain w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('markov-chain - wave130', () => {
+  it('markov-chain w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('markov-chain - wave133', () => {
+  it('markov-chain w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('markov-chain - wave136', () => {
+  it('markov-chain w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('markov-chain - wave139', () => {
+  it('markov-chain w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

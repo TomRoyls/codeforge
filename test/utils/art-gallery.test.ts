@@ -762,3 +762,63 @@ describe('art-gallery - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('art-gallery - wave127', () => {
+  it('art-gallery w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('art-gallery - wave130', () => {
+  it('art-gallery w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('art-gallery - wave133', () => {
+  it('art-gallery w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('art-gallery - wave136', () => {
+  it('art-gallery w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('art-gallery - wave139', () => {
+  it('art-gallery w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

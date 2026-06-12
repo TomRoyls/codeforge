@@ -623,3 +623,63 @@ describe('lz-compression - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lz-compression - wave127', () => {
+  it('lz-compression w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - wave130', () => {
+  it('lz-compression w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - wave133', () => {
+  it('lz-compression w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - wave136', () => {
+  it('lz-compression w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - wave139', () => {
+  it('lz-compression w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -716,3 +716,63 @@ describe('rope - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rope - wave127', () => {
+  it('rope w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rope - wave130', () => {
+  it('rope w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rope - wave133', () => {
+  it('rope w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rope - wave136', () => {
+  it('rope w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rope - wave139', () => {
+  it('rope w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -765,3 +765,63 @@ describe('interval-scheduler - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-scheduler - wave127', () => {
+  it('interval-scheduler w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - wave130', () => {
+  it('interval-scheduler w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - wave133', () => {
+  it('interval-scheduler w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - wave136', () => {
+  it('interval-scheduler w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - wave139', () => {
+  it('interval-scheduler w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

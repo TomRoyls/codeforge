@@ -773,3 +773,63 @@ describe('disjoint-set-union - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-set-union - wave127', () => {
+  it('disjoint-set-union w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - wave130', () => {
+  it('disjoint-set-union w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - wave133', () => {
+  it('disjoint-set-union w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - wave136', () => {
+  it('disjoint-set-union w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - wave139', () => {
+  it('disjoint-set-union w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

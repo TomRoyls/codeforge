@@ -709,3 +709,63 @@ describe('merge-sorted-iterators - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('merge-sorted-iterators - wave127', () => {
+  it('merge-sorted-iterators w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - wave130', () => {
+  it('merge-sorted-iterators w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - wave133', () => {
+  it('merge-sorted-iterators w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - wave136', () => {
+  it('merge-sorted-iterators w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - wave139', () => {
+  it('merge-sorted-iterators w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

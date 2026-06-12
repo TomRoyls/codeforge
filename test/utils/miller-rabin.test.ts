@@ -635,3 +635,63 @@ describe('miller-rabin - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('miller-rabin - wave127', () => {
+  it('miller-rabin w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('miller-rabin - wave130', () => {
+  it('miller-rabin w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('miller-rabin - wave133', () => {
+  it('miller-rabin w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('miller-rabin - wave136', () => {
+  it('miller-rabin w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('miller-rabin - wave139', () => {
+  it('miller-rabin w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

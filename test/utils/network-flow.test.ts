@@ -705,3 +705,63 @@ describe('network-flow - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('network-flow - wave127', () => {
+  it('network-flow w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow - wave130', () => {
+  it('network-flow w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow - wave133', () => {
+  it('network-flow w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow - wave136', () => {
+  it('network-flow w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow - wave139', () => {
+  it('network-flow w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

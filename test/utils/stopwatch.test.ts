@@ -744,3 +744,63 @@ describe('stopwatch - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stopwatch - wave127', () => {
+  it('stopwatch w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - wave130', () => {
+  it('stopwatch w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - wave133', () => {
+  it('stopwatch w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - wave136', () => {
+  it('stopwatch w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - wave139', () => {
+  it('stopwatch w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

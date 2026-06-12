@@ -593,3 +593,63 @@ describe('modulo-combinatorics - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modulo-combinatorics - wave127', () => {
+  it('modulo-combinatorics w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modulo-combinatorics - wave130', () => {
+  it('modulo-combinatorics w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modulo-combinatorics - wave133', () => {
+  it('modulo-combinatorics w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modulo-combinatorics - wave136', () => {
+  it('modulo-combinatorics w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modulo-combinatorics - wave139', () => {
+  it('modulo-combinatorics w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

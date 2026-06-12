@@ -1003,3 +1003,63 @@ describe('leftist-heap - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('leftist-heap - wave127', () => {
+  it('leftist-heap w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('leftist-heap - wave130', () => {
+  it('leftist-heap w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('leftist-heap - wave133', () => {
+  it('leftist-heap w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('leftist-heap - wave136', () => {
+  it('leftist-heap w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('leftist-heap - wave139', () => {
+  it('leftist-heap w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

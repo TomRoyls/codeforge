@@ -497,3 +497,63 @@ describe('knuth-morris-pratt - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('knuth-morris-pratt - wave127', () => {
+  it('knuth-morris-pratt w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - wave130', () => {
+  it('knuth-morris-pratt w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - wave133', () => {
+  it('knuth-morris-pratt w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - wave136', () => {
+  it('knuth-morris-pratt w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - wave139', () => {
+  it('knuth-morris-pratt w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

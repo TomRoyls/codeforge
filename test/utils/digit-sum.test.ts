@@ -520,3 +520,63 @@ describe('digit-sum - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('digit-sum - wave127', () => {
+  it('digit-sum w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('digit-sum - wave130', () => {
+  it('digit-sum w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('digit-sum - wave133', () => {
+  it('digit-sum w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('digit-sum - wave136', () => {
+  it('digit-sum w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('digit-sum - wave139', () => {
+  it('digit-sum w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

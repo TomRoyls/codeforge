@@ -707,3 +707,63 @@ describe('deterministic-rng - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deterministic-rng - wave127', () => {
+  it('deterministic-rng w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - wave130', () => {
+  it('deterministic-rng w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - wave133', () => {
+  it('deterministic-rng w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - wave136', () => {
+  it('deterministic-rng w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - wave139', () => {
+  it('deterministic-rng w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

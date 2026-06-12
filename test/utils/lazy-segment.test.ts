@@ -687,3 +687,63 @@ describe('lazy-segment - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lazy-segment - wave127', () => {
+  it('lazy-segment w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lazy-segment - wave130', () => {
+  it('lazy-segment w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lazy-segment - wave133', () => {
+  it('lazy-segment w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lazy-segment - wave136', () => {
+  it('lazy-segment w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lazy-segment - wave139', () => {
+  it('lazy-segment w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

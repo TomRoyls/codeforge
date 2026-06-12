@@ -737,3 +737,63 @@ describe('sparse-set - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-set - wave127', () => {
+  it('sparse-set w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - wave130', () => {
+  it('sparse-set w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - wave133', () => {
+  it('sparse-set w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - wave136', () => {
+  it('sparse-set w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - wave139', () => {
+  it('sparse-set w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

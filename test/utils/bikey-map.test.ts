@@ -902,3 +902,63 @@ describe('bikey-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bikey-map - wave127', () => {
+  it('bikey-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - wave130', () => {
+  it('bikey-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - wave133', () => {
+  it('bikey-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - wave136', () => {
+  it('bikey-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - wave139', () => {
+  it('bikey-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

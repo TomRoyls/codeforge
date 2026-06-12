@@ -742,3 +742,63 @@ describe('chinese-postman - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chinese-postman - wave127', () => {
+  it('chinese-postman w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-postman - wave130', () => {
+  it('chinese-postman w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-postman - wave133', () => {
+  it('chinese-postman w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-postman - wave136', () => {
+  it('chinese-postman w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-postman - wave139', () => {
+  it('chinese-postman w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

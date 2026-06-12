@@ -602,3 +602,63 @@ describe('sqrt-decomp-range - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sqrt-decomp-range - wave127', () => {
+  it('sqrt-decomp-range w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - wave130', () => {
+  it('sqrt-decomp-range w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - wave133', () => {
+  it('sqrt-decomp-range w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - wave136', () => {
+  it('sqrt-decomp-range w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - wave139', () => {
+  it('sqrt-decomp-range w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

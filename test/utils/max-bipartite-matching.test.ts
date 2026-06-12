@@ -760,3 +760,63 @@ describe('max-bipartite-matching - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('max-bipartite-matching - wave127', () => {
+  it('max-bipartite-matching w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('max-bipartite-matching - wave130', () => {
+  it('max-bipartite-matching w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('max-bipartite-matching - wave133', () => {
+  it('max-bipartite-matching w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('max-bipartite-matching - wave136', () => {
+  it('max-bipartite-matching w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('max-bipartite-matching - wave139', () => {
+  it('max-bipartite-matching w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

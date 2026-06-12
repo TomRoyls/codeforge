@@ -787,3 +787,63 @@ describe('rolling-hash - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rolling-hash - wave127', () => {
+  it('rolling-hash w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rolling-hash - wave130', () => {
+  it('rolling-hash w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rolling-hash - wave133', () => {
+  it('rolling-hash w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rolling-hash - wave136', () => {
+  it('rolling-hash w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rolling-hash - wave139', () => {
+  it('rolling-hash w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

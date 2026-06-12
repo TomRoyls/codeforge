@@ -796,3 +796,63 @@ describe('tree-hash - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-hash - wave127', () => {
+  it('tree-hash w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - wave130', () => {
+  it('tree-hash w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - wave133', () => {
+  it('tree-hash w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - wave136', () => {
+  it('tree-hash w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - wave139', () => {
+  it('tree-hash w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

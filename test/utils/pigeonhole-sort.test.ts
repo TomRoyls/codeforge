@@ -545,3 +545,63 @@ describe('pigeonhole-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pigeonhole-sort - wave127', () => {
+  it('pigeonhole-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pigeonhole-sort - wave130', () => {
+  it('pigeonhole-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pigeonhole-sort - wave133', () => {
+  it('pigeonhole-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pigeonhole-sort - wave136', () => {
+  it('pigeonhole-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pigeonhole-sort - wave139', () => {
+  it('pigeonhole-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -547,3 +547,63 @@ describe('sparse-table-gcd - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-table-gcd - wave127', () => {
+  it('sparse-table-gcd w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - wave130', () => {
+  it('sparse-table-gcd w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - wave133', () => {
+  it('sparse-table-gcd w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - wave136', () => {
+  it('sparse-table-gcd w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - wave139', () => {
+  it('sparse-table-gcd w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

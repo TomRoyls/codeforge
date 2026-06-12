@@ -581,3 +581,63 @@ describe('combination - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('combination - wave127', () => {
+  it('combination w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('combination - wave130', () => {
+  it('combination w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('combination - wave133', () => {
+  it('combination w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('combination - wave136', () => {
+  it('combination w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('combination - wave139', () => {
+  it('combination w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

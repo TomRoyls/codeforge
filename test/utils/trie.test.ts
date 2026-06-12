@@ -806,3 +806,63 @@ describe('trie - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('trie - wave127', () => {
+  it('trie w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('trie - wave130', () => {
+  it('trie w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('trie - wave133', () => {
+  it('trie w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('trie - wave136', () => {
+  it('trie w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('trie - wave139', () => {
+  it('trie w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

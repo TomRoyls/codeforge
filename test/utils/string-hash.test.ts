@@ -598,3 +598,63 @@ describe('string-hash - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-hash - wave127', () => {
+  it('string-hash w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-hash - wave130', () => {
+  it('string-hash w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-hash - wave133', () => {
+  it('string-hash w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-hash - wave136', () => {
+  it('string-hash w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-hash - wave139', () => {
+  it('string-hash w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

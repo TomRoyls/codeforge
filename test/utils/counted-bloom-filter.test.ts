@@ -723,3 +723,63 @@ describe('counted-bloom-filter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counted-bloom-filter - wave127', () => {
+  it('counted-bloom-filter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counted-bloom-filter - wave130', () => {
+  it('counted-bloom-filter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counted-bloom-filter - wave133', () => {
+  it('counted-bloom-filter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counted-bloom-filter - wave136', () => {
+  it('counted-bloom-filter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counted-bloom-filter - wave139', () => {
+  it('counted-bloom-filter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

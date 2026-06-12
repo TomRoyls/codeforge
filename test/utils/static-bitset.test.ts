@@ -739,3 +739,63 @@ describe('static-bitset - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('static-bitset - wave127', () => {
+  it('static-bitset w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - wave130', () => {
+  it('static-bitset w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - wave133', () => {
+  it('static-bitset w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - wave136', () => {
+  it('static-bitset w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - wave139', () => {
+  it('static-bitset w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

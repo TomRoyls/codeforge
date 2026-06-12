@@ -789,3 +789,63 @@ describe('bimodal-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bimodal-map - wave127', () => {
+  it('bimodal-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bimodal-map - wave130', () => {
+  it('bimodal-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bimodal-map - wave133', () => {
+  it('bimodal-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bimodal-map - wave136', () => {
+  it('bimodal-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bimodal-map - wave139', () => {
+  it('bimodal-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

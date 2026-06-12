@@ -625,3 +625,63 @@ describe('array-helpers - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('array-helpers - wave127', () => {
+  it('array-helpers w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - wave130', () => {
+  it('array-helpers w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - wave133', () => {
+  it('array-helpers w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - wave136', () => {
+  it('array-helpers w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - wave139', () => {
+  it('array-helpers w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

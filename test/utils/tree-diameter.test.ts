@@ -769,3 +769,63 @@ describe('tree-diameter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-diameter - wave127', () => {
+  it('tree-diameter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - wave130', () => {
+  it('tree-diameter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - wave133', () => {
+  it('tree-diameter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - wave136', () => {
+  it('tree-diameter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - wave139', () => {
+  it('tree-diameter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

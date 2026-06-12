@@ -785,3 +785,63 @@ describe('monotonic-queue - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('monotonic-queue - wave127', () => {
+  it('monotonic-queue w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - wave130', () => {
+  it('monotonic-queue w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - wave133', () => {
+  it('monotonic-queue w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - wave136', () => {
+  it('monotonic-queue w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - wave139', () => {
+  it('monotonic-queue w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

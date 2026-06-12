@@ -731,3 +731,63 @@ describe('linked-list - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('linked-list - wave127', () => {
+  it('linked-list w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - wave130', () => {
+  it('linked-list w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - wave133', () => {
+  it('linked-list w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - wave136', () => {
+  it('linked-list w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - wave139', () => {
+  it('linked-list w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

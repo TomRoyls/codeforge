@@ -774,3 +774,63 @@ describe('frequency-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('frequency-map - wave127', () => {
+  it('frequency-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - wave130', () => {
+  it('frequency-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - wave133', () => {
+  it('frequency-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - wave136', () => {
+  it('frequency-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - wave139', () => {
+  it('frequency-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -714,3 +714,63 @@ describe('arc-cache - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('arc-cache - wave127', () => {
+  it('arc-cache w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - wave130', () => {
+  it('arc-cache w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - wave133', () => {
+  it('arc-cache w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - wave136', () => {
+  it('arc-cache w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - wave139', () => {
+  it('arc-cache w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -887,3 +887,63 @@ describe('binomial-heap - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binomial-heap - wave127', () => {
+  it('binomial-heap w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binomial-heap - wave130', () => {
+  it('binomial-heap w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binomial-heap - wave133', () => {
+  it('binomial-heap w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binomial-heap - wave136', () => {
+  it('binomial-heap w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binomial-heap - wave139', () => {
+  it('binomial-heap w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

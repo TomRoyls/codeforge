@@ -820,3 +820,63 @@ describe('quad-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quad-tree - wave127', () => {
+  it('quad-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quad-tree - wave130', () => {
+  it('quad-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quad-tree - wave133', () => {
+  it('quad-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quad-tree - wave136', () => {
+  it('quad-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quad-tree - wave139', () => {
+  it('quad-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

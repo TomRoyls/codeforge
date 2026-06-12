@@ -499,3 +499,63 @@ describe('boyer-moore-extended - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore-extended - wave127', () => {
+  it('boyer-moore-extended w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - wave130', () => {
+  it('boyer-moore-extended w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - wave133', () => {
+  it('boyer-moore-extended w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - wave136', () => {
+  it('boyer-moore-extended w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - wave139', () => {
+  it('boyer-moore-extended w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

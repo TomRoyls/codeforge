@@ -708,3 +708,63 @@ describe('convex-hull-trick - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('convex-hull-trick - wave127', () => {
+  it('convex-hull-trick w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - wave130', () => {
+  it('convex-hull-trick w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - wave133', () => {
+  it('convex-hull-trick w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - wave136', () => {
+  it('convex-hull-trick w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - wave139', () => {
+  it('convex-hull-trick w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

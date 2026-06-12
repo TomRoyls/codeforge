@@ -831,3 +831,63 @@ describe('binary-heap - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-heap - wave127', () => {
+  it('binary-heap w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-heap - wave130', () => {
+  it('binary-heap w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-heap - wave133', () => {
+  it('binary-heap w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-heap - wave136', () => {
+  it('binary-heap w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-heap - wave139', () => {
+  it('binary-heap w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

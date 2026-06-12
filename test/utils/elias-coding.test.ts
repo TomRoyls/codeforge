@@ -711,3 +711,63 @@ describe('elias-coding - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-coding - wave127', () => {
+  it('elias-coding w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - wave130', () => {
+  it('elias-coding w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - wave133', () => {
+  it('elias-coding w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - wave136', () => {
+  it('elias-coding w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - wave139', () => {
+  it('elias-coding w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

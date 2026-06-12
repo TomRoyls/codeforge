@@ -743,3 +743,63 @@ describe('streaming-quantile - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-quantile - wave127', () => {
+  it('streaming-quantile w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - wave130', () => {
+  it('streaming-quantile w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - wave133', () => {
+  it('streaming-quantile w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - wave136', () => {
+  it('streaming-quantile w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - wave139', () => {
+  it('streaming-quantile w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

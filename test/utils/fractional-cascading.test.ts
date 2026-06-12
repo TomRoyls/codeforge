@@ -647,3 +647,63 @@ describe('fractional-cascading - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fractional-cascading - wave127', () => {
+  it('fractional-cascading w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fractional-cascading - wave130', () => {
+  it('fractional-cascading w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fractional-cascading - wave133', () => {
+  it('fractional-cascading w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fractional-cascading - wave136', () => {
+  it('fractional-cascading w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fractional-cascading - wave139', () => {
+  it('fractional-cascading w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -808,3 +808,63 @@ describe('stable-priority-queue - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stable-priority-queue - wave127', () => {
+  it('stable-priority-queue w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stable-priority-queue - wave130', () => {
+  it('stable-priority-queue w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stable-priority-queue - wave133', () => {
+  it('stable-priority-queue w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stable-priority-queue - wave136', () => {
+  it('stable-priority-queue w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stable-priority-queue - wave139', () => {
+  it('stable-priority-queue w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

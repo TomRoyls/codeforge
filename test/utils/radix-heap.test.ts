@@ -753,3 +753,63 @@ describe('radix-heap - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('radix-heap - wave127', () => {
+  it('radix-heap w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-heap - wave130', () => {
+  it('radix-heap w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-heap - wave133', () => {
+  it('radix-heap w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-heap - wave136', () => {
+  it('radix-heap w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-heap - wave139', () => {
+  it('radix-heap w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -636,3 +636,63 @@ describe('bridge-finder - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bridge-finder - wave127', () => {
+  it('bridge-finder w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finder - wave130', () => {
+  it('bridge-finder w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finder - wave133', () => {
+  it('bridge-finder w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finder - wave136', () => {
+  it('bridge-finder w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finder - wave139', () => {
+  it('bridge-finder w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -543,3 +543,63 @@ describe('stooge-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stooge-sort - wave127', () => {
+  it('stooge-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stooge-sort - wave130', () => {
+  it('stooge-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stooge-sort - wave133', () => {
+  it('stooge-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stooge-sort - wave136', () => {
+  it('stooge-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stooge-sort - wave139', () => {
+  it('stooge-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

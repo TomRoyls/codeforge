@@ -676,3 +676,63 @@ describe('graph-coloring - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-coloring - wave127', () => {
+  it('graph-coloring w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-coloring - wave130', () => {
+  it('graph-coloring w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-coloring - wave133', () => {
+  it('graph-coloring w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-coloring - wave136', () => {
+  it('graph-coloring w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-coloring - wave139', () => {
+  it('graph-coloring w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

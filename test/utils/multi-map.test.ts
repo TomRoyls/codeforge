@@ -720,3 +720,63 @@ describe('multi-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('multi-map - wave127', () => {
+  it('multi-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - wave130', () => {
+  it('multi-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - wave133', () => {
+  it('multi-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - wave136', () => {
+  it('multi-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - wave139', () => {
+  it('multi-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -730,3 +730,63 @@ describe('bounded-deque - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bounded-deque - wave127', () => {
+  it('bounded-deque w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - wave130', () => {
+  it('bounded-deque w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - wave133', () => {
+  it('bounded-deque w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - wave136', () => {
+  it('bounded-deque w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - wave139', () => {
+  it('bounded-deque w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

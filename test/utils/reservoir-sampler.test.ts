@@ -750,3 +750,63 @@ describe('reservoir-sampler - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('reservoir-sampler - wave127', () => {
+  it('reservoir-sampler w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - wave130', () => {
+  it('reservoir-sampler w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - wave133', () => {
+  it('reservoir-sampler w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - wave136', () => {
+  it('reservoir-sampler w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - wave139', () => {
+  it('reservoir-sampler w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

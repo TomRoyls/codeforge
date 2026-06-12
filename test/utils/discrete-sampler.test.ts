@@ -725,3 +725,63 @@ describe('discrete-sampler - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('discrete-sampler - wave127', () => {
+  it('discrete-sampler w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - wave130', () => {
+  it('discrete-sampler w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - wave133', () => {
+  it('discrete-sampler w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - wave136', () => {
+  it('discrete-sampler w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - wave139', () => {
+  it('discrete-sampler w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

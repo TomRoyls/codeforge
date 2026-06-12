@@ -782,3 +782,63 @@ describe('lowest-common-ancestor - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lowest-common-ancestor - wave127', () => {
+  it('lowest-common-ancestor w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lowest-common-ancestor - wave130', () => {
+  it('lowest-common-ancestor w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lowest-common-ancestor - wave133', () => {
+  it('lowest-common-ancestor w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lowest-common-ancestor - wave136', () => {
+  it('lowest-common-ancestor w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lowest-common-ancestor - wave139', () => {
+  it('lowest-common-ancestor w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

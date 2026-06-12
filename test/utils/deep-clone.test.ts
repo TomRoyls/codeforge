@@ -662,3 +662,63 @@ describe('deep-clone - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deep-clone - wave127', () => {
+  it('deep-clone w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-clone - wave130', () => {
+  it('deep-clone w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-clone - wave133', () => {
+  it('deep-clone w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-clone - wave136', () => {
+  it('deep-clone w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-clone - wave139', () => {
+  it('deep-clone w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

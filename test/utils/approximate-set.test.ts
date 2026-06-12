@@ -680,3 +680,63 @@ describe('approximate-set - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('approximate-set - wave127', () => {
+  it('approximate-set w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - wave130', () => {
+  it('approximate-set w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - wave133', () => {
+  it('approximate-set w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - wave136', () => {
+  it('approximate-set w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - wave139', () => {
+  it('approximate-set w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

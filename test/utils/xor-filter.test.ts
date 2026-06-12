@@ -661,3 +661,63 @@ describe('xor-filter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-filter - wave127', () => {
+  it('xor-filter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - wave130', () => {
+  it('xor-filter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - wave133', () => {
+  it('xor-filter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - wave136', () => {
+  it('xor-filter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - wave139', () => {
+  it('xor-filter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

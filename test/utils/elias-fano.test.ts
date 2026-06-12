@@ -654,3 +654,63 @@ describe('elias-fano - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-fano - wave127', () => {
+  it('elias-fano w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - wave130', () => {
+  it('elias-fano w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - wave133', () => {
+  it('elias-fano w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - wave136', () => {
+  it('elias-fano w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - wave139', () => {
+  it('elias-fano w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

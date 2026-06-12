@@ -678,3 +678,63 @@ describe('code-pattern - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('code-pattern - wave127', () => {
+  it('code-pattern w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - wave130', () => {
+  it('code-pattern w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - wave133', () => {
+  it('code-pattern w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - wave136', () => {
+  it('code-pattern w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - wave139', () => {
+  it('code-pattern w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

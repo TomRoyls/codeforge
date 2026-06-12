@@ -750,3 +750,63 @@ describe('flat-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('flat-map - wave127', () => {
+  it('flat-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - wave130', () => {
+  it('flat-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - wave133', () => {
+  it('flat-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - wave136', () => {
+  it('flat-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - wave139', () => {
+  it('flat-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

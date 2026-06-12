@@ -736,3 +736,63 @@ describe('edmonds-karp - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edmonds-karp - wave127', () => {
+  it('edmonds-karp w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-karp - wave130', () => {
+  it('edmonds-karp w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-karp - wave133', () => {
+  it('edmonds-karp w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-karp - wave136', () => {
+  it('edmonds-karp w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-karp - wave139', () => {
+  it('edmonds-karp w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

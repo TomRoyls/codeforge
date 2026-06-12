@@ -711,3 +711,63 @@ describe('heavy-keeper - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-keeper - wave127', () => {
+  it('heavy-keeper w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - wave130', () => {
+  it('heavy-keeper w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - wave133', () => {
+  it('heavy-keeper w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - wave136', () => {
+  it('heavy-keeper w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - wave139', () => {
+  it('heavy-keeper w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

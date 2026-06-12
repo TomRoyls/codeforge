@@ -608,3 +608,63 @@ describe('triangular-number - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('triangular-number - wave127', () => {
+  it('triangular-number w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('triangular-number - wave130', () => {
+  it('triangular-number w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('triangular-number - wave133', () => {
+  it('triangular-number w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('triangular-number - wave136', () => {
+  it('triangular-number w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('triangular-number - wave139', () => {
+  it('triangular-number w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

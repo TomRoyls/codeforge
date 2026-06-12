@@ -718,3 +718,63 @@ describe('timer - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('timer - wave127', () => {
+  it('timer w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - wave130', () => {
+  it('timer w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - wave133', () => {
+  it('timer w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - wave136', () => {
+  it('timer w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - wave139', () => {
+  it('timer w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

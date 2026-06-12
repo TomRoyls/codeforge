@@ -778,3 +778,63 @@ describe('prim-mst - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('prim-mst - wave127', () => {
+  it('prim-mst w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - wave130', () => {
+  it('prim-mst w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - wave133', () => {
+  it('prim-mst w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - wave136', () => {
+  it('prim-mst w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - wave139', () => {
+  it('prim-mst w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

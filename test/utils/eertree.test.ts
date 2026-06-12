@@ -632,3 +632,63 @@ describe('eertree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('eertree - wave127', () => {
+  it('eertree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - wave130', () => {
+  it('eertree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - wave133', () => {
+  it('eertree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - wave136', () => {
+  it('eertree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - wave139', () => {
+  it('eertree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

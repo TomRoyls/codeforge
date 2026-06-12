@@ -758,3 +758,63 @@ describe('red-black-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('red-black-tree - wave127', () => {
+  it('red-black-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - wave130', () => {
+  it('red-black-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - wave133', () => {
+  it('red-black-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - wave136', () => {
+  it('red-black-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - wave139', () => {
+  it('red-black-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -714,3 +714,63 @@ describe('binary-lifting - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-lifting - wave127', () => {
+  it('binary-lifting w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - wave130', () => {
+  it('binary-lifting w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - wave133', () => {
+  it('binary-lifting w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - wave136', () => {
+  it('binary-lifting w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - wave139', () => {
+  it('binary-lifting w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

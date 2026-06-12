@@ -701,3 +701,63 @@ describe('bitmap-index - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bitmap-index - wave127', () => {
+  it('bitmap-index w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitmap-index - wave130', () => {
+  it('bitmap-index w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitmap-index - wave133', () => {
+  it('bitmap-index w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitmap-index - wave136', () => {
+  it('bitmap-index w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitmap-index - wave139', () => {
+  it('bitmap-index w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

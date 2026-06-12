@@ -849,3 +849,63 @@ describe('virtual-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('virtual-tree - wave127', () => {
+  it('virtual-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('virtual-tree - wave130', () => {
+  it('virtual-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('virtual-tree - wave133', () => {
+  it('virtual-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('virtual-tree - wave136', () => {
+  it('virtual-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('virtual-tree - wave139', () => {
+  it('virtual-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

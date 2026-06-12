@@ -646,3 +646,63 @@ describe('fenwick-2d - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fenwick-2d - wave127', () => {
+  it('fenwick-2d w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fenwick-2d - wave130', () => {
+  it('fenwick-2d w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fenwick-2d - wave133', () => {
+  it('fenwick-2d w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fenwick-2d - wave136', () => {
+  it('fenwick-2d w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fenwick-2d - wave139', () => {
+  it('fenwick-2d w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

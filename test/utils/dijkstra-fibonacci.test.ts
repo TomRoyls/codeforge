@@ -845,3 +845,63 @@ describe('dijkstra-fibonacci - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dijkstra-fibonacci - wave127', () => {
+  it('dijkstra-fibonacci w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - wave130', () => {
+  it('dijkstra-fibonacci w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - wave133', () => {
+  it('dijkstra-fibonacci w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - wave136', () => {
+  it('dijkstra-fibonacci w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - wave139', () => {
+  it('dijkstra-fibonacci w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

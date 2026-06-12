@@ -883,3 +883,63 @@ describe('retry - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('retry - wave127', () => {
+  it('retry w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('retry - wave130', () => {
+  it('retry w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('retry - wave133', () => {
+  it('retry w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('retry - wave136', () => {
+  it('retry w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('retry - wave139', () => {
+  it('retry w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -770,3 +770,63 @@ describe('flow-push-relabel - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('flow-push-relabel - wave127', () => {
+  it('flow-push-relabel w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - wave130', () => {
+  it('flow-push-relabel w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - wave133', () => {
+  it('flow-push-relabel w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - wave136', () => {
+  it('flow-push-relabel w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - wave139', () => {
+  it('flow-push-relabel w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

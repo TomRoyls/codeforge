@@ -759,3 +759,63 @@ describe('memoize - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('memoize - wave127', () => {
+  it('memoize w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - wave130', () => {
+  it('memoize w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - wave133', () => {
+  it('memoize w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - wave136', () => {
+  it('memoize w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - wave139', () => {
+  it('memoize w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

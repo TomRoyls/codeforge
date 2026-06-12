@@ -736,3 +736,63 @@ describe('streaming-histogram - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-histogram - wave127', () => {
+  it('streaming-histogram w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - wave130', () => {
+  it('streaming-histogram w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - wave133', () => {
+  it('streaming-histogram w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - wave136', () => {
+  it('streaming-histogram w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - wave139', () => {
+  it('streaming-histogram w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

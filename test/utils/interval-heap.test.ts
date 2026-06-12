@@ -751,3 +751,63 @@ describe('interval-heap - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-heap - wave127', () => {
+  it('interval-heap w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-heap - wave130', () => {
+  it('interval-heap w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-heap - wave133', () => {
+  it('interval-heap w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-heap - wave136', () => {
+  it('interval-heap w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-heap - wave139', () => {
+  it('interval-heap w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

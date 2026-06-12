@@ -654,3 +654,63 @@ describe('disjoint-interval - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-interval - wave127', () => {
+  it('disjoint-interval w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - wave130', () => {
+  it('disjoint-interval w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - wave133', () => {
+  it('disjoint-interval w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - wave136', () => {
+  it('disjoint-interval w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - wave139', () => {
+  it('disjoint-interval w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

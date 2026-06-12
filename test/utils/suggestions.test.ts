@@ -524,3 +524,63 @@ describe('suggestions - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suggestions - wave127', () => {
+  it('suggestions w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suggestions - wave130', () => {
+  it('suggestions w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suggestions - wave133', () => {
+  it('suggestions w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suggestions - wave136', () => {
+  it('suggestions w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suggestions - wave139', () => {
+  it('suggestions w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

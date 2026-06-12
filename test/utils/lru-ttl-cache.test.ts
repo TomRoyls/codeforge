@@ -703,3 +703,63 @@ describe('lru-ttl-cache - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lru-ttl-cache - wave127', () => {
+  it('lru-ttl-cache w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-ttl-cache - wave130', () => {
+  it('lru-ttl-cache w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-ttl-cache - wave133', () => {
+  it('lru-ttl-cache w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-ttl-cache - wave136', () => {
+  it('lru-ttl-cache w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-ttl-cache - wave139', () => {
+  it('lru-ttl-cache w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

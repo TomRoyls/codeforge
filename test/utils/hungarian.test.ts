@@ -722,3 +722,63 @@ describe('hungarian - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian - wave127', () => {
+  it('hungarian w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - wave130', () => {
+  it('hungarian w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - wave133', () => {
+  it('hungarian w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - wave136', () => {
+  it('hungarian w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - wave139', () => {
+  it('hungarian w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

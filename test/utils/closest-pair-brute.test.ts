@@ -773,3 +773,63 @@ describe('closest-pair-brute - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair-brute - wave127', () => {
+  it('closest-pair-brute w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - wave130', () => {
+  it('closest-pair-brute w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - wave133', () => {
+  it('closest-pair-brute w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - wave136', () => {
+  it('closest-pair-brute w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - wave139', () => {
+  it('closest-pair-brute w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

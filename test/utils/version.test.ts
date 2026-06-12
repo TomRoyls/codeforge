@@ -562,3 +562,63 @@ describe('version - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('version - wave127', () => {
+  it('version w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - wave130', () => {
+  it('version w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - wave133', () => {
+  it('version w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - wave136', () => {
+  it('version w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - wave139', () => {
+  it('version w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

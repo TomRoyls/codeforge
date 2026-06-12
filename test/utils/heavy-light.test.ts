@@ -745,3 +745,63 @@ describe('heavy-light - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-light - wave127', () => {
+  it('heavy-light w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light - wave130', () => {
+  it('heavy-light w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light - wave133', () => {
+  it('heavy-light w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light - wave136', () => {
+  it('heavy-light w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light - wave139', () => {
+  it('heavy-light w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

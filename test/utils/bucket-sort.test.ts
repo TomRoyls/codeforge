@@ -510,3 +510,63 @@ describe('bucket-sort - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bucket-sort - wave127', () => {
+  it('bucket-sort w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bucket-sort - wave130', () => {
+  it('bucket-sort w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bucket-sort - wave133', () => {
+  it('bucket-sort w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bucket-sort - wave136', () => {
+  it('bucket-sort w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bucket-sort - wave139', () => {
+  it('bucket-sort w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

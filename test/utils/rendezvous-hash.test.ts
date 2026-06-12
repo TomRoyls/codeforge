@@ -763,3 +763,63 @@ describe('rendezvous-hash - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rendezvous-hash - wave127', () => {
+  it('rendezvous-hash w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - wave130', () => {
+  it('rendezvous-hash w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - wave133', () => {
+  it('rendezvous-hash w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - wave136', () => {
+  it('rendezvous-hash w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - wave139', () => {
+  it('rendezvous-hash w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

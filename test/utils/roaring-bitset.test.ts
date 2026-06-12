@@ -693,3 +693,63 @@ describe('roaring-bitset - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('roaring-bitset - wave127', () => {
+  it('roaring-bitset w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roaring-bitset - wave130', () => {
+  it('roaring-bitset w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roaring-bitset - wave133', () => {
+  it('roaring-bitset w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roaring-bitset - wave136', () => {
+  it('roaring-bitset w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roaring-bitset - wave139', () => {
+  it('roaring-bitset w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

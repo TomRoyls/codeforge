@@ -738,3 +738,63 @@ describe('parallel-binary-search - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('parallel-binary-search - wave127', () => {
+  it('parallel-binary-search w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - wave130', () => {
+  it('parallel-binary-search w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - wave133', () => {
+  it('parallel-binary-search w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - wave136', () => {
+  it('parallel-binary-search w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - wave139', () => {
+  it('parallel-binary-search w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

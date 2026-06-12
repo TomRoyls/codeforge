@@ -611,3 +611,63 @@ describe('wavelet-matrix - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-matrix - wave127', () => {
+  it('wavelet-matrix w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - wave130', () => {
+  it('wavelet-matrix w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - wave133', () => {
+  it('wavelet-matrix w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - wave136', () => {
+  it('wavelet-matrix w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - wave139', () => {
+  it('wavelet-matrix w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

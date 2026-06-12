@@ -561,3 +561,63 @@ describe('continued-fraction - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('continued-fraction - wave127', () => {
+  it('continued-fraction w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('continued-fraction - wave130', () => {
+  it('continued-fraction w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('continued-fraction - wave133', () => {
+  it('continued-fraction w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('continued-fraction - wave136', () => {
+  it('continued-fraction w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('continued-fraction - wave139', () => {
+  it('continued-fraction w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

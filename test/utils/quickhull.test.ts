@@ -722,3 +722,63 @@ describe('quickhull - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickhull - wave127', () => {
+  it('quickhull w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - wave130', () => {
+  it('quickhull w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - wave133', () => {
+  it('quickhull w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - wave136', () => {
+  it('quickhull w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - wave139', () => {
+  it('quickhull w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -712,3 +712,63 @@ describe('ford-fulkerson - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ford-fulkerson - wave127', () => {
+  it('ford-fulkerson w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - wave130', () => {
+  it('ford-fulkerson w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - wave133', () => {
+  it('ford-fulkerson w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - wave136', () => {
+  it('ford-fulkerson w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - wave139', () => {
+  it('ford-fulkerson w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

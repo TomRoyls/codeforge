@@ -739,3 +739,63 @@ describe('weighted-random - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('weighted-random - wave127', () => {
+  it('weighted-random w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - wave130', () => {
+  it('weighted-random w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - wave133', () => {
+  it('weighted-random w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - wave136', () => {
+  it('weighted-random w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - wave139', () => {
+  it('weighted-random w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

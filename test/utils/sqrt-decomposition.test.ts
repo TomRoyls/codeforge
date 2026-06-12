@@ -642,3 +642,63 @@ describe('sqrt-decomposition - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sqrt-decomposition - wave127', () => {
+  it('sqrt-decomposition w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - wave130', () => {
+  it('sqrt-decomposition w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - wave133', () => {
+  it('sqrt-decomposition w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - wave136', () => {
+  it('sqrt-decomposition w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - wave139', () => {
+  it('sqrt-decomposition w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

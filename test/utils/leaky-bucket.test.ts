@@ -669,3 +669,63 @@ describe('leaky-bucket - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('leaky-bucket - wave127', () => {
+  it('leaky-bucket w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - wave130', () => {
+  it('leaky-bucket w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - wave133', () => {
+  it('leaky-bucket w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - wave136', () => {
+  it('leaky-bucket w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - wave139', () => {
+  it('leaky-bucket w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

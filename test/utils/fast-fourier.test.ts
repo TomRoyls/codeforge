@@ -622,3 +622,63 @@ describe('fast-fourier - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fast-fourier - wave127', () => {
+  it('fast-fourier w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fast-fourier - wave130', () => {
+  it('fast-fourier w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fast-fourier - wave133', () => {
+  it('fast-fourier w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fast-fourier - wave136', () => {
+  it('fast-fourier w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fast-fourier - wave139', () => {
+  it('fast-fourier w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

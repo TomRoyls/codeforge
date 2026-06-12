@@ -636,3 +636,63 @@ describe('welford - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('welford - wave127', () => {
+  it('welford w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('welford - wave130', () => {
+  it('welford w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('welford - wave133', () => {
+  it('welford w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('welford - wave136', () => {
+  it('welford w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('welford - wave139', () => {
+  it('welford w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

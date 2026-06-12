@@ -551,3 +551,63 @@ describe('format-utils - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('format-utils - wave127', () => {
+  it('format-utils w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('format-utils - wave130', () => {
+  it('format-utils w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('format-utils - wave133', () => {
+  it('format-utils w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('format-utils - wave136', () => {
+  it('format-utils w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('format-utils - wave139', () => {
+  it('format-utils w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

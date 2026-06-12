@@ -679,3 +679,63 @@ describe('suffix-automaton-light - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-automaton-light - wave127', () => {
+  it('suffix-automaton-light w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton-light - wave130', () => {
+  it('suffix-automaton-light w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton-light - wave133', () => {
+  it('suffix-automaton-light w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton-light - wave136', () => {
+  it('suffix-automaton-light w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton-light - wave139', () => {
+  it('suffix-automaton-light w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

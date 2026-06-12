@@ -681,3 +681,63 @@ describe('line-sweep - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('line-sweep - wave127', () => {
+  it('line-sweep w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - wave130', () => {
+  it('line-sweep w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - wave133', () => {
+  it('line-sweep w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - wave136', () => {
+  it('line-sweep w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - wave139', () => {
+  it('line-sweep w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

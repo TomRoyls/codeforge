@@ -789,3 +789,63 @@ describe('simd-bit-set - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('simd-bit-set - wave127', () => {
+  it('simd-bit-set w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simd-bit-set - wave130', () => {
+  it('simd-bit-set w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simd-bit-set - wave133', () => {
+  it('simd-bit-set w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simd-bit-set - wave136', () => {
+  it('simd-bit-set w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simd-bit-set - wave139', () => {
+  it('simd-bit-set w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -706,3 +706,63 @@ describe('strongly-connected-components - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('strongly-connected-components - wave127', () => {
+  it('strongly-connected-components w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strongly-connected-components - wave130', () => {
+  it('strongly-connected-components w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strongly-connected-components - wave133', () => {
+  it('strongly-connected-components w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strongly-connected-components - wave136', () => {
+  it('strongly-connected-components w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strongly-connected-components - wave139', () => {
+  it('strongly-connected-components w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

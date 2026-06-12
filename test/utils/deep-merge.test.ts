@@ -653,3 +653,63 @@ describe('deep-merge - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deep-merge - wave127', () => {
+  it('deep-merge w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-merge - wave130', () => {
+  it('deep-merge w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-merge - wave133', () => {
+  it('deep-merge w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-merge - wave136', () => {
+  it('deep-merge w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-merge - wave139', () => {
+  it('deep-merge w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

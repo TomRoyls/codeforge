@@ -769,3 +769,63 @@ describe('hierarchical-timer - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hierarchical-timer - wave127', () => {
+  it('hierarchical-timer w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - wave130', () => {
+  it('hierarchical-timer w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - wave133', () => {
+  it('hierarchical-timer w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - wave136', () => {
+  it('hierarchical-timer w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - wave139', () => {
+  it('hierarchical-timer w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

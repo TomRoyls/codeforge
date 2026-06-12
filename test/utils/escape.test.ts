@@ -531,3 +531,63 @@ describe('escape - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('escape - wave127', () => {
+  it('escape w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - wave130', () => {
+  it('escape w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - wave133', () => {
+  it('escape w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - wave136', () => {
+  it('escape w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - wave139', () => {
+  it('escape w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

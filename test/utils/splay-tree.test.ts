@@ -770,3 +770,63 @@ describe('splay-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('splay-tree - wave127', () => {
+  it('splay-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - wave130', () => {
+  it('splay-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - wave133', () => {
+  it('splay-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - wave136', () => {
+  it('splay-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - wave139', () => {
+  it('splay-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

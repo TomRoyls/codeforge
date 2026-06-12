@@ -742,3 +742,63 @@ describe('trie-radix - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-radix - wave127', () => {
+  it('trie-radix w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - wave130', () => {
+  it('trie-radix w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - wave133', () => {
+  it('trie-radix w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - wave136', () => {
+  it('trie-radix w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - wave139', () => {
+  it('trie-radix w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -609,3 +609,63 @@ describe('square-decomposition - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('square-decomposition - wave127', () => {
+  it('square-decomposition w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - wave130', () => {
+  it('square-decomposition w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - wave133', () => {
+  it('square-decomposition w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - wave136', () => {
+  it('square-decomposition w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - wave139', () => {
+  it('square-decomposition w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

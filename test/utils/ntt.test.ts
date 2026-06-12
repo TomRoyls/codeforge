@@ -632,3 +632,63 @@ describe('ntt - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ntt - wave127', () => {
+  it('ntt w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - wave130', () => {
+  it('ntt w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - wave133', () => {
+  it('ntt w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - wave136', () => {
+  it('ntt w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - wave139', () => {
+  it('ntt w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

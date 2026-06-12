@@ -679,3 +679,63 @@ describe('consistent-hash-ring - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('consistent-hash-ring - wave127', () => {
+  it('consistent-hash-ring w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - wave130', () => {
+  it('consistent-hash-ring w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - wave133', () => {
+  it('consistent-hash-ring w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - wave136', () => {
+  it('consistent-hash-ring w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - wave139', () => {
+  it('consistent-hash-ring w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

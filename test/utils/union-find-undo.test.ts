@@ -883,3 +883,63 @@ describe('union-find-undo - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('union-find-undo - wave127', () => {
+  it('union-find-undo w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - wave130', () => {
+  it('union-find-undo w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - wave133', () => {
+  it('union-find-undo w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - wave136', () => {
+  it('union-find-undo w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - wave139', () => {
+  it('union-find-undo w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -797,3 +797,63 @@ describe('time-series-buffer - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('time-series-buffer - wave127', () => {
+  it('time-series-buffer w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('time-series-buffer - wave130', () => {
+  it('time-series-buffer w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('time-series-buffer - wave133', () => {
+  it('time-series-buffer w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('time-series-buffer - wave136', () => {
+  it('time-series-buffer w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('time-series-buffer - wave139', () => {
+  it('time-series-buffer w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

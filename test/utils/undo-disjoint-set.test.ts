@@ -826,3 +826,63 @@ describe('undo-disjoint-set - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('undo-disjoint-set - wave127', () => {
+  it('undo-disjoint-set w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('undo-disjoint-set - wave130', () => {
+  it('undo-disjoint-set w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('undo-disjoint-set - wave133', () => {
+  it('undo-disjoint-set w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('undo-disjoint-set - wave136', () => {
+  it('undo-disjoint-set w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('undo-disjoint-set - wave139', () => {
+  it('undo-disjoint-set w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

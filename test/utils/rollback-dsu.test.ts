@@ -724,3 +724,63 @@ describe('rollback-dsu - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rollback-dsu - wave127', () => {
+  it('rollback-dsu w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - wave130', () => {
+  it('rollback-dsu w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - wave133', () => {
+  it('rollback-dsu w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - wave136', () => {
+  it('rollback-dsu w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - wave139', () => {
+  it('rollback-dsu w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

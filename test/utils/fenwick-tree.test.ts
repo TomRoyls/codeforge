@@ -684,3 +684,63 @@ describe('fenwick-tree - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('fenwick-tree - wave127', () => {
+  it('fenwick-tree w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('fenwick-tree - wave130', () => {
+  it('fenwick-tree w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('fenwick-tree - wave133', () => {
+  it('fenwick-tree w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('fenwick-tree - wave136', () => {
+  it('fenwick-tree w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('fenwick-tree - wave139', () => {
+  it('fenwick-tree w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

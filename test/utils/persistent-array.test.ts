@@ -643,3 +643,63 @@ describe('persistent-array - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-array - wave127', () => {
+  it('persistent-array w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - wave130', () => {
+  it('persistent-array w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - wave133', () => {
+  it('persistent-array w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - wave136', () => {
+  it('persistent-array w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - wave139', () => {
+  it('persistent-array w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

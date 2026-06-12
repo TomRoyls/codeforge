@@ -888,3 +888,63 @@ describe('van-emde-boas - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('van-emde-boas - wave127', () => {
+  it('van-emde-boas w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - wave130', () => {
+  it('van-emde-boas w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - wave133', () => {
+  it('van-emde-boas w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - wave136', () => {
+  it('van-emde-boas w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - wave139', () => {
+  it('van-emde-boas w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

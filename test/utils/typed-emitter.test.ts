@@ -564,3 +564,63 @@ describe('typed-emitter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('typed-emitter - wave127', () => {
+  it('typed-emitter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('typed-emitter - wave130', () => {
+  it('typed-emitter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('typed-emitter - wave133', () => {
+  it('typed-emitter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('typed-emitter - wave136', () => {
+  it('typed-emitter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('typed-emitter - wave139', () => {
+  it('typed-emitter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

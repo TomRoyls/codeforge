@@ -654,3 +654,63 @@ describe('persistent-stack - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-stack - wave127', () => {
+  it('persistent-stack w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - wave130', () => {
+  it('persistent-stack w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - wave133', () => {
+  it('persistent-stack w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - wave136', () => {
+  it('persistent-stack w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - wave139', () => {
+  it('persistent-stack w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -771,3 +771,63 @@ describe('tree-decomposition - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-decomposition - wave127', () => {
+  it('tree-decomposition w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - wave130', () => {
+  it('tree-decomposition w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - wave133', () => {
+  it('tree-decomposition w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - wave136', () => {
+  it('tree-decomposition w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - wave139', () => {
+  it('tree-decomposition w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

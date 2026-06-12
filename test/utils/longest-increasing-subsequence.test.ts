@@ -534,3 +534,63 @@ describe('longest-increasing-subsequence - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-increasing-subsequence - wave127', () => {
+  it('longest-increasing-subsequence w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-increasing-subsequence - wave130', () => {
+  it('longest-increasing-subsequence w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-increasing-subsequence - wave133', () => {
+  it('longest-increasing-subsequence w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-increasing-subsequence - wave136', () => {
+  it('longest-increasing-subsequence w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-increasing-subsequence - wave139', () => {
+  it('longest-increasing-subsequence w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

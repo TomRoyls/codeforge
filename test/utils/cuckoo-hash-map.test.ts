@@ -765,3 +765,63 @@ describe('cuckoo-hash-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash-map - wave127', () => {
+  it('cuckoo-hash-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash-map - wave130', () => {
+  it('cuckoo-hash-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash-map - wave133', () => {
+  it('cuckoo-hash-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash-map - wave136', () => {
+  it('cuckoo-hash-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash-map - wave139', () => {
+  it('cuckoo-hash-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

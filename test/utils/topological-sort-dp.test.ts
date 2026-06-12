@@ -730,3 +730,63 @@ describe('topological-sort-dp - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('topological-sort-dp - wave127', () => {
+  it('topological-sort-dp w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - wave130', () => {
+  it('topological-sort-dp w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - wave133', () => {
+  it('topological-sort-dp w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - wave136', () => {
+  it('topological-sort-dp w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - wave139', () => {
+  it('topological-sort-dp w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

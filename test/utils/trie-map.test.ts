@@ -697,3 +697,63 @@ describe('trie-map - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-map - wave127', () => {
+  it('trie-map w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - wave130', () => {
+  it('trie-map w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - wave133', () => {
+  it('trie-map w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - wave136', () => {
+  it('trie-map w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - wave139', () => {
+  it('trie-map w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

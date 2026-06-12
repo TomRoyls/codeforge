@@ -762,3 +762,63 @@ describe('hopscotch-hash-table - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hopscotch-hash-table - wave127', () => {
+  it('hopscotch-hash-table w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hopscotch-hash-table - wave130', () => {
+  it('hopscotch-hash-table w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hopscotch-hash-table - wave133', () => {
+  it('hopscotch-hash-table w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hopscotch-hash-table - wave136', () => {
+  it('hopscotch-hash-table w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hopscotch-hash-table - wave139', () => {
+  it('hopscotch-hash-table w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

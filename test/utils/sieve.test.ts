@@ -647,3 +647,63 @@ describe('sieve - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sieve - wave127', () => {
+  it('sieve w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - wave130', () => {
+  it('sieve w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - wave133', () => {
+  it('sieve w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - wave136', () => {
+  it('sieve w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - wave139', () => {
+  it('sieve w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

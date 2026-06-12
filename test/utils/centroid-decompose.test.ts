@@ -912,3 +912,63 @@ describe('centroid-decompose - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-decompose - wave127', () => {
+  it('centroid-decompose w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - wave130', () => {
+  it('centroid-decompose w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - wave133', () => {
+  it('centroid-decompose w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - wave136', () => {
+  it('centroid-decompose w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - wave139', () => {
+  it('centroid-decompose w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

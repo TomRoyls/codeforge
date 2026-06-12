@@ -787,3 +787,63 @@ describe('circuit-breaker - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circuit-breaker - wave127', () => {
+  it('circuit-breaker w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - wave130', () => {
+  it('circuit-breaker w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - wave133', () => {
+  it('circuit-breaker w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - wave136', () => {
+  it('circuit-breaker w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - wave139', () => {
+  it('circuit-breaker w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

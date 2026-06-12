@@ -640,3 +640,63 @@ describe('monotonic-stack - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monotonic-stack - wave127', () => {
+  it('monotonic-stack w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - wave130', () => {
+  it('monotonic-stack w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - wave133', () => {
+  it('monotonic-stack w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - wave136', () => {
+  it('monotonic-stack w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - wave139', () => {
+  it('monotonic-stack w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

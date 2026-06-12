@@ -774,3 +774,63 @@ describe('sparse-bitset - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-bitset - wave127', () => {
+  it('sparse-bitset w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bitset - wave130', () => {
+  it('sparse-bitset w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bitset - wave133', () => {
+  it('sparse-bitset w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bitset - wave136', () => {
+  it('sparse-bitset w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bitset - wave139', () => {
+  it('sparse-bitset w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

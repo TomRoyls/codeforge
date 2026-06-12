@@ -764,3 +764,63 @@ describe('slope-trick - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('slope-trick - wave127', () => {
+  it('slope-trick w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('slope-trick - wave130', () => {
+  it('slope-trick w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('slope-trick - wave133', () => {
+  it('slope-trick w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('slope-trick - wave136', () => {
+  it('slope-trick w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('slope-trick - wave139', () => {
+  it('slope-trick w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

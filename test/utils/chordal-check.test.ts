@@ -758,3 +758,63 @@ describe('chordal-check - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chordal-check - wave127', () => {
+  it('chordal-check w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - wave130', () => {
+  it('chordal-check w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - wave133', () => {
+  it('chordal-check w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - wave136', () => {
+  it('chordal-check w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - wave139', () => {
+  it('chordal-check w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

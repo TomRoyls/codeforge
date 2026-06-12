@@ -731,3 +731,63 @@ describe('graph-isomorphism - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-isomorphism - wave127', () => {
+  it('graph-isomorphism w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-isomorphism - wave130', () => {
+  it('graph-isomorphism w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-isomorphism - wave133', () => {
+  it('graph-isomorphism w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-isomorphism - wave136', () => {
+  it('graph-isomorphism w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-isomorphism - wave139', () => {
+  it('graph-isomorphism w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

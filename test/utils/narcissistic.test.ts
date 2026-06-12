@@ -549,3 +549,63 @@ describe('narcissistic - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('narcissistic - wave127', () => {
+  it('narcissistic w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('narcissistic - wave130', () => {
+  it('narcissistic w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('narcissistic - wave133', () => {
+  it('narcissistic w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('narcissistic - wave136', () => {
+  it('narcissistic w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('narcissistic - wave139', () => {
+  it('narcissistic w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

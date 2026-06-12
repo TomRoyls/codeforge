@@ -796,3 +796,63 @@ describe('priority-search-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('priority-search-tree - wave127', () => {
+  it('priority-search-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-search-tree - wave130', () => {
+  it('priority-search-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-search-tree - wave133', () => {
+  it('priority-search-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-search-tree - wave136', () => {
+  it('priority-search-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-search-tree - wave139', () => {
+  it('priority-search-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

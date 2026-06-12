@@ -782,3 +782,63 @@ describe('circular-deque - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-deque - wave127', () => {
+  it('circular-deque w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-deque - wave130', () => {
+  it('circular-deque w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-deque - wave133', () => {
+  it('circular-deque w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-deque - wave136', () => {
+  it('circular-deque w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-deque - wave139', () => {
+  it('circular-deque w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

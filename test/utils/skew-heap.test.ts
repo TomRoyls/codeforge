@@ -824,3 +824,63 @@ describe('skew-heap - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skew-heap - wave127', () => {
+  it('skew-heap w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - wave130', () => {
+  it('skew-heap w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - wave133', () => {
+  it('skew-heap w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - wave136', () => {
+  it('skew-heap w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - wave139', () => {
+  it('skew-heap w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

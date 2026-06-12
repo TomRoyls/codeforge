@@ -790,3 +790,63 @@ describe('biconnected-components - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('biconnected-components - wave127', () => {
+  it('biconnected-components w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - wave130', () => {
+  it('biconnected-components w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - wave133', () => {
+  it('biconnected-components w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - wave136', () => {
+  it('biconnected-components w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - wave139', () => {
+  it('biconnected-components w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

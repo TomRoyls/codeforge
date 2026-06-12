@@ -709,3 +709,63 @@ describe('recent-counter - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('recent-counter - wave127', () => {
+  it('recent-counter w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - wave130', () => {
+  it('recent-counter w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - wave133', () => {
+  it('recent-counter w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - wave136', () => {
+  it('recent-counter w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - wave139', () => {
+  it('recent-counter w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

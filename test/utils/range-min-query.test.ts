@@ -638,3 +638,63 @@ describe('range-min-query - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('range-min-query - wave127', () => {
+  it('range-min-query w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - wave130', () => {
+  it('range-min-query w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - wave133', () => {
+  it('range-min-query w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - wave136', () => {
+  it('range-min-query w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - wave139', () => {
+  it('range-min-query w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

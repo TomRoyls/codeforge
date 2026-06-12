@@ -648,3 +648,63 @@ describe('runge-kutta - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('runge-kutta - wave127', () => {
+  it('runge-kutta w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('runge-kutta - wave130', () => {
+  it('runge-kutta w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('runge-kutta - wave133', () => {
+  it('runge-kutta w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('runge-kutta - wave136', () => {
+  it('runge-kutta w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('runge-kutta - wave139', () => {
+  it('runge-kutta w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

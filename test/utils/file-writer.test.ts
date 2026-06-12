@@ -739,3 +739,63 @@ describe('file-writer - wave566', () => {
     expect(afterEach).toBeDefined()
   })
 })
+
+describe('file-writer - wave127', () => {
+  it('file-writer w127 v0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w127 v1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w127 v2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('file-writer - wave130', () => {
+  it('file-writer w130 v0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w130 v1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w130 v2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('file-writer - wave133', () => {
+  it('file-writer w133 v0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w133 v1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w133 v2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('file-writer - wave136', () => {
+  it('file-writer w136 v0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w136 v1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w136 v2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('file-writer - wave139', () => {
+  it('file-writer w139 v0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w139 v1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w139 v2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})

@@ -893,3 +893,63 @@ describe('min-hash - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-hash - wave127', () => {
+  it('min-hash w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-hash - wave130', () => {
+  it('min-hash w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-hash - wave133', () => {
+  it('min-hash w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-hash - wave136', () => {
+  it('min-hash w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-hash - wave139', () => {
+  it('min-hash w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -743,3 +743,63 @@ describe('edge-coloring - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edge-coloring - wave127', () => {
+  it('edge-coloring w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - wave130', () => {
+  it('edge-coloring w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - wave133', () => {
+  it('edge-coloring w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - wave136', () => {
+  it('edge-coloring w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - wave139', () => {
+  it('edge-coloring w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

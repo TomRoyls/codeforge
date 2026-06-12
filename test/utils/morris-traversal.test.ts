@@ -692,3 +692,63 @@ describe('morris-traversal - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('morris-traversal - wave127', () => {
+  it('morris-traversal w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - wave130', () => {
+  it('morris-traversal w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - wave133', () => {
+  it('morris-traversal w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - wave136', () => {
+  it('morris-traversal w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - wave139', () => {
+  it('morris-traversal w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

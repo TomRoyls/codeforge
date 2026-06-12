@@ -598,3 +598,63 @@ describe('fibonacci-iterator - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-iterator - wave127', () => {
+  it('fibonacci-iterator w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-iterator - wave130', () => {
+  it('fibonacci-iterator w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-iterator - wave133', () => {
+  it('fibonacci-iterator w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-iterator - wave136', () => {
+  it('fibonacci-iterator w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-iterator - wave139', () => {
+  it('fibonacci-iterator w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

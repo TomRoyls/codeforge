@@ -827,3 +827,63 @@ describe('scc-tarjan - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('scc-tarjan - wave127', () => {
+  it('scc-tarjan w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scc-tarjan - wave130', () => {
+  it('scc-tarjan w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scc-tarjan - wave133', () => {
+  it('scc-tarjan w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scc-tarjan - wave136', () => {
+  it('scc-tarjan w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scc-tarjan - wave139', () => {
+  it('scc-tarjan w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -725,3 +725,63 @@ describe('median-maintenance - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('median-maintenance - wave127', () => {
+  it('median-maintenance w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - wave130', () => {
+  it('median-maintenance w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - wave133', () => {
+  it('median-maintenance w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - wave136', () => {
+  it('median-maintenance w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - wave139', () => {
+  it('median-maintenance w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

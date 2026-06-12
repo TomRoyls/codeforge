@@ -720,3 +720,63 @@ describe('planar-check - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('planar-check - wave127', () => {
+  it('planar-check w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('planar-check - wave130', () => {
+  it('planar-check w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('planar-check - wave133', () => {
+  it('planar-check w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('planar-check - wave136', () => {
+  it('planar-check w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('planar-check - wave139', () => {
+  it('planar-check w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

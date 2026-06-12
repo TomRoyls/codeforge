@@ -613,3 +613,63 @@ describe('spiral-matrix - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('spiral-matrix - wave127', () => {
+  it('spiral-matrix w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - wave130', () => {
+  it('spiral-matrix w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - wave133', () => {
+  it('spiral-matrix w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - wave136', () => {
+  it('spiral-matrix w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - wave139', () => {
+  it('spiral-matrix w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

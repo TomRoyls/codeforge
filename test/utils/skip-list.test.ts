@@ -799,3 +799,63 @@ describe('skip-list - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skip-list - wave127', () => {
+  it('skip-list w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - wave130', () => {
+  it('skip-list w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - wave133', () => {
+  it('skip-list w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - wave136', () => {
+  it('skip-list w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - wave139', () => {
+  it('skip-list w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

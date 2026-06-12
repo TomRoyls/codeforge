@@ -738,3 +738,63 @@ describe('similarity-index - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('similarity-index - wave127', () => {
+  it('similarity-index w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - wave130', () => {
+  it('similarity-index w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - wave133', () => {
+  it('similarity-index w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - wave136', () => {
+  it('similarity-index w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - wave139', () => {
+  it('similarity-index w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

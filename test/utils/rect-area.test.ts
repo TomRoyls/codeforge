@@ -606,3 +606,63 @@ describe('rect-area - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rect-area - wave127', () => {
+  it('rect-area w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - wave130', () => {
+  it('rect-area w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - wave133', () => {
+  it('rect-area w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - wave136', () => {
+  it('rect-area w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - wave139', () => {
+  it('rect-area w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

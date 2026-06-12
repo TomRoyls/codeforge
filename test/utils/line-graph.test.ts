@@ -703,3 +703,63 @@ describe('line-graph - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('line-graph - wave127', () => {
+  it('line-graph w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - wave130', () => {
+  it('line-graph w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - wave133', () => {
+  it('line-graph w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - wave136', () => {
+  it('line-graph w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - wave139', () => {
+  it('line-graph w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

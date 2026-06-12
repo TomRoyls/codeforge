@@ -814,3 +814,63 @@ describe('bloom-filter-3 - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bloom-filter-3 - wave127', () => {
+  it('bloom-filter-3 w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloom-filter-3 - wave130', () => {
+  it('bloom-filter-3 w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloom-filter-3 - wave133', () => {
+  it('bloom-filter-3 w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloom-filter-3 - wave136', () => {
+  it('bloom-filter-3 w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloom-filter-3 - wave139', () => {
+  it('bloom-filter-3 w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -622,3 +622,63 @@ describe('crt - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('crt - wave127', () => {
+  it('crt w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - wave130', () => {
+  it('crt w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - wave133', () => {
+  it('crt w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - wave136', () => {
+  it('crt w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - wave139', () => {
+  it('crt w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

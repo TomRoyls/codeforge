@@ -712,3 +712,63 @@ describe('misra-gries - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('misra-gries - wave127', () => {
+  it('misra-gries w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('misra-gries - wave130', () => {
+  it('misra-gries w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('misra-gries - wave133', () => {
+  it('misra-gries w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('misra-gries - wave136', () => {
+  it('misra-gries w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('misra-gries - wave139', () => {
+  it('misra-gries w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

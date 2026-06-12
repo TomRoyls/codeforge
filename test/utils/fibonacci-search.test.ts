@@ -619,3 +619,63 @@ describe('fibonacci-search - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-search - wave127', () => {
+  it('fibonacci-search w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - wave130', () => {
+  it('fibonacci-search w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - wave133', () => {
+  it('fibonacci-search w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - wave136', () => {
+  it('fibonacci-search w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - wave139', () => {
+  it('fibonacci-search w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

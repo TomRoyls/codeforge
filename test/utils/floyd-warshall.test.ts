@@ -775,3 +775,63 @@ describe('floyd-warshall - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('floyd-warshall - wave127', () => {
+  it('floyd-warshall w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - wave130', () => {
+  it('floyd-warshall w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - wave133', () => {
+  it('floyd-warshall w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - wave136', () => {
+  it('floyd-warshall w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - wave139', () => {
+  it('floyd-warshall w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

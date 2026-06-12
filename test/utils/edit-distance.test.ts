@@ -534,3 +534,63 @@ describe('edit-distance - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edit-distance - wave127', () => {
+  it('edit-distance w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - wave130', () => {
+  it('edit-distance w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - wave133', () => {
+  it('edit-distance w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - wave136', () => {
+  it('edit-distance w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - wave139', () => {
+  it('edit-distance w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

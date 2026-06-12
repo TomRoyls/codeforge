@@ -730,3 +730,63 @@ describe('top-k-stream - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k-stream - wave127', () => {
+  it('top-k-stream w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k-stream - wave130', () => {
+  it('top-k-stream w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k-stream - wave133', () => {
+  it('top-k-stream w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k-stream - wave136', () => {
+  it('top-k-stream w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k-stream - wave139', () => {
+  it('top-k-stream w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

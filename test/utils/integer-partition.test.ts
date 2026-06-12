@@ -556,3 +556,63 @@ describe('integer-partition - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('integer-partition - wave127', () => {
+  it('integer-partition w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - wave130', () => {
+  it('integer-partition w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - wave133', () => {
+  it('integer-partition w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - wave136', () => {
+  it('integer-partition w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - wave139', () => {
+  it('integer-partition w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

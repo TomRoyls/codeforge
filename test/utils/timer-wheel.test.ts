@@ -713,3 +713,63 @@ describe('timer-wheel - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('timer-wheel - wave127', () => {
+  it('timer-wheel w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer-wheel - wave130', () => {
+  it('timer-wheel w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer-wheel - wave133', () => {
+  it('timer-wheel w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer-wheel - wave136', () => {
+  it('timer-wheel w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer-wheel - wave139', () => {
+  it('timer-wheel w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

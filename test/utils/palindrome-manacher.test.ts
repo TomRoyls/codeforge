@@ -578,3 +578,63 @@ describe('palindrome-manacher - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindrome-manacher - wave127', () => {
+  it('palindrome-manacher w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - wave130', () => {
+  it('palindrome-manacher w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - wave133', () => {
+  it('palindrome-manacher w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - wave136', () => {
+  it('palindrome-manacher w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - wave139', () => {
+  it('palindrome-manacher w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

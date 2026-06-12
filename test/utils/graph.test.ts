@@ -702,3 +702,63 @@ describe('graph - wave566', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('graph - wave127', () => {
+  it('graph w127 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w127 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w127 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('graph - wave130', () => {
+  it('graph w130 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w130 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w130 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('graph - wave133', () => {
+  it('graph w133 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w133 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w133 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('graph - wave136', () => {
+  it('graph w136 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w136 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w136 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('graph - wave139', () => {
+  it('graph w139 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w139 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w139 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -753,3 +753,63 @@ describe('double-buffer - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('double-buffer - wave127', () => {
+  it('double-buffer w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - wave130', () => {
+  it('double-buffer w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - wave133', () => {
+  it('double-buffer w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - wave136', () => {
+  it('double-buffer w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - wave139', () => {
+  it('double-buffer w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

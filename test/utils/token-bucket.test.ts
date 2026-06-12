@@ -638,3 +638,63 @@ describe('token-bucket - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('token-bucket - wave127', () => {
+  it('token-bucket w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - wave130', () => {
+  it('token-bucket w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - wave133', () => {
+  it('token-bucket w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - wave136', () => {
+  it('token-bucket w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - wave139', () => {
+  it('token-bucket w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

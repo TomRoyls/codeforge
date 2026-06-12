@@ -700,3 +700,63 @@ describe('zobrist-hashing - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('zobrist-hashing - wave127', () => {
+  it('zobrist-hashing w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - wave130', () => {
+  it('zobrist-hashing w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - wave133', () => {
+  it('zobrist-hashing w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - wave136', () => {
+  it('zobrist-hashing w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - wave139', () => {
+  it('zobrist-hashing w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

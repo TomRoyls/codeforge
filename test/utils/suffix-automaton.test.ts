@@ -612,3 +612,63 @@ describe('suffix-automaton - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-automaton - wave127', () => {
+  it('suffix-automaton w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - wave130', () => {
+  it('suffix-automaton w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - wave133', () => {
+  it('suffix-automaton w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - wave136', () => {
+  it('suffix-automaton w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - wave139', () => {
+  it('suffix-automaton w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

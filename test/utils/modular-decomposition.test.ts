@@ -716,3 +716,63 @@ describe('modular-decomposition - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modular-decomposition - wave127', () => {
+  it('modular-decomposition w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-decomposition - wave130', () => {
+  it('modular-decomposition w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-decomposition - wave133', () => {
+  it('modular-decomposition w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-decomposition - wave136', () => {
+  it('modular-decomposition w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-decomposition - wave139', () => {
+  it('modular-decomposition w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

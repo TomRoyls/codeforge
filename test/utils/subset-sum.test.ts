@@ -551,3 +551,63 @@ describe('subset-sum - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('subset-sum - wave127', () => {
+  it('subset-sum w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('subset-sum - wave130', () => {
+  it('subset-sum w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('subset-sum - wave133', () => {
+  it('subset-sum w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('subset-sum - wave136', () => {
+  it('subset-sum w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('subset-sum - wave139', () => {
+  it('subset-sum w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

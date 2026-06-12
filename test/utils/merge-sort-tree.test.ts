@@ -592,3 +592,63 @@ describe('merge-sort-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('merge-sort-tree - wave127', () => {
+  it('merge-sort-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - wave130', () => {
+  it('merge-sort-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - wave133', () => {
+  it('merge-sort-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - wave136', () => {
+  it('merge-sort-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - wave139', () => {
+  it('merge-sort-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

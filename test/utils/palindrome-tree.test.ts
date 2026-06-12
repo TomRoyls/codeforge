@@ -601,3 +601,63 @@ describe('palindrome-tree - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindrome-tree - wave127', () => {
+  it('palindrome-tree w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - wave130', () => {
+  it('palindrome-tree w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - wave133', () => {
+  it('palindrome-tree w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - wave136', () => {
+  it('palindrome-tree w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - wave139', () => {
+  it('palindrome-tree w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

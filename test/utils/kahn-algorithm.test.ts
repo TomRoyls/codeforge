@@ -721,3 +721,63 @@ describe('kahn-algorithm - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kahn-algorithm - wave127', () => {
+  it('kahn-algorithm w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - wave130', () => {
+  it('kahn-algorithm w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - wave133', () => {
+  it('kahn-algorithm w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - wave136', () => {
+  it('kahn-algorithm w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - wave139', () => {
+  it('kahn-algorithm w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

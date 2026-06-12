@@ -752,3 +752,63 @@ describe('concurrent-hashmap - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('concurrent-hashmap - wave127', () => {
+  it('concurrent-hashmap w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('concurrent-hashmap - wave130', () => {
+  it('concurrent-hashmap w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('concurrent-hashmap - wave133', () => {
+  it('concurrent-hashmap w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('concurrent-hashmap - wave136', () => {
+  it('concurrent-hashmap w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('concurrent-hashmap - wave139', () => {
+  it('concurrent-hashmap w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

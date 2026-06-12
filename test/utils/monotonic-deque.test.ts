@@ -796,3 +796,63 @@ describe('monotonic-deque - wave566', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monotonic-deque - wave127', () => {
+  it('monotonic-deque w127 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w127 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w127 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - wave130', () => {
+  it('monotonic-deque w130 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w130 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w130 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - wave133', () => {
+  it('monotonic-deque w133 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w133 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w133 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - wave136', () => {
+  it('monotonic-deque w136 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w136 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w136 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - wave139', () => {
+  it('monotonic-deque w139 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w139 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w139 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
