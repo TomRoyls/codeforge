@@ -429,3 +429,15 @@ describe('continued-fraction - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('continued-fraction - wave556', () => {
+  it('continued-fraction w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

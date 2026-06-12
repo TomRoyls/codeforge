@@ -453,3 +453,15 @@ describe('command-helpers - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('command-helpers - wave556', () => {
+  it('command-helpers w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

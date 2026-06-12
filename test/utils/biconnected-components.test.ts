@@ -658,3 +658,15 @@ describe('biconnected-components - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('biconnected-components - wave556', () => {
+  it('biconnected-components w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

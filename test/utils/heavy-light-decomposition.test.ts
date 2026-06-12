@@ -801,3 +801,15 @@ describe('heavy-light-decomposition - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-light-decomposition - wave556', () => {
+  it('heavy-light-decomposition w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

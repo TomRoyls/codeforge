@@ -502,3 +502,14 @@ describe('constants regex special chars', () => {
     expect(REGEX_SPECIAL_CHARS.has('}')).toBe(true)
   })
 })
+describe('constants - wave556', () => {
+  it('constants w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('constants w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('constants w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

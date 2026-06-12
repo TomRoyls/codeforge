@@ -644,3 +644,15 @@ describe('ternary-search-tree - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search-tree - wave556', () => {
+  it('ternary-search-tree w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

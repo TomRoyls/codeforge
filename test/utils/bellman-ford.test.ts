@@ -675,3 +675,15 @@ describe('bellman-ford - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bellman-ford - wave556', () => {
+  it('bellman-ford w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

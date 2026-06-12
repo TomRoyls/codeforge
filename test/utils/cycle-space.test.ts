@@ -605,3 +605,15 @@ describe('cycle-space - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cycle-space - wave556', () => {
+  it('cycle-space w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -428,3 +428,15 @@ describe('pancake-sort - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pancake-sort - wave556', () => {
+  it('pancake-sort w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

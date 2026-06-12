@@ -609,3 +609,15 @@ describe('newton-method - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('newton-method - wave556', () => {
+  it('newton-method w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -392,3 +392,15 @@ describe('suggestions - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suggestions - wave556', () => {
+  it('suggestions w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

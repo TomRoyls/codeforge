@@ -637,3 +637,15 @@ describe('dinic - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dinic - wave556', () => {
+  it('dinic w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

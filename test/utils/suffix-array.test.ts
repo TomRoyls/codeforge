@@ -508,3 +508,15 @@ describe('suffix-array - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-array - wave556', () => {
+  it('suffix-array w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

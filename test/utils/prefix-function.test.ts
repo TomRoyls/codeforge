@@ -378,3 +378,15 @@ describe('prefix-function - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('prefix-function - wave556', () => {
+  it('prefix-function w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

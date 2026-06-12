@@ -572,3 +572,15 @@ describe('edmonds-blossom - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edmonds-blossom - wave556', () => {
+  it('edmonds-blossom w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

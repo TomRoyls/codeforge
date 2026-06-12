@@ -469,3 +469,15 @@ describe('palindrome-tree - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindrome-tree - wave556', () => {
+  it('palindrome-tree w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

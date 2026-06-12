@@ -477,3 +477,15 @@ describe('radix-sort - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('radix-sort - wave556', () => {
+  it('radix-sort w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

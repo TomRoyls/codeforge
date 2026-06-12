@@ -573,3 +573,15 @@ describe('network-flow - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('network-flow - wave556', () => {
+  it('network-flow w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

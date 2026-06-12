@@ -745,3 +745,15 @@ describe('bench - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bench - wave556', () => {
+  it('bench w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

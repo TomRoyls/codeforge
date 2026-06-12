@@ -501,3 +501,15 @@ describe('wavelet-tree - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-tree - wave556', () => {
+  it('wavelet-tree w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

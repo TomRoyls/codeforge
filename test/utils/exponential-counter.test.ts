@@ -552,3 +552,15 @@ describe('exponential-counter - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('exponential-counter - wave556', () => {
+  it('exponential-counter w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

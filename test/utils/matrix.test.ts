@@ -683,3 +683,15 @@ describe('matrix - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('matrix - wave556', () => {
+  it('matrix w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

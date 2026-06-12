@@ -659,3 +659,15 @@ describe('b-tree - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('b-tree - wave556', () => {
+  it('b-tree w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('b-tree w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('b-tree w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

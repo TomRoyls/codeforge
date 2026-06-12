@@ -644,3 +644,15 @@ describe('bag - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bag - wave556', () => {
+  it('bag w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

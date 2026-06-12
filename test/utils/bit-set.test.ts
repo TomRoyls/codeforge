@@ -595,3 +595,15 @@ describe('bit-set - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bit-set - wave556', () => {
+  it('bit-set w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

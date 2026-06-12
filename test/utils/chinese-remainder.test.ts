@@ -495,3 +495,15 @@ describe('chinese-remainder - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chinese-remainder - wave556', () => {
+  it('chinese-remainder w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

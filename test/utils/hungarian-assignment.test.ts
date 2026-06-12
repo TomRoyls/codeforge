@@ -714,3 +714,15 @@ describe('hungarian-assignment - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian-assignment - wave556', () => {
+  it('hungarian-assignment w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

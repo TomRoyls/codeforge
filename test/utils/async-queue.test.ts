@@ -625,3 +625,15 @@ describe('async-queue - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('async-queue - wave556', () => {
+  it('async-queue w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

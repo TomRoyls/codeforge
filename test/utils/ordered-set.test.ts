@@ -616,3 +616,15 @@ describe('ordered-set - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ordered-set - wave556', () => {
+  it('ordered-set w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

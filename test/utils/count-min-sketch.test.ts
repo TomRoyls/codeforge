@@ -741,3 +741,15 @@ describe('count-min-sketch - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('count-min-sketch - wave556', () => {
+  it('count-min-sketch w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

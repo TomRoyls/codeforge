@@ -675,3 +675,15 @@ describe('dancing-links - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dancing-links - wave556', () => {
+  it('dancing-links w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

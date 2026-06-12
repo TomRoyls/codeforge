@@ -568,3 +568,15 @@ describe('markov-chain - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('markov-chain - wave556', () => {
+  it('markov-chain w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

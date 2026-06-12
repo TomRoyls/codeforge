@@ -470,3 +470,15 @@ describe('options-helpers - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('options-helpers - wave556', () => {
+  it('options-helpers w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

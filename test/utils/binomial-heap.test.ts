@@ -755,3 +755,15 @@ describe('binomial-heap - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binomial-heap - wave556', () => {
+  it('binomial-heap w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

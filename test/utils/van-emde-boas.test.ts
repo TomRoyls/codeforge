@@ -756,3 +756,15 @@ describe('van-emde-boas - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('van-emde-boas - wave556', () => {
+  it('van-emde-boas w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

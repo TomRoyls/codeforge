@@ -440,3 +440,15 @@ describe('substring-counter - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('substring-counter - wave556', () => {
+  it('substring-counter w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

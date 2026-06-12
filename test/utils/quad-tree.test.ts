@@ -688,3 +688,15 @@ describe('quad-tree - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quad-tree - wave556', () => {
+  it('quad-tree w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quad-tree w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

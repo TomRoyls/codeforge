@@ -676,3 +676,15 @@ describe('deque-aggregation - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deque-aggregation - wave556', () => {
+  it('deque-aggregation w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

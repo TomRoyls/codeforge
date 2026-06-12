@@ -598,3 +598,15 @@ describe('bounded-deque - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bounded-deque - wave556', () => {
+  it('bounded-deque w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

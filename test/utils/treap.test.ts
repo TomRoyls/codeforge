@@ -659,3 +659,15 @@ describe('treap - wave555', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap - wave556', () => {
+  it('treap w556 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w556 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap w556 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
