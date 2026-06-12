@@ -406,4 +406,19 @@ describe('Error hierarchy', () => {
     const err = SystemError.parseError('file.ts', new Error('syntax'))
     expect(err).toBeInstanceOf(SystemError)
   })
+
+  it('CLIError has correct name', () => {
+    const err = new CLIError('test error')
+    expect(err.name).toBe('CLIError')
+  })
+
+  it('SystemError has correct name', () => {
+    const err = new SystemError('sys error')
+    expect(err.name).toBe('SystemError')
+  })
+
+  it('CLIError is instanceof Error', () => {
+    const err = new CLIError('test')
+    expect(err).toBeInstanceOf(Error)
+  })
 })

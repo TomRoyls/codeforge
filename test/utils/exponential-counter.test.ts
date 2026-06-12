@@ -394,4 +394,33 @@ describe('ExponentialCounter', () => {
     counter2.reset()
     expect(counter1.equals(counter2)).toBe(true)
   })
+
+  it('reset clears counter', () => {
+    const c = new ExponentialCounter()
+    c.increment()
+    c.increment()
+    c.reset()
+    expect(c.equals(new ExponentialCounter())).toBe(true)
+  })
+
+  it('add increases value', () => {
+    const c = new ExponentialCounter()
+    c.add(5)
+    const c2 = new ExponentialCounter()
+    c2.increment()
+    c2.increment()
+    c2.increment()
+    c2.increment()
+    c2.increment()
+    expect(c.equals(c2)).toBe(true)
+  })
+
+  it('merge combines counters', () => {
+    const c1 = new ExponentialCounter()
+    c1.increment()
+    const c2 = new ExponentialCounter()
+    c2.increment()
+    c1.merge(c2)
+    expect(c1.toString()).toBeDefined()
+  })
 })

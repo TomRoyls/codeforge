@@ -473,4 +473,22 @@ describe('DoubleBuffer', () => {
     const result = db.drainFront()
     expect(result).toEqual([1, 2, 3])
   })
+
+  it('pushMany then swap', () => {
+    const buf = new DoubleBuffer<number>()
+    buf.pushMany([10, 20])
+    expect(buf.swap()).toEqual([10, 20])
+  })
+
+  it('clear removes pending', () => {
+    const buf = new DoubleBuffer<number>()
+    buf.push(1)
+    buf.clear()
+    expect(buf.swap()).toEqual([])
+  })
+
+  it('swap on empty returns empty', () => {
+    const buf = new DoubleBuffer<number>()
+    expect(buf.swap()).toEqual([])
+  })
 })

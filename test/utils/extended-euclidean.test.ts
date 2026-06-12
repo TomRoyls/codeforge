@@ -282,4 +282,18 @@ describe('ExtendedEuclidean', () => {
     expect(ExtendedEuclidean.lcm(5n, 15n)).toBe(15n)
     expect(ExtendedEuclidean.lcm(3n, 21n)).toBe(21n)
   })
+
+  it('solveNumber returns correct gcd', () => {
+    const { gcd } = ExtendedEuclidean.solveNumber(12, 8)
+    expect(gcd).toBe(4)
+  })
+
+  it('modularInverseNumber returns null for no inverse', () => {
+    expect(ExtendedEuclidean.modularInverseNumber(2, 4)).toBeNull()
+  })
+
+  it('solve with coprime returns gcd 1', () => {
+    const { gcd } = ExtendedEuclidean.solve(7n, 11n)
+    expect(gcd).toBe(1n)
+  })
 })

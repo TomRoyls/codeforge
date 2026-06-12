@@ -377,4 +377,24 @@ describe('EulerTour', () => {
     const et = new EulerTour(adj, 0)
     expect(et.getPath(3, 4)).toEqual([])
   })
+
+  it('isAncestor root is ancestor of all', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.isAncestor(0, 1)).toBe(true)
+    expect(et.isAncestor(0, 2)).toBe(true)
+  })
+
+  it('getSubtreeSize returns correct size', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    expect(et.getSubtreeSize(0)).toBe(3)
+  })
+
+  it('getSubtreeRange returns valid range', () => {
+    const adj = [[1], [0, 2], [1]]
+    const et = new EulerTour(adj, 0)
+    const [l, r] = et.getSubtreeRange(0)
+    expect(r).toBeGreaterThan(l)
+  })
 })

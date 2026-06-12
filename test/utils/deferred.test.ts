@@ -403,4 +403,26 @@ describe('DeferredBarrier', () => {
     barrier.resolve('key', { nested: 123 })
     expect(await d.promise).toEqual({ nested: 123 })
   })
+
+  it('createDeferred resolves immediately', async () => {
+    const d = createDeferred<number>()
+    d.resolve(42)
+    expect(await d.promise).toBe(42)
+  })
+
+  it('createDeferred rejects', async () => {
+    const d = createDeferred<number>()
+    d.reject(new Error('test'))
+    await expect(d.promise).rejects.toThrow('test')
+  })
+
+  it('DeferredBarrier waits for multiple keys', async () => {
+    const barrier = new DeferredBarrier()
+    const d1 = barrier.create<string>('a')
+    const d2 = barrier.create<string>('b')
+    barrier.resolve('a', 'x')
+    barrier.resolve('b', 'y')
+    expect(await d1.promise).toBe('x')
+    expect(await d2.promise).toBe('y')
+  })
 })

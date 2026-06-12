@@ -410,4 +410,22 @@ describe('BloomFilter', () => {
     filter.add('only-item')
     expect(filter.mightContain('only-item')).toBe(true)
   })
+
+  it('clear is callable', () => {
+    const filter = new BloomFilter({ size: 100 })
+    filter.add('a')
+    filter.clear()
+    expect(filter).toBeDefined()
+  })
+
+  it('getHashFunctionCount returns a value', () => {
+    const filter = new BloomFilter({ size: 100 })
+    expect(typeof filter.getHashFunctionCount()).toBe('number')
+  })
+
+  it('handles many additions', () => {
+    const filter = new BloomFilter({ size: 1000 })
+    for (let i = 0; i < 100; i++) filter.add(`item-${i}`)
+    expect(filter.mightContain('item-50')).toBe(true)
+  })
 })

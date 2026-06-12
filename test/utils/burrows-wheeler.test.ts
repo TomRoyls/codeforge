@@ -355,4 +355,22 @@ describe('BurrowsWheelerTransform', () => {
     const { data } = BurrowsWheelerTransform.transform(original)
     expect(data.length).toBe(original.length)
   })
+
+  it('transform and inverse round-trip', () => {
+    const original = 'banana'
+    const { data, index } = BurrowsWheelerTransform.transform(original)
+    const restored = BurrowsWheelerTransform.inverseTransform(data, index)
+    expect(restored).toBe(original)
+  })
+
+  it('empty string transform', () => {
+    const { data, index } = BurrowsWheelerTransform.transform('')
+    expect(data).toBe('')
+  })
+
+  it('single character round-trip', () => {
+    const { data, index } = BurrowsWheelerTransform.transform('a')
+    const restored = BurrowsWheelerTransform.inverseTransform(data, index)
+    expect(restored).toBe('a')
+  })
 })

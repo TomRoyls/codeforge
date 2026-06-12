@@ -377,4 +377,25 @@ describe('DynamicBitset', () => {
     bs.set(2)
     expect(bs.toString()).toContain('1')
   })
+
+  it('flip toggles bit', () => {
+    const bs = new DynamicBitset()
+    bs.set(5)
+    bs.flip(5)
+    expect(bs.get(5)).toBe(false)
+  })
+
+  it('resize grows the bitset', () => {
+    const bs = new DynamicBitset(10)
+    bs.set(100)
+    expect(bs.get(100)).toBe(true)
+  })
+
+  it('count returns number of set bits', () => {
+    const bs = new DynamicBitset()
+    bs.set(0)
+    bs.set(5)
+    bs.set(10)
+    expect(bs.count()).toBe(3)
+  })
 })

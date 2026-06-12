@@ -343,4 +343,21 @@ describe('FastFourierTransform', () => {
     expect(result).toHaveLength(5)
     expect(result[0]).toBeCloseTo(1)
   })
+
+  it('multiplyPolynomials basic', () => {
+    const result = FastFourierTransform.multiplyPolynomials([1, 1], [1, 1])
+    expect(result).toEqual([1, 2, 1])
+  })
+
+  it('multiplyPolynomials by zero', () => {
+    const result = FastFourierTransform.multiplyPolynomials([0], [1, 2, 3])
+    expect(result).toEqual([0, 0, 0])
+  })
+
+  it('transform and inverse round-trip', () => {
+    const input = [{ re: 1, im: 0 }, { re: 0, im: 0 }, { re: 0, im: 0 }, { re: 0, im: 0 }]
+    const transformed = FastFourierTransform.transform(input)
+    const restored = FastFourierTransform.transform(transformed, true)
+    expect(restored[0].re).toBeCloseTo(1, 5)
+  })
 })

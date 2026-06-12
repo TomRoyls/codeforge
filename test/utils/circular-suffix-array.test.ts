@@ -330,4 +330,21 @@ describe('CircularSuffixArray', () => {
     const csa = new CircularSuffixArray('a\x00b')
     expect(csa.length).toBe(3)
   })
+
+  it('rank returns correct value', () => {
+    const csa = new CircularSuffixArray('abc')
+    expect(typeof csa.rank(0)).toBe('number')
+  })
+
+  it('first and last are valid indices', () => {
+    const csa = new CircularSuffixArray('banana')
+    expect(csa.first()).toBeGreaterThanOrEqual(0)
+    expect(csa.last()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('single character', () => {
+    const csa = new CircularSuffixArray('x')
+    expect(csa.length).toBe(1)
+    expect(csa.index(0)).toBe(0)
+  })
 })

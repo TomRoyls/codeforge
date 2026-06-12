@@ -450,4 +450,26 @@ describe('BoundedPriorityQueue', () => {
     q.push(-3)
     expect(q.toArray()).toEqual([-1, -3, -5])
   })
+
+  it('peek returns item without removing', () => {
+    const q = new BoundedPriorityQueue<number>(5, (a, b) => a - b)
+    q.push(3)
+    q.push(1)
+    expect(q.peek()).toBeDefined()
+    expect(q.size).toBe(2)
+  })
+
+  it('drain returns all items', () => {
+    const q = new BoundedPriorityQueue<number>(5, (a, b) => a - b)
+    q.push(1)
+    q.push(2)
+    q.push(3)
+    expect(q.drain().length).toBe(3)
+    expect(q.size).toBe(0)
+  })
+
+  it('empty queue peek returns undefined', () => {
+    const q = new BoundedPriorityQueue<number>(5, (a, b) => a - b)
+    expect(q.peek()).toBeUndefined()
+  })
 })

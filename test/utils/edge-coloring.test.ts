@@ -462,4 +462,26 @@ describe('EdgeColoring', () => {
     expect(colors.has('1,2')).toBe(true)
     expect(typeof colors.get('0,1')).toBe('number')
   })
+
+  it('maxDegree returns correct value', () => {
+    const ec = new EdgeColoring(3)
+    ec.addEdge(0, 1)
+    ec.addEdge(1, 2)
+    expect(ec.maxDegree()).toBe(2)
+  })
+
+  it('single edge coloring', () => {
+    const ec = new EdgeColoring(2)
+    ec.addEdge(0, 1)
+    const colors = ec.greedyColor()
+    expect(colors.size).toBe(1)
+  })
+
+  it('chromaticIndex is at least max degree', () => {
+    const ec = new EdgeColoring(4)
+    ec.addEdge(0, 1)
+    ec.addEdge(0, 2)
+    ec.addEdge(0, 3)
+    expect(ec.chromaticIndex()).toBeGreaterThanOrEqual(ec.maxDegree())
+  })
 })

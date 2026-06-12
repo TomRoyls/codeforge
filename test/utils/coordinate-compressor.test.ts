@@ -334,4 +334,21 @@ describe('CoordinateCompressor', () => {
     expect(cc.size).toBe(1)
     expect(cc.compress(5)).toBe(0)
   })
+
+  it('decompress reverses compress', () => {
+    const cc = new CoordinateCompressor([10, 20, 30])
+    const idx = cc.compress(20)
+    expect(cc.decompress(idx)).toBe(20)
+  })
+
+  it('has returns true for known values', () => {
+    const cc = new CoordinateCompressor([1, 2, 3])
+    expect(cc.has(2)).toBe(true)
+    expect(cc.has(99)).toBe(false)
+  })
+
+  it('size returns number of unique values', () => {
+    const cc = new CoordinateCompressor([5, 5, 10, 10, 15])
+    expect(cc.size).toBe(3)
+  })
 })

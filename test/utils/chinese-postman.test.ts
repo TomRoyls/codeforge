@@ -464,5 +464,24 @@ describe('ChinesePostman', () => {
       const result = cp.solve()
       expect(result).toBeGreaterThan(0)
     })
+
+    it('single edge returns its weight', () => {
+      const cp = new ChinesePostman(2)
+      cp.addEdge(0, 1, 5)
+      expect(cp.solve()).toBe(10)
+    })
+
+    it('two nodes no edges returns 0', () => {
+      const cp = new ChinesePostman(2)
+      expect(cp.solve()).toBe(0)
+    })
+
+    it('triangle graph', () => {
+      const cp = new ChinesePostman(3)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(0, 2, 1)
+      expect(cp.solve()).toBeGreaterThan(0)
+    })
   })
 })

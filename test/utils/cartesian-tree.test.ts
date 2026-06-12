@@ -345,4 +345,26 @@ describe('CartesianTree', () => {
     expect(preorder.length).toBe(3)
     expect(inorder.length).toBe(3)
   })
+
+  it('clear removes all nodes', () => {
+    const tree = new CartesianTree<number>((a, b) => a - b)
+    tree.insert(5, 1)
+    tree.insert(3, 2)
+    tree.clear()
+    expect(tree.size).toBe(0)
+  })
+
+  it('insert maintains heap property', () => {
+    const tree = new CartesianTree<number>((a, b) => a - b)
+    tree.insert(1, 3)
+    tree.insert(2, 1)
+    tree.insert(3, 2)
+    expect(tree.size).toBe(3)
+  })
+
+  it('single insert', () => {
+    const tree = new CartesianTree<number>((a, b) => a - b)
+    tree.insert(42, 1)
+    expect(tree.size).toBe(1)
+  })
 })

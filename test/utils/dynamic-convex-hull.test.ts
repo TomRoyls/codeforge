@@ -462,4 +462,30 @@ describe('DynamicConvexHull', () => {
     expect(ch.area).toBeGreaterThan(0)
     expect(ch.area).toBeLessThan(0.000001)
   })
+
+  it('getHull returns array of points', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(0, 1)
+    const hull = ch.getHull()
+    expect(hull.length).toBeGreaterThanOrEqual(3)
+  })
+
+  it('clone produces independent copy', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(0, 1)
+    const c = ch.clone()
+    c.add(5, 5)
+    expect(ch.getHull().length).not.toBe(c.getHull().length)
+  })
+
+  it('toJSON returns object', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    expect(ch.toJSON()).toBeDefined()
+  })
 })

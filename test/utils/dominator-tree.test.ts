@@ -550,4 +550,27 @@ describe('DominatorTree', () => {
     const dom = dt.build(0)
     expect(dom).toEqual([0, 0])
   })
+
+  it('dominates root dominates itself', () => {
+    const dt = new DominatorTree(3)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    dt.build(0)
+    expect(dt.dominates(0, 0, 0)).toBe(true)
+  })
+
+  it('single node tree', () => {
+    const dt = new DominatorTree(1)
+    const dom = dt.build(0)
+    expect(dom).toEqual([0])
+  })
+
+  it('dominates checks ancestor', () => {
+    const dt = new DominatorTree(4)
+    dt.addEdge(0, 1)
+    dt.addEdge(1, 2)
+    dt.addEdge(2, 3)
+    dt.build(0)
+    expect(dt.dominates(0, 0, 2)).toBe(true)
+  })
 })

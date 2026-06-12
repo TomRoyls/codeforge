@@ -483,5 +483,31 @@ describe('ConsistentHash', () => {
       }
       expect(moved).toBeLessThan(50)
     })
+
+    it('getNodes returns all added nodes', () => {
+      const ch = new ConsistentHash<string>()
+      ch.addNode('a')
+      ch.addNode('b')
+      expect(ch.getNodes()).toContain('a')
+      expect(ch.getNodes()).toContain('b')
+    })
+
+    it('removeNode decreases node count', () => {
+      const ch = new ConsistentHash<string>()
+      ch.addNode('x')
+      ch.addNode('y')
+      ch.removeNode('x')
+      expect(ch.getNodes()).not.toContain('x')
+    })
+
+    it('consistent routing for same key', () => {
+      const ch = new ConsistentHash<string>()
+      ch.addNode('a')
+      ch.addNode('b')
+      ch.addNode('c')
+      const first = ch.getNode('key1')
+      const second = ch.getNode('key1')
+      expect(first).toBe(second)
+    })
   })
 })
