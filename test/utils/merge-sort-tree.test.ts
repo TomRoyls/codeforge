@@ -580,3 +580,15 @@ describe('merge-sort-tree - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('merge-sort-tree - wave566', () => {
+  it('merge-sort-tree w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

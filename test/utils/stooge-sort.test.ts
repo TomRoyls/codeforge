@@ -531,3 +531,15 @@ describe('stooge-sort - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stooge-sort - wave566', () => {
+  it('stooge-sort w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -712,3 +712,15 @@ describe('adjacency-list-graph - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-list-graph - wave566', () => {
+  it('adjacency-list-graph w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

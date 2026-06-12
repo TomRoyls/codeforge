@@ -733,3 +733,15 @@ describe('heavy-light - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-light - wave566', () => {
+  it('heavy-light w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

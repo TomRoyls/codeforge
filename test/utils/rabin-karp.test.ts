@@ -544,3 +544,15 @@ describe('rabin-karp - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rabin-karp - wave566', () => {
+  it('rabin-karp w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

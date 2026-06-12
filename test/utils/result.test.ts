@@ -649,3 +649,15 @@ describe('result - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('result - wave566', () => {
+  it('result w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

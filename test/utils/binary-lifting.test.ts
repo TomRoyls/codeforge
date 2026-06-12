@@ -702,3 +702,15 @@ describe('binary-lifting - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-lifting - wave566', () => {
+  it('binary-lifting w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

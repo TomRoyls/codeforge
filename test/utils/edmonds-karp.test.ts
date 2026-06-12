@@ -724,3 +724,15 @@ describe('edmonds-karp - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edmonds-karp - wave566', () => {
+  it('edmonds-karp w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

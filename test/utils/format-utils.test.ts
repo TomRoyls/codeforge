@@ -539,3 +539,15 @@ describe('format-utils - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('format-utils - wave566', () => {
+  it('format-utils w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

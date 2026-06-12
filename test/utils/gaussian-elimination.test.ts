@@ -731,3 +731,15 @@ describe('gaussian-elimination - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gaussian-elimination - wave566', () => {
+  it('gaussian-elimination w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

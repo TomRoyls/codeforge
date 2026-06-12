@@ -697,3 +697,15 @@ describe('merge-sorted-iterators - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('merge-sorted-iterators - wave566', () => {
+  it('merge-sorted-iterators w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

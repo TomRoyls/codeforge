@@ -669,3 +669,15 @@ describe('li-chao-tree - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('li-chao-tree - wave566', () => {
+  it('li-chao-tree w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

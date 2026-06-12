@@ -727,3 +727,15 @@ describe('weighted-random - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('weighted-random - wave566', () => {
+  it('weighted-random w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

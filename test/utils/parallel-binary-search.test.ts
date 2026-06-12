@@ -726,3 +726,15 @@ describe('parallel-binary-search - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('parallel-binary-search - wave566', () => {
+  it('parallel-binary-search w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

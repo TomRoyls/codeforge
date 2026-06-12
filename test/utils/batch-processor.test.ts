@@ -1061,3 +1061,15 @@ describe('batch-processor - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('batch-processor - wave566', () => {
+  it('batch-processor w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

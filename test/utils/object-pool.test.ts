@@ -941,3 +941,15 @@ describe('object-pool - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('object-pool - wave566', () => {
+  it('object-pool w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

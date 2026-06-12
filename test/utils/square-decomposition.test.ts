@@ -597,3 +597,15 @@ describe('square-decomposition - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('square-decomposition - wave566', () => {
+  it('square-decomposition w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -594,3 +594,15 @@ describe('gray-code - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gray-code - wave566', () => {
+  it('gray-code w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

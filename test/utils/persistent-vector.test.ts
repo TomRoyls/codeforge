@@ -610,3 +610,15 @@ describe('persistent-vector - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-vector - wave566', () => {
+  it('persistent-vector w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

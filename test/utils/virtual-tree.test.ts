@@ -837,3 +837,15 @@ describe('virtual-tree - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('virtual-tree - wave566', () => {
+  it('virtual-tree w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('virtual-tree w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

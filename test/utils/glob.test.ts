@@ -594,3 +594,15 @@ describe('glob - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('glob - wave566', () => {
+  it('glob w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

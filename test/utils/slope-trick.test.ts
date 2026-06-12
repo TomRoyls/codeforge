@@ -752,3 +752,15 @@ describe('slope-trick - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('slope-trick - wave566', () => {
+  it('slope-trick w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

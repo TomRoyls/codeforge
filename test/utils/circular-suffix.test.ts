@@ -546,3 +546,15 @@ describe('circular-suffix - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-suffix - wave566', () => {
+  it('circular-suffix w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

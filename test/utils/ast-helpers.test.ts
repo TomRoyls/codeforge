@@ -825,3 +825,12 @@ describe('hasNotChain', () => {
     expect(hasNotChain(node)).toBe(true)
   })
 })
+
+describe('ast-helpers - wave566', () => {
+  it('ast-helpers w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ast-helpers w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+})

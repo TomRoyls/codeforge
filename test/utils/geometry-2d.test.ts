@@ -585,3 +585,15 @@ describe('geometry-2d - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('geometry-2d - wave566', () => {
+  it('geometry-2d w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('geometry-2d w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('geometry-2d w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

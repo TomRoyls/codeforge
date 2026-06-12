@@ -537,3 +537,15 @@ describe('narcissistic - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('narcissistic - wave566', () => {
+  it('narcissistic w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

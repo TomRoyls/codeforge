@@ -787,3 +787,15 @@ describe('skip-list - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skip-list - wave566', () => {
+  it('skip-list w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

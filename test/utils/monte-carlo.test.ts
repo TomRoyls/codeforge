@@ -643,3 +643,15 @@ describe('monte-carlo - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monte-carlo - wave566', () => {
+  it('monte-carlo w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

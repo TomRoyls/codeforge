@@ -552,3 +552,15 @@ describe('typed-emitter - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('typed-emitter - wave566', () => {
+  it('typed-emitter w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

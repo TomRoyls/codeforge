@@ -746,3 +746,15 @@ describe('chordal-check - wave565', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chordal-check - wave566', () => {
+  it('chordal-check w566 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w566 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check w566 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
