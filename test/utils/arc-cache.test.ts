@@ -296,4 +296,70 @@ describe('ARCCache', () => {
     expect(ks).toContain('x')
     expect(ks).toContain('y')
   })
+
+  it('toJSON includes all internal structures', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1); cache.set('b', 2)
+    cache.get('a')
+    const json = cache.toJSON() as { capacity: number; p: number; t1: Array<[string, number]>; t2: Array<[string, number]>; b1: string[]; b2: string[] }
+    expect(json.capacity).toBe(3)
+    expect(json.p).toBeGreaterThanOrEqual(0)
+    expect(json.t1).toBeInstanceOf(Array)
+    expect(json.t2).toBeInstanceOf(Array)
+    expect(json.b1).toBeInstanceOf(Array)
+    expect(json.b2).toBeInstanceOf(Array)
+  })
+
+  it('equals returns false when p values differ', () => {
+    const c1 = new ARCCache<string, number>(3)
+    const c2 = new ARCCache<string, number>(3)
+    c1.set('a', 1)
+    c2.set('a', 1)
+    for (let i = 0; i < 10; i++) {
+      c1.set(`temp${i}`, i)
+    }
+    expect(c1.equals(c2)).toBe(false)
+  })
+
+  it('repeated get on same key updates recency', () => {
+    const cache = new ARCCache<string, number>(2)
+    cache.set('a', 1); cache.set('b', 2)
+    for (let i = 0; i < 5; i++) cache.get('a')
+    cache.set('c', 3)
+    expect(cache.has('a')).toBe(true)
+  })
+
+  it('handles alternating access pattern', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
+    cache.get('a')
+    cache.get('b')
+    cache.get('a')
+    cache.set('d', 4)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.has('b')).toBe(true)
+  })
+
+  it('capacity 1 behaves correctly with gets', () => {
+    const cache = new ARCCache<string, number>(1)
+    cache.set('a', 1)
+    cache.get('a')
+    expect(cache.size).toBe(1)
+    cache.set('b', 2)
+    expect(cache.size).toBeLessThanOrEqual(1)
+  })
+
+  it('clone preserves internal ghost lists', () => {
+    const cache = new ARCCache<string, number>(2)
+    cache.set('a', 1); cache.set('b', 2)
+    for (let i = 0; i < 5; i++) cache.set(`temp${i}`, i)
+    const cloned = cache.clone()
+    expect(cloned.equals(cache)).toBe(true)
+  })
+
+  it('handles many rapid sets without errors', () => {
+    const cache = new ARCCache<number, number>(10)
+    for (let i = 0; i < 1000; i++) cache.set(i, i)
+    expect(cache.size).toBeLessThanOrEqual(10)
+  })
 })

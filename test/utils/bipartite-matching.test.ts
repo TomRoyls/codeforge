@@ -322,4 +322,98 @@ describe('BipartiteMatching', () => {
     graph.addEdge(2, 2)
     expect(graph.maxMatching()).toBe(3)
   })
+
+  it('constructor with zero left side', () => {
+    const graph = new BipartiteMatching(0, 5)
+    expect(graph.leftSize).toBe(0)
+    expect(graph.rightSize).toBe(5)
+    expect(graph.maxMatching()).toBe(0)
+  })
+
+  it('constructor with zero right side', () => {
+    const graph = new BipartiteMatching(5, 0)
+    expect(graph.leftSize).toBe(5)
+    expect(graph.rightSize).toBe(0)
+    expect(graph.maxMatching()).toBe(0)
+  })
+
+  it('clear preserves leftSize and rightSize', () => {
+    const graph = new BipartiteMatching(4, 6)
+    graph.addEdge(0, 0)
+    graph.addEdge(1, 1)
+    graph.clear()
+    expect(graph.leftSize).toBe(4)
+    expect(graph.rightSize).toBe(6)
+  })
+
+  it('getMatching with partial matching', () => {
+    const graph = new BipartiteMatching(4, 4)
+    graph.addEdge(0, 0)
+    graph.addEdge(1, 1)
+    graph.addEdge(2, 2)
+    graph.maxMatching()
+    const matching = graph.getMatching()
+    expect(matching.size).toBe(3)
+    expect(matching.get(0)).toBe(0)
+    expect(matching.get(1)).toBe(1)
+    expect(matching.get(2)).toBe(2)
+    expect(matching.get(3)).toBeUndefined()
+  })
+
+  it('equals with same edges in different order', () => {
+    const a = new BipartiteMatching(3, 3)
+    const b = new BipartiteMatching(3, 3)
+    a.addEdge(0, 0)
+    a.addEdge(0, 1)
+    a.addEdge(1, 2)
+    b.addEdge(1, 2)
+    b.addEdge(0, 1)
+    b.addEdge(0, 0)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('toJSON structure contains expected properties', () => {
+    const graph = new BipartiteMatching(3, 4)
+    graph.addEdge(0, 1)
+    graph.addEdge(2, 3)
+    const json = graph.toJSON() as Record<string, unknown>
+    expect(json).toHaveProperty('leftSize')
+    expect(json).toHaveProperty('rightSize')
+    expect(json).toHaveProperty('adj')
+    expect(json).toHaveProperty('edgeCount')
+    expect(json.leftSize).toBe(3)
+    expect(json.rightSize).toBe(4)
+    expect(json.edgeCount).toBe(2)
+  })
+
+  it('clone is independent from original edges', () => {
+    const graph = new BipartiteMatching(3, 3)
+    graph.addEdge(0, 0)
+    const copy = graph.clone()
+    graph.clear()
+    expect(copy.edgeCount).toBe(1)
+    expect(copy.maxMatching()).toBe(1)
+    expect(graph.edgeCount).toBe(0)
+  })
+
+  it('isMatched after clear returns false for all', () => {
+    const graph = new BipartiteMatching(3, 3)
+    graph.addEdge(0, 0)
+    graph.addEdge(1, 1)
+    graph.maxMatching()
+    graph.clear()
+    expect(graph.isMatched(0)).toBe(false)
+    expect(graph.isMatched(1)).toBe(false)
+    expect(graph.isMatched(2)).toBe(false)
+  })
+
+  it('edgeCount preserved in clone', () => {
+    const graph = new BipartiteMatching(3, 3)
+    graph.addEdge(0, 0)
+    graph.addEdge(0, 1)
+    graph.addEdge(1, 2)
+    expect(graph.edgeCount).toBe(3)
+    const copy = graph.clone()
+    expect(copy.edgeCount).toBe(3)
+  })
 })

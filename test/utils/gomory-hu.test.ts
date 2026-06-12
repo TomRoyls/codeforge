@@ -300,4 +300,125 @@ describe('GomoryHu', () => {
     gh2.addEdge(1, 2, 3)
     expect(gh1.equals(gh2)).toBe(true)
   })
+
+  it('equals is reflexive', () => {
+    const gh = new GomoryHu(3)
+    gh.addEdge(0, 1, 5)
+    expect(gh.equals(gh)).toBe(true)
+  })
+
+  it('equals is symmetric', () => {
+    const gh1 = new GomoryHu(3)
+    gh1.addEdge(0, 1, 5)
+    const gh2 = new GomoryHu(3)
+    gh2.addEdge(0, 1, 5)
+    expect(gh1.equals(gh2)).toBe(true)
+    expect(gh2.equals(gh1)).toBe(true)
+  })
+
+  it('allPairsMinCut returns symmetric matrix', () => {
+    const gh = new GomoryHu(3)
+    gh.addEdge(0, 1, 5)
+    gh.addEdge(1, 2, 3)
+    const cuts = gh.allPairsMinCut()
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        expect(cuts[i]![j]).toBe(cuts[j]![i])
+      }
+    }
+  })
+
+  it('allPairsMinCut has zero diagonal', () => {
+    const gh = new GomoryHu(4)
+    gh.addEdge(0, 1, 5)
+    gh.addEdge(1, 2, 3)
+    const cuts = gh.allPairsMinCut()
+    expect(cuts[0]![0]).toBe(0)
+    expect(cuts[1]![1]).toBe(0)
+    expect(cuts[2]![2]).toBe(0)
+    expect(cuts[3]![3]).toBe(0)
+  })
+
+  it('handles zero weight edges', () => {
+    const gh = new GomoryHu(3)
+    gh.addEdge(0, 1, 0)
+    gh.addEdge(1, 2, 5)
+    expect(gh.minCut(0, 2)).toBe(0)
+  })
+
+  it('handles self-loop edge', () => {
+    const gh = new GomoryHu(2)
+    gh.addEdge(0, 0, 10)
+    gh.addEdge(0, 1, 5)
+    expect(gh.minCut(0, 1)).toBe(5)
+  })
+
+  it('clone handles parallel edges', () => {
+    const gh1 = new GomoryHu(2)
+    gh1.addEdge(0, 1, 3)
+    gh1.addEdge(0, 1, 4)
+    const gh2 = gh1.clone()
+    expect(gh1.equals(gh2)).toBe(true)
+  })
+
+  it('toJSON with parallel edges', () => {
+    const gh = new GomoryHu(2)
+    gh.addEdge(0, 1, 3)
+    gh.addEdge(0, 1, 4)
+    const json = gh.toJSON()
+    expect(json.n).toBe(2)
+    expect(Array.isArray(json.edges)).toBe(true)
+    expect(json.edges[0].length).toBe(2)
+  })
+
+  it('equals with empty graphs', () => {
+    const gh1 = new GomoryHu(3)
+    const gh2 = new GomoryHu(3)
+    expect(gh1.equals(gh2)).toBe(true)
+  })
+
+  it('minCut on fully connected graph', () => {
+    const gh = new GomoryHu(4)
+    gh.addEdge(0, 1, 1)
+    gh.addEdge(0, 2, 1)
+    gh.addEdge(0, 3, 1)
+    gh.addEdge(1, 2, 1)
+    gh.addEdge(1, 3, 1)
+    gh.addEdge(2, 3, 1)
+    expect(gh.minCut(0, 1)).toBe(3)
+  })
+
+  it('allPairsMinCut on completely disconnected graph', () => {
+    const gh = new GomoryHu(4)
+    const cuts = gh.allPairsMinCut()
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        expect(cuts[i]![j]).toBe(0)
+      }
+    }
+  })
+
+  it('handles chain graph with varying weights', () => {
+    const gh = new GomoryHu(5)
+    gh.addEdge(0, 1, 10)
+    gh.addEdge(1, 2, 2)
+    gh.addEdge(2, 3, 5)
+    gh.addEdge(3, 4, 1)
+    expect(gh.minCut(0, 4)).toBe(1)
+    expect(gh.minCut(0, 2)).toBe(2)
+    expect(gh.minCut(2, 4)).toBe(1)
+  })
+
+  it('toString for large graph', () => {
+    const gh = new GomoryHu(100)
+    expect(gh.toString()).toBe('GomoryHu(100)')
+  })
+
+  it('clone with different edge weights is not equal', () => {
+    const gh1 = new GomoryHu(2)
+    gh1.addEdge(0, 1, 5)
+    const gh2 = gh1.clone()
+    gh2.addEdge(0, 1, 2)
+    expect(gh1.equals(gh2)).toBe(false)
+  })
 })

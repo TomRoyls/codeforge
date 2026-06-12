@@ -448,4 +448,81 @@ describe('throttle', () => {
       expect(fn).toHaveBeenLastCalledWith('debounce1')
     })
   })
+
+  // ─── Additional behavior tests ───────────────────────────────
+  describe('additional behaviors', () => {
+    beforeEach(() => { vi.useFakeTimers() })
+    afterEach(() => { vi.useRealTimers() })
+
+    it('flush after cancel with pending arguments uses latest args', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 100)
+      debounced('first')
+      debounced.cancel()
+      debounced('second')
+      debounced.flush()
+      expect(fn).toHaveBeenCalledTimes(1)
+      expect(fn).toHaveBeenCalledWith('second')
+    })
+
+    it('throttle cancel clears timer completely', () => {
+      const fn = vi.fn()
+      const throttled = throttle(fn, 100)
+      throttled('first')
+      throttled('second')
+      throttled.cancel()
+      vi.advanceTimersByTime(200)
+      expect(fn).toHaveBeenCalledTimes(1) // Only first immediate call
+    })
+
+    it('debounce with very long delay eventually executes', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 10000)
+      debounced('test')
+      vi.advanceTimersByTime(5000)
+      expect(fn).not.toHaveBeenCalled()
+      vi.advanceTimersByTime(5000)
+      expect(fn).toHaveBeenCalledTimes(1)
+      expect(fn).toHaveBeenCalledWith('test')
+    })
+
+    it('throttle rapid cancel and restart waits for interval', () => {
+      const fn = vi.fn()
+      const throttled = throttle(fn, 100)
+      throttled('first')
+      expect(fn).toHaveBeenCalledTimes(1)
+      throttled('second')
+      throttled.cancel()
+      throttled('third')
+      expect(fn).toHaveBeenCalledTimes(1) // Not called yet due to throttle
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledTimes(2)
+      expect(fn).toHaveBeenLastCalledWith('third')
+    })
+
+    it('debounce with object arguments', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 100)
+      const obj1 = { key: 'value1' }
+      const obj2 = { key: 'value2' }
+      debounced(obj1)
+      debounced(obj2)
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledTimes(1)
+      expect(fn).toHaveBeenCalledWith(obj2)
+    })
+
+    it('throttle with object arguments', () => {
+      const fn = vi.fn()
+      const throttled = throttle(fn, 100)
+      const obj1 = { key: 'value1' }
+      const obj2 = { key: 'value2' }
+      throttled(obj1)
+      expect(fn).toHaveBeenCalledWith(obj1)
+      throttled(obj2)
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledTimes(2)
+      expect(fn).toHaveBeenLastCalledWith(obj2)
+    })
+  })
 })

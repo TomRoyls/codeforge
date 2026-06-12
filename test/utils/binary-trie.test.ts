@@ -99,23 +99,46 @@ describe('BinaryTrie', () => {
     expect(bt.maxXor(0)).toBe(15)
   })
 
-  it('handles remove to empty', () => {
-    const bt = new BinaryTrie(4)
-    bt.insert(5)
-    bt.remove(5)
-    expect(bt.size).toBe(0)
-    expect(bt.find(5)).toBe(false)
-  })
+    it('handles remove to empty', () => {
+      const bt = new BinaryTrie(4)
+      bt.insert(5)
+      bt.remove(5)
+      expect(bt.size).toBe(0)
+      expect(bt.find(5)).toBe(false)
+    })
 
-  it('handles multiple insert remove', () => {
-    const bt = new BinaryTrie(4)
-    bt.insert(3)
-    bt.insert(7)
-    bt.remove(3)
-    expect(bt.find(3)).toBe(false)
-    expect(bt.find(7)).toBe(true)
-    expect(bt.size).toBe(1)
-  })
+    it('handles multiple insert remove', () => {
+      const bt = new BinaryTrie(4)
+      bt.insert(3)
+      bt.insert(7)
+      bt.remove(3)
+      expect(bt.find(3)).toBe(false)
+      expect(bt.find(7)).toBe(true)
+      expect(bt.size).toBe(1)
+    })
+
+    it('handles removal of duplicate', () => {
+      const bt = new BinaryTrie(8)
+      bt.insert(5)
+      bt.insert(5)
+      bt.remove(5)
+      expect(bt.size).toBe(1)
+      expect(bt.find(5)).toBe(true)
+      bt.remove(5)
+      expect(bt.size).toBe(0)
+      expect(bt.find(5)).toBe(false)
+    })
+
+    it('remove maintains other values', () => {
+      const bt = new BinaryTrie(8)
+      bt.insert(1)
+      bt.insert(2)
+      bt.insert(3)
+      bt.remove(2)
+      expect(bt.find(1)).toBe(true)
+      expect(bt.find(2)).toBe(false)
+      expect(bt.find(3)).toBe(true)
+    })
 
   it('handles maxXor with multiple values', () => {
     const bt = new BinaryTrie(4)
@@ -251,6 +274,29 @@ describe('BinaryTrie', () => {
       const copy = trie.clone()
       expect(copy.size).toBe(0)
     })
+
+    it('clone with duplicates - clones unique values only', () => {
+      const trie = new BinaryTrie(8)
+      trie.insert(5)
+      trie.insert(5)
+      trie.insert(5)
+      const copy = trie.clone()
+      expect(copy.size).toBe(1)
+      expect(copy.find(5)).toBe(true)
+    })
+
+    it('clone preserves removal independence', () => {
+      const trie = new BinaryTrie(8)
+      trie.insert(1)
+      trie.insert(2)
+      const copy = trie.clone()
+      trie.remove(1)
+      copy.remove(2)
+      expect(trie.find(1)).toBe(false)
+      expect(trie.find(2)).toBe(true)
+      expect(copy.find(1)).toBe(true)
+      expect(copy.find(2)).toBe(false)
+    })
   })
 
   describe('BinaryTrie equals', () => {
@@ -295,6 +341,38 @@ describe('BinaryTrie', () => {
       trie.insert(42)
       expect(trie.equals(trie)).toBe(true)
     })
+
+    it('equals with different order inserts', () => {
+      const a = new BinaryTrie(8)
+      a.insert(1)
+      a.insert(2)
+      a.insert(3)
+      const b = new BinaryTrie(8)
+      b.insert(3)
+      b.insert(2)
+      b.insert(1)
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('equals with duplicates', () => {
+      const a = new BinaryTrie(8)
+      a.insert(5)
+      a.insert(5)
+      const b = new BinaryTrie(8)
+      b.insert(5)
+      b.insert(5)
+      expect(a.equals(b)).toBe(true)
+    })
+
+    it('equals after remove', () => {
+      const a = new BinaryTrie(8)
+      a.insert(1)
+      a.insert(2)
+      a.remove(1)
+      const b = new BinaryTrie(8)
+      b.insert(2)
+      expect(a.equals(b)).toBe(true)
+    })
   })
 
   it('handles many insertions and removals', () => {
@@ -319,5 +397,43 @@ describe('BinaryTrie', () => {
     const result = trie.maxXor(0b10101010)
     const xorResult = result ^ 0b10101010
     expect(xorResult).toBeGreaterThan(0)
+  })
+
+  it('maxXor with single element', () => {
+    const trie = new BinaryTrie(8)
+    trie.insert(42)
+    expect(trie.maxXor(0)).toBe(42)
+    expect(trie.maxXor(42)).toBe(0)
+  })
+
+  it('maxXor with complementary bits', () => {
+    const trie = new BinaryTrie(4)
+    trie.insert(0b0101)
+    trie.insert(0b1010)
+    const result = trie.maxXor(0b0101)
+    expect(result).toBe(0b1111)
+  })
+
+  it('maxXor handles 32-bit signed integers', () => {
+    const trie = new BinaryTrie(32)
+    trie.insert(-1)
+    expect(trie.maxXor(0)).toBe(-1)
+  })
+
+  it('maxXor with multiple near values', () => {
+    const trie = new BinaryTrie(8)
+    trie.insert(100)
+    trie.insert(101)
+    trie.insert(102)
+    const result = trie.maxXor(100)
+    expect(result).toBeGreaterThan(0)
+  })
+
+  it('maxXor finds optimal path', () => {
+    const trie = new BinaryTrie(4)
+    trie.insert(1)
+    trie.insert(14)
+    const result = trie.maxXor(8)
+    expect(result).toBeGreaterThan(7)
   })
 })

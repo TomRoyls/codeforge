@@ -203,4 +203,104 @@ describe('IntegerPartition', () => {
       expect(IntegerPartition.generate(n).length).toBe(IntegerPartition.count(n))
     }
   })
+
+  it('generate returns empty array for n = 0', () => {
+    expect(IntegerPartition.generate(0)).toEqual([])
+  })
+
+  it('generate returns empty array for negative n', () => {
+    expect(IntegerPartition.generate(-5)).toEqual([])
+  })
+
+  it('generate of 10 returns correct number of partitions', () => {
+    expect(IntegerPartition.generate(10).length).toBe(42)
+  })
+
+  it('generate of 7 returns correct partitions', () => {
+    const result = IntegerPartition.generate(7)
+    expect(result.length).toBe(15)
+    expect(result[0]).toEqual([7])
+  })
+
+  it('generate of 8 returns correct number of partitions', () => {
+    expect(IntegerPartition.generate(8).length).toBe(22)
+  })
+
+  it('generate of 6 returns all partitions', () => {
+    const result = IntegerPartition.generate(6)
+    expect(result).toEqual([
+      [6], [5, 1], [4, 2], [4, 1, 1], [3, 3], [3, 2, 1], [3, 1, 1, 1],
+      [2, 2, 2], [2, 2, 1, 1], [2, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1]
+    ])
+  })
+
+  it('count returns 1 for n = 0', () => {
+    expect(IntegerPartition.count(0)).toBe(1)
+  })
+
+  it('count returns 0 for negative numbers', () => {
+    expect(IntegerPartition.count(-10)).toBe(0)
+  })
+
+  it('count of 20 matches known value', () => {
+    expect(IntegerPartition.count(20)).toBe(627)
+  })
+
+  it('generateDistinct returns single partition for prime', () => {
+    expect(IntegerPartition.generateDistinct(11).length).toBeGreaterThan(0)
+  })
+
+  it('generateDistinct of 0 returns empty partition', () => {
+    expect(IntegerPartition.generateDistinct(0)).toEqual([[]])
+  })
+
+  it('generateDistinct of 3 returns correct partitions', () => {
+    expect(IntegerPartition.generateDistinct(3)).toEqual([[1, 2], [3]])
+  })
+
+  it('generateDistinct of 4 returns correct partitions', () => {
+    expect(IntegerPartition.generateDistinct(4)).toEqual([[1, 3], [4]])
+  })
+
+  it('generateDistinct returns ascending order', () => {
+    const result = IntegerPartition.generateDistinct(10)
+    for (const p of result) {
+      for (let i = 1; i < p.length; i++) {
+        expect(p[i]).toBeGreaterThan(p[i - 1])
+      }
+    }
+  })
+
+  it('generateFixedLength with k = n returns all ones', () => {
+    expect(IntegerPartition.generateFixedLength(5, 5)).toEqual([[1, 1, 1, 1, 1]])
+  })
+
+  it('generateFixedLength with k = 1 returns single part', () => {
+    expect(IntegerPartition.generateFixedLength(10, 1)).toEqual([[10]])
+  })
+
+  it('generateFixedLength with k > n returns empty', () => {
+    expect(IntegerPartition.generateFixedLength(3, 5)).toEqual([])
+  })
+
+  it('generateFixedLength of 7 into 3 parts', () => {
+    const result = IntegerPartition.generateFixedLength(7, 3)
+    for (const p of result) {
+      expect(p.length).toBe(3)
+      expect(p.reduce((a, b) => a + b, 0)).toBe(7)
+    }
+  })
+
+  it('generateFixedLength parts are non-decreasing', () => {
+    const result = IntegerPartition.generateFixedLength(8, 3)
+    for (const p of result) {
+      for (let i = 1; i < p.length; i++) {
+        expect(p[i]).toBeGreaterThanOrEqual(p[i - 1])
+      }
+    }
+  })
+
+  it('generateFixedLength returns empty for zero parts', () => {
+    expect(IntegerPartition.generateFixedLength(5, 0)).toEqual([])
+  })
 })

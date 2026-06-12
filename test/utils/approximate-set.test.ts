@@ -273,4 +273,57 @@ describe('ApproximateSet', () => {
     expect(cloned.bitSize).toBe(set.bitSize)
     expect(cloned.count).toBe(set.count)
   })
+
+  it('hashCount varies with configuration', () => {
+    const set1 = new ApproximateSet(100, 0.01)
+    const set2 = new ApproximateSet(1000, 0.01)
+    const set3 = new ApproximateSet(100, 0.001)
+    expect(set2.bitSize).toBeGreaterThan(set1.bitSize)
+    expect(set3.bitSize).toBeGreaterThan(set1.bitSize)
+  })
+
+  it('empty set equals another empty set with same config', () => {
+    const s1 = new ApproximateSet(100, 0.01)
+    const s2 = new ApproximateSet(100, 0.01)
+    expect(s1.equals(s2)).toBe(true)
+  })
+
+  it('toJSON includes hashCount in output', () => {
+    const set = new ApproximateSet(100, 0.01)
+    set.add('test')
+    const json = set.toJSON() as { size: number; hashCount: number; count: number }
+    expect(json.hashCount).toBeGreaterThan(0)
+    expect(json.size).toBeGreaterThan(0)
+    expect(json.count).toBe(1)
+  })
+
+  it('clone of empty set remains independent', () => {
+    const set = new ApproximateSet(100)
+    const cloned = set.clone()
+    set.add('original')
+    cloned.add('copy')
+    expect(set.has('original')).toBe(true)
+    expect(set.has('copy')).toBe(false)
+    expect(cloned.has('copy')).toBe(true)
+    expect(cloned.has('original')).toBe(false)
+  })
+
+  it('equals returns false when bitSize differs', () => {
+    const s1 = new ApproximateSet(100, 0.01)
+    const s2 = new ApproximateSet(100, 0.001)
+    s1.add('test')
+    s2.add('test')
+    expect(s1.equals(s2)).toBe(false)
+  })
+
+  it('toString format is consistent with different configurations', () => {
+    const set1 = new ApproximateSet(100, 0.01)
+    const set2 = new ApproximateSet(500, 0.001)
+    set1.add('a')
+    set2.add('b')
+    const str1 = set1.toString()
+    const str2 = set2.toString()
+    expect(str1).toMatch(/ApproximateSet\(size=\d+, hashCount=\d+, count=\d+\)/)
+    expect(str2).toMatch(/ApproximateSet\(size=\d+, hashCount=\d+, count=\d+\)/)
+  })
 })

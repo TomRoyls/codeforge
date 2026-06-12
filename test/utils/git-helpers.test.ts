@@ -10,6 +10,8 @@ import {
   getGitRoot,
   getStagedFiles,
   isGitRepository,
+  getCurrentBranch,
+  getBlameForFile,
 } from '../../src/utils/git-helpers.js'
 
 describe('git-helpers cache', () => {
@@ -309,5 +311,116 @@ describe('getGitRoot', () => {
 
   it('returns null for root directory', () => {
     expect(getGitRoot('/')).toBeNull()
+  })
+})
+
+describe('getCurrentBranch', () => {
+  beforeEach(() => {
+    clearGitCache()
+  })
+
+  afterEach(() => {
+    clearGitCache()
+  })
+
+  it('returns a non-empty string for current repo', () => {
+    const branch = getCurrentBranch(process.cwd())
+    expect(typeof branch).toBe('string')
+    expect(branch.length).toBeGreaterThan(0)
+  })
+
+  it('returns empty string for /tmp', () => {
+    expect(getCurrentBranch('/tmp')).toBe('')
+  })
+
+  it('caches the result', () => {
+    clearGitCache()
+    getCurrentBranch(process.cwd())
+    const keys = getGitCacheStats().keys
+    expect(keys.some((k) => k.startsWith('getCurrentBranch:'))).toBe(true)
+  })
+
+  it('returns empty string for non-existent directory', () => {
+    expect(getCurrentBranch('/nonexistent/path')).toBe('')
+  })
+
+  it('returns same result on repeated calls', () => {
+    const first = getCurrentBranch(process.cwd())
+    const second = getCurrentBranch(process.cwd())
+    expect(first).toBe(second)
+  })
+
+  it('returns a string type', () => {
+    expect(typeof getCurrentBranch(process.cwd())).toBe('string')
+  })
+})
+
+describe('getBlameForFile', () => {
+  beforeEach(() => {
+    clearGitCache()
+  })
+
+  afterEach(() => {
+    clearGitCache()
+  })
+
+  it('returns an array', () => {
+    const result = getBlameForFile('test/utils/git-helpers.test.ts', process.cwd())
+    expect(Array.isArray(result)).toBe(true)
+  })
+
+  it('returns empty array for non-existent file', () => {
+    expect(getBlameForFile('/nonexistent/file.ts', process.cwd())).toEqual([])
+  })
+
+  it('caches the result with correct key prefix', () => {
+    clearGitCache()
+    getBlameForFile('test/utils/git-helpers.test.ts', process.cwd())
+    const keys = getGitCacheStats().keys
+    expect(keys.some((k) => k.startsWith('getBlameForFile:'))).toBe(true)
+  })
+
+  it('includes file path in cache key', () => {
+    clearGitCache()
+    getBlameForFile('test/utils/git-helpers.test.ts', process.cwd())
+    const keys = getGitCacheStats().keys
+    const blameKey = keys.find((k) => k.startsWith('getBlameForFile:'))
+    expect(blameKey).toContain('test/utils/git-helpers.test.ts')
+  })
+
+  it('different files create different cache keys', () => {
+    clearGitCache()
+    getBlameForFile('test/utils/git-helpers.test.ts', process.cwd())
+    getBlameForFile('test/utils/avl-tree-map.test.ts', process.cwd())
+    const keys = getGitCacheStats().keys
+    const blameKeys = keys.filter((k) => k.startsWith('getBlameForFile:'))
+    expect(blameKeys.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('returns empty array for /tmp', () => {
+    expect(getBlameForFile('/tmp/test.ts', process.cwd())).toEqual([])
+  })
+
+  it('array elements have correct structure', () => {
+    const result = getBlameForFile('test/utils/git-helpers.test.ts', process.cwd())
+    for (const line of result) {
+      expect(line).toHaveProperty('author')
+      expect(line).toHaveProperty('commit')
+      expect(line).toHaveProperty('date')
+      expect(line).toHaveProperty('line')
+      expect(line).toHaveProperty('summary')
+      expect(typeof line.author).toBe('string')
+      expect(typeof line.commit).toBe('string')
+      expect(typeof line.date).toBe('string')
+      expect(typeof line.line).toBe('number')
+      expect(typeof line.summary).toBe('string')
+    }
+  })
+
+  it('commit is truncated to 8 characters', () => {
+    const result = getBlameForFile('test/utils/git-helpers.test.ts', process.cwd())
+    if (result.length > 0) {
+      expect(result[0]!.commit.length).toBeLessThanOrEqual(8)
+    }
   })
 })

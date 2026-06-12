@@ -270,4 +270,50 @@ describe('NTT', () => {
     const inverted = NTT.transform(transformed, 998244353n, 3n, true)
     expect(inverted).toEqual(input)
   })
+
+  it('transform with different primitive root', () => {
+    const mod = 998244353n
+    const root = 5n
+    const input = [1n, 2n, 3n, 4n, 5n, 6n, 7n, 8n]
+    const transformed = NTT.transform(input, mod, root, false)
+    const inverted = NTT.transform(transformed, mod, root, true)
+    expect(inverted).toEqual(input)
+  })
+
+  it('transform linearity: NTT(a+b) = NTT(a) + NTT(b)', () => {
+    const mod = 998244353n
+    const a = [1n, 2n, 3n, 4n]
+    const b = [5n, 6n, 7n, 8n]
+    const sum = a.map((v, i) => (v + b[i]!) % mod)
+    const nttA = NTT.transform(a, mod, 3n, false)
+    const nttB = NTT.transform(b, mod, 3n, false)
+    const nttSum = NTT.transform(sum, mod, 3n, false)
+    const combined = nttA.map((v, i) => (v + nttB[i]!) % mod)
+    expect(nttSum).toEqual(combined)
+  })
+
+  it('transform with mod-1 values', () => {
+    const mod = 998244353n
+    const input = [mod - 1n, mod - 1n, mod - 1n, mod - 1n]
+    const transformed = NTT.transform(input, mod, 3n, false)
+    const inverted = NTT.transform(transformed, mod, 3n, true)
+    expect(inverted).toEqual(input)
+  })
+
+  it('inverse transform of known frequency domain', () => {
+    const input = [0n, 0n, 0n, 0n]
+    const transformed = NTT.transform(input)
+    expect(transformed.every(x => x === 0n)).toBe(true)
+  })
+
+  it('multiplyPolynomials associative', () => {
+    const a = [1n, 1n]
+    const b = [1n, 1n]
+    const c = [1n, 1n]
+    const ab = NTT.multiplyPolynomials(a, b)
+    const abc1 = NTT.multiplyPolynomials(ab, c)
+    const bc = NTT.multiplyPolynomials(b, c)
+    const abc2 = NTT.multiplyPolynomials(a, bc)
+    expect(abc1).toEqual(abc2)
+  })
 })

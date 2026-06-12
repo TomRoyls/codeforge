@@ -420,3 +420,97 @@ describe('AVLTreeMap - string keys', () => {
     expect(map.last()).toEqual(['cherry', 3])
   })
 })
+
+// ─── toString, toJSON, clone, equals ──────────────────────
+describe('AVLTreeMap - serialization methods', () => {
+  it('toString returns correct format', () => {
+    const map = new AVLTreeMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    expect(map.toString()).toBe('AVLTreeMap(size=2)')
+  })
+
+  it('toString on empty map shows size 0', () => {
+    const map = new AVLTreeMap<number, string>()
+    expect(map.toString()).toBe('AVLTreeMap(size=0)')
+  })
+
+  it('toJSON returns entries array', () => {
+    const map = new AVLTreeMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.set(3, 'c')
+    const json = map.toJSON()
+    expect(json).toEqual([
+      [1, 'a'],
+      [2, 'b'],
+      [3, 'c'],
+    ])
+  })
+
+  it('toJSON on empty map returns empty array', () => {
+    const map = new AVLTreeMap<number, string>()
+    expect(map.toJSON()).toEqual([])
+  })
+
+  it('clone creates independent copy', () => {
+    const map = new AVLTreeMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const clone = map.clone()
+    expect(clone.entries()).toEqual(map.entries())
+    expect(clone.size).toBe(map.size)
+  })
+
+  it('clone modifications do not affect original', () => {
+    const map = new AVLTreeMap<number, string>()
+    map.set(1, 'a')
+    const clone = map.clone()
+    clone.set(2, 'b')
+    expect(map.has(2)).toBe(false)
+    expect(clone.has(2)).toBe(true)
+  })
+
+  it('equals returns true for identical maps', () => {
+    const map1 = new AVLTreeMap<number, string>()
+    const map2 = new AVLTreeMap<number, string>()
+    map1.set(1, 'a')
+    map1.set(2, 'b')
+    map2.set(1, 'a')
+    map2.set(2, 'b')
+    expect(map1.equals(map2)).toBe(true)
+  })
+
+  it('equals returns false for different sizes', () => {
+    const map1 = new AVLTreeMap<number, string>()
+    const map2 = new AVLTreeMap<number, string>()
+    map1.set(1, 'a')
+    map2.set(1, 'a')
+    map2.set(2, 'b')
+    expect(map1.equals(map2)).toBe(false)
+  })
+
+  it('equals returns false for different values', () => {
+    const map1 = new AVLTreeMap<number, string>()
+    const map2 = new AVLTreeMap<number, string>()
+    map1.set(1, 'a')
+    map2.set(1, 'b')
+    expect(map1.equals(map2)).toBe(false)
+  })
+
+  it('equals returns false for non-AVLTreeMap', () => {
+    const map = new AVLTreeMap<number, string>()
+    expect(map.equals(null)).toBe(false)
+    expect(map.equals(undefined)).toBe(false)
+    expect(map.equals({})).toBe(false)
+    expect(map.equals([])).toBe(false)
+  })
+
+  it('clone equals original', () => {
+    const map = new AVLTreeMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const clone = map.clone()
+    expect(clone.equals(map)).toBe(true)
+  })
+})

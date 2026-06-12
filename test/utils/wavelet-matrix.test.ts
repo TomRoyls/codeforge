@@ -101,6 +101,30 @@ describe('WaveletMatrix', () => {
       expect(wm.rank(0, 5)).toBe(3)
       expect(wm.rank(0, 2)).toBe(2)
     })
+
+    it('handles rank at boundary indices', () => {
+      const wm = new WaveletMatrix([5, 3, 1, 5, 3, 1])
+      expect(wm.rank(5, 0)).toBe(1)
+      expect(wm.rank(5, 1)).toBe(1)
+      expect(wm.rank(5, 3)).toBe(2)
+      expect(wm.rank(5, 5)).toBe(2)
+    })
+
+    it('handles repeated value count', () => {
+      const wm = new WaveletMatrix([7, 7, 7, 7])
+      expect(wm.rank(7, 3)).toBe(4)
+    })
+
+    it('handles value not in array', () => {
+      const wm = new WaveletMatrix([1, 2, 3, 4, 5])
+      expect(wm.rank(10, 4)).toBe(0)
+    })
+
+    it('handles large array rank', () => {
+      const data = Array.from({ length: 100 }, () => 5)
+      const wm = new WaveletMatrix(data)
+      expect(wm.rank(5, 99)).toBe(100)
+    })
   })
 
   describe('quantile', () => {
@@ -150,6 +174,35 @@ describe('WaveletMatrix', () => {
       expect(wm.quantile(0, 2, 5)).toBe(1)
       expect(wm.quantile(3, 2, 5)).toBe(9)
     })
+
+    it('handles single element range', () => {
+      const wm = new WaveletMatrix([3, 1, 4, 1, 5, 9, 2, 6])
+      expect(wm.quantile(0, 2, 2)).toBe(4)
+    })
+
+    it('handles range with all same values', () => {
+      const wm = new WaveletMatrix([5, 5, 5, 5, 5])
+      expect(wm.quantile(2, 0, 4)).toBe(5)
+    })
+
+    it('handles range with zeros', () => {
+      const wm = new WaveletMatrix([0, 0, 1, 2, 3])
+      expect(wm.quantile(0, 0, 2)).toBe(0)
+      expect(wm.quantile(2, 0, 4)).toBe(1)
+    })
+
+    it('handles quantile at last index', () => {
+      const wm = new WaveletMatrix([1, 2, 3, 4, 5])
+      expect(wm.quantile(4, 0, 4)).toBe(5)
+    })
+
+    it('handles quantile with large range', () => {
+      const data = Array.from({ length: 100 }, (_, i) => i)
+      const wm = new WaveletMatrix(data)
+      expect(wm.quantile(0, 0, 99)).toBe(0)
+      expect(wm.quantile(50, 0, 99)).toBe(50)
+      expect(wm.quantile(99, 0, 99)).toBe(99)
+    })
   })
 
   describe('rangeCount', () => {
@@ -179,6 +232,27 @@ describe('WaveletMatrix', () => {
     it('returns zero for non-existent value', () => {
       const wm = new WaveletMatrix([1, 2, 3])
       expect(wm.rangeCount(99, 0, 2)).toBe(0)
+    })
+
+    it('handles range with multiple occurrences', () => {
+      const wm = new WaveletMatrix([1, 2, 1, 3, 1, 2, 1])
+      expect(wm.rangeCount(1, 0, 6)).toBe(4)
+    })
+
+    it('handles range starting and ending same index', () => {
+      const wm = new WaveletMatrix([5, 3, 1, 4])
+      expect(wm.rangeCount(1, 2, 2)).toBe(1)
+    })
+
+    it('handles range with value at boundary', () => {
+      const wm = new WaveletMatrix([1, 2, 3, 4, 5])
+      expect(wm.rangeCount(1, 0, 0)).toBe(1)
+      expect(wm.rangeCount(5, 4, 4)).toBe(1)
+    })
+
+    it('handles empty range', () => {
+      const wm = new WaveletMatrix([1, 2, 3])
+      expect(wm.rangeCount(2, 0, 0)).toBe(0)
     })
   })
 
@@ -248,6 +322,35 @@ describe('WaveletMatrix', () => {
 
       const wm3 = new WaveletMatrix([256])
       expect(wm3.access(0)).toBe(256)
+    })
+
+    it('handles large dataset consistently', () => {
+      const data = Array.from({ length: 500 }, (_, i) => i % 100)
+      const wm = new WaveletMatrix(data)
+      expect(wm.length).toBe(500)
+      expect(wm.access(0)).toBe(0)
+      expect(wm.access(499)).toBe(99)
+    })
+
+    it('handles alternating pattern', () => {
+      const data = [1, 0, 1, 0, 1, 0]
+      const wm = new WaveletMatrix(data)
+      expect(wm.rangeCount(1, 0, 5)).toBe(3)
+      expect(wm.rangeCount(0, 0, 5)).toBe(3)
+    })
+
+    it('handles descending sequence', () => {
+      const data = [10, 9, 8, 7, 6, 5]
+      const wm = new WaveletMatrix(data)
+      expect(wm.quantile(0, 0, 5)).toBe(5)
+      expect(wm.quantile(5, 0, 5)).toBe(10)
+    })
+
+    it('handles monotonic sequence', () => {
+      const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      const wm = new WaveletMatrix(data)
+      expect(wm.access(5)).toBe(6)
+      expect(wm.rank(5, 9)).toBe(1)
     })
   })
 })

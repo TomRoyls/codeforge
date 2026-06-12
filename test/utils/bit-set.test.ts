@@ -333,4 +333,69 @@ describe('BitSet - large scale', () => {
     bs.set(4)
     expect(bs.toString()).toBe('10001')
   })
+
+  it('toJSON returns structure with size and bits', () => {
+    const bs = new BitSet(64)
+    bs.set(5)
+    bs.set(10)
+    const json = bs.toJSON() as Record<string, unknown>
+    expect(json).toHaveProperty('size')
+    expect(json).toHaveProperty('bits')
+    expect(json.size).toBe(64)
+    expect(Array.isArray(json.bits)).toBe(true)
+  })
+
+  it('toJSON bits array length matches words needed', () => {
+    const bs = new BitSet(33)
+    const json = bs.toJSON() as Record<string, unknown>
+    const bits = json.bits as number[]
+    expect(bits.length).toBe(2)
+  })
+
+  it('setRange from 0 sets first bit', () => {
+    const bs = new BitSet(16)
+    bs.setRange(0, 1)
+    expect(bs.has(0)).toBe(true)
+    expect(bs.has(1)).toBe(false)
+  })
+
+  it('set and get at word boundary (32)', () => {
+    const bs = new BitSet(64)
+    bs.set(31)
+    bs.set(32)
+    bs.set(33)
+    expect(bs.get(31)).toBe(1)
+    expect(bs.get(32)).toBe(1)
+    expect(bs.get(33)).toBe(1)
+    expect(bs.get(30)).toBe(0)
+    expect(bs.get(34)).toBe(0)
+  })
+
+  it('equals with self returns true', () => {
+    const bs = new BitSet(32)
+    bs.set(5)
+    bs.set(10)
+    expect(bs.equals(bs)).toBe(true)
+  })
+
+  it('count on empty bitset returns 0', () => {
+    const bs = new BitSet(100)
+    expect(bs.count()).toBe(0)
+  })
+
+  it('clearRange from 0 clears first bit', () => {
+    const bs = new BitSet(16)
+    bs.set(0)
+    bs.set(1)
+    bs.clearRange(0, 1)
+    expect(bs.has(0)).toBe(false)
+    expect(bs.has(1)).toBe(true)
+  })
+
+  it('setRange and flipRange on same range', () => {
+    const bs = new BitSet(8)
+    bs.setRange(2, 6)
+    bs.flipRange(2, 6)
+    expect(bs.toArray()).toEqual([])
+  })
 })

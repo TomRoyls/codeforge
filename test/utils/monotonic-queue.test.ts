@@ -342,3 +342,158 @@ describe('MonotonicQueue - large scale', () => {
     expect(q.size).toBe(100)
   })
 })
+
+// ─── Negative numbers ──────────────────────────────────────
+describe('MonotonicQueue - negative numbers', () => {
+  it('tracks minimum with negative values', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(-5)
+    q.push(-3)
+    q.push(-7)
+    expect(q.current()).toBe(-7)
+  })
+
+  it('tracks maximum with negative values', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    q.push(-5)
+    q.push(-3)
+    q.push(-7)
+    expect(q.current()).toBe(-3)
+  })
+
+  it('handles mixed positive and negative values for min', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(5)
+    q.push(-3)
+    q.push(7)
+    expect(q.current()).toBe(-3)
+  })
+
+  it('handles mixed positive and negative values for max', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    q.push(-5)
+    q.push(3)
+    q.push(-7)
+    expect(q.current()).toBe(3)
+  })
+})
+
+// ─── Zero values ────────────────────────────────────────────
+describe('MonotonicQueue - zero values', () => {
+  it('tracks minimum with zeros', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(5)
+    q.push(0)
+    q.push(3)
+    expect(q.current()).toBe(0)
+  })
+
+  it('handles all zeros in min mode', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(0)
+    q.push(0)
+    q.push(0)
+    expect(q.current()).toBe(0)
+  })
+
+  it('handles all zeros in max mode', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    q.push(0)
+    q.push(0)
+    q.push(0)
+    expect(q.current()).toBe(0)
+  })
+})
+
+// ─── Sliding window edge cases ───────────────────────────────
+describe('MonotonicQueue - sliding window edge cases', () => {
+  it('sliding window with increasing sequence', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 3 })
+    const input = [1, 2, 3, 4, 5]
+    const results: number[] = []
+    for (const v of input) {
+      q.push(v)
+      results.push(q.current())
+    }
+    expect(results).toEqual([1, 1, 1, 2, 3])
+  })
+
+  it('sliding window with all increasing max mode', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max', windowSize: 3 })
+    const input = [1, 2, 3, 4, 5]
+    const results: number[] = []
+    for (const v of input) {
+      q.push(v)
+      results.push(q.current())
+    }
+    expect(results).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('sliding window with alternating sequence', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 3 })
+    const input = [5, 1, 5, 1, 5]
+    const results: number[] = []
+    for (const v of input) {
+      q.push(v)
+      results.push(q.current())
+    }
+    expect(results).toEqual([5, 1, 1, 1, 5])
+  })
+
+  it('sliding window with decreasing max mode', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max', windowSize: 3 })
+    const input = [5, 4, 3, 2, 1]
+    const results: number[] = []
+    for (const v of input) {
+      q.push(v)
+      results.push(q.current())
+    }
+    expect(results).toEqual([5, 5, 5, 4, 3])
+  })
+
+  it('windowSize larger than pushed elements', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 10 })
+    q.push(1)
+    q.push(2)
+    q.push(3)
+    expect(q.size).toBe(3)
+    expect(q.current()).toBe(1)
+  })
+})
+
+// ─── Multiple clear operations ───────────────────────────────
+describe('MonotonicQueue - multiple operations', () => {
+  it('handles multiple consecutive clear operations', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(1)
+    q.push(2)
+    q.clear()
+    q.clear()
+    q.clear()
+    expect(q.size).toBe(0)
+    expect(q.isEmpty()).toBe(true)
+  })
+
+  it('maintains window behavior after clear', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 3 })
+    q.push(1)
+    q.push(2)
+    q.push(3)
+    q.clear()
+    q.push(10)
+    q.push(20)
+    q.push(30)
+    expect(q.size).toBe(3)
+    expect(q.current()).toBe(10)
+  })
+
+  it('maintains mode after clear', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    q.push(1)
+    q.push(5)
+    q.clear()
+    q.push(3)
+    q.push(7)
+    expect(q.current()).toBe(7)
+  })
+})

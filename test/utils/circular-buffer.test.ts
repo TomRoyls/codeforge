@@ -369,3 +369,85 @@ describe('CircularBuffer - generic types', () => {
     expect(buf.read()?.id).toBe(3)
   })
 })
+
+// ─── Clear resets peek ───────────────────────────────────
+describe('CircularBuffer - clear and peek', () => {
+  it('peek and peekNewest return undefined after clear', () => {
+    const buf = new CircularBuffer<number>(5)
+    buf.write(1)
+    buf.write(2)
+    buf.write(3)
+    expect(buf.peek()).toBe(1)
+    expect(buf.peekNewest()).toBe(3)
+    buf.clear()
+    expect(buf.peek()).toBeUndefined()
+    expect(buf.peekNewest()).toBeUndefined()
+  })
+
+  it('capacity remains constant through all operations', () => {
+    const buf = new CircularBuffer<number>(10)
+    expect(buf.capacity).toBe(10)
+    for (let i = 0; i < 20; i++) {
+      buf.write(i)
+    }
+    expect(buf.capacity).toBe(10)
+    buf.clear()
+    expect(buf.capacity).toBe(10)
+    for (let i = 0; i < 5; i++) {
+      buf.read()
+    }
+    expect(buf.capacity).toBe(10)
+  })
+})
+
+// ─── Wraparound behavior ──────────────────────────────────
+describe('CircularBuffer - wraparound', () => {
+  it('toArray preserves order with wraparound', () => {
+    const buf = new CircularBuffer<number>(4)
+    buf.write(1)
+    buf.write(2)
+    buf.write(3)
+    buf.write(4)
+    buf.read()  // Removes 1
+    buf.read()  // Removes 2
+    buf.write(5)
+    buf.write(6)
+    // Buffer now has: [empty, empty, 3, 4, 5, 6] with wraparound
+    expect(buf.toArray()).toEqual([3, 4, 5, 6])
+  })
+
+  it('toArrayNewest preserves order with wraparound', () => {
+    const buf = new CircularBuffer<number>(4)
+    buf.write(1)
+    buf.write(2)
+    buf.write(3)
+    buf.write(4)
+    buf.read()  // Removes 1
+    buf.read()  // Removes 2
+    buf.write(5)
+    buf.write(6)
+    expect(buf.toArrayNewest()).toEqual([6, 5, 4, 3])
+  })
+
+  it('write undefined values work correctly', () => {
+    const buf = new CircularBuffer<number | undefined>(3)
+    buf.write(1)
+    buf.write(undefined)
+    buf.write(3)
+    expect(buf.size).toBe(3)
+    expect(buf.read()).toBe(1)
+    expect(buf.read()).toBeUndefined()
+    expect(buf.read()).toBe(3)
+  })
+
+  it('read clears buffer slot', () => {
+    const buf = new CircularBuffer<number>(3)
+    buf.write(1)
+    buf.write(2)
+    buf.write(3)
+    buf.read()
+    buf.write(4)
+    expect(buf.size).toBe(3)
+    expect(buf.toArray()).toEqual([2, 3, 4])
+  })
+})

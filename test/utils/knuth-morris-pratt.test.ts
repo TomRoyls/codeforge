@@ -66,6 +66,30 @@ describe('KnuthMorrisPratt', () => {
     it('finds repeated single char', () => {
       expect(KnuthMorrisPratt.search('aaaaa', 'a')).toEqual([0, 1, 2, 3, 4])
     })
+
+    it('handles pattern equals text exactly', () => {
+      expect(KnuthMorrisPratt.search('hello', 'hello')).toEqual([0])
+    })
+
+    it('handles pattern longer than text with different chars', () => {
+      expect(KnuthMorrisPratt.search('ab', 'abcdef')).toEqual([])
+    })
+
+    it('finds consecutive overlapping occurrences', () => {
+      expect(KnuthMorrisPratt.search('ababa', 'aba')).toEqual([0, 2])
+    })
+
+    it('handles numeric strings', () => {
+      expect(KnuthMorrisPratt.search('123123123', '123')).toEqual([0, 3, 6])
+    })
+
+    it('is case-sensitive', () => {
+      expect(KnuthMorrisPratt.search('Hello World', 'hello')).toEqual([])
+    })
+
+    it('finds pattern with repeated partial matches', () => {
+      expect(KnuthMorrisPratt.search('abcababcab', 'abcab')).toEqual([0, 5])
+    })
   })
 
   describe('buildLPS', () => {
@@ -100,6 +124,18 @@ describe('KnuthMorrisPratt', () => {
     it('prefix that is also suffix', () => {
       expect(KnuthMorrisPratt.buildLPS('abcabc')).toEqual([0, 0, 0, 1, 2, 3])
     })
+
+    it('handles pattern with partial match at different positions', () => {
+      expect(KnuthMorrisPratt.buildLPS('aabaaab')).toEqual([0, 1, 0, 1, 2, 2, 3])
+    })
+
+    it('handles pattern ending with repeated prefix', () => {
+      expect(KnuthMorrisPratt.buildLPS('abcabcabc')).toEqual([0, 0, 0, 1, 2, 3, 4, 5, 6])
+    })
+
+    it('handles pattern with single char repeated', () => {
+      expect(KnuthMorrisPratt.buildLPS('aaaab')).toEqual([0, 1, 2, 3, 0])
+    })
   })
 
   describe('contains', () => {
@@ -126,6 +162,14 @@ describe('KnuthMorrisPratt', () => {
     it('returns true for entire text match', () => {
       expect(KnuthMorrisPratt.contains('hello', 'hello')).toBe(true)
     })
+
+    it('returns true for pattern appearing multiple times', () => {
+      expect(KnuthMorrisPratt.contains('abcabcabc', 'abc')).toBe(true)
+    })
+
+    it('returns false for single char mismatch', () => {
+      expect(KnuthMorrisPratt.contains('a', 'b')).toBe(false)
+    })
   })
 
   describe('countOccurrences', () => {
@@ -148,6 +192,14 @@ describe('KnuthMorrisPratt', () => {
     it('counts single char occurrences', () => {
       expect(KnuthMorrisPratt.countOccurrences('abcabc', 'a')).toBe(2)
     })
+
+    it('returns 1 for exact match', () => {
+      expect(KnuthMorrisPratt.countOccurrences('hello', 'hello')).toBe(1)
+    })
+
+    it('counts all same characters', () => {
+      expect(KnuthMorrisPratt.countOccurrences('aaaaa', 'a')).toBe(5)
+    })
   })
 
   describe('firstOccurrence', () => {
@@ -169,6 +221,18 @@ describe('KnuthMorrisPratt', () => {
 
     it('returns correct index for repeated pattern', () => {
       expect(KnuthMorrisPratt.firstOccurrence('ababab', 'bab')).toBe(1)
+    })
+
+    it('returns -1 for pattern longer than text', () => {
+      expect(KnuthMorrisPratt.firstOccurrence('ab', 'abc')).toBe(-1)
+    })
+
+    it('returns -1 for empty text with non-empty pattern', () => {
+      expect(KnuthMorrisPratt.firstOccurrence('', 'a')).toBe(-1)
+    })
+
+    it('returns index for numeric strings', () => {
+      expect(KnuthMorrisPratt.firstOccurrence('123456', '345')).toBe(2)
     })
   })
 })
