@@ -525,3 +525,22 @@ describe('BloomFilter3', () => {
     expect(filter.equals(null)).toBe(false)
   })
 })
+  it('has returns false for non-added', () => {
+    const bf = new BloomFilter3(100)
+    expect(bf.has('missing')).toBe(false)
+  })
+
+  it('add and has', () => {
+    const bf = new BloomFilter3(100)
+    bf.add('hello')
+    expect(bf.has('hello')).toBe(true)
+  })
+
+  it('multiple adds', () => {
+    const bf = new BloomFilter3(100)
+    bf.add('a')
+    bf.add('b')
+    bf.add('c')
+    expect(bf.has('a')).toBe(true)
+    expect(bf.has('b')).toBe(true)
+  })

@@ -458,3 +458,22 @@ describe('BipartiteMatching', () => {
     expect(bm.edgeCount).toBe(1)
   })
 })
+  it('no edges returns 0 matches', () => {
+    const bm = new BipartiteMatching(2, 2)
+    expect(bm.maxMatching()).toBe(0)
+  })
+
+  it('single edge matches', () => {
+    const bm = new BipartiteMatching(2, 2)
+    bm.addEdge(0, 0)
+    expect(bm.maxMatching()).toBe(1)
+  })
+
+  it('complete bipartite matching', () => {
+    const bm = new BipartiteMatching(2, 2)
+    bm.addEdge(0, 0)
+    bm.addEdge(0, 1)
+    bm.addEdge(1, 0)
+    bm.addEdge(1, 1)
+    expect(bm.maxMatching()).toBe(2)
+  })

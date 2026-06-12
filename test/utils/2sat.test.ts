@@ -490,3 +490,22 @@ describe('TwoSAT', () => {
     expect(result).not.toBeNull()
   })
 })
+
+  it('single variable satisfied', () => {
+    const solver = new TwoSAT(1)
+    solver.addClause(0, true, 0, true)
+    expect(solver.solve()).not.toBeNull()
+  })
+
+  it('contradictory clauses unsatisfiable', () => {
+    const solver = new TwoSAT(1)
+    solver.addClause(0, true, 0, true)
+    solver.addClause(0, false, 0, false)
+    expect(solver.solve()).toBeNull()
+  })
+
+  it('two variables with implication', () => {
+    const solver = new TwoSAT(2)
+    solver.addClause(0, false, 1, true)
+    expect(solver.solve()).not.toBeNull()
+  })

@@ -600,3 +600,20 @@ describe('BinomialHeap equals', () => {
     expect(min.priority).toBe(2)
   })
 })
+  it('isEmpty on new heap', () => {
+    const heap = new BinomialHeap<number>()
+    expect(heap.isEmpty()).toBe(true)
+  })
+
+  it('peek on empty returns undefined', () => {
+    const heap = new BinomialHeap<number>()
+    expect(heap.peek()).toBeUndefined()
+  })
+
+  it('size tracks count', () => {
+    const heap = new BinomialHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    heap.push(3)
+    expect(heap.size).toBe(3)
+  })

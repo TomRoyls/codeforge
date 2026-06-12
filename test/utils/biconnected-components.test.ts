@@ -500,3 +500,23 @@ describe('BiconnectedComponents', () => {
     expect(ap).toContain(2)
   })
 })
+
+  it('single node has no biconnected components', () => {
+    const bc = new BiconnectedComponents(1)
+    expect(bc.findComponents()).toEqual([])
+  })
+
+  it('two connected nodes form one component', () => {
+    const bc = new BiconnectedComponents(2)
+    bc.addEdge(0, 1)
+    const comps = bc.findComponents()
+    expect(comps.length).toBe(1)
+  })
+
+  it('three nodes chain has components', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    const comps = bc.findComponents()
+    expect(comps.length).toBeGreaterThan(0)
+  })

@@ -436,4 +436,22 @@ describe('Centroid2D', () => {
     expect(c.x).toBeCloseTo(2)
     expect(c.y).toBeCloseTo(2)
   })
+
+  it('single point centroid', () => {
+    const c = Centroid2D.compute([{ x: 1, y: 2 }])
+    expect(c.x).toBe(1)
+    expect(c.y).toBe(2)
+  })
+
+  it('two points centroid', () => {
+    const c = Centroid2D.compute([{ x: 0, y: 0 }, { x: 4, y: 4 }])
+    expect(c.x).toBe(2)
+    expect(c.y).toBe(2)
+  })
+
+  it('compute empty returns zero', () => {
+    const c = Centroid2D.compute([])
+    expect(c.x).toBe(0)
+    expect(c.y).toBe(0)
+  })
 })

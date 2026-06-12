@@ -381,3 +381,20 @@ describe('AhoCorasickMulti', () => {
     expect(ac.equals(null)).toBe(false)
   })
 })
+
+  it('empty patterns returns empty map', () => {
+    const ac = new AhoCorasickMulti([])
+    expect(ac.search('hello').size).toBe(0)
+  })
+
+  it('single character pattern', () => {
+    const ac = new AhoCorasickMulti(['a'])
+    const matches = ac.search('abc')
+    expect(matches.size).toBe(1)
+  })
+
+  it('overlapping patterns', () => {
+    const ac = new AhoCorasickMulti(['ab', 'bc'])
+    const matches = ac.search('abc')
+    expect(matches.size).toBe(2)
+  })

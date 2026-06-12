@@ -529,3 +529,24 @@ describe('BloomierFilter stats additional', () => {
     expect(bf.capacity).toBeGreaterThanOrEqual(bf.size)
   })
 })
+
+  it('create with empty map', () => {
+    const bf = BloomierFilter.create(new Map<string, number>())
+    expect(bf).toBeDefined()
+  })
+
+  it('create with entries', () => {
+    const entries = new Map<string, number>()
+    entries.set('a', 1)
+    entries.set('b', 2)
+    entries.set('c', 3)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get('a')).toBe(1)
+  })
+
+  it('get returns undefined for missing', () => {
+    const entries = new Map<string, number>()
+    entries.set('x', 10)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.get('missing')).toBeUndefined()
+  })

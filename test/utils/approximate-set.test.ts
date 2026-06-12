@@ -392,3 +392,21 @@ describe('ApproximateSet', () => {
     expect(s.has('日本語')).toBe(true)
   })
 })
+
+  it('has returns false for non-member', () => {
+    const s = new ApproximateSet(100)
+    expect(s.has('missing')).toBe(false)
+  })
+
+  it('add and has returns true', () => {
+    const s = new ApproximateSet(100)
+    s.add('hello')
+    expect(s.has('hello')).toBe(true)
+  })
+
+  it('count returns count', () => {
+    const s = new ApproximateSet(100)
+    s.add('a')
+    s.add('b')
+    expect(s.count).toBe(2)
+  })

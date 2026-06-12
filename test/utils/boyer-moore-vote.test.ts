@@ -259,3 +259,15 @@ describe('BoyerMooreVote', () => {
     expect(result).toContain(5)
   })
 })
+
+  it('no majority returns null', () => {
+    expect(BoyerMooreVote.findMajority([1, 2, 3])).toBeNull()
+  })
+
+  it('finds majority element', () => {
+    expect(BoyerMooreVote.findMajority([1, 1, 2, 1, 3, 1])).toBe(1)
+  })
+
+  it('single element is majority', () => {
+    expect(BoyerMooreVote.findMajority([5])).toBe(5)
+  })

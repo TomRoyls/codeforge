@@ -500,3 +500,24 @@ describe('BTree height', () => {
     expect(tree.height).toBeGreaterThan(0)
   })
 })
+
+  it('contains returns false for missing', () => {
+    const bt = new BTree<number, string>(3)
+    expect(bt.contains(99)).toBe(false)
+  })
+
+  it('delete removes key', () => {
+    const bt = new BTree<number, string>(3)
+    bt.insert(1, 'a')
+    bt.insert(2, 'b')
+    bt.delete(1)
+    expect(bt.contains(1)).toBe(false)
+  })
+
+  it('size tracks count', () => {
+    const bt = new BTree<number, string>(3)
+    bt.insert(1, 'a')
+    bt.insert(2, 'b')
+    bt.insert(3, 'c')
+    expect(bt.size).toBe(3)
+  })

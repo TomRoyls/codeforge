@@ -274,3 +274,16 @@ describe('CartesianProduct', () => {
     expect(result).toEqual([[]])
   })
 })
+
+  it('empty input returns single empty', () => {
+    expect(CartesianProduct.generate()).toEqual([[]])
+  })
+
+  it('single set', () => {
+    expect(CartesianProduct.generate([1, 2])).toEqual([[1], [2]])
+  })
+
+  it('two sets', () => {
+    const result = CartesianProduct.generate([1], [2, 3])
+    expect(result).toEqual([[1, 2], [1, 3]])
+  })

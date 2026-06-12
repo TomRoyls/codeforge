@@ -426,3 +426,21 @@ describe('ARCCache', () => {
     expect(cache.equals(null)).toBe(false)
   })
 })
+
+  it('get returns undefined for missing', () => {
+    const cache = new ARCCache<string, number>(10)
+    expect(cache.get('missing')).toBeUndefined()
+  })
+
+  it('set and get', () => {
+    const cache = new ARCCache<string, number>(10)
+    cache.set('key', 42)
+    expect(cache.get('key')).toBe(42)
+  })
+
+  it('size tracks entries', () => {
+    const cache = new ARCCache<string, number>(10)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.size).toBe(2)
+  })

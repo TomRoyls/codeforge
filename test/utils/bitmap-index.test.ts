@@ -412,3 +412,22 @@ describe('BitmapIndex', () => {
     expect(index.documentCount).toBe(0)
   })
 })
+  it('empty bitmap returns empty result', () => {
+    const bi = new BitmapIndex()
+    expect(bi.query('missing')).toEqual([])
+  })
+
+  it('add and query', () => {
+    const bi = new BitmapIndex()
+    bi.add(0, 'a')
+    bi.add(1, 'a')
+    expect(bi.query('a').sort()).toEqual([0, 1])
+  })
+
+  it('multiple values for same id', () => {
+    const bi = new BitmapIndex()
+    bi.add(0, 'x')
+    bi.add(0, 'y')
+    expect(bi.query('x')).toContain(0)
+    expect(bi.query('y')).toContain(0)
+  })

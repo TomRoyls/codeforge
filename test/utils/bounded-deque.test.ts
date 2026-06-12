@@ -439,3 +439,24 @@ describe('BoundedDeque', () => {
     expect(dq1.equals(dq2)).toBe(false)
   })
 })
+
+  it('push drops oldest when full', () => {
+    const bd = new BoundedDeque<number>(3)
+    bd.pushBack(1)
+    bd.pushBack(2)
+    bd.pushBack(3)
+    bd.pushBack(4)
+    expect(bd.size).toBe(3)
+  })
+
+  it('pushFront prepends', () => {
+    const bd = new BoundedDeque<number>(5)
+    bd.pushFront(1)
+    bd.pushFront(2)
+    expect(bd.front()).toBe(2)
+  })
+
+  it('isEmpty on new deque', () => {
+    const bd = new BoundedDeque<number>(5)
+    expect(bd.isEmpty()).toBe(true)
+  })

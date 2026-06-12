@@ -541,3 +541,23 @@ describe('BinaryHeap equals edge cases', () => {
     expect(h.size).toBe(1)
   })
 })
+
+  it('isEmpty on new heap', () => {
+    const heap = new BinaryHeap<number>()
+    expect(heap.isEmpty()).toBe(true)
+  })
+
+  it('peek on empty returns undefined', () => {
+    const heap = new BinaryHeap<number>()
+    expect(heap.peek()).toBeUndefined()
+  })
+
+  it('pop returns elements in order', () => {
+    const heap = new BinaryHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    heap.push(2)
+    expect(heap.pop()).toBe(1)
+    expect(heap.pop()).toBe(2)
+    expect(heap.pop()).toBe(3)
+  })

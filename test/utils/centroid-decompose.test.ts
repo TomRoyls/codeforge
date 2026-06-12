@@ -617,4 +617,28 @@ describe('CentroidDecomposition', () => {
     expect(parent.length).toBe(7)
     expect(depth.length).toBe(7)
   })
+
+  it('single node decomposes to itself', () => {
+    const cd = new CentroidDecomposition(1)
+    const result = cd.decompose()
+    expect(result).toBeDefined()
+  })
+
+  it('chain decomposes correctly', () => {
+    const cd = new CentroidDecomposition(3)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    const result = cd.decompose()
+    expect(result.parent.length).toBe(3)
+  })
+
+  it('star graph decomposes', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 1)
+    cd.addEdge(0, 2)
+    cd.addEdge(0, 3)
+    cd.addEdge(0, 4)
+    const result = cd.decompose()
+    expect(result.parent.length).toBe(5)
+  })
 })

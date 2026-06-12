@@ -464,3 +464,19 @@ describe('CartesianProductGraph', () => {
     expect(cg.productEdgeCount()).toBe(0)
   })
 })
+  it('single nodes cartesian product', () => {
+    const cpg = new CartesianProductGraph(1, 1)
+    expect(cpg).toBeDefined()
+  })
+
+  it('node count is product', () => {
+    const cpg = new CartesianProductGraph(2, 3)
+    expect(cpg.productNodeCount()).toBe(6)
+  })
+
+  it('small product has edges', () => {
+    const cpg = new CartesianProductGraph(2, 2)
+    cpg.addEdgeG1(0, 1)
+    cpg.addEdgeG2(0, 1)
+    expect(cpg.productEdgeCount()).toBeGreaterThan(0)
+  })
