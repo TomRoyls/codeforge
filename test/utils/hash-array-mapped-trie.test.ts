@@ -474,4 +474,18 @@ describe('HashArrayMappedTrie', () => {
   it('isEmpty is true for new trie', () => {
     expect(new HashArrayMappedTrie<string, number>().isEmpty).toBe(true)
   })
+  it('empty trie size is 0', () => {
+    const t = HashArrayMappedTrie.empty<string, number>()
+    expect(t.size).toBe(0)
+  })
+
+  it('set and get', () => {
+    const t = HashArrayMappedTrie.empty<string, number>().set('a', 1)
+    expect(t.get('a')).toBe(1)
+  })
+
+  it('has returns boolean', () => {
+    const t = HashArrayMappedTrie.empty<string, number>()
+    expect(t.has('missing')).toBe(false)
+  })
 })

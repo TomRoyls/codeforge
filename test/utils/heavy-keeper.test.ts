@@ -424,4 +424,20 @@ describe('HeavyKeeper', () => {
     const c = hk.clone()
     expect(c.equals(hk)).toBe(true)
   })
+  it('new keeper isEmpty', () => {
+    const hk = new HeavyKeeper()
+    expect(hk.isEmpty()).toBe(true)
+  })
+
+  it('update and estimate', () => {
+    const hk = new HeavyKeeper()
+    hk.update('a', 5)
+    expect(hk.estimate('a')).toBeGreaterThanOrEqual(0)
+  })
+
+  it('heavyHitters returns array', () => {
+    const hk = new HeavyKeeper()
+    hk.update('a', 10)
+    expect(Array.isArray(hk.heavyHitters(0.5))).toBe(true)
+  })
 })

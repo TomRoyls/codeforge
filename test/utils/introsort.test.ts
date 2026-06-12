@@ -344,4 +344,16 @@ describe('Introsort', () => {
   it('handles already sorted input', () => {
     expect(Introsort.sort([1, 2, 3, 4], (a, b) => a - b)).toEqual([1, 2, 3, 4])
   })
+
+  it('sort empty array', () => {
+    expect(Introsort.sort([], (a, b) => a - b)).toEqual([])
+  })
+
+  it('sort single element', () => {
+    expect(Introsort.sort([5], (a, b) => a - b)).toEqual([5])
+  })
+
+  it('sort reversed', () => {
+    expect(Introsort.sort([3, 2, 1], (a, b) => a - b)).toEqual([1, 2, 3])
+  })
 })

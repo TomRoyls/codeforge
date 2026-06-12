@@ -398,4 +398,21 @@ describe('GraphEntropy', () => {
     expect(cc).toBeGreaterThanOrEqual(0)
     expect(cc).toBeLessThanOrEqual(1)
   })
+
+  it('empty graph entropy is 0', () => {
+    const ge = new GraphEntropy(1)
+    expect(ge.degreeEntropy()).toBe(0)
+  })
+
+  it('two node graph', () => {
+    const ge = new GraphEntropy(2)
+    ge.addEdge(0, 1)
+    expect(ge.degreeEntropy()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('clusteringCoefficient returns number', () => {
+    const ge = new GraphEntropy(3)
+    ge.addEdge(0, 1)
+    expect(typeof ge.clusteringCoefficient()).toBe('number')
+  })
 })

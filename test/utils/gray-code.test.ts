@@ -323,4 +323,16 @@ describe('GrayCode', () => {
       expect(GrayCode.grayToBinary(GrayCode.binaryToGray(i))).toBe(i)
     }
   })
+
+  it('generate n=1', () => {
+    expect(GrayCode.generate(1)).toEqual(['0', '1'])
+  })
+
+  it('generate n=2', () => {
+    expect(GrayCode.generate(2).length).toBe(4)
+  })
+
+  it('generateNumbers n=2', () => {
+    expect(GrayCode.generateNumbers(2).length).toBe(4)
+  })
 })

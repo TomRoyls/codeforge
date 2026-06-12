@@ -386,4 +386,17 @@ describe('EulerianPath', () => {
     expect(json).toHaveProperty('path')
     expect(json).toHaveProperty('isEulerian')
   })
+
+  it('hasEulerianCircuit single node', () => {
+    expect(EulerianPath.hasEulerianCircuit([[]])).toBe(true)
+  })
+
+  it('hasEulerianPath disconnected', () => {
+    expect(EulerianPath.hasEulerianPath([[], []])).toBe(false)
+  })
+
+  it('constructor with adjacency', () => {
+    const ep = new EulerianPath([[1], [0]])
+    expect(ep).toBeDefined()
+  })
 })

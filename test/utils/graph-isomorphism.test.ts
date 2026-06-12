@@ -444,4 +444,20 @@ describe('GraphIsomorphism', () => {
     const gi = new GraphIsomorphism(2)
     expect(typeof gi.toString()).toBe('string')
   })
+
+  it('single node isomorphic to itself', () => {
+    const gi = new GraphIsomorphism(1)
+    expect(gi.isomorphic()).toBe(true)
+  })
+
+  it('two nodes no edges', () => {
+    const gi = new GraphIsomorphism(2)
+    expect(gi.isomorphic()).toBe(true)
+  })
+
+  it('degreeSequence returns array', () => {
+    const gi = new GraphIsomorphism(2)
+    const seq = gi.degreeSequence([new Set([1]), new Set([0])])
+    expect(Array.isArray(seq)).toBe(true)
+  })
 })

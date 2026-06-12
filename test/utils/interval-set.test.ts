@@ -451,4 +451,20 @@ describe('IntervalSet', () => {
     const is = new IntervalSet()
     expect(is.getTotalSpan()).toBe(0)
   })
+
+  it('new set contains nothing', () => {
+    const is = new IntervalSet()
+    expect(is.contains(5)).toBe(false)
+  })
+
+  it('add and contains', () => {
+    const is = new IntervalSet()
+    is.add({ start: 0, end: 10, startKind: 'closed', endKind: 'closed' })
+    expect(is.contains(5)).toBe(true)
+  })
+
+  it('getIntervals returns array', () => {
+    const is = new IntervalSet()
+    expect(Array.isArray(is.getIntervals())).toBe(true)
+  })
 })

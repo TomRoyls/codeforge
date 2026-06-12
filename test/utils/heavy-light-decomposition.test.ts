@@ -647,4 +647,19 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj)
     expect(hld.lca(1, 2)).toBe(0)
   })
+
+  it('single node HLD', () => {
+    const hld = new HeavyLightDecomposition([[]])
+    expect(hld).toBeDefined()
+  })
+
+  it('two node chain', () => {
+    const hld = new HeavyLightDecomposition([[1], [0]])
+    expect(hld).toBeDefined()
+  })
+
+  it('clone works', () => {
+    const hld = new HeavyLightDecomposition([[1], [0]])
+    expect(hld.clone()).toBeDefined()
+  })
 })

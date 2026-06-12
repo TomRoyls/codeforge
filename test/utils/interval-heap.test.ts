@@ -465,4 +465,19 @@ describe('IntervalHeap', () => {
     expect(merged.isEmpty).toBe(true)
     expect(merged.size).toBe(0)
   })
+  it('new heap peek undefined', () => {
+    const h = new IntervalHeap<number>()
+    expect(h.peek()).toBeUndefined()
+  })
+
+  it('insert and peek', () => {
+    const h = new IntervalHeap<number>()
+    h.insert(5, 'a')
+    expect(h.peek()).toBeDefined()
+  })
+
+  it('has returns boolean', () => {
+    const h = new IntervalHeap<number>()
+    expect(h.has('a')).toBe(false)
+  })
 })

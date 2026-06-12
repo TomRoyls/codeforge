@@ -437,4 +437,18 @@ describe('Hungarian', () => {
       expect(idx).toBeGreaterThanOrEqual(0)
     }
   })
+
+  it('1x1 solve', () => {
+    expect(Hungarian.solve([[5]])).toEqual({ assignment: [0], totalCost: 5 })
+  })
+
+  it('2x2 solve', () => {
+    const result = Hungarian.solve([[1, 2], [3, 4]])
+    expect(result.totalCost).toBe(1 + 4)
+  })
+
+  it('returns assignment array', () => {
+    const result = Hungarian.solve([[1]])
+    expect(Array.isArray(result.assignment)).toBe(true)
+  })
 })

@@ -556,4 +556,23 @@ describe('HungarianAssignment', () => {
     const result = ha.solve()
     expect(result.totalCost).toBe(7)
   })
+
+  it('1x1 assignment', () => {
+    const ha = new HungarianAssignment(1, 1)
+    ha.setCost(0, 0, 5)
+    const result = ha.solve()
+    expect(result.totalCost).toBe(5)
+  })
+
+  it('solveGreedy returns result', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1)
+    ha.setCost(1, 1, 2)
+    expect(ha.solveGreedy()).toBeDefined()
+  })
+
+  it('clone works', () => {
+    const ha = new HungarianAssignment(2, 2)
+    expect(ha.clone()).toBeDefined()
+  })
 })

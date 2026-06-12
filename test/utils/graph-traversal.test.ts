@@ -383,4 +383,19 @@ describe('GraphTraversal', () => {
     const cc = GraphTraversal.connectedComponents(adj)
     expect(cc.length).toBe(2)
   })
+
+  it('bfs single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(GraphTraversal.bfs(adj, 0)).toEqual([0])
+  })
+
+  it('dfs single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(GraphTraversal.dfs(adj, 0)).toEqual([0])
+  })
+
+  it('bfs two nodes', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    expect(GraphTraversal.bfs(adj, 0)).toEqual([0, 1])
+  })
 })

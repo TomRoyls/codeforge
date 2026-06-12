@@ -420,4 +420,22 @@ describe('HyperLogLog - edge cases', () => {
     const b = new HyperLogLog(14)
     expect(a.equals(b)).toBe(false)
   })
+
+  it('new HLL count is 0', () => {
+    const hll = new HyperLogLog()
+    expect(hll.count()).toBe(0)
+  })
+
+  it('add and count', () => {
+    const hll = new HyperLogLog()
+    hll.add('a')
+    expect(hll.count()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('reset clears', () => {
+    const hll = new HyperLogLog()
+    hll.add('a')
+    hll.reset()
+    expect(hll.count()).toBe(0)
+  })
 })

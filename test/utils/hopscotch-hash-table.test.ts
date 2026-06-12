@@ -476,4 +476,19 @@ describe('HopscotchHashTable', () => {
     table.clear()
     expect(table.isEmpty()).toBe(true)
   })
+  it('new table isEmpty', () => {
+    const t = new HopscotchHashTable<string, number>()
+    expect(t.isEmpty()).toBe(true)
+  })
+
+  it('set and get', () => {
+    const t = new HopscotchHashTable<string, number>()
+    t.set('a', 1)
+    expect(t.get('a')).toBe(1)
+  })
+
+  it('has returns boolean', () => {
+    const t = new HopscotchHashTable<string, number>()
+    expect(t.has('missing')).toBe(false)
+  })
 })

@@ -357,4 +357,16 @@ describe('hash64 - additional', () => {
       expect(typeof fnv1a('', 0)).toBe('number')
     })
   })
+
+  it('hash64 returns number', () => {
+    expect(typeof hash64('test', 0)).toBe('number')
+  })
+
+  it('fnv1a returns number', () => {
+    expect(typeof fnv1a('test', 0)).toBe('number')
+  })
+
+  it('hash64 deterministic', () => {
+    expect(hash64('hello', 0)).toBe(hash64('hello', 0))
+  })
 })
