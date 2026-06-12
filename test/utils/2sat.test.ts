@@ -453,4 +453,40 @@ describe('TwoSAT', () => {
     ts.addClause(3, false, 18, false)
     expect(ts.solve()).not.toBeNull()
   })
+
+  it('implication chain x1 -> x2 -> x3 with all true', () => {
+    const ts = new TwoSAT(3)
+    ts.addClause(0, true, 1, false)
+    ts.addClause(1, true, 2, false)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    if (result) {
+      expect(result[0] || result[1]).toBe(true)
+      expect(result[1] || result[2]).toBe(true)
+    }
+  })
+
+  it('x AND NOT x is unsatisfiable', () => {
+    const ts = new TwoSAT(1)
+    ts.addClause(0, false, 0, false)
+    ts.addClause(0, true, 0, true)
+    expect(ts.solve()).toBeNull()
+  })
+
+  it('returns assignment of correct length', () => {
+    const ts = new TwoSAT(5)
+    ts.addClause(0, false, 1, false)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    expect(result!.length).toBe(5)
+  })
+
+  it('clauses with negated variables only', () => {
+    const ts = new TwoSAT(3)
+    ts.addClause(0, true, 1, true)
+    ts.addClause(1, true, 2, true)
+    ts.addClause(0, true, 2, true)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+  })
 })

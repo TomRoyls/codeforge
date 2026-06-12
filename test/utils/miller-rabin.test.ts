@@ -336,4 +336,20 @@ describe('MillerRabin', () => {
     expect(MillerRabin.isPrime(9509)).toBe(false)
     expect(MillerRabin.isPrime(10403)).toBe(false)
   })
+
+  it('2 is prime', () => {
+    expect(MillerRabin.isPrime(2)).toBe(true)
+  })
+
+  it('3 is prime', () => {
+    expect(MillerRabin.isPrime(3)).toBe(true)
+  })
+
+  it('1 is not prime', () => {
+    expect(MillerRabin.isPrime(1)).toBe(false)
+  })
+
+  it('large prime 9973', () => {
+    expect(MillerRabin.isPrime(9973)).toBe(true)
+  })
 })

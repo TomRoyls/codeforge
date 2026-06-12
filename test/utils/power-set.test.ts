@@ -309,4 +309,26 @@ describe('PowerSet', () => {
     expect(PowerSet.count(4)).toBe(16)
     expect(PowerSet.count(0)).toBe(1)
   })
+
+  it('bySize groups subsets by cardinality', () => {
+    const map = PowerSet.bySize(['a', 'b'])
+    expect(map.get(0)).toEqual([[]])
+    expect(map.get(1)!.length).toBe(2)
+    expect(map.get(2)).toEqual([['a', 'b']])
+  })
+
+  it('lazy yields same as generate', () => {
+    const arr = [1, 2]
+    const eager = PowerSet.generate(arr)
+    const lazy = [...PowerSet.lazy(arr)]
+    expect(lazy).toEqual(eager)
+  })
+
+  it('generate for empty array returns [[]]', () => {
+    expect(PowerSet.generate([])).toEqual([[]])
+  })
+
+  it('count for 10 is 1024', () => {
+    expect(PowerSet.count(10)).toBe(1024)
+  })
 })

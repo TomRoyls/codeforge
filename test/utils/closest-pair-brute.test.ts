@@ -449,4 +449,39 @@ describe('ClosestPairBrute', () => {
     expect(result).not.toBeNull()
     expect(result!.distance).toBeCloseTo(Math.sqrt(2), 5)
   })
+
+  it('findKNearest returns k pairs sorted by distance', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 0)
+    cp.addPoint(3, 0)
+    cp.addPoint(6, 0)
+    const pairs = cp.findKNearest(2)
+    expect(pairs.length).toBe(2)
+    expect(pairs[0]!.distance).toBeLessThanOrEqual(pairs[1]!.distance)
+  })
+
+  it('minimumSpanningTreeLength for triangle', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 0)
+    cp.addPoint(0, 1)
+    const mst = cp.minimumSpanningTreeLength()
+    expect(mst).toBeCloseTo(2, 5)
+  })
+
+  it('size tracks point count', () => {
+    const cp = new ClosestPairBrute()
+    expect(cp.size).toBe(0)
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 1)
+    expect(cp.size).toBe(2)
+  })
+
+  it('findClosest with identical points returns 0 distance', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(5, 5)
+    cp.addPoint(5, 5)
+    expect(cp.findClosest()!.distance).toBe(0)
+  })
 })

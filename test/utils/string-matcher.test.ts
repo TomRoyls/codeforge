@@ -463,4 +463,35 @@ describe('StringMatcher', () => {
     expect(results).toHaveLength(1)
     expect(results[0]!.id).toBe('custom-id')
   })
+
+  it('containsAny returns false when no patterns match', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('xyz')
+    sm.build()
+    expect(sm.containsAny('hello world')).toBe(false)
+  })
+
+  it('containsAny returns true when pattern matches', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('hello')
+    sm.build()
+    expect(sm.containsAny('hello world')).toBe(true)
+  })
+
+  it('clear removes all patterns', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('test')
+    sm.clear()
+    sm.build()
+    expect(sm.search('test')).toEqual([])
+  })
+
+  it('search finds multiple patterns', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('ab')
+    sm.addPattern('bc')
+    sm.build()
+    const results = sm.search('abc')
+    expect(results.length).toBe(2)
+  })
 })

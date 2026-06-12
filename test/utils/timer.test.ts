@@ -409,4 +409,29 @@ describe('Timer', () => {
       }),
     ).rejects.toThrow(customError)
   })
+
+  it('measure returns result and elapsed time', () => {
+    const { result, elapsed } = Timer.measure(() => 42)
+    expect(result).toBe(42)
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('measure handles slow function', () => {
+    const { elapsed } = Timer.measure(() => {
+      let sum = 0
+      for (let i = 0; i < 1000000; i++) sum += i
+      return sum
+    })
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('measureAsync returns result', async () => {
+    const { result, elapsed } = await Timer.measureAsync(async () => 'hello')
+    expect(result).toBe('hello')
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('measure with function that throws', () => {
+    expect(() => Timer.measure(() => { throw new Error('boom') })).toThrow('boom')
+  })
 })

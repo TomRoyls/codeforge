@@ -297,4 +297,25 @@ describe('SqrtDecompRange', () => {
     sd.update(2, 10)
     expect(sd.rangeSum(0, 4)).toBe(22)
   })
+
+  it('rangeMin returns minimum in range', () => {
+    const sd = new SqrtDecompRange([5, 3, 8, 1, 4])
+    expect(sd.rangeMin(0, 4)).toBe(1)
+  })
+
+  it('rangeMax returns maximum in range', () => {
+    const sd = new SqrtDecompRange([5, 3, 8, 1, 4])
+    expect(sd.rangeMax(0, 4)).toBe(8)
+  })
+
+  it('update changes value', () => {
+    const sd = new SqrtDecompRange([1, 2, 3])
+    sd.update(1, 10)
+    expect(sd.rangeSum(0, 2)).toBe(14)
+  })
+
+  it('rangeSum for single element', () => {
+    const sd = new SqrtDecompRange([10, 20, 30])
+    expect(sd.rangeSum(1, 1)).toBe(20)
+  })
 })

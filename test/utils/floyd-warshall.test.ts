@@ -463,4 +463,29 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath([], 1)
     expect(dist[0]![0]).toBe(0)
   })
+
+  it('transitiveClosure for direct edges', () => {
+    const edges = [{ from: 0, to: 1 }, { from: 1, to: 2 }]
+    const tc = FloydWarshall.transitiveClosure(edges, 3)
+    expect(tc[0]![1]).toBe(true)
+    expect(tc[0]![2]).toBe(true)
+    expect(tc[2]![0]).toBe(false)
+  })
+
+  it('hasNegativeCycle returns false for positive weights', () => {
+    const edges = [{ from: 0, to: 1, weight: 1 }]
+    expect(FloydWarshall.hasNegativeCycle(edges, 2)).toBe(false)
+  })
+
+  it('allPairsShortestPath diagonal is 0', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const dist = FloydWarshall.allPairsShortestPath(edges, 3)
+    expect(dist[1]![1]).toBe(0)
+    expect(dist[2]![2]).toBe(0)
+  })
+
+  it('allPairsShortestPath unreachable is Infinity', () => {
+    const dist = FloydWarshall.allPairsShortestPath([], 3)
+    expect(dist[0]![1]).toBe(Infinity)
+  })
 })

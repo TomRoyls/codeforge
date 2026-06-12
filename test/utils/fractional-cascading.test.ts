@@ -337,4 +337,28 @@ describe('FractionalCascading', () => {
     expect(result[0]).toBeGreaterThanOrEqual(0)
     expect(result[0]).toBeLessThan(5000)
   })
+
+  it('search in empty lists returns empty array', () => {
+    const fc = new FractionalCascading([])
+    expect(fc.search(5)).toEqual([])
+  })
+
+  it('search finds element in single list', () => {
+    const fc = new FractionalCascading([[1, 3, 5]])
+    const result = fc.search(3)
+    expect(result.length).toBe(1)
+    expect(result[0]).toBe(1)
+  })
+
+  it('search returns -1 for missing element', () => {
+    const fc = new FractionalCascading([[1, 3, 5]])
+    const result = fc.search(4)
+    expect(result[0]).toBe(-1)
+  })
+
+  it('constructor sorts unsorted input lists', () => {
+    const fc = new FractionalCascading([[5, 1, 3]])
+    const result = fc.search(3)
+    expect(result[0]).toBe(1)
+  })
 })

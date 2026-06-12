@@ -291,4 +291,26 @@ describe('StringHash', () => {
     const sh = new StringHash('abcdef')
     expect(sh.equals(0, 2, 3, 4)).toBe(false)
   })
+
+  it('hash returns consistent values for same substring', () => {
+    const sh = new StringHash('abcabc')
+    expect(sh.hash(0, 2)).toBe(sh.hash(3, 5))
+  })
+
+  it('hash of empty substring is defined', () => {
+    const sh = new StringHash('abc')
+    const h = sh.hash(0, 0)
+    expect(h).toBeDefined()
+  })
+
+  it('equals returns true for identical single chars', () => {
+    const sh = new StringHash('aaa')
+    expect(sh.equals(0, 0, 1, 1)).toBe(true)
+  })
+
+  it('handles string with special characters', () => {
+    const sh = new StringHash('hello world!')
+    expect(sh.hash(0, 4)).toBeDefined()
+    expect(sh.hash(6, 10)).toBeDefined()
+  })
 })

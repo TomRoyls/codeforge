@@ -392,4 +392,31 @@ describe('RecentCounter', () => {
     expect(rc.ping(30)).toBe(3)
     expect(rc.count(30)).toBe(3)
   })
+
+  it('reset clears all pings', () => {
+    const rc = new RecentCounter(10)
+    rc.ping(5)
+    rc.ping(8)
+    rc.reset()
+    expect(rc.count(9)).toBe(0)
+  })
+
+  it('compact removes old entries', () => {
+    const rc = new RecentCounter(10)
+    rc.ping(1)
+    rc.ping(5)
+    const removed = rc.compact()
+    expect(removed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('count with no pings is 0', () => {
+    const rc = new RecentCounter(10)
+    expect(rc.count()).toBe(0)
+  })
+
+  it('multiple pings within window', () => {
+    const rc = new RecentCounter(100)
+    for (let i = 0; i < 10; i++) rc.ping(i)
+    expect(rc.count(50)).toBe(10)
+  })
 })

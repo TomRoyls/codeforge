@@ -502,4 +502,42 @@ describe('BinaryHeap equals edge cases', () => {
     maxHeap.push(3)
     expect(minHeap.equals(maxHeap)).toBe(false)
   })
+
+  it('handles objects with custom comparator', () => {
+    const heap = new BinaryHeap<{ priority: number }>({
+      comparator: (a, b) => a.priority - b.priority,
+    })
+    heap.push({ priority: 3 })
+    heap.push({ priority: 1 })
+    heap.push({ priority: 2 })
+    expect(heap.pop()!.priority).toBe(1)
+    expect(heap.pop()!.priority).toBe(2)
+  })
+
+  it('clear resets size to 0', () => {
+    const h = new BinaryHeap<number>()
+    h.push(1)
+    h.push(2)
+    h.clear()
+    expect(h.size).toBe(0)
+    expect(h.isEmpty()).toBe(true)
+  })
+
+  it('clone is independent of original', () => {
+    const h = new BinaryHeap<number>()
+    h.push(10)
+    h.push(20)
+    const c = h.clone()
+    h.pop()
+    expect(c.size).toBe(2)
+    expect(h.size).toBe(1)
+  })
+
+  it('toArray returns copy not reference', () => {
+    const h = new BinaryHeap<number>()
+    h.push(1)
+    const arr = h.toArray()
+    arr.push(999)
+    expect(h.size).toBe(1)
+  })
 })

@@ -285,4 +285,22 @@ describe('QuickSelect', () => {
       expect(result1.left.length + result1.right.length).toBe(3)
     })
   })
+
+  it('median for odd-length array', () => {
+    expect(QuickSelect.median([3, 1, 2])).toBe(2)
+  })
+
+  it('kthSmallest returns kth element', () => {
+    expect(QuickSelect.kthSmallest([5, 3, 1, 4, 2], 0)).toBe(1)
+    expect(QuickSelect.kthSmallest([5, 3, 1, 4, 2], 4)).toBe(5)
+  })
+
+  it('kthLargest returns kth element from end', () => {
+    expect(QuickSelect.kthLargest([5, 3, 1, 4, 2], 0)).toBe(5)
+    expect(QuickSelect.kthLargest([5, 3, 1, 4, 2], 4)).toBe(1)
+  })
+
+  it('select handles single element', () => {
+    expect(QuickSelect.select([42], 0)).toBe(42)
+  })
 })

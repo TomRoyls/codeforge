@@ -320,4 +320,22 @@ describe('RandomWalk', () => {
     const positions = [{ x: -1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: 1 }]
     expect(RandomWalk.uniquePositions2D(positions)).toBe(2)
   })
+
+  it('maxDistance1D computes maximum deviation', () => {
+    expect(RandomWalk.maxDistance1D([0, 1, 2, 1, 0])).toBe(2)
+  })
+
+  it('finalPosition1D returns last position', () => {
+    expect(RandomWalk.finalPosition1D([0, 1, 0, -1])).toBe(-1)
+  })
+
+  it('returnsToOrigin1D detects return', () => {
+    expect(RandomWalk.returnsToOrigin1D([0, 1, 0])).toBe(true)
+    expect(RandomWalk.returnsToOrigin1D([0, 1, 2])).toBe(false)
+  })
+
+  it('simulateMultiple1D returns correct number of walks', () => {
+    const results = RandomWalk.simulateMultiple1D(10, 5, () => () => 0.5)
+    expect(results.length).toBe(5)
+  })
 })

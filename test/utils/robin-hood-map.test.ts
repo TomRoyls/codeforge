@@ -431,4 +431,31 @@ describe('RobinHopMap', () => {
     expect(map.delete('x')).toBe(true)
     expect(map.get('x')).toBeUndefined()
   })
+
+  it('clear empties the map', () => {
+    const map = new RobinHoodMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    map.clear()
+    expect(map.size).toBe(0)
+  })
+
+  it('maxPSL returns non-negative value', () => {
+    const map = new RobinHoodMap<string, number>()
+    map.set('a', 1)
+    expect(map.maxPSL()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('capacity is positive after creation', () => {
+    const map = new RobinHoodMap<string, number>(32)
+    expect(map.capacity).toBeGreaterThanOrEqual(32)
+  })
+
+  it('overwrites existing key', () => {
+    const map = new RobinHoodMap<string, number>()
+    map.set('a', 1)
+    map.set('a', 2)
+    expect(map.get('a')).toBe(2)
+    expect(map.size).toBe(1)
+  })
 })

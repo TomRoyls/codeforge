@@ -456,4 +456,34 @@ describe('StopWatch', () => {
     expect(r2.duration).toBeGreaterThanOrEqual(0)
     expect(r3.duration).toBeGreaterThanOrEqual(0)
   })
+
+  it('lapCount tracks laps', () => {
+    const sw = new Stopwatch()
+    sw.start()
+    sw.lap('a')
+    sw.lap('b')
+    expect(sw.lapCount).toBe(2)
+  })
+
+  it('totalLapTime is sum of all laps', () => {
+    const sw = new Stopwatch()
+    sw.start()
+    sw.lap('a')
+    sw.lap('b')
+    expect(sw.totalLapTime).toBeGreaterThanOrEqual(0)
+  })
+
+  it('averageLapTime is non-negative', () => {
+    const sw = new Stopwatch()
+    sw.start()
+    sw.lap('x')
+    expect(sw.averageLapTime).toBeGreaterThanOrEqual(0)
+  })
+
+  it('formatResults returns string', () => {
+    const sw = new Stopwatch()
+    sw.start()
+    sw.lap('test')
+    expect(typeof sw.formatResults()).toBe('string')
+  })
 })

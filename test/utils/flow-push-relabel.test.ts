@@ -464,4 +464,26 @@ describe('FlowPushRelabel', () => {
     ]
     expect(FlowPushRelabel.maxFlow(edges, 0, 99, 100)).toBe(10)
   })
+
+  it('returns 0 when source equals sink', () => {
+    expect(FlowPushRelabel.maxFlow([], 0, 0, 1)).toBe(0)
+  })
+
+  it('handles single edge', () => {
+    const edges = [{ from: 0, to: 1, capacity: 7 }]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(7)
+  })
+
+  it('handles graph with disconnected sink', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 2, 3)).toBe(0)
+  })
+
+  it('handles parallel edges by summing capacity', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 1, capacity: 4 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(7)
+  })
 })

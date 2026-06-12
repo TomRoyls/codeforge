@@ -200,12 +200,38 @@ describe('MinCostFlow', () => {
     expect(result.flow).toBe(0)
   })
 
-  it('single edge with flow', () => {
+  it('single edge with cost', () => {
     const mcf = new MinCostFlow(2)
-    mcf.addEdge(0, 1, 5, 1)
+    mcf.addEdge(0, 1, 10, 5)
     const result = mcf.solve(0, 1)
-    expect(result.flow).toBe(5)
+    expect(result.flow).toBe(10)
+    expect(result.cost).toBe(50)
   })
+
+  it('getFlow returns flow for edge', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 10, 1)
+    mcf.solve(0, 1)
+    expect(mcf.getFlow(0)).toBe(10)
+  })
+
+  it('picks cheaper path when multiple exist', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 10)
+    mcf.addEdge(0, 2, 5, 1)
+    mcf.addEdge(1, 3, 5, 1)
+    mcf.addEdge(2, 3, 5, 1)
+    const result = mcf.solve(0, 3)
+    expect(result.flow).toBeGreaterThan(0)
+  })
+
+  it('maxFlow parameter limits flow', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 100, 1)
+    const result = mcf.solve(0, 1, 10)
+    expect(result.flow).toBe(10)
+  })
+})
 
   it('no path has zero flow', () => {
     const mcf = new MinCostFlow(2)

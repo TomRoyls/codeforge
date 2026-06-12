@@ -318,4 +318,25 @@ describe('LZCompression', () => {
       expect(LZCompression.decompress(tokens)).toBe(result)
     })
   })
+
+  it('compressRatio returns 0 for empty string', () => {
+    expect(LZCompression.compressRatio('')).toBe(0)
+  })
+
+  it('compressRatio is between 0 and 1 for non-empty', () => {
+    const ratio = LZCompression.compressRatio('abcabcabcabc')
+    expect(ratio).toBeGreaterThanOrEqual(0)
+    expect(ratio).toBeLessThanOrEqual(1)
+  })
+
+  it('compress and decompress roundtrip for repetitive data', () => {
+    const data = 'xyzxyzxyzxyz'
+    const tokens = LZCompression.compress(data)
+    expect(LZCompression.decompress(tokens)).toBe(data)
+  })
+
+  it('compress produces at least one token', () => {
+    const tokens = LZCompression.compress('hello')
+    expect(tokens.length).toBeGreaterThan(0)
+  })
 })

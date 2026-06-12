@@ -363,4 +363,32 @@ describe('ApproximateSet', () => {
     s1.add('b')
     expect(s1.equals(s2)).toBe(false)
   })
+
+  it('estimatedFalsePositiveRate starts near zero', () => {
+    const s = new ApproximateSet(1000)
+    expect(s.estimatedFalsePositiveRate).toBeLessThan(0.01)
+  })
+
+  it('estimatedFalsePositiveRate increases with more items', () => {
+    const s = new ApproximateSet(10, 0.01)
+    for (let i = 0; i < 50; i++) s.add(`item-${i}`)
+    const rate = s.estimatedFalsePositiveRate
+    expect(rate).toBeGreaterThan(0)
+  })
+
+  it('clone preserves hashCount', () => {
+    const s = new ApproximateSet(500)
+    s.add('x')
+    const c = s.clone()
+    expect(c.bitSize).toBe(s.bitSize)
+    expect(c.count).toBe(s.count)
+  })
+
+  it('handles unicode strings', () => {
+    const s = new ApproximateSet(100)
+    s.add('café')
+    s.add('日本語')
+    expect(s.has('café')).toBe(true)
+    expect(s.has('日本語')).toBe(true)
+  })
 })

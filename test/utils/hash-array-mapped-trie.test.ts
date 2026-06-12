@@ -452,4 +452,26 @@ describe('HashArrayMappedTrie', () => {
       expect(merged.get('other')).toBe(30)
     })
   })
+
+  it('keys returns all keys', () => {
+    const trie = new HashArrayMappedTrie<string, number>()
+      .set('a', 1).set('b', 2)
+    expect(trie.keys().sort()).toEqual(['a', 'b'])
+  })
+
+  it('values returns all values', () => {
+    const trie = new HashArrayMappedTrie<string, number>()
+      .set('x', 10).set('y', 20)
+    expect(trie.values().sort()).toEqual([10, 20])
+  })
+
+  it('entries returns key-value pairs', () => {
+    const trie = new HashArrayMappedTrie<string, number>()
+      .set('a', 1)
+    expect(trie.entries()).toEqual([['a', 1]])
+  })
+
+  it('isEmpty is true for new trie', () => {
+    expect(new HashArrayMappedTrie<string, number>().isEmpty).toBe(true)
+  })
 })

@@ -322,4 +322,27 @@ describe('Eertree', () => {
     expect(tree.hasPalindrome('a')).toBe(true)
     expect(tree.hasPalindrome('b')).toBe(true)
   })
+
+  it('nodeCount returns number of distinct palindromes', () => {
+    const tree = Eertree.build('abba')
+    expect(tree.nodeCount).toBeGreaterThan(0)
+  })
+
+  it('getPalindromes includes single characters', () => {
+    const tree = Eertree.build('abc')
+    const pals = tree.getPalindromes()
+    expect(pals).toContain('a')
+    expect(pals).toContain('b')
+    expect(pals).toContain('c')
+  })
+
+  it('hasPalindrome returns false for non-palindrome', () => {
+    const tree = Eertree.build('ab')
+    expect(tree.hasPalindrome('ab')).toBe(false)
+  })
+
+  it('build with empty string has 0 palindromes', () => {
+    const tree = Eertree.build('')
+    expect(tree.nodeCount).toBe(0)
+  })
 })

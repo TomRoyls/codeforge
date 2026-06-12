@@ -397,4 +397,29 @@ describe('NetworkFlow', () => {
     ]
     expect(NetworkFlow.maxFlow(edges, 0, 1, 2)).toBe(7)
   })
+
+  it('hasAugmentingPath returns true when path exists', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    expect(NetworkFlow.hasAugmentingPath(edges, 0, 1, 2)).toBe(true)
+  })
+
+  it('hasAugmentingPath returns false when no path', () => {
+    const edges: { from: number; to: number; capacity: number }[] = []
+    expect(NetworkFlow.hasAugmentingPath(edges, 0, 1, 2)).toBe(false)
+  })
+
+  it('maxFlow returns 0 for disconnected graph', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    expect(NetworkFlow.maxFlow(edges, 0, 2, 3)).toBe(0)
+  })
+
+  it('maxFlow with multiple paths', () => {
+    const edges = [
+      { from: 0, to: 2, capacity: 5 },
+      { from: 0, to: 3, capacity: 5 },
+      { from: 2, to: 1, capacity: 3 },
+      { from: 3, to: 1, capacity: 7 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 1, 4)).toBe(8)
+  })
 })

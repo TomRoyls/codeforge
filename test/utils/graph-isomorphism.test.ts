@@ -418,4 +418,30 @@ describe('GraphIsomorphism', () => {
     gi2.addEdgeG2(0, 1)
     expect(gi1.equals(gi2)).toBe(true)
   })
+
+  it('isomorphic returns false for different graph sizes', () => {
+    const gi = new GraphIsomorphism(2)
+    gi.addEdgeG1(0, 1)
+    expect(gi.isomorphic()).toBe(false)
+  })
+
+  it('degreeSequence returns correct degrees', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    gi.addEdgeG1(0, 2)
+    const seq = gi.degreeSequence(gi.toJSON() as any)
+    expect(seq).toBeDefined()
+  })
+
+  it('clone produces equal object', () => {
+    const gi = new GraphIsomorphism(3)
+    gi.addEdgeG1(0, 1)
+    const c = gi.clone()
+    expect(c.equals(gi)).toBe(true)
+  })
+
+  it('toString returns string', () => {
+    const gi = new GraphIsomorphism(2)
+    expect(typeof gi.toString()).toBe('string')
+  })
 })

@@ -345,4 +345,42 @@ describe('GraphTraversal', () => {
     expect(result.length).toBe(3)
     expect(new Set(result)).toEqual(new Set([0, 1, 2]))
   })
+
+  it('dfsIterative returns same nodes as dfs', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]],
+      [1, []],
+      [2, []],
+    ])
+    const dfs = GraphTraversal.dfs(adj, 0)
+    const dfsi = GraphTraversal.dfsIterative(adj, 0)
+    expect(new Set(dfs)).toEqual(new Set(dfsi))
+  })
+
+  it('shortestPathBFS returns null for unreachable', () => {
+    const adj = new Map<number, number[]>([
+      [0, []],
+      [1, []],
+    ])
+    expect(GraphTraversal.shortestPathBFS(adj, 0, 1)).toBeNull()
+  })
+
+  it('hasCycle returns false for tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]],
+      [1, []],
+      [2, []],
+    ])
+    expect(GraphTraversal.hasCycle(adj)).toBe(false)
+  })
+
+  it('connectedComponents with isolated nodes', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]],
+      [1, [0]],
+      [2, []],
+    ])
+    const cc = GraphTraversal.connectedComponents(adj)
+    expect(cc.length).toBe(2)
+  })
 })

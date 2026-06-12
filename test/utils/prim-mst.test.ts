@@ -461,4 +461,34 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.totalWeight).toBe(3)
   })
+
+  it('isConnected returns false for disconnected graph', () => {
+    const mst = new PrimMST(4)
+    mst.addEdge(0, 1, 1)
+    mst.addEdge(2, 3, 1)
+    expect(mst.isConnected()).toBe(false)
+  })
+
+  it('isConnected returns true for connected graph', () => {
+    const mst = new PrimMST(3)
+    mst.addEdge(0, 1, 1)
+    mst.addEdge(1, 2, 1)
+    expect(mst.isConnected()).toBe(true)
+  })
+
+  it('findMST for single node returns weight 0', () => {
+    const mst = new PrimMST(1)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(0)
+  })
+
+  it('findMST returns n-1 edges for n nodes', () => {
+    const mst = new PrimMST(4)
+    mst.addEdge(0, 1, 1)
+    mst.addEdge(1, 2, 2)
+    mst.addEdge(2, 3, 3)
+    mst.addEdge(0, 3, 10)
+    const result = mst.findMST()
+    expect(result.edges.length).toBe(3)
+  })
 })

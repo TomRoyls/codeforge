@@ -420,4 +420,28 @@ describe('TopK - edge cases', () => {
     expect(merged.has('a')).toBe(true)
     expect(merged.has('b')).toBe(true)
   })
+
+  it('getCount returns 0 for missing value', () => {
+    const tk = new TopK<string>(3)
+    expect(tk.getCount('missing')).toBe(0)
+  })
+
+  it('clear empties all data', () => {
+    const tk = new TopK<string>(3)
+    tk.add('a')
+    tk.clear()
+    expect(tk.isEmpty).toBe(true)
+  })
+
+  it('topValues returns just the values', () => {
+    const tk = new TopK<string>(3)
+    tk.add('x', 5)
+    tk.add('y', 3)
+    expect(tk.topValues).toContain('x')
+  })
+
+  it('k property returns configured k', () => {
+    const tk = new TopK<number>(7)
+    expect(tk.k).toBe(7)
+  })
 })

@@ -215,4 +215,21 @@ describe('KMP', () => {
   it('search handles long pattern at end', () => {
     expect(KMP.search('shortlong', 'long')).toEqual([5])
   })
+
+  it('contains returns true when pattern found', () => {
+    expect(KMP.contains('hello world', 'world')).toBe(true)
+  })
+
+  it('contains returns false when pattern not found', () => {
+    expect(KMP.contains('hello', 'world')).toBe(false)
+  })
+
+  it('countOccurrences counts all occurrences', () => {
+    expect(KMP.countOccurrences('ababab', 'ab')).toBe(3)
+  })
+
+  it('buildTable returns correct prefix table', () => {
+    expect(KMP.buildTable('abcdab')).toBeDefined()
+    expect(KMP.buildTable('abcdab').length).toBe(6)
+  })
 })

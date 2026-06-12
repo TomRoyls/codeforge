@@ -241,4 +241,21 @@ describe('BoyerMooreVote', () => {
       expect(result).toContain(1n)
     })
   })
+
+  it('findMajorityIndex returns -1 for empty', () => {
+    expect(BoyerMooreVote.findMajorityIndex([])).toBe(-1)
+  })
+
+  it('findMajorityIndex returns correct index', () => {
+    expect(BoyerMooreVote.findMajorityIndex([2, 2, 2, 1])).toBe(0)
+  })
+
+  it('findMajorityIndex returns -1 when no majority', () => {
+    expect(BoyerMooreVote.findMajorityIndex([1, 2, 3])).toBe(-1)
+  })
+
+  it('findAllFrequent with k=1 returns items above count threshold', () => {
+    const result = BoyerMooreVote.findAllFrequent([5, 5, 5, 5, 1], 1)
+    expect(result).toContain(5)
+  })
 })

@@ -579,4 +579,37 @@ describe('throttle', () => {
       expect(fn).toHaveBeenCalledWith('third')
     })
   })
+
+  it('cancel prevents pending execution', async () => {
+    const fn = vi.fn()
+    const d = debounce(fn, 50)
+    d('a')
+    d.cancel()
+    await new Promise(r => setTimeout(r, 100))
+    expect(fn).not.toHaveBeenCalled()
+  })
+
+  it('flush executes pending immediately', async () => {
+    const fn = vi.fn()
+    const d = debounce(fn, 100)
+    d('a')
+    d.flush()
+    expect(fn).toHaveBeenCalledWith('a')
+  })
+
+  it('flush with no pending call is no-op', () => {
+    const fn = vi.fn()
+    const d = debounce(fn, 50)
+    d.flush()
+    expect(fn).not.toHaveBeenCalled()
+  })
+
+  it('cancel after flush is no-op', async () => {
+    const fn = vi.fn()
+    const d = debounce(fn, 50)
+    d('x')
+    d.flush()
+    d.cancel()
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
 })

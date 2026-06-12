@@ -369,4 +369,28 @@ describe('CompactIntSet', () => {
     expect(set.delete(2)).toBe(true)
     expect(set.has(2)).toBe(false)
   })
+
+  it('union combines two sets', () => {
+    const a = new CompactIntSet([1, 3])
+    const b = new CompactIntSet([2, 3])
+    const u = a.union(b)
+    expect(u.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('intersection finds common elements', () => {
+    const a = new CompactIntSet([1, 2, 3])
+    const b = new CompactIntSet([2, 3, 4])
+    const i = a.intersection(b)
+    expect(i.toArray()).toEqual([2, 3])
+  })
+
+  it('add returns false for negative values', () => {
+    const set = new CompactIntSet()
+    expect(set.add(-1)).toBe(false)
+  })
+
+  it('has returns false for negative values', () => {
+    const set = new CompactIntSet([1, 2])
+    expect(set.has(-5)).toBe(false)
+  })
 })

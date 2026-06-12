@@ -414,4 +414,27 @@ describe('Hungarian', () => {
     expect(assignment).toEqual([0])
     expect(totalCost).toBe(42)
   })
+
+  it('solve 1x1 matrix', () => {
+    const result = Hungarian.solve([[7]])
+    expect(result.assignment).toEqual([0])
+    expect(result.totalCost).toBe(7)
+  })
+
+  it('solve 2x2 matrix picks minimum cost', () => {
+    const result = Hungarian.solve([[1, 2], [2, 1]])
+    expect(result.totalCost).toBe(2)
+  })
+
+  it('solve handles rectangular cost matrix (more rows)', () => {
+    const result = Hungarian.solve([[5, 3], [8, 2], [6, 4]])
+    expect(result.assignment.length).toBe(3)
+  })
+
+  it('solve returns valid assignment indices', () => {
+    const result = Hungarian.solve([[10, 5, 13], [3, 7, 11], [6, 9, 2]])
+    for (const idx of result.assignment) {
+      expect(idx).toBeGreaterThanOrEqual(0)
+    }
+  })
 })

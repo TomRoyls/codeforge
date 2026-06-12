@@ -253,4 +253,27 @@ describe('ModularArithmetic', () => {
     expect(gcd).toBe(4)
     expect(12 * x + 8 * y).toBe(4)
   })
+
+  it('modPow computes power modulo', () => {
+    expect(ModularArithmetic.modPow(2, 10, 1000)).toBe(24)
+  })
+
+  it('modInverse computes modular inverse', () => {
+    const inv = ModularArithmetic.modInverse(3, 7)
+    expect(inv).not.toBeNull()
+    if (inv !== null) expect((3 * inv) % 7).toBe(1)
+  })
+
+  it('modInverse returns null for non-coprime', () => {
+    expect(ModularArithmetic.modInverse(2, 4)).toBeNull()
+  })
+
+  it('crt solves simple system', () => {
+    const result = ModularArithmetic.crt([2, 3], [3, 5])
+    expect(result).not.toBeNull()
+    if (result !== null) {
+      expect(result % 3).toBe(2)
+      expect(result % 5).toBe(3)
+    }
+  })
 })

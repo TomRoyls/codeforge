@@ -304,4 +304,23 @@ describe('GrayCode', () => {
     expect(GrayCode.grayToBinary(2)).toBe(3)
     expect(GrayCode.grayToBinary(6)).toBe(4)
   })
+
+  it('generateNumbers returns correct count', () => {
+    expect(GrayCode.generateNumbers(3).length).toBe(8)
+  })
+
+  it('count returns 2^n', () => {
+    expect(GrayCode.count(4)).toBe(16)
+  })
+
+  it('isGrayCodePair for adjacent codes', () => {
+    expect(GrayCode.isGrayCodePair(0, 1)).toBe(true)
+    expect(GrayCode.isGrayCodePair(0, 2)).toBe(false)
+  })
+
+  it('binaryToGray and grayToBinary are inverses', () => {
+    for (let i = 0; i < 32; i++) {
+      expect(GrayCode.grayToBinary(GrayCode.binaryToGray(i))).toBe(i)
+    }
+  })
 })

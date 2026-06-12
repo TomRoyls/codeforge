@@ -394,4 +394,29 @@ describe('ConvexHullTrick', () => {
     expect(cht.query(0)).toBe(5)
     expect(cht.query(10)).toBe(15)
   })
+
+  it('returns Infinity for empty min query', () => {
+    const cht = new ConvexHullTrick(true)
+    expect(cht.query(5)).toBe(Infinity)
+  })
+
+  it('returns -Infinity for empty max query', () => {
+    const cht = new ConvexHullTrick(false)
+    expect(cht.query(5)).toBe(-Infinity)
+  })
+
+  it('lineCount tracks added lines', () => {
+    const cht = new ConvexHullTrick(true)
+    expect(cht.lineCount).toBe(0)
+    cht.addLine(1, 0)
+    cht.addLine(2, 0)
+    expect(cht.lineCount).toBe(2)
+  })
+
+  it('handles single line correctly', () => {
+    const cht = new ConvexHullTrick(true)
+    cht.addLine(3, 10)
+    expect(cht.query(0)).toBe(10)
+    expect(cht.query(5)).toBe(25)
+  })
 })

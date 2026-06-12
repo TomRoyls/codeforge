@@ -343,4 +343,28 @@ describe('deepMerge edge cases', () => {
     const result = deepMerge(base, override)
     expect(result).toEqual({ a: 1, b: 2 })
   })
+
+  it('respects maxDepth option', () => {
+    const base = { a: { b: { c: 1 } } }
+    const override = { a: { b: { c: 2 } } }
+    const result = deepMerge(base as any, override as any, { maxDepth: 1 })
+    expect(result.a.b).toEqual({ c: 2 })
+  })
+
+  it('override replaces array by default', () => {
+    const base = { arr: [1, 2, 3] }
+    const override = { arr: [4, 5] }
+    const result = deepMerge(base as any, override as any)
+    expect(result.arr).toEqual([4, 5])
+  })
+
+  it('returns override for non-object base', () => {
+    const result = deepMerge(null as any, { a: 1 })
+    expect(result).toEqual({ a: 1 })
+  })
+
+  it('returns override for non-object override', () => {
+    const result = deepMerge({ a: 1 }, 'string' as any)
+    expect(result).toBe('string')
+  })
 })

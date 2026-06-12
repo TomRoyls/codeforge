@@ -273,4 +273,21 @@ describe('NumberTheory', () => {
   it('should compute fibonacci', () => {
     expect(NumberTheory.fibonacci(10)).toBe(55n)
   })
+
+  it('eulerTotient for prime is n-1', () => {
+    expect(NumberTheory.eulerTotient(7)).toBe(6)
+    expect(NumberTheory.eulerTotient(13)).toBe(12)
+  })
+
+  it('mobius for square-free with odd prime factors is -1', () => {
+    expect(NumberTheory.mobius(6)).toBe(-1)
+  })
+
+  it('divisorCount for 12 is 6', () => {
+    expect(NumberTheory.divisorCount(12)).toBe(6)
+  })
+
+  it('sumOfDivisors for 6 is 12', () => {
+    expect(NumberTheory.sumOfDivisors(6)).toBe(12)
+  })
 })

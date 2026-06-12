@@ -405,4 +405,33 @@ describe('MedianMaintenance', () => {
     expect(mm.getMedian()).toBe(5)
     expect(mm.getRollingMedian()).toBe(5)
   })
+
+  it('isEmpty is true initially', () => {
+    expect(new MedianMaintenance().isEmpty).toBe(true)
+  })
+
+  it('size tracks number of elements', () => {
+    const mm = new MedianMaintenance()
+    mm.add(1)
+    mm.add(2)
+    expect(mm.size).toBe(2)
+  })
+
+  it('clear resets the structure', () => {
+    const mm = new MedianMaintenance()
+    mm.add(1)
+    mm.add(2)
+    mm.clear()
+    expect(mm.isEmpty).toBe(true)
+    expect(mm.size).toBe(0)
+  })
+
+  it('getMedian for even count returns lower median', () => {
+    const mm = new MedianMaintenance()
+    mm.add(1)
+    mm.add(10)
+    const median = mm.getMedian()
+    expect(median).toBeGreaterThanOrEqual(1)
+    expect(median).toBeLessThanOrEqual(10)
+  })
 })

@@ -379,4 +379,31 @@ describe('KdTree', () => {
     const nearest = tree.nearest([5, 5], 3)
     expect(nearest.length).toBe(3)
   })
+
+  it('rangeSearch returns points in range', () => {
+    const tree = new KdTree<number[]>([[1, 1], [5, 5], [10, 10]])
+    const result = tree.rangeSearch([0, 0], [6, 6])
+    expect(result).toContainEqual([1, 1])
+    expect(result).toContainEqual([5, 5])
+    expect(result).not.toContainEqual([10, 10])
+  })
+
+  it('clone produces equal tree', () => {
+    const tree = new KdTree<number[]>([[1, 2], [3, 4]])
+    const c = tree.clone()
+    expect(c.equals(tree)).toBe(true)
+  })
+
+  it('toString returns string', () => {
+    const tree = new KdTree<number[]>([])
+    expect(typeof tree.toString()).toBe('string')
+  })
+
+  it('insert adds point retrievable by nearest', () => {
+    const tree = new KdTree<number[]>([])
+    tree.insert([0, 0])
+    tree.insert([3, 3])
+    const n = tree.nearest([1, 1], 1)
+    expect(n[0]).toEqual([0, 0])
+  })
 })

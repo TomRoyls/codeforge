@@ -503,4 +503,33 @@ describe('QuadTree', () => {
       expect(json).toEqual([[1, 2], [3, 4]]);
     });
   });
+
+  it('should check contains', () => {
+    const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+    qt.insert({ x: 50, y: 50 });
+    expect(qt.contains({ x: 50, y: 50 })).toBe(true);
+    expect(qt.contains({ x: 99, y: 99 })).toBe(false);
+  });
+
+  it('should clear all points', () => {
+    const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+    qt.insert({ x: 10, y: 10 });
+    qt.clear();
+    expect(qt.isEmpty()).toBe(true);
+  });
+
+  it('should remove a point', () => {
+    const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+    qt.insert({ x: 5, y: 5 });
+    expect(qt.remove({ x: 5, y: 5 })).toBe(true);
+    expect(qt.isEmpty()).toBe(true);
+  });
+
+  it('should find nearestNeighbor', () => {
+    const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+    qt.insert({ x: 10, y: 10 });
+    qt.insert({ x: 90, y: 90 });
+    const nearest = qt.nearestNeighbor({ x: 5, y: 5 });
+    expect(nearest).toEqual({ x: 10, y: 10 });
+  });
 });

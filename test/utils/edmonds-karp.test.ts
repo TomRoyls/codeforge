@@ -425,4 +425,31 @@ describe('EdmondsKarp minCut', () => {
     const { reachable } = EdmondsKarp.minCut(edges, 0, 3, 4)
     expect(reachable.has(0)).toBe(true)
   })
+
+  it('maxFlow returns 0 for source equals sink', () => {
+    const flow = EdmondsKarp.maxFlow([], 0, 0, 1)
+    expect(flow).toBe(0)
+  })
+
+  it('maxFlow on linear graph returns bottleneck', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 2, capacity: 3 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 2, 3)).toBe(3)
+  })
+
+  it('minCut reachable set contains source', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10 }]
+    const { reachable } = EdmondsKarp.minCut(edges, 0, 1, 2)
+    expect(reachable.has(0)).toBe(true)
+  })
+
+  it('handles multiple parallel edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3 },
+      { from: 0, to: 1, capacity: 7 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
 })

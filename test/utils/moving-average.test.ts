@@ -475,4 +475,32 @@ describe('MovingAverage', () => {
     expect(ma.min).toBe(-30)
     expect(ma.max).toBe(-10)
   })
+
+  it('variance is 0 for identical values', () => {
+    const ma = new MovingAverage(5)
+    ma.push(5)
+    ma.push(5)
+    ma.push(5)
+    expect(ma.variance).toBe(0)
+  })
+
+  it('stddev is sqrt of variance', () => {
+    const ma = new MovingAverage(5)
+    ma.push(1)
+    ma.push(3)
+    expect(ma.stddev).toBeCloseTo(Math.sqrt(ma.variance), 5)
+  })
+
+  it('windowSize is accessible', () => {
+    const ma = new MovingAverage(7)
+    expect(ma.windowSize).toBe(7)
+  })
+
+  it('reset clears the window', () => {
+    const ma = new MovingAverage(3)
+    ma.push(1)
+    ma.push(2)
+    ma.reset()
+    expect(ma.size).toBe(0)
+  })
 })

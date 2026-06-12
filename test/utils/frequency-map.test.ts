@@ -452,4 +452,36 @@ describe('FrequencyMap - edge cases', () => {
     fm.add('a')
     expect(fm.has('a')).toBe(true)
   })
+
+  it('decrease reduces count', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('x', 5)
+    fm.decrease('x', 3)
+    expect(fm.get('x')).toBe(2)
+  })
+
+  it('decrease removes key when count reaches zero', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('x', 3)
+    fm.decrease('x', 3)
+    expect(fm.has('x')).toBe(false)
+  })
+
+  it('bottom returns least frequent items', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 10)
+    fm.add('b', 1)
+    fm.add('c', 5)
+    const bottom = fm.bottom(1)
+    expect(bottom[0]!.key).toBe('b')
+  })
+
+  it('getStatistics returns correct values', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a', 5)
+    fm.add('b', 3)
+    const stats = fm.getStatistics()
+    expect(stats.uniqueKeys).toBe(2)
+    expect(stats.totalObservations).toBe(8)
+  })
 })

@@ -427,4 +427,32 @@ describe('NewtonMethod', () => {
     )
     expect(root).toBeCloseTo(Math.PI, 4)
   })
+
+  it('sqrt computes square root', () => {
+    expect(NewtonMethod.sqrt(4)).toBeCloseTo(2, 5)
+    expect(NewtonMethod.sqrt(9)).toBeCloseTo(3, 5)
+  })
+
+  it('nthRoot computes cube root', () => {
+    expect(NewtonMethod.nthRoot(27, 3)).toBeCloseTo(3, 3)
+  })
+
+  it('findRootWithHistory returns array of iterations', () => {
+    const result = NewtonMethod.findRootWithHistory(
+      (x: number) => x * x - 4,
+      (x: number) => 2 * x,
+      3
+    )
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('inverse finds x where f(x)=target', () => {
+    const x = NewtonMethod.inverse(
+      (x: number) => 2 * x,
+      () => 2,
+      10,
+      1
+    )
+    expect(x).toBeCloseTo(5, 3)
+  })
 })

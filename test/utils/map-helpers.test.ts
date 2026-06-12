@@ -360,4 +360,30 @@ describe('append', () => {
     increment(map, 'x', 0)
     expect(map.get('x')).toBe(0)
   })
+
+  it('append creates array for new key', () => {
+    const map = new Map<string, number[]>()
+    append(map, 'items', 42)
+    expect(map.get('items')).toEqual([42])
+  })
+
+  it('append adds to existing array', () => {
+    const map = new Map<string, number[]>()
+    append(map, 'x', 1)
+    append(map, 'x', 2)
+    expect(map.get('x')).toEqual([1, 2])
+  })
+
+  it('increment with negative delta', () => {
+    const map = new Map<string, number>()
+    increment(map, 'val', 10)
+    increment(map, 'val', -3)
+    expect(map.get('val')).toBe(7)
+  })
+
+  it('increment default delta is 1', () => {
+    const map = new Map<string, number>()
+    increment(map, 'count')
+    expect(map.get('count')).toBe(1)
+  })
 })

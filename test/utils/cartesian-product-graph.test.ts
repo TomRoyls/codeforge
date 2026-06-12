@@ -440,4 +440,27 @@ describe('CartesianProductGraph', () => {
     expect(cg.areAdjacent([2, 2], [5, 0])).toBe(false)
     expect(cg.areAdjacent([1, 1], [2, 1])).toBe(true)
   })
+
+  it('productNodeCount is n1 * n2', () => {
+    const cg = new CartesianProductGraph(3, 4)
+    expect(cg.productNodeCount()).toBe(12)
+  })
+
+  it('productDegree sums degrees from both graphs', () => {
+    const cg = new CartesianProductGraph(2, 2)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productDegree(0, 0)).toBe(2)
+  })
+
+  it('areAdjacent returns false for nodes differing in both coords', () => {
+    const cg = new CartesianProductGraph(2, 2)
+    cg.addEdgeG1(0, 1)
+    expect(cg.areAdjacent([0, 0], [1, 1])).toBe(false)
+  })
+
+  it('productEdgeCount is 0 with no edges', () => {
+    const cg = new CartesianProductGraph(3, 3)
+    expect(cg.productEdgeCount()).toBe(0)
+  })
 })

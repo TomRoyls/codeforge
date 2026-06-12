@@ -379,4 +379,30 @@ describe('CountingBloomFilter edge cases', () => {
     expect(bf.isEmpty).toBe(true)
     expect(bf.size).toBe(0)
   })
+
+  it('add then remove then has returns false', () => {
+    const bf = new CountingBloomFilter(50)
+    bf.add('test')
+    bf.remove('test')
+    expect(bf.has('test')).toBe(false)
+  })
+
+  it('remove returns false for non-existent item', () => {
+    const bf = new CountingBloomFilter(50)
+    expect(bf.remove('ghost')).toBe(false)
+  })
+
+  it('stats returns correct capacity', () => {
+    const bf = new CountingBloomFilter(100)
+    const stats = bf.stats()
+    expect(stats.capacity).toBe(100)
+  })
+
+  it('multiple adds and removes cycle', () => {
+    const bf = new CountingBloomFilter(50)
+    bf.add('x')
+    bf.add('x')
+    expect(bf.remove('x')).toBe(true)
+    expect(bf.has('x')).toBe(true)
+  })
 })

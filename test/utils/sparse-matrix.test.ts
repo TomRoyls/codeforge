@@ -541,4 +541,36 @@ describe('SparseMatrix - large sparse', () => {
     expect(m.get(1, 0)).toBe(3)
     expect(m.get(0, 0)).toBe(0)
   })
+
+  it('transpose swaps rows and cols', () => {
+    const m = new SparseMatrix(2, 3)
+    m.set(0, 1, 5)
+    const t = m.transpose()
+    expect(t.rows).toBe(3)
+    expect(t.cols).toBe(2)
+    expect(t.get(1, 0)).toBe(5)
+  })
+
+  it('scale multiplies all values', () => {
+    const m = new SparseMatrix(2, 2)
+    m.set(0, 0, 3)
+    const s = m.scale(2)
+    expect(s.get(0, 0)).toBe(6)
+  })
+
+  it('nnz counts non-zero elements', () => {
+    const m = new SparseMatrix(3, 3)
+    m.set(0, 0, 1)
+    m.set(1, 1, 2)
+    expect(m.nnz).toBe(2)
+  })
+
+  it('forEachNonZero iterates all non-zero entries', () => {
+    const m = new SparseMatrix(2, 2)
+    m.set(0, 1, 5)
+    m.set(1, 0, 10)
+    const entries: number[][] = []
+    m.forEachNonZero((r, c, v) => entries.push([r, c, v]))
+    expect(entries.length).toBe(2)
+  })
 })

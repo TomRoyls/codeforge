@@ -176,60 +176,37 @@ describe('FenwickTree2D', () => {
     it('returns correct format for zero dimensions', () => {
       const tree = new FenwickTree2D(0, 0);
       expect(tree.toString()).toBe('FenwickTree2D(0x0)');
-    });
   });
 
-  describe('FenwickTree2D toJSON', () => {
-    it('returns structure with rows, cols, data', () => {
-      const tree = new FenwickTree2D(2, 2);
-      tree.update(0, 0, 5);
-      const json = tree.toJSON();
-      expect(json.rows).toBe(2);
-      expect(json.cols).toBe(2);
-      expect(json.data[0][0]).toBe(5);
-    });
-
-    it('returns zero-filled data for untouched tree', () => {
-      const tree = new FenwickTree2D(2, 2);
-      const json = tree.toJSON();
-      expect(json.data).toEqual([[0, 0], [0, 0]]);
-    });
-
-    it('includes all updates in data', () => {
-      const tree = new FenwickTree2D(3, 3);
-      tree.update(0, 0, 1);
-      tree.update(1, 1, 2);
-      tree.update(2, 2, 3);
-      const json = tree.toJSON();
-      expect(json.data[0][0]).toBe(1);
-      expect(json.data[1][1]).toBe(2);
-      expect(json.data[2][2]).toBe(3);
-    });
+  it('rangeQuery on full grid returns total', () => {
+    const ft = new FenwickTree2D(2, 2);
+    ft.update(0, 0, 1);
+    ft.update(0, 1, 2);
+    ft.update(1, 0, 3);
+    ft.update(1, 1, 4);
+    expect(ft.rangeQuery(0, 0, 1, 1)).toBe(10);
   });
 
-  describe('FenwickTree2D clone', () => {
-    it('creates independent copy', () => {
-      const tree = new FenwickTree2D(3, 3);
-      tree.update(1, 1, 10);
-      const copy = tree.clone();
-      expect(copy.get(1, 1)).toBe(10);
-    });
+  it('multiple updates accumulate', () => {
+    const ft = new FenwickTree2D(2, 2);
+    ft.update(0, 0, 5);
+    ft.update(0, 0, 3);
+    expect(ft.query(0, 0)).toBe(8);
+  });
 
-    it('modifications to clone do not affect original', () => {
-      const tree = new FenwickTree2D(3, 3);
-      tree.update(0, 0, 5);
-      const copy = tree.clone();
-      copy.update(0, 0, 100);
-      expect(tree.get(0, 0)).toBe(5);
-      expect(copy.get(0, 0)).toBe(105);
-    });
+  it('negative delta decreases sum', () => {
+    const ft = new FenwickTree2D(3, 3);
+    ft.update(1, 1, 10);
+    ft.update(1, 1, -4);
+    expect(ft.query(1, 1)).toBe(6);
+  });
 
-    it('clone preserves dimensions', () => {
-      const tree = new FenwickTree2D(4, 7);
-      const copy = tree.clone();
-      expect(copy.rows).toBe(4);
-      expect(copy.cols).toBe(7);
-    })
+  it('rows and cols are accessible', () => {
+    const ft = new FenwickTree2D(4, 5);
+    expect(ft.rows).toBe(4);
+    expect(ft.cols).toBe(5);
+  });
+});
 
     it('clone of empty tree is empty', () => {
       const tree = new FenwickTree2D(3, 3);

@@ -495,4 +495,37 @@ describe('CircularBuffer - edge cases', () => {
     expect(buf.peek()).toBeUndefined()
     expect(buf.read()).toBeUndefined()
   })
+
+  it('peekNewest returns last written value', () => {
+    const buf = new CircularBuffer<number>(5)
+    buf.write(1)
+    buf.write(2)
+    buf.write(3)
+    expect(buf.peekNewest()).toBe(3)
+  })
+
+  it('toArrayNewest returns items newest first', () => {
+    const buf = new CircularBuffer<number>(5)
+    buf.write(1)
+    buf.write(2)
+    const arr = buf.toArrayNewest()
+    expect(arr[0]).toBe(2)
+    expect(arr[1]).toBe(1)
+  })
+
+  it('write returns overwritten value when full', () => {
+    const buf = new CircularBuffer<number>(2)
+    buf.write(10)
+    buf.write(20)
+    const overwritten = buf.write(30)
+    expect(overwritten).toBe(10)
+  })
+
+  it('isFull returns true at capacity', () => {
+    const buf = new CircularBuffer<number>(3)
+    buf.write(1)
+    buf.write(2)
+    buf.write(3)
+    expect(buf.isFull()).toBe(true)
+  })
 })

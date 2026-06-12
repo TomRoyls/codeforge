@@ -461,4 +461,36 @@ describe('LowestCommonAncestor', () => {
     expect(lca.getDepth(0)).toBe(0)
     expect(lca.getDepth(2)).toBe(2)
   })
+
+  it('distance between two nodes', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [0]], [2, [0, 3]], [3, [2]],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.distance(1, 3)).toBe(3)
+  })
+
+  it('query returns root for root and leaf', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0, 2]], [2, [1]],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(0, 2)).toBe(0)
+  })
+
+  it('clone produces equal instance', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.clone().equals(lca)).toBe(true)
+  })
+
+  it('distance to self is 0', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0]],
+    ])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.distance(1, 1)).toBe(0)
+  })
 })

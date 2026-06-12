@@ -287,4 +287,24 @@ describe('ModuloCombinatorics', () => {
     const powerOfTwo = mc.modPow(2, n, mc.mod)
     expect(sum).toBe(powerOfTwo)
   })
+
+  it('nPr for n=3 r=2 is 6', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nPr(3, 2)).toBe(6)
+  })
+
+  it('nHr computes combinations with replacement', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nHr(3, 2)).toBe(mc.nCr(3 + 2 - 1, 2))
+  })
+
+  it('factorial of 0 is 1', () => {
+    const mc = new ModuloCombinatorics(5)
+    expect(mc.factorial(0)).toBe(1)
+  })
+
+  it('nCr of n=0 r=0 is 1', () => {
+    const mc = new ModuloCombinatorics(5)
+    expect(mc.nCr(0, 0)).toBe(1)
+  })
 })

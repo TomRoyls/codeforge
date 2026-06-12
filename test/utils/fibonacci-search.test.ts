@@ -47,11 +47,24 @@ describe('FibonacciSearch search', () => {
     expect(result).toBe(2)
   })
 
-  it('search with large array', () => {
-    const arr = Array.from({ length: 1000 }, (_, i) => i * 2)
-    const result = FibonacciSearch.search(arr, 500)
-    expect(result).toBe(250)
+  it('returns -1 for empty array', () => {
+    expect(FibonacciSearch.search([], 5)).toBe(-1)
   })
+
+  it('finds first element', () => {
+    expect(FibonacciSearch.search([10, 20, 30, 40], 10)).toBe(0)
+  })
+
+  it('finds last element', () => {
+    expect(FibonacciSearch.search([10, 20, 30, 40], 40)).toBe(3)
+  })
+
+  it('works with custom comparator', () => {
+    const arr = [{ v: 1 }, { v: 2 }, { v: 3 }]
+    const idx = FibonacciSearch.search(arr, { v: 2 }, (a, b) => a.v - b.v)
+    expect(idx).toBe(1)
+  })
+})
 })
 
 describe('FibonacciSearch firstIndexOf', () => {

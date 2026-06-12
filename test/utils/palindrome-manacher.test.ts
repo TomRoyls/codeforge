@@ -271,4 +271,25 @@ describe('PalindromeManacher', () => {
     expect(m.longestPalindrome()).toBe('a')
     expect(m.countAllPalindromes()).toBe(1)
   })
+
+  it('isPalindrome checks substring', () => {
+    const m = new PalindromeManacher('racecar')
+    expect(m.isPalindrome(0, 6)).toBe(true)
+    expect(m.isPalindrome(0, 3)).toBe(false)
+  })
+
+  it('longestPalindrome for single char', () => {
+    const m = new PalindromeManacher('a')
+    expect(m.longestPalindrome()).toBe('a')
+  })
+
+  it('countAllPalindromes for empty string is 0', () => {
+    const m = new PalindromeManacher('')
+    expect(m.countAllPalindromes()).toBe(0)
+  })
+
+  it('finds even-length palindromes', () => {
+    const m = new PalindromeManacher('abba')
+    expect(m.longestPalindrome()).toBe('abba')
+  })
 })

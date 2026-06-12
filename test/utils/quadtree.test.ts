@@ -398,4 +398,32 @@ describe('Quadtree', () => {
     const results = qt.query({ x: 0, y: 0, w: 50, h: 50 })
     expect(results).toEqual([])
   })
+
+  it('findAll returns all inserted points', () => {
+    const qt = new Quadtree<{ x: number; y: number }>({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 10, y: 10, data: { x: 10, y: 10 } })
+    qt.insert({ x: 20, y: 20, data: { x: 20, y: 20 } })
+    expect(qt.findAll().length).toBe(2)
+  })
+
+  it('insert returns false for point outside boundary', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 10, h: 10 })
+    expect(qt.insert({ x: 100, y: 100, data: null })).toBe(false)
+  })
+
+  it('query returns points within range', () => {
+    const qt = new Quadtree<{ x: number; y: number }>({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 5, y: 5, data: { x: 5, y: 5 } })
+    qt.insert({ x: 50, y: 50, data: { x: 50, y: 50 } })
+    const result = qt.query({ x: 0, y: 0, w: 10, h: 10 })
+    expect(result.length).toBe(1)
+  })
+
+  it('handles many inserts by subdividing', () => {
+    const qt = new Quadtree({ x: 0, y: 0, w: 100, h: 100 })
+    for (let i = 0; i < 20; i++) {
+      qt.insert({ x: i * 5, y: i * 5, data: i })
+    }
+    expect(qt.findAll().length).toBe(20)
+  })
 })

@@ -332,4 +332,27 @@ describe('PersistentArray', () => {
     const v2 = v1.set(1, 999)
     expect(v2.toArray()).toEqual([10, 999, 30])
   })
+
+  it('push returns new version', () => {
+    const v1 = PersistentArray.from([1, 2])
+    const v2 = v1.push(3)
+    expect(v1.toArray()).toEqual([1, 2])
+    expect(v2.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('filter returns new filtered version', () => {
+    const v1 = PersistentArray.from([1, 2, 3, 4])
+    const v2 = v1.filter(x => x > 2)
+    expect(v2.toArray()).toEqual([3, 4])
+  })
+
+  it('length is correct', () => {
+    const arr = PersistentArray.from([10, 20, 30])
+    expect(arr.length).toBe(3)
+  })
+
+  it('get returns undefined for out of bounds', () => {
+    const arr = PersistentArray.from([1])
+    expect(arr.get(5)).toBeUndefined()
+  })
 })

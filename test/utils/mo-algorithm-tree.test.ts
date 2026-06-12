@@ -703,4 +703,42 @@ describe('MoAlgorithmTree', () => {
       expect(toggleCount).toBeGreaterThan(0)
     })
   })
+
+  it('handles single node tree', () => {
+    const mo = new MoAlgorithmTree(1)
+    let count = 0
+    mo.processQueries([[0, 0]], () => { count++ }, () => { count++ })
+    expect(count).toBeGreaterThan(0)
+  })
+
+  it('handles chain of 5 nodes', () => {
+    const mo = new MoAlgorithmTree(5)
+    mo.addEdge(0, 1)
+    mo.addEdge(1, 2)
+    mo.addEdge(2, 3)
+    mo.addEdge(3, 4)
+    const results: number[] = []
+    mo.processQueries([[0, 4]], () => { results.push(1) }, () => { results.push(-1) })
+    expect(results.length).toBeGreaterThan(0)
+  })
+
+  it('processes multiple queries', () => {
+    const mo = new MoAlgorithmTree(3)
+    mo.addEdge(0, 1)
+    mo.addEdge(1, 2)
+    let adds = 0
+    mo.processQueries([[0, 2], [1, 1]], () => { adds++ }, () => {})
+    expect(adds).toBeGreaterThan(0)
+  })
+
+  it('handles star graph', () => {
+    const mo = new MoAlgorithmTree(5)
+    mo.addEdge(0, 1)
+    mo.addEdge(0, 2)
+    mo.addEdge(0, 3)
+    mo.addEdge(0, 4)
+    let ops = 0
+    mo.processQueries([[1, 3]], () => { ops++ }, () => { ops++ })
+    expect(ops).toBeGreaterThan(0)
+  })
 })

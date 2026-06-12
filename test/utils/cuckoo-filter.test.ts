@@ -416,4 +416,29 @@ describe('CuckooFilter edge cases', () => {
     expect(cf.capacity).toBeGreaterThanOrEqual(25)
     expect(cf.capacity % 5).toBe(0)
   })
+
+  it('insert returns true for normal insert', () => {
+    const cf = new CuckooFilter({ capacity: 10 })
+    expect(cf.insert('hello')).toBe(true)
+  })
+
+  it('remove returns false for non-existent item', () => {
+    const cf = new CuckooFilter({ capacity: 10 })
+    expect(cf.remove('ghost')).toBe(false)
+  })
+
+  it('loadFactor increases with inserts', () => {
+    const cf = new CuckooFilter({ capacity: 10 })
+    const initial = cf.loadFactor
+    cf.insert('a')
+    expect(cf.loadFactor).toBeGreaterThan(initial)
+  })
+
+  it('size tracks number of items', () => {
+    const cf = new CuckooFilter({ capacity: 10 })
+    expect(cf.size).toBe(0)
+    cf.insert('x')
+    cf.insert('y')
+    expect(cf.size).toBe(2)
+  })
 })

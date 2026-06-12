@@ -246,4 +246,25 @@ describe('CocktailSort', () => {
     const result = CocktailSort.sortWithComparator([1, 2, 3], (a, b) => -(a - b))
     expect(result).toEqual([3, 2, 1])
   })
+
+  it('sortInPlace modifies original array', () => {
+    const arr = [3, 1, 2]
+    CocktailSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+  })
+
+  it('sortInPlace handles empty array', () => {
+    const arr: number[] = []
+    CocktailSort.sortInPlace(arr)
+    expect(arr).toEqual([])
+  })
+
+  it('sortWithComparator handles strings', () => {
+    const result = CocktailSort.sortWithComparator(['c', 'a', 'b'], (a, b) => a.localeCompare(b))
+    expect(result).toEqual(['a', 'b', 'c'])
+  })
+
+  it('sort handles single element', () => {
+    expect(CocktailSort.sort([42])).toEqual([42])
+  })
 })

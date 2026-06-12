@@ -423,4 +423,36 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search(queries)
     expect(results).toEqual([5, 5000, 0])
   })
+
+  it('finds target in single array', () => {
+    const result = ParallelBinarySearch.search(
+      [[1, 3, 5, 7, 9]],
+      [(sorted) => sorted.indexOf(5) >= 0 ? 5 : 0]
+    )
+    expect(result[0]).toBe(5)
+  })
+
+  it('returns 0 when condition never met', () => {
+    const result = ParallelBinarySearch.search(
+      [[1, 2, 3]],
+      [() => false]
+    )
+    expect(result[0]).toBe(0)
+  })
+
+  it('handles empty arrays', () => {
+    const result = ParallelBinarySearch.search(
+      [[]],
+      [() => true]
+    )
+    expect(result[0]).toBe(0)
+  })
+
+  it('all arrays find target', () => {
+    const result = ParallelBinarySearch.search(
+      [[10, 20, 30], [5, 15, 25]],
+      [(a) => a.includes(20) ? 20 : 0, (a) => a.includes(15) ? 15 : 0]
+    )
+    expect(result.length).toBe(2)
+  })
 })

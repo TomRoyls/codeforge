@@ -527,4 +527,33 @@ describe('HungarianAssignment', () => {
     const { totalCost } = ha.solve()
     expect(totalCost).toBe(3)
   })
+
+  it('solveGreedy returns valid assignment', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 1)
+    ha.setCost(0, 1, 10)
+    ha.setCost(1, 0, 10)
+    ha.setCost(1, 1, 1)
+    const result = ha.solveGreedy()
+    expect(result.totalCost).toBeGreaterThan(0)
+  })
+
+  it('clone produces equal instance', () => {
+    const ha = new HungarianAssignment(2, 2)
+    ha.setCost(0, 0, 5)
+    const c = ha.clone()
+    expect(c.equals(ha)).toBe(true)
+  })
+
+  it('toString returns a string', () => {
+    const ha = new HungarianAssignment(2, 2)
+    expect(typeof ha.toString()).toBe('string')
+  })
+
+  it('solve with 1x1 returns that cell', () => {
+    const ha = new HungarianAssignment(1, 1)
+    ha.setCost(0, 0, 7)
+    const result = ha.solve()
+    expect(result.totalCost).toBe(7)
+  })
 })

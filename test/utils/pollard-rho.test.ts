@@ -251,4 +251,26 @@ describe('PollardRho', () => {
     expect(PollardRho.isPrime(100n)).toBe(false)
     expect(PollardRho.isPrime(1001n)).toBe(false)
   })
+
+  it('factorize returns factors of 12', () => {
+    const factors = PollardRho.factorize(12)
+    expect(factors.length).toBeGreaterThan(0)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(12n)
+  })
+
+  it('factorize of prime returns that prime', () => {
+    const factors = PollardRho.factorize(13)
+    expect(factors).toEqual([13n])
+  })
+
+  it('isPrime for 2', () => {
+    expect(PollardRho.isPrime(2n)).toBe(true)
+  })
+
+  it('factorize large number', () => {
+    const factors = PollardRho.factorize(100)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(100n)
+  })
 })

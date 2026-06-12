@@ -427,4 +427,34 @@ describe('BipartiteMatching', () => {
     bm.addEdge(0, 0)
     expect(bm.maxMatching()).toBe(1)
   })
+
+  it('clear resets the matching', () => {
+    const bm = new BipartiteMatching(3, 3)
+    bm.addEdge(0, 0)
+    bm.addEdge(1, 1)
+    expect(bm.maxMatching()).toBe(2)
+    bm.clear()
+    expect(bm.maxMatching()).toBe(0)
+  })
+
+  it('isMatched returns false for unmatched left node', () => {
+    const bm = new BipartiteMatching(3, 2)
+    bm.addEdge(0, 0)
+    bm.maxMatching()
+    expect(bm.isMatched(2)).toBe(false)
+  })
+
+  it('getMatch returns undefined for unmatched node', () => {
+    const bm = new BipartiteMatching(2, 2)
+    bm.addEdge(0, 0)
+    bm.maxMatching()
+    expect(bm.getMatch(1)).toBeUndefined()
+  })
+
+  it('duplicate edges do not increase edgeCount', () => {
+    const bm = new BipartiteMatching(2, 2)
+    bm.addEdge(0, 0)
+    bm.addEdge(0, 0)
+    expect(bm.edgeCount).toBe(1)
+  })
 })

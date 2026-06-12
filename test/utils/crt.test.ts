@@ -318,4 +318,22 @@ describe('ChineseRemainderTheorem', () => {
     const inv = ChineseRemainderTheorem.modularInverse(1, 2)
     expect(inv).toBe(1)
   })
+
+  it('modularInverse returns null when no inverse exists', () => {
+    expect(ChineseRemainderTheorem.modularInverse(2, 4)).toBeNull()
+  })
+
+  it('lcm of coprime numbers', () => {
+    expect(ChineseRemainderTheorem.lcm(3, 5)).toBe(15)
+  })
+
+  it('lcm with common factor', () => {
+    expect(ChineseRemainderTheorem.lcm(6, 8)).toBe(24)
+  })
+
+  it('solve with single congruence', () => {
+    const result = ChineseRemainderTheorem.solve([[2, 5]])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 5).toBe(2)
+  })
 })

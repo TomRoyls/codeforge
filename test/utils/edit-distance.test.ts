@@ -235,4 +235,20 @@ describe('EditDistance', () => {
     expect(n).toBeGreaterThanOrEqual(0)
     expect(n).toBeLessThanOrEqual(1)
   })
+
+  it('hamming distance for identical strings is 0', () => {
+    expect(EditDistance.hamming('abc', 'abc')).toBe(0)
+  })
+
+  it('hamming throws on different length', () => {
+    expect(() => EditDistance.hamming('ab', 'abc')).toThrow()
+  })
+
+  it('normalizedLevenshtein for identical strings is 1', () => {
+    expect(EditDistance.normalizedLevenshtein('test', 'test')).toBe(1)
+  })
+
+  it('normalizedLevenshtein for empty strings is 1', () => {
+    expect(EditDistance.normalizedLevenshtein('', '')).toBe(1)
+  })
 })

@@ -328,4 +328,20 @@ describe('Introsort', () => {
   it('should handle empty array', () => {
     expect(Introsort.sort<number>([])).toEqual([])
   })
+
+  it('sorts numbers in ascending order', () => {
+    expect(Introsort.sort([5, 3, 1, 4, 2], (a, b) => a - b)).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('sorts strings', () => {
+    expect(Introsort.sort(['cherry', 'apple', 'banana'])).toEqual(['apple', 'banana', 'cherry'])
+  })
+
+  it('sorts with custom comparator descending', () => {
+    expect(Introsort.sort([1, 2, 3], (a, b) => b - a)).toEqual([3, 2, 1])
+  })
+
+  it('handles already sorted input', () => {
+    expect(Introsort.sort([1, 2, 3, 4], (a, b) => a - b)).toEqual([1, 2, 3, 4])
+  })
 })

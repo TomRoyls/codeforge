@@ -347,4 +347,25 @@ describe('EliasFano - edge cases', () => {
     ef.forEach((v) => vals.push(v))
     expect(vals).toEqual([5, 15, 25])
   })
+
+  it('length returns number of elements', () => {
+    const ef = new EliasFano([1, 2, 3])
+    expect(ef.length).toBe(3)
+  })
+
+  it('encodedSize is positive', () => {
+    const ef = new EliasFano([10, 20, 30])
+    expect(ef.encodedSize).toBeGreaterThan(0)
+  })
+
+  it('fromSorted static constructor works', () => {
+    const ef = EliasFano.fromSorted([5, 10, 15])
+    expect(ef.get(0)).toBe(5)
+    expect(ef.get(2)).toBe(15)
+  })
+
+  it('get throws for out of bounds', () => {
+    const ef = new EliasFano([1, 2])
+    expect(() => ef.get(5)).toThrow()
+  })
 })

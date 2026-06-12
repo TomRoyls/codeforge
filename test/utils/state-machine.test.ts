@@ -675,4 +675,45 @@ describe('StateMachine', () => {
     sm.reset()
     expect(exitCalled).toBe(true)
   })
+
+  it('getHistory returns transition log', () => {
+    const sm = new StateMachine({
+      initial: 'idle',
+      states: {
+        idle: { on: { START: 'running' } },
+        running: { on: { STOP: 'idle' } },
+      },
+    })
+    sm.send('START')
+    sm.send('STOP')
+    expect(sm.getHistory().length).toBe(2)
+  })
+
+  it('isState checks current state', () => {
+    const sm = new StateMachine({
+      initial: 'a',
+      states: { a: { on: { GO: 'b' } }, b: {} },
+    })
+    expect(sm.isState('a')).toBe(true)
+    sm.send('GO')
+    expect(sm.isState('b')).toBe(true)
+  })
+
+  it('canSend returns false for invalid event', () => {
+    const sm = new StateMachine({
+      initial: 'idle',
+      states: { idle: { on: { START: 'running' } }, running: {} },
+    })
+    expect(sm.canSend('STOP')).toBe(false)
+  })
+
+  it('reset returns to initial state', () => {
+    const sm = new StateMachine({
+      initial: 'start',
+      states: { start: { on: { NEXT: 'end' } }, end: {} },
+    })
+    sm.send('NEXT')
+    sm.reset()
+    expect(sm.getState()).toBe('start')
+  })
 })

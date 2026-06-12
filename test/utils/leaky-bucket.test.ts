@@ -357,4 +357,28 @@ describe('LeakyBucket', () => {
     bucket.pour(3)
     expect(bucket.available).toBeLessThan(10)
   })
+
+  it('level starts at 0', () => {
+    const bucket = new LeakyBucket(10, 1)
+    expect(bucket.level).toBe(0)
+  })
+
+  it('isFull returns false initially', () => {
+    const bucket = new LeakyBucket(10, 1)
+    expect(bucket.isFull).toBe(false)
+  })
+
+  it('reset clears the bucket', () => {
+    const bucket = new LeakyBucket(10, 1)
+    bucket.pour(5)
+    bucket.reset()
+    expect(bucket.level).toBe(0)
+  })
+
+  it('clone produces equal instance', () => {
+    const bucket = new LeakyBucket(10, 1)
+    bucket.pour(3)
+    const c = bucket.clone()
+    expect(c.equals(bucket)).toBe(true)
+  })
 })

@@ -314,4 +314,24 @@ describe('FingerTree with strings', () => {
     const ft2 = FingerTree.from(['c', 'd'])
     expect(ft1.concat(ft2).toArray()).toEqual(['a', 'b', 'c', 'd'])
   })
+
+  it('get returns element at index', () => {
+    const ft = FingerTree.from([10, 20, 30])
+    expect(ft.get(1)).toBe(20)
+  })
+
+  it('get returns undefined for out of bounds', () => {
+    const ft = FingerTree.from([1])
+    expect(ft.get(5)).toBeUndefined()
+  })
+
+  it('popFront on empty returns empty', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.popFront().size).toBe(0)
+  })
+
+  it('popBack on empty returns empty', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.popBack().size).toBe(0)
+  })
 })

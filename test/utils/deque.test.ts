@@ -419,4 +419,35 @@ describe('Deque', () => {
     dq.pushBack(3)
     expect(dq.size).toBe(3)
   })
+
+  it('back returns last element', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.back()).toBe(2)
+  })
+
+  it('front returns first element', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(10)
+    dq.pushBack(20)
+    expect(dq.front()).toBe(10)
+  })
+
+  it('clear empties the deque', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.clear()
+    expect(dq.size).toBe(0)
+    expect(dq.isEmpty).toBe(true)
+  })
+
+  it('toArray preserves order', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushFront(0)
+    dq.pushBack(2)
+    expect(dq.toArray()).toEqual([0, 1, 2])
+  })
 })

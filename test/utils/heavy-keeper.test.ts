@@ -398,4 +398,30 @@ describe('HeavyKeeper', () => {
     const hitters = hk.heavyHitters(0.5)
     expect(hitters.length).toBeGreaterThanOrEqual(0)
   })
+
+  it('top returns k most frequent items', () => {
+    const hk = new HeavyKeeper({ decay: 0.9 })
+    hk.update('a', 100)
+    hk.update('b', 50)
+    const top = hk.top(1)
+    expect(top.length).toBe(1)
+  })
+
+  it('isEmpty returns true for new instance', () => {
+    expect(new HeavyKeeper().isEmpty()).toBe(true)
+  })
+
+  it('reset clears all data', () => {
+    const hk = new HeavyKeeper()
+    hk.update('x', 10)
+    hk.reset()
+    expect(hk.isEmpty()).toBe(true)
+  })
+
+  it('clone produces equal instance', () => {
+    const hk = new HeavyKeeper()
+    hk.update('a', 5)
+    const c = hk.clone()
+    expect(c.equals(hk)).toBe(true)
+  })
 })

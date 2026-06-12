@@ -384,4 +384,28 @@ describe('CountingBloomFilter2 stats', () => {
     expect(filter.contains('never-added')).toBe(false)
     expect(filter.count('never-added')).toBe(0)
   })
+
+  it('add then remove then contains returns false', () => {
+    const f = new CountingBloomFilter2(50)
+    f.add('hello')
+    f.remove('hello')
+    expect(f.contains('hello')).toBe(false)
+  })
+
+  it('estimatedCount tracks additions', () => {
+    const f = new CountingBloomFilter2(20)
+    f.add('a')
+    f.add('b')
+    expect(f.estimatedCount).toBe(2)
+  })
+
+  it('hashCount is positive', () => {
+    const f = new CountingBloomFilter2(100)
+    expect(f.hashCount).toBeGreaterThan(0)
+  })
+
+  it('filterSize is at least 64', () => {
+    const f = new CountingBloomFilter2(10)
+    expect(f.filterSize).toBeGreaterThanOrEqual(64)
+  })
 })

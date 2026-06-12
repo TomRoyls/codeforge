@@ -438,4 +438,27 @@ describe('RadixHeap', () => {
     expect(rh.pop()).toBe(10)
     expect(rh.pop()).toBe(30)
   })
+
+  it('isEmpty is true for new heap', () => {
+    expect(new RadixHeap().isEmpty).toBe(true)
+  })
+
+  it('size tracks number of elements', () => {
+    const rh = new RadixHeap()
+    rh.push(5)
+    rh.push(3)
+    expect(rh.size).toBe(2)
+  })
+
+  it('pop returns undefined when empty', () => {
+    expect(new RadixHeap().pop()).toBeUndefined()
+  })
+
+  it('handles duplicate values', () => {
+    const rh = new RadixHeap()
+    rh.push(5)
+    rh.push(5)
+    expect(rh.pop()).toBe(5)
+    expect(rh.pop()).toBe(5)
+  })
 })

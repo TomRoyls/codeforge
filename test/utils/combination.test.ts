@@ -276,4 +276,26 @@ describe('Combination', () => {
   it('should count n choose 0 as 1', () => {
     expect(Combination.count(5, 0)).toBe(1)
   })
+
+  it('withReplacement generates correct count', () => {
+    const result = Combination.withReplacement(['a', 'b'], 2)
+    expect(result.length).toBe(Combination.countWithReplacement(2, 2))
+  })
+
+  it('countWithReplacement for n=3 k=2', () => {
+    expect(Combination.countWithReplacement(3, 2)).toBe(6)
+  })
+
+  it('lazy generator yields same results as generate', () => {
+    const arr = [1, 2, 3, 4]
+    const k = 2
+    const eager = Combination.generate(arr, k)
+    const lazy = [...Combination.lazy(arr, k)]
+    expect(lazy).toEqual(eager)
+  })
+
+  it('withReplacement allows duplicates', () => {
+    const result = Combination.withReplacement(['x'], 3)
+    expect(result).toEqual([['x', 'x', 'x']])
+  })
 })

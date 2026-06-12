@@ -452,4 +452,29 @@ describe('ScalableBloomFilter', () => {
       expect(sbf.falsePositiveRate).toBeGreaterThan(0)
     })
   })
+
+  it('clear resets the filter', () => {
+    const sbf = new ScalableBloomFilter(50)
+    sbf.add('test')
+    sbf.clear()
+    expect(sbf.size).toBe(0)
+    expect(sbf.isEmpty()).toBe(true)
+  })
+
+  it('filterCount increases when capacity exceeded', () => {
+    const sbf = new ScalableBloomFilter(5)
+    for (let i = 0; i < 20; i++) sbf.add(`x${i}`)
+    expect(sbf.filterCount).toBeGreaterThan(1)
+  })
+
+  it('clone produces equal instance', () => {
+    const sbf = new ScalableBloomFilter(50)
+    sbf.add('a')
+    expect(sbf.clone().equals(sbf)).toBe(true)
+  })
+
+  it('capacity is positive', () => {
+    const sbf = new ScalableBloomFilter(100)
+    expect(sbf.capacity).toBeGreaterThan(0)
+  })
 })

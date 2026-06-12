@@ -417,4 +417,25 @@ describe('Quickhull', () => {
     ]
     expect(Quickhull.hullArea(hull)).toBeCloseTo(0, 6)
   })
+
+  it('isConvex returns true for valid hull', () => {
+    const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 5 }])
+    expect(Quickhull.isConvex(hull)).toBe(true)
+  })
+
+  it('cross product computes correctly', () => {
+    expect(Quickhull.cross({ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 })).toBeGreaterThan(0)
+  })
+
+  it('convexHull for collinear points', () => {
+    const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }])
+    expect(hull.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('convexHull handles square', () => {
+    const points = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(4)
+    expect(Quickhull.hullArea(hull)).toBeCloseTo(1, 5)
+  })
 })

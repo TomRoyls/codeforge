@@ -417,4 +417,30 @@ describe('DigitalTree', () => {
     expect(arr).toContain('cat')
     expect(arr).toContain('car')
   })
+
+  it('remove returns false for non-existent word', () => {
+    const tree = new DigitalTree()
+    expect(tree.remove('missing')).toBe(false)
+  })
+
+  it('count tracks inserted unique words', () => {
+    const tree = new DigitalTree()
+    tree.insert('a')
+    tree.insert('b')
+    tree.insert('a')
+    expect(tree.count).toBe(2)
+  })
+
+  it('startsWith returns true for single char prefix', () => {
+    const tree = new DigitalTree()
+    tree.insert('hello')
+    expect(tree.startsWith('h')).toBe(true)
+    expect(tree.startsWith('x')).toBe(false)
+  })
+
+  it('search returns false for partial match', () => {
+    const tree = new DigitalTree()
+    tree.insert('hello')
+    expect(tree.search('hel')).toBe(false)
+  })
 })
