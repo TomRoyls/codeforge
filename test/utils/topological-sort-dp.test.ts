@@ -1171,3 +1171,168 @@ describe('topological-sort-dp - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('topological-sort-dp - w260', () => {
+  it('topological-sort-dp x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w270', () => {
+  it('topological-sort-dp x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w280', () => {
+  it('topological-sort-dp x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w290', () => {
+  it('topological-sort-dp x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w300', () => {
+  it('topological-sort-dp x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

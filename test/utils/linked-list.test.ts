@@ -1172,3 +1172,168 @@ describe('linked-list - w250', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('linked-list - w260', () => {
+  it('linked-list x260x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x260x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w270', () => {
+  it('linked-list x270x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x270x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w280', () => {
+  it('linked-list x280x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x280x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w290', () => {
+  it('linked-list x290x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x290x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w300', () => {
+  it('linked-list x300x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list x300x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

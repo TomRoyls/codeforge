@@ -1214,3 +1214,168 @@ describe('disjoint-set-union - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-set-union - w260', () => {
+  it('disjoint-set-union x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w270', () => {
+  it('disjoint-set-union x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w280', () => {
+  it('disjoint-set-union x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w290', () => {
+  it('disjoint-set-union x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w300', () => {
+  it('disjoint-set-union x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

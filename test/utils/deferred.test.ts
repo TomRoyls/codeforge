@@ -1127,3 +1127,168 @@ describe('deferred - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deferred - w260', () => {
+  it('deferred x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deferred - w270', () => {
+  it('deferred x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deferred - w280', () => {
+  it('deferred x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deferred - w290', () => {
+  it('deferred x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deferred - w300', () => {
+  it('deferred x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

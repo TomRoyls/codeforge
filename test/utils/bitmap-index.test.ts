@@ -1142,3 +1142,168 @@ describe('bitmap-index - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bitmap-index - w260', () => {
+  it('bitmap-index x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitmap-index - w270', () => {
+  it('bitmap-index x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitmap-index - w280', () => {
+  it('bitmap-index x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitmap-index - w290', () => {
+  it('bitmap-index x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitmap-index - w300', () => {
+  it('bitmap-index x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

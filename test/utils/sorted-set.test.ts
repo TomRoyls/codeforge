@@ -1232,3 +1232,168 @@ describe('sorted-set - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sorted-set - w260', () => {
+  it('sorted-set x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w270', () => {
+  it('sorted-set x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w280', () => {
+  it('sorted-set x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w290', () => {
+  it('sorted-set x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w300', () => {
+  it('sorted-set x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

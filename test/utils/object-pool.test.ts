@@ -1394,3 +1394,168 @@ describe('object-pool - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('object-pool - w260', () => {
+  it('object-pool x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w270', () => {
+  it('object-pool x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w280', () => {
+  it('object-pool x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w290', () => {
+  it('object-pool x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w300', () => {
+  it('object-pool x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

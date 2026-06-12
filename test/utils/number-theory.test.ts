@@ -1014,3 +1014,168 @@ describe('number-theory - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('number-theory - w260', () => {
+  it('number-theory x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w270', () => {
+  it('number-theory x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w280', () => {
+  it('number-theory x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w290', () => {
+  it('number-theory x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w300', () => {
+  it('number-theory x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

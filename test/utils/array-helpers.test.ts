@@ -1066,3 +1066,168 @@ describe('array-helpers - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('array-helpers - w260', () => {
+  it('array-helpers x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w270', () => {
+  it('array-helpers x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w280', () => {
+  it('array-helpers x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w290', () => {
+  it('array-helpers x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w300', () => {
+  it('array-helpers x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

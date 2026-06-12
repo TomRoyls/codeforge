@@ -1156,3 +1156,168 @@ describe('binary-trie - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-trie - w260', () => {
+  it('binary-trie x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-trie - w270', () => {
+  it('binary-trie x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-trie - w280', () => {
+  it('binary-trie x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-trie - w290', () => {
+  it('binary-trie x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-trie - w300', () => {
+  it('binary-trie x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

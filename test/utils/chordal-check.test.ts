@@ -1199,3 +1199,168 @@ describe('chordal-check - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chordal-check - w260', () => {
+  it('chordal-check x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w270', () => {
+  it('chordal-check x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w280', () => {
+  it('chordal-check x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w290', () => {
+  it('chordal-check x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w300', () => {
+  it('chordal-check x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

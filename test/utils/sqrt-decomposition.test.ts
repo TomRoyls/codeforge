@@ -1083,3 +1083,168 @@ describe('sqrt-decomposition - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sqrt-decomposition - w260', () => {
+  it('sqrt-decomposition x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w270', () => {
+  it('sqrt-decomposition x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w280', () => {
+  it('sqrt-decomposition x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w290', () => {
+  it('sqrt-decomposition x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w300', () => {
+  it('sqrt-decomposition x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

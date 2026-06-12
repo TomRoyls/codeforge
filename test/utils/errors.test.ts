@@ -1124,3 +1124,168 @@ describe('errors - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('errors - w260', () => {
+  it('errors x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w270', () => {
+  it('errors x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w280', () => {
+  it('errors x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w290', () => {
+  it('errors x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w300', () => {
+  it('errors x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

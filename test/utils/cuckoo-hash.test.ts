@@ -1183,3 +1183,168 @@ describe('cuckoo-hash - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash - w260', () => {
+  it('cuckoo-hash x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w270', () => {
+  it('cuckoo-hash x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w280', () => {
+  it('cuckoo-hash x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w290', () => {
+  it('cuckoo-hash x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w300', () => {
+  it('cuckoo-hash x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

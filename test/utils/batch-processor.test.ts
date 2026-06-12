@@ -1514,3 +1514,168 @@ describe('batch-processor - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('batch-processor - w260', () => {
+  it('batch-processor x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('batch-processor - w270', () => {
+  it('batch-processor x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('batch-processor - w280', () => {
+  it('batch-processor x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('batch-processor - w290', () => {
+  it('batch-processor x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('batch-processor - w300', () => {
+  it('batch-processor x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

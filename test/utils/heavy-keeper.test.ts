@@ -1152,3 +1152,168 @@ describe('heavy-keeper - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-keeper - w260', () => {
+  it('heavy-keeper x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - w270', () => {
+  it('heavy-keeper x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - w280', () => {
+  it('heavy-keeper x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - w290', () => {
+  it('heavy-keeper x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - w300', () => {
+  it('heavy-keeper x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

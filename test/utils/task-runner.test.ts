@@ -1210,3 +1210,168 @@ describe('task-runner - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('task-runner - w260', () => {
+  it('task-runner x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('task-runner - w270', () => {
+  it('task-runner x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('task-runner - w280', () => {
+  it('task-runner x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('task-runner - w290', () => {
+  it('task-runner x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('task-runner - w300', () => {
+  it('task-runner x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

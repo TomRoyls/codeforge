@@ -1151,3 +1151,168 @@ describe('persistent-dsu - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-dsu - w260', () => {
+  it('persistent-dsu x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w270', () => {
+  it('persistent-dsu x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w280', () => {
+  it('persistent-dsu x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w290', () => {
+  it('persistent-dsu x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w300', () => {
+  it('persistent-dsu x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

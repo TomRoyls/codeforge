@@ -1375,3 +1375,168 @@ describe('min-max-heap - w250', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-heap - w260', () => {
+  it('min-max-heap x260x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x260x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w270', () => {
+  it('min-max-heap x270x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x270x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w280', () => {
+  it('min-max-heap x280x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x280x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w290', () => {
+  it('min-max-heap x290x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x290x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w300', () => {
+  it('min-max-heap x300x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap x300x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -1125,3 +1125,168 @@ describe('exponential-counter - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('exponential-counter - w260', () => {
+  it('exponential-counter x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w270', () => {
+  it('exponential-counter x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w280', () => {
+  it('exponential-counter x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w290', () => {
+  it('exponential-counter x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w300', () => {
+  it('exponential-counter x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

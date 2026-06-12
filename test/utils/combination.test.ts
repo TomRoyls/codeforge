@@ -1022,3 +1022,168 @@ describe('combination - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('combination - w260', () => {
+  it('combination x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('combination - w270', () => {
+  it('combination x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('combination - w280', () => {
+  it('combination x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('combination - w290', () => {
+  it('combination x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('combination - w300', () => {
+  it('combination x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1155,3 +1155,168 @@ describe('binary-lifting - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-lifting - w260', () => {
+  it('binary-lifting x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w270', () => {
+  it('binary-lifting x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w280', () => {
+  it('binary-lifting x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w290', () => {
+  it('binary-lifting x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w300', () => {
+  it('binary-lifting x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

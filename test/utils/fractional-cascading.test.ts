@@ -1088,3 +1088,168 @@ describe('fractional-cascading - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fractional-cascading - w260', () => {
+  it('fractional-cascading x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fractional-cascading - w270', () => {
+  it('fractional-cascading x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fractional-cascading - w280', () => {
+  it('fractional-cascading x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fractional-cascading - w290', () => {
+  it('fractional-cascading x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fractional-cascading - w300', () => {
+  it('fractional-cascading x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

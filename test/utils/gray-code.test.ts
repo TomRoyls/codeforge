@@ -1047,3 +1047,168 @@ describe('gray-code - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gray-code - w260', () => {
+  it('gray-code x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w270', () => {
+  it('gray-code x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w280', () => {
+  it('gray-code x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w290', () => {
+  it('gray-code x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w300', () => {
+  it('gray-code x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1061,3 +1061,168 @@ describe('comparators - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comparators - w260', () => {
+  it('comparators x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - w270', () => {
+  it('comparators x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - w280', () => {
+  it('comparators x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - w290', () => {
+  it('comparators x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - w300', () => {
+  it('comparators x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

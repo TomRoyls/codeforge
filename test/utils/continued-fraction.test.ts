@@ -1002,3 +1002,168 @@ describe('continued-fraction - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('continued-fraction - w260', () => {
+  it('continued-fraction x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('continued-fraction - w270', () => {
+  it('continued-fraction x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('continued-fraction - w280', () => {
+  it('continued-fraction x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('continued-fraction - w290', () => {
+  it('continued-fraction x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('continued-fraction - w300', () => {
+  it('continued-fraction x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

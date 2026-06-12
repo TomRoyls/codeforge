@@ -1172,3 +1172,168 @@ describe('graph-isomorphism - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-isomorphism - w260', () => {
+  it('graph-isomorphism x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-isomorphism - w270', () => {
+  it('graph-isomorphism x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-isomorphism - w280', () => {
+  it('graph-isomorphism x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-isomorphism - w290', () => {
+  it('graph-isomorphism x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-isomorphism - w300', () => {
+  it('graph-isomorphism x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

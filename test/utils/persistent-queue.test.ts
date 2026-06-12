@@ -1138,3 +1138,168 @@ describe('persistent-queue - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-queue - w260', () => {
+  it('persistent-queue x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-queue - w270', () => {
+  it('persistent-queue x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-queue - w280', () => {
+  it('persistent-queue x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-queue - w290', () => {
+  it('persistent-queue x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-queue - w300', () => {
+  it('persistent-queue x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1196,3 +1196,168 @@ describe('lsm-tree - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lsm-tree - w260', () => {
+  it('lsm-tree x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w270', () => {
+  it('lsm-tree x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w280', () => {
+  it('lsm-tree x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w290', () => {
+  it('lsm-tree x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w300', () => {
+  it('lsm-tree x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

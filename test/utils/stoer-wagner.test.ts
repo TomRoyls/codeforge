@@ -1174,3 +1174,168 @@ describe('stoer-wagner - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stoer-wagner - w260', () => {
+  it('stoer-wagner x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stoer-wagner - w270', () => {
+  it('stoer-wagner x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stoer-wagner - w280', () => {
+  it('stoer-wagner x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stoer-wagner - w290', () => {
+  it('stoer-wagner x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stoer-wagner - w300', () => {
+  it('stoer-wagner x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

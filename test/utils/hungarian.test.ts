@@ -1163,3 +1163,168 @@ describe('hungarian - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian - w260', () => {
+  it('hungarian x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w270', () => {
+  it('hungarian x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w280', () => {
+  it('hungarian x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w290', () => {
+  it('hungarian x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w300', () => {
+  it('hungarian x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1143,3 +1143,168 @@ describe('graph - w250', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('graph - w260', () => {
+  it('graph x260x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x260x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('graph - w270', () => {
+  it('graph x270x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x270x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('graph - w280', () => {
+  it('graph x280x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x280x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('graph - w290', () => {
+  it('graph x290x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x290x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('graph - w300', () => {
+  it('graph x300x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph x300x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

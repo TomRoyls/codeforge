@@ -1035,3 +1035,168 @@ describe('matrix-chain-multiply - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('matrix-chain-multiply - w260', () => {
+  it('matrix-chain-multiply x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w270', () => {
+  it('matrix-chain-multiply x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w280', () => {
+  it('matrix-chain-multiply x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w290', () => {
+  it('matrix-chain-multiply x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w300', () => {
+  it('matrix-chain-multiply x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

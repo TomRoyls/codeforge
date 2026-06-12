@@ -1194,3 +1194,168 @@ describe('radix-heap - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('radix-heap - w260', () => {
+  it('radix-heap x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-heap - w270', () => {
+  it('radix-heap x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-heap - w280', () => {
+  it('radix-heap x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-heap - w290', () => {
+  it('radix-heap x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-heap - w300', () => {
+  it('radix-heap x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

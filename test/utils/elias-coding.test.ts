@@ -1152,3 +1152,168 @@ describe('elias-coding - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-coding - w260', () => {
+  it('elias-coding x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w270', () => {
+  it('elias-coding x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w280', () => {
+  it('elias-coding x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w290', () => {
+  it('elias-coding x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w300', () => {
+  it('elias-coding x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

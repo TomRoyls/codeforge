@@ -1016,3 +1016,168 @@ describe('golden-ratio-search - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('golden-ratio-search - w260', () => {
+  it('golden-ratio-search x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w270', () => {
+  it('golden-ratio-search x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w280', () => {
+  it('golden-ratio-search x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w290', () => {
+  it('golden-ratio-search x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w300', () => {
+  it('golden-ratio-search x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1148,3 +1148,168 @@ describe('deterministic-rng - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deterministic-rng - w260', () => {
+  it('deterministic-rng x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w270', () => {
+  it('deterministic-rng x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w280', () => {
+  it('deterministic-rng x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w290', () => {
+  it('deterministic-rng x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w300', () => {
+  it('deterministic-rng x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

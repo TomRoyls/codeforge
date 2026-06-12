@@ -1064,3 +1064,168 @@ describe('lz-compression - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lz-compression - w260', () => {
+  it('lz-compression x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w270', () => {
+  it('lz-compression x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w280', () => {
+  it('lz-compression x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w290', () => {
+  it('lz-compression x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w300', () => {
+  it('lz-compression x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

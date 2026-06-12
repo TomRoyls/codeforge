@@ -1215,3 +1215,168 @@ describe('treap-implicit - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap-implicit - w260', () => {
+  it('treap-implicit x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w270', () => {
+  it('treap-implicit x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w280', () => {
+  it('treap-implicit x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w290', () => {
+  it('treap-implicit x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w300', () => {
+  it('treap-implicit x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

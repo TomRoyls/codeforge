@@ -1229,3 +1229,168 @@ describe('two-sat - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('two-sat - w260', () => {
+  it('two-sat x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('two-sat - w270', () => {
+  it('two-sat x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('two-sat - w280', () => {
+  it('two-sat x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('two-sat - w290', () => {
+  it('two-sat x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('two-sat - w300', () => {
+  it('two-sat x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

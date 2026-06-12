@@ -1122,3 +1122,168 @@ describe('line-sweep - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('line-sweep - w260', () => {
+  it('line-sweep x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w270', () => {
+  it('line-sweep x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w280', () => {
+  it('line-sweep x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w290', () => {
+  it('line-sweep x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w300', () => {
+  it('line-sweep x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

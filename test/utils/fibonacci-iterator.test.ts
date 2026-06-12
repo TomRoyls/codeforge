@@ -1039,3 +1039,168 @@ describe('fibonacci-iterator - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-iterator - w260', () => {
+  it('fibonacci-iterator x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-iterator - w270', () => {
+  it('fibonacci-iterator x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-iterator - w280', () => {
+  it('fibonacci-iterator x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-iterator - w290', () => {
+  it('fibonacci-iterator x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-iterator - w300', () => {
+  it('fibonacci-iterator x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

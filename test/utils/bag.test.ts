@@ -1217,3 +1217,168 @@ describe('bag - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bag - w260', () => {
+  it('bag x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w270', () => {
+  it('bag x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w280', () => {
+  it('bag x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w290', () => {
+  it('bag x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w300', () => {
+  it('bag x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

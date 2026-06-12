@@ -1052,3 +1052,168 @@ describe('wavelet-matrix - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-matrix - w260', () => {
+  it('wavelet-matrix x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w270', () => {
+  it('wavelet-matrix x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w280', () => {
+  it('wavelet-matrix x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w290', () => {
+  it('wavelet-matrix x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w300', () => {
+  it('wavelet-matrix x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

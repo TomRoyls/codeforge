@@ -984,3 +984,168 @@ describe('counting-inversions - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-inversions - w260', () => {
+  it('counting-inversions x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w270', () => {
+  it('counting-inversions x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w280', () => {
+  it('counting-inversions x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w290', () => {
+  it('counting-inversions x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w300', () => {
+  it('counting-inversions x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

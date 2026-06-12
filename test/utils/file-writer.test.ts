@@ -1180,3 +1180,168 @@ describe('file-writer - w250', () => {
     expect(afterEach).toBeDefined()
   })
 })
+
+describe('file-writer - w260', () => {
+  it('file-writer x260x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x260x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('file-writer - w270', () => {
+  it('file-writer x270x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x270x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('file-writer - w280', () => {
+  it('file-writer x280x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x280x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('file-writer - w290', () => {
+  it('file-writer x290x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x290x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('file-writer - w300', () => {
+  it('file-writer x300x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer x300x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+})

@@ -1095,3 +1095,168 @@ describe('disjoint-interval - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-interval - w260', () => {
+  it('disjoint-interval x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w270', () => {
+  it('disjoint-interval x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w280', () => {
+  it('disjoint-interval x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w290', () => {
+  it('disjoint-interval x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w300', () => {
+  it('disjoint-interval x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

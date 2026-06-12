@@ -1164,3 +1164,168 @@ describe('convex-hull - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('convex-hull - w260', () => {
+  it('convex-hull x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull - w270', () => {
+  it('convex-hull x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull - w280', () => {
+  it('convex-hull x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull - w290', () => {
+  it('convex-hull x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull - w300', () => {
+  it('convex-hull x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

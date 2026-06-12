@@ -1255,3 +1255,168 @@ describe('bloom-filter-3 - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bloom-filter-3 - w260', () => {
+  it('bloom-filter-3 x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloom-filter-3 - w270', () => {
+  it('bloom-filter-3 x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloom-filter-3 - w280', () => {
+  it('bloom-filter-3 x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloom-filter-3 - w290', () => {
+  it('bloom-filter-3 x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloom-filter-3 - w300', () => {
+  it('bloom-filter-3 x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

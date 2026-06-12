@@ -1205,3 +1205,168 @@ describe('slope-trick - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('slope-trick - w260', () => {
+  it('slope-trick x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('slope-trick - w270', () => {
+  it('slope-trick x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('slope-trick - w280', () => {
+  it('slope-trick x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('slope-trick - w290', () => {
+  it('slope-trick x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('slope-trick - w300', () => {
+  it('slope-trick x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('slope-trick x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

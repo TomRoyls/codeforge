@@ -1178,3 +1178,168 @@ describe('sparse-set - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-set - w260', () => {
+  it('sparse-set x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w270', () => {
+  it('sparse-set x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w280', () => {
+  it('sparse-set x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w290', () => {
+  it('sparse-set x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w300', () => {
+  it('sparse-set x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

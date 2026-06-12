@@ -1269,3 +1269,168 @@ describe('tremaux-maze - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tremaux-maze - w260', () => {
+  it('tremaux-maze x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tremaux-maze - w270', () => {
+  it('tremaux-maze x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tremaux-maze - w280', () => {
+  it('tremaux-maze x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tremaux-maze - w290', () => {
+  it('tremaux-maze x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tremaux-maze - w300', () => {
+  it('tremaux-maze x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

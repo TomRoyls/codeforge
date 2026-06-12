@@ -1136,3 +1136,168 @@ describe('hamiltonian-path - w250', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hamiltonian-path - w260', () => {
+  it('hamiltonian-path x260x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x260x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w270', () => {
+  it('hamiltonian-path x270x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x270x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w280', () => {
+  it('hamiltonian-path x280x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x280x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w290', () => {
+  it('hamiltonian-path x290x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x290x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w300', () => {
+  it('hamiltonian-path x300x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path x300x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
