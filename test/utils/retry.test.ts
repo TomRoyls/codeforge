@@ -597,4 +597,19 @@ describe('retryAsync - edge cases', () => {
   it('retryAsync returns error after max retries', async () => {
     const result = await retryAsync(() => Promise.reject(new Error('always')), { maxRetries: 2, delayMs: 10 })
     expect(result.isErr()).toBe(true)
+
+  it('retryAsync is a function', () => {
+    expect(typeof retryAsync).toBe('function')
+  })
+
+  it('retryAsync resolves on first try', async () => {
+    const result = await retryAsync(() => Promise.resolve(42), { maxRetries: 3 })
+    expect(result).toBeDefined()
+  })
+
+  it('retryAsync with retries option', async () => {
+    const result = await retryAsync(() => Promise.resolve('ok'), { maxRetries: 0 })
+    expect(result).toBeDefined()
+  })
+
   })

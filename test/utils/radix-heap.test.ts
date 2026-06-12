@@ -461,4 +461,26 @@ describe('RadixHeap', () => {
     expect(rh.pop()).toBe(5)
     expect(rh.pop()).toBe(5)
   })
+
+  it('push and pop', () => {
+    const h = new RadixHeap(100)
+    h.push(5)
+    h.push(3)
+    expect(h.pop()).toBe(3)
+  })
+
+  it('pop empty returns undefined', () => {
+    const h = new RadixHeap()
+    expect(h.pop()).toBeUndefined()
+  })
+
+  it('maintains order', () => {
+    const h = new RadixHeap(100)
+    h.push(5)
+    h.push(1)
+    h.push(3)
+    expect(h.pop()).toBe(1)
+    expect(h.pop()).toBe(3)
+  })
+
 })

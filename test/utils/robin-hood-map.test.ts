@@ -458,4 +458,21 @@ describe('RobinHopMap', () => {
     expect(map.get('a')).toBe(2)
     expect(map.size).toBe(1)
   })
+
+  it('get missing returns undefined', () => {
+    const m = new RobinHopMap<string, number>()
+    expect(m.get('missing')).toBeUndefined()
+  })
+
+  it('set and get', () => {
+    const m = new RobinHopMap<string, number>()
+    m.set('a', 1)
+    expect(m.get('a')).toBe(1)
+  })
+
+  it('has returns boolean', () => {
+    const m = new RobinHopMap<string, number>()
+    expect(m.has('missing')).toBe(false)
+  })
+
 })

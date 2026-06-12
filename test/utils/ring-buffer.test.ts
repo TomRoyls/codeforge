@@ -470,4 +470,22 @@ describe('RingBuffer - capacity 1', () => {
     rb.push(2)
     rb.clear()
     expect(rb.size).toBe(0)
+
+  it('empty buffer get undefined', () => {
+    const rb = new RingBuffer<number>(5)
+    expect(rb.get(0)).toBeUndefined()
+  })
+
+  it('push and shift', () => {
+    const rb = new RingBuffer<number>(5)
+    rb.push(1)
+    rb.push(2)
+    expect(rb.shift()).toBe(1)
+  })
+
+  it('fromArray works', () => {
+    const rb = RingBuffer.fromArray([1, 2, 3])
+    expect(rb).toBeDefined()
+  })
+
   })

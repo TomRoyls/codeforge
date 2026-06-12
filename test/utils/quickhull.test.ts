@@ -438,4 +438,18 @@ describe('Quickhull', () => {
     expect(hull.length).toBe(4)
     expect(Quickhull.hullArea(hull)).toBeCloseTo(1, 5)
   })
+
+  it('convexHull empty points', () => {
+    expect(Quickhull.convexHull([])).toEqual([])
+  })
+
+  it('convexHull single point', () => {
+    expect(Quickhull.convexHull([{ x: 0, y: 0 }])).toEqual([{ x: 0, y: 0 }])
+  })
+
+  it('convexHull triangle', () => {
+    const hull = Quickhull.convexHull([{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 }])
+    expect(hull.length).toBe(3)
+  })
+
 })

@@ -379,4 +379,21 @@ describe('RateLimiter', () => {
     const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
     expect(rl.tryAcquire(3)).toBe(true)
     expect(rl.tryAcquire(3)).toBe(false)
+
+  it('tryAcquire returns boolean', () => {
+    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1 })
+    expect(typeof rl.tryAcquire()).toBe('boolean')
+  })
+
+  it('getAvailableTokens returns number', () => {
+    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1 })
+    expect(typeof rl.getAvailableTokens()).toBe('number')
+  })
+
+  it('reset clears tokens', () => {
+    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1 })
+    rl.reset()
+    expect(rl.getAvailableTokens()).toBe(10)
+  })
+
   })

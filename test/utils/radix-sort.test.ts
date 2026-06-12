@@ -325,4 +325,17 @@ describe('RadixSort', () => {
 })
   it('sort empty array', () => {
     expect(RadixSort.sort([])).toEqual([])
+
+  it('sort empty arr', () => {
+    expect(RadixSort.sort([])).toEqual([])
+  })
+
+  it('sort single element', () => {
+    expect(RadixSort.sort([5])).toEqual([5])
+  })
+
+  it('sort works', () => {
+    expect(RadixSort.sort([3, 1, 2])).toEqual([1, 2, 3])
+  })
+
   })

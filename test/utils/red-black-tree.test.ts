@@ -469,4 +469,22 @@ describe('RedBlackTree height', () => {
     tree.insert(2, 'b')
     tree.insert(3, 'c')
     expect(tree.size).toBe(3)
+
+  it('empty tree size is 0', () => {
+    const tree = new RedBlackTree<number, string>()
+    expect(tree.size).toBe(0)
+  })
+
+  it('insert increases size', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.size).toBe(1)
+  })
+
+  it('contains after insert', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    expect(tree.contains(1)).toBe(true)
+  })
+
   })

@@ -459,4 +459,24 @@ describe('ReservoirSampler', () => {
     rs.add(2)
     rs.add(3)
     expect(rs.totalSeen).toBe(3)
+
+  it('empty sampler toArray empty', () => {
+    const rs = new ReservoirSampler<number>(5)
+    expect(rs.toArray()).toEqual([])
+  })
+
+  it('add and toArray', () => {
+    const rs = new ReservoirSampler<number>(5)
+    rs.add(1)
+    rs.add(2)
+    expect(rs.toArray().length).toBe(2)
+  })
+
+  it('reset clears', () => {
+    const rs = new ReservoirSampler<number>(5)
+    rs.add(1)
+    rs.reset()
+    expect(rs.toArray()).toEqual([])
+  })
+
   })

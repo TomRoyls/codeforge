@@ -436,4 +436,21 @@ describe('RollbackDSU', () => {
     expect(dsu.connected(0, 1)).toBe(true)
     expect(dsu.connected(2, 3)).toBe(true)
     expect(dsu.connected(0, 2)).toBe(false)
+
+  it('single element DSU', () => {
+    const dsu = new RollbackDSU(1)
+    expect(dsu.find(0)).toBe(0)
+  })
+
+  it('union connects elements', () => {
+    const dsu = new RollbackDSU(2)
+    dsu.union(0, 1)
+    expect(dsu.connected(0, 1)).toBe(true)
+  })
+
+  it('snapshot returns number', () => {
+    const dsu = new RollbackDSU(3)
+    expect(typeof dsu.snapshot()).toBe('number')
+  })
+
   })

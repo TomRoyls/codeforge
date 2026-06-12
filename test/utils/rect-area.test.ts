@@ -321,4 +321,18 @@ describe('RectArea', () => {
   it('unionArea of single rect is its area', () => {
     const rects = [{ x1: 0, y1: 0, x2: 3, y2: 4 }]
     expect(RectArea.unionArea(rects)).toBe(12)
+
+  it('unionArea empty is 0', () => {
+    expect(RectArea.unionArea([])).toBe(0)
+  })
+
+  it('unionArea single rect', () => {
+    expect(RectArea.unionArea([{ x1: 0, y1: 0, x2: 2, y2: 2 }])).toBe(4)
+  })
+
+  it('intersection of same rect', () => {
+    const r = { x1: 0, y1: 0, x2: 2, y2: 2 }
+    expect(RectArea.intersection(r, r)).toEqual(r)
+  })
+
   })

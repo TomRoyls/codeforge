@@ -394,4 +394,22 @@ describe('RangeUpdatePointQuery', () => {
     const rupq = new RangeUpdatePointQuery(3)
     rupq.addRange(0, 2, 1)
     expect(rupq.build()).toEqual([1, 1, 1])
+
+  it('new array all zeros', () => {
+    const r = new RangeUpdatePointQuery(5)
+    expect(r.get(0)).toBe(0)
+  })
+
+  it('addRange updates values', () => {
+    const r = new RangeUpdatePointQuery(5)
+    r.addRange(0, 2, 1)
+    expect(r.get(1)).toBe(1)
+  })
+
+  it('addPoint works', () => {
+    const r = new RangeUpdatePointQuery(5)
+    r.addPoint(0, 5)
+    expect(r.get(0)).toBe(5)
+  })
+
   })

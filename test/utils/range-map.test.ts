@@ -451,4 +451,21 @@ describe('RangeMap - clone', () => {
   it('get returns undefined for empty map', () => {
     const rm = new RangeMap<string>()
     expect(rm.get(0)).toBeUndefined()
+
+  it('get missing returns undefined', () => {
+    const rm = new RangeMap<string>()
+    expect(rm.get(5)).toBeUndefined()
+  })
+
+  it('has returns boolean', () => {
+    const rm = new RangeMap<string>()
+    expect(rm.has(5)).toBe(false)
+  })
+
+  it('set and get', () => {
+    const rm = new RangeMap<string>()
+    rm.set(0, 10, 'a')
+    expect(rm.get(5)).toBe('a')
+  })
+
   })

@@ -478,4 +478,23 @@ describe('RingBufferQueue', () => {
   it('size on empty is 0', () => {
     const rbq = new RingBufferQueue<number>()
     expect(rbq.size).toBe(0)
+
+  it('empty queue peek undefined', () => {
+    const q = new RingBufferQueue<number>()
+    expect(q.peek()).toBeUndefined()
+  })
+
+  it('enqueue and dequeue', () => {
+    const q = new RingBufferQueue<number>()
+    q.enqueue(1)
+    expect(q.dequeue()).toBe(1)
+  })
+
+  it('peekLast returns last', () => {
+    const q = new RingBufferQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    expect(q.peekLast()).toBe(2)
+  })
+
   })

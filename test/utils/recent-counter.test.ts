@@ -419,4 +419,23 @@ describe('RecentCounter', () => {
     for (let i = 0; i < 10; i++) rc.ping(i)
     expect(rc.count(50)).toBe(10)
   })
+
+  it('new counter count is 0', () => {
+    const rc = new RecentCounter(1000)
+    expect(rc.count()).toBe(0)
+  })
+
+  it('ping increments count', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(100)
+    expect(rc.count(100)).toBe(1)
+  })
+
+  it('reset clears', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(100)
+    rc.reset()
+    expect(rc.count()).toBe(0)
+  })
+
 })

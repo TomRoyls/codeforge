@@ -403,4 +403,23 @@ describe('RoaringBitSet', () => {
     const rb = RoaringBitSet.from([1, 3, 5])
     expect(rb.has(1)).toBe(true)
     expect(rb.has(2)).toBe(false)
+
+  it('new bitset has nothing', () => {
+    const bs = new RoaringBitSet()
+    expect(bs.has(0)).toBe(false)
+  })
+
+  it('add and has', () => {
+    const bs = new RoaringBitSet()
+    bs.add(5)
+    expect(bs.has(5)).toBe(true)
+  })
+
+  it('delete removes', () => {
+    const bs = new RoaringBitSet()
+    bs.add(5)
+    bs.delete(5)
+    expect(bs.has(5)).toBe(false)
+  })
+
   })

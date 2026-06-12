@@ -475,4 +475,21 @@ describe('RendezvousHash - with complex values', () => {
   it('has returns false for missing', () => {
     const rh = new RendezvousHash<string>()
     expect(rh.has('missing')).toBe(false)
+
+  it('empty hash get undefined', () => {
+    const rh = new RendezvousHash<string>()
+    expect(rh.get('key')).toBeUndefined()
+  })
+
+  it('add and get', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('node1', 'value1')
+    expect(rh.get('any-key')).toBeDefined()
+  })
+
+  it('has returns boolean', () => {
+    const rh = new RendezvousHash<string>()
+    expect(rh.has('node1')).toBe(false)
+  })
+
   })

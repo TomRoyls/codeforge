@@ -338,4 +338,19 @@ describe('RandomWalk', () => {
     const results = RandomWalk.simulateMultiple1D(10, 5, () => () => 0.5)
     expect(results.length).toBe(5)
   })
+
+  it('walk1D returns array', () => {
+    const walk = RandomWalk.walk1D(10)
+    expect(walk.length).toBe(11)
+  })
+
+  it('walk2D returns points', () => {
+    const walk = RandomWalk.walk2D(10)
+    expect(walk.length).toBe(11)
+  })
+
+  it('walk1D starts at 0', () => {
+    expect(RandomWalk.walk1D(5)[0]).toBe(0)
+  })
+
 })

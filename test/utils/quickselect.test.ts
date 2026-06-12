@@ -303,4 +303,17 @@ describe('QuickSelect', () => {
   it('select handles single element', () => {
     expect(QuickSelect.select([42], 0)).toBe(42)
   })
+
+  it('select from single element', () => {
+    expect(QuickSelect.select([5], 0)).toBe(5)
+  })
+
+  it('median of odd array', () => {
+    expect(QuickSelect.median([3, 1, 2])).toBe(2)
+  })
+
+  it('select k=0 returns min', () => {
+    expect(QuickSelect.select([3, 1, 2], 0)).toBe(1)
+  })
+
 })
