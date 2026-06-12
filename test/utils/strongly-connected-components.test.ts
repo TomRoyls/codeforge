@@ -412,4 +412,36 @@ describe('SCCGraph', () => {
     const components = scc.findSCCs()
     expect(components.length).toBe(1)
   })
+  it('cycle forms single SCC', () => {
+    const scc = new SCCGraph()
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    scc.addEdge(2, 0)
+    const result = scc.findSCCs()
+    expect(result.length).toBe(1)
+  })
+
+  it('nodeCount returns count', () => {
+    const scc = new SCCGraph()
+    scc.addNode(1)
+    scc.addNode(2)
+    expect(scc.nodeCount).toBe(2)
+  })
+
+  it('single node is one SCC', () => {
+    const scc = new SCCGraph()
+    scc.addNode(0)
+    const result = scc.findSCCs()
+    expect(result.length).toBe(1)
+    expect(result[0]).toEqual([0])
+  })
+
+  it('disconnected nodes form separate SCCs', () => {
+    const scc = new SCCGraph()
+    scc.addNode(0)
+    scc.addNode(1)
+    scc.addNode(2)
+    const result = scc.findSCCs()
+    expect(result.length).toBe(3)
+  })
 })

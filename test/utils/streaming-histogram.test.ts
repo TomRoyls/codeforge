@@ -429,3 +429,26 @@ describe('StreamingHistogram', () => {
     expect(hist.quantile(0.5)).toBeGreaterThanOrEqual(0)
   })
 })
+  it('count tracks elements', () => {
+    const sh = new StreamingHistogram(10)
+    sh.add(1)
+    sh.add(2)
+    sh.add(3)
+    expect(sh.count).toBe(3)
+  })
+
+  it('min and max track range', () => {
+    const sh = new StreamingHistogram(10)
+    sh.add(5)
+    sh.add(1)
+    sh.add(9)
+    expect(sh.min).toBe(1)
+    expect(sh.max).toBe(9)
+  })
+
+  it('mean returns average', () => {
+    const sh = new StreamingHistogram(10)
+    sh.add(2)
+    sh.add(4)
+    expect(sh.mean).toBe(3)
+  })

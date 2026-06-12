@@ -254,3 +254,16 @@ describe('SubsetSum', () => {
     expect(SubsetSum.findSubset([5], 5)).toEqual([5])
   })
 })
+
+  it('hasSubset returns false for impossible', () => {
+    expect(SubsetSum.hasSubset([1, 2, 3], 100)).toBe(false)
+  })
+
+  it('findSubset returns null for impossible', () => {
+    expect(SubsetSum.findSubset([1, 2], 5)).toBeNull()
+  })
+
+  it('findAllSubsets returns empty for zero target', () => {
+    const result = SubsetSum.findAllSubsets([1, 2, 3], 0)
+    expect(result).toEqual([[]])
+  })

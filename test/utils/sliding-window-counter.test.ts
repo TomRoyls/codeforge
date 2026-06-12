@@ -369,3 +369,22 @@ describe('SlidingWindowCounter - same timestamp', () => {
     expect(() => new SlidingWindowCounter(1000, 0)).toThrow()
   })
 })
+
+  it('getCount returns 0 on new counter', () => {
+    const swc = new SlidingWindowCounter(1000)
+    expect(swc.getCount()).toBe(0)
+  })
+
+  it('reset clears count', () => {
+    const swc = new SlidingWindowCounter(1000)
+    swc.increment(5)
+    swc.reset()
+    expect(swc.getCount()).toBe(0)
+  })
+
+  it('increment adds to count', () => {
+    const swc = new SlidingWindowCounter(10000)
+    swc.increment(3)
+    swc.increment(2)
+    expect(swc.getCount()).toBe(5)
+  })

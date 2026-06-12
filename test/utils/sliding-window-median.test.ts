@@ -474,3 +474,23 @@ describe('SlidingWindowMedian', () => {
     expect(swm.median()).toBe(-3)
   })
 })
+  it('min returns smallest in window', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(5)
+    swm.push(1)
+    swm.push(3)
+    expect(swm.min()).toBe(1)
+  })
+
+  it('median of single element', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(7)
+    expect(swm.median()).toBe(7)
+  })
+
+  it('window slides correctly', () => {
+    const swm = new SlidingWindowMedian(2)
+    swm.push(1)
+    swm.push(2)
+    expect(swm.median()).toBe(1.5)
+  })

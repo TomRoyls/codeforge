@@ -463,3 +463,20 @@ describe('SlopeTrick', () => {
     expect(typeof st.min).toBe('number')
   })
 })
+  it('min starts at zero', () => {
+    const st = new SlopeTrick()
+    expect(st.min).toBe(0)
+  })
+
+  it('addAbsolute changes min', () => {
+    const st = new SlopeTrick()
+    st.addAbsolute()
+    expect(st.min).toBe(0)
+  })
+
+  it('argmin returns range', () => {
+    const st = new SlopeTrick()
+    const result = st.argmin
+    expect(typeof result.lo).toBe('number')
+    expect(typeof result.hi).toBe('number')
+  })

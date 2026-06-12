@@ -312,3 +312,19 @@ describe('SuffixAutomaton', () => {
     expect(sam.getState(sam.size)).toBeUndefined()
   })
 })
+  it('contains returns false for missing', () => {
+    const sa = new SuffixAutomaton('abc')
+    expect(sa.contains('xyz')).toBe(false)
+  })
+
+  it('contains returns true for empty string', () => {
+    const sa = new SuffixAutomaton('abc')
+    expect(sa.contains('')).toBe(true)
+  })
+
+  it('extend adds character', () => {
+    const sa = new SuffixAutomaton()
+    sa.extend('a')
+    sa.extend('b')
+    expect(sa.contains('ab')).toBe(true)
+  })

@@ -507,3 +507,20 @@ describe('StablePriorityQueue', () => {
     expect(pq.size).toBe(2)
   })
 })
+  it('isEmpty on new queue', () => {
+    const spq = new StablePriorityQueue<number>()
+    expect(spq.isEmpty()).toBe(true)
+  })
+
+  it('peek returns undefined on empty', () => {
+    const spq = new StablePriorityQueue<number>()
+    expect(spq.peek()).toBeUndefined()
+  })
+
+  it('clear empties queue', () => {
+    const spq = new StablePriorityQueue<number>()
+    spq.enqueue(1)
+    spq.enqueue(2)
+    spq.clear()
+    expect(spq.size).toBe(0)
+  })

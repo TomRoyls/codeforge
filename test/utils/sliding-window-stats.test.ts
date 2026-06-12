@@ -437,3 +437,26 @@ describe('SlidingWindowStats', () => {
     expect(sw.mean).toBe(0)
   })
 })
+
+  it('count tracks elements', () => {
+    const sws = new SlidingWindowStats(3)
+    sws.push(1)
+    sws.push(2)
+    expect(sws.count).toBe(2)
+  })
+
+  it('isFull when window full', () => {
+    const sws = new SlidingWindowStats(2)
+    sws.push(1)
+    sws.push(2)
+    expect(sws.isFull).toBe(true)
+  })
+
+  it('min and max work correctly', () => {
+    const sws = new SlidingWindowStats(5)
+    sws.push(3)
+    sws.push(1)
+    sws.push(4)
+    expect(sws.min).toBe(1)
+    expect(sws.max).toBe(4)
+  })

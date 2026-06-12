@@ -314,3 +314,18 @@ describe('SpiralMatrix', () => {
     expect(sm).toBeDefined()
   })
 })
+
+  it('generate 1x1 matrix', () => {
+    expect(SpiralMatrix.generate(1)).toEqual([[1]])
+  })
+
+  it('traverse returns elements in spiral order', () => {
+    const matrix = [[1, 2], [3, 4]]
+    expect(SpiralMatrix.traverse(matrix)).toEqual([1, 2, 4, 3])
+  })
+
+  it('generate 3x3 has correct dimensions', () => {
+    const m = SpiralMatrix.generate(3)
+    expect(m.length).toBe(3)
+    expect(m[0].length).toBe(3)
+  })

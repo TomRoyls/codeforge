@@ -284,3 +284,21 @@ describe('SlidingWindowMin', () => {
     expect(result).toEqual([3, 2, 1])
   })
 })
+
+  it('push returns undefined before window full', () => {
+    const swm = new SlidingWindowMin(3)
+    expect(swm.push(1)).toBeUndefined()
+  })
+
+  it('getMin returns current minimum', () => {
+    const swm = new SlidingWindowMin(3)
+    swm.push(3)
+    swm.push(1)
+    swm.push(2)
+    expect(swm.getMin()).toBe(1)
+  })
+
+  it('solve returns array of minimums', () => {
+    const result = SlidingWindowMin.solve([4, 2, 1, 3], 2)
+    expect(result).toEqual([2, 1, 1])
+  })

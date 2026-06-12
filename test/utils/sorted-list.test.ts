@@ -408,3 +408,21 @@ describe('SortedList', () => {
     expect(sl.removeItem(99)).toBe(false)
   })
 })
+
+  it('contains returns false for missing', () => {
+    const sl = new SortedList<number>()
+    expect(sl.contains(99)).toBe(false)
+  })
+
+  it('indexOf returns -1 for missing', () => {
+    const sl = new SortedList<number>()
+    sl.insert(1)
+    sl.insert(3)
+    expect(sl.indexOf(2)).toBe(-1)
+  })
+
+  it('removeItem returns false for missing', () => {
+    const sl = new SortedList<number>()
+    sl.insert(1)
+    expect(sl.removeItem(99)).toBe(false)
+  })

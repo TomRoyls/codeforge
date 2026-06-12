@@ -398,3 +398,24 @@ describe('StrongConnectivityContraction', () => {
     expect(scc.contract().componentCount).toBe(1)
   })
 })
+
+  it('single node contracts to one component', () => {
+    const scc = new StrongConnectivityContraction(1)
+    const result = scc.contract()
+    expect(result.componentCount).toBe(1)
+  })
+
+  it('disconnected nodes form separate components', () => {
+    const scc = new StrongConnectivityContraction(3)
+    const result = scc.contract()
+    expect(result.componentCount).toBe(3)
+  })
+
+  it('cycle forms single component', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    scc.addEdge(2, 0)
+    const result = scc.contract()
+    expect(result.componentCount).toBe(1)
+  })

@@ -377,3 +377,21 @@ describe('SuffixAutomatonLight', () => {
     expect(sa.countDistinctSubstrings()).toBeGreaterThanOrEqual(1)
   })
 })
+
+  it('contains returns false for missing', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abc')
+    expect(sa.contains('xyz')).toBe(false)
+  })
+
+  it('contains returns true for substring', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abcabc')
+    expect(sa.contains('cab')).toBe(true)
+  })
+
+  it('contains returns true for full string', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('hello')
+    expect(sa.contains('hello')).toBe(true)
+  })

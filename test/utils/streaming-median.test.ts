@@ -411,3 +411,24 @@ describe('StreamingMedian', () => {
     expect(sm.min()).toBe(3)
   })
 })
+
+  it('median of single value', () => {
+    const sm = new StreamingMedian()
+    sm.push(5)
+    expect(sm.median()).toBe(5)
+  })
+
+  it('median of two values is average', () => {
+    const sm = new StreamingMedian()
+    sm.push(1)
+    sm.push(3)
+    expect(sm.median()).toBe(2)
+  })
+
+  it('min returns smallest', () => {
+    const sm = new StreamingMedian()
+    sm.push(5)
+    sm.push(1)
+    sm.push(3)
+    expect(sm.min()).toBe(1)
+  })

@@ -493,3 +493,26 @@ describe('SteinerTree', () => {
     expect(result.totalWeight).toBeLessThanOrEqual(6)
   })
 })
+  it('single terminal returns empty', () => {
+    const st = new SteinerTree(3)
+    st.addEdge(0, 1, 1)
+    expect(st.approximateSteiner([0])).toEqual({ edges: [], totalWeight: 0 })
+  })
+
+  it('two terminals finds direct edge', () => {
+    const st = new SteinerTree(3)
+    st.addEdge(0, 1, 5)
+    st.addEdge(1, 2, 3)
+    const result = st.approximateSteiner([0, 1])
+    expect(result.totalWeight).toBe(5)
+  })
+
+  it('three terminals finds steiner tree', () => {
+    const st = new SteinerTree(4)
+    st.addEdge(0, 1, 1)
+    st.addEdge(1, 2, 1)
+    st.addEdge(2, 3, 1)
+    st.addEdge(0, 3, 3)
+    const result = st.approximateSteiner([0, 1, 2])
+    expect(result.totalWeight).toBeLessThanOrEqual(3)
+  })

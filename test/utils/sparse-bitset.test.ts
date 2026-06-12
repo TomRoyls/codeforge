@@ -472,4 +472,21 @@ describe('SparseBitSet', () => {
     expect(bs1.get(20)).toBe(true)
     expect(bs1.get(30)).toBe(true)
   })
+
+  it('get returns false for unset bit', () => {
+    const bs = new SparseBitSet()
+    expect(bs.get(100)).toBe(false)
+  })
+
+  it('flip toggles bit', () => {
+    const bs = new SparseBitSet()
+    bs.set(5)
+    bs.flip(5)
+    expect(bs.get(5)).toBe(false)
+  })
+
+  it('isEmpty on new bitset', () => {
+    const bs = new SparseBitSet()
+    expect(bs.isEmpty).toBe(true)
+  })
 })
