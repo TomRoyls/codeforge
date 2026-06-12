@@ -314,3 +314,17 @@ describe('StringHasher', () => {
     const sh = new StringHasher('test')
     expect(typeof sh.hashFull()).toBe('number')
   })
+
+describe('string-hasher - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

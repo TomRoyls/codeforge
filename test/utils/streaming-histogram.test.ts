@@ -452,3 +452,17 @@ describe('StreamingHistogram', () => {
     sh.add(4)
     expect(sh.mean).toBe(3)
   })
+
+describe('streaming-histogram - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

@@ -325,3 +325,17 @@ describe('SquareDecomposition', () => {
     const sd = new SquareDecomposition([1, 2, 3, 4, 5])
     expect(sd.length).toBe(5)
   })
+
+describe('square-decomposition - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

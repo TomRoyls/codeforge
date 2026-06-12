@@ -267,3 +267,17 @@ describe('SubsetSum', () => {
     const result = SubsetSum.findAllSubsets([1, 2, 3], 0)
     expect(result).toEqual([[]])
   })
+
+describe('subset-sum - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

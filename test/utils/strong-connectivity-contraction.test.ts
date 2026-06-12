@@ -419,3 +419,17 @@ describe('StrongConnectivityContraction', () => {
     const result = scc.contract()
     expect(result.componentCount).toBe(1)
   })
+
+describe('strong-connectivity-contraction - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

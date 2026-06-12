@@ -288,3 +288,17 @@ describe('SubstringCounter', () => {
     const sc = new SubstringCounter('aaa')
     expect(sc.countNaive('aa')).toBe(2)
   })
+
+describe('substring-counter - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

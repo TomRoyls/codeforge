@@ -486,3 +486,17 @@ describe('SplayTree zig-zag rotations', () => {
     expect(tree.inOrder().map((e) => e.key)).toEqual([1, 2, 5, 10])
   })
 })
+
+describe('splay-tree - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

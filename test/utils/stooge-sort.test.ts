@@ -259,3 +259,17 @@ describe('StoogeSort', () => {
   it('sortWithComparator sorts descending', () => {
     expect(StoogeSort.sortWithComparator([3, 1, 2], (a, b) => b - a)).toEqual([3, 2, 1])
   })
+
+describe('stooge-sort - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

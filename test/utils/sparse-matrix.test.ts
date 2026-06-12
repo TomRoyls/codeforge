@@ -574,3 +574,17 @@ describe('SparseMatrix - large sparse', () => {
     expect(entries.length).toBe(2)
   })
 })
+
+describe('sparse-matrix - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

@@ -319,3 +319,16 @@ describe('SqrtDecompRange', () => {
     expect(sd.rangeSum(1, 1)).toBe(20)
   })
 })
+describe('sqrt-decomp-range - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

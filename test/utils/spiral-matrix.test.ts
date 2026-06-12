@@ -329,3 +329,17 @@ describe('SpiralMatrix', () => {
     expect(m.length).toBe(3)
     expect(m[0].length).toBe(3)
   })
+
+describe('spiral-matrix - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

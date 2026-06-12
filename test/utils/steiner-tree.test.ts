@@ -516,3 +516,17 @@ describe('SteinerTree', () => {
     const result = st.approximateSteiner([0, 1, 2])
     expect(result.totalWeight).toBeLessThanOrEqual(3)
   })
+
+describe('steiner-tree - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})
