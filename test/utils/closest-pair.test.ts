@@ -315,4 +315,54 @@ describe('ClosestPair', () => {
     expect(result!.distance).toBeGreaterThan(0)
     expect(result!.distance).toBeLessThan(2)
   })
+
+  it('bruteForce with many duplicate points returns 0', () => {
+    const points = [
+      { x: 1, y: 1 }, { x: 1, y: 1 },
+      { x: 1, y: 1 }, { x: 1, y: 1 }
+    ]
+    const result = ClosestPair.bruteForce(points)
+    expect(result).not.toBeNull()
+    expect(result!.distance).toBeCloseTo(0, 8)
+  })
+
+  it('minDistance with single point returns Infinity', () => {
+    const result = ClosestPair.minDistance([{ x: 0, y: 0 }])
+    expect(result).toBe(Infinity)
+  })
+
+  it('distance with identical points returns 0', () => {
+    const p = { x: 5.5, y: 7.3 }
+    expect(ClosestPair.distance(p, p)).toBe(0)
+  })
+
+  it('find with points spanning multiple orders of magnitude', () => {
+    const points = [
+      { x: 1e-10, y: 1e-10 },
+      { x: 1e10, y: 1e10 },
+      { x: 1.000000001e-10, y: 1e-10 }
+    ]
+    const result = ClosestPair.find(points)
+    expect(result!.distance).toBeCloseTo(0.001e-10, 15)
+  })
+
+  it('bruteForce with equilateral triangle', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 0.5, Math.sqrt(3) / 2 }
+    ]
+    const result = ClosestPair.bruteForce(points)
+    expect(result!.distance).toBeCloseTo(1, 8)
+  })
+
+  it('find and bruteForce match on large random set', () => {
+    const points: { x: number; y: number }[] = []
+    for (let i = 0; i < 100; i++) {
+      points.push({ x: Math.random() * 1000, y: Math.random() * 1000 })
+    }
+    const findResult = ClosestPair.find(points)!
+    const bruteResult = ClosestPair.bruteForce(points)!
+    expect(findResult.distance).toBeCloseTo(bruteResult.distance, 6)
+  })
 })

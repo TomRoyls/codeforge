@@ -345,4 +345,43 @@ describe('StrongConnectivityContraction', () => {
       expect(c).toBeLessThan(componentCount)
     }
   })
+
+  it('contract can be called multiple times', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 0)
+    const first = scc.contract()
+    const second = scc.contract()
+    expect(first.componentCount).toBe(second.componentCount)
+    expect(first.dag.length).toBe(second.dag.length)
+  })
+
+  it('single node with self-loop has cycle', () => {
+    const scc = new StrongConnectivityContraction(1)
+    scc.addEdge(0, 0)
+    expect(scc.hasCycle()).toBe(true)
+    expect(scc.contract().componentCount).toBe(1)
+  })
+
+  it('three nodes all with self-loops', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 0); scc.addEdge(1, 1); scc.addEdge(2, 2)
+    expect(scc.hasCycle()).toBe(true)
+    expect(scc.contract().componentCount).toBe(3)
+  })
+
+  it('mixed self-loops and normal edges', () => {
+    const scc = new StrongConnectivityContraction(4)
+    scc.addEdge(0, 0)
+    scc.addEdge(1, 2); scc.addEdge(2, 1)
+    scc.addEdge(2, 3)
+    expect(scc.contract().componentCount).toBe(3)
+  })
+
+  it('graph with cycle pointing to itself', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1); scc.addEdge(1, 2); scc.addEdge(2, 0)
+    scc.addEdge(0, 0)
+    expect(scc.contract().componentCount).toBe(1)
+    expect(scc.hasCycle()).toBe(true)
+  })
 })

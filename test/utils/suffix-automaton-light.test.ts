@@ -328,4 +328,40 @@ describe('SuffixAutomatonLight', () => {
     expect(sa.contains('cd')).toBe(true)
     expect(sa.contains('da')).toBe(false)
   })
+
+  it('stateCount for empty string', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('')
+    expect(sa.stateCount).toBe(1)
+  })
+
+  it('extend on empty automaton', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.extend('x')
+    sa.extend('y')
+    expect(sa.contains('xy')).toBe(true)
+    expect(sa.contains('x')).toBe(true)
+  })
+
+  it('contains is case sensitive', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('Hello')
+    expect(sa.contains('Hello')).toBe(true)
+    expect(sa.contains('hello')).toBe(false)
+    expect(sa.contains('HELLO')).toBe(false)
+  })
+
+  it('LCS with whitespace', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('hello world')
+    expect(sa.longestCommonSubstring('world')).toBe(5)
+    expect(sa.longestCommonSubstring('lo w')).toBe(4)
+  })
+
+  it('countDistinctSubstrings for alternating pattern', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abab')
+    const count = sa.countDistinctSubstrings()
+    expect(count).toBeGreaterThan(0)
+  })
 })

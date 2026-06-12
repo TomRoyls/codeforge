@@ -325,4 +325,69 @@ describe('LazySegmentTree', () => {
     const tree = new LazySegmentTree(data)
     expect(tree.rangeQuery(0, 63)).toBe(2080)
   })
+
+  it('update with zero length (same start and end)', () => {
+    const tree = new LazySegmentTree([1, 2, 3, 4, 5])
+    tree.rangeUpdate(2, 2, 10)
+    expect(tree.rangeQuery(2, 2)).toBe(13)
+    expect(tree.rangeQuery(0, 4)).toBe(25)
+  })
+
+  it('handles 128 elements', () => {
+    const data = Array.from({ length: 128 }, (_, i) => i + 1)
+    const tree = new LazySegmentTree(data)
+    expect(tree.rangeQuery(0, 127)).toBe(8256)
+    tree.rangeUpdate(0, 127, 1)
+    expect(tree.rangeQuery(0, 127)).toBe(8384)
+  })
+
+  it('multiple overlapping lazy updates in complex pattern', () => {
+    const tree = new LazySegmentTree([0, 0, 0, 0, 0, 0, 0, 0])
+    tree.rangeUpdate(0, 7, 1)
+    tree.rangeUpdate(2, 5, 2)
+    tree.rangeUpdate(3, 4, 5)
+    expect(tree.rangeQuery(0, 1)).toBe(2)
+    expect(tree.rangeQuery(2, 2)).toBe(3)
+    expect(tree.rangeQuery(3, 4)).toBe(16)
+    expect(tree.rangeQuery(5, 5)).toBe(3)
+    expect(tree.rangeQuery(6, 7)).toBe(2)
+  })
+
+  it('query after clearing values with negative updates', () => {
+    const tree = new LazySegmentTree([10, 10, 10, 10])
+    tree.rangeUpdate(0, 3, -10)
+    expect(tree.rangeQuery(0, 3)).toBe(0)
+    tree.rangeUpdate(1, 2, 5)
+    expect(tree.rangeQuery(0, 3)).toBe(10)
+  })
+
+  it('pointQuery after multiple range updates', () => {
+    const tree = new LazySegmentTree([0, 0, 0, 0, 0])
+    tree.rangeUpdate(0, 4, 5)
+    tree.rangeUpdate(1, 3, 3)
+    tree.rangeUpdate(2, 2, 10)
+    expect(tree.pointQuery(0)).toBe(5)
+    expect(tree.pointQuery(1)).toBe(8)
+    expect(tree.pointQuery(2)).toBe(18)
+    expect(tree.pointQuery(3)).toBe(8)
+    expect(tree.pointQuery(4)).toBe(5)
+  })
+
+  it('range update covering entire array', () => {
+    const tree = new LazySegmentTree([1, 2, 3, 4, 5])
+    tree.rangeUpdate(0, 4, 100)
+    expect(tree.rangeQuery(0, 4)).toBe(515)
+    expect(tree.pointQuery(0)).toBe(101)
+    expect(tree.pointQuery(4)).toBe(105)
+  })
+
+  it('small negative updates accumulating to zero', () => {
+    const tree = new LazySegmentTree([5, 5, 5, 5])
+    tree.rangeUpdate(0, 3, -1)
+    tree.rangeUpdate(0, 3, -1)
+    tree.rangeUpdate(0, 3, -1)
+    tree.rangeUpdate(0, 3, -1)
+    tree.rangeUpdate(0, 3, -1)
+    expect(tree.rangeQuery(0, 3)).toBe(0)
+  })
 })

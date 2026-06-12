@@ -411,4 +411,46 @@ describe('TwoSAT', () => {
     ts.addClause(3, false, 7, true)
     expect(ts.solve()).not.toBeNull()
   })
+
+  it('solves with 8 variables chain', () => {
+    const ts = new TwoSAT(8)
+    for (let i = 0; i < 7; i++) ts.addClause(i, true, i + 1, false)
+    expect(ts.solve()).not.toBeNull()
+  })
+
+  it('single variable satisfiable with clause (x OR x)', () => {
+    const ts = new TwoSAT(1)
+    ts.addClause(0, false, 0, false)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    expect(result![0]).toBe(true)
+  })
+
+  it('double negation across two variables', () => {
+    const ts = new TwoSAT(2)
+    ts.addClause(0, true, 1, false)
+    ts.addClause(0, false, 1, true)
+    const result = ts.solve()
+    expect(result).not.toBeNull()
+    if (result) {
+      expect(result[0]).toBe(result[1])
+    }
+  })
+
+  it('multiple calls to solve return same result', () => {
+    const ts = new TwoSAT(3)
+    ts.addClause(0, false, 1, false)
+    ts.addClause(1, true, 2, false)
+    const r1 = ts.solve()
+    const r2 = ts.solve()
+    expect(r1).toEqual(r2)
+  })
+
+  it('handles 20 variables with sparse constraints', () => {
+    const ts = new TwoSAT(20)
+    ts.addClause(0, false, 5, false)
+    ts.addClause(10, true, 15, true)
+    ts.addClause(3, false, 18, false)
+    expect(ts.solve()).not.toBeNull()
+  })
 })

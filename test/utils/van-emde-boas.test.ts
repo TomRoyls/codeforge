@@ -498,3 +498,104 @@ describe('VanEmdeBoas universe size 2', () => {
     expect(tree.isEmpty()).toBe(true)
   })
 })
+
+// ─── Clear and reinsert ────────────────────────────────────────
+describe('VanEmdeBoas clear and reinsert', () => {
+  it('clears and reinserts same values', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(7)
+    tree.insert(12)
+    tree.clear()
+    expect(tree.isEmpty()).toBe(true)
+    tree.insert(3)
+    tree.insert(7)
+    tree.insert(12)
+    expect(tree.size).toBe(3)
+    expect(tree.min()).toBe(3)
+    expect(tree.max()).toBe(12)
+  })
+
+  it('clear preserves tree structure for new inserts', () => {
+    const tree = new VanEmdeBoas(64)
+    for (let i = 0; i < 32; i++) {
+      tree.insert(i * 2)
+    }
+    tree.clear()
+    tree.insert(10)
+    tree.insert(50)
+    expect(tree.size).toBe(2)
+    expect(tree.min()).toBe(10)
+    expect(tree.max()).toBe(50)
+  })
+})
+
+// ─── Delete out of range ────────────────────────────────────────
+describe('VanEmdeBoas delete out of range', () => {
+  it('handles delete of negative value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    tree.delete(-1)
+    expect(tree.size).toBe(1)
+    expect(tree.has(5)).toBe(true)
+  })
+
+  it('handles delete of value >= universeSize', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    tree.delete(16)
+    tree.delete(100)
+    expect(tree.size).toBe(1)
+    expect(tree.has(5)).toBe(true)
+  })
+})
+
+// ─── Insert out of range ────────────────────────────────────────
+describe('VanEmdeBoas insert out of range', () => {
+  it('handles insert of negative value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(-5)
+    tree.insert(-1)
+    expect(tree.size).toBe(0)
+    expect(tree.isEmpty()).toBe(true)
+  })
+
+  it('handles insert of value >= universeSize', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(16)
+    tree.insert(100)
+    expect(tree.size).toBe(0)
+    expect(tree.isEmpty()).toBe(true)
+  })
+})
+
+// ─── Successor and predecessor edge cases ─────────────────────
+describe('VanEmdeBoas successor/predecessor edge cases', () => {
+  it('handles successor of value just before max', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    tree.insert(10)
+    tree.insert(15)
+    expect(tree.successor(14)).toBe(15)
+    expect(tree.successor(15)).toBeUndefined()
+  })
+
+  it('handles predecessor of value just after min', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(8)
+    tree.insert(12)
+    expect(tree.predecessor(4)).toBe(3)
+    expect(tree.predecessor(3)).toBeUndefined()
+  })
+
+  it('handles successor after deleting middle element', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(2)
+    tree.insert(5)
+    tree.insert(8)
+    tree.delete(5)
+    expect(tree.successor(2)).toBe(8)
+    expect(tree.successor(8)).toBeUndefined()
+  })
+})

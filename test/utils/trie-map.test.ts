@@ -339,4 +339,47 @@ describe('TrieMap', () => {
     expect(trie.size).toBe(100)
     expect(trie.get('key50')).toBe(50)
   })
+
+  it('valuesWithPrefix returns empty for no match', () => {
+    const trie = new TrieMap<number>()
+    trie.set('abc', 1)
+    expect(trie.valuesWithPrefix('xyz')).toEqual([])
+  })
+
+  it('entriesWithPrefix returns empty for no match', () => {
+    const trie = new TrieMap<number>()
+    trie.set('abc', 1)
+    expect(trie.entriesWithPrefix('xyz')).toEqual([])
+  })
+
+  it('longestPrefixOf with no match returns empty', () => {
+    const trie = new TrieMap<number>()
+    trie.set('abc', 1)
+    expect(trie.longestPrefixOf('xyz')).toBe('')
+  })
+
+  it('delete middle of chain keeps prefix and suffix', () => {
+    const trie = new TrieMap<number>()
+    trie.set('a', 1); trie.set('ab', 2); trie.set('abc', 3)
+    trie.delete('ab')
+    expect(trie.has('a')).toBe(true)
+    expect(trie.has('abc')).toBe(true)
+    expect(trie.has('ab')).toBe(false)
+  })
+
+  it('set after delete works', () => {
+    const trie = new TrieMap<number>()
+    trie.set('abc', 1)
+    trie.delete('abc')
+    trie.set('abc', 2)
+    expect(trie.get('abc')).toBe(2)
+    expect(trie.size).toBe(1)
+  })
+
+  it('multiple overwrites keep size correct', () => {
+    const trie = new TrieMap<number>()
+    trie.set('x', 1); trie.set('x', 2); trie.set('x', 3); trie.set('x', 4)
+    expect(trie.size).toBe(1)
+    expect(trie.get('x')).toBe(4)
+  })
 })

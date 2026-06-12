@@ -348,6 +348,22 @@ describe('MinMaxHeap - custom comparator', () => {
     expect(heap.extractMax()).toBe('cherry')
   })
 
+  it('works with objects using custom comparator', () => {
+    interface Item {
+      priority: number
+      name: string
+    }
+    const heap = new MinMaxHeap<Item>({
+      comparator: (a, b) => a.priority - b.priority,
+    })
+    heap.insert({ priority: 3, name: 'c' })
+    heap.insert({ priority: 1, name: 'a' })
+    heap.insert({ priority: 2, name: 'b' })
+    expect(heap.extractMin()?.name).toBe('a')
+    expect(heap.extractMax()?.name).toBe('c')
+  })
+})
+
 describe('MinMaxHeap - clone', () => {
   it('creates an independent copy', () => {
     const heap = new MinMaxHeap<number>()

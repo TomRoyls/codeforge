@@ -381,4 +381,70 @@ describe('RedBlackTree height', () => {
     expect(tree.find(0)).toBe('zero')
     expect(tree.find(5)).toBe('pos')
   })
+
+  it('delete all nodes and verify tree remains functional', () => {
+    const tree = new RedBlackTree<number, string>()
+    for (let i = 0; i < 20; i++) tree.insert(i, `v${i}`)
+    for (let i = 0; i < 20; i++) tree.delete(i)
+    tree.insert(100, 'new')
+    expect(tree.size).toBe(1)
+    expect(tree.find(100)).toBe('new')
+  })
+
+  it('inOrder returns values in correct order', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(5, 'e')
+    tree.insert(3, 'c')
+    tree.insert(7, 'g')
+    tree.insert(1, 'a')
+    tree.insert(9, 'i')
+    expect(tree.inOrder().map((e) => e.value)).toEqual(['a', 'c', 'e', 'g', 'i'])
+  })
+
+  it('equals compares clones correctly', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.insert(3, 'c')
+    const clone = tree.clone()
+    expect(tree.equals(clone)).toBe(true)
+  })
+
+  it('handles object values', () => {
+    const tree = new RedBlackTree<number, { name: string }>()
+    const obj1 = { name: 'first' }
+    const obj2 = { name: 'second' }
+    tree.insert(1, obj1)
+    tree.insert(2, obj2)
+    expect(tree.find(1)).toBe(obj1)
+    expect(tree.find(2)).toBe(obj2)
+  })
+
+  it('toString with empty values', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, '')
+    tree.insert(2, '   ')
+    expect(tree.toString()).toBe('[1=, 2=   ]')
+  })
+
+  it('height with only right-leaning tree', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.insert(3, 'c')
+    expect(tree.height).toBeLessThanOrEqual(3)
+  })
+
+  it('getRoot returns node with correct structure', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(5, 'e')
+    tree.insert(3, 'c')
+    const root = tree.getRoot()
+    expect(root).not.toBeNull()
+    expect(root).toHaveProperty('key')
+    expect(root).toHaveProperty('value')
+    expect(root).toHaveProperty('left')
+    expect(root).toHaveProperty('right')
+    expect(root).toHaveProperty('color')
+  })
 })

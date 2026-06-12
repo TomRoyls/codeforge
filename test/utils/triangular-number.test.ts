@@ -270,4 +270,33 @@ describe('TriangularNumber', () => {
       expect(values[i]).toBe(TriangularNumber.nth(i + 1))
     }
   })
+
+  it('isTriangular handles very large triangular numbers', () => {
+    expect(TriangularNumber.isTriangular(125250)).toBe(true)
+    expect(TriangularNumber.indexOf(125250)).toBe(500)
+    expect(TriangularNumber.isTriangular(500500)).toBe(true)
+    expect(TriangularNumber.indexOf(500500)).toBe(1000)
+  })
+
+  it('pentagonal that are also triangular', () => {
+    expect(TriangularNumber.isTriangular(TriangularNumber.pentagonal(1))).toBe(true)
+    expect(TriangularNumber.isTriangular(TriangularNumber.pentagonal(12))).toBe(true)
+    expect(TriangularNumber.indexOf(TriangularNumber.pentagonal(1))).toBe(1)
+  })
+
+  it('indexOf boundary cases', () => {
+    expect(TriangularNumber.indexOf(0)).toBe(-1)
+    expect(TriangularNumber.indexOf(-100)).toBe(-1)
+    expect(TriangularNumber.indexOf(Number.MAX_SAFE_INTEGER)).toBe(-1)
+  })
+
+  it('sumOfFirst handles large n', () => {
+    expect(TriangularNumber.sumOfFirst(100)).toBe(171700)
+    expect(TriangularNumber.sumOfFirst(50)).toBe(22100)
+  })
+
+  it('generate with negative count returns empty', () => {
+    expect(TriangularNumber.generate(-1)).toEqual([])
+    expect(TriangularNumber.generate(-10)).toEqual([])
+  })
 })

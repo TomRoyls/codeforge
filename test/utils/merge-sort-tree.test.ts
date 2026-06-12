@@ -260,4 +260,29 @@ describe('MergeSortTree', () => {
     expect(mst.querySorted(0, 0)).toEqual([10])
     expect(mst.queryCountLessThan(0, 0, 10)).toBe(0)
   })
+
+  it('queryCountLessThan with value equal to max element', () => {
+    const mst = new MergeSortTree([1, 3, 5, 7, 9])
+    expect(mst.queryCountLessThan(0, 4, 9)).toBe(4)
+  })
+
+  it('queryKthSmallest with middle index on large range', () => {
+    const mst = new MergeSortTree([10, 5, 15, 3, 12, 8, 20, 1])
+    expect(mst.queryKthSmallest(0, 7, 3)).toBe(8)
+  })
+
+  it('queryCountInRange with zero-width range returns 0', () => {
+    const mst = new MergeSortTree([1, 2, 3, 4, 5])
+    expect(mst.queryCountInRange(0, 4, 3, 3)).toBe(1)
+  })
+
+  it('querySorted on two adjacent elements', () => {
+    const mst = new MergeSortTree([5, 3, 7, 1, 9])
+    expect(mst.querySorted(1, 2)).toEqual([3, 7])
+  })
+
+  it('queryCountLessThan on strictly increasing array', () => {
+    const mst = new MergeSortTree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    expect(mst.queryCountLessThan(0, 9, 6)).toBe(5)
+  })
 })

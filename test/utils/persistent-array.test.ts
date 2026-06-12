@@ -299,4 +299,37 @@ describe('PersistentArray', () => {
     expect(filtered.length).toBe(3)
     expect(filtered.toArray()).toEqual([3, 4, 5])
   })
+
+  it('reduce with complex accumulator type', () => {
+    const arr = PersistentArray.from([1, 2, 3])
+    const result = arr.reduce((acc, v) => ({ sum: acc.sum + v, count: acc.count + 1 }), { sum: 0, count: 0 })
+    expect(result).toEqual({ sum: 6, count: 3 })
+  })
+
+  it('set after filter creates new version', () => {
+    const v0 = PersistentArray.from([1, 2, 3, 4, 5])
+    const v1 = v0.filter(x => x % 2 === 0)
+    const v2 = v1.set(0, 99)
+    expect(v2.toArray()).toEqual([99, 4])
+  })
+
+  it('map then filter then map', () => {
+    const arr = PersistentArray.from([1, 2, 3, 4])
+    const result = arr.map(x => x * 2).filter(x => x > 4).map(x => x + 1)
+    expect(result.toArray()).toEqual([7, 9])
+  })
+
+  it('filter on all false preserves nothing', () => {
+    const arr = PersistentArray.from([1, 2, 3])
+    const filtered = arr.filter(x => x > 10)
+    expect(filtered.length).toBe(0)
+    expect(filtered.toArray()).toEqual([])
+  })
+
+  it('set after map creates new version with mapped values', () => {
+    const v0 = PersistentArray.from([1, 2, 3])
+    const v1 = v0.map(x => x * 10)
+    const v2 = v1.set(1, 999)
+    expect(v2.toArray()).toEqual([10, 999, 30])
+  })
 })

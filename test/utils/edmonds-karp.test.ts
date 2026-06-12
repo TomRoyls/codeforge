@@ -375,4 +375,54 @@ describe('EdmondsKarp minCut', () => {
     expect(reachable.has(2)).toBe(false)
     expect(reachable.has(3)).toBe(false)
   })
+
+  it('handles three-node cycle', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 0, capacity: 2 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 2, 3)).toBe(5)
+  })
+
+  it('minCut on single edge', () => {
+    const edges = [{ from: 0, to: 1, capacity: 7 }]
+    const { maxFlow, reachable } = EdmondsKarp.minCut(edges, 0, 1, 2)
+    expect(maxFlow).toBe(7)
+    expect(reachable.has(0)).toBe(true)
+    expect(reachable.has(1)).toBe(false)
+  })
+
+  it('handles graph with disconnected sink', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(0)
+  })
+
+  it('handles zero capacity edge', () => {
+    const edges = [{ from: 0, to: 1, capacity: 0 }]
+    expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(0)
+  })
+
+  it('handles multiple sources feeding single edge', () => {
+    const edges = [
+      { from: 0, to: 2, capacity: 5 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 2, to: 3, capacity: 3 },
+    ]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(3)
+  })
+
+  it('minCut returns correct reachable set', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 0, to: 2, capacity: 5 },
+      { from: 1, to: 3, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    const { reachable } = EdmondsKarp.minCut(edges, 0, 3, 4)
+    expect(reachable.has(0)).toBe(true)
+  })
 })

@@ -399,4 +399,54 @@ describe('ClosestPairBrute', () => {
     expect(result).not.toBeNull()
     expect(result!.distance).toBeCloseTo(1, 5)
   })
+
+  it('findKNearest with k greater than total pairs', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 0)
+    const pairs = cp.findKNearest(100)
+    expect(pairs.length).toBe(1)
+  })
+
+  it('findKNearest with equidistant pairs', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 0)
+    cp.addPoint(0, 1)
+    cp.addPoint(1, 1)
+    const pairs = cp.findKNearest(4)
+    expect(pairs.length).toBe(6)
+    const distances = pairs.map(p => p.distance)
+    const sortedDistances = [...distances].sort((a, b) => a - b)
+    expect(distances).toEqual(sortedDistances)
+  })
+
+  it('MST with pentagon geometry', () => {
+    const cp = new ClosestPairBrute()
+    for (let i = 0; i < 5; i++) {
+      const angle = (i * 2 * Math.PI) / 5
+      cp.addPoint(Math.cos(angle), Math.sin(angle))
+    }
+    const mst = cp.minimumSpanningTreeLength()
+    expect(mst).toBeGreaterThan(0)
+    expect(mst).toBeLessThan(5)
+  })
+
+  it('findClosest with equilateral triangle', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(0, 0)
+    cp.addPoint(1, 0)
+    cp.addPoint(0.5, Math.sqrt(3) / 2)
+    const result = cp.findClosest()
+    expect(result!.distance).toBeCloseTo(1, 5)
+  })
+
+  it('handles extreme coordinate values', () => {
+    const cp = new ClosestPairBrute()
+    cp.addPoint(1e100, 1e100)
+    cp.addPoint(1e100 + 1, 1e100 + 1)
+    const result = cp.findClosest()
+    expect(result).not.toBeNull()
+    expect(result!.distance).toBeCloseTo(Math.sqrt(2), 5)
+  })
 })

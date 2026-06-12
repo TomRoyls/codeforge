@@ -214,5 +214,31 @@ describe('BoyerMooreVote', () => {
       const result = BoyerMooreVote.findAllFrequent([5, 5, 5, 5], 2)
       expect(result).toEqual([5])
     })
+
+    it('handles k=0 returns empty array', () => {
+      const result = BoyerMooreVote.findAllFrequent([1, 2, 3], 0)
+      expect(result).toEqual([])
+    })
+
+    it('handles negative k values returns elements', () => {
+      const result = BoyerMooreVote.findAllFrequent([1, 1, 2], -2)
+      expect(result.sort()).toEqual([1, 2])
+    })
+
+    it('handles NaN elements correctly counted', () => {
+      const result = BoyerMooreVote.findAllFrequent([NaN, NaN, 1, 2], 2)
+      expect(result.length).toBe(1)
+    })
+
+    it('threshold with k=1 requires all elements', () => {
+      const arr = [1, 1, 1, 1]
+      const result = BoyerMooreVote.findAllFrequent(arr, 1)
+      expect(result).toEqual([1])
+    })
+
+    it('handles BigInt elements', () => {
+      const result = BoyerMooreVote.findAllFrequent([1n, 1n, 2n, 3n], 2)
+      expect(result).toContain(1n)
+    })
   })
 })

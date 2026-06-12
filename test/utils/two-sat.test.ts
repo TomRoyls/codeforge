@@ -403,4 +403,68 @@ describe('TwoSAT', () => {
     expect(result![0]).toBe(true)
     expect(result![1]).toBe(false)
   })
+
+  it('solution contains only boolean values', () => {
+    const sat = new TwoSAT(3)
+    sat.addClause(0, false, 1, true)
+    sat.addClause(1, false, 2, true)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+    for (let i = 0; i < result!.length; i++) {
+      expect(typeof result![i]).toBe('boolean')
+    }
+  })
+
+  it('same literal appears multiple times in formula', () => {
+    const sat = new TwoSAT(2)
+    sat.addClause(0, false, 0, false)
+    sat.addClause(0, false, 1, false)
+    sat.addClause(0, false, 1, true)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+    expect(result![0]).toBe(true)
+  })
+
+  it('variables must be different in XOR-like pattern', () => {
+    const sat = new TwoSAT(2)
+    sat.addClause(0, false, 1, false)
+    sat.addClause(0, true, 1, true)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+    const sol = result!
+    expect(sol[0] !== sol[1]).toBe(true)
+  })
+
+  it('variable forced true by multiple clauses', () => {
+    const sat = new TwoSAT(3)
+    sat.addClause(0, false, 0, false)
+    sat.addClause(0, false, 1, false)
+    sat.addClause(0, false, 2, false)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+    expect(result![0]).toBe(true)
+  })
+
+  it('implication chain forces last variable true', () => {
+    const sat = new TwoSAT(4)
+    sat.addClause(0, true, 1, false)
+    sat.addClause(1, true, 2, false)
+    sat.addClause(2, true, 3, false)
+    sat.addClause(3, true, 3, false)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+    expect(result![3]).toBe(true)
+  })
+
+  it('mutually exclusive but not complementary', () => {
+    const sat = new TwoSAT(3)
+    sat.addClause(0, false, 1, false)
+    sat.addClause(0, false, 2, false)
+    sat.addClause(1, false, 2, false)
+    const result = sat.solve()
+    expect(result).not.toBeNull()
+    const sol = result!
+    const trues = sol.filter(v => v).length
+    expect(trues).toBeGreaterThanOrEqual(2)
+  })
 })

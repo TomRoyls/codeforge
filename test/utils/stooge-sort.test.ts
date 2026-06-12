@@ -210,4 +210,44 @@ describe('StoogeSort', () => {
     const sorted = StoogeSort.sort(arr)
     expect(sorted).not.toBe(arr)
   })
+
+  it('sorts array of size 2 (minimal non-trivial)', () => {
+    expect(StoogeSort.sort([2, 1])).toEqual([1, 2])
+  })
+
+  it('sortWithComparator returns new array reference', () => {
+    const arr = [3, 1, 2]
+    const sorted = StoogeSort.sortWithComparator(arr, (a, b) => a - b)
+    expect(sorted).not.toBe(arr)
+  })
+
+  it('sorts with infinity values', () => {
+    expect(StoogeSort.sort([Infinity, 1, -Infinity, 0]))
+      .toEqual([-Infinity, 0, 1, Infinity])
+  })
+
+  it('sorts identical complex objects', () => {
+    const obj = { x: 1, y: 2 }
+    expect(StoogeSort.sort([obj, obj, obj])).toEqual([obj, obj, obj])
+  })
+
+  it('sorts with infinity values', () => {
+    expect(StoogeSort.sort([Infinity, 1, -Infinity, 0]))
+      .toEqual([-Infinity, 0, 1, Infinity])
+  })
+
+  it('sortWithComparator returns new array reference', () => {
+    const arr = [3, 1, 2]
+    const sorted = StoogeSort.sortWithComparator(arr, (a, b) => a - b)
+    expect(sorted).not.toBe(arr)
+  })
+
+  it('sorts array of size 2 (minimal non-trivial)', () => {
+    expect(StoogeSort.sort([2, 1])).toEqual([1, 2])
+  })
+
+  it('sorts with large and small float values', () => {
+     expect(StoogeSort.sort([1e-10, 1e10, 1, -1e-10, -1e10]))
+       .toEqual([-1e10, -1e-10, 1e-10, 1, 1e10])
+   })
 })

@@ -338,4 +338,61 @@ describe('SCCGraph', () => {
     expect(g.nodeCount).toBe(2)
     expect(g.findSCCs().length).toBe(2)
   })
+
+  it('condensation with isolated nodes', () => {
+    const g = new SCCGraph()
+    g.addNode(0)
+    g.addNode(1)
+    g.addEdge(2, 3); g.addEdge(3, 2)
+    const { dag, componentMap } = g.condensation()
+    expect(componentMap.size).toBe(4)
+    expect(dag.size).toBe(3)
+    expect(componentMap.has(0)).toBe(true)
+    expect(componentMap.has(1)).toBe(true)
+  })
+
+  it('very sparse graph', () => {
+    const g = new SCCGraph()
+    g.addEdge(0, 1)
+    g.addEdge(10, 11)
+    g.addEdge(20, 21)
+    const sccs = g.findSCCs()
+    expect(sccs.length).toBe(6)
+    expect(sccs.every(scc => scc.length === 1)).toBe(true)
+  })
+
+  it('dense graph with many edges', () => {
+    const g = new SCCGraph()
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        if (i !== j) g.addEdge(i, j)
+      }
+    }
+    const sccs = g.findSCCs()
+    expect(sccs.length).toBe(1)
+    expect(sccs[0]!.length).toBe(10)
+  })
+
+  it('graph with only self-loops', () => {
+    const g = new SCCGraph()
+    for (let i = 0; i < 5; i++) {
+      g.addEdge(i, i)
+    }
+    const sccs = g.findSCCs()
+    expect(sccs.length).toBe(5)
+    expect(sccs.every(scc => scc.length === 1)).toBe(true)
+  })
+
+  it('componentMap covers all nodes including isolated', () => {
+    const g = new SCCGraph()
+    g.addNode(0)
+    g.addNode(1)
+    g.addEdge(2, 3)
+    const { componentMap } = g.condensation()
+    expect(componentMap.has(0)).toBe(true)
+    expect(componentMap.has(1)).toBe(true)
+    expect(componentMap.has(2)).toBe(true)
+    expect(componentMap.has(3)).toBe(true)
+    expect(componentMap.size).toBe(4)
+  })
 })

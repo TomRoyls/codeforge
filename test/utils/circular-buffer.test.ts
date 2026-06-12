@@ -451,3 +451,48 @@ describe('CircularBuffer - wraparound', () => {
     expect(buf.toArray()).toEqual([2, 3, 4])
   })
 })
+
+describe('CircularBuffer - edge cases', () => {
+  it('write undefined works correctly', () => {
+    const buf = new CircularBuffer<number | undefined>(3)
+    buf.write(undefined)
+    buf.write(1)
+    buf.write(2)
+    expect(buf.size).toBe(3)
+    expect(buf.read()).toBeUndefined()
+  })
+
+  it('toArray after emptying and refilling', () => {
+    const buf = new CircularBuffer<number>(2)
+    buf.write(1)
+    buf.write(2)
+    buf.read()
+    buf.read()
+    expect(buf.toArray()).toEqual([])
+    buf.write(3)
+    buf.write(4)
+    expect(buf.toArray()).toEqual([3, 4])
+  })
+
+  it('toArrayNewest with single element', () => {
+    const buf = new CircularBuffer<number>(5)
+    buf.write(99)
+    expect(buf.toArrayNewest()).toEqual([99])
+  })
+
+  it('multiple consecutive reads from empty buffer', () => {
+    const buf = new CircularBuffer<number>(3)
+    expect(buf.read()).toBeUndefined()
+    expect(buf.read()).toBeUndefined()
+    expect(buf.read()).toBeUndefined()
+  })
+
+  it('peek and read after clear', () => {
+    const buf = new CircularBuffer<number>(3)
+    buf.write(1)
+    buf.write(2)
+    buf.clear()
+    expect(buf.peek()).toBeUndefined()
+    expect(buf.read()).toBeUndefined()
+  })
+})

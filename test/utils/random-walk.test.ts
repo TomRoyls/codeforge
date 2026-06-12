@@ -286,4 +286,38 @@ describe('RandomWalk', () => {
     const result = RandomWalk.simulateMultiple1D(30, 20)
     expect(result.avgFinalPos).toBeGreaterThanOrEqual(0)
   })
+
+  it('walk2D with seed=always-3 moves down', () => {
+    const alwaysDown = () => 0.99
+    const walk = RandomWalk.walk2D(3, { seed: alwaysDown })
+    for (const p of walk.slice(1)) {
+      expect(p.y).toBeLessThan(p.x === 0 ? 0 : p.y)
+    }
+  })
+
+  it('uniquePositions2D with large positions', () => {
+    const positions = [{ x: 1000000, y: -1000000 }, { x: 0, y: 0 }]
+    expect(RandomWalk.uniquePositions2D(positions)).toBe(2)
+  })
+
+  it('walk1D with alternating seed direction', () => {
+    let step = 0
+    const alt = () => {
+      step++
+      return step % 2 === 0 ? 0.6 : 0.4
+    }
+    const walk = RandomWalk.walk1D(4, { seed: alt })
+    // With this alternating seed: step 1→0.4→-1, step 2→0.6→+1, step 3→0.4→-1, step 4→0.6→+1
+    expect(walk).toEqual([0, -1, 0, -1, 0])
+  })
+
+  it('finalPosition1D returns correct for large array', () => {
+    const walk = RandomWalk.walk1D(500)
+    expect(RandomWalk.finalPosition1D(walk)).toBe(walk[walk.length - 1])
+  })
+
+  it('uniquePositions2D with negative and positive coordinates', () => {
+    const positions = [{ x: -1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: 1 }]
+    expect(RandomWalk.uniquePositions2D(positions)).toBe(2)
+  })
 })

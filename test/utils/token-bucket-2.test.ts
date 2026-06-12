@@ -286,4 +286,40 @@ describe('TokenBucket2', () => {
     expect(bucket.tryConsume(2)).toBe(false)
     expect(bucket.tryConsume(1)).toBe(true)
   })
+
+  it('waitTime with zero tokens returns exact calculation', () => {
+    const bucket = new TokenBucket2(10, 10)
+    bucket.consume(10)
+    const waitTime = bucket.waitTime(5)
+    expect(waitTime).toBeCloseTo(500, 0)
+  })
+
+  it('reserve deducts exactly requested tokens', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.reserve(4)
+    expect(bucket.availableTokens).toBeCloseTo(6, 0)
+  })
+
+  it('waitTime after refill with fake timers', () => {
+    vi.useFakeTimers()
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume(10)
+    vi.advanceTimersByTime(2000)
+    const waitTime = bucket.waitTime(5)
+    expect(waitTime).toBe(0)
+    vi.useRealTimers()
+  })
+
+  it('consume default parameter is 1', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume()
+    expect(bucket.availableTokens).toBe(9)
+  })
+
+  it('reserve returns exact wait time calculation', () => {
+    const bucket = new TokenBucket2(10, 5)
+    bucket.consume(8)
+    const wait = bucket.reserve(5)
+    expect(wait).toBeCloseTo(600, 0)
+  })
 })

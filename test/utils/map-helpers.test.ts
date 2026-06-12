@@ -326,4 +326,38 @@ describe('append', () => {
     expect(arr1).toEqual([1])
     expect(arr2).toEqual([2])
   })
+
+  it('increment with negative delta decreases value', () => {
+    const map = new Map<string, number>()
+    increment(map, 'x', 5)
+    increment(map, 'x', -2)
+    expect(map.get('x')).toBe(3)
+  })
+
+  it('increment from zero with negative delta', () => {
+    const map = new Map<string, number>()
+    increment(map, 'x', -3)
+    expect(map.get('x')).toBe(-3)
+  })
+
+  it('increment multiple keys independently', () => {
+    const map = new Map<string, number>()
+    increment(map, 'a'); increment(map, 'b'); increment(map, 'a')
+    expect(map.get('a')).toBe(2)
+    expect(map.get('b')).toBe(1)
+  })
+
+  it('append mixed types to different keys', () => {
+    const map = new Map<string, number[]>()
+    append(map, 'evens', 2); append(map, 'evens', 4)
+    append(map, 'odds', 1); append(map, 'odds', 3)
+    expect(map.get('evens')).toEqual([2, 4])
+    expect(map.get('odds')).toEqual([1, 3])
+  })
+
+  it('increment with zero delta does nothing', () => {
+    const map = new Map<string, number>()
+    increment(map, 'x', 0)
+    expect(map.get('x')).toBe(0)
+  })
 })

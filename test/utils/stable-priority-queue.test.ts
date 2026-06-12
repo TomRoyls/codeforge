@@ -439,4 +439,56 @@ describe('StablePriorityQueue', () => {
     expect(pq.peek()!.id).toBe(1)
     expect(pq.peek()!.id).toBe(1)
   })
+
+  it('works with string priorities', () => {
+    const pq = new StablePriorityQueue<{ priority: string; value: number }>((a, b) => a.priority.localeCompare(b.priority))
+    pq.enqueue({ priority: 'high', value: 1 })
+    pq.enqueue({ priority: 'low', value: 2 })
+    pq.enqueue({ priority: 'medium', value: 3 })
+    expect(pq.dequeue()!.value).toBe(1)
+    expect(pq.dequeue()!.value).toBe(2)
+    expect(pq.dequeue()!.value).toBe(3)
+  })
+
+  it('handles floating point priorities', () => {
+    const pq = new StablePriorityQueue<number>()
+    pq.enqueue(3.14)
+    pq.enqueue(1.41)
+    pq.enqueue(2.72)
+    expect(pq.dequeue()).toBe(1.41)
+    expect(pq.dequeue()).toBe(2.72)
+    expect(pq.dequeue()).toBe(3.14)
+  })
+
+  it('clear does not reset sequence counter causing stability issues', () => {
+    const pq = new StablePriorityQueue<{ p: number; id: number }>((a, b) => a.p - b.p)
+    pq.enqueue({ p: 1, id: 1 })
+    pq.enqueue({ p: 1, id: 2 })
+    pq.clear()
+    pq.enqueue({ p: 1, id: 3 })
+    expect(pq.dequeue()!.id).toBe(3)
+  })
+
+  it('works with dates as priorities', () => {
+    const date1 = new Date('2020-01-01')
+    const date2 = new Date('2020-01-03')
+    const date3 = new Date('2020-01-02')
+    const pq = new StablePriorityQueue<{ date: Date; label: string }>((a, b) => a.date.getTime() - b.date.getTime())
+    pq.enqueue({ date: date1, label: 'first' })
+    pq.enqueue({ date: date2, label: 'third' })
+    pq.enqueue({ date: date3, label: 'second' })
+    expect(pq.dequeue()!.label).toBe('first')
+    expect(pq.dequeue()!.label).toBe('second')
+    expect(pq.dequeue()!.label).toBe('third')
+  })
+
+  it('handles case-insensitive string comparator', () => {
+    const pq = new StablePriorityQueue<string>((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    pq.enqueue('Zebra')
+    pq.enqueue('apple')
+    pq.enqueue('Banana')
+    expect(pq.dequeue()).toBe('apple')
+    expect(pq.dequeue()).toBe('Banana')
+    expect(pq.dequeue()).toBe('Zebra')
+  })
 })

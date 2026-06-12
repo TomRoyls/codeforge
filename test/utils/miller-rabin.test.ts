@@ -312,4 +312,28 @@ describe('MillerRabin', () => {
     expect(MillerRabin.prevPrime(11)).toBe(7)
     expect(MillerRabin.prevPrime(13)).toBe(11)
   })
+
+  it('isPrime for very large known prime', () => {
+    expect(MillerRabin.isPrime(15485863)).toBe(true)
+  })
+
+  it('nextPrime from even number returns odd prime', () => {
+    expect(MillerRabin.isPrime(MillerRabin.nextPrime(50))).toBe(true)
+    expect(MillerRabin.nextPrime(50) % 2).toBe(1)
+  })
+
+  it('prevPrime with large gap after prime', () => {
+    expect(MillerRabin.prevPrime(120)).toBe(113)
+    expect(MillerRabin.isPrime(113)).toBe(true)
+  })
+
+  it('primeCount for range including large prime', () => {
+    expect(MillerRabin.primeCount(1000)).toBe(168)
+    expect(MillerRabin.primeCount(2000)).toBe(303)
+  })
+
+  it('isPrime for product of two primes is composite', () => {
+    expect(MillerRabin.isPrime(9509)).toBe(false)
+    expect(MillerRabin.isPrime(10403)).toBe(false)
+  })
 })

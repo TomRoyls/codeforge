@@ -413,4 +413,50 @@ describe('SlidingWindowMedian', () => {
     swm.push(4)
     expect(swm.percentile(50)).toBe(2)
   })
+
+  it('handles negative values in window', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(-5)
+    swm.push(-1)
+    swm.push(-3)
+    expect(swm.median()).toBe(-3)
+  })
+
+  it('handles mixed positive and negative', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(-2)
+    swm.push(0)
+    swm.push(2)
+    expect(swm.median()).toBe(0)
+  })
+
+  it('size tracks window correctly', () => {
+    const swm = new SlidingWindowMedian(3)
+    expect(swm.size).toBe(0)
+    swm.push(1)
+    expect(swm.size).toBe(1)
+    swm.push(2)
+    swm.push(3)
+    expect(swm.size).toBe(3)
+    swm.push(4)
+    expect(swm.size).toBe(3)
+  })
+
+  it('handles repeated identical values', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(5)
+    swm.push(5)
+    swm.push(5)
+    expect(swm.median()).toBe(5)
+    expect(swm.min()).toBe(5)
+    expect(swm.max()).toBe(5)
+  })
+
+  it('handles single value after many slides', () => {
+    const swm = new SlidingWindowMedian(1)
+    swm.push(10)
+    expect(swm.median()).toBe(10)
+    swm.push(20)
+    expect(swm.median()).toBe(20)
+  })
 })

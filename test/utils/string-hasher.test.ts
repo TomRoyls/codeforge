@@ -247,4 +247,60 @@ describe('StringHasher', () => {
     expect(sh.hashFull()).toBeTypeOf('number')
     expect(sh.hashFull()).toBeLessThan(1009)
   })
+
+  it('hash at start of string', () => {
+    const sh = new StringHasher('abcdefgh')
+    const h = sh.hash(0, 2)
+    expect(h).toBeTypeOf('number')
+    expect(h).toBeGreaterThanOrEqual(0)
+  })
+
+  it('hash at end of string', () => {
+    const sh = new StringHasher('abcdefgh')
+    const h = sh.hash(6, 8)
+    expect(h).toBeTypeOf('number')
+    expect(h).toBeGreaterThanOrEqual(0)
+  })
+
+  it('hash consistency for same substring', () => {
+    const sh = new StringHasher('abcabcabc')
+    const h1 = sh.hash(0, 3)
+    const h2 = sh.hash(3, 6)
+    const h3 = sh.hash(6, 9)
+    expect(h1).toBe(h2)
+    expect(h2).toBe(h3)
+  })
+
+  it('very large mod value', () => {
+    const sh = new StringHasher('test', 31, Number.MAX_SAFE_INTEGER)
+    expect(sh.hashFull()).toBeTypeOf('number')
+    expect(sh.hashFull()).toBeLessThan(Number.MAX_SAFE_INTEGER)
+  })
+
+  it('hash for prefix only', () => {
+    const sh = new StringHasher('prefixmiddle')
+    const h = sh.hash(0, 6)
+    expect(h).toBe(sh.hash(0, 6))
+    expect(h).toBeTypeOf('number')
+  })
+
+  it('equals with different length but same content', () => {
+    const sh = new StringHasher('abcabc')
+    expect(sh.equals(0, 3, 3, 6)).toBe(true)
+    expect(sh.equals(0, 6, 0, 3)).toBe(false)
+  })
+
+  it('hash for middle substring', () => {
+    const sh = new StringHasher('abcdefgh')
+    const h = sh.hash(2, 6)
+    expect(h).toBeTypeOf('number')
+    expect(h).toBeGreaterThan(0)
+  })
+
+  it('static hashString with large string', () => {
+    const s = 'x'.repeat(10000)
+    const h = StringHasher.hashString(s)
+    expect(h).toBeTypeOf('number')
+    expect(h).toBeGreaterThan(0)
+  })
 })

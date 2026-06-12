@@ -286,4 +286,54 @@ describe('Welford', () => {
     expect(w1.n).toBe(6)
     expect(w1.meanValue).toBeCloseTo(3.5, 5)
   })
+
+  it('handles decimal values precisely', () => {
+    const w = Welford.fromArray([1.5, 2.5, 3.5])
+    expect(w.meanValue).toBe(2.5)
+    expect(w.variance).toBeCloseTo(2 / 3, 5)
+  })
+
+  it('handles values with mixed signs', () => {
+    const w = Welford.fromArray([-10, -5, 0, 5, 10])
+    expect(w.meanValue).toBe(0)
+    expect(w.variance).toBeCloseTo(50, 5)
+  })
+
+  it('large dataset variance stability', () => {
+    const arr = Array.from({ length: 5000 }, (_, i) => i)
+    const w = Welford.fromArray(arr)
+    // Variance of 0..n-1 is (n^2 - 1) / 12
+    const expectedVariance = (5000 * 5000 - 1) / 12
+    expect(w.variance).toBeCloseTo(expectedVariance, 0)
+  })
+
+  it('stdDev is sqrt of variance', () => {
+    const w = Welford.fromArray([1, 2, 3, 4, 5])
+    expect(w.stdDev).toBeCloseTo(Math.sqrt(w.variance), 10)
+  })
+
+  it('merge three Welford instances', () => {
+    const w1 = Welford.fromArray([1, 2])
+    const w2 = Welford.fromArray([3, 4])
+    const w3 = Welford.fromArray([5, 6])
+    w1.merge(w2)
+    w1.merge(w3)
+    expect(w1.n).toBe(6)
+    expect(w1.meanValue).toBe(3.5)
+  })
+
+  it('scale invariance: multiply all values by constant', () => {
+    const w1 = Welford.fromArray([1, 2, 3, 4, 5])
+    const w2 = Welford.fromArray([10, 20, 30, 40, 50])
+    expect(w2.meanValue).toBe(10 * w1.meanValue)
+    expect(w2.stdDev).toBeCloseTo(10 * w1.stdDev, 10)
+  })
+
+  it('empty addBatch has no effect', () => {
+    const w = Welford.fromArray([1, 2, 3])
+    const nBefore = w.n
+    w.addBatch([])
+    expect(w.n).toBe(nBefore)
+    expect(w.meanValue).toBe(2)
+  })
 })

@@ -479,4 +479,105 @@ describe('retryAsync - edge cases', () => {
     }, { maxAttempts: 3, maxDelayMs: 10000, jitter: true })
     expect(result.isOk()).toBe(true)
   })
+
+  it('handles success on last attempt', async () => {
+    let attempt = 0
+    const result = await retryAsync(async () => {
+      attempt++
+      if (attempt < 5) throw new Error('fail')
+      return 'done'
+    }, { maxAttempts: 5, maxDelayMs: 1 })
+    expect(result.isOk()).toBe(true)
+    expect(result.unwrap()).toBe('done')
+    expect(attempt).toBe(5)
+  })
+
+  it('does not retry on first attempt success with onRetry', async () => {
+    let onRetryCalled = false
+    const result = await retryAsync(async () => 'success', {
+      maxAttempts: 5,
+      maxDelayMs: 1,
+      onRetry: () => { onRetryCalled = true },
+    })
+    expect(result.isOk()).toBe(true)
+    expect(onRetryCalled).toBe(false)
+  })
+
+  it('handles multiple different errors in shouldRetry', async () => {
+    let attempts = 0
+    const errors: string[] = []
+    const result = await retryAsync(async () => {
+      attempts++
+      if (attempts === 1) throw new Error('network')
+      if (attempts === 2) throw new Error('timeout')
+      if (attempts === 3) throw new Error('fatal')
+    }, {
+      maxAttempts: 10,
+      maxDelayMs: 1,
+      shouldRetry: (err) => {
+        errors.push((err as Error).message)
+        return (err as Error).message !== 'fatal'
+      },
+    })
+    expect(result.isErr()).toBe(true)
+    expect(errors).toEqual(['network', 'timeout', 'fatal'])
+  })
+
+  it('backoffFactor greater than 1 causes increasing delays', async () => {
+    const delays: number[] = []
+    const start = Date.now()
+    let attempt = 0
+    await retryAsync(async () => {
+      attempt++
+      if (attempt > 1) {
+        delays.push(Date.now() - start)
+      }
+      if (attempt < 3) throw new Error('fail')
+    }, { maxAttempts: 4, maxDelayMs: 1000, backoffFactor: 2 })
+    expect(delays.length).toBe(2)
+    expect(delays[1]! > delays[0]! || delays[0]! >= 100).toBe(true)
+  })
+
+  it('maxDelayMs caps exponential backoff', async () => {
+    const start = Date.now()
+    let attempt = 0
+    await retryAsync(async () => {
+      attempt++
+      if (attempt < 10) throw new Error('fail')
+    }, { maxAttempts: 15, maxDelayMs: 50, backoffFactor: 10 })
+    const elapsed = Date.now() - start
+    expect(elapsed).toBeLessThan(1000)
+  })
+
+  it('onRetry receives error and attempt number in correct order', async () => {
+    const received: Array<{ error: Error; attempt: number }> = []
+    let attempt = 0
+    const error = new Error('test error')
+    await retryAsync(async () => {
+      attempt++
+      if (attempt < 3) throw error
+    }, {
+      maxAttempts: 5,
+      maxDelayMs: 1,
+      onRetry: (err, n) => {
+        received.push({ error: err as Error, attempt: n })
+      },
+    })
+    expect(received.length).toBe(2)
+    expect(received[0]!.attempt).toBe(1)
+    expect(received[1]!.attempt).toBe(2)
+  })
+
+  it('handles concurrent retry calls', async () => {
+    let counter = 0
+    const createRetry = async (id: number) => {
+      return await retryAsync(async () => {
+        counter++
+        if (counter < 3) throw new Error('fail')
+        return id
+      }, { maxAttempts: 5, maxDelayMs: 1 })
+    }
+    const [r1, r2] = await Promise.all([createRetry(1), createRetry(2)])
+    expect(r1.isOk() || r2.isOk()).toBe(true)
+  })
 })

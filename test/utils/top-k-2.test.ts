@@ -356,4 +356,57 @@ describe('TopK2', () => {
     expect(result.length).toBe(2)
     expect(result.some((x) => x.item === 2 && x.count === 0)).toBe(true)
   })
+
+  it('replaces item when new count strictly greater than min count', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 2)
+    tracker.add(2, 5)
+    tracker.add(3, 3)
+    tracker.add(4, 4)
+    const result = tracker.top()
+    expect(result.length).toBe(3)
+    expect(result.some((x) => x.item === 4)).toBe(true)
+    expect(result.some((x) => x.item === 1)).toBe(false)
+  })
+
+  it('adding duplicate with zero count increments correctly', () => {
+    const tracker = new TopK2<number>(3)
+    tracker.add(1, 5)
+    tracker.add(1, 0)
+    const result = tracker.top()
+    expect(result.length).toBe(1)
+    expect(result[0]!.count).toBe(5)
+  })
+
+  it('reset then add returns expected size', () => {
+    const tracker = new TopK2<number>(5)
+    tracker.add(1, 10)
+    tracker.add(2, 5)
+    tracker.reset()
+    tracker.add(3, 8)
+    tracker.add(4, 3)
+    expect(tracker.size).toBe(2)
+  })
+
+  it('maintains top order after multiple increments', () => {
+    const tracker = new TopK2<number>(5)
+    tracker.add(1, 10)
+    tracker.add(2, 5)
+    tracker.add(2, 10)
+    const result = tracker.top()
+    expect(result[0]!.item).toBe(2)
+    expect(result[0]!.count).toBe(15)
+  })
+
+  it('handles very small k value (k=2)', () => {
+    const tracker = new TopK2<number>(2)
+    tracker.add(1, 1)
+    tracker.add(2, 2)
+    tracker.add(3, 3)
+    tracker.add(4, 4)
+    const result = tracker.top()
+    expect(result.length).toBe(2)
+    expect(result[0]!.count).toBe(4)
+    expect(result[1]!.count).toBe(3)
+  })
 })

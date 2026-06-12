@@ -409,4 +409,35 @@ describe('TreeDiameter', () => {
     td.addEdge(7, 8)
     expect(td.findDiameter()).toBe(8)
   })
+
+  it('tree with two equal length branches', () => {
+    const td = new TreeDiameter(7)
+    td.addEdge(0, 1); td.addEdge(0, 2)
+    td.addEdge(1, 3); td.addEdge(3, 4)
+    td.addEdge(2, 5); td.addEdge(5, 6)
+    expect(td.findDiameter()).toBe(6)
+  })
+
+  it('handles path of 25 nodes', () => {
+    const td = new TreeDiameter(25)
+    for (let i = 0; i < 24; i++) td.addEdge(i, i + 1)
+    expect(td.findDiameter()).toBe(24)
+  })
+
+  it('consecutive calls return same diameter', () => {
+    const td = new TreeDiameter(5)
+    td.addEdge(0, 1); td.addEdge(1, 2); td.addEdge(2, 3); td.addEdge(3, 4)
+    expect(td.findDiameter()).toBe(4)
+    expect(td.findDiameter()).toBe(4)
+  })
+
+  it('diameter path for balanced ternary tree', () => {
+    const td = new TreeDiameter(10)
+    td.addEdge(0, 1); td.addEdge(0, 2); td.addEdge(0, 3)
+    td.addEdge(1, 4); td.addEdge(1, 5)
+    td.addEdge(2, 6); td.addEdge(2, 7)
+    td.addEdge(3, 8); td.addEdge(3, 9)
+    const path = td.findDiameterPath()
+    expect(path.length).toBe(5)
+  })
 })

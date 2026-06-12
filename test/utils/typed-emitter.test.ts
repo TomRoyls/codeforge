@@ -402,4 +402,71 @@ describe('TypedEventEmitter', () => {
     expect(count).toBe(1)
     expect(emitter.listenerCount('count')).toBe(1)
   })
+
+  it('emits to listeners in registration order', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    const results: number[] = []
+    emitter.on('count', () => { results.push(1) })
+    emitter.on('count', () => { results.push(2) })
+    emitter.on('count', () => { results.push(3) })
+    emitter.emit('count', 0)
+    expect(results).toEqual([1, 2, 3])
+  })
+
+  it('handles complex event data types', () => {
+    interface ComplexEvents {
+      data: { id: number; name: string; values: number[] }
+    }
+    const emitter = new TypedEventEmitter<ComplexEvents>()
+    let received: { id: number; name: string; values: number[] } | null = null
+    emitter.on('data', (d) => { received = d })
+    emitter.emit('data', { id: 42, name: 'test', values: [1, 2, 3] })
+    expect(received).toEqual({ id: 42, name: 'test', values: [1, 2, 3] })
+  })
+
+  it('getStats returns object with correct structure', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    const stats = emitter.getStats()
+    expect(stats).toHaveProperty('events')
+    expect(stats).toHaveProperty('totalListeners')
+    expect(stats).toHaveProperty('totalEmitted')
+    expect(typeof stats.events).toBe('number')
+    expect(typeof stats.totalListeners).toBe('number')
+    expect(typeof stats.totalEmitted).toBe('number')
+  })
+
+  it('removing listener during emit does not affect current emit', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count = 0
+    const handler1 = () => { count++ }
+    const handler2 = () => { count++; emitter.off('count', handler1) }
+    emitter.on('count', handler1)
+    emitter.on('count', handler2)
+    emitter.emit('count', 1)
+    expect(count).toBe(2)
+    emitter.emit('count', 2)
+    expect(count).toBe(3)
+  })
+
+  it('multiple removeAllListeners calls do not throw', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    emitter.removeAllListeners('message')
+    emitter.removeAllListeners('message')
+    expect(() => emitter.removeAllListeners('message')).not.toThrow()
+  })
+
+  it('chaining multiple add and remove operations', () => {
+    const emitter = new TypedEventEmitter<TestEvents>()
+    let count = 0
+    const handler1 = () => { count += 1 }
+    const handler2 = () => { count += 10 }
+    emitter.on('count', handler1)
+    emitter.on('count', handler2)
+    emitter.emit('count', 1)
+    emitter.off('count', handler1)
+    emitter.emit('count', 2)
+    emitter.on('count', handler1)
+    emitter.emit('count', 3)
+    expect(count).toBe(32)
+  })
 })

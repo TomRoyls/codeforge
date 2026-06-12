@@ -377,4 +377,55 @@ describe('TrieRadix', () => {
     expect(trie.search('internet')).toBe(true)
     expect(trie.startsWith('intern')).toBe(true)
   })
+
+  it('handles deeply nested prefixes', () => {
+    const trie = new TrieRadix()
+    trie.insert('a'); trie.insert('ab'); trie.insert('abc')
+    trie.insert('abcd'); trie.insert('abcde')
+    expect(trie.search('abcde')).toBe(true)
+    expect(trie.search('abcd')).toBe(true)
+    expect(trie.search('abc')).toBe(true)
+  })
+
+  it('startsWith after multiple inserts with different roots', () => {
+    const trie = new TrieRadix()
+    trie.insert('xyz')
+    trie.insert('xylophone')
+    trie.insert('xenon')
+    expect(trie.startsWith('x')).toBe(true)
+    expect(trie.startsWith('xy')).toBe(true)
+    expect(trie.startsWith('xz')).toBe(false)
+  })
+
+  it('collectWords after many split operations', () => {
+    const trie = new TrieRadix()
+    trie.insert('ab'); trie.insert('ac'); trie.insert('ad')
+    trie.insert('ae'); trie.insert('af')
+    expect(trie.collectWords().sort()).toEqual(['ab', 'ac', 'ad', 'ae', 'af'])
+  })
+
+  it('handles reversed insertion order', () => {
+    const trie = new TrieRadix()
+    trie.insert('abcde'); trie.insert('abcd'); trie.insert('abc')
+    trie.insert('ab'); trie.insert('a')
+    expect(trie.search('a')).toBe(true)
+    expect(trie.search('abc')).toBe(true)
+    expect(trie.search('abcde')).toBe(true)
+  })
+
+  it('many words with no common prefix', () => {
+    const trie = new TrieRadix()
+    const words = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape']
+    for (const w of words) trie.insert(w)
+    expect(trie.collectWords().length).toBe(7)
+    for (const w of words) expect(trie.search(w)).toBe(true)
+  })
+
+  it('startsWith returns false for longer prefix than any word', () => {
+    const trie = new TrieRadix()
+    trie.insert('hi')
+    expect(trie.startsWith('h')).toBe(true)
+    expect(trie.startsWith('hi')).toBe(true)
+    expect(trie.startsWith('hii')).toBe(false)
+  })
 })

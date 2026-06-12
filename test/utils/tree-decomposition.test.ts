@@ -397,4 +397,63 @@ describe('TreeDecomposition', () => {
     td.addEdge(3, 4)
     expect(td.treewidth()).toBeLessThan(4)
   })
+
+  it('bags for single node graph', () => {
+    const td = new TreeDecomposition(1)
+    const bags = td.bags()
+    expect(bags.length).toBe(1)
+    expect(bags[0]).toEqual([0])
+  })
+
+  it('bags for path of 3 nodes', () => {
+    const td = new TreeDecomposition(3)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    const bags = td.bags()
+    expect(bags.length).toBe(3)
+    const allVertices = new Set<number>()
+    for (const bag of bags) {
+      for (const v of bag) allVertices.add(v)
+    }
+    expect(allVertices.size).toBe(3)
+  })
+
+  it('bags for triangle graph', () => {
+    const td = new TreeDecomposition(3)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    td.addEdge(0, 2)
+    const bags = td.bags()
+    expect(bags.length).toBe(3)
+    for (const bag of bags) {
+      expect(bag.length).toBeGreaterThanOrEqual(1)
+      expect(bag.length).toBeLessThanOrEqual(3)
+    }
+  })
+
+  it('bags for star graph', () => {
+    const td = new TreeDecomposition(5)
+    for (let i = 1; i < 5; i++) td.addEdge(0, i)
+    const bags = td.bags()
+    expect(bags.length).toBe(5)
+    const allVertices = new Set<number>()
+    for (const bag of bags) {
+      for (const v of bag) allVertices.add(v)
+    }
+    expect(allVertices.size).toBe(5)
+  })
+
+  it('bags order is deterministic', () => {
+    const td1 = new TreeDecomposition(3)
+    td1.addEdge(0, 1)
+    td1.addEdge(1, 2)
+    const bags1 = td1.bags()
+
+    const td2 = new TreeDecomposition(3)
+    td2.addEdge(0, 1)
+    td2.addEdge(1, 2)
+    const bags2 = td2.bags()
+
+    expect(bags1).toEqual(bags2)
+  })
 })

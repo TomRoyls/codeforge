@@ -439,4 +439,40 @@ describe('MovingAverage', () => {
     expect(ma.min).toBe(30)
     expect(ma.max).toBe(50)
   })
+
+  it('stddev is zero for constant values', () => {
+    const ma = new MovingAverage(5)
+    ma.push(7); ma.push(7); ma.push(7)
+    expect(ma.stddev).toBe(0)
+  })
+
+  it('reset clears all state', () => {
+    const ma = new MovingAverage(5)
+    ma.push(1); ma.push(2); ma.push(3)
+    ma.reset()
+    expect(ma.size).toBe(0)
+    expect(ma.average).toBe(0)
+    expect(ma.toArray()).toEqual([])
+  })
+
+  it('toArray returns current window', () => {
+    const ma = new MovingAverage(3)
+    ma.push(10); ma.push(20); ma.push(30)
+    expect(ma.toArray()).toEqual([10, 20, 30])
+    ma.push(40)
+    expect(ma.toArray()).toEqual([20, 30, 40])
+  })
+
+  it('windowSize returns constructor parameter', () => {
+    const ma = new MovingAverage(7)
+    expect(ma.windowSize).toBe(7)
+  })
+
+  it('handles negative values correctly', () => {
+    const ma = new MovingAverage(3)
+    ma.push(-10); ma.push(-20); ma.push(-30)
+    expect(ma.average).toBe(-20)
+    expect(ma.min).toBe(-30)
+    expect(ma.max).toBe(-10)
+  })
 })

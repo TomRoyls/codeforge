@@ -368,4 +368,55 @@ describe('WeightedRandom', () => {
     const result = sampler.sampleN(-5)
     expect(result).toEqual([])
   })
+
+  it('add with zero weight silently ignored and size not incremented', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', 0)
+    sampler.add('b', 1)
+    sampler.add('c', 0)
+    expect(sampler.size).toBe(1)
+    expect(sampler.totalWeight).toBe(1)
+  })
+
+  it('sample after multiple adds and builds', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', 1); sampler.build()
+    sampler.add('b', 1); sampler.build()
+    sampler.add('c', 1); sampler.build()
+    expect(['a', 'b', 'c']).toContain(sampler.sample())
+    expect(sampler.size).toBe(3)
+  })
+
+  it('probability with duplicate items returns first match weight', () => {
+    const sampler = new WeightedRandom<string>()
+    sampler.add('x', 3); sampler.add('x', 7)
+    sampler.build()
+    expect(sampler.probability('x')).toBeCloseTo(0.3)
+  })
+
+  it('totalWeight after clear is zero', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', 10); sampler.add('b', 20)
+    sampler.clear()
+    expect(sampler.totalWeight).toBe(0)
+  })
+
+  it('sampleN returns valid items only', () => {
+    const sampler = new WeightedRandom<string>()
+    sampler.add('only', 1); sampler.build()
+    const samples = sampler.sampleN(50)
+    expect(samples.every(s => s === 'only')).toBe(true)
+  })
+
+  it('handles single item with very small weight', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('tiny', 0.0001); sampler.build()
+    expect(sampler.sample()).toBe('tiny')
+  })
+
+  it('sampleMultiple returns correct count for zero', () => {
+    const sampler = new WeightedRandom()
+    sampler.add('a', 1); sampler.build()
+    expect(sampler.sampleMultiple(0)).toEqual([])
+  })
 })

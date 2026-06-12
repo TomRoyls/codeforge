@@ -429,4 +429,89 @@ describe('SkewHeap', () => {
     expect(heap.peek()).toBe(2)
     expect(heap.size).toBe(2)
   })
+
+  it('case-insensitive string comparator', () => {
+    const heap = new SkewHeap<string>((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    heap.push('Apple')
+    heap.push('banana')
+    heap.push('CHERRY')
+    expect(heap.pop()).toBe('Apple')
+    expect(heap.pop()).toBe('banana')
+    expect(heap.pop()).toBe('CHERRY')
+  })
+
+  it('size accuracy after many operations', () => {
+    const heap = new SkewHeap<number>()
+    for (let i = 0; i < 50; i++) heap.push(i)
+    expect(heap.size).toBe(50)
+    for (let i = 0; i < 25; i++) heap.pop()
+    expect(heap.size).toBe(25)
+    for (let i = 50; i < 75; i++) heap.push(i)
+    expect(heap.size).toBe(50)
+  })
+
+  it('merge returns new heap with proper comparator', () => {
+    const h1 = new SkewHeap<number>((a, b) => b - a)
+    const h2 = new SkewHeap<number>((a, b) => b - a)
+    h1.push(5)
+    h2.push(3)
+    const merged = h1.merge(h2)
+    merged.push(4)
+    expect(merged.pop()).toBe(5)
+    expect(merged.pop()).toBe(4)
+    expect(merged.pop()).toBe(3)
+  })
+
+  it('stress test alternating push and pop', () => {
+    const heap = new SkewHeap<number>()
+    const values: number[] = []
+    for (let i = 0; i < 20; i++) {
+      heap.push(i)
+      values.push(i)
+      if (i % 3 === 0 && values.length > 0) {
+        const expected = Math.min(...values)
+        expect(heap.pop()).toBe(expected)
+        values.splice(values.indexOf(expected), 1)
+      }
+    }
+    while (values.length > 0) {
+      const expected = Math.min(...values)
+      expect(heap.pop()).toBe(expected)
+      values.splice(values.indexOf(expected), 1)
+    }
+  })
+
+  it('toArray order verification on large heap', () => {
+    const heap = new SkewHeap<number>()
+    const values = Array.from({ length: 100 }, () => Math.floor(Math.random() * 1000))
+    for (const v of values) heap.push(v)
+    const arr = heap.toArray()
+    const sorted = [...values].sort((a, b) => a - b)
+    expect(arr).toEqual(sorted)
+  })
+
+  it('merge where one heap becomes empty after pops', () => {
+    const h1 = new SkewHeap<number>()
+    const h2 = new SkewHeap<number>()
+    h1.push(1)
+    h1.push(2)
+    h2.push(3)
+    const merged = h1.merge(h2)
+    merged.pop()
+    merged.pop()
+    merged.pop()
+    expect(merged.isEmpty).toBe(true)
+    expect(merged.size).toBe(0)
+  })
+
+  it('custom comparator with nested object properties', () => {
+    interface User { name: string; profile: { age: number; score: number } }
+    const heap = new SkewHeap<User>((a, b) => a.profile.score - b.profile.score)
+    heap.push({ name: 'Alice', profile: { age: 25, score: 100 } })
+    heap.push({ name: 'Bob', profile: { age: 30, score: 85 } })
+    heap.push({ name: 'Charlie', profile: { age: 28, score: 95 } })
+    expect(heap.pop()!.name).toBe('Bob')
+    expect(heap.pop()!.name).toBe('Charlie')
+    expect(heap.pop()!.name).toBe('Alice')
+  })
 })

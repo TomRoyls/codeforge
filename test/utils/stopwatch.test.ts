@@ -397,4 +397,63 @@ describe('StopWatch', () => {
     expect(e2).toBeGreaterThanOrEqual(e1)
     sw.stop()
   })
+
+  it('lap with empty label', () => {
+    const sw = new StopWatch()
+    sw.start()
+    const d = sw.lap('')
+    expect(d).toBeGreaterThanOrEqual(0)
+    expect(sw.lapResults[0]!.label).toBe('')
+    sw.stop()
+  })
+
+  it('lap with special characters in label', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('test-label_123')
+    expect(sw.lapResults[0]!.label).toBe('test-label_123')
+    sw.stop()
+  })
+
+  it('restart when already running resets and starts', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('before-restart')
+    sw.restart()
+    expect(sw.lapCount).toBe(0)
+    expect(sw.elapsed).toBeGreaterThan(0)
+    sw.stop()
+  })
+
+  it('formatResults shows correct precision', () => {
+    const sw = new StopWatch()
+    sw.start()
+    sw.lap('lap1')
+    const formatted = sw.formatResults()
+    expect(formatted).toMatch(/\.\d{2}ms$/)
+    sw.stop()
+  })
+
+  it('lapResults reflects changes', () => {
+    const sw = new StopWatch()
+    sw.start()
+    const results1 = sw.lapResults
+    sw.lap('new-lap')
+    const results2 = sw.lapResults
+    expect(results2.length).toBe(1)
+    expect(results1).toBe(results2)
+    sw.stop()
+  })
+
+  it('measureTimeAsync with multiple sequential calls', async () => {
+    const r1 = await measureTimeAsync(async () => 1)
+    const r2 = await measureTimeAsync(async () => 2)
+    const r3 = await measureTimeAsync(async () => 3)
+    expect(r1.result).toBe(1)
+    expect(r2.result).toBe(2)
+    expect(r3.result).toBe(3)
+    expect(r1.duration).toBeGreaterThanOrEqual(0)
+    expect(r2.duration).toBeGreaterThanOrEqual(0)
+    expect(r3.duration).toBeGreaterThanOrEqual(0)
+  })
 })

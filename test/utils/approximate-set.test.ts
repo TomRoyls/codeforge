@@ -326,4 +326,41 @@ describe('ApproximateSet', () => {
     expect(str1).toMatch(/ApproximateSet\(size=\d+, hashCount=\d+, count=\d+\)/)
     expect(str2).toMatch(/ApproximateSet\(size=\d+, hashCount=\d+, count=\d+\)/)
   })
+
+  it('add and has with many unique items', () => {
+    const set = new ApproximateSet(200, 0.01)
+    for (let i = 0; i < 100; i++) set.add(`unique-${i}`)
+    expect(set.count).toBe(100)
+    for (let i = 0; i < 100; i++) expect(set.has(`unique-${i}`)).toBe(true)
+  })
+
+  it('clone preserves has behavior', () => {
+    const set = new ApproximateSet(100)
+    set.add('alpha'); set.add('beta')
+    const cloned = set.clone()
+    expect(cloned.has('alpha')).toBe(true)
+    expect(cloned.has('beta')).toBe(true)
+    expect(cloned.has('gamma')).toBe(false)
+  })
+
+  it('toJSON bits array has correct length', () => {
+    const set = new ApproximateSet(100, 0.01)
+    const json = set.toJSON() as { bits: number[]; size: number }
+    expect(json.bits.length).toBe(Math.ceil(json.size / 8))
+  })
+
+  it('estimatedFalsePositiveRate for single item is very low', () => {
+    const set = new ApproximateSet(1000, 0.01)
+    set.add('only-one')
+    expect(set.estimatedFalsePositiveRate).toBeLessThan(0.01)
+  })
+
+  it('equals returns false after modifying one set', () => {
+    const s1 = new ApproximateSet(100)
+    const s2 = new ApproximateSet(100)
+    s1.add('a'); s2.add('a')
+    expect(s1.equals(s2)).toBe(true)
+    s1.add('b')
+    expect(s1.equals(s2)).toBe(false)
+  })
 })

@@ -197,6 +197,63 @@ describe('TopologicalSort.sort', () => {
     expect(result).not.toBeNull()
     expect(result!.indexOf(0)).toBeLessThan(result!.indexOf(1))
   })
+
+  it('handles graph with nodes only as targets', () => {
+    const adj = new Map<number, number[]>([
+      [0, [3]], [1, [3]], [2, [3]], [3, []],
+    ])
+    const result = TopologicalSort.sort(adj)
+    expect(result).not.toBeNull()
+    expect(result!.length).toBe(4)
+    expect(result!.indexOf(3)).toBe(result!.length - 1)
+  })
+
+  it('handles complex multi-level dependencies', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3]], [2, [4]], [3, [5]], [4, [5]], [5, []],
+    ])
+    const result = TopologicalSort.sort(adj)
+    expect(result).not.toBeNull()
+    expect(result!.indexOf(0)).toBeLessThan(result!.indexOf(1))
+    expect(result!.indexOf(0)).toBeLessThan(result!.indexOf(2))
+    expect(result!.indexOf(1)).toBeLessThan(result!.indexOf(3))
+    expect(result!.indexOf(2)).toBeLessThan(result!.indexOf(4))
+    expect(result!.indexOf(3)).toBeLessThan(result!.indexOf(5))
+    expect(result!.indexOf(4)).toBeLessThan(result!.indexOf(5))
+  })
+
+  it('handles non-sequential node IDs', () => {
+    const adj = new Map<number, number[]>([
+      [10, [20]], [20, [30]], [30, []],
+    ])
+    const result = TopologicalSort.sort(adj)
+    expect(result).not.toBeNull()
+    expect(result).toEqual([10, 20, 30])
+  })
+
+  it('allTopologicalSorts handles complex dependencies with multiple valid orders', () => {
+    const adj = new Map<number, number[]>([
+      [0, [2, 3]], [1, [2, 3]], [2, [4]], [3, [4]], [4, []],
+    ])
+    const results = TopologicalSort.allTopologicalSorts(adj)
+    expect(results.length).toBeGreaterThan(1)
+    for (const order of results) {
+      expect(order.indexOf(0)).toBeLessThan(order.indexOf(2))
+      expect(order.indexOf(0)).toBeLessThan(order.indexOf(3))
+      expect(order.indexOf(1)).toBeLessThan(order.indexOf(2))
+      expect(order.indexOf(1)).toBeLessThan(order.indexOf(3))
+      expect(order.indexOf(2)).toBeLessThan(order.indexOf(4))
+      expect(order.indexOf(3)).toBeLessThan(order.indexOf(4))
+    }
+  })
+
+  it('allTopologicalSorts with self-loop returns empty', () => {
+    const adj = new Map<number, number[]>([
+      [0, [0]],
+    ])
+    const results = TopologicalSort.allTopologicalSorts(adj)
+    expect(results).toEqual([])
+  })
 })
 
 describe('TopologicalSort.allTopologicalSorts', () => {

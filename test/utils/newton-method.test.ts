@@ -373,4 +373,58 @@ describe('NewtonMethod', () => {
     )
     expect(root).toBeCloseTo(3, 8)
   })
+
+  it('finds cube root of 8', () => {
+    const root = NewtonMethod.solve(
+      (x) => x * x * x - 8,
+      (x) => 3 * x * x,
+      2.5
+    )
+    expect(root).toBeCloseTo(2, 6)
+  })
+
+  it('finds root of linear function', () => {
+    const root = NewtonMethod.solve(
+      (x) => 2 * x - 4,
+      (x) => 2,
+      10
+    )
+    expect(root).toBeCloseTo(2, 6)
+  })
+
+  it('handles negative initial guess', () => {
+    const root = NewtonMethod.solve(
+      (x) => x * x - 4,
+      (x) => 2 * x,
+      -3
+    )
+    expect(Math.abs(root)).toBeCloseTo(2, 4)
+  })
+
+  it('handles function with root at zero', () => {
+    const root = NewtonMethod.solve(
+      (x) => x,
+      (x) => 1,
+      5
+    )
+    expect(root).toBeCloseTo(0, 6)
+  })
+
+  it('converges with small initial guess', () => {
+    const root = NewtonMethod.solve(
+      (x) => x * x - 2,
+      (x) => 2 * x,
+      1.5
+    )
+    expect(root).toBeCloseTo(Math.sqrt(2), 6)
+  })
+
+  it('finds root of sine near pi', () => {
+    const root = NewtonMethod.solve(
+      (x) => Math.sin(x),
+      (x) => Math.cos(x),
+      3
+    )
+    expect(root).toBeCloseTo(Math.PI, 4)
+  })
 })

@@ -370,4 +370,39 @@ describe('MedianMaintenance', () => {
     expect(mm.getMedian()).toBe(20)
     expect(mm.getRollingMedian()).toBe(20)
   })
+
+  it('handles negative numbers', () => {
+    const mm = new MedianMaintenance()
+    mm.add(-5); mm.add(-1); mm.add(-3)
+    expect(mm.getMedian()).toBe(-3)
+  })
+
+  it('handles mixed positive and negative', () => {
+    const mm = new MedianMaintenance()
+    mm.add(-2); mm.add(0); mm.add(2)
+    expect(mm.getMedian()).toBe(0)
+  })
+
+  it('rolling median for two elements', () => {
+    const mm = new MedianMaintenance()
+    mm.add(10); mm.add(20)
+    expect(mm.getRollingMedian()).toBe(15)
+  })
+
+  it('size tracks additions after clear and re-add', () => {
+    const mm = new MedianMaintenance()
+    mm.add(1); mm.add(2); mm.add(3)
+    mm.clear()
+    expect(mm.size).toBe(0)
+    mm.add(10)
+    expect(mm.size).toBe(1)
+    expect(mm.getMedian()).toBe(10)
+  })
+
+  it('handles duplicate values', () => {
+    const mm = new MedianMaintenance()
+    mm.add(5); mm.add(5); mm.add(5)
+    expect(mm.getMedian()).toBe(5)
+    expect(mm.getRollingMedian()).toBe(5)
+  })
 })

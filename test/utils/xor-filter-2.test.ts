@@ -372,5 +372,48 @@ describe('XorFilter', () => {
       expect(typeof filter.has('alpha')).toBe('boolean')
       expect(typeof filter.has('delta')).toBe('boolean')
     })
+
+    it('single item always returns true consistently', () => {
+      const filter = new XorFilter(['guaranteed'])
+      expect(filter.has('guaranteed')).toBe(true)
+      expect(filter.has('guaranteed')).toBe(true)
+      expect(filter.has('guaranteed')).toBe(true)
+    })
+
+    it('empty filter always returns false for any input', () => {
+      const filter = new XorFilter([])
+      expect(filter.has('')).toBe(false)
+      expect(filter.has('anything')).toBe(false)
+      expect(filter.has('test')).toBe(false)
+    })
+
+    it('non-existent items return false for single item filter', () => {
+      const filter = new XorFilter(['only_this'])
+      expect(filter.has('something_else')).toBe(false)
+      expect(filter.has('')).toBe(false)
+      expect(filter.has('only')).toBe(false)
+    })
+
+    it('constructs with two items and returns boolean', () => {
+      const filter = new XorFilter(['alpha', 'beta'])
+      expect(typeof filter.has('alpha')).toBe('boolean')
+      expect(typeof filter.has('beta')).toBe('boolean')
+      expect(filter.has('gamma')).toBe(false)
+    })
+
+    it('filter is consistent across multiple has calls', () => {
+      const filter = new XorFilter(['consistency_test'])
+      const r1 = filter.has('consistency_test')
+      const r2 = filter.has('consistency_test')
+      const r3 = filter.has('consistency_test')
+      expect(r1).toBe(r2)
+      expect(r2).toBe(r3)
+    })
+
+    it('has returns correct type for missing item', () => {
+      const filter = new XorFilter(['typecheck'])
+      expect(typeof filter.has('typecheck')).toBe('boolean')
+      expect(typeof filter.has('other')).toBe('boolean')
+    })
   })
 })

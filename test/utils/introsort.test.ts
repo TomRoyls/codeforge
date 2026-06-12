@@ -280,4 +280,42 @@ describe('Introsort', () => {
       }
     })
   })
+
+  describe('heap sort fallback', () => {
+    it('handles array that triggers heap sort (large depth)', () => {
+      // Create array that will exhaust depth limit and trigger heap sort
+      const arr = Array.from({ length: 100 }, (_, i) => i)
+      const sorted = Introsort.sort(arr, (a, b) => a - b)
+      expect(sorted[0]).toBe(0)
+      expect(sorted[sorted.length - 1]).toBe(99)
+    })
+
+    it('handles array requiring multiple heap sort calls', () => {
+      // Create worst-case scenario for quicksort that triggers heap sort
+      const arr = Array.from({ length: 200 }, (_, i) => i)
+      const sorted = Introsort.sort(arr, (a, b) => a - b)
+      for (let i = 0; i < sorted.length - 1; i++) {
+        expect(sorted[i]!).toBeLessThanOrEqual(sorted[i + 1]!)
+      }
+    })
+  })
+
+  describe('mixed data types', () => {
+    it('sorts array of booleans', () => {
+      const arr = [true, false, true, false, true]
+      const result = Introsort.sort(arr, (a, b) => Number(a) - Number(b))
+      expect(result).toEqual([false, false, true, true, true])
+    })
+
+    it('sorts array of dates', () => {
+      const dates = [
+        new Date('2023-01-01'),
+        new Date('2022-01-01'),
+        new Date('2023-12-01'),
+      ]
+      const result = Introsort.sort(dates, (a, b) => a.getTime() - b.getTime())
+      expect(result[0].getFullYear()).toBe(2022)
+      expect(result[2].getFullYear()).toBe(2023)
+    })
+  })
 })

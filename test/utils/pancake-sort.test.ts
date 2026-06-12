@@ -226,4 +226,38 @@ describe('PancakeSort', () => {
     const arr = [3, 1, 4, 2]
     expect(PancakeSort.minFlips(arr)).toBe(PancakeSort.sortWithFlips(arr).flips)
   })
+
+  it('sortWithFlips returns sorted array', () => {
+    const result = PancakeSort.sortWithFlips([5, 3, 1, 4, 2])
+    expect(result.sorted).toEqual([1, 2, 3, 4, 5])
+    expect(result.flips).toBeGreaterThan(0)
+  })
+
+  it('sortWithFlips zero flips for sorted input', () => {
+    const result = PancakeSort.sortWithFlips([1, 2, 3, 4])
+    expect(result.sorted).toEqual([1, 2, 3, 4])
+    expect(result.flips).toBe(0)
+  })
+
+  it('flip reverses first k elements', () => {
+    const arr = [1, 2, 3, 4, 5]
+    PancakeSort.flip(arr, 3)
+    expect(arr).toEqual([3, 2, 1, 4, 5])
+  })
+
+  it('flip entire array', () => {
+    const arr = [1, 2, 3]
+    PancakeSort.flip(arr, 3)
+    expect(arr).toEqual([3, 2, 1])
+  })
+
+  it('isSorted detects unsorted', () => {
+    expect(PancakeSort.isSorted([3, 1, 2])).toBe(false)
+    expect(PancakeSort.isSorted([1])).toBe(true)
+    expect(PancakeSort.isSorted([])).toBe(true)
+  })
+
+  it('sort handles all same elements', () => {
+    expect(PancakeSort.sort([5, 5, 5, 5])).toEqual([5, 5, 5, 5])
+  })
 })

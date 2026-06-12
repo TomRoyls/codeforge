@@ -362,4 +362,72 @@ describe('SegmentTree2D', () => {
     expect(st.query(0, 0, 1, 0)).toBe(4)
     expect(st.query(0, 1, 1, 1)).toBe(6)
   })
+
+  it('handles custom combine function', () => {
+    const st = new SegmentTree2D(2, 2, (a, b) => a + b)
+    st.update(0, 0, 10)
+    st.update(0, 1, 20)
+    st.update(1, 0, 30)
+    st.update(1, 1, 40)
+    expect(st.query(0, 0, 0, 1)).toBe(30)
+    expect(st.query(1, 0, 1, 1)).toBe(70)
+    expect(st.query(0, 0, 1, 1)).toBe(100)
+  })
+
+  it('handles XOR combine function', () => {
+    const st = new SegmentTree2D(2, 2, (a, b) => a ^ b)
+    st.update(0, 0, 1)
+    st.update(0, 1, 2)
+    st.update(1, 0, 4)
+    st.update(1, 1, 8)
+    expect(st.query(0, 0, 0, 1)).toBe(3)
+    expect(st.query(1, 0, 1, 1)).toBe(12)
+    expect(st.query(0, 0, 1, 1)).toBe(15)
+  })
+
+  it('handles 10x10 grid', () => {
+    const st = new SegmentTree2D(10, 10)
+    for (let i = 0; i < 10; i++)
+      for (let j = 0; j < 10; j++) st.update(i, j, i * 10 + j + 1)
+    expect(st.query(0, 0, 9, 9)).toBe(5050)
+    expect(st.query(2, 3, 5, 7)).toBe(820)
+  })
+
+  it('query after multiple consecutive updates to same region', () => {
+    const st = new SegmentTree2D(3, 3)
+    for (let i = 0; i < 5; i++) {
+      st.update(1, 1, i)
+    }
+    expect(st.query(1, 1, 1, 1)).toBe(4)
+  })
+
+  it('max function with all negative values', () => {
+    const st = new SegmentTree2D(2, 2, Math.max)
+    st.update(0, 0, -5)
+    st.update(0, 1, -10)
+    st.update(1, 0, -3)
+    st.update(1, 1, -7)
+    expect(st.query(0, 0, 1, 1)).toBe(-3)
+  })
+
+  it('min function with all positive values', () => {
+    const st = new SegmentTree2D(2, 2, Math.min)
+    st.update(0, 0, 15)
+    st.update(0, 1, 8)
+    st.update(1, 0, 12)
+    st.update(1, 1, 20)
+    expect(st.query(0, 0, 1, 1)).toBe(8)
+  })
+
+  it('sum with mixed positive and negative values', () => {
+    const st = new SegmentTree2D(3, 3)
+    st.update(0, 0, 10)
+    st.update(0, 1, -5)
+    st.update(0, 2, 3)
+    st.update(1, 0, -2)
+    st.update(1, 1, 7)
+    st.update(1, 2, -1)
+    expect(st.query(0, 0, 1, 2)).toBe(12)
+    expect(st.query(0, 0, 0, 2)).toBe(8)
+  })
 })

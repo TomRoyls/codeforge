@@ -212,4 +212,37 @@ describe('SubsetSum', () => {
     expect(result).not.toBeNull()
     expect(result!.reduce((a, b) => a + b, 0)).toBe(25)
   })
+
+  it('handles array with zero', () => {
+    expect(SubsetSum.hasSubset([0, 1, 2], 0)).toBe(true)
+    expect(SubsetSum.hasSubset([0, 1, 2], 1)).toBe(true)
+    expect(SubsetSum.findSubset([0, 1, 2], 0)).toEqual([])
+  })
+
+  it('findAllSubsets returns consistent subsets for same input', () => {
+    const result1 = SubsetSum.findAllSubsets([2, 3, 5], 8)
+    const result2 = SubsetSum.findAllSubsets([2, 3, 5], 8)
+    expect(result1.length).toBe(result2.length)
+    const sums1 = result1.map(s => s.sort().join(','))
+    const sums2 = result2.map(s => s.sort().join(','))
+    sums1.sort()
+    sums2.sort()
+    expect(sums1).toEqual(sums2)
+  })
+
+  it('countSubsets for exact element match', () => {
+    expect(SubsetSum.countSubsets([3, 5, 7], 5)).toBe(1)
+    expect(SubsetSum.countSubsets([3, 5, 5], 5)).toBe(2)
+  })
+
+  it('hasSubset with target directly in array', () => {
+    expect(SubsetSum.hasSubset([1, 5, 10, 15], 10)).toBe(true)
+    expect(SubsetSum.hasSubset([1, 5, 10, 15], 15)).toBe(true)
+  })
+
+  it('findSubset with multiple solutions returns valid subset', () => {
+    const result = SubsetSum.findSubset([1, 2, 3, 4, 5], 6)
+    expect(result).not.toBeNull()
+    expect(result!.reduce((a, b) => a + b, 0)).toBe(6)
+  })
 })

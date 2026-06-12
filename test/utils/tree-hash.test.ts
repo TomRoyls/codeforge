@@ -433,4 +433,44 @@ describe('TreeHash', () => {
     const center = th.findCenter()
     expect(center).toEqual([0])
   })
+
+  it('rooted hash is deterministic', () => {
+    const th = new TreeHash(5)
+    th.addEdge(0, 1); th.addEdge(0, 2); th.addEdge(0, 3); th.addEdge(0, 4)
+    const h1 = th.rootedHash()
+    const h2 = th.rootedHash()
+    expect(h1).toBe(h2)
+  })
+
+  it('rooted hash for single node', () => {
+    const th = new TreeHash(1)
+    expect(typeof th.rootedHash()).toBe('bigint')
+  })
+
+  it('rooted hash for two nodes', () => {
+    const th = new TreeHash(2)
+    th.addEdge(0, 1)
+    expect(typeof th.rootedHash()).toBe('bigint')
+  })
+
+  it('findCenter for three node path', () => {
+    const th = new TreeHash(3)
+    th.addEdge(0, 1); th.addEdge(1, 2)
+    expect(th.findCenter()).toEqual([1])
+  })
+
+  it('isomorphic star trees with different centers', () => {
+    const t1 = new TreeHash(4)
+    t1.addEdge(0, 1); t1.addEdge(0, 2); t1.addEdge(0, 3)
+    const t2 = new TreeHash(4)
+    t2.addEdge(2, 0); t2.addEdge(2, 1); t2.addEdge(2, 3)
+    expect(t1.isIsomorphic(t2, 0, 2)).toBe(true)
+  })
+
+  it('hash for deep chain is bigint', () => {
+    const th = new TreeHash(20)
+    for (let i = 0; i < 19; i++) th.addEdge(i, i + 1)
+    const h = th.hash(0)
+    expect(typeof h).toBe('bigint')
+  })
 })

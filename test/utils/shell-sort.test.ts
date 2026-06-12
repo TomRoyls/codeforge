@@ -225,4 +225,54 @@ describe('ShellSort', () => {
   it('handles alternating high low pattern', () => {
     expect(ShellSort.sort([10, 1, 9, 2, 8, 3])).toEqual([1, 2, 3, 8, 9, 10])
   })
+
+  it('sortInPlace with negative numbers', () => {
+    const arr = [-5, 3, -2, 0, -1]
+    ShellSort.sortInPlace(arr)
+    expect(arr).toEqual([-5, -2, -1, 0, 3])
+  })
+
+  it('sortWithComparator returns new array', () => {
+    const arr = [3, 1, 2]
+    const result = ShellSort.sortWithComparator(arr, (a, b) => a - b)
+    expect(result).not.toBe(arr)
+    expect(arr).toEqual([3, 1, 2])
+  })
+
+  it('sorts Infinity and -Infinity correctly', () => {
+    expect(ShellSort.sort([Infinity, 1, -Infinity, 0, -1])).toEqual([-Infinity, -1, 0, 1, Infinity])
+  })
+
+  it('sorts date objects via comparator', () => {
+    const dates = [
+      new Date('2025-01-15'),
+      new Date('2024-12-01'),
+      new Date('2025-03-01')
+    ]
+    const result = ShellSort.sortWithComparator(dates, (a, b) => a.getTime() - b.getTime())
+    expect(result[0]).toEqual(new Date('2024-12-01'))
+    expect(result[1]).toEqual(new Date('2025-01-15'))
+    expect(result[2]).toEqual(new Date('2025-03-01'))
+  })
+
+  it('handles very large array (10000 elements)', () => {
+    const arr = Array.from({ length: 10000 }, (_, i) => 10000 - i)
+    const result = ShellSort.sort(arr)
+    expect(result[0]).toBe(1)
+    expect(result[9999]).toBe(10000)
+    for (let i = 1; i < 10000; i++) {
+      expect(result[i]).toBeGreaterThanOrEqual(result[i - 1]!)
+    }
+  })
+
+  it('sortWithComparator with mixed case strings', () => {
+    const result = ShellSort.sortWithComparator(['Zebra', 'apple', 'Banana'], (a, b) => a.localeCompare(b))
+    expect(result).toEqual(['apple', 'Banana', 'Zebra'])
+  })
+
+  it('sortInPlace with two elements unsorted', () => {
+    const arr = [5, 3]
+    ShellSort.sortInPlace(arr)
+    expect(arr).toEqual([3, 5])
+  })
 })

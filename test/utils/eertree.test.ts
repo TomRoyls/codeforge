@@ -288,4 +288,38 @@ describe('Eertree', () => {
     expect(tree.hasPalindrome('aceca')).toBe(true)
     expect(tree.hasPalindrome('cec')).toBe(true)
   })
+
+  it('nodeCount for empty string', () => {
+    const tree = Eertree.build('')
+    expect(tree.nodeCount).toBe(0)
+  })
+
+  it('allPalindromes returns array', () => {
+    const tree = Eertree.build('aba')
+    const all = tree.allPalindromes()
+    expect(Array.isArray(all)).toBe(true)
+    expect(all.length).toBeGreaterThan(0)
+  })
+
+  it('handles numeric string characters', () => {
+    const tree = Eertree.build('121')
+    expect(tree.hasPalindrome('121')).toBe(true)
+    expect(tree.hasPalindrome('2')).toBe(true)
+  })
+
+  it('handles special characters', () => {
+    const tree = Eertree.build('!@!')
+    expect(tree.hasPalindrome('!@!')).toBe(true)
+  })
+
+  it('nodeCount increases with distinct palindromes', () => {
+    const tree = Eertree.build('abacaba')
+    expect(tree.nodeCount).toBeGreaterThanOrEqual(4)
+  })
+
+  it('handles two-character string', () => {
+    const tree = Eertree.build('ab')
+    expect(tree.hasPalindrome('a')).toBe(true)
+    expect(tree.hasPalindrome('b')).toBe(true)
+  })
 })
