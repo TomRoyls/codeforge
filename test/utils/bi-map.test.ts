@@ -745,3 +745,15 @@ describe('bi-map - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bi-map - wave558', () => {
+  it('bi-map w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

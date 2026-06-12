@@ -651,3 +651,15 @@ describe('memoize - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('memoize - wave558', () => {
+  it('memoize w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

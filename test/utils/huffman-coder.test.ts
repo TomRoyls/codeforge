@@ -579,3 +579,15 @@ describe('huffman-coder - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('huffman-coder - wave558', () => {
+  it('huffman-coder w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

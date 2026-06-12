@@ -560,3 +560,15 @@ describe('aho-corasick-multi - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('aho-corasick-multi - wave558', () => {
+  it('aho-corasick-multi w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick-multi w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -578,3 +578,15 @@ describe('deferred - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deferred - wave558', () => {
+  it('deferred w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

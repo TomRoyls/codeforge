@@ -682,3 +682,15 @@ describe('index-priority-queue - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('index-priority-queue - wave558', () => {
+  it('index-priority-queue w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

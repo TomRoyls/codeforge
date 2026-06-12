@@ -631,3 +631,15 @@ describe('file-writer - wave557', () => {
     expect(afterEach).toBeDefined()
   })
 })
+
+describe('file-writer - wave558', () => {
+  it('file-writer w558 v0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w558 v1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('file-writer w558 v2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})

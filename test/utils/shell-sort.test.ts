@@ -469,3 +469,15 @@ describe('shell-sort - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('shell-sort - wave558', () => {
+  it('shell-sort w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shell-sort w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shell-sort w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

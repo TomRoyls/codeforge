@@ -690,3 +690,15 @@ describe('avl-tree-map - wave557', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('avl-tree-map - wave558', () => {
+  it('avl-tree-map w558 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w558 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map w558 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

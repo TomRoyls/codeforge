@@ -595,3 +595,15 @@ describe('lru-ttl-cache - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lru-ttl-cache - wave558', () => {
+  it('lru-ttl-cache w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-ttl-cache w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

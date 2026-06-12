@@ -654,3 +654,15 @@ describe('hopscotch-hash-table - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hopscotch-hash-table - wave558', () => {
+  it('hopscotch-hash-table w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

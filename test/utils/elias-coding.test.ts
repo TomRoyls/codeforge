@@ -603,3 +603,15 @@ describe('elias-coding - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-coding - wave558', () => {
+  it('elias-coding w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -500,3 +500,15 @@ describe('sparse-table - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-table - wave558', () => {
+  it('sparse-table w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

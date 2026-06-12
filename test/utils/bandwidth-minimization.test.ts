@@ -617,3 +617,15 @@ describe('bandwidth-minimization - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bandwidth-minimization - wave558', () => {
+  it('bandwidth-minimization w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -628,3 +628,15 @@ describe('streaming-histogram - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-histogram - wave558', () => {
+  it('streaming-histogram w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

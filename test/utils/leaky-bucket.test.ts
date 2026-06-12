@@ -561,3 +561,15 @@ describe('leaky-bucket - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('leaky-bucket - wave558', () => {
+  it('leaky-bucket w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

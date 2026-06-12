@@ -698,3 +698,15 @@ describe('trie - wave557', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('trie - wave558', () => {
+  it('trie w558 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w558 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w558 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

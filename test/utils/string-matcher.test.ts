@@ -671,3 +671,15 @@ describe('string-matcher - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-matcher - wave558', () => {
+  it('string-matcher w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

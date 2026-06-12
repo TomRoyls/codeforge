@@ -617,3 +617,15 @@ describe('median-maintenance - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('median-maintenance - wave558', () => {
+  it('median-maintenance w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

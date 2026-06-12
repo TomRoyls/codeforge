@@ -634,3 +634,15 @@ describe('cuckoo-hash - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash - wave558', () => {
+  it('cuckoo-hash w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

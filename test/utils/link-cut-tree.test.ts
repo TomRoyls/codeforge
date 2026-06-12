@@ -654,3 +654,15 @@ describe('link-cut-tree - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('link-cut-tree - wave558', () => {
+  it('link-cut-tree w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

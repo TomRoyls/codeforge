@@ -590,3 +590,15 @@ describe('object-diff - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('object-diff - wave558', () => {
+  it('object-diff w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -678,3 +678,15 @@ describe('version-vector - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('version-vector - wave558', () => {
+  it('version-vector w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

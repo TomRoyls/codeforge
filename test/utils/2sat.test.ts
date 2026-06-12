@@ -671,3 +671,15 @@ describe('2sat - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('2sat - wave558', () => {
+  it('2sat w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

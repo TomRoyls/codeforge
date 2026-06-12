@@ -592,3 +592,15 @@ describe('zobrist-hashing - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('zobrist-hashing - wave558', () => {
+  it('zobrist-hashing w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

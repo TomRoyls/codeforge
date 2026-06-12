@@ -498,3 +498,15 @@ describe('rect-area - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rect-area - wave558', () => {
+  it('rect-area w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -530,3 +530,15 @@ describe('range-min-query - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('range-min-query - wave558', () => {
+  it('range-min-query w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

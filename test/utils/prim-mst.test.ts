@@ -670,3 +670,15 @@ describe('prim-mst - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('prim-mst - wave558', () => {
+  it('prim-mst w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

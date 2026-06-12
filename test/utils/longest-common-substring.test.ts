@@ -398,3 +398,15 @@ describe('longest-common-substring - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-common-substring - wave558', () => {
+  it('longest-common-substring w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

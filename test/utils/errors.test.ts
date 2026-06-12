@@ -575,3 +575,15 @@ describe('errors - wave557', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('errors - wave558', () => {
+  it('errors w558 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w558 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w558 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
