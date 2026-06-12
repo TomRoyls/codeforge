@@ -286,4 +286,14 @@ describe('Logger methods', () => {
     const log = new Logger({ level: LogLevel.INFO })
     expect(() => log.info('date', new Date())).not.toThrow()
   })
+
+  it('should handle warn level', () => {
+    const log = new Logger({ level: LogLevel.WARN })
+    expect(() => log.warn('warning message')).not.toThrow()
+  })
+
+  it('should handle error level', () => {
+    const log = new Logger({ level: LogLevel.ERROR })
+    expect(() => log.error('error message')).not.toThrow()
+  })
 })

@@ -413,4 +413,19 @@ describe('HashMapOpen', () => {
     expect(map.keys().length).toBe(2)
     expect(map.values().length).toBe(2)
   })
+
+  it('should handle overwrite', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('a', 2)
+    expect(map.get('a')).toBe(2)
+    expect(map.size).toBe(1)
+  })
+
+  it('should handle delete', () => {
+    const map = new HashMapOpen<number, string>()
+    map.set(1, 'one')
+    expect(map.delete(1)).toBe(true)
+    expect(map.get(1)).toBeUndefined()
+  })
 })

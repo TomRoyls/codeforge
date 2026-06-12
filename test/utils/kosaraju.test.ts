@@ -347,4 +347,15 @@ describe('KosarajuSCC', () => {
     const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
     expect(KosarajuSCC.isStronglyConnected(adj)).toBe(true)
   })
+
+  it('should find condensation', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]], [2, [0]]])
+    const cond = KosarajuSCC.condensation(adj)
+    expect(cond.size).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should handle single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(KosarajuSCC.countSCCs(adj)).toBe(1)
+  })
 })

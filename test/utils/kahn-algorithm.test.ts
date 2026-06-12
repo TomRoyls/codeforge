@@ -393,4 +393,24 @@ describe('KahnAlgorithm', () => {
     const ka = new KahnAlgorithm(1)
     expect(ka.sort()).toEqual([0])
   })
+
+  it('should handle linear DAG', () => {
+    const ka = new KahnAlgorithm(4)
+    ka.addEdge(0, 1)
+    ka.addEdge(1, 2)
+    ka.addEdge(2, 3)
+    expect(ka.sort()).toEqual([0, 1, 2, 3])
+  })
+
+  it('should handle diamond DAG', () => {
+    const ka = new KahnAlgorithm(4)
+    ka.addEdge(0, 1)
+    ka.addEdge(0, 2)
+    ka.addEdge(1, 3)
+    ka.addEdge(2, 3)
+    const sorted = ka.sort()
+    expect(sorted).not.toBeNull()
+    expect(sorted![0]).toBe(0)
+    expect(sorted![3]).toBe(3)
+  })
 })

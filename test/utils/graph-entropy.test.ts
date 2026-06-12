@@ -361,4 +361,18 @@ describe('GraphEntropy', () => {
     ge.addEdge(3, 4)
     expect(ge.degreeEntropy()).toBeGreaterThan(0)
   })
+
+  it('should compute entropy for single edge', () => {
+    const ge = new GraphEntropy(2)
+    ge.addEdge(0, 1)
+    expect(ge.degreeEntropy()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('should handle complete graph', () => {
+    const ge = new GraphEntropy(3)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    ge.addEdge(0, 2)
+    expect(ge.degreeEntropy()).toBeGreaterThanOrEqual(0)
+  })
 })

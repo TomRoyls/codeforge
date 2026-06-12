@@ -419,4 +419,20 @@ describe('IntervalSet', () => {
       expect(a.intersection(b).isEmpty).toBe(true)
     })
   })
+
+  it('should compute union', () => {
+    const a = new IntervalSet()
+    a.add(0, 5)
+    const b = new IntervalSet()
+    b.add(3, 8)
+    const u = a.union(b)
+    expect(u.isEmpty).toBe(false)
+  })
+
+  it('should compute complement', () => {
+    const s = new IntervalSet()
+    s.add(2, 5)
+    const c = s.complement(0, 10)
+    expect(c).toBeDefined()
+  })
 })

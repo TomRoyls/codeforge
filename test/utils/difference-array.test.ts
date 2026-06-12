@@ -404,4 +404,17 @@ describe('DifferenceArray', () => {
     expect(da.get(0)).toBe(1e9)
     expect(da.get(4)).toBe(1e9)
   })
+
+  it('should handle prefix sum query', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(0, 4, 1)
+    expect(da.get(2)).toBe(1)
+  })
+
+  it('should handle overlapping ranges', () => {
+    const da = new DifferenceArray(4)
+    da.rangeAdd(0, 2, 5)
+    da.rangeAdd(1, 3, 3)
+    expect(da.get(1)).toBe(8)
+  })
 })

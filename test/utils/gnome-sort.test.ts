@@ -264,4 +264,12 @@ describe('GnomeSort', () => {
     const result = GnomeSort.sort(arr)
     expect(result).not.toBe(arr)
   })
+
+  it('should handle single element', () => {
+    expect(GnomeSort.sort([1])).toEqual([1])
+  })
+
+  it('should handle already sorted', () => {
+    expect(GnomeSort.sort([1, 2, 3])).toEqual([1, 2, 3])
+  })
 })

@@ -457,4 +457,14 @@ describe('DinicMaxFlow', () => {
     ]
     expect(DinicMaxFlow.maxFlow(edges, 2, 0, 3)).toBe(0)
   })
+
+  it('should handle single edge', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10 }]
+    expect(DinicMaxFlow.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
+
+  it('should handle no path', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }]
+    expect(DinicMaxFlow.maxFlow(edges, 0, 2, 3)).toBe(0)
+  })
 })

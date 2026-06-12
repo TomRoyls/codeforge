@@ -617,4 +617,16 @@ describe('HeavyLightDecomposition', () => {
     const json = hld.toJSON()
     expect(json).toBeDefined()
   })
+
+  it('should handle chain graph', () => {
+    const adj = [[1], [0, 2], [1, 3], [2]]
+    const hld = new HeavyLightDecomposition(adj)
+    expect(hld).toBeDefined()
+  })
+
+  it('should handle single node', () => {
+    const adj = [[]]
+    const hld = new HeavyLightDecomposition(adj)
+    expect(hld).toBeDefined()
+  })
 })

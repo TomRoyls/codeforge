@@ -328,4 +328,15 @@ describe('KahnTopologicalSort', () => {
     const adj = [[1], [0]]
     expect(KahnTopologicalSort.isDAG(adj)).toBe(false)
   })
+
+  it('should compute longest path', () => {
+    const adj = [[1, 2], [3], [3], []]
+    const weights = [1, 2, 3, 4]
+    const result = KahnTopologicalSort.longestPath(adj, weights)
+    expect(result).toBeGreaterThanOrEqual(4)
+  })
+
+  it('should handle empty graph', () => {
+    expect(KahnTopologicalSort.isDAG([])).toBe(true)
+  })
 })

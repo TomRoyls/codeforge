@@ -431,4 +431,24 @@ describe('EventSink', () => {
     const clone = sink.clone()
     expect(clone.toJSON()).toEqual(sink.toJSON())
   })
+
+  it('should emit and listen', () => {
+    const sink = new EventSink<Events>()
+    let received = ''
+    const unsub = sink.on('click', () => { received = 'clicked' })
+    sink.emit('click', { x: 1, y: 2 })
+    expect(received).toBe('clicked')
+    unsub()
+  })
+
+  it('should remove listener with off', () => {
+    const sink = new EventSink<Events>()
+    let count = 0
+    const handler = () => { count++ }
+    sink.on('click', handler)
+    sink.emit('click', { x: 0, y: 0 })
+    sink.off('click', handler)
+    sink.emit('click', { x: 0, y: 0 })
+    expect(count).toBe(1)
+  })
 })

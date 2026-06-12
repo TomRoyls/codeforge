@@ -570,4 +570,22 @@ describe('Dijkstra', () => {
       expect(Dijkstra.reconstructPath(parents, 0, 2)).toBeNull()
     })
   })
+
+  it('should handle disconnected graph', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, []],
+      [1, []],
+      [2, []],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(1)).toBe(Infinity)
+  })
+
+  it('should handle self-loop', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 0, weight: 5 }]],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })

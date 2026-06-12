@@ -426,4 +426,18 @@ describe('GaussianElimination', () => {
       ])
     ).toBe(1)
   })
+
+  it('should handle identity matrix', () => {
+    const aug = [[1, 0, 3], [0, 1, 4]]
+    const solution = GaussianElimination.solve(aug)
+    expect(solution).not.toBeNull()
+    expect(solution![0]).toBeCloseTo(3)
+    expect(solution![1]).toBeCloseTo(4)
+  })
+
+  it('should handle 1x1 system', () => {
+    const solution = GaussianElimination.solve([[5, 10]])
+    expect(solution).not.toBeNull()
+    expect(solution![0]).toBeCloseTo(2)
+  })
 })

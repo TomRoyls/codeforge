@@ -441,4 +441,24 @@ describe('greedyIntervalSchedule', () => {
     const result = greedyIntervalSchedule([{ start: 0, end: 5 }])
     expect(result.length).toBe(1)
   })
+
+  it('should handle weighted intervals', () => {
+    const intervals = [
+      { start: 0, end: 3, weight: 5 },
+      { start: 2, end: 5, weight: 6 },
+      { start: 4, end: 7, weight: 4 },
+    ]
+    const { totalWeight } = weightedIntervalSchedule(intervals)
+    expect(totalWeight).toBeGreaterThan(0)
+  })
+
+  it('should handle non-overlapping intervals', () => {
+    const intervals = [
+      { start: 0, end: 2, weight: 3 },
+      { start: 3, end: 5, weight: 4 },
+    ]
+    const { totalWeight, selected } = weightedIntervalSchedule(intervals)
+    expect(totalWeight).toBe(7)
+    expect(selected.length).toBe(2)
+  })
 })

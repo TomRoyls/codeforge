@@ -468,4 +468,22 @@ describe('HierarchicalTimer', () => {
     const opDuration = flat.get('op')!
     expect(opDuration).toBeGreaterThan(0)
   })
+
+  it('should handle nested timing', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('outer')
+    timer.start('inner')
+    timer.end('inner')
+    timer.end('outer')
+    expect(timer).toBeDefined()
+  })
+
+  it('should handle multiple timers', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('a')
+    timer.end('a')
+    timer.start('b')
+    timer.end('b')
+    expect(timer).toBeDefined()
+  })
 })

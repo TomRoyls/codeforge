@@ -356,4 +356,14 @@ describe('EulerianPath', () => {
   it('hasEulerianCircuit with single node', () => {
     expect(EulerianPath.hasEulerianCircuit([[]])).toBe(true)
   })
+
+  it('should find path in simple graph', () => {
+    const adj = [[1], [0, 2], [1]]
+    expect(EulerianPath.hasEulerianPath(adj)).toBe(true)
+  })
+
+  it('should handle path graph', () => {
+    const adj = [[1], [0, 2], [1]]
+    expect(EulerianPath.hasEulerianPath(adj)).toBe(true)
+  })
 })
