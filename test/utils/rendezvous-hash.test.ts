@@ -476,6 +476,7 @@ describe('RendezvousHash - with complex values', () => {
     const rh = new RendezvousHash<string>()
     expect(rh.has('missing')).toBe(false)
 
+
   it('empty hash get undefined', () => {
     const rh = new RendezvousHash<string>()
     expect(rh.get('key')).toBeUndefined()
@@ -491,5 +492,4 @@ describe('RendezvousHash - with complex values', () => {
     const rh = new RendezvousHash<string>()
     expect(rh.has('node1')).toBe(false)
   })
-
   })

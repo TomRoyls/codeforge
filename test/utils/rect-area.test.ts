@@ -322,6 +322,7 @@ describe('RectArea', () => {
     const rects = [{ x1: 0, y1: 0, x2: 3, y2: 4 }]
     expect(RectArea.unionArea(rects)).toBe(12)
 
+
   it('unionArea empty is 0', () => {
     expect(RectArea.unionArea([])).toBe(0)
   })
@@ -334,5 +335,4 @@ describe('RectArea', () => {
     const r = { x1: 0, y1: 0, x2: 2, y2: 2 }
     expect(RectArea.intersection(r, r)).toEqual(r)
   })
-
   })

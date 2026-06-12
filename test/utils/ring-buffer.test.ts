@@ -471,6 +471,7 @@ describe('RingBuffer - capacity 1', () => {
     rb.clear()
     expect(rb.size).toBe(0)
 
+
   it('empty buffer get undefined', () => {
     const rb = new RingBuffer<number>(5)
     expect(rb.get(0)).toBeUndefined()
@@ -487,5 +488,4 @@ describe('RingBuffer - capacity 1', () => {
     const rb = RingBuffer.fromArray([1, 2, 3])
     expect(rb).toBeDefined()
   })
-
   })

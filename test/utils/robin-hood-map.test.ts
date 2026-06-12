@@ -459,6 +459,7 @@ describe('RobinHopMap', () => {
     expect(map.size).toBe(1)
   })
 
+
   it('get missing returns undefined', () => {
     const m = new RobinHopMap<string, number>()
     expect(m.get('missing')).toBeUndefined()
@@ -474,5 +475,4 @@ describe('RobinHopMap', () => {
     const m = new RobinHopMap<string, number>()
     expect(m.has('missing')).toBe(false)
   })
-
 })

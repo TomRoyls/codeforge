@@ -460,6 +460,7 @@ describe('ReservoirSampler', () => {
     rs.add(3)
     expect(rs.totalSeen).toBe(3)
 
+
   it('empty sampler toArray empty', () => {
     const rs = new ReservoirSampler<number>(5)
     expect(rs.toArray()).toEqual([])
@@ -478,5 +479,4 @@ describe('ReservoirSampler', () => {
     rs.reset()
     expect(rs.toArray()).toEqual([])
   })
-
   })

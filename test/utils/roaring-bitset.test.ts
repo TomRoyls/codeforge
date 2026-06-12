@@ -404,6 +404,7 @@ describe('RoaringBitSet', () => {
     expect(rb.has(1)).toBe(true)
     expect(rb.has(2)).toBe(false)
 
+
   it('new bitset has nothing', () => {
     const bs = new RoaringBitSet()
     expect(bs.has(0)).toBe(false)
@@ -421,5 +422,4 @@ describe('RoaringBitSet', () => {
     bs.delete(5)
     expect(bs.has(5)).toBe(false)
   })
-
   })

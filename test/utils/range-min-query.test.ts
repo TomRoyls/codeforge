@@ -352,6 +352,7 @@ describe('RangeMinQuery', () => {
     const rmq = new RangeMinQuery([3, 1, 4, 1, 5])
     expect(rmq.query(1, 3)).toBe(1)
 
+
   it('single element query', () => {
     const rmq = new RangeMinQuery([5])
     expect(rmq.query(0, 0)).toBe(5)
@@ -366,5 +367,4 @@ describe('RangeMinQuery', () => {
     const rmq = new RangeMinQuery([5, 3, 1, 4, 2])
     expect(rmq.query(0, 4)).toBe(1)
   })
-
   })

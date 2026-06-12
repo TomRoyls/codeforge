@@ -470,6 +470,7 @@ describe('RedBlackTree height', () => {
     tree.insert(3, 'c')
     expect(tree.size).toBe(3)
 
+
   it('empty tree size is 0', () => {
     const tree = new RedBlackTree<number, string>()
     expect(tree.size).toBe(0)
@@ -486,5 +487,4 @@ describe('RedBlackTree height', () => {
     tree.insert(1, 'a')
     expect(tree.contains(1)).toBe(true)
   })
-
   })

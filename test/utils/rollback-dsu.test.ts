@@ -437,6 +437,7 @@ describe('RollbackDSU', () => {
     expect(dsu.connected(2, 3)).toBe(true)
     expect(dsu.connected(0, 2)).toBe(false)
 
+
   it('single element DSU', () => {
     const dsu = new RollbackDSU(1)
     expect(dsu.find(0)).toBe(0)
@@ -452,5 +453,4 @@ describe('RollbackDSU', () => {
     const dsu = new RollbackDSU(3)
     expect(typeof dsu.snapshot()).toBe('number')
   })
-
   })

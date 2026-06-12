@@ -479,6 +479,7 @@ describe('RingBufferQueue', () => {
     const rbq = new RingBufferQueue<number>()
     expect(rbq.size).toBe(0)
 
+
   it('empty queue peek undefined', () => {
     const q = new RingBufferQueue<number>()
     expect(q.peek()).toBeUndefined()
@@ -496,5 +497,4 @@ describe('RingBufferQueue', () => {
     q.enqueue(2)
     expect(q.peekLast()).toBe(2)
   })
-
   })

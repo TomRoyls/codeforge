@@ -598,6 +598,7 @@ describe('retryAsync - edge cases', () => {
     const result = await retryAsync(() => Promise.reject(new Error('always')), { maxRetries: 2, delayMs: 10 })
     expect(result.isErr()).toBe(true)
 
+
   it('retryAsync is a function', () => {
     expect(typeof retryAsync).toBe('function')
   })
@@ -611,5 +612,4 @@ describe('retryAsync - edge cases', () => {
     const result = await retryAsync(() => Promise.resolve('ok'), { maxRetries: 0 })
     expect(result).toBeDefined()
   })
-
   })

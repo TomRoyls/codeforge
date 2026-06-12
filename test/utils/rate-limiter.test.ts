@@ -380,6 +380,7 @@ describe('RateLimiter', () => {
     expect(rl.tryAcquire(3)).toBe(true)
     expect(rl.tryAcquire(3)).toBe(false)
 
+
   it('tryAcquire returns boolean', () => {
     const rl = new RateLimiter({ maxTokens: 10, refillRate: 1 })
     expect(typeof rl.tryAcquire()).toBe('boolean')
@@ -395,5 +396,4 @@ describe('RateLimiter', () => {
     rl.reset()
     expect(rl.getAvailableTokens()).toBe(10)
   })
-
   })
