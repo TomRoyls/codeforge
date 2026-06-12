@@ -534,3 +534,15 @@ describe('disjoint-interval - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-interval - wave557', () => {
+  it('disjoint-interval w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

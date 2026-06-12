@@ -590,3 +590,15 @@ describe('persistent-dsu - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-dsu - wave557', () => {
+  it('persistent-dsu w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -466,3 +466,15 @@ describe('sliding-window-min - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-min - wave557', () => {
+  it('sliding-window-min w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-min w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-min w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

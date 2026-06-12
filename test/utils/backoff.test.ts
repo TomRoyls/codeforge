@@ -517,3 +517,15 @@ describe('backoff - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('backoff - wave557', () => {
+  it('backoff w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

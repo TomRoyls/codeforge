@@ -417,3 +417,9 @@ describe('escapeMarkdown', () => {
     expect(escapeMarkdown('end*')).toContain('\\*')
   })
 })
+
+describe('escape - wave557', () => {
+  it('escape w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+})

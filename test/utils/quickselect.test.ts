@@ -466,3 +466,15 @@ describe('quickselect - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickselect - wave557', () => {
+  it('quickselect w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

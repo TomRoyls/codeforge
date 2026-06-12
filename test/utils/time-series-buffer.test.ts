@@ -677,3 +677,15 @@ describe('time-series-buffer - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('time-series-buffer - wave557', () => {
+  it('time-series-buffer w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

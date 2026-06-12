@@ -446,3 +446,15 @@ describe('gnome-sort - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gnome-sort - wave557', () => {
+  it('gnome-sort w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

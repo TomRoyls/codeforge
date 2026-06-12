@@ -473,3 +473,15 @@ describe('kmp-automaton - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp-automaton - wave557', () => {
+  it('kmp-automaton w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

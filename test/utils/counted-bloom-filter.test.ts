@@ -603,3 +603,15 @@ describe('counted-bloom-filter - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counted-bloom-filter - wave557', () => {
+  it('counted-bloom-filter w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

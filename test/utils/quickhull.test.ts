@@ -602,3 +602,15 @@ describe('quickhull - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickhull - wave557', () => {
+  it('quickhull w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

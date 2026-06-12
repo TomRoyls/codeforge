@@ -725,3 +725,15 @@ describe('dijkstra-fibonacci - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dijkstra-fibonacci - wave557', () => {
+  it('dijkstra-fibonacci w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

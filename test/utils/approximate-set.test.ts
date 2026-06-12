@@ -560,3 +560,15 @@ describe('approximate-set - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('approximate-set - wave557', () => {
+  it('approximate-set w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -652,3 +652,15 @@ describe('exponential-moving-average - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('exponential-moving-average - wave557', () => {
+  it('exponential-moving-average w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

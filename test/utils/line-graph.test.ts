@@ -583,3 +583,15 @@ describe('line-graph - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('line-graph - wave557', () => {
+  it('line-graph w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

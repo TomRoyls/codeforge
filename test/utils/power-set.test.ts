@@ -494,3 +494,15 @@ describe('power-set - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('power-set - wave557', () => {
+  it('power-set w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

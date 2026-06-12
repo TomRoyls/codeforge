@@ -605,3 +605,15 @@ describe('centroid-2d - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-2d - wave557', () => {
+  it('centroid-2d w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-2d w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-2d w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

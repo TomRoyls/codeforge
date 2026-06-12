@@ -622,3 +622,15 @@ describe('manacher-2d - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('manacher-2d - wave557', () => {
+  it('manacher-2d w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher-2d w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher-2d w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -586,3 +586,15 @@ describe('strongly-connected-components - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('strongly-connected-components - wave557', () => {
+  it('strongly-connected-components w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

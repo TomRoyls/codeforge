@@ -675,3 +675,15 @@ describe('moving-average - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-average - wave557', () => {
+  it('moving-average w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

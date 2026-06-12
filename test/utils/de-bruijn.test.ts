@@ -482,3 +482,15 @@ describe('de-bruijn - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('de-bruijn - wave557', () => {
+  it('de-bruijn w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

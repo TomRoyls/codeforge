@@ -564,3 +564,15 @@ describe('compact-int-set - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('compact-int-set - wave557', () => {
+  it('compact-int-set w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

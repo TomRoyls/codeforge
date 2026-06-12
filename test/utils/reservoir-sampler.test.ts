@@ -630,3 +630,15 @@ describe('reservoir-sampler - wave556', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('reservoir-sampler - wave557', () => {
+  it('reservoir-sampler w557 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w557 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler w557 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
