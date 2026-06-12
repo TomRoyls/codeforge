@@ -485,3 +485,21 @@ describe('RollingHash edge cases', () => {
     expect(cloned).toBeDefined()
   })
 })
+
+  it('isFull when window filled', () => {
+    const rh = new RollingHash(3)
+    rh.push(1)
+    rh.push(2)
+    rh.push(3)
+    expect(rh.isFull).toBe(true)
+  })
+
+  it('windowSize returns configured size', () => {
+    const rh = new RollingHash(5)
+    expect(rh.windowSize).toBe(5)
+  })
+
+  it('hashString returns number', () => {
+    const hash = RollingHash.hashString('hello')
+    expect(typeof hash).toBe('number')
+  })

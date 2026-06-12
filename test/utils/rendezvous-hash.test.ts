@@ -457,3 +457,22 @@ describe('RendezvousHash - with complex values', () => {
     expect(selected[0]).toBe('A')
   })
 })
+
+  it('size returns node count', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'node-a')
+    rh.add('b', 'node-b')
+    expect(rh.size).toBe(2)
+  })
+
+  it('remove deletes a node', () => {
+    const rh = new RendezvousHash<string>()
+    rh.add('a', 'node-a')
+    rh.remove('a')
+    expect(rh.has('a')).toBe(false)
+  })
+
+  it('has returns false for missing', () => {
+    const rh = new RendezvousHash<string>()
+    expect(rh.has('missing')).toBe(false)
+  })

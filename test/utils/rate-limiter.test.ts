@@ -363,3 +363,20 @@ describe('RateLimiter', () => {
     expect(stats).toBeDefined()
   })
 })
+
+  it('tryAcquire returns true when tokens available', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.tryAcquire()).toBe(true)
+  })
+
+  it('tryAcquire returns false when exhausted', () => {
+    const rl = new RateLimiter({ maxTokens: 1, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.tryAcquire()).toBe(true)
+    expect(rl.tryAcquire()).toBe(false)
+  })
+
+  it('tryAcquire respects count parameter', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.tryAcquire(3)).toBe(true)
+    expect(rl.tryAcquire(3)).toBe(false)
+  })

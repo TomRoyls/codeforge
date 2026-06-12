@@ -391,3 +391,19 @@ describe('LazySegmentTree', () => {
     expect(tree.rangeQuery(0, 3)).toBe(0)
   })
 })
+
+  it('pointQuery returns original value', () => {
+    const st = new LazySegmentTree([1, 2, 3, 4])
+    expect(st.pointQuery(2)).toBe(3)
+  })
+
+  it('pointUpdate adds value', () => {
+    const st = new LazySegmentTree([1, 2, 3, 4])
+    st.pointUpdate(0, 5)
+    expect(st.pointQuery(0)).toBe(6)
+  })
+
+  it('length returns data length', () => {
+    const st = new LazySegmentTree([1, 2, 3, 4, 5])
+    expect(st.length).toBe(5)
+  })

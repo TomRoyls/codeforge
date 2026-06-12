@@ -447,3 +447,24 @@ describe('SkipListMap', () => {
     expect(sl.isEmpty()).toBe(false)
   })
 })
+  it('has returns false for missing', () => {
+    const sl = new SkipListMap<number, string>()
+    expect(sl.has(99)).toBe(false)
+  })
+
+  it('delete removes entry', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'a')
+    sl.set(2, 'b')
+    expect(sl.delete(1)).toBe(true)
+    expect(sl.has(1)).toBe(false)
+    expect(sl.size).toBe(1)
+  })
+
+  it('set overwrites existing key', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'a')
+    sl.set(1, 'b')
+    expect(sl.get(1)).toBe('b')
+    expect(sl.size).toBe(1)
+  })

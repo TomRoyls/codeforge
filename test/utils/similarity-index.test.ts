@@ -436,3 +436,21 @@ describe('SimilarityIndex', () => {
     expect(index.size).toBe(0)
   })
 })
+  it('size returns entry count', () => {
+    const si = new SimilarityIndex<string>(64)
+    si.add('a', 'item-a', ['x', 'y'])
+    si.add('b', 'item-b', ['z'])
+    expect(si.size).toBe(2)
+  })
+
+  it('query returns empty for no matches', () => {
+    const si = new SimilarityIndex<string>(64)
+    si.add('a', 'item-a', ['x'])
+    expect(si.query(['z'], 0.5)).toEqual([])
+  })
+
+  it('findSimilar with no other entries returns empty', () => {
+    const si = new SimilarityIndex<string>(64)
+    si.add('a', 'item-a', ['x', 'y'])
+    expect(si.findSimilar('a', 0.5)).toEqual([])
+  })

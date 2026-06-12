@@ -354,3 +354,24 @@ describe('SegmentTree - multiple updates', () => {
     expect(st.query(5, 10)).toBe(Infinity)
   })
 })
+
+  it('query single element', () => {
+    const st = new SegmentTree(5, (a, b) => a + b, 0)
+    st.update(2, 4)
+    expect(st.query(2, 2)).toBe(4)
+  })
+
+  it('update changes value', () => {
+    const st = new SegmentTree(3, (a, b) => a + b, 0)
+    st.update(0, 5)
+    st.update(1, 10)
+    expect(st.query(0, 1)).toBe(15)
+  })
+
+  it('toArray returns data', () => {
+    const st = new SegmentTree(3, (a, b) => a + b, 0)
+    st.update(0, 5)
+    st.update(1, 6)
+    st.update(2, 7)
+    expect(st.toArray()).toEqual([5, 6, 7])
+  })

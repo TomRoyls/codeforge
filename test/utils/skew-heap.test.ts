@@ -515,3 +515,28 @@ describe('SkewHeap', () => {
     expect(heap.pop()!.name).toBe('Alice')
   })
 })
+  it('peek returns min without removing', () => {
+    const heap = new SkewHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    heap.push(2)
+    expect(heap.peek()).toBe(1)
+    expect(heap.size).toBe(3)
+  })
+
+  it('isEmpty on new heap', () => {
+    const heap = new SkewHeap<number>()
+    expect(heap.isEmpty).toBe(true)
+  })
+
+  it('merge combines two heaps', () => {
+    const h1 = new SkewHeap<number>()
+    h1.push(1)
+    h1.push(3)
+    const h2 = new SkewHeap<number>()
+    h2.push(2)
+    h2.push(4)
+    const merged = h1.merge(h2)
+    expect(merged.size).toBe(4)
+    expect(merged.pop()).toBe(1)
+  })

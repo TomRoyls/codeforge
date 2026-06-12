@@ -521,3 +521,25 @@ describe('SCCTarjan', () => {
     expect(result.length).toBe(4)
   })
 })
+  it('single node has one component', () => {
+    const scc = new SCCTarjan(1)
+    const result = scc.solve()
+    expect(result.length).toBe(1)
+    expect(result[0]).toEqual([0])
+  })
+
+  it('disconnected nodes each form component', () => {
+    const scc = new SCCTarjan(3)
+    const result = scc.solve()
+    expect(result.length).toBe(3)
+  })
+
+  it('cycle forms single component', () => {
+    const scc = new SCCTarjan(3)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    scc.addEdge(2, 0)
+    const result = scc.solve()
+    expect(result.length).toBe(1)
+    expect(result[0].sort()).toEqual([0, 1, 2])
+  })

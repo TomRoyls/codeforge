@@ -449,3 +449,25 @@ describe('RingBuffer - capacity 1', () => {
     expect(rb.isEmpty()).toBe(true)
   })
 })
+
+  it('toArray returns current buffer', () => {
+    const rb = new RingBuffer<number>({ capacity: 3 })
+    rb.push(1)
+    rb.push(2)
+    expect(rb.toArray()).toEqual([1, 2])
+  })
+
+  it('isFull returns true when full', () => {
+    const rb = new RingBuffer<number>({ capacity: 2 })
+    rb.push(1)
+    rb.push(2)
+    expect(rb.isFull()).toBe(true)
+  })
+
+  it('clear empties buffer', () => {
+    const rb = new RingBuffer<number>({ capacity: 5 })
+    rb.push(1)
+    rb.push(2)
+    rb.clear()
+    expect(rb.size).toBe(0)
+  })

@@ -431,3 +431,22 @@ describe('SegmentTree2D', () => {
     expect(st.query(0, 0, 0, 2)).toBe(8)
   })
 })
+
+  it('query empty returns zero', () => {
+    const st = new SegmentTree2D(3, 3)
+    expect(st.query(0, 0, 2, 2)).toBe(0)
+  })
+
+  it('update and query single cell', () => {
+    const st = new SegmentTree2D(3, 3)
+    st.update(1, 1, 5)
+    expect(st.query(1, 1, 1, 1)).toBe(5)
+  })
+
+  it('update multiple cells sums correctly', () => {
+    const st = new SegmentTree2D(3, 3)
+    st.update(0, 0, 1)
+    st.update(1, 1, 2)
+    st.update(2, 2, 3)
+    expect(st.query(0, 0, 2, 2)).toBe(6)
+  })

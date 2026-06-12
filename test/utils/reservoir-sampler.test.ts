@@ -438,3 +438,25 @@ describe('ReservoirSampler', () => {
     expect(sampler.totalSeen).toBe(0)
   })
 })
+  it('isFull when reservoir full', () => {
+    const rs = new ReservoirSampler<number>(2)
+    rs.add(1)
+    rs.add(2)
+    rs.add(3)
+    expect(rs.isFull).toBe(true)
+  })
+
+  it('sample returns array', () => {
+    const rs = new ReservoirSampler<number>(5)
+    rs.add(1)
+    rs.add(2)
+    expect(rs.sample.length).toBeLessThanOrEqual(5)
+  })
+
+  it('totalSeen tracks count', () => {
+    const rs = new ReservoirSampler<number>(5)
+    rs.add(1)
+    rs.add(2)
+    rs.add(3)
+    expect(rs.totalSeen).toBe(3)
+  })

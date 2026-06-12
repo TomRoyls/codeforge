@@ -309,3 +309,20 @@ describe('Shuffle', () => {
     expect(() => Shuffle.weightedSample([1, 2], [1, 1], 3)).toThrow()
   })
 })
+
+  it('fisherYates preserves elements', () => {
+    const arr = [1, 2, 3, 4, 5]
+    const shuffled = Shuffle.fisherYates([...arr])
+    expect(shuffled.sort()).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('inPlace returns same reference', () => {
+    const arr = [1, 2, 3]
+    const result = Shuffle.inPlace(arr)
+    expect(result).toBe(arr)
+  })
+
+  it('isShuffled validates same elements', () => {
+    const arr = [1, 2, 3, 4, 5]
+    expect(Shuffle.isShuffled(arr, [5, 4, 3, 2, 1])).toBe(true)
+  })

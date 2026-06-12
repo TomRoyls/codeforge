@@ -581,3 +581,20 @@ describe('retryAsync - edge cases', () => {
     expect(r1.isOk() || r2.isOk()).toBe(true)
   })
 })
+
+  it('retryAsync resolves on first try', async () => {
+    const result = await retryAsync(() => Promise.resolve(42), { maxRetries: 3, delayMs: 10 })
+    expect(result.isOk()).toBe(true)
+  })
+
+  it('retryAsync retries on failure then succeeds', async () => {
+    let attempts = 0
+    const fn = () => { attempts++; if (attempts < 3) return Promise.reject(new Error('fail')); return Promise.resolve('ok') }
+    const result = await retryAsync(fn, { maxRetries: 5, delayMs: 10 })
+    expect(result.isOk()).toBe(true)
+  })
+
+  it('retryAsync returns error after max retries', async () => {
+    const result = await retryAsync(() => Promise.reject(new Error('always')), { maxRetries: 2, delayMs: 10 })
+    expect(result.isErr()).toBe(true)
+  })

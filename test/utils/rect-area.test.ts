@@ -307,3 +307,18 @@ describe('RectArea', () => {
     expect(RectArea.unionArea([r])).toBe(100)
   })
 })
+
+  it('area of unit rect is 1', () => {
+    expect(RectArea.area({ x1: 0, y1: 0, x2: 1, y2: 1 })).toBe(1)
+  })
+
+  it('intersection of non-overlapping is null', () => {
+    const r1 = { x1: 0, y1: 0, x2: 1, y2: 1 }
+    const r2 = { x1: 2, y1: 2, x2: 3, y2: 3 }
+    expect(RectArea.intersection(r1, r2)).toBeNull()
+  })
+
+  it('unionArea of single rect is its area', () => {
+    const rects = [{ x1: 0, y1: 0, x2: 3, y2: 4 }]
+    expect(RectArea.unionArea(rects)).toBe(12)
+  })

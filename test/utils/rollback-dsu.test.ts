@@ -419,3 +419,21 @@ describe('RollbackDSU', () => {
     expect(dsu.componentSize(0)).toBe(2)
   })
 })
+  it('snapshot returns stack depth', () => {
+    const dsu = new RollbackDSU(3)
+    const snap = dsu.snapshot()
+    expect(typeof snap).toBe('number')
+  })
+
+  it('componentSize returns correct size', () => {
+    const dsu = new RollbackDSU(3)
+    dsu.union(0, 1)
+    expect(dsu.componentSize(0)).toBe(2)
+  })
+
+  it('fromPairs creates connected components', () => {
+    const dsu = RollbackDSU.fromPairs(4, [[0, 1], [2, 3]])
+    expect(dsu.connected(0, 1)).toBe(true)
+    expect(dsu.connected(2, 3)).toBe(true)
+    expect(dsu.connected(0, 2)).toBe(false)
+  })

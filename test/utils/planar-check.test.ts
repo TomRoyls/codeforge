@@ -417,3 +417,21 @@ describe('PlanarCheck', () => {
     expect(pc.isPlanar()).toBe(true)
   })
 })
+  it('single node is planar', () => {
+    const pc = new PlanarCheck(1)
+    expect(pc.isPlanar()).toBe(true)
+  })
+
+  it('two nodes with edge is planar', () => {
+    const pc = new PlanarCheck(2)
+    pc.addEdge(0, 1)
+    expect(pc.isPlanar()).toBe(true)
+  })
+
+  it('triangle is planar', () => {
+    const pc = new PlanarCheck(3)
+    pc.addEdge(0, 1)
+    pc.addEdge(1, 2)
+    pc.addEdge(2, 0)
+    expect(pc.isPlanar()).toBe(true)
+  })

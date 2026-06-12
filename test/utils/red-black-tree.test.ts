@@ -448,3 +448,25 @@ describe('RedBlackTree height', () => {
     expect(root).toHaveProperty('color')
   })
 })
+
+  it('contains returns false for missing key', () => {
+    const tree = new RedBlackTree<number, string>()
+    expect(tree.contains(99)).toBe(false)
+  })
+
+  it('delete removes a key', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.delete(1)
+    expect(tree.contains(1)).toBe(false)
+    expect(tree.contains(2)).toBe(true)
+  })
+
+  it('size tracks insertions', () => {
+    const tree = new RedBlackTree<number, string>()
+    tree.insert(1, 'a')
+    tree.insert(2, 'b')
+    tree.insert(3, 'c')
+    expect(tree.size).toBe(3)
+  })

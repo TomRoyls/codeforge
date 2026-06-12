@@ -247,3 +247,17 @@ describe('PigeonholeSort', () => {
     expect(PigeonholeSort.sort([42])).toEqual([42])
   })
 })
+
+  it('sortInPlace modifies array', () => {
+    const arr = [3, 1, 2]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+  })
+
+  it('isStable returns boolean', () => {
+    expect(typeof PigeonholeSort.isStable()).toBe('boolean')
+  })
+
+  it('sort empty array', () => {
+    expect(PigeonholeSort.sort([])).toEqual([])
+  })

@@ -546,3 +546,26 @@ describe('PriorityQueue - size consistency', () => {
     expect(arr.length).toBe(2)
   })
 })
+
+  it('toArray returns elements', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.toArray().sort()).toEqual([1, 2, 3])
+  })
+
+  it('peek on empty returns undefined', () => {
+    const pq = new PriorityQueue<number>()
+    expect(pq.peek()).toBeUndefined()
+  })
+
+  it('dequeue all returns in order', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(5)
+    pq.enqueue(1)
+    pq.enqueue(3)
+    const result: number[] = []
+    while (pq.size > 0) result.push(pq.dequeue()!)
+    expect(result).toEqual([1, 3, 5])
+  })

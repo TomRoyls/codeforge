@@ -376,3 +376,22 @@ describe('RangeUpdatePointQuery', () => {
     expect(rq.get(1)).toBe(5)
   })
 })
+
+  it('addPoint adds value to index', () => {
+    const rupq = new RangeUpdatePointQuery(5)
+    rupq.addPoint(2, 10)
+    expect(rupq.get(2)).toBe(10)
+  })
+
+  it('reset clears all values', () => {
+    const rupq = new RangeUpdatePointQuery(5)
+    rupq.addRange(0, 4, 5)
+    rupq.reset()
+    expect(rupq.get(0)).toBe(0)
+  })
+
+  it('build returns array', () => {
+    const rupq = new RangeUpdatePointQuery(3)
+    rupq.addRange(0, 2, 1)
+    expect(rupq.build()).toEqual([1, 1, 1])
+  })

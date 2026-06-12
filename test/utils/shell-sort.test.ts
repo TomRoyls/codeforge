@@ -276,3 +276,19 @@ describe('ShellSort', () => {
     expect(arr).toEqual([3, 5])
   })
 })
+
+  it('sort empty array', () => {
+    expect(ShellSort.sort([])).toEqual([])
+  })
+
+  it('sortWithComparator sorts descending', () => {
+    const arr = [3, 1, 4, 1, 5]
+    const result = ShellSort.sortWithComparator(arr, (a, b) => b - a)
+    expect(result).toEqual([5, 4, 3, 1, 1])
+  })
+
+  it('sortInPlace modifies array', () => {
+    const arr = [5, 2, 4, 1, 3]
+    ShellSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
