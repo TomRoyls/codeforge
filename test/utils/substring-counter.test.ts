@@ -244,4 +244,37 @@ describe('SubstringCounter', () => {
     expect(sc.contains('ab')).toBe(true)
     expect(sc.contains('xyz')).toBe(false)
   })
+
+  it('should count char occurrences', () => {
+    const sc = new SubstringCounter('hello world')
+    expect(sc.countChar('l')).toBe(3)
+  })
+
+  it('should count non-overlapping', () => {
+    const sc = new SubstringCounter('aaa')
+    expect(sc.countNonOverlapping('aa')).toBe(1)
+  })
+
+  it('should count naive (overlapping)', () => {
+    const sc = new SubstringCounter('aaa')
+    expect(sc.countNaive('aa')).toBe(2)
+  })
+
+  it('should return 0 for not found', () => {
+    const sc = new SubstringCounter('hello')
+    expect(sc.countNaive('xyz')).toBe(0)
+  })
+
+  it('should count all of multiple substrings', () => {
+    const sc = new SubstringCounter('abcabc')
+    const counts = sc.countAllOf(['ab', 'bc'])
+    expect(counts.get('ab')).toBe(2)
+    expect(counts.get('bc')).toBe(2)
+  })
+
+  it('should handle empty text', () => {
+    const sc = new SubstringCounter('')
+    expect(sc.countNaive('a')).toBe(0)
+    expect(sc.contains('a')).toBe(false)
+  })
 })

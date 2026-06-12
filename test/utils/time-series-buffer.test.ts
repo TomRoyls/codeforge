@@ -450,4 +450,46 @@ describe('TimeSeriesBuffer', () => {
     expect(tsb1.size).toBe(3)
     expect(tsb1.earliest()?.timestamp).toBe(300)
   })
+
+  it('should push and retrieve entries', () => {
+    const tsb = new TimeSeriesBuffer(10)
+    tsb.push(100, 5)
+    tsb.push(200, 10)
+    expect(tsb.size).toBe(2)
+    expect(tsb.latest()?.value).toBe(10)
+    expect(tsb.earliest()?.value).toBe(5)
+  })
+
+  it('should query range', () => {
+    const tsb = new TimeSeriesBuffer(10)
+    tsb.push(100, 1)
+    tsb.push(200, 2)
+    tsb.push(300, 3)
+    const result = tsb.queryRange(150, 250)
+    expect(result).toHaveLength(1)
+    expect(result[0]!.value).toBe(2)
+  })
+
+  it('should enforce maxSize', () => {
+    const tsb = new TimeSeriesBuffer(2)
+    tsb.push(100, 1)
+    tsb.push(200, 2)
+    tsb.push(300, 3)
+    expect(tsb.size).toBe(2)
+    expect(tsb.earliest()?.timestamp).toBe(200)
+  })
+
+  it('should handle empty buffer', () => {
+    const tsb = new TimeSeriesBuffer(10)
+    expect(tsb.size).toBe(0)
+    expect(tsb.earliest()).toBeUndefined()
+    expect(tsb.latest()).toBeUndefined()
+  })
+
+  it('should return all entries', () => {
+    const tsb = new TimeSeriesBuffer(10)
+    tsb.push(100, 1)
+    tsb.push(200, 2)
+    expect(tsb.queryRange(0, 300)).toHaveLength(2)
+  })
 })

@@ -299,4 +299,61 @@ describe('PermutationIterator', () => {
       }
     }
   })
+
+  it('should generate all permutations of 3', () => {
+    const iter = new PermutationIterator(3)
+    const perms: number[][] = []
+    let result = iter.next()
+    while (!result.done) {
+      perms.push(result.value)
+      result = iter.next()
+    }
+    expect(perms.length).toBe(6)
+  })
+
+  it('should generate permutations of 2', () => {
+    const iter = new PermutationIterator(2)
+    const perms: number[][] = []
+    let result = iter.next()
+    while (!result.done) {
+      perms.push(result.value)
+      result = iter.next()
+    }
+    expect(perms).toEqual([[0, 1], [1, 0]])
+  })
+
+  it('should return done immediately for 0', () => {
+    const iter = new PermutationIterator(0)
+    expect(iter.next().done).toBe(true)
+  })
+
+  it('should generate 1 permutation for n=1', () => {
+    const iter = new PermutationIterator(1)
+    expect(iter.next().value).toEqual([0])
+    expect(iter.next().done).toBe(true)
+  })
+
+  it('should generate unique permutations', () => {
+    const iter = new PermutationIterator(4)
+    const seen = new Set<string>()
+    let result = iter.next()
+    while (!result.done) {
+      const key = result.value.join(',')
+      expect(seen.has(key)).toBe(false)
+      seen.add(key)
+      result = iter.next()
+    }
+    expect(seen.size).toBe(24)
+  })
+
+  it('should produce 120 permutations for n=5', () => {
+    const iter = new PermutationIterator(5)
+    let count = 0
+    let result = iter.next()
+    while (!result.done) {
+      count++
+      result = iter.next()
+    }
+    expect(count).toBe(120)
+  })
 })

@@ -401,4 +401,55 @@ describe('KruskalMST', () => {
     expect(mstEdges).toEqual([])
     expect(totalWeight).toBe(0)
   })
+
+  it('should find MST for a simple graph', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 2 },
+      { from: 0, to: 2, weight: 5 },
+    ]
+    const result = KruskalMST.findMST(edges, 3)
+    expect(result.totalWeight).toBe(3)
+    expect(result.edges).toHaveLength(2)
+  })
+
+  it('should check if graph is connected', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 2 },
+    ]
+    expect(KruskalMST.isConnected(edges, 3)).toBe(true)
+  })
+
+  it('should detect disconnected graph', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+    ]
+    expect(KruskalMST.isConnected(edges, 3)).toBe(false)
+  })
+
+  it('should handle single node', () => {
+    expect(KruskalMST.isConnected([], 1)).toBe(true)
+  })
+
+  it('should handle equal weight edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 1 },
+      { from: 0, to: 2, weight: 1 },
+    ]
+    const result = KruskalMST.findMST(edges, 3)
+    expect(result.totalWeight).toBe(2)
+    expect(result.edges).toHaveLength(2)
+  })
+
+  it('should ignore self-loops in MST', () => {
+    const edges = [
+      { from: 0, to: 0, weight: 1 },
+      { from: 0, to: 1, weight: 2 },
+    ]
+    const result = KruskalMST.findMST(edges, 2)
+    expect(result.edges).toHaveLength(1)
+    expect(result.totalWeight).toBe(2)
+  })
 })

@@ -445,4 +445,45 @@ describe('ZigguratNormal', () => {
       expect(Number.isFinite(samples[i])).toBe(true)
     }
   })
+
+  it('should generate sample', () => {
+    const zn = new ZigguratNormal()
+    const val = zn.sample()
+    expect(typeof val).toBe('number')
+    expect(isFinite(val)).toBe(true)
+  })
+
+  it('should generate multiple samples', () => {
+    const zn = new ZigguratNormal()
+    const samples = zn.sampleN(100)
+    expect(samples.length).toBe(100)
+  })
+
+  it('should use custom RNG', () => {
+    let callCount = 0
+    const zn = new ZigguratNormal(() => { callCount++; return 0.5 })
+    zn.sample()
+    expect(callCount).toBeGreaterThan(0)
+  })
+
+  it('should produce roughly zero mean', () => {
+    const zn = new ZigguratNormal()
+    const samples = zn.sampleN(1000)
+    let sum = 0
+    for (let i = 0; i < samples.length; i++) sum += samples[i]!
+    const mean = sum / samples.length
+    expect(Math.abs(mean)).toBeLessThan(0.2)
+  })
+
+  it('should produce finite values', () => {
+    const zn = new ZigguratNormal()
+    for (let i = 0; i < 100; i++) {
+      expect(isFinite(zn.sample())).toBe(true)
+    }
+  })
+
+  it('should handle sampleN with zero', () => {
+    const zn = new ZigguratNormal()
+    expect(zn.sampleN(0)).toHaveLength(0)
+  })
 })

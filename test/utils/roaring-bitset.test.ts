@@ -333,4 +333,64 @@ describe('RoaringBitSet', () => {
     const bs = RoaringBitSet.fromRange(10, 5)
     expect(bs.isEmpty).toBe(true)
   })
+
+  it('should report min and max', () => {
+    const bs = new RoaringBitSet()
+    bs.add(10)
+    bs.add(50)
+    bs.add(100)
+    expect(bs.min).toBe(10)
+    expect(bs.max).toBe(100)
+  })
+
+  it('should convert to array', () => {
+    const bs = new RoaringBitSet()
+    bs.add(3)
+    bs.add(1)
+    bs.add(5)
+    expect(bs.toArray()).toEqual([1, 3, 5])
+  })
+
+  it('should check has correctly', () => {
+    const bs = new RoaringBitSet()
+    bs.add(42)
+    expect(bs.has(42)).toBe(true)
+    expect(bs.has(99)).toBe(false)
+  })
+
+  it('should remove elements', () => {
+    const bs = new RoaringBitSet()
+    bs.add(10)
+    bs.delete(10)
+    expect(bs.has(10)).toBe(false)
+    expect(bs.size).toBe(0)
+  })
+
+  it('should compute union', () => {
+    const bs1 = new RoaringBitSet()
+    bs1.add(1)
+    bs1.add(2)
+    const bs2 = new RoaringBitSet()
+    bs2.add(2)
+    bs2.add(3)
+    const union = RoaringBitSet.from([...bs1.toArray(), ...bs2.toArray()])
+    expect(union.has(1)).toBe(true)
+    expect(union.has(2)).toBe(true)
+    expect(union.has(3)).toBe(true)
+  })
+
+  it('should compute intersection', () => {
+    const bs1 = new RoaringBitSet()
+    bs1.add(1)
+    bs1.add(2)
+    bs1.add(3)
+    const bs2 = new RoaringBitSet()
+    bs2.add(2)
+    bs2.add(3)
+    bs2.add(4)
+    const inter = RoaringBitSet.from(bs1.toArray().filter(x => bs2.has(x)))
+    expect(inter.has(1)).toBe(false)
+    expect(inter.has(2)).toBe(true)
+    expect(inter.has(3)).toBe(true)
+  })
 })

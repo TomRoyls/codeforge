@@ -363,4 +363,36 @@ describe('HyperLogLog - edge cases', () => {
     hll.add(longString)
     expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
+
+  it('should handle empty cardinality', () => {
+    const hll = new HyperLogLog(8)
+    expect(hll.count()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('should estimate cardinality for repeated values', () => {
+    const hll = new HyperLogLog(10)
+    for (let i = 0; i < 1000; i++) hll.add('same')
+    expect(hll.count()).toBeLessThan(10)
+  })
+
+  it('should report precision', () => {
+    const hll = new HyperLogLog(12)
+    expect(hll.precision).toBe(12)
+  })
+
+  it('should merge two sketches', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = new HyperLogLog(8)
+    for (let i = 0; i < 100; i++) hll1.add(`a${i}`)
+    for (let i = 0; i < 100; i++) hll2.add(`b${i}`)
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThan(100)
+  })
+
+  it('should reset the sketch', () => {
+    const hll = new HyperLogLog(8)
+    hll.add('test')
+    hll.reset()
+    expect(hll.count()).toBe(0)
+  })
 })

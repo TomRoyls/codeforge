@@ -239,4 +239,34 @@ describe('OddEvenSort', () => {
     OddEvenSort.sortInPlace(arr)
     expect(arr).toEqual([1.1, 2.5, 3.7])
   })
+
+  it('should sort in place', () => {
+    const arr = [5, 3, 1, 4, 2]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('should handle already sorted array', () => {
+    expect(OddEvenSort.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('should handle reverse sorted array', () => {
+    expect(OddEvenSort.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('should handle array with duplicates', () => {
+    expect(OddEvenSort.sort([3, 1, 2, 1, 3])).toEqual([1, 1, 2, 3, 3])
+  })
+
+  it('should sort with custom comparator', () => {
+    const result = OddEvenSort.sortWithComparator(
+      ['banana', 'apple', 'cherry'],
+      (a, b) => a.localeCompare(b)
+    )
+    expect(result).toEqual(['apple', 'banana', 'cherry'])
+  })
+
+  it('should handle empty array', () => {
+    expect(OddEvenSort.sort([])).toEqual([])
+  })
 })

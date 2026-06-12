@@ -424,4 +424,54 @@ describe('memoize - edge cases', () => {
     fn({ x: 1 })
     expect(calls).toBe(1)
   })
+
+  it('should clear memoized cache', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x * 2 })
+    fn(5)
+    fn(5)
+    expect(calls).toBe(1)
+    clearMemoized(fn)
+    fn(5)
+    expect(calls).toBe(2)
+  })
+
+  it('should memoize with custom key function', () => {
+    let calls = 0
+    const fn = memoize(
+      (a: number, b: number) => { calls++; return a + b },
+      { keyFn: (args) => JSON.stringify(args) }
+    )
+    fn(1, 2)
+    fn(1, 2)
+    expect(calls).toBe(1)
+  })
+
+  it('should handle multiple arguments', () => {
+    let calls = 0
+    const fn = memoize((a: number, b: number, c: number) => { calls++; return a + b + c })
+    expect(fn(1, 2, 3)).toBe(6)
+    fn(1, 2, 3)
+    expect(calls).toBe(1)
+  })
+
+  it('should cache different results for different args', () => {
+    const fn = memoize((x: number) => x * 10)
+    expect(fn(1)).toBe(10)
+    expect(fn(2)).toBe(20)
+  })
+
+  it('should preserve this context', () => {
+    const obj = { multiplier: 3 }
+    const fn = memoize(function(this: typeof obj, x: number) { return x * this.multiplier })
+    expect(fn.call(obj, 5)).toBe(15)
+  })
+
+  it('should handle undefined result', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return undefined })
+    fn(1)
+    fn(1)
+    expect(calls).toBe(1)
+  })
 })

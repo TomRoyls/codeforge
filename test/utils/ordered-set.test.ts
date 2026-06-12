@@ -430,4 +430,41 @@ describe('OrderedSet', () => {
     expect(os.at(1)).toBeUndefined()
     expect(os.at(2)).toBe(3)
   })
+
+  it('should report size', () => {
+    const os = new OrderedSet([1, 2, 3])
+    expect(os.size).toBe(3)
+  })
+
+  it('should report isEmpty', () => {
+    const os = new OrderedSet<number>()
+    expect(os.isEmpty()).toBe(true)
+    os.add(1)
+    expect(os.isEmpty()).toBe(false)
+  })
+
+  it('should convert to array', () => {
+    const os = new OrderedSet([3, 1, 2])
+    expect(os.toArray()).toEqual([3, 1, 2])
+  })
+
+  it('should delete elements', () => {
+    const os = new OrderedSet([1, 2, 3])
+    expect(os.delete(2)).toBe(true)
+    expect(os.has(2)).toBe(false)
+    expect(os.delete(99)).toBe(false)
+  })
+
+  it('should clear the set', () => {
+    const os = new OrderedSet([1, 2, 3])
+    os.clear()
+    expect(os.size).toBe(0)
+    expect(os.isEmpty()).toBe(true)
+  })
+
+  it('should iterate values', () => {
+    const os = new OrderedSet([1, 2, 3])
+    const values = [...os]
+    expect(values).toEqual([1, 2, 3])
+  })
 })

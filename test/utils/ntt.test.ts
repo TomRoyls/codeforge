@@ -316,4 +316,42 @@ describe('NTT', () => {
     const abc2 = NTT.multiplyPolynomials(a, bc)
     expect(abc1).toEqual(abc2)
   })
+
+  it('should handle identity polynomial', () => {
+    const result = NTT.multiplyPolynomials([1n], [1n])
+    expect(result).toEqual([1n])
+  })
+
+  it('should multiply by zero polynomial', () => {
+    const result = NTT.multiplyPolynomials([0n, 0n], [1n, 2n])
+    expect(result).toEqual([0n, 0n, 0n])
+  })
+
+  it('should multiply linear polynomials', () => {
+    const result = NTT.multiplyPolynomials([1n, 1n], [1n, 1n])
+    expect(result[0]).toBe(1n)
+    expect(result[1]).toBe(2n)
+    expect(result[2]).toBe(1n)
+  })
+
+  it('should handle single element polynomials', () => {
+    const result = NTT.multiplyPolynomials([3n], [4n])
+    expect(result).toEqual([12n])
+  })
+
+  it('should compute polynomial of degree 3', () => {
+    const result = NTT.multiplyPolynomials([1n, 2n, 3n], [1n, 1n])
+    expect(result).toHaveLength(4)
+    expect(result[0]).toBe(1n)
+    expect(result[1]).toBe(3n)
+  })
+
+  it('should handle larger polynomial multiplication', () => {
+    const a = [1n, 2n]
+    const b = [3n, 4n]
+    const result = NTT.multiplyPolynomials(a, b)
+    expect(result).toHaveLength(3)
+    expect(result[0]).toBe(3n)
+    expect(result[1]).toBe(10n)
+  })
 })

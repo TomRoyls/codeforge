@@ -350,4 +350,49 @@ describe('SweepLine', () => {
       { x1: 0, y1: 0, x2: 2, y2: 2 },
     )).toBe(true)
   })
+
+  it('should find no intersections for parallel segments', () => {
+    const result = SweepLine.findIntersections([
+      { x1: 0, y1: 0, x2: 10, y2: 0 },
+      { x1: 0, y1: 5, x2: 10, y2: 5 },
+    ])
+    expect(result).toEqual([])
+  })
+
+  it('should find intersection of crossing segments', () => {
+    const result = SweepLine.findIntersections([
+      { x1: 0, y1: 0, x2: 10, y2: 10 },
+      { x1: 0, y1: 10, x2: 10, y2: 0 },
+    ])
+    expect(result).toHaveLength(1)
+  })
+
+  it('should handle single segment', () => {
+    const result = SweepLine.findIntersections([
+      { x1: 0, y1: 0, x2: 5, y2: 5 },
+    ])
+    expect(result).toEqual([])
+  })
+
+  it('should handle empty input', () => {
+    const result = SweepLine.findIntersections([])
+    expect(result).toEqual([])
+  })
+
+  it('should find multiple intersections', () => {
+    const result = SweepLine.findIntersections([
+      { x1: 0, y1: 0, x2: 10, y2: 10 },
+      { x1: 0, y1: 10, x2: 10, y2: 0 },
+      { x1: 0, y1: 5, x2: 10, y2: 5 },
+    ])
+    expect(result.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('should detect non-overlapping segments', () => {
+    const result = SweepLine.findIntersections([
+      { x1: 0, y1: 0, x2: 5, y2: 5 },
+      { x1: 10, y1: 10, x2: 15, y2: 15 },
+    ])
+    expect(result).toEqual([])
+  })
 })

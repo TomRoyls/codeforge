@@ -331,4 +331,32 @@ describe('calculateBackoff - edge cases', () => {
     const unique = new Set(results)
     expect(unique.size).toBeGreaterThan(10)
   })
+
+  it('should calculate uniform backoff', () => {
+    const delay = calculateUniformBackoff(0, 100)
+    expect(delay).toBe(100)
+  })
+
+  it('should cap uniform backoff at max', () => {
+    const delay = calculateUniformBackoff(100, 100, 1000)
+    expect(delay).toBe(1000)
+  })
+
+  it('should throw for negative attempt', () => {
+    expect(() => calculateBackoff(-1, 100)).toThrow()
+  })
+
+  it('should throw for zero baseDelayMs', () => {
+    expect(() => calculateBackoff(0, 0)).toThrow()
+  })
+
+  it('should throw when maxDelayMs less than baseDelayMs', () => {
+    expect(() => calculateBackoff(0, 100, 50)).toThrow()
+  })
+
+  it('should return value within range for full jitter', () => {
+    const delay = calculateBackoff(2, 100, 30000, 'full')
+    expect(delay).toBeGreaterThanOrEqual(0)
+    expect(delay).toBeLessThanOrEqual(400)
+  })
 })

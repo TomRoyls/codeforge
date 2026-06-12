@@ -428,4 +428,49 @@ describe('PairHeap', () => {
       expect(h.pop()).toBe(i)
     }
   })
+
+  it('should peek without removing', () => {
+    const heap = new PairHeap<number>()
+    heap.push(5)
+    heap.push(3)
+    expect(heap.peek()).toBe(3)
+    expect(heap.size).toBe(2)
+  })
+
+  it('should pop in order', () => {
+    const heap = new PairHeap<number>()
+    heap.push(5)
+    heap.push(3)
+    heap.push(1)
+    expect(heap.pop()).toBe(1)
+    expect(heap.pop()).toBe(3)
+    expect(heap.pop()).toBe(5)
+  })
+
+  it('should handle empty pop', () => {
+    const heap = new PairHeap<number>()
+    expect(heap.pop()).toBeUndefined()
+  })
+
+  it('should handle empty peek', () => {
+    const heap = new PairHeap<number>()
+    expect(heap.peek()).toBeUndefined()
+  })
+
+  it('should handle two separate heaps', () => {
+    const h1 = new PairHeap<number>()
+    h1.push(5)
+    const h2 = new PairHeap<number>()
+    h2.push(3)
+    expect(h1.pop()).toBe(5)
+    expect(h2.pop()).toBe(3)
+  })
+
+  it('should handle custom comparator for max heap', () => {
+    const heap = new PairHeap<number>((a, b) => b - a)
+    heap.push(1)
+    heap.push(5)
+    heap.push(3)
+    expect(heap.pop()).toBe(5)
+  })
 })

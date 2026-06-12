@@ -282,4 +282,36 @@ describe('SquareDecomposition', () => {
     sd.update(4, 50)
     expect(sd.query(0, 8)).toBe(90)
   })
+
+  it('should update a value', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    sd.update(2, 10)
+    expect(sd.query(0, 4)).toBe(22)
+  })
+
+  it('should report length', () => {
+    const sd = new SquareDecomposition([1, 2, 3])
+    expect(sd.length).toBe(3)
+  })
+
+  it('should convert to array', () => {
+    const sd = new SquareDecomposition([10, 20, 30])
+    expect(sd.toArray()).toEqual([10, 20, 30])
+  })
+
+  it('should handle single element', () => {
+    const sd = new SquareDecomposition([42])
+    expect(sd.query(0, 0)).toBe(42)
+  })
+
+  it('should query range correctly', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    expect(sd.query(1, 3)).toBe(9)
+  })
+
+  it('should handle update and re-query', () => {
+    const sd = new SquareDecomposition([1, 1, 1, 1, 1])
+    sd.update(0, 10)
+    expect(sd.query(0, 4)).toBe(14)
+  })
 })

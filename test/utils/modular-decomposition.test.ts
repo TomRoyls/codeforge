@@ -390,4 +390,46 @@ describe('ModularDecomposition', () => {
     }
     expect(md.moduleCount()).toBe(1)
   })
+
+  it('should handle disconnected graph', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(2, 3)
+    expect(md.moduleCount()).toBeGreaterThan(1)
+  })
+
+  it('should handle single node', () => {
+    const md = new ModularDecomposition(1)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should handle complete graph', () => {
+    const md = new ModularDecomposition(3)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(1, 2)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should handle path graph', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.addEdge(2, 3)
+    expect(md.moduleCount()).toBeGreaterThan(0)
+  })
+
+  it('should handle star graph', () => {
+    const md = new ModularDecomposition(5)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(0, 3)
+    md.addEdge(0, 4)
+    expect(md.moduleCount()).toBeGreaterThan(0)
+  })
+
+  it('should handle no edges', () => {
+    const md = new ModularDecomposition(3)
+    expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
+  })
 })

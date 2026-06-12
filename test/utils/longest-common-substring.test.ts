@@ -203,4 +203,32 @@ describe('LongestCommonSubstring', () => {
   it('handles strings with consecutive repeated substrings', () => {
     expect(LongestCommonSubstring.find('abcabcabc', 'abc')).toBe('abc')
   })
+
+  it('should return empty for no common substring', () => {
+    expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
+  })
+
+  it('should return length of LCS', () => {
+    expect(LongestCommonSubstring.findLength('abcdef', 'zcdemf')).toBe(3)
+  })
+
+  it('should find all common substrings', () => {
+    const all = LongestCommonSubstring.findAll('ABAB', 'BABA')
+    expect(all.length).toBeGreaterThan(0)
+    for (const s of all) expect(s.length).toBe(3)
+  })
+
+  it('should find LCS of many strings', () => {
+    const result = LongestCommonSubstring.ofMany(['abcdef', 'abcxyz', 'abcmnop'])
+    expect(result).toBe('abc')
+  })
+
+  it('should return empty for empty input', () => {
+    expect(LongestCommonSubstring.find('', 'abc')).toBe('')
+    expect(LongestCommonSubstring.find('abc', '')).toBe('')
+  })
+
+  it('should handle ofMany with single string', () => {
+    expect(LongestCommonSubstring.ofMany(['hello'])).toBe('hello')
+  })
 })

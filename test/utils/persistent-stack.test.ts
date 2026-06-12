@@ -332,4 +332,48 @@ describe('PersistentStack', () => {
     const combined = stack1.concat(stack2)
     expect(combined.size).toBe(stack1.size + stack2.size)
   })
+
+  it('should push and peek correctly', () => {
+    let stack = new PersistentStack<number>()
+    stack = stack.push(10)
+    stack = stack.push(20)
+    expect(stack.peek()).toBe(20)
+  })
+
+  it('should pop correctly', () => {
+    let stack = new PersistentStack<number>()
+    stack = stack.push(1)
+    stack = stack.push(2)
+    const popped = stack.pop()
+    expect(popped.peek()).toBe(1)
+    expect(popped.size).toBe(1)
+  })
+
+  it('should convert to array', () => {
+    let stack = new PersistentStack<number>()
+    stack = stack.push(1).push(2).push(3)
+    expect(stack.toArray()).toEqual([3, 2, 1])
+  })
+
+  it('should handle empty stack operations', () => {
+    const stack = new PersistentStack<number>()
+    expect(stack.isEmpty()).toBe(true)
+    expect(stack.size).toBe(0)
+  })
+
+  it('should preserve previous version on push', () => {
+    let v1 = new PersistentStack<number>()
+    v1 = v1.push(1)
+    const v2 = v1.push(2)
+    expect(v1.peek()).toBe(1)
+    expect(v2.peek()).toBe(2)
+  })
+
+  it('should handle single element', () => {
+    let stack = new PersistentStack<string>()
+    stack = stack.push('only')
+    expect(stack.size).toBe(1)
+    expect(stack.peek()).toBe('only')
+    expect(stack.pop().isEmpty()).toBe(true)
+  })
 })

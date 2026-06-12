@@ -243,4 +243,39 @@ describe('ModInt', () => {
     const a = new ModInt(3, 7)
     expect(a.mul(0).value).toBe(0)
   })
+
+  it('should perform subtraction', () => {
+    const a = ModInt.from(5, 7)
+    const b = ModInt.from(3, 7)
+    expect(a.sub(b).value).toBe(2)
+  })
+
+  it('should handle negative modular results', () => {
+    const a = ModInt.from(3, 7)
+    const b = ModInt.from(5, 7)
+    expect(a.sub(b).value).toBe(5)
+  })
+
+  it('should compute power', () => {
+    const a = ModInt.from(2, 7)
+    expect(a.pow(3).value).toBe(1)
+  })
+
+  it('should compute inverse', () => {
+    const a = ModInt.from(3, 7)
+    const inv = a.inv()
+    expect(a.mul(inv).value).toBe(1)
+  })
+
+  it('should negate', () => {
+    const a = ModInt.from(3, 7)
+    expect(a.negate().value).toBe(4)
+  })
+
+  it('should check equals', () => {
+    const a = ModInt.from(3, 7)
+    const b = ModInt.from(10, 7)
+    expect(a.equals(b)).toBe(true)
+    expect(a.equals(ModInt.from(3, 11))).toBe(false)
+  })
 })

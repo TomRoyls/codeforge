@@ -370,4 +370,49 @@ describe('TimerWheel', () => {
     const result = tw.advance()
     expect(result).toEqual([true, false])
   })
+
+  it('should schedule and advance', () => {
+    const tw = new TimerWheel<string>(4)
+    tw.schedule(0, 'a')
+    tw.schedule(1, 'b')
+    tw.schedule(2, 'c')
+    const r0 = tw.advance()
+    expect(r0).toContain('a')
+    const r1 = tw.advance()
+    expect(r1).toContain('b')
+  })
+
+  it('should handle empty advance', () => {
+    const tw = new TimerWheel<string>(4)
+    expect(tw.advance()).toEqual([])
+  })
+
+  it('should schedule multiple items at same tick', () => {
+    const tw = new TimerWheel<number>(4)
+    tw.schedule(0, 1)
+    tw.schedule(0, 2)
+    tw.schedule(0, 3)
+    const result = tw.advance()
+    expect(result.sort()).toEqual([1, 2, 3])
+  })
+
+  it('should report size', () => {
+    const tw = new TimerWheel<string>(4)
+    tw.schedule(0, 'a')
+    expect(tw.advance()).toContain('a')
+  })
+
+  it('should advance and retrieve items', () => {
+    const tw = new TimerWheel<string>(4)
+    tw.schedule(0, 'a')
+    tw.schedule(0, 'b')
+    const result = tw.advance()
+    expect(result).toContain('a')
+    expect(result).toContain('b')
+  })
+
+  it('should throw for invalid bits', () => {
+    expect(() => new TimerWheel(0)).toThrow()
+    expect(() => new TimerWheel(17)).toThrow()
+  })
 })

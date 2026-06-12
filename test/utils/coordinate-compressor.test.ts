@@ -299,4 +299,39 @@ describe('CoordinateCompressor', () => {
     const cc = new CoordinateCompressor([1, 2, 3])
     expect(() => cc.decompress(1000)).toThrow(RangeError)
   })
+
+  it('should check has correctly', () => {
+    const cc = new CoordinateCompressor([10, 20, 30])
+    expect(cc.has(10)).toBe(true)
+    expect(cc.has(15)).toBe(false)
+  })
+
+  it('should return indexOf', () => {
+    const cc = new CoordinateCompressor([10, 20, 30])
+    expect(cc.indexOf(10)).toBe(0)
+    expect(cc.indexOf(30)).toBe(2)
+    expect(cc.indexOf(99)).toBe(-1)
+  })
+
+  it('should return min and max', () => {
+    const cc = new CoordinateCompressor([50, 10, 30, 20])
+    expect(cc.min).toBe(10)
+    expect(cc.max).toBe(50)
+  })
+
+  it('should return compressed indices', () => {
+    const cc = new CoordinateCompressor([100, 200, 300])
+    expect(cc.compressed()).toEqual([0, 1, 2])
+  })
+
+  it('should return original sorted values', () => {
+    const cc = new CoordinateCompressor([300, 100, 200])
+    expect(cc.original()).toEqual([100, 200, 300])
+  })
+
+  it('should handle duplicate values', () => {
+    const cc = new CoordinateCompressor([5, 5, 5])
+    expect(cc.size).toBe(1)
+    expect(cc.compress(5)).toBe(0)
+  })
 })

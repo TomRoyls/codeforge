@@ -393,4 +393,50 @@ describe('MultiMap', () => {
     expect(numMap.getValues(1)).toContain('a')
     expect(numMap.getValues(1)).toContain('b')
   })
+
+  it('should delete a specific entry', () => {
+    const mm = new MultiMap<string, number>()
+    mm.set('a', 1)
+    mm.set('a', 2)
+    expect(mm.deleteEntry('a', 1)).toBe(true)
+    expect(mm.hasEntry('a', 1)).toBe(false)
+    expect(mm.hasEntry('a', 2)).toBe(true)
+  })
+
+  it('should return false for deleting missing entry', () => {
+    const mm = new MultiMap<string, number>()
+    expect(mm.deleteEntry('x', 1)).toBe(false)
+  })
+
+  it('should report isEmpty', () => {
+    const mm = new MultiMap<string, number>()
+    expect(mm.isEmpty).toBe(true)
+    mm.set('a', 1)
+    expect(mm.isEmpty).toBe(false)
+  })
+
+  it('should report keyCount and entryCount', () => {
+    const mm = new MultiMap<string, number>()
+    mm.set('a', 1)
+    mm.set('a', 2)
+    mm.set('b', 3)
+    expect(mm.keyCount).toBe(2)
+    expect(mm.entryCount).toBe(3)
+  })
+
+  it('should clone the multimap', () => {
+    const mm = new MultiMap<string, number>()
+    mm.set('a', 1)
+    const cloned = mm.clone()
+    expect(cloned.equals(mm)).toBe(true)
+  })
+
+  it('should invert the multimap', () => {
+    const mm = new MultiMap<string, number>()
+    mm.set('a', 1)
+    mm.set('b', 1)
+    const inv = mm.invert()
+    expect(inv.hasEntry(1, 'a')).toBe(true)
+    expect(inv.hasEntry(1, 'b')).toBe(true)
+  })
 })

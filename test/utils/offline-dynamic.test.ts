@@ -395,4 +395,52 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(0, 5, 5)
     expect(odc.solve()).toEqual([true])
   })
+
+  it('should handle query before any edges', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 5, 10)
+    odc.addQuery(0, 1, 2)
+    expect(odc.solve()).toEqual([false])
+  })
+
+  it('should handle disconnected nodes', () => {
+    const odc = new OfflineDynamicConnectivity(4)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(2, 3, 5)
+    expect(odc.solve()).toEqual([false])
+  })
+
+  it('should handle multiple queries', () => {
+    const odc = new OfflineDynamicConnectivity(4)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(2, 3, 0, 10)
+    odc.addQuery(0, 1, 5)
+    odc.addQuery(2, 3, 5)
+    odc.addQuery(0, 3, 5)
+    const result = odc.solve()
+    expect(result[0]).toBe(true)
+    expect(result[1]).toBe(true)
+    expect(result[2]).toBe(false)
+  })
+
+  it('should handle edge ending before query', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 0, 5)
+    odc.addQuery(0, 1, 10)
+    const result = odc.solve()
+    expect(result).toHaveLength(1)
+  })
+
+  it('should handle self-connected components', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addQuery(0, 0, 5)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('should handle same start/end time edge', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 5, 5)
+    odc.addQuery(0, 1, 5)
+    expect(odc.solve()[0]).toBeDefined()
+  })
 })

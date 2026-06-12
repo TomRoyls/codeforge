@@ -393,4 +393,37 @@ describe('HyperLogLog', () => {
     hll.add('日本語')
     expect(hll.count()).toBeGreaterThan(1)
   })
+
+  it('should handle single element', () => {
+    const hll = new HyperLogLog(8)
+    hll.add('only')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should estimate repeated elements as ~1', () => {
+    const hll = new HyperLogLog(10)
+    for (let i = 0; i < 500; i++) hll.add('same')
+    expect(hll.count()).toBeLessThan(10)
+  })
+
+  it('should merge two sketches', () => {
+    const hll1 = new HyperLogLog(8)
+    const hll2 = new HyperLogLog(8)
+    for (let i = 0; i < 100; i++) hll1.add(`x${i}`)
+    for (let i = 0; i < 100; i++) hll2.add(`y${i}`)
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThan(50)
+  })
+
+  it('should report precision', () => {
+    const hll = new HyperLogLog(12)
+    expect(hll.precision).toBe(12)
+  })
+
+  it('should handle large cardinality', () => {
+    const hll = new HyperLogLog(10)
+    for (let i = 0; i < 10000; i++) hll.add(`item${i}`)
+    const estimate = hll.count()
+    expect(estimate).toBeGreaterThan(1000)
+  })
 })
