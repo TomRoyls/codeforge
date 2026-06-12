@@ -245,4 +245,16 @@ describe('LevenshteinDistance', () => {
     expect(d).toBeGreaterThanOrEqual(0)
     expect(d).toBeLessThanOrEqual(1)
   })
+
+  it('same string is 0', () => {
+    expect(LevenshteinDistance.distance('abc', 'abc')).toBe(0)
+  })
+
+  it('empty strings is 0', () => {
+    expect(LevenshteinDistance.distance('', '')).toBe(0)
+  })
+
+  it('single char diff is 1', () => {
+    expect(LevenshteinDistance.distance('a', 'b')).toBe(1)
+  })
 })

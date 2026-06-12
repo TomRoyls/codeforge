@@ -381,4 +381,21 @@ describe('LeakyBucket', () => {
     const c = bucket.clone()
     expect(c.equals(bucket)).toBe(true)
   })
+
+  it('pour into empty bucket succeeds', () => {
+    const lb = new LeakyBucket(10, 1)
+    expect(lb.pour(1)).toBe(true)
+  })
+
+  it('pour over capacity fails', () => {
+    const lb = new LeakyBucket(5, 1)
+    expect(lb.pour(10)).toBe(false)
+  })
+
+  it('reset clears bucket', () => {
+    const lb = new LeakyBucket(10, 1)
+    lb.pour(5)
+    lb.reset()
+    expect(lb.pour(10)).toBe(true)
+  })
 })

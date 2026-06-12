@@ -493,4 +493,22 @@ describe('LowestCommonAncestor', () => {
     const lca = new LowestCommonAncestor(adj, 0)
     expect(lca.distance(1, 1)).toBe(0)
   })
+
+  it('single node LCA is itself', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.query(0, 0)).toBe(0)
+  })
+
+  it('getDepth root is 0', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.getDepth(0)).toBe(0)
+  })
+
+  it('distance between same node is 0', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.distance(0, 0)).toBe(0)
+  })
 })

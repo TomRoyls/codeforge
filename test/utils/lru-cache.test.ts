@@ -427,4 +427,20 @@ describe('LRUCache - equals', () => {
     cache.clear()
     expect(cache.size).toBe(0)
   })
+
+  it('get missing returns undefined', () => {
+    const c = new LRUCache<string, number>(5)
+    expect(c.get('missing')).toBeUndefined()
+  })
+
+  it('has returns boolean', () => {
+    const c = new LRUCache<string, number>(5)
+    expect(c.has('missing')).toBe(false)
+  })
+
+  it('set and get', () => {
+    const c = new LRUCache<string, number>(5)
+    c.set('a', 1)
+    expect(c.get('a')).toBe(1)
+  })
 })

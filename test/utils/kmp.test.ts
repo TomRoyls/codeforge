@@ -232,4 +232,16 @@ describe('KMP', () => {
     expect(KMP.buildTable('abcdab')).toBeDefined()
     expect(KMP.buildTable('abcdab').length).toBe(6)
   })
+
+  it('search empty text returns empty', () => {
+    expect(KMP.search('', 'a')).toEqual([])
+  })
+
+  it('search no match returns empty', () => {
+    expect(KMP.search('hello', 'xyz')).toEqual([])
+  })
+
+  it('contains returns boolean', () => {
+    expect(KMP.contains('hello world', 'world')).toBe(true)
+  })
 })

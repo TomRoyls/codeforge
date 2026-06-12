@@ -375,4 +375,19 @@ describe('KosarajuSCC', () => {
     const sccs = KosarajuSCC.findSCCs(adj)
     expect(sccs.length).toBe(2)
   })
+
+  it('single node is strongly connected', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(KosarajuSCC.isStronglyConnected(adj)).toBe(true)
+  })
+
+  it('countSCCs single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(KosarajuSCC.countSCCs(adj)).toBe(1)
+  })
+
+  it('findSCCs returns array', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    expect(KosarajuSCC.findSCCs(adj).length).toBeGreaterThan(0)
+  })
 })

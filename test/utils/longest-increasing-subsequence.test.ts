@@ -251,4 +251,16 @@ describe('LongestIncreasingSubsequence', () => {
   it('single element returns 1', () => {
     expect(LongestIncreasingSubsequence.length([42])).toBe(1)
   })
+
+  it('empty array length is 0', () => {
+    expect(LongestIncreasingSubsequence.length([])).toBe(0)
+  })
+
+  it('single element', () => {
+    expect(LongestIncreasingSubsequence.length([5])).toBe(1)
+  })
+
+  it('lengthNonDecreasing works', () => {
+    expect(LongestIncreasingSubsequence.lengthNonDecreasing([1, 2, 2, 3])).toBe(4)
+  })
 })

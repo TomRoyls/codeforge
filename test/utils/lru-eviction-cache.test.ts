@@ -429,4 +429,20 @@ describe('LRUEvictionCache - equals', () => {
     cache.set('b', 2)
     expect(cache.size).toBe(2)
   })
+
+  it('get missing returns undefined', () => {
+    const c = new LRUEvictionCache<string, number>(5)
+    expect(c.get('missing')).toBeUndefined()
+  })
+
+  it('set and get', () => {
+    const c = new LRUEvictionCache<string, number>(5)
+    c.set('a', 1)
+    expect(c.get('a')).toBe(1)
+  })
+
+  it('has returns boolean', () => {
+    const c = new LRUEvictionCache<string, number>(5)
+    expect(c.has('missing')).toBe(false)
+  })
 })

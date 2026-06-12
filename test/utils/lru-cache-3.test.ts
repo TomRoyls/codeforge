@@ -469,4 +469,20 @@ describe('LRUCache3', () => {
     cache.set('a', obj)
     expect(cache.get('a')).toBe(obj)
   })
+
+  it('get missing returns undefined', () => {
+    const c = new LRUCache3<number>(5)
+    expect(c.get('missing')).toBeUndefined()
+  })
+
+  it('set and get', () => {
+    const c = new LRUCache3<number>(5)
+    c.set('a', 1)
+    expect(c.get('a')).toBe(1)
+  })
+
+  it('has returns boolean', () => {
+    const c = new LRUCache3<number>(5)
+    expect(c.has('missing')).toBe(false)
+  })
 })

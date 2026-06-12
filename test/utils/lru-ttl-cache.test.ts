@@ -416,4 +416,20 @@ describe('LRUTTLCache', () => {
     cache.set('b', 2)
     expect(cache.size).toBe(2)
   })
+
+  it('get missing returns undefined', () => {
+    const c = new LRUTTLCache<string, number>({ maxSize: 5, ttl: 1000 })
+    expect(c.get('missing')).toBeUndefined()
+  })
+
+  it('has returns boolean', () => {
+    const c = new LRUTTLCache<string, number>({ maxSize: 5, ttl: 1000 })
+    expect(c.has('missing')).toBe(false)
+  })
+
+  it('set and get', () => {
+    const c = new LRUTTLCache<string, number>({ maxSize: 5, ttl: 1000 })
+    c.set('a', 1)
+    expect(c.get('a')).toBe(1)
+  })
 })

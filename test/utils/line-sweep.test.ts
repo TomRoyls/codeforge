@@ -398,4 +398,16 @@ describe('LineSweep', () => {
     const result = LineSweep.findOverlapPoints([{ start: 0, end: 5 }, { start: 3, end: 8 }])
     expect(result).toBeInstanceOf(Map)
   })
+
+  it('countOverlappingIntervals empty', () => {
+    expect(LineSweep.countOverlappingIntervals([])).toBe(0)
+  })
+
+  it('mergeIntervals empty', () => {
+    expect(LineSweep.mergeIntervals([])).toEqual([])
+  })
+
+  it('mergeIntervals single', () => {
+    expect(LineSweep.mergeIntervals([{ start: 0, end: 1 }])).toEqual([{ start: 0, end: 1 }])
+  })
 })

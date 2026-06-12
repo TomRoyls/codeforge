@@ -474,4 +474,20 @@ describe('LFUCache', () => {
     cache.set('b', 2)
     expect(cache.size).toBe(2)
   })
+
+  it('get missing returns undefined', () => {
+    const c = new LFUCache<string, number>(5)
+    expect(c.get('missing')).toBeUndefined()
+  })
+
+  it('has returns boolean', () => {
+    const c = new LFUCache<string, number>(5)
+    expect(c.has('missing')).toBe(false)
+  })
+
+  it('set and get', () => {
+    const c = new LFUCache<string, number>(5)
+    c.set('a', 1)
+    expect(c.get('a')).toBe(1)
+  })
 })

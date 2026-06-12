@@ -311,4 +311,17 @@ describe('Logger methods', () => {
     const log = new Logger({ level: 'debug' })
     expect(() => log.warn('warning')).not.toThrow()
   })
+
+  it('Logger is a class', () => {
+    expect(typeof Logger).toBe('function')
+  })
+
+  it('Logger has log levels', () => {
+    expect(LogLevel).toBeDefined()
+  })
+
+  it('Logger constructor accepts options', () => {
+    const logger = new Logger({ level: 'info' })
+    expect(logger).toBeDefined()
+  })
 })

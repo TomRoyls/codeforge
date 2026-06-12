@@ -399,4 +399,21 @@ describe('LazySegmentTree', () => {
     st.updateRange(0, 3, 5)
     expect(st.getPoint(0)).toBe(6)
   })
+
+  it('queryRange returns identity', () => {
+    const lst = new LazySegmentTree(5, (a, b) => a + b, (v, l, n) => v + l * n, (e, n) => e + n)
+    expect(lst.queryRange(0, 4)).toBe(0)
+  })
+
+  it('updateRange changes value', () => {
+    const lst = new LazySegmentTree(5, (a, b) => a + b, (v, l, n) => v + l * n, (e, n) => e + n)
+    lst.updateRange(0, 2, 1)
+    expect(lst.queryRange(0, 2)).toBe(3)
+  })
+
+  it('setPoint works', () => {
+    const lst = new LazySegmentTree(5, (a, b) => a + b, (v, l, n) => v + l * n, (e, n) => e + n)
+    lst.setPoint(0, 5)
+    expect(lst.getPoint(0)).toBe(5)
+  })
 })

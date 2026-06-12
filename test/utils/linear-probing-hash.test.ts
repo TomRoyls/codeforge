@@ -453,4 +453,20 @@ describe('LinearProbingHashTable', () => {
     const map = new LinearProbingHashTable<string, number>()
     expect(map.isEmpty()).toBe(true)
   })
+
+  it('new table isEmpty', () => {
+    const t = new LinearProbingHashTable<string, number>()
+    expect(t.isEmpty()).toBe(true)
+  })
+
+  it('set and get', () => {
+    const t = new LinearProbingHashTable<string, number>()
+    t.set('a', 1)
+    expect(t.get('a')).toBe(1)
+  })
+
+  it('has returns boolean', () => {
+    const t = new LinearProbingHashTable<string, number>()
+    expect(t.has('missing')).toBe(false)
+  })
 })

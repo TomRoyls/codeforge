@@ -406,4 +406,20 @@ describe('KdTree', () => {
     const n = tree.nearest([1, 1], 1)
     expect(n[0]).toEqual([0, 0])
   })
+
+  it('empty tree nearest returns empty', () => {
+    const tree = new KdTree([], 2)
+    expect(tree.nearest([0, 0], 1)).toEqual([])
+  })
+
+  it('insert and nearest', () => {
+    const tree = new KdTree([{ coords: [1, 1] }], 2)
+    tree.insert({ coords: [3, 3] })
+    expect(tree.nearest([2, 2], 1).length).toBeGreaterThan(0)
+  })
+
+  it('rangeSearch returns array', () => {
+    const tree = new KdTree([{ coords: [1, 1] }, { coords: [5, 5] }], 2)
+    expect(tree.rangeSearch([0, 0], [3, 3]).length).toBe(1)
+  })
 })

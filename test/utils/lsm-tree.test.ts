@@ -468,4 +468,20 @@ describe('LSMTree', () => {
     tree.set('nan-key', NaN)
     expect(tree.get('nan-key')).toBe(NaN)
   })
+
+  it('get missing returns undefined', () => {
+    const tree = new LSMTree<number>()
+    expect(tree.get('missing')).toBeUndefined()
+  })
+
+  it('has returns boolean', () => {
+    const tree = new LSMTree<number>()
+    expect(tree.has('missing')).toBe(false)
+  })
+
+  it('set and get', () => {
+    const tree = new LSMTree<number>()
+    tree.set('a', 1)
+    expect(tree.get('a')).toBe(1)
+  })
 })
