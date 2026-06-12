@@ -176,6 +176,7 @@ describe('FenwickTree2D', () => {
     it('returns correct format for zero dimensions', () => {
       const tree = new FenwickTree2D(0, 0);
       expect(tree.toString()).toBe('FenwickTree2D(0x0)');
+    });
   });
 
   it('rangeQuery on full grid returns total', () => {
@@ -202,18 +203,16 @@ describe('FenwickTree2D', () => {
   });
 
   it('rows and cols are accessible', () => {
-    const ft = new FenwickTree2D(4, 5);
-    expect(ft.rows).toBe(4);
-    expect(ft.cols).toBe(5);
-  });
-});
+     const ft = new FenwickTree2D(4, 5);
+     expect(ft.rows).toBe(4);
+     expect(ft.cols).toBe(5);
+   });
 
     it('clone of empty tree is empty', () => {
       const tree = new FenwickTree2D(3, 3);
       const copy = tree.clone()
       expect(copy.equals(tree)).toBe(true)
-    })
-  });
+    });
 
   describe('FenwickTree2D equals', () => {
     it('empty trees with same dimensions are equal', () => {
