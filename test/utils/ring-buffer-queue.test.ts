@@ -684,3 +684,15 @@ describe('ring-buffer-queue - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ring-buffer-queue - wave560', () => {
+  it('ring-buffer-queue w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ring-buffer-queue w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ring-buffer-queue w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

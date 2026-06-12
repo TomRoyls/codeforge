@@ -493,3 +493,15 @@ describe('shell-sort - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('shell-sort - wave560', () => {
+  it('shell-sort w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shell-sort w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shell-sort w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

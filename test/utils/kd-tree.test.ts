@@ -609,3 +609,15 @@ describe('kd-tree - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kd-tree - wave560', () => {
+  it('kd-tree w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

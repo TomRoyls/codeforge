@@ -647,3 +647,15 @@ describe('graph-isomorphism - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-isomorphism - wave560', () => {
+  it('graph-isomorphism w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-isomorphism w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

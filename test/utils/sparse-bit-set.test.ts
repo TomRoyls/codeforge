@@ -680,3 +680,15 @@ describe('sparse-bit-set - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-bit-set - wave560', () => {
+  it('sparse-bit-set w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

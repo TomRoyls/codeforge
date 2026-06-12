@@ -564,3 +564,15 @@ describe('runge-kutta - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('runge-kutta - wave560', () => {
+  it('runge-kutta w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

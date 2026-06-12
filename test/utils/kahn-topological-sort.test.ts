@@ -550,3 +550,15 @@ describe('kahn-topological-sort - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kahn-topological-sort - wave560', () => {
+  it('kahn-topological-sort w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

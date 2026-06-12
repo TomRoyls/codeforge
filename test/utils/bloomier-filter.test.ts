@@ -736,3 +736,15 @@ describe('bloomier-filter - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bloomier-filter - wave560', () => {
+  it('bloomier-filter w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

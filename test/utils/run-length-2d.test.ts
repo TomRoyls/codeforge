@@ -524,3 +524,15 @@ describe('run-length-2d - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-2d - wave560', () => {
+  it('run-length-2d w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

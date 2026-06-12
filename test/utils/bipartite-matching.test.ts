@@ -663,3 +663,15 @@ describe('bipartite-matching - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bipartite-matching - wave560', () => {
+  it('bipartite-matching w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

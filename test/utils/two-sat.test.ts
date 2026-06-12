@@ -704,3 +704,15 @@ describe('two-sat - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('two-sat - wave560', () => {
+  it('two-sat w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('two-sat w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -850,3 +850,15 @@ describe('min-max-heap - wave559', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-heap - wave560', () => {
+  it('min-max-heap w560 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w560 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap w560 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

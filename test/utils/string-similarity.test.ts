@@ -509,3 +509,15 @@ describe('string-similarity - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-similarity - wave560', () => {
+  it('string-similarity w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

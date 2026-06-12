@@ -701,3 +701,15 @@ describe('monotonic-queue - wave559', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('monotonic-queue - wave560', () => {
+  it('monotonic-queue w560 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w560 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue w560 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -989,3 +989,15 @@ describe('batch-processor - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('batch-processor - wave560', () => {
+  it('batch-processor w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('batch-processor w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

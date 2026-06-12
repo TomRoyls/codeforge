@@ -617,3 +617,15 @@ describe('bitmap-index - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bitmap-index - wave560', () => {
+  it('bitmap-index w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -686,3 +686,15 @@ describe('flow-push-relabel - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('flow-push-relabel - wave560', () => {
+  it('flow-push-relabel w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

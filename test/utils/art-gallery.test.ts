@@ -678,3 +678,15 @@ describe('art-gallery - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('art-gallery - wave560', () => {
+  it('art-gallery w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

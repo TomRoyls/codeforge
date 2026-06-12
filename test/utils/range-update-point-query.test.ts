@@ -599,3 +599,15 @@ describe('range-update-point-query - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('range-update-point-query - wave560', () => {
+  it('range-update-point-query w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

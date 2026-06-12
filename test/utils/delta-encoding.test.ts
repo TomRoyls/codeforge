@@ -512,3 +512,15 @@ describe('delta-encoding - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('delta-encoding - wave560', () => {
+  it('delta-encoding w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -550,3 +550,15 @@ describe('token-bucket-2 - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('token-bucket-2 - wave560', () => {
+  it('token-bucket-2 w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket-2 w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket-2 w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

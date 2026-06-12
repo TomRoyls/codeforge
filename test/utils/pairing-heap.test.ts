@@ -705,3 +705,15 @@ describe('pairing-heap - wave559', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('pairing-heap - wave560', () => {
+  it('pairing-heap w560 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w560 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap w560 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

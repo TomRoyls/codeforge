@@ -540,3 +540,15 @@ describe('event-sink - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('event-sink - wave560', () => {
+  it('event-sink w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

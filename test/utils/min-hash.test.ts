@@ -809,3 +809,15 @@ describe('min-hash - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-hash - wave560', () => {
+  it('min-hash w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-hash w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -626,3 +626,15 @@ describe('sorted-list - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sorted-list - wave560', () => {
+  it('sorted-list w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-list w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-list w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

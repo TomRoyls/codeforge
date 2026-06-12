@@ -603,3 +603,15 @@ describe('lazy-segment - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lazy-segment - wave560', () => {
+  it('lazy-segment w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lazy-segment w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

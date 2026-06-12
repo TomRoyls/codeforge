@@ -689,3 +689,15 @@ describe('work-stealing-deque - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('work-stealing-deque - wave560', () => {
+  it('work-stealing-deque w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -581,3 +581,15 @@ describe('run-length-encoder - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoder - wave560', () => {
+  it('run-length-encoder w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

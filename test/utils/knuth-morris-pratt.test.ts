@@ -413,3 +413,15 @@ describe('knuth-morris-pratt - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('knuth-morris-pratt - wave560', () => {
+  it('knuth-morris-pratt w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

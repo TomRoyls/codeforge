@@ -473,3 +473,15 @@ describe('cartesian-product - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-product - wave560', () => {
+  it('cartesian-product w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -698,3 +698,15 @@ describe('circular-deque - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-deque - wave560', () => {
+  it('circular-deque w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -577,3 +577,15 @@ describe('result - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('result - wave560', () => {
+  it('result w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

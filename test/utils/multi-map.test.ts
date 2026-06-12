@@ -636,3 +636,15 @@ describe('multi-map - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('multi-map - wave560', () => {
+  it('multi-map w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

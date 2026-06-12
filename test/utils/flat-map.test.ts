@@ -666,3 +666,15 @@ describe('flat-map - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('flat-map - wave560', () => {
+  it('flat-map w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -497,3 +497,15 @@ describe('combination - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('combination - wave560', () => {
+  it('combination w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

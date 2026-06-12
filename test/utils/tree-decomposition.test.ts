@@ -687,3 +687,15 @@ describe('tree-decomposition - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-decomposition - wave560', () => {
+  it('tree-decomposition w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

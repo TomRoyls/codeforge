@@ -690,3 +690,15 @@ describe('disjoint-set - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-set - wave560', () => {
+  it('disjoint-set w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

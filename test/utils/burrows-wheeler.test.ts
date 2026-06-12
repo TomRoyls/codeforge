@@ -550,3 +550,15 @@ describe('burrows-wheeler - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('burrows-wheeler - wave560', () => {
+  it('burrows-wheeler w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

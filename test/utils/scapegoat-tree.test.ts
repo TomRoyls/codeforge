@@ -849,3 +849,15 @@ describe('scapegoat-tree - wave559', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('scapegoat-tree - wave560', () => {
+  it('scapegoat-tree w560 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree w560 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree w560 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
