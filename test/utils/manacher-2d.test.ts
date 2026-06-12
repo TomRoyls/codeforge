@@ -441,4 +441,19 @@ describe('Manacher2D', () => {
     const result = Manacher2D.longestPalindromicSubgrid(grid)
     expect(result.len).toBeGreaterThanOrEqual(3)
   })
+
+  it('1x1 grid returns len 1', () => {
+    const result = Manacher2D.longestPalindromicSubgrid([['a']])
+    expect(result.len).toBe(1)
+  })
+
+  it('2x2 same chars returns len', () => {
+    const result = Manacher2D.longestPalindromicSubgrid([['a', 'a'], ['a', 'a']])
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('empty grid', () => {
+    const result = Manacher2D.longestPalindromicSubgrid([])
+    expect(result).toBeDefined()
+  })
 })

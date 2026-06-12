@@ -509,4 +509,27 @@ describe('MinCostFlow', () => {
     expect(maxFlow).toBe(20)
     expect(minCost).toBeGreaterThan(0)
   })
+
+  it('no path returns zero flow', () => {
+    const mcf = new MinCostFlow(4)
+    mcf.addEdge(0, 1, 10, 1)
+    mcf.addEdge(2, 3, 10, 1)
+    const result = mcf.solve(0, 3)
+    expect(result.maxFlow).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 5, 1)
+    const result = mcf.solve(0, 1)
+    expect(result.maxFlow).toBe(5)
+  })
+
+  it('parallel edges', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 5, 1)
+    mcf.addEdge(0, 1, 5, 2)
+    const result = mcf.solve(0, 1)
+    expect(result.maxFlow).toBe(10)
+  })
 })

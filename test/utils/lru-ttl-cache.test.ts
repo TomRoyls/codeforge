@@ -397,4 +397,23 @@ describe('LRUTTLCache', () => {
     c2.set('a', 1)
     expect(c1.equals(c2)).toBe(true)
   })
+
+  it('has returns false for missing', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 1000 })
+    expect(cache.has('missing')).toBe(false)
+  })
+
+  it('delete removes entry', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 1000 })
+    cache.set('a', 1)
+    cache.delete('a')
+    expect(cache.get('a')).toBeUndefined()
+  })
+
+  it('size tracks entries', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 5, defaultTTL: 1000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.size).toBe(2)
+  })
 })

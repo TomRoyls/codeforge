@@ -451,4 +451,26 @@ describe('MaxBipartiteMatching', () => {
     const m = new MaxBipartiteMatching(3, 3)
     expect(m.getMatchingSize()).toBe(0)
   })
+
+  it('single pair matching', () => {
+    const m = new MaxBipartiteMatching(1, 1)
+    m.addEdge(0, 0)
+    expect(m.maxMatching().length).toBe(1)
+  })
+
+  it('complete bipartite matching', () => {
+    const m = new MaxBipartiteMatching(3, 3)
+    m.addEdge(0, 0)
+    m.addEdge(1, 1)
+    m.addEdge(2, 2)
+    expect(m.getMatchingSize()).toBe(3)
+  })
+
+  it('unbalanced bipartite graph', () => {
+    const m = new MaxBipartiteMatching(2, 3)
+    m.addEdge(0, 0)
+    m.addEdge(0, 1)
+    m.addEdge(1, 2)
+    expect(m.getMatchingSize()).toBe(2)
+  })
 })

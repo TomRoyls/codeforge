@@ -402,4 +402,25 @@ describe('MergeSortedIterators', () => {
     const iter = new MergeSortedIterators<number>([[1, 5][Symbol.iterator](), [2, 3, 4][Symbol.iterator]()])
     expect(iter.toArray()).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('merges two single-element iterators', () => {
+    function* gen1() { yield 1 }
+    function* gen2() { yield 2 }
+    const iter = new MergeSortedIterators([gen1(), gen2()], (a, b) => a - b)
+    expect(iter.toArray()).toEqual([1, 2])
+  })
+
+  it('handles empty iterators', () => {
+    function* gen() { /* empty */ }
+    const iter = new MergeSortedIterators([gen(), gen()], (a, b) => a - b)
+    expect(iter.toArray()).toEqual([])
+  })
+
+  it('merges three iterators', () => {
+    function* a() { yield 1; yield 4 }
+    function* b() { yield 2; yield 5 }
+    function* c() { yield 3; yield 6 }
+    const iter = new MergeSortedIterators([a(), b(), c()], (x, y) => x - y)
+    expect(iter.toArray()).toEqual([1, 2, 3, 4, 5, 6])
+  })
 })

@@ -317,4 +317,20 @@ describe('Manacher', () => {
     const lp = m.longestPalindrome()
     expect(lp.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('countAllPalindromes returns count', () => {
+    const m = new Manacher('aba')
+    expect(m.countAllPalindromes()).toBeGreaterThan(0)
+  })
+
+  it('isPalindrome checks substring', () => {
+    const m = new Manacher('racecar')
+    expect(m.isPalindrome(0, 6)).toBe(true)
+  })
+
+  it('getAllPalindromes returns array', () => {
+    const m = new Manacher('aba')
+    const all = m.getAllPalindromes()
+    expect(all.length).toBeGreaterThan(0)
+  })
 })

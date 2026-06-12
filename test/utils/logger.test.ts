@@ -296,4 +296,19 @@ describe('Logger methods', () => {
     const log = new Logger({ level: LogLevel.ERROR })
     expect(() => log.error('error message')).not.toThrow()
   })
+
+  it('logger with name prefix', () => {
+    const log = new Logger({ level: 'info', name: 'test' })
+    expect(log).toBeDefined()
+  })
+
+  it('logger debug level suppresses info', () => {
+    const log = new Logger({ level: 'warn' })
+    expect(() => log.info('suppressed')).not.toThrow()
+  })
+
+  it('logger warn does not throw', () => {
+    const log = new Logger({ level: 'debug' })
+    expect(() => log.warn('warning')).not.toThrow()
+  })
 })

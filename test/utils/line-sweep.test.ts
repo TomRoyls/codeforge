@@ -383,4 +383,19 @@ describe('LineSweep', () => {
     ])
     expect(result).toBe(12)
   })
+
+  it('countOverlappingIntervals empty', () => {
+    expect(LineSweep.countOverlappingIntervals([])).toBe(0)
+  })
+
+  it('mergeIntervals merges overlapping', () => {
+    const merged = LineSweep.mergeIntervals([{ start: 0, end: 5 }, { start: 3, end: 8 }])
+    expect(merged.length).toBe(1)
+    expect(merged[0]).toEqual({ start: 0, end: 8 })
+  })
+
+  it('findOverlapPoints returns map', () => {
+    const result = LineSweep.findOverlapPoints([{ start: 0, end: 5 }, { start: 3, end: 8 }])
+    expect(result).toBeInstanceOf(Map)
+  })
 })

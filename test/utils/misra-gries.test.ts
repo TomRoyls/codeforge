@@ -405,4 +405,22 @@ describe('MisraGries', () => {
     mg.processBatch(['a', 'b', 'c'])
     expect(mg.size).toBe(3)
   })
+
+  it('top returns sorted by frequency', () => {
+    const mg = new MisraGries<string>(2)
+    mg.processBatch(['a', 'a', 'b', 'c'])
+    const top = mg.top()
+    expect(top.length).toBeGreaterThan(0)
+  })
+
+  it('getCount returns 0 for unseen', () => {
+    const mg = new MisraGries<string>(2)
+    expect(mg.getCount('x')).toBe(0)
+  })
+
+  it('processBatch processes multiple items', () => {
+    const mg = new MisraGries<number>(3)
+    mg.processBatch([1, 2, 3, 4, 5])
+    expect(mg.size).toBeGreaterThan(0)
+  })
 })

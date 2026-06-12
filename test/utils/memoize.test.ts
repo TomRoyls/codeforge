@@ -474,4 +474,27 @@ describe('memoize - edge cases', () => {
     fn(1)
     expect(calls).toBe(1)
   })
+
+  it('clearMemoized resets cache', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x * 2 })
+    fn(5)
+    clearMemoized(fn)
+    fn(5)
+    expect(calls).toBe(2)
+  })
+
+  it('memoize with different args', () => {
+    let calls = 0
+    const fn = memoize((x: number) => { calls++; return x })
+    fn(1)
+    fn(2)
+    expect(calls).toBe(2)
+  })
+
+  it('memoize preserves return value', () => {
+    const fn = memoize((x: number) => x * 3)
+    expect(fn(4)).toBe(12)
+    expect(fn(4)).toBe(12)
+  })
 })

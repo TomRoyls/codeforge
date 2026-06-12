@@ -407,4 +407,24 @@ describe('LRUCache - equals', () => {
     cache.set('b', 2)
     expect([...cache.keys()].length).toBe(2)
   })
+
+  it('getOrDefault returns default for missing', () => {
+    const cache = new LRUCache<string, number>(5)
+    expect(cache.getOrDefault('missing', 42)).toBe(42)
+  })
+
+  it('delete removes entry', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    cache.delete('a')
+    expect(cache.get('a')).toBeUndefined()
+  })
+
+  it('clear removes all entries', () => {
+    const cache = new LRUCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.clear()
+    expect(cache.size).toBe(0)
+  })
 })

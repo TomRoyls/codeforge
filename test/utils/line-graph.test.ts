@@ -421,4 +421,24 @@ describe('LineGraph', () => {
     expect(Array.isArray(json)).toBe(true)
     expect(json.length).toBe(3)
   })
+
+  it('maxDegree returns correct value', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.build()
+    expect(lg.maxDegree()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('edgeCount returns total edges', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    expect(lg.edgeCount()).toBe(2)
+  })
+
+  it('build on empty graph returns empty', () => {
+    const lg = new LineGraph(3)
+    expect(lg.build()).toEqual([])
+  })
 })

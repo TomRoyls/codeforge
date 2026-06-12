@@ -408,4 +408,25 @@ describe('LRUEvictionCache - equals', () => {
     cache.set('x', 2)
     expect(cache.get('x')).toBe(2)
   })
+
+  it('has returns boolean', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('a', 1)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.has('missing')).toBe(false)
+  })
+
+  it('delete removes entry', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('a', 1)
+    cache.delete('a')
+    expect(cache.get('a')).toBeUndefined()
+  })
+
+  it('size tracks entries', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.size).toBe(2)
+  })
 })

@@ -316,4 +316,21 @@ describe('MatrixChainMultiply', () => {
     expect(result.splits).toBeDefined()
     expect(result.splits.length).toBe(3)
   })
+
+  it('optimalOrder returns string', () => {
+    const order = MatrixChainMultiply.optimalOrder([10, 20, 30])
+    expect(typeof order).toBe('string')
+  })
+
+  it('matrixMultiply 2x2 times 2x2', () => {
+    const a = [[1, 0], [0, 1]]
+    const b = [[2, 3], [4, 5]]
+    const result = MatrixChainMultiply.matrixMultiply(a, b)
+    expect(result).toEqual([[2, 3], [4, 5]])
+  })
+
+  it('minCost single matrix returns 0', () => {
+    const result = MatrixChainMultiply.minCost([10, 20])
+    expect(result.cost).toBe(0)
+  })
 })

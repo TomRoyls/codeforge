@@ -434,4 +434,23 @@ describe('LinearProbingHashTable', () => {
     expect(copy.size).toBe(0)
     expect(copy.isEmpty()).toBe(true)
   })
+
+  it('size tracks entries', () => {
+    const map = new LinearProbingHashTable<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    expect(map.size).toBe(2)
+  })
+
+  it('delete removes entry', () => {
+    const map = new LinearProbingHashTable<string, number>()
+    map.set('x', 42)
+    map.delete('x')
+    expect(map.has('x')).toBe(false)
+  })
+
+  it('isEmpty on new map', () => {
+    const map = new LinearProbingHashTable<string, number>()
+    expect(map.isEmpty()).toBe(true)
+  })
 })

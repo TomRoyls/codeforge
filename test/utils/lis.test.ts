@@ -252,4 +252,17 @@ describe('LongestIncreasingSubsequence', () => {
   it('should handle decreasing array', () => {
     expect(LongestIncreasingSubsequence.length([5, 4, 3, 2, 1])).toBe(1)
   })
+
+  it('find returns actual subsequence', () => {
+    expect(LongestIncreasingSubsequence.find([1, 3, 2, 4])).toEqual([1, 2, 4])
+  })
+
+  it('findIndices returns indices', () => {
+    const indices = LongestIncreasingSubsequence.findIndices([1, 3, 2, 4])
+    expect(indices.length).toBe(3)
+  })
+
+  it('empty array returns 0', () => {
+    expect(LongestIncreasingSubsequence.length([])).toBe(0)
+  })
 })

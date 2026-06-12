@@ -422,4 +422,23 @@ describe('MarkovChain', () => {
     mc.addTransition('こんにちは', '世界')
     expect(mc.getStates()).toContain('こんにちは')
   })
+
+  it('getTransitionProbability returns 0 for unknown', () => {
+    const mc = new MarkovChain<string>()
+    expect(mc.getTransitionProbability('a', 'b')).toBe(0)
+  })
+
+  it('generate with single state', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('x', 'x')
+    const seq = mc.generate('x', 3, () => 0.5)
+    expect(seq.length).toBeLessThanOrEqual(3)
+  })
+
+  it('train builds transitions', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'b', 'a', 'b'])
+    expect(mc.getStates()).toContain('a')
+    expect(mc.getStates()).toContain('b')
+  })
 })

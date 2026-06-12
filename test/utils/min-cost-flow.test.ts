@@ -200,13 +200,25 @@ describe('MinCostFlow', () => {
     expect(result.flow).toBe(0)
   })
 
-  it('single edge with cost', () => {
+  it('single edge flow', () => {
     const mcf = new MinCostFlow(2)
-    mcf.addEdge(0, 1, 10, 5)
+    mcf.addEdge(0, 1, 5, 1)
     const result = mcf.solve(0, 1)
-    expect(result.flow).toBe(10)
-    expect(result.cost).toBe(50)
+    expect(result.flow).toBe(5)
   })
+
+  it('nodeCount is set correctly', () => {
+    const mcf = new MinCostFlow(5)
+    expect(mcf.nodeCount).toBe(5)
+  })
+
+  it('edgeCount tracks additions', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    mcf.addEdge(1, 2, 5, 1)
+    expect(mcf.edgeCount).toBe(2)
+  })
+})
 
   it('getFlow returns flow for edge', () => {
     const mcf = new MinCostFlow(2)

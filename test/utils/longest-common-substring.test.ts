@@ -231,4 +231,17 @@ describe('LongestCommonSubstring', () => {
   it('should handle ofMany with single string', () => {
     expect(LongestCommonSubstring.ofMany(['hello'])).toBe('hello')
   })
+
+  it('findLength returns correct value', () => {
+    expect(LongestCommonSubstring.findLength('abc', 'bcd')).toBe(2)
+  })
+
+  it('findAll returns all common substrings', () => {
+    const results = LongestCommonSubstring.findAll('abc', 'bcd')
+    expect(results.length).toBeGreaterThan(0)
+  })
+
+  it('no common substring returns empty string', () => {
+    expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
+  })
 })
