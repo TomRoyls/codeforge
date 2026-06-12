@@ -271,4 +271,51 @@ describe('KahnTopologicalSort', () => {
     expect(sort.order.indexOf(0)).toBeLessThan(sort.order.indexOf(1))
     expect(sort.order.indexOf(2)).toBeLessThan(sort.order.indexOf(3))
   })
+
+  it('longestPath calculates correctly with different weights', () => {
+    const adj = [[1, 2], [3], [3], []]
+    const weights = [5, 3, 7, 2]
+    const result = KahnTopologicalSort.longestPath(adj, weights)
+    expect(result).toBe(14)
+  })
+
+  it('longestPath with parallel paths', () => {
+    const adj = [[1, 2], [3], [3], []]
+    const weights = [2, 8, 3, 1]
+    expect(KahnTopologicalSort.longestPath(adj, weights)).toBe(11)
+  })
+
+  it('longestPath with complex branching', () => {
+    const adj = [[1, 2], [3, 4], [3, 4], [5], [5], []]
+    const weights = [1, 2, 3, 4, 5, 6]
+    expect(KahnTopologicalSort.longestPath(adj, weights)).toBe(15)
+  })
+
+  it('clone preserves cycleNodes', () => {
+    const sort = new KahnTopologicalSort([[1], [0]])
+    const cloned = sort.clone()
+    expect(cloned.cycleNodes).toEqual(sort.cycleNodes)
+    expect(cloned.cycleNodes).toContain(0)
+    expect(cloned.cycleNodes).toContain(1)
+  })
+
+  it('toJSON for empty graph', () => {
+    const sort = new KahnTopologicalSort([])
+    const json = sort.toJSON() as Record<string, unknown>
+    expect(json.order).toEqual([])
+    expect(json.hasCycle).toBe(false)
+    expect(json.cycleNodes).toEqual([])
+  })
+
+  it('longestPath with single edge', () => {
+    const adj = [[1], []]
+    const weights = [10, 5]
+    expect(KahnTopologicalSort.longestPath(adj, weights)).toBe(15)
+  })
+
+  it('toString for empty graph', () => {
+    const sort = new KahnTopologicalSort([])
+    expect(sort.toString()).toContain('order.length=0')
+    expect(sort.toString()).toContain('hasCycle=false')
+  })
 })

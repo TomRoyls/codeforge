@@ -250,4 +250,30 @@ describe('Shuffle', () => {
     }
     expect(same).toBeLessThan(10)
   })
+
+  it('isShuffled with non-empty and empty', () => {
+    expect(Shuffle.isShuffled([1], [])).toBe(false)
+  })
+
+  it('weightedSample with zero weight item', () => {
+    const items = ['a', 'b', 'c']
+    const weights = [0, 1, 1]
+    const sample = Shuffle.weightedSample(items, weights, 2)
+    expect(sample.length).toBe(2)
+    expect(sample).not.toContain('a')
+    expect(sample).toContain('b')
+    expect(sample).toContain('c')
+  })
+
+  it('inPlace likely produces different order', () => {
+    const arr = Array.from({ length: 20 }, (_, i) => i)
+    const original = [...arr]
+    let same = 0
+    for (let i = 0; i < 10; i++) {
+      arr.sort((a, b) => a - b)
+      Shuffle.inPlace(arr)
+      if (arr.every((v, idx) => v === original[idx])) same++
+    }
+    expect(same).toBeLessThan(10)
+  })
 })

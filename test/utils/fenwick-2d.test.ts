@@ -313,5 +313,58 @@ describe('FenwickTree2D', () => {
       tree.set(1, 1, 5);
       expect(tree.get(1, 1)).toBe(5);
     });
+
+    it('handles tree with zero rows but non-zero columns', () => {
+      const tree = new FenwickTree2D(0, 5);
+      expect(tree.rows).toBe(0);
+      expect(tree.cols).toBe(5);
+      expect(tree.toString()).toBe('FenwickTree2D(0x5)');
+    });
+
+    it('handles tree with non-zero rows but zero columns', () => {
+      const tree = new FenwickTree2D(5, 0);
+      expect(tree.rows).toBe(5);
+      expect(tree.cols).toBe(0);
+      expect(tree.toString()).toBe('FenwickTree2D(5x0)');
+    });
+
+    it('range query with large range works correctly', () => {
+      const tree = new FenwickTree2D(100, 100);
+      tree.update(10, 10, 5);
+      tree.update(50, 50, 10);
+      tree.update(90, 90, 15);
+      const sum = tree.rangeQuery(0, 0, 99, 99);
+      expect(sum).toBe(30);
+    });
+
+    it('set with negative value works', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(1, 1, 10);
+      tree.set(1, 1, -5);
+      expect(tree.get(1, 1)).toBe(-5);
+    });
+
+    it('multiple updates to different cells accumulate correctly', () => {
+      const tree = new FenwickTree2D(4, 4);
+      tree.update(0, 0, 1);
+      tree.update(0, 1, 2);
+      tree.update(1, 0, 3);
+      tree.update(1, 1, 4);
+      tree.update(2, 2, 5);
+      tree.update(3, 3, 6);
+      expect(tree.rangeQuery(0, 0, 3, 3)).toBe(21);
+    });
+
+    it('handles single cell query', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(1, 1, 10);
+      expect(tree.rangeQuery(1, 1, 1, 1)).toBe(10);
+    });
+
+    it('handles zero update', () => {
+      const tree = new FenwickTree2D(3, 3);
+      tree.update(1, 1, 0);
+      expect(tree.rangeQuery(0, 0, 2, 2)).toBe(0);
+    });
   });
 });

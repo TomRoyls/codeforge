@@ -350,4 +350,44 @@ describe('ModularDecomposition', () => {
     expect(md.isModule(0, 2)).toBe(true)
     expect(md.isModule(0, 3)).toBe(true)
   })
+
+  it('isModule with isolated vertex connected to nothing', () => {
+    const md = new ModularDecomposition(5)
+    md.addEdge(0, 1)
+    md.addEdge(0, 2)
+    md.addEdge(0, 3)
+    md.addEdge(0, 4)
+    expect(md.isModule(1, 2)).toBe(true)
+    expect(md.isModule(1, 3)).toBe(true)
+    expect(md.isModule(2, 3)).toBe(true)
+  })
+
+  it('isStrongModule for all vertices with one internal edge', () => {
+    const md = new ModularDecomposition(5)
+    md.addEdge(0, 1)
+    expect(md.isStrongModule([0, 1, 2, 3, 4])).toBe(true)
+  })
+
+  it('findModules on wheel graph W5', () => {
+    const md = new ModularDecomposition(5)
+    for (let i = 1; i < 5; i++) {
+      md.addEdge(0, i)
+    }
+    md.addEdge(1, 2)
+    md.addEdge(2, 3)
+    md.addEdge(3, 4)
+    md.addEdge(4, 1)
+    const modules = md.findModules()
+    expect(modules.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('moduleCount on K10 is 1', () => {
+    const md = new ModularDecomposition(10)
+    for (let i = 0; i < 10; i++) {
+      for (let j = i + 1; j < 10; j++) {
+        md.addEdge(i, j)
+      }
+    }
+    expect(md.moduleCount()).toBe(1)
+  })
 })

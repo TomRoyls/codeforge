@@ -278,4 +278,25 @@ describe('PersistentArray', () => {
     const v1 = arr.set(1, 99)
     expect(v1.toArray()).toEqual([1, 99, 3])
   })
+
+  it('reduce with string concatenation', () => {
+    const arr = PersistentArray.from(['a', 'b', 'c'])
+    const result = arr.reduce((acc, v) => acc + v, '')
+    expect(result).toBe('abc')
+  })
+
+  it('set at middle index', () => {
+    const v0 = PersistentArray.from([1, 2, 3, 4, 5, 6, 7])
+    const v1 = v0.set(3, 99)
+    expect(v1.get(2)).toBe(3)
+    expect(v1.get(3)).toBe(99)
+    expect(v1.get(4)).toBe(5)
+  })
+
+  it('map returns filtered array with different length', () => {
+    const arr = PersistentArray.from([1, 2, 3, 4, 5])
+    const filtered = arr.filter(x => x > 2)
+    expect(filtered.length).toBe(3)
+    expect(filtered.toArray()).toEqual([3, 4, 5])
+  })
 })

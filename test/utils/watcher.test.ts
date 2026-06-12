@@ -709,3 +709,154 @@ describe('FileWatcher configuration', () => {
     await w.stop()
   })
 })
+
+describe('FileWatcher event type detection', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('emits change event for existing files', async () => {
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(TEMP_DIR, 'test.ts'), 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'change',
+      })
+    )
+
+    await w.stop()
+  })
+
+  it('emits unlink event for deleted files', async () => {
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    const testFile = join(TEMP_DIR, 'test.ts')
+    writeFileSync(testFile, 'code', 'utf8')
+
+    await w.watch(TEMP_DIR)
+
+    await new Promise((r) => setTimeout(r, 60))
+
+    rmSync(testFile)
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'unlink',
+      })
+    )
+
+    await w.stop()
+  })
+})
+
+describe('FileWatcher nested directory watching', () => {
+  beforeEach(() => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+  })
+
+  afterEach(() => {
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('detects changes in deeply nested directories', async () => {
+    const deepDir = join(TEMP_DIR, 'level1', 'level2', 'level3')
+    mkdirSync(deepDir, { recursive: true })
+
+    const w = new FileWatcher({ debounceMs: 50 })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(deepDir, 'test.ts'), 'code', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalled()
+
+    await w.stop()
+  })
+
+  it('handles multiple nested directories', async () => {
+    const dir1 = join(TEMP_DIR, 'nested1', 'deep')
+    const dir2 = join(TEMP_DIR, 'nested2', 'deep')
+    mkdirSync(dir1, { recursive: true })
+    mkdirSync(dir2, { recursive: true })
+
+    const w = new FileWatcher({ debounceMs: 50, extensions: ['.ts'] })
+    const handler = vi.fn()
+    w.on('change', handler)
+
+    await w.watch(TEMP_DIR)
+
+    writeFileSync(join(dir1, 'test.ts'), 'code1', 'utf8')
+    writeFileSync(join(dir2, 'test.ts'), 'code2', 'utf8')
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(handler).toHaveBeenCalledTimes(2)
+
+    await w.stop()
+  })
+})
+
+describe('FileWatcher error handling', () => {
+  it('handles error events', async () => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+    const w = new FileWatcher()
+    const handler = vi.fn()
+    w.on('error', handler)
+
+    await w.watch(TEMP_DIR)
+
+    await w.stop()
+    await w.watch(join(TEMP_DIR, 'nonexistent'))
+
+    await w.stop()
+
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+})
+
+describe('createWatcher', () => {
+  it('creates a new watcher', () => {
+    const w = createWatcher()
+    expect(w).toBeInstanceOf(FileWatcher)
+    w.stop()
+  })
+
+  it('creates watcher with options', () => {
+    const w = createWatcher({ debounceMs: 100, extensions: ['.ts'] })
+    expect(w).toBeInstanceOf(FileWatcher)
+    w.stop()
+  })
+
+  it('stops previous watcher when creating new one', async () => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+    const w1 = createWatcher()
+    await w1.watch(TEMP_DIR)
+    expect(w1.isActive()).toBe(true)
+
+    const w2 = createWatcher()
+    expect(w1.isActive()).toBe(false)
+
+    await w2.stop()
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+})

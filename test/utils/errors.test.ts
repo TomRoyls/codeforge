@@ -347,4 +347,32 @@ describe('Error hierarchy', () => {
     expect(err.cause).toBe(mid)
     expect((err.cause as SystemError).cause).toBe(root)
   })
+
+  it('CLIError accepts string code', () => {
+    const err = new CLIError('test', { code: 'E999' })
+    expect(typeof err.code).toBe('string')
+    expect(err.code).toBe('E999')
+  })
+
+  it('CLIError with nested context objects', () => {
+    const err = new CLIError('nested', {
+      context: { outer: { inner: { value: 42 } } },
+    })
+    expect(err.context.outer.inner.value).toBe(42)
+  })
+
+  it('SystemError with nested context objects', () => {
+    const err = new SystemError('nested', {
+      context: { outer: { inner: { value: 42 } } },
+    })
+    expect(err.context.outer.inner.value).toBe(42)
+  })
+
+  it('CLIError configValidation with complex value types', () => {
+    const obj = { a: 1, b: [1, 2, 3] }
+    const err = CLIError.configValidation('config', obj, 'invalid structure')
+    expect(err.context.key).toBe('config')
+    expect(err.context.value).toBe('[object Object]')
+    expect(err.code).toBe('E004')
+  })
 })

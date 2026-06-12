@@ -298,4 +298,72 @@ describe('PersistentQueue', () => {
     const r2 = r1.queue.dequeue()!
     expect(r2.queue.peek()).toBe(30)
   })
+
+  it('handles undefined elements', () => {
+    const q = PersistentQueue.create<number | undefined>().enqueue(undefined).enqueue(1)
+    expect(q.peek()).toBeUndefined()
+    const r = q.dequeue()!
+    expect(r.value).toBeUndefined()
+    expect(r.queue.peek()).toBe(1)
+  })
+
+  it('handles symbol elements', () => {
+    const sym1 = Symbol('test1')
+    const sym2 = Symbol('test2')
+    const q = PersistentQueue.create<symbol>().enqueue(sym1).enqueue(sym2)
+    expect(q.peek()).toBe(sym1)
+    expect(q.toArray()).toEqual([sym1, sym2])
+  })
+
+  it('handles zero values', () => {
+    const q = PersistentQueue.create<number>().enqueue(0).enqueue(0)
+    expect(q.toArray()).toEqual([0, 0])
+    const r = q.dequeue()!
+    expect(r.value).toBe(0)
+  })
+
+  it('handles floating point numbers', () => {
+    const q = PersistentQueue.create<number>().enqueue(1.5).enqueue(2.7).enqueue(3.14)
+    expect(q.toArray()).toEqual([1.5, 2.7, 3.14])
+    const r = q.dequeue()!
+    expect(r.value).toBe(1.5)
+  })
+
+  it('handles array elements', () => {
+    const arr1 = [1, 2]
+    const arr2 = [3, 4]
+    const q = PersistentQueue.create<number[]>().enqueue(arr1).enqueue(arr2)
+    expect(q.peek()).toBe(arr1)
+    expect(q.toArray()).toEqual([arr1, arr2])
+  })
+
+  it('nested enqueue chain returns unique queues', () => {
+    const q0 = PersistentQueue.create<number>()
+    const q1 = q0.enqueue(1)
+    const q2 = q1.enqueue(2)
+    const q3 = q2.enqueue(3)
+    expect(q0).not.toBe(q1)
+    expect(q1).not.toBe(q2)
+    expect(q2).not.toBe(q3)
+  })
+
+  it('dequeue after multiple enqueues maintains order', () => {
+    const q = PersistentQueue.create<number>().enqueue(1).enqueue(2).enqueue(3).enqueue(4)
+    const r1 = q.dequeue()!
+    expect(r1.value).toBe(1)
+    const r2 = r1.queue.dequeue()!
+    expect(r2.value).toBe(2)
+    const r3 = r2.queue.dequeue()!
+    expect(r3.value).toBe(3)
+    const r4 = r3.queue.dequeue()!
+    expect(r4.value).toBe(4)
+  })
+
+  it('toArray returns new array on each call', () => {
+    const q = PersistentQueue.create<number>().enqueue(1).enqueue(2)
+    const arr1 = q.toArray()
+    const arr2 = q.toArray()
+    expect(arr1).not.toBe(arr2)
+    expect(arr1).toEqual(arr2)
+  })
 })

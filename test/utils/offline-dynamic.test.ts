@@ -352,4 +352,47 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(0, 2, 9)
     expect(odc.solve()).toEqual([false, true, true, true])
   })
+
+  it('edge with zero duration is still added', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 3, 3)
+    odc.addQuery(0, 1, 3)
+    expect(odc.solve()).toEqual([true])
+  })
+
+  it('queries interleaved with edge additions', () => {
+    const odc = new OfflineDynamicConnectivity(4)
+    odc.addEdge(0, 1, 1, 5)
+    odc.addQuery(0, 1, 0)
+    odc.addQuery(0, 1, 2)
+    odc.addEdge(1, 2, 3, 6)
+    odc.addQuery(0, 2, 4)
+    odc.addEdge(2, 3, 5, 7)
+    odc.addQuery(0, 3, 6)
+    expect(odc.solve()).toEqual([false, true, true, true])
+  })
+
+  it('multiple edges between same nodes at different times', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 2)
+    odc.addEdge(0, 1, 4, 6)
+    odc.addEdge(0, 1, 8, 10)
+    odc.addQuery(0, 1, 1)
+    odc.addQuery(0, 1, 3)
+    odc.addQuery(0, 1, 5)
+    odc.addQuery(0, 1, 7)
+    odc.addQuery(0, 1, 9)
+    expect(odc.solve()).toEqual([true, true, true, true, true])
+  })
+
+  it('queries on unconnected nodes in dense graph', () => {
+    const odc = new OfflineDynamicConnectivity(6)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addEdge(1, 2, 0, 10)
+    odc.addEdge(2, 3, 0, 10)
+    odc.addEdge(3, 4, 0, 10)
+    odc.addEdge(4, 5, 0, 10)
+    odc.addQuery(0, 5, 5)
+    expect(odc.solve()).toEqual([true])
+  })
 })

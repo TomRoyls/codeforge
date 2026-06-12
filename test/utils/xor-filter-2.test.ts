@@ -361,5 +361,16 @@ describe('XorFilter', () => {
       }
       expect(results.every((r) => r === true)).toBe(true)
     })
+
+    it('handles single item filter', () => {
+      const filter = new XorFilter(['only'])
+      expect(filter.has('only')).toBe(true)
+    })
+
+    it('has returns boolean for any input', () => {
+      const filter = new XorFilter(['alpha', 'beta', 'gamma'])
+      expect(typeof filter.has('alpha')).toBe('boolean')
+      expect(typeof filter.has('delta')).toBe('boolean')
+    })
   })
 })

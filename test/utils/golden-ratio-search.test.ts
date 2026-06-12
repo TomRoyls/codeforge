@@ -229,4 +229,15 @@ describe('GoldenRatioSearch maximize', () => {
     const x = GoldenRatioSearch.maximize((t) => -(t - 0.5) * (t - 0.5), 0.49, 0.51)
     expect(x).toBeCloseTo(0.5, 2)
   })
+
+  it('minimizes flat function returns boundary point', () => {
+    const x = GoldenRatioSearch.minimize(() => 5, 0, 10)
+    expect(x).toBeGreaterThanOrEqual(0)
+    expect(x).toBeLessThanOrEqual(10)
+  })
+
+  it('minimize with asymmetric range', () => {
+    const x = GoldenRatioSearch.minimize((t) => (t - 1) * (t - 1), -100, 100)
+    expect(x).toBeCloseTo(1, 0)
+  })
 })

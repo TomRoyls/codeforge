@@ -240,4 +240,50 @@ describe('Logger methods', () => {
       log.info(`message ${i}`)
     }
   })
+
+  it('timestamp without colorize', () => {
+    const log = new Logger({ level: LogLevel.INFO, timestamp: true, colorize: false })
+    expect(() => log.info('test')).not.toThrow()
+  })
+
+  it('prefix without colorize', () => {
+    const log = new Logger({ level: LogLevel.INFO, prefix: 'PREFIX', colorize: false })
+    expect(() => log.info('test')).not.toThrow()
+  })
+
+  it('multiple extra arguments', () => {
+    const log = new Logger({ level: LogLevel.DEBUG })
+    expect(() => log.info('msg', 'arg1', 'arg2', 'arg3', 'arg4')).not.toThrow()
+  })
+
+  it('getLevel returns correct level after construction', () => {
+    const log = new Logger({ level: LogLevel.WARN })
+    expect(log.getLevel()).toBe(LogLevel.WARN)
+  })
+
+  it('nested object in arguments', () => {
+    const log = new Logger({ level: LogLevel.INFO })
+    const obj = { a: { b: { c: 1 } } }
+    expect(() => log.info('nested', obj)).not.toThrow()
+  })
+
+  it('special characters in message', () => {
+    const log = new Logger({ level: LogLevel.INFO })
+    expect(() => log.info('test \n \t \r \\')).not.toThrow()
+  })
+
+  it('numeric message', () => {
+    const log = new Logger({ level: LogLevel.INFO })
+    expect(() => log.info('12345')).not.toThrow()
+  })
+
+  it('empty array in arguments', () => {
+    const log = new Logger({ level: LogLevel.DEBUG })
+    expect(() => log.debug('empty', [])).not.toThrow()
+  })
+
+  it('Date object in arguments', () => {
+    const log = new Logger({ level: LogLevel.INFO })
+    expect(() => log.info('date', new Date())).not.toThrow()
+  })
 })

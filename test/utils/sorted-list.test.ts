@@ -338,4 +338,23 @@ describe('SortedList', () => {
     sl.insert(2)
     expect(sl.slice(5)).toEqual([])
   })
+
+  it('handles duplicate values', () => {
+    const sl = new SortedList<number>()
+    sl.insert(3)
+    sl.insert(3)
+    sl.insert(3)
+    expect(sl.size).toBe(3)
+    expect(sl.slice()).toEqual([3, 3, 3])
+  })
+
+  it('clear removes all elements', () => {
+    const sl = new SortedList<number>()
+    sl.insert(1)
+    sl.insert(2)
+    sl.insert(3)
+    sl.clear()
+    expect(sl.size).toBe(0)
+    expect(sl.min()).toBeUndefined()
+  })
 })

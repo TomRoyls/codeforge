@@ -408,4 +408,41 @@ describe('ZigguratNormal', () => {
     }
     expect(foundExtreme).toBe(true)
   })
+
+  it('sampleMean with very large count approaches zero', () => {
+    const rng = new ZigguratNormal()
+    const mean = rng.sampleMean(100000)
+    expect(Math.abs(mean)).toBeLessThan(0.02)
+  })
+
+  it('distribution skewness is near zero', () => {
+    const rng = new ZigguratNormal()
+    const n = 10000
+    const samples = rng.sampleN(n)
+    const mean = samples.reduce((a, b) => a + b, 0) / n
+    const variance = samples.reduce((a, b) => a + (b - mean) ** 2, 0) / n
+    const stdDev = Math.sqrt(variance)
+    const skewness = samples.reduce((a, b) => a + ((b - mean) / stdDev) ** 3, 0) / n
+    expect(Math.abs(skewness)).toBeLessThan(0.3)
+  })
+
+  it('distribution kurtosis is near 3', () => {
+    const rng = new ZigguratNormal()
+    const n = 10000
+    const samples = rng.sampleN(n)
+    const mean = samples.reduce((a, b) => a + b, 0) / n
+    const variance = samples.reduce((a, b) => a + (b - mean) ** 2, 0) / n
+    const stdDev = Math.sqrt(variance)
+    const kurtosis = samples.reduce((a, b) => a + ((b - mean) / stdDev) ** 4, 0) / n
+    expect(Math.abs(kurtosis - 3)).toBeLessThan(1.0)
+  })
+
+  it('sampleN with very large count works', () => {
+    const rng = new ZigguratNormal()
+    const samples = rng.sampleN(50000)
+    expect(samples.length).toBe(50000)
+    for (let i = 0; i < samples.length; i++) {
+      expect(Number.isFinite(samples[i])).toBe(true)
+    }
+  })
 })

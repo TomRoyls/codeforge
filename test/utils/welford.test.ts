@@ -266,4 +266,24 @@ describe('Welford', () => {
     expect(w.meanValue).toBe(15)
     expect(w.n).toBe(2)
   })
+
+  it('addBatch with large dataset', () => {
+    const w = new Welford()
+    w.addBatch(Array.from({ length: 1000 }, (_, i) => i))
+    expect(w.n).toBe(1000)
+    expect(w.meanValue).toBeCloseTo(499.5, 0)
+  })
+
+  it('variance is non-negative for any data', () => {
+    const w = Welford.fromArray([2, 4, 4, 4, 5, 5, 7, 9])
+    expect(w.variance).toBeGreaterThanOrEqual(0)
+  })
+
+  it('merge two separate datasets', () => {
+    const w1 = Welford.fromArray([1, 2, 3])
+    const w2 = Welford.fromArray([4, 5, 6])
+    w1.merge(w2)
+    expect(w1.n).toBe(6)
+    expect(w1.meanValue).toBeCloseTo(3.5, 5)
+  })
 })

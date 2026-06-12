@@ -263,4 +263,58 @@ describe('KMPAutomaton', () => {
     const kmp = new KMPAutomaton('abab')
     expect(kmp.search('abababab')).toEqual([0, 2, 4])
   })
+
+  it('handles pattern with newline characters', () => {
+    const kmp = new KMPAutomaton('a\nb')
+    expect(kmp.search('x\na\nb\ny')).toEqual([2])
+  })
+
+  it('handles pattern with tab characters', () => {
+    const kmp = new KMPAutomaton('a\tb')
+    expect(kmp.search('x\ta\tb\ty')).toEqual([2])
+  })
+
+  it('handles pattern with escape sequences', () => {
+    const kmp = new KMPAutomaton('a\\nb')
+    expect(kmp.search('x\\na\\nby')).toEqual([3])
+  })
+
+  it('getFailure for pattern with proper prefix-suffix', () => {
+    const kmp = new KMPAutomaton('ababa')
+    const fail = kmp.getFailure()
+    expect(fail).toEqual([-1, 0, 0, 1, 2, 3])
+  })
+
+  it('toJSON returns different object on subsequent calls', () => {
+    const kmp = new KMPAutomaton('abc')
+    const json1 = kmp.toJSON()
+    const json2 = kmp.toJSON()
+    expect(json1).toEqual(json2)
+    expect(json1).not.toBe(json2)
+  })
+
+  it('equals returns false for undefined', () => {
+    const kmp = new KMPAutomaton('abc')
+    expect(kmp.equals(undefined)).toBe(false)
+  })
+
+  it('equals returns false for number', () => {
+    const kmp = new KMPAutomaton('abc')
+    expect(kmp.equals(123)).toBe(false)
+  })
+
+  it('search pattern containing backslash', () => {
+    const kmp = new KMPAutomaton('\\n')
+    expect(kmp.search('a\\nb')).toEqual([1])
+  })
+
+  it('search empty text returns empty array', () => {
+    const kmp = new KMPAutomaton('abc')
+    expect(kmp.search('')).toEqual([])
+  })
+
+  it('toString returns string representation', () => {
+    const kmp = new KMPAutomaton('ab')
+    expect(typeof kmp.toString()).toBe('string')
+  })
 })

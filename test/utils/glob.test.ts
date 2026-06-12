@@ -264,4 +264,17 @@ describe('matchAnyGlob advanced', () => {
     expect(matchAnyGlob('FOO.TS', ['*.ts'], { ignoreCase: true })).toBe(true)
     expect(matchAnyGlob('FOO.TS', ['*.ts'], { ignoreCase: false })).toBe(false)
   })
+
+  it('matchGlob respects ignoreCase option', () => {
+    expect(matchGlob('FOO.TS', '*.ts', { ignoreCase: true })).toBe(true)
+    expect(matchGlob('FOO.TS', '*.ts', { ignoreCase: false })).toBe(false)
+  })
+
+  it('matchAnyGlob with empty pattern in array', () => {
+    expect(matchAnyGlob('test', [''])).toBe(false)
+  })
+
+  it('matchAnyGlob with all matching patterns', () => {
+    expect(matchAnyGlob('test.ts', ['*.ts', 'test.*', '*t.ts'])).toBe(true)
+  })
 })

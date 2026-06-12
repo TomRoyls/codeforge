@@ -227,4 +227,21 @@ describe('SubstringCounter', () => {
     const counts = new SubstringCounter('abc').countAllOf(['a', 'b'])
     expect(counts).toBeInstanceOf(Map)
   })
+
+  it('countChar returns correct count', () => {
+    const sc = new SubstringCounter('abc')
+    expect(sc.countChar('a')).toBe(1)
+    expect(sc.countChar('z')).toBe(0)
+  })
+
+  it('getText returns original text', () => {
+    const sc = new SubstringCounter('hello')
+    expect(sc.getText()).toBe('hello')
+  })
+
+  it('contains returns correct boolean', () => {
+    const sc = new SubstringCounter('abc')
+    expect(sc.contains('ab')).toBe(true)
+    expect(sc.contains('xyz')).toBe(false)
+  })
 })
