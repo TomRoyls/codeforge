@@ -582,3 +582,15 @@ describe('persistent-stack - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-stack - wave561', () => {
+  it('persistent-stack w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

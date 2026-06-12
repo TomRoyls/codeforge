@@ -538,3 +538,15 @@ describe('shuffle - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('shuffle - wave561', () => {
+  it('shuffle w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

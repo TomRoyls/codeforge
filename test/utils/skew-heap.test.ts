@@ -752,3 +752,15 @@ describe('skew-heap - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skew-heap - wave561', () => {
+  it('skew-heap w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

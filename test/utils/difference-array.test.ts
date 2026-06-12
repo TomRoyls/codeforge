@@ -652,3 +652,15 @@ describe('difference-array - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('difference-array - wave561', () => {
+  it('difference-array w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

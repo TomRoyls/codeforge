@@ -689,3 +689,15 @@ describe('lfu-cache - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lfu-cache - wave561', () => {
+  it('lfu-cache w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

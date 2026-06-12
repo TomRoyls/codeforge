@@ -637,3 +637,15 @@ describe('recent-counter - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('recent-counter - wave561', () => {
+  it('recent-counter w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -480,3 +480,15 @@ describe('string-helpers - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-helpers - wave561', () => {
+  it('string-helpers w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-helpers w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-helpers w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

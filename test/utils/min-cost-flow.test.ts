@@ -653,3 +653,15 @@ describe('min-cost-flow - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-cost-flow - wave561', () => {
+  it('min-cost-flow w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

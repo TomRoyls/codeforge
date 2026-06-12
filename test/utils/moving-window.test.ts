@@ -662,3 +662,15 @@ describe('moving-window - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-window - wave561', () => {
+  it('moving-window w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

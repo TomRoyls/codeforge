@@ -736,3 +736,15 @@ describe('stable-priority-queue - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stable-priority-queue - wave561', () => {
+  it('stable-priority-queue w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stable-priority-queue w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

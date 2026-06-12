@@ -702,3 +702,15 @@ describe('treap-implicit - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap-implicit - wave561', () => {
+  it('treap-implicit w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

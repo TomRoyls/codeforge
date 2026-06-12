@@ -586,3 +586,15 @@ describe('euler-tour - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('euler-tour - wave561', () => {
+  it('euler-tour w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

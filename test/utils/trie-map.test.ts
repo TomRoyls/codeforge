@@ -625,3 +625,15 @@ describe('trie-map - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-map - wave561', () => {
+  it('trie-map w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

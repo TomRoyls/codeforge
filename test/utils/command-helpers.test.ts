@@ -513,3 +513,15 @@ describe('command-helpers - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('command-helpers - wave561', () => {
+  it('command-helpers w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

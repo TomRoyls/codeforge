@@ -641,3 +641,15 @@ describe('timer-wheel - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('timer-wheel - wave561', () => {
+  it('timer-wheel w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer-wheel w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

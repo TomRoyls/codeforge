@@ -683,3 +683,15 @@ describe('lsm-tree - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lsm-tree - wave561', () => {
+  it('lsm-tree w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

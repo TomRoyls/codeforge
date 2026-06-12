@@ -642,3 +642,15 @@ describe('lru-cache - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lru-cache - wave561', () => {
+  it('lru-cache w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-cache w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-cache w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

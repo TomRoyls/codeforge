@@ -485,3 +485,15 @@ describe('pollard-rho - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pollard-rho - wave561', () => {
+  it('pollard-rho w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

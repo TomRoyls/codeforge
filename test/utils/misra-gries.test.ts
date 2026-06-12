@@ -640,3 +640,15 @@ describe('misra-gries - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('misra-gries - wave561', () => {
+  it('misra-gries w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

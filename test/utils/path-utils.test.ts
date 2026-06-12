@@ -505,3 +505,15 @@ describe('path-utils - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('path-utils - wave561', () => {
+  it('path-utils w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

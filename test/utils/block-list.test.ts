@@ -621,3 +621,15 @@ describe('block-list - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('block-list - wave561', () => {
+  it('block-list w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-list w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-list w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

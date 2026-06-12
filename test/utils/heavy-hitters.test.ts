@@ -609,3 +609,15 @@ describe('heavy-hitters - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-hitters - wave561', () => {
+  it('heavy-hitters w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

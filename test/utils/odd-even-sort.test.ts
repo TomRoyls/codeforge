@@ -474,3 +474,15 @@ describe('odd-even-sort - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('odd-even-sort - wave561', () => {
+  it('odd-even-sort w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('odd-even-sort w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

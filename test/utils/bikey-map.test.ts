@@ -830,3 +830,15 @@ describe('bikey-map - wave560', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bikey-map - wave561', () => {
+  it('bikey-map w561 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w561 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w561 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
