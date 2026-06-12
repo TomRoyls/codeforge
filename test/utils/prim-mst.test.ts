@@ -491,4 +491,20 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.edges.length).toBe(3)
   })
+
+  it('single node MST weight 0', () => {
+    const mst = new PrimMST(1)
+    expect(mst.findMST().totalWeight).toBe(0)
+  })
+
+  it('two nodes with edge', () => {
+    const mst = new PrimMST(2)
+    mst.addEdge(0, 1, 5)
+    expect(mst.findMST().totalWeight).toBe(5)
+  })
+
+  it('isConnected returns boolean', () => {
+    const mst = new PrimMST(2)
+    expect(typeof mst.isConnected()).toBe('boolean')
+  })
 })

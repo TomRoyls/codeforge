@@ -455,4 +455,16 @@ describe('ParallelBinarySearch', () => {
     )
     expect(result.length).toBe(2)
   })
+
+  it('ParallelBinarySearch is a class', () => {
+    expect(typeof ParallelBinarySearch).toBe('function')
+  })
+
+  it('search is static', () => {
+    expect(typeof ParallelBinarySearch.search).toBe('function')
+  })
+
+  it('ParallelBinarySearch is defined', () => {
+    expect(ParallelBinarySearch).toBeDefined()
+  })
 })

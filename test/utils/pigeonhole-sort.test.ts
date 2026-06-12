@@ -260,4 +260,18 @@ describe('PigeonholeSort', () => {
 
   it('sort empty array', () => {
     expect(PigeonholeSort.sort([])).toEqual([])
+
+  it('sort empty array', () => {
+    expect(PigeonholeSort.sort([])).toEqual([])
   })
+
+  it('sort single element', () => {
+    expect(PigeonholeSort.sort([5])).toEqual([5])
+  })
+
+  it('sortInPlace works', () => {
+    const arr = [3, 1, 2]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+  })
+})

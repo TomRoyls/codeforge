@@ -273,4 +273,17 @@ describe('PollardRho', () => {
     const product = factors.reduce((a, b) => a * b, 1n)
     expect(product).toBe(100n)
   })
+
+  it('factorize 12', () => {
+    const factors = PollardRho.factorize(12)
+    expect(factors.length).toBeGreaterThan(0)
+  })
+
+  it('isPrime 7', () => {
+    expect(PollardRho.isPrime(7n)).toBe(true)
+  })
+
+  it('isPrime 4', () => {
+    expect(PollardRho.isPrime(4n)).toBe(false)
+  })
 })

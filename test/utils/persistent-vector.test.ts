@@ -337,4 +337,18 @@ describe('PersistentVector', () => {
     expect(vec2.get(0)).toBe(1)
     expect(vec3.get(0)).toBe(99)
   })
+
+  it('empty vector size 0', () => {
+    expect(PersistentVector.empty<number>().size).toBe(0)
+  })
+
+  it('of creates from items', () => {
+    const v = PersistentVector.of(1, 2, 3)
+    expect(v.get(1)).toBe(2)
+  })
+
+  it('push adds element', () => {
+    const v = PersistentVector.empty<number>().push(1).push(2)
+    expect(v.size).toBe(2)
+  })
 })

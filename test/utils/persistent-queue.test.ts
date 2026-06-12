@@ -409,4 +409,21 @@ describe('PersistentQueue', () => {
     const q = PersistentQueue.create<number>()
     expect(q.dequeue()).toBeNull()
   })
+
+  it('create returns empty queue', () => {
+    const q = PersistentQueue.create<number>()
+    expect(q.peek()).toBeUndefined()
+  })
+
+  it('enqueue and peek', () => {
+    const q = PersistentQueue.create<number>().enqueue(1).enqueue(2)
+    expect(q.peek()).toBe(1)
+  })
+
+  it('dequeue returns value', () => {
+    const q = PersistentQueue.create<number>().enqueue(1)
+    const result = q.dequeue()
+    expect(result).not.toBeNull()
+    expect(result!.value).toBe(1)
+  })
 })

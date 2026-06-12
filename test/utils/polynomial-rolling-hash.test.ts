@@ -290,4 +290,16 @@ describe('PolynomialRollingHash', () => {
       expect(new Set(hashes).size).toBe(1)
     })
   })
+
+  it('hash returns bigint', () => {
+    expect(typeof PolynomialRollingHash.hash('hello')).toBe('bigint')
+  })
+
+  it('hashArray returns bigint', () => {
+    expect(typeof PolynomialRollingHash.hashArray([1, 2, 3])).toBe('bigint')
+  })
+
+  it('same input same hash', () => {
+    expect(PolynomialRollingHash.hash('test')).toBe(PolynomialRollingHash.hash('test'))
+  })
 })

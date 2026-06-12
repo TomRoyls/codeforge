@@ -422,4 +422,16 @@ describe('NetworkFlow', () => {
     ]
     expect(NetworkFlow.maxFlow(edges, 0, 1, 4)).toBe(8)
   })
+
+  it('no edges max flow is 0', () => {
+    expect(NetworkFlow.maxFlow([], 0, 1, 2)).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    expect(NetworkFlow.maxFlow([{ from: 0, to: 1, capacity: 10 }], 0, 1, 2)).toBe(10)
+  })
+
+  it('hasAugmentingPath returns boolean', () => {
+    expect(typeof NetworkFlow.hasAugmentingPath([], 0, 1, 2)).toBe('boolean')
+  })
 })

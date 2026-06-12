@@ -416,7 +416,6 @@ describe('PlanarCheck', () => {
     pc.addEdge(1, 4)
     expect(pc.isPlanar()).toBe(true)
   })
-})
   it('single node is planar', () => {
     const pc = new PlanarCheck(1)
     expect(pc.isPlanar()).toBe(true)
@@ -434,4 +433,20 @@ describe('PlanarCheck', () => {
     pc.addEdge(1, 2)
     pc.addEdge(2, 0)
     expect(pc.isPlanar()).toBe(true)
+
+  it('single node is planar', () => {
+    const pc = new PlanarCheck(1)
+    expect(pc.isPlanar()).toBe(true)
   })
+
+  it('two nodes with edge is planar', () => {
+    const pc = new PlanarCheck(2)
+    pc.addEdge(0, 1)
+    expect(pc.isPlanar()).toBe(true)
+  })
+
+  it('clone works', () => {
+    const pc = new PlanarCheck(2)
+    expect(pc.clone()).toBeDefined()
+  })
+})

@@ -331,4 +331,16 @@ describe('PowerSet', () => {
   it('count for 10 is 1024', () => {
     expect(PowerSet.count(10)).toBe(1024)
   })
+
+  it('empty set returns [[]]', () => {
+    expect(PowerSet.generate([])).toEqual([[]])
+  })
+
+  it('single element returns 2 subsets', () => {
+    expect(PowerSet.generate([1]).length).toBe(2)
+  })
+
+  it('two elements returns 4 subsets', () => {
+    expect(PowerSet.generate([1, 2]).length).toBe(4)
+  })
 })

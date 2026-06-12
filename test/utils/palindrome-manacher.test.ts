@@ -292,4 +292,19 @@ describe('PalindromeManacher', () => {
     const m = new PalindromeManacher('abba')
     expect(m.longestPalindrome()).toBe('abba')
   })
+
+  it('empty string no palindromes', () => {
+    const m = new PalindromeManacher('')
+    expect(m.countAllPalindromes()).toBe(0)
+  })
+
+  it('single char is palindrome', () => {
+    const m = new PalindromeManacher('a')
+    expect(m.longestPalindrome()).toBe('a')
+  })
+
+  it('aba is palindrome', () => {
+    const m = new PalindromeManacher('aba')
+    expect(m.isPalindrome(0, 2)).toBe(true)
+  })
 })

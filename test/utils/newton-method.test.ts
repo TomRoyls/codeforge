@@ -455,4 +455,19 @@ describe('NewtonMethod', () => {
     )
     expect(x).toBeCloseTo(5, 3)
   })
+
+  it('findRoot for x^2 = 4', () => {
+    const root = NewtonMethod.findRoot((x) => x * x - 4, (x) => 2 * x, 3)
+    expect(Math.abs(root - 2)).toBeLessThan(0.001)
+  })
+
+  it('findRoot for linear', () => {
+    const root = NewtonMethod.findRoot((x) => x - 5, (x) => 1, 0)
+    expect(Math.abs(root - 5)).toBeLessThan(0.001)
+  })
+
+  it('findRootWithHistory returns array', () => {
+    const result = NewtonMethod.findRootWithHistory((x) => x * x - 1, (x) => 2 * x, 2)
+    expect(Array.isArray(result)).toBe(true)
+  })
 })

@@ -426,4 +426,21 @@ describe('Quadtree', () => {
     }
     expect(qt.findAll().length).toBe(20)
   })
+
+  it('empty quadtree', () => {
+    const qt = new Quadtree<any>({ x: 0, y: 0, w: 100, h: 100 })
+    expect(qt.findAll()).toEqual([])
+  })
+
+  it('insert and findAll', () => {
+    const qt = new Quadtree<any>({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 50, y: 50, data: 'a' })
+    expect(qt.findAll().length).toBe(1)
+  })
+
+  it('query range', () => {
+    const qt = new Quadtree<any>({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 50, y: 50, data: 'a' })
+    expect(qt.query({ x: 0, y: 0, w: 100, h: 100 }).length).toBe(1)
+  })
 })

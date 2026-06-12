@@ -355,4 +355,21 @@ describe('PersistentArray', () => {
     const arr = PersistentArray.from([1])
     expect(arr.get(5)).toBeUndefined()
   })
+
+  it('create returns array', () => {
+    const a = PersistentArray.create(3, 0)
+    expect(a.toArray()).toEqual([0, 0, 0])
+  })
+
+  it('from creates from items', () => {
+    const a = PersistentArray.from([1, 2, 3])
+    expect(a.get(1)).toBe(2)
+  })
+
+  it('set returns new array', () => {
+    const a = PersistentArray.from([1, 2, 3])
+    const b = a.set(1, 99)
+    expect(a.get(1)).toBe(2)
+    expect(b.get(1)).toBe(99)
+  })
 })

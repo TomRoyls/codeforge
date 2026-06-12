@@ -509,4 +509,20 @@ describe('PrioritySearchTree - corner cases', () => {
     const pst = new PrioritySearchTree()
     pst.insert(5, 3, 'a')
     expect(pst.query(10, 20, 10)).toEqual([])
+
+  it('insert and query', () => {
+    const pst = new PrioritySearchTree()
+    pst.insert(1, 1, 'a')
+    const result = pst.query(0, 2, 2)
+    expect(result.length).toBeGreaterThan(0)
   })
+
+  it('empty query returns empty', () => {
+    const pst = new PrioritySearchTree()
+    expect(pst.query(0, 1, 1)).toEqual([])
+  })
+
+  it('PrioritySearchTree is a class', () => {
+    expect(typeof PrioritySearchTree).toBe('function')
+  })
+})

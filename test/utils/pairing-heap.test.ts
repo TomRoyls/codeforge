@@ -499,4 +499,23 @@ describe('PairingHeap', () => {
       expect(heap.size).toBe(2)
     })
   })
+
+  it('empty heap peek undefined', () => {
+    const h = new PairingHeap<number>()
+    expect(h.peek()).toBeUndefined()
+  })
+
+  it('insert and peek', () => {
+    const h = new PairingHeap<number>()
+    h.insert(5)
+    expect(h.peek()).toBe(5)
+  })
+
+  it('findMin returns min', () => {
+    const h = new PairingHeap<number>()
+    h.insert(5)
+    h.insert(3)
+    h.insert(7)
+    expect(h.findMin()).toBe(3)
+  })
 })

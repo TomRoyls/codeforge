@@ -568,4 +568,22 @@ describe('PriorityQueue - size consistency', () => {
     const result: number[] = []
     while (pq.size > 0) result.push(pq.dequeue()!)
     expect(result).toEqual([1, 3, 5])
+
+  it('empty queue peek undefined', () => {
+    const pq = new PriorityQueue<number>()
+    expect(pq.peek()).toBeUndefined()
   })
+
+  it('enqueue and dequeue', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(3)
+    pq.enqueue(1)
+    pq.enqueue(2)
+    expect(pq.dequeue()).toBe(1)
+  })
+
+  it('isEmpty on new queue', () => {
+    const pq = new PriorityQueue<number>()
+    expect(pq.isEmpty()).toBe(true)
+  })
+})

@@ -290,4 +290,16 @@ describe('NumberTheory', () => {
   it('sumOfDivisors for 6 is 12', () => {
     expect(NumberTheory.sumOfDivisors(6)).toBe(12)
   })
+
+  it('gcd of 12 and 8 is 4', () => {
+    expect(NumberTheory.gcd(12, 8)).toBe(4)
+  })
+
+  it('lcm of 4 and 6 is 12', () => {
+    expect(NumberTheory.lcm(4, 6)).toBe(12)
+  })
+
+  it('gcd of 0 and n is n', () => {
+    expect(NumberTheory.gcd(0, 7)).toBe(7)
+  })
 })

@@ -277,4 +277,16 @@ describe('PancakeSort', () => {
     PancakeSort.flip(arr, 3)
     expect(arr).toEqual([3, 2, 1, 4, 5])
   })
+
+  it('sort empty array', () => {
+    expect(PancakeSort.sort([])).toEqual([])
+  })
+
+  it('sort single element', () => {
+    expect(PancakeSort.sort([5])).toEqual([5])
+  })
+
+  it('sort reversed', () => {
+    expect(PancakeSort.sort([3, 2, 1])).toEqual([1, 2, 3])
+  })
 })
