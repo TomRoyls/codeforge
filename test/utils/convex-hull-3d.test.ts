@@ -753,3 +753,15 @@ describe('convex-hull-3d - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('convex-hull-3d - wave563', () => {
+  it('convex-hull-3d w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

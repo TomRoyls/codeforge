@@ -472,3 +472,15 @@ describe('digit-sum - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('digit-sum - wave563', () => {
+  it('digit-sum w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

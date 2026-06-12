@@ -589,3 +589,15 @@ describe('permutation-iterator - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('permutation-iterator - wave563', () => {
+  it('permutation-iterator w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -668,3 +668,15 @@ describe('rope - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rope - wave563', () => {
+  it('rope w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

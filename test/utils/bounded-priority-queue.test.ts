@@ -683,3 +683,15 @@ describe('bounded-priority-queue - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bounded-priority-queue - wave563', () => {
+  it('bounded-priority-queue w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

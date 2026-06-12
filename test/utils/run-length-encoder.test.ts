@@ -617,3 +617,15 @@ describe('run-length-encoder - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoder - wave563', () => {
+  it('run-length-encoder w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

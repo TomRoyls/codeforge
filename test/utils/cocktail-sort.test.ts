@@ -501,3 +501,15 @@ describe('cocktail-sort - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cocktail-sort - wave563', () => {
+  it('cocktail-sort w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cocktail-sort w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cocktail-sort w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

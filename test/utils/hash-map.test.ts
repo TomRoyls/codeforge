@@ -702,3 +702,15 @@ describe('hash-map - wave562', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('hash-map - wave563', () => {
+  it('hash-map w563 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map w563 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map w563 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

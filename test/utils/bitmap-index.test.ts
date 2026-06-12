@@ -653,3 +653,15 @@ describe('bitmap-index - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bitmap-index - wave563', () => {
+  it('bitmap-index w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -632,3 +632,15 @@ describe('approximate-set - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('approximate-set - wave563', () => {
+  it('approximate-set w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

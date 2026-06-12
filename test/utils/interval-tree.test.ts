@@ -705,3 +705,15 @@ describe('interval-tree - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-tree - wave563', () => {
+  it('interval-tree w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

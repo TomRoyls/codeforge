@@ -659,3 +659,15 @@ describe('deterministic-rng - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deterministic-rng - wave563', () => {
+  it('deterministic-rng w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

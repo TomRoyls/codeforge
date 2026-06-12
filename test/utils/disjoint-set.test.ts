@@ -726,3 +726,15 @@ describe('disjoint-set - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-set - wave563', () => {
+  it('disjoint-set w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

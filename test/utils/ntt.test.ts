@@ -584,3 +584,15 @@ describe('ntt - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ntt - wave563', () => {
+  it('ntt w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

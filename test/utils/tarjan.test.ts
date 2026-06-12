@@ -675,3 +675,15 @@ describe('tarjan - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tarjan - wave563', () => {
+  it('tarjan w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

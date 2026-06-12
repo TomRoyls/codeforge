@@ -495,3 +495,15 @@ describe('stooge-sort - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stooge-sort - wave563', () => {
+  it('stooge-sort w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stooge-sort w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

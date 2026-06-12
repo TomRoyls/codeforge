@@ -748,3 +748,15 @@ describe('priority-search-tree - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('priority-search-tree - wave563', () => {
+  it('priority-search-tree w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

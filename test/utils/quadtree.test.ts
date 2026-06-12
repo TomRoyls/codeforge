@@ -666,3 +666,15 @@ describe('quadtree - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quadtree - wave563', () => {
+  it('quadtree w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quadtree w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quadtree w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

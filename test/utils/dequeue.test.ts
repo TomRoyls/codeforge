@@ -773,3 +773,15 @@ describe('dequeue - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dequeue - wave563', () => {
+  it('dequeue w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

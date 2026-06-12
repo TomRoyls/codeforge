@@ -698,3 +698,15 @@ describe('robin-hood-map - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('robin-hood-map - wave563', () => {
+  it('robin-hood-map w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

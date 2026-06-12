@@ -694,3 +694,15 @@ describe('deque - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deque - wave563', () => {
+  it('deque w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

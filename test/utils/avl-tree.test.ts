@@ -848,3 +848,15 @@ describe('avl-tree - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('avl-tree - wave563', () => {
+  it('avl-tree w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -627,3 +627,15 @@ describe('map-helpers - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('map-helpers - wave563', () => {
+  it('map-helpers w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('map-helpers w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('map-helpers w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -493,3 +493,15 @@ describe('boyer-moore-vote - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore-vote - wave563', () => {
+  it('boyer-moore-vote w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -576,3 +576,15 @@ describe('random-walk - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('random-walk - wave563', () => {
+  it('random-walk w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

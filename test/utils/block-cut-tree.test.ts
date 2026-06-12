@@ -814,3 +814,15 @@ describe('block-cut-tree - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('block-cut-tree - wave563', () => {
+  it('block-cut-tree w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

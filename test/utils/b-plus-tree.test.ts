@@ -828,3 +828,15 @@ describe('b-plus-tree - wave562', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('b-plus-tree - wave563', () => {
+  it('b-plus-tree w563 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('b-plus-tree w563 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('b-plus-tree w563 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

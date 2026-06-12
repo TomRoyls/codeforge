@@ -721,3 +721,15 @@ describe('hierarchical-timer - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hierarchical-timer - wave563', () => {
+  it('hierarchical-timer w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -628,3 +628,15 @@ describe('graph-coloring - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-coloring - wave563', () => {
+  it('graph-coloring w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

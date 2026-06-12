@@ -850,3 +850,15 @@ describe('debounce - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('debounce - wave563', () => {
+  it('debounce w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

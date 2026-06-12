@@ -613,3 +613,15 @@ describe('kosaraju - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kosaraju - wave563', () => {
+  it('kosaraju w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

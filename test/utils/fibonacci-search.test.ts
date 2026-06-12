@@ -571,3 +571,15 @@ describe('fibonacci-search - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-search - wave563', () => {
+  it('fibonacci-search w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

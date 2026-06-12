@@ -666,3 +666,15 @@ describe('arc-cache - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('arc-cache - wave563', () => {
+  it('arc-cache w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

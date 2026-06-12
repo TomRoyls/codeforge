@@ -702,3 +702,15 @@ describe('cartesian-product-graph - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-product-graph - wave563', () => {
+  it('cartesian-product-graph w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

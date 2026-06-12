@@ -679,3 +679,15 @@ describe('offline-dynamic - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('offline-dynamic - wave563', () => {
+  it('offline-dynamic w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

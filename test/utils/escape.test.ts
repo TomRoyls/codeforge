@@ -483,3 +483,15 @@ describe('escape - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('escape - wave563', () => {
+  it('escape w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

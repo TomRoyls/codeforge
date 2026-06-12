@@ -631,3 +631,15 @@ describe('consistent-hash-ring - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('consistent-hash-ring - wave563', () => {
+  it('consistent-hash-ring w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

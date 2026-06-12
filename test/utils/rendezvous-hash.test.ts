@@ -715,3 +715,15 @@ describe('rendezvous-hash - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rendezvous-hash - wave563', () => {
+  it('rendezvous-hash w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

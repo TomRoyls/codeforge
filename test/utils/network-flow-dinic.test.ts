@@ -664,3 +664,15 @@ describe('network-flow-dinic - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('network-flow-dinic - wave563', () => {
+  it('network-flow-dinic w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

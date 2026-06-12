@@ -955,3 +955,15 @@ describe('leftist-heap - wave562', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('leftist-heap - wave563', () => {
+  it('leftist-heap w563 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w563 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w563 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

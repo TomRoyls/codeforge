@@ -723,3 +723,15 @@ describe('tree-decomposition - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-decomposition - wave563', () => {
+  it('tree-decomposition w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

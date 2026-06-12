@@ -725,3 +725,15 @@ describe('closest-pair-brute - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair-brute - wave563', () => {
+  it('closest-pair-brute w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

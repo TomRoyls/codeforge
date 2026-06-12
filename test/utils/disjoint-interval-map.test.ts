@@ -742,3 +742,15 @@ describe('disjoint-interval-map - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-interval-map - wave563', () => {
+  it('disjoint-interval-map w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-map w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-map w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

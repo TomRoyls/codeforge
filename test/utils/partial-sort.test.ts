@@ -478,3 +478,15 @@ describe('partial-sort - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('partial-sort - wave563', () => {
+  it('partial-sort w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

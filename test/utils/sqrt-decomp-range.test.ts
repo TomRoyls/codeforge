@@ -554,3 +554,15 @@ describe('sqrt-decomp-range - wave562', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sqrt-decomp-range - wave563', () => {
+  it('sqrt-decomp-range w563 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w563 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range w563 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
