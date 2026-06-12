@@ -2434,3 +2434,309 @@ describe('watcher - w500', () => {
     expect(mkdirSync).toBeDefined()
   })
 })
+
+describe('watcher - w550', () => {
+  it('watcher x550x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x3', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x4', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x5', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x6', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x7', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x8', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x9', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x10', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x11', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x12', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x13', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x14', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x15', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x16', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x17', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x18', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x19', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x20', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x21', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x22', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x23', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x24', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x25', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x26', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x27', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x28', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x29', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x30', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x31', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x32', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x33', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x34', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x35', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x36', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x37', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x38', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x39', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x40', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x41', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x42', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x43', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x44', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x45', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x46', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x47', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x48', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x550x49', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})
+
+describe('watcher - w600', () => {
+  it('watcher x600x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x3', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x4', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x5', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x6', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x7', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x8', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x9', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x10', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x11', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x12', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x13', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x14', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x15', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x16', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x17', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x18', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x19', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x20', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x21', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x22', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x23', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x24', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x25', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x26', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x27', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x28', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x29', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x30', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x31', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x32', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x33', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x34', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x35', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x36', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x37', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x38', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x39', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x40', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x41', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x42', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x43', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x44', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x45', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x46', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x47', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x48', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher x600x49', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})

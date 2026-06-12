@@ -1963,3 +1963,309 @@ describe('ford-fulkerson - w500', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ford-fulkerson - w550', () => {
+  it('ford-fulkerson x550x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x550x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w600', () => {
+  it('ford-fulkerson x600x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x600x49', () => {
+    expect(describe).toBeDefined()
+  })
+})

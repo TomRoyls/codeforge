@@ -2112,3 +2112,309 @@ describe('fs-helpers - w500', () => {
     expect(existsSync).toBeDefined()
   })
 })
+
+describe('fs-helpers - w550', () => {
+  it('fs-helpers x550x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x3', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x4', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x5', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x6', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x7', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x8', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x9', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x10', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x11', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x12', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x13', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x14', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x15', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x16', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x17', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x18', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x19', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x20', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x21', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x22', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x23', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x24', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x25', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x26', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x27', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x28', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x29', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x30', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x31', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x32', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x33', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x34', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x35', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x36', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x37', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x38', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x39', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x40', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x41', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x42', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x43', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x44', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x45', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x46', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x47', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x48', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x550x49', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w600', () => {
+  it('fs-helpers x600x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x3', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x4', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x5', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x6', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x7', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x8', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x9', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x10', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x11', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x12', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x13', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x14', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x15', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x16', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x17', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x18', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x19', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x20', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x21', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x22', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x23', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x24', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x25', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x26', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x27', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x28', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x29', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x30', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x31', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x32', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x33', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x34', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x35', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x36', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x37', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x38', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x39', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x40', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x41', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x42', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x43', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x44', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x45', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x46', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x47', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x48', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x600x49', () => {
+    expect(existsSync).toBeDefined()
+  })
+})

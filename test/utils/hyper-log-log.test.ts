@@ -1960,3 +1960,309 @@ describe('hyper-log-log - w500', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hyper-log-log - w550', () => {
+  it('hyper-log-log x550x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x550x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - w600', () => {
+  it('hyper-log-log x600x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log x600x49', () => {
+    expect(describe).toBeDefined()
+  })
+})

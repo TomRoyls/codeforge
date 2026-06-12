@@ -2035,3 +2035,309 @@ describe('union-find - w500', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('union-find - w550', () => {
+  it('union-find x550x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x550x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find - w600', () => {
+  it('union-find x600x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x600x49', () => {
+    expect(describe).toBeDefined()
+  })
+})

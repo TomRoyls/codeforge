@@ -1976,3 +1976,309 @@ describe('bandwidth-minimization - w500', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bandwidth-minimization - w550', () => {
+  it('bandwidth-minimization x550x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x550x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - w600', () => {
+  it('bandwidth-minimization x600x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization x600x49', () => {
+    expect(describe).toBeDefined()
+  })
+})

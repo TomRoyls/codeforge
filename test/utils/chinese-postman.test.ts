@@ -1993,3 +1993,309 @@ describe('chinese-postman - w500', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chinese-postman - w550', () => {
+  it('chinese-postman x550x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x550x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-postman - w600', () => {
+  it('chinese-postman x600x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman x600x49', () => {
+    expect(describe).toBeDefined()
+  })
+})

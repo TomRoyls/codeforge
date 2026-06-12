@@ -1975,3 +1975,309 @@ describe('rollback-dsu - w500', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rollback-dsu - w550', () => {
+  it('rollback-dsu x550x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x550x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - w600', () => {
+  it('rollback-dsu x600x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x600x49', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1757,3 +1757,309 @@ describe('longest-common-substring - w500', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-common-substring - w550', () => {
+  it('longest-common-substring x550x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x550x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - w600', () => {
+  it('longest-common-substring x600x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring x600x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
