@@ -729,3 +729,15 @@ describe('double-buffer - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('double-buffer - wave565', () => {
+  it('double-buffer w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

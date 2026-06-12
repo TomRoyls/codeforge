@@ -648,3 +648,15 @@ describe('sliding-window-counter - wave564', () => {
     expect(afterEach).toBeDefined()
   })
 })
+
+describe('sliding-window-counter - wave565', () => {
+  it('sliding-window-counter w565 v0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter w565 v1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter w565 v2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})

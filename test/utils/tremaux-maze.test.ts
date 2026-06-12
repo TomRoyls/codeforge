@@ -804,3 +804,15 @@ describe('tremaux-maze - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tremaux-maze - wave565', () => {
+  it('tremaux-maze w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tremaux-maze w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

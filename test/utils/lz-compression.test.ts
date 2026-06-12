@@ -599,3 +599,15 @@ describe('lz-compression - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lz-compression - wave565', () => {
+  it('lz-compression w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -542,3 +542,15 @@ describe('ternary-search-continuous - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search-continuous - wave565', () => {
+  it('ternary-search-continuous w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

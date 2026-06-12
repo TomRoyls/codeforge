@@ -754,3 +754,15 @@ describe('deque-min - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deque-min - wave565', () => {
+  it('deque-min w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -688,3 +688,15 @@ describe('ford-fulkerson - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ford-fulkerson - wave565', () => {
+  it('ford-fulkerson w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

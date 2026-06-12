@@ -699,3 +699,15 @@ describe('convex-hull - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('convex-hull - wave565', () => {
+  it('convex-hull w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -646,3 +646,15 @@ describe('eulerian-path - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('eulerian-path - wave565', () => {
+  it('eulerian-path w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

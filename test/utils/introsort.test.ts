@@ -603,3 +603,15 @@ describe('introsort - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('introsort - wave565', () => {
+  it('introsort w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

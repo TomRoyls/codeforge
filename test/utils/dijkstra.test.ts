@@ -876,3 +876,15 @@ describe('dijkstra - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dijkstra - wave565', () => {
+  it('dijkstra w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

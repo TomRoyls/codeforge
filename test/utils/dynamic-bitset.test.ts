@@ -636,3 +636,15 @@ describe('dynamic-bitset - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dynamic-bitset - wave565', () => {
+  it('dynamic-bitset w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-bitset w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-bitset w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

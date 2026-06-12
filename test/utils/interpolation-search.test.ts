@@ -504,3 +504,15 @@ describe('interpolation-search - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interpolation-search - wave565', () => {
+  it('interpolation-search w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

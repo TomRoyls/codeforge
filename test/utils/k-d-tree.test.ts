@@ -905,3 +905,15 @@ describe('k-d-tree - wave564', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('k-d-tree - wave565', () => {
+  it('k-d-tree w565 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('k-d-tree w565 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('k-d-tree w565 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

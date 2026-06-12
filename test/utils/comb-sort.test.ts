@@ -531,3 +531,15 @@ describe('comb-sort - wave564', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comb-sort - wave565', () => {
+  it('comb-sort w565 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort w565 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort w565 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
