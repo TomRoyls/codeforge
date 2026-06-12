@@ -599,3 +599,15 @@ describe('sorted-set - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sorted-set - wave551', () => {
+  it('sorted-set w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

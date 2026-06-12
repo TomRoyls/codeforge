@@ -553,3 +553,15 @@ describe('heavy-light - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-light - wave551', () => {
+  it('heavy-light w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

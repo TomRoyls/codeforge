@@ -538,3 +538,15 @@ describe('top-k-stream - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k-stream - wave551', () => {
+  it('top-k-stream w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

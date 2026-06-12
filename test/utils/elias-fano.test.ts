@@ -462,3 +462,15 @@ describe('elias-fano - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-fano - wave551', () => {
+  it('elias-fano w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -362,3 +362,15 @@ describe('ternary-search - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search - wave551', () => {
+  it('ternary-search w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

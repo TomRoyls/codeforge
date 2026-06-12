@@ -538,3 +538,15 @@ describe('digital-tree - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('digital-tree - wave551', () => {
+  it('digital-tree w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digital-tree w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digital-tree w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

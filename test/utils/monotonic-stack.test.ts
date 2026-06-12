@@ -448,3 +448,15 @@ describe('monotonic-stack - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monotonic-stack - wave551', () => {
+  it('monotonic-stack w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

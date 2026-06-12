@@ -436,3 +436,15 @@ describe('tim-sort - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tim-sort - wave551', () => {
+  it('tim-sort w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tim-sort w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tim-sort w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

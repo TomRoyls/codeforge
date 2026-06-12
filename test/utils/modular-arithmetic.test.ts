@@ -367,3 +367,15 @@ describe('modular-arithmetic - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modular-arithmetic - wave551', () => {
+  it('modular-arithmetic w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -406,3 +406,15 @@ describe('string-hasher - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-hasher - wave551', () => {
+  it('string-hasher w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

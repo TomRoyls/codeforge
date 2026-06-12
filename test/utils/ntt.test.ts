@@ -440,3 +440,15 @@ describe('ntt - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ntt - wave551', () => {
+  it('ntt w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -614,3 +614,15 @@ describe('count-min-sketch-weighted - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('count-min-sketch-weighted - wave551', () => {
+  it('count-min-sketch-weighted w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

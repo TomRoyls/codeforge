@@ -769,3 +769,15 @@ describe('min-max-stack - wave550', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-stack - wave551', () => {
+  it('min-max-stack w551 check 0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w551 check 1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack w551 check 2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

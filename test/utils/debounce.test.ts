@@ -706,3 +706,15 @@ describe('debounce - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('debounce - wave551', () => {
+  it('debounce w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

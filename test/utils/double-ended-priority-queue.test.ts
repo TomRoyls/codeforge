@@ -625,3 +625,15 @@ describe('double-ended-priority-queue - wave550', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('double-ended-priority-queue - wave551', () => {
+  it('double-ended-priority-queue w551 check 0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w551 check 1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue w551 check 2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

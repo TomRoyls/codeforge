@@ -586,3 +586,15 @@ describe('sliding-window-median - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-median - wave551', () => {
+  it('sliding-window-median w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

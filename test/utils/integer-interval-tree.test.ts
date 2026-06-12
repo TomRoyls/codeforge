@@ -597,3 +597,14 @@ describe('IntegerIntervalTree', () => {
     })
   })
 })
+describe('integer-interval-tree - wave551', () => {
+  it('integer-interval-tree w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

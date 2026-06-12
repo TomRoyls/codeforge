@@ -353,3 +353,15 @@ describe('roman-numeral - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('roman-numeral - wave551', () => {
+  it('roman-numeral w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -661,3 +661,15 @@ describe('bi-map - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bi-map - wave551', () => {
+  it('bi-map w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

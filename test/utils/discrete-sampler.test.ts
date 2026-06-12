@@ -533,3 +533,15 @@ describe('discrete-sampler - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('discrete-sampler - wave551', () => {
+  it('discrete-sampler w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

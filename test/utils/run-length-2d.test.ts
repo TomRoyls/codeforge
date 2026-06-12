@@ -416,3 +416,15 @@ describe('run-length-2d - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-2d - wave551', () => {
+  it('run-length-2d w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

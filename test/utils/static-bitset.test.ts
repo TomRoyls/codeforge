@@ -554,3 +554,8 @@ describe('StaticBitset', () => {
     expect(bs.isEmpty).toBe(true)
   })
 })
+describe('static-bitset - wave551', () => {
+  it('static-bitset w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+})

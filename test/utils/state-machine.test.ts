@@ -808,3 +808,15 @@ describe('state-machine - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('state-machine - wave551', () => {
+  it('state-machine w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

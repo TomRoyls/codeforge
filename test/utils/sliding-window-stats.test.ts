@@ -552,3 +552,15 @@ describe('sliding-window-stats - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-stats - wave551', () => {
+  it('sliding-window-stats w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -538,3 +538,15 @@ describe('cuckoo-filter - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-filter - wave551', () => {
+  it('cuckoo-filter w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

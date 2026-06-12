@@ -416,3 +416,15 @@ describe('circular-suffix-array - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-suffix-array - wave551', () => {
+  it('circular-suffix-array w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

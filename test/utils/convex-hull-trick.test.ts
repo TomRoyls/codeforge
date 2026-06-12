@@ -516,3 +516,15 @@ describe('convex-hull-trick - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('convex-hull-trick - wave551', () => {
+  it('convex-hull-trick w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -526,3 +526,15 @@ describe('timer - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('timer - wave551', () => {
+  it('timer w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

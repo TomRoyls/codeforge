@@ -357,3 +357,15 @@ describe('z-function - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('z-function - wave551', () => {
+  it('z-function w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

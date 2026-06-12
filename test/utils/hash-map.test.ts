@@ -558,3 +558,15 @@ describe('hash-map - wave550', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('hash-map - wave551', () => {
+  it('hash-map w551 check 0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map w551 check 1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map w551 check 2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

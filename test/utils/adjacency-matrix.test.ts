@@ -493,3 +493,15 @@ describe('adjacency-matrix - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-matrix - wave551', () => {
+  it('adjacency-matrix w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

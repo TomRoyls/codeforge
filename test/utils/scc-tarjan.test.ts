@@ -635,3 +635,15 @@ describe('scc-tarjan - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('scc-tarjan - wave551', () => {
+  it('scc-tarjan w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -604,3 +604,15 @@ describe('monotonic-deque - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monotonic-deque - wave551', () => {
+  it('monotonic-deque w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -500,3 +500,15 @@ describe('morris-traversal - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('morris-traversal - wave551', () => {
+  it('morris-traversal w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

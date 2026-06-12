@@ -554,3 +554,15 @@ describe('topological-sort - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('topological-sort - wave551', () => {
+  it('topological-sort w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

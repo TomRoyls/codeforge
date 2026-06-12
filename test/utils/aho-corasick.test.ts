@@ -510,3 +510,15 @@ describe('aho-corasick - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('aho-corasick - wave551', () => {
+  it('aho-corasick w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

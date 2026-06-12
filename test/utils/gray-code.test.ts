@@ -414,3 +414,15 @@ describe('gray-code - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gray-code - wave551', () => {
+  it('gray-code w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

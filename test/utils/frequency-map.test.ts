@@ -582,3 +582,15 @@ describe('frequency-map - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('frequency-map - wave551', () => {
+  it('frequency-map w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

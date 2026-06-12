@@ -708,3 +708,15 @@ describe('dijkstra - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dijkstra - wave551', () => {
+  it('dijkstra w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

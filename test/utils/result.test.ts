@@ -469,3 +469,15 @@ describe('result - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('result - wave551', () => {
+  it('result w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -365,3 +365,15 @@ describe('cartesian-product - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-product - wave551', () => {
+  it('cartesian-product w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

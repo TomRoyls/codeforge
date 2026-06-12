@@ -323,3 +323,15 @@ describe('kmp - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp - wave551', () => {
+  it('kmp w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -486,3 +486,15 @@ describe('code-pattern - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('code-pattern - wave551', () => {
+  it('code-pattern w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

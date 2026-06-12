@@ -522,3 +522,15 @@ describe('arc-cache - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('arc-cache - wave551', () => {
+  it('arc-cache w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

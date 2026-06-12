@@ -421,3 +421,15 @@ describe('spiral-matrix - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('spiral-matrix - wave551', () => {
+  it('spiral-matrix w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

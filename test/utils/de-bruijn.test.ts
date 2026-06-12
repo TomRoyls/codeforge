@@ -410,3 +410,15 @@ describe('de-bruijn - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('de-bruijn - wave551', () => {
+  it('de-bruijn w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

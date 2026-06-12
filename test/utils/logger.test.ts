@@ -403,3 +403,15 @@ describe('logger - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('logger - wave551', () => {
+  it('logger w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

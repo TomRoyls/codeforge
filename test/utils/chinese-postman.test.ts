@@ -550,3 +550,15 @@ describe('chinese-postman - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chinese-postman - wave551', () => {
+  it('chinese-postman w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-postman w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

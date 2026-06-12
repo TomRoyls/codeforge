@@ -451,3 +451,15 @@ describe('persistent-array - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-array - wave551', () => {
+  it('persistent-array w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

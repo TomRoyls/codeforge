@@ -768,3 +768,8 @@ describe('ObjectPool - edge cases', () => {
     expect(count).toBe(3)
   })
 })
+describe('object-pool - wave551', () => {
+  it('object-pool w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+})

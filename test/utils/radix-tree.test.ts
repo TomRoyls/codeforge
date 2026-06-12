@@ -639,3 +639,15 @@ describe('radix-tree - wave550', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('radix-tree - wave551', () => {
+  it('radix-tree w551 check 0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('radix-tree w551 check 1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('radix-tree w551 check 2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

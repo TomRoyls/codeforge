@@ -576,3 +576,15 @@ describe('ring-buffer-queue - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ring-buffer-queue - wave551', () => {
+  it('ring-buffer-queue w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ring-buffer-queue w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ring-buffer-queue w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

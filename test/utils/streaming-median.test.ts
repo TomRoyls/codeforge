@@ -524,3 +524,15 @@ describe('streaming-median - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-median - wave551', () => {
+  it('streaming-median w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

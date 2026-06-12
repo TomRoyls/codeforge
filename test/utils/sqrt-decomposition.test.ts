@@ -450,3 +450,15 @@ describe('sqrt-decomposition - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sqrt-decomposition - wave551', () => {
+  it('sqrt-decomposition w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

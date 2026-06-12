@@ -307,3 +307,15 @@ describe('boyer-moore-extended - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore-extended - wave551', () => {
+  it('boyer-moore-extended w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})

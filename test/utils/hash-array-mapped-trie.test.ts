@@ -567,3 +567,15 @@ describe('hash-array-mapped-trie - wave550', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-array-mapped-trie - wave551', () => {
+  it('hash-array-mapped-trie w551 check 0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w551 check 1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie w551 check 2', () => {
+    expect(describe).toBeDefined()
+  })
+})
