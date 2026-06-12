@@ -451,3 +451,24 @@ describe('Deque', () => {
     expect(dq.toArray()).toEqual([0, 1, 2])
   })
 })
+
+  it('isEmpty on new deque', () => {
+    const d = new Deque<number>()
+    expect(d.isEmpty).toBe(true)
+  })
+
+  it('size tracks count', () => {
+    const d = new Deque<number>()
+    d.pushBack(1)
+    d.pushBack(2)
+    expect(d.size).toBe(2)
+  })
+
+  it('front and back', () => {
+    const d = new Deque<number>()
+    d.pushBack(1)
+    d.pushBack(2)
+    d.pushBack(3)
+    expect(d.front()).toBe(1)
+    expect(d.back()).toBe(3)
+  })

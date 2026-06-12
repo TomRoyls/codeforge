@@ -477,3 +477,21 @@ describe('CuckooHashMap', () => {
     expect(map.values().sort()).toEqual([10, 20])
   })
 })
+  it('has returns false for missing', () => {
+    const m = new CuckooHashMap<string, number>()
+    expect(m.has('missing')).toBe(false)
+  })
+
+  it('delete removes entry', () => {
+    const m = new CuckooHashMap<string, number>()
+    m.set('a', 1)
+    m.delete('a')
+    expect(m.get('a')).toBeUndefined()
+  })
+
+  it('size tracks count', () => {
+    const m = new CuckooHashMap<string, number>()
+    m.set('a', 1)
+    m.set('b', 2)
+    expect(m.size).toBe(2)
+  })

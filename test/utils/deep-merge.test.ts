@@ -368,3 +368,18 @@ describe('deepMerge edge cases', () => {
     expect(result).toBe('string')
   })
 })
+
+  it('merges flat objects', () => {
+    const result = deepMerge({ a: 1 }, { b: 2 })
+    expect(result).toEqual({ a: 1, b: 2 })
+  })
+
+  it('override takes precedence', () => {
+    const result = deepMerge({ a: 1 }, { a: 2 })
+    expect(result).toEqual({ a: 2 })
+  })
+
+  it('deep merges nested', () => {
+    const result = deepMerge({ a: { x: 1 } }, { a: { y: 2 } })
+    expect(result).toEqual({ a: { x: 1, y: 2 } })
+  })

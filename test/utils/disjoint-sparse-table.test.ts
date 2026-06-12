@@ -347,3 +347,18 @@ describe('DisjointSparseTable', () => {
     expect(typeof t.toString()).toBe('string')
   })
 })
+
+  it('query returns element', () => {
+    const dst = new DisjointSparseTable([3, 1, 4, 1, 5], (a, b) => Math.min(a, b))
+    expect(dst.query(0, 0)).toBe(3)
+  })
+
+  it('query finds min in range', () => {
+    const dst = new DisjointSparseTable([3, 1, 4, 1, 5], (a, b) => Math.min(a, b))
+    expect(dst.query(0, 4)).toBe(1)
+  })
+
+  it('single element', () => {
+    const dst = new DisjointSparseTable([42], (a, b) => a + b)
+    expect(dst.query(0, 0)).toBe(42)
+  })

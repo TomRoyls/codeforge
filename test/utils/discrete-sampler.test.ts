@@ -438,3 +438,20 @@ describe('DiscreteSampler', () => {
     expect(count2).toBeGreaterThan(count0)
   })
 })
+  it('sample returns index', () => {
+    const ds = new DiscreteSampler([1, 1, 1])
+    const s = ds.sample()
+    expect(s).toBeGreaterThanOrEqual(0)
+    expect(s).toBeLessThan(3)
+  })
+
+  it('sampleN returns correct count', () => {
+    const ds = new DiscreteSampler([1, 1])
+    const samples = ds.sampleN(10)
+    expect(samples.length).toBe(10)
+  })
+
+  it('single weight always returns 0', () => {
+    const ds = new DiscreteSampler([1])
+    expect(ds.sample()).toBe(0)
+  })

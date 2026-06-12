@@ -454,3 +454,21 @@ describe('DifferenceArray2D', () => {
     expect(grid[0]!.length).toBe(4)
   })
 })
+  it('build empty returns zeros', () => {
+    const da = new DifferenceArray2D(2, 2)
+    expect(da.build()).toEqual(new Float64Array([0, 0, 0, 0]))
+  })
+
+  it('addPoint adds value', () => {
+    const da = new DifferenceArray2D(2, 2)
+    da.addPoint(0, 0, 5)
+    const result = da.build()
+    expect(result[0]).toBe(5)
+  })
+
+  it('add range', () => {
+    const da = new DifferenceArray2D(3, 3)
+    da.add(0, 0, 2, 2, 1)
+    const result = da.build()
+    expect(result[0]).toBe(1)
+  })

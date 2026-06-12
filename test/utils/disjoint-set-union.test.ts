@@ -486,3 +486,20 @@ describe('DisjointSetUnion - edge cases', () => {
     expect(typeof dsu.toString()).toBe('string')
   })
 })
+
+  it('find returns root', () => {
+    const dsu = new DisjointSetUnion(3)
+    dsu.union(0, 1)
+    expect(dsu.find(0)).toBe(dsu.find(1))
+  })
+
+  it('connected returns true after union', () => {
+    const dsu = new DisjointSetUnion(3)
+    dsu.union(0, 1)
+    expect(dsu.connected(0, 1)).toBe(true)
+  })
+
+  it('componentCount returns count', () => {
+    const dsu = new DisjointSetUnion(5)
+    expect(dsu.componentCount).toBe(5)
+  })

@@ -437,3 +437,20 @@ describe('DifferenceArray', () => {
     expect(typeof da.toString()).toBe('string')
   })
 })
+
+  it('toArray returns zeros initially', () => {
+    const da = new DifferenceArray(3)
+    expect(da.toArray()).toEqual([0, 0, 0])
+  })
+
+  it('pointAdd adds to index', () => {
+    const da = new DifferenceArray(3)
+    da.pointAdd(1, 5)
+    expect(da.toArray()).toEqual([0, 5, 0])
+  })
+
+  it('rangeAdd adds to range', () => {
+    const da = new DifferenceArray(5)
+    da.rangeAdd(1, 3, 10)
+    expect(da.toArray()).toEqual([0, 10, 10, 10, 0])
+  })

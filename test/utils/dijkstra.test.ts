@@ -607,3 +607,26 @@ describe('Dijkstra', () => {
     expect(distances.get(0)).toBe(0)
   })
 })
+  it('single node distance is 0', () => {
+    const d = new Dijkstra()
+    d.addNode(0)
+    const result = d.shortestPath(0)
+    expect(result.get(0)).toBe(0)
+  })
+
+  it('two connected nodes', () => {
+    const d = new Dijkstra()
+    d.addNode(0)
+    d.addNode(1)
+    d.addEdge(0, 1, 5)
+    const result = d.shortestPath(0)
+    expect(result.get(1)).toBe(5)
+  })
+
+  it('disconnected node has Infinity', () => {
+    const d = new Dijkstra()
+    d.addNode(0)
+    d.addNode(1)
+    const result = d.shortestPath(0)
+    expect(result.get(1)).toBe(Infinity)
+  })

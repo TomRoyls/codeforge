@@ -315,3 +315,15 @@ describe('CycleSort', () => {
     expect(result.sorted).toEqual([1, 1, 2, 2])
   })
 })
+  it('sort empty array', () => {
+    expect(CycleSort.sort([]).sorted).toEqual([])
+  })
+
+  it('sort single element', () => {
+    expect(CycleSort.sort([1]).sorted).toEqual([1])
+  })
+
+  it('writes count', () => {
+    const result = CycleSort.sort([3, 1, 2])
+    expect(result.writes).toBeGreaterThanOrEqual(0)
+  })

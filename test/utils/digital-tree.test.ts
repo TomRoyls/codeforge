@@ -444,3 +444,19 @@ describe('DigitalTree', () => {
     expect(tree.search('hel')).toBe(false)
   })
 })
+  it('search returns false for missing', () => {
+    const dt = new DigitalTree()
+    expect(dt.search('missing')).toBe(false)
+  })
+
+  it('insert and search', () => {
+    const dt = new DigitalTree()
+    dt.insert('hello')
+    expect(dt.search('hello')).toBe(true)
+  })
+
+  it('startsWith works', () => {
+    const dt = new DigitalTree()
+    dt.insert('hello')
+    expect(dt.startsWith('hel')).toBe(true)
+  })

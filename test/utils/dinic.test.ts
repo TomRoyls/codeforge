@@ -487,3 +487,15 @@ describe('DinicMaxFlow', () => {
     expect(DinicMaxFlow.maxFlow(edges, 0, 3, 4)).toBe(10)
   })
 })
+  it('no edges max flow is 0', () => {
+    expect(Dinic.maxFlow([], 2, 0, 1)).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    expect(Dinic.maxFlow([{ from: 0, to: 1, capacity: 10 }], 2, 0, 1)).toBe(10)
+  })
+
+  it('bottleneck flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10 }, { from: 1, to: 2, capacity: 5 }]
+    expect(Dinic.maxFlow(edges, 3, 0, 2)).toBe(5)
+  })

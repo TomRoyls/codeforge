@@ -521,3 +521,20 @@ describe('DequeAggregation', () => {
     expect(deque.aggregate()).toBe(7)
   })
 })
+
+  it('front returns undefined on empty', () => {
+    const da = new DequeAggregation<number>((a, b) => a + b)
+    expect(da.front()).toBeUndefined()
+  })
+
+  it('popFront on empty returns undefined', () => {
+    const da = new DequeAggregation<number>((a, b) => a + b)
+    expect(da.popFront()).toBeUndefined()
+  })
+
+  it('pushBack adds value', () => {
+    const da = new DequeAggregation<number>((a, b) => a + b)
+    da.pushBack(1)
+    da.pushBack(2)
+    expect(da.front()).toBe(1)
+  })

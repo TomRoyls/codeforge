@@ -417,4 +417,23 @@ describe('DeterministicRng', () => {
     const b = rng.next()
     expect(a).toBe(b)
   })
+
+  it('next returns number', () => {
+    const rng = new DeterministicRng(42)
+    expect(typeof rng.next()).toBe('number')
+  })
+
+  it('nextFloat returns 0-1', () => {
+    const rng = new DeterministicRng(42)
+    const v = rng.nextFloat()
+    expect(v).toBeGreaterThanOrEqual(0)
+    expect(v).toBeLessThan(1)
+  })
+
+  it('nextInt in range', () => {
+    const rng = new DeterministicRng(42)
+    const v = rng.nextInt(10, 20)
+    expect(v).toBeGreaterThanOrEqual(10)
+    expect(v).toBeLessThanOrEqual(20)
+  })
 })

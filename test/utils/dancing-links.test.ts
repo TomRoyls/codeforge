@@ -518,3 +518,22 @@ describe('DancingLinks', () => {
     expect(solutions.length).toBeGreaterThan(0)
   })
 })
+  it('solve returns array', () => {
+    const dl = new DancingLinks()
+    dl.addRow(0, [0, 1])
+    dl.addRow(1, [1, 2])
+    const result = dl.solve()
+    expect(Array.isArray(result)).toBe(true)
+  })
+
+  it('empty solve returns empty or single empty', () => {
+    const dl = new DancingLinks()
+    const result = dl.solve()
+    expect(result.length).toBeLessThanOrEqual(1)
+  })
+
+  it('addRow accepts columns', () => {
+    const dl = new DancingLinks()
+    dl.addRow(0, [0, 1, 2])
+    expect(dl).toBeDefined()
+  })

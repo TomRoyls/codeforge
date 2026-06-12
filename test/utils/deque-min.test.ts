@@ -488,3 +488,23 @@ describe('DequeMin', () => {
     expect(dq.min).toBeUndefined()
   })
 })
+
+  it('min on empty returns undefined', () => {
+    const dm = new DequeMin()
+    expect(dm.min).toBeUndefined()
+  })
+
+  it('size tracks count', () => {
+    const dm = new DequeMin()
+    dm.pushBack(1)
+    dm.pushBack(2)
+    expect(dm.size).toBe(2)
+  })
+
+  it('min returns smallest', () => {
+    const dm = new DequeMin()
+    dm.pushBack(3)
+    dm.pushBack(1)
+    dm.pushBack(2)
+    expect(dm.min).toBe(1)
+  })

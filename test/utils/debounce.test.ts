@@ -613,3 +613,18 @@ describe('throttle', () => {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 })
+
+  it('debounce returns function', () => {
+    const fn = debounce(() => {}, 100)
+    expect(typeof fn).toBe('function')
+  })
+
+  it('debounced fn has cancel', () => {
+    const fn = debounce(() => {}, 100) as any
+    expect(typeof fn.cancel).toBe('function')
+  })
+
+  it('debounced fn has flush', () => {
+    const fn = debounce(() => {}, 100) as any
+    expect(typeof fn.flush).toBe('function')
+  })

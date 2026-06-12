@@ -561,3 +561,17 @@ describe('DijkstraFibonacci', () => {
     expect(prev[2]).toBe(1)
   })
 })
+  it('single node distance is 0', () => {
+    const result = DijkstraFibonacci.shortestPath([], 1, 0)
+    expect(result.distances[0]).toBe(0)
+  })
+
+  it('two nodes with edge', () => {
+    const result = DijkstraFibonacci.shortestPath([{ from: 0, to: 1, weight: 5 }], 2, 0)
+    expect(result.distances[1]).toBe(5)
+  })
+
+  it('disconnected node has Infinity', () => {
+    const result = DijkstraFibonacci.shortestPath([], 2, 0)
+    expect(result.distances[1]).toBe(Infinity)
+  })

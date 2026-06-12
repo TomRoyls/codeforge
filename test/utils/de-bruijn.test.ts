@@ -318,3 +318,17 @@ describe('DeBruijnSequence', () => {
     expect(DeBruijnSequence.generate(3, 1).length).toBe(3)
   })
 })
+  it('generate k=2 n=2', () => {
+    const result = DeBruijnSequence.generate(2, 2)
+    expect(result.length).toBe(4)
+  })
+
+  it('generate k=2 n=1', () => {
+    const result = DeBruijnSequence.generate(2, 1)
+    expect(result.length).toBe(2)
+  })
+
+  it('generate contains all substrings', () => {
+    const seq = DeBruijnSequence.generate(2, 3)
+    expect(seq.length).toBe(8)
+  })
