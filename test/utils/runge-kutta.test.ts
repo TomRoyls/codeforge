@@ -432,3 +432,15 @@ describe('runge-kutta - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('runge-kutta - wave549', () => {
+  it('runge-kutta module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

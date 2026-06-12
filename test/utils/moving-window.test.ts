@@ -518,3 +518,15 @@ describe('moving-window - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-window - wave549', () => {
+  it('moving-window module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

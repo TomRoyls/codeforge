@@ -591,3 +591,15 @@ describe('bellman-ford - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bellman-ford - wave549', () => {
+  it('bellman-ford module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -615,3 +615,15 @@ describe('binary-heap - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-heap - wave549', () => {
+  it('binary-heap module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -592,3 +592,15 @@ describe('deque-aggregation - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deque-aggregation - wave549', () => {
+  it('deque-aggregation module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

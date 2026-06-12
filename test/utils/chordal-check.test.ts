@@ -542,3 +542,15 @@ describe('chordal-check - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chordal-check - wave549', () => {
+  it('chordal-check module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

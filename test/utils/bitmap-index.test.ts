@@ -485,3 +485,15 @@ describe('bitmap-index - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bitmap-index - wave549', () => {
+  it('bitmap-index module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

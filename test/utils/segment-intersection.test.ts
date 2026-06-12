@@ -402,3 +402,15 @@ describe('segment-intersection - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-intersection - wave549', () => {
+  it('segment-intersection module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

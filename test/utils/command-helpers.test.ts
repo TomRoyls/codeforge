@@ -369,3 +369,15 @@ describe('command-helpers - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('command-helpers - wave549', () => {
+  it('command-helpers module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

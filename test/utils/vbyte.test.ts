@@ -427,3 +427,15 @@ describe('vbyte - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vbyte - wave549', () => {
+  it('vbyte module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

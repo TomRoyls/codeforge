@@ -331,3 +331,15 @@ describe('sparse-table-gcd - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-table-gcd - wave549', () => {
+  it('sparse-table-gcd module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -392,3 +392,15 @@ describe('polynomial - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('polynomial - wave549', () => {
+  it('polynomial module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

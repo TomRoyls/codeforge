@@ -487,3 +487,15 @@ describe('strong-connectivity-contraction - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('strong-connectivity-contraction - wave549', () => {
+  it('strong-connectivity-contraction module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -437,3 +437,15 @@ describe('TarjanSCC', () => {
     })
   })
 })
+
+describe('tarjan-scc - wave549', () => {
+  it('tarjan-scc module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

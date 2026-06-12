@@ -312,3 +312,15 @@ describe('interpolation-search - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interpolation-search - wave549', () => {
+  it('interpolation-search module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

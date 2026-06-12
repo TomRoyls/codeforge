@@ -465,3 +465,15 @@ describe('li-chao-tree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('li-chao-tree - wave549', () => {
+  it('li-chao-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

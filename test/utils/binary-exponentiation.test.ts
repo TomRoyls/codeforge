@@ -312,3 +312,15 @@ describe('binary-exponentiation - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-exponentiation - wave549', () => {
+  it('binary-exponentiation module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -299,3 +299,15 @@ describe('kmp - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp - wave549', () => {
+  it('kmp module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

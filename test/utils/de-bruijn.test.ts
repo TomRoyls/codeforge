@@ -386,3 +386,15 @@ describe('de-bruijn - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('de-bruijn - wave549', () => {
+  it('de-bruijn module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

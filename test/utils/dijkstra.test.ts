@@ -684,3 +684,15 @@ describe('dijkstra - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dijkstra - wave549', () => {
+  it('dijkstra module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

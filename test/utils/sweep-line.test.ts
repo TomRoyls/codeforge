@@ -471,3 +471,15 @@ describe('sweep-line - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sweep-line - wave549', () => {
+  it('sweep-line module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sweep-line module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sweep-line module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

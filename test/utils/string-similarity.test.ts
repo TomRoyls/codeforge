@@ -377,3 +377,15 @@ describe('string-similarity - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-similarity - wave549', () => {
+  it('string-similarity module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

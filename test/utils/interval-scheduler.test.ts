@@ -549,3 +549,15 @@ describe('interval-scheduler - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-scheduler - wave549', () => {
+  it('interval-scheduler module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

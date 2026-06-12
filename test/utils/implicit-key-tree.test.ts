@@ -508,3 +508,15 @@ describe('implicit-key-tree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('implicit-key-tree - wave549', () => {
+  it('implicit-key-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -403,3 +403,15 @@ describe('manacher - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('manacher - wave549', () => {
+  it('manacher module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

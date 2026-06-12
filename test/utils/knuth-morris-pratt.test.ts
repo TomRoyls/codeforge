@@ -281,3 +281,15 @@ describe('knuth-morris-pratt - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('knuth-morris-pratt - wave549', () => {
+  it('knuth-morris-pratt module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

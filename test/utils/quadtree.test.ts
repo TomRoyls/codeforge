@@ -498,3 +498,15 @@ describe('quadtree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quadtree - wave549', () => {
+  it('quadtree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quadtree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quadtree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

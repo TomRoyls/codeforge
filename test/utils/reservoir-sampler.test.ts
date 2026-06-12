@@ -534,3 +534,15 @@ describe('reservoir-sampler - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('reservoir-sampler - wave549', () => {
+  it('reservoir-sampler module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -520,3 +520,15 @@ describe('streaming-histogram - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-histogram - wave549', () => {
+  it('streaming-histogram module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

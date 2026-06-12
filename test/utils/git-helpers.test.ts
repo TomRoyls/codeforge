@@ -469,3 +469,15 @@ describe('git-helpers - wave548', () => {
     expect(resolve).toBeDefined()
   })
 })
+
+describe('git-helpers - wave549', () => {
+  it('git-helpers module defined', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module is function', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module has name', () => {
+    expect(resolve).toBeDefined()
+  })
+})

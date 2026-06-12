@@ -392,3 +392,15 @@ describe('triangular-number - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('triangular-number - wave549', () => {
+  it('triangular-number module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

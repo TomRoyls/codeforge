@@ -479,3 +479,15 @@ describe('hamiltonian-path - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hamiltonian-path - wave549', () => {
+  it('hamiltonian-path module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

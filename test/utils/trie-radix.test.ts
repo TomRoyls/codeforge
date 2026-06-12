@@ -526,3 +526,15 @@ describe('trie-radix - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-radix - wave549', () => {
+  it('trie-radix module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

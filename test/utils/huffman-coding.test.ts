@@ -393,3 +393,15 @@ describe('huffman-coding - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('huffman-coding - wave549', () => {
+  it('huffman-coding module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

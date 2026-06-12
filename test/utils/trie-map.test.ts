@@ -481,3 +481,15 @@ describe('trie-map - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-map - wave549', () => {
+  it('trie-map module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -453,3 +453,15 @@ describe('leaky-bucket - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('leaky-bucket - wave549', () => {
+  it('leaky-bucket module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

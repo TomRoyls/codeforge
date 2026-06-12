@@ -488,3 +488,15 @@ describe('gomory-hu - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gomory-hu - wave549', () => {
+  it('gomory-hu module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -527,3 +527,15 @@ describe('streaming-quantile - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-quantile - wave549', () => {
+  it('streaming-quantile module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

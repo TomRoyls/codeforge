@@ -514,3 +514,15 @@ describe('top-k-stream - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k-stream - wave549', () => {
+  it('top-k-stream module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

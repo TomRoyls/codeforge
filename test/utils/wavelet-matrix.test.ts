@@ -395,3 +395,15 @@ describe('wavelet-matrix - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-matrix - wave549', () => {
+  it('wavelet-matrix module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

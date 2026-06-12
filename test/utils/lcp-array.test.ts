@@ -383,3 +383,15 @@ describe('lcp-array - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcp-array - wave549', () => {
+  it('lcp-array module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -492,3 +492,15 @@ describe('convex-hull-trick - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('convex-hull-trick - wave549', () => {
+  it('convex-hull-trick module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

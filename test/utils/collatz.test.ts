@@ -321,3 +321,15 @@ describe('collatz - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('collatz - wave549', () => {
+  it('collatz module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

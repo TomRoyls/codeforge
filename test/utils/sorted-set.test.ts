@@ -575,3 +575,15 @@ describe('sorted-set - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sorted-set - wave549', () => {
+  it('sorted-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

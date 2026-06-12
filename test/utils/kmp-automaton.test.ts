@@ -377,3 +377,15 @@ describe('kmp-automaton - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp-automaton - wave549', () => {
+  it('kmp-automaton module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

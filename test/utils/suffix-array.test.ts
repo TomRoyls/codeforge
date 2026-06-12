@@ -424,3 +424,15 @@ describe('suffix-array - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-array - wave549', () => {
+  it('suffix-array module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

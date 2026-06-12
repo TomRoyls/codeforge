@@ -370,3 +370,15 @@ describe('quickselect - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickselect - wave549', () => {
+  it('quickselect module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

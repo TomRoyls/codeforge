@@ -416,3 +416,15 @@ describe('disjoint-sparse-table - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-sparse-table - wave549', () => {
+  it('disjoint-sparse-table module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

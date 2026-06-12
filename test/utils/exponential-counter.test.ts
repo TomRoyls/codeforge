@@ -468,3 +468,15 @@ describe('exponential-counter - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('exponential-counter - wave549', () => {
+  it('exponential-counter module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

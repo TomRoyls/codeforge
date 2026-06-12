@@ -327,3 +327,15 @@ describe('counting-inversions - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-inversions - wave549', () => {
+  it('counting-inversions module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

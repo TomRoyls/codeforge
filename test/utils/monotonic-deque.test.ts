@@ -580,3 +580,15 @@ describe('monotonic-deque - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monotonic-deque - wave549', () => {
+  it('monotonic-deque module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

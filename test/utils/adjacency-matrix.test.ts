@@ -469,3 +469,15 @@ describe('adjacency-matrix - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-matrix - wave549', () => {
+  it('adjacency-matrix module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

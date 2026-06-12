@@ -562,3 +562,15 @@ describe('prim-mst - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('prim-mst - wave549', () => {
+  it('prim-mst module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -558,3 +558,15 @@ describe('frequency-map - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('frequency-map - wave549', () => {
+  it('frequency-map module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

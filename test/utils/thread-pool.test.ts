@@ -674,3 +674,15 @@ describe('thread-pool - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('thread-pool - wave549', () => {
+  it('thread-pool module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

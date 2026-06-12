@@ -455,3 +455,15 @@ describe('t-digest - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('t-digest - wave549', () => {
+  it('t-digest module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

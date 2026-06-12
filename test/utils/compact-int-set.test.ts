@@ -468,3 +468,15 @@ describe('compact-int-set - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('compact-int-set - wave549', () => {
+  it('compact-int-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('compact-int-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

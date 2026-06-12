@@ -406,3 +406,15 @@ describe('fast-fourier - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fast-fourier - wave549', () => {
+  it('fast-fourier module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

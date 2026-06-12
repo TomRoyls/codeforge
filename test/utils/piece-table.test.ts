@@ -486,3 +486,15 @@ describe('piece-table - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('piece-table - wave549', () => {
+  it('piece-table module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

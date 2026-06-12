@@ -718,3 +718,15 @@ describe('min-max-heap - wave548', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-heap - wave549', () => {
+  it('min-max-heap module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

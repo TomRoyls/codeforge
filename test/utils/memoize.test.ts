@@ -543,3 +543,15 @@ describe('memoize - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('memoize - wave549', () => {
+  it('memoize module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

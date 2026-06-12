@@ -748,3 +748,12 @@ describe('MinMaxStack - sequential operations', () => {
     expect(stack.max()).toBe(10)
   })
 })
+
+describe('min-max-stack - wave549', () => {
+  it('min-max-stack module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

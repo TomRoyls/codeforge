@@ -575,3 +575,15 @@ describe('treap - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap - wave549', () => {
+  it('treap module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

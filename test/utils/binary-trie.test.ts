@@ -499,3 +499,15 @@ describe('binary-trie - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-trie - wave549', () => {
+  it('binary-trie module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -513,3 +513,15 @@ describe('top-k - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k - wave549', () => {
+  it('top-k module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

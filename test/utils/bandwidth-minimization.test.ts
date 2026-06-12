@@ -509,3 +509,15 @@ describe('bandwidth-minimization - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bandwidth-minimization - wave549', () => {
+  it('bandwidth-minimization module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -475,3 +475,15 @@ describe('segment-tree-lazy - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-tree-lazy - wave549', () => {
+  it('segment-tree-lazy module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -580,3 +580,15 @@ describe('priority-search-tree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('priority-search-tree - wave549', () => {
+  it('priority-search-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

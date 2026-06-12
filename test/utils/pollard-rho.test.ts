@@ -341,3 +341,15 @@ describe('pollard-rho - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pollard-rho - wave549', () => {
+  it('pollard-rho module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

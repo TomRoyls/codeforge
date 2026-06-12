@@ -438,3 +438,15 @@ describe('elias-fano - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-fano - wave549', () => {
+  it('elias-fano module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

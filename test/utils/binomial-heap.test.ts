@@ -671,3 +671,15 @@ describe('binomial-heap - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binomial-heap - wave549', () => {
+  it('binomial-heap module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binomial-heap module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

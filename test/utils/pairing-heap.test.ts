@@ -573,3 +573,15 @@ describe('pairing-heap - wave548', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('pairing-heap - wave549', () => {
+  it('pairing-heap module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

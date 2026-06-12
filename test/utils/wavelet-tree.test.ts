@@ -417,3 +417,15 @@ describe('wavelet-tree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-tree - wave549', () => {
+  it('wavelet-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

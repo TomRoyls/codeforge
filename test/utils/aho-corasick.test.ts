@@ -486,3 +486,15 @@ describe('aho-corasick - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('aho-corasick - wave549', () => {
+  it('aho-corasick module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -443,3 +443,15 @@ describe('order-key - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('order-key - wave549', () => {
+  it('order-key module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('order-key module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('order-key module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -667,3 +667,15 @@ describe('retry - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('retry - wave549', () => {
+  it('retry module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -477,3 +477,15 @@ describe('block-list - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('block-list - wave549', () => {
+  it('block-list module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-list module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-list module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

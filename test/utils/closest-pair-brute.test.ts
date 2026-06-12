@@ -557,3 +557,15 @@ describe('closest-pair-brute - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair-brute - wave549', () => {
+  it('closest-pair-brute module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

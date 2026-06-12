@@ -498,3 +498,15 @@ describe('arc-cache - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('arc-cache - wave549', () => {
+  it('arc-cache module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

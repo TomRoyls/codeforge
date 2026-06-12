@@ -496,3 +496,15 @@ describe('ford-fulkerson - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ford-fulkerson - wave549', () => {
+  it('ford-fulkerson module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

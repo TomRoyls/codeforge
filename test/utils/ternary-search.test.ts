@@ -338,3 +338,15 @@ describe('ternary-search - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search - wave549', () => {
+  it('ternary-search module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

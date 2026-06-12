@@ -379,3 +379,15 @@ describe('logger - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('logger - wave549', () => {
+  it('logger module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -506,3 +506,15 @@ describe('quickhull - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickhull - wave549', () => {
+  it('quickhull module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

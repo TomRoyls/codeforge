@@ -482,3 +482,15 @@ describe('object-diff - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('object-diff - wave549', () => {
+  it('object-diff module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-diff module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

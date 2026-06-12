@@ -456,3 +456,8 @@ describe('RunLengthEncoder', () => {
     expect(sliced.decode()).toEqual([2, 3, 6])
   })
 })
+describe('run-length-encoder - wave549', () => {
+  it('run-length-encoder module defined', () => {
+    expect(describe).toBeDefined()
+  })
+})

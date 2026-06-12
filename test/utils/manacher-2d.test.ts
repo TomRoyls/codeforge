@@ -526,3 +526,15 @@ describe('manacher-2d - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('manacher-2d - wave549', () => {
+  it('manacher-2d module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher-2d module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher-2d module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

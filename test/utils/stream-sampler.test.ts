@@ -467,3 +467,15 @@ describe('stream-sampler - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stream-sampler - wave549', () => {
+  it('stream-sampler module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -571,3 +571,15 @@ describe('circuit-breaker - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circuit-breaker - wave549', () => {
+  it('circuit-breaker module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

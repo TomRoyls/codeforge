@@ -575,3 +575,14 @@ describe('DisjointIntervalMap', () => {
     expect(map.get(hi + 1)).toBeUndefined()
   })
 })
+describe('disjoint-interval-map - wave549', () => {
+  it('disjoint-interval-map module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-map module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-map module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

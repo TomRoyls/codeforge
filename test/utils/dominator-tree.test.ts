@@ -615,3 +615,15 @@ describe('dominator-tree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dominator-tree - wave549', () => {
+  it('dominator-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

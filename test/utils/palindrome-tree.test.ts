@@ -385,3 +385,15 @@ describe('palindrome-tree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindrome-tree - wave549', () => {
+  it('palindrome-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

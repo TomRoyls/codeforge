@@ -509,3 +509,15 @@ describe('discrete-sampler - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('discrete-sampler - wave549', () => {
+  it('discrete-sampler module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

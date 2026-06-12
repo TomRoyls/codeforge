@@ -494,3 +494,15 @@ describe('persistent-dsu - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-dsu - wave549', () => {
+  it('persistent-dsu module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

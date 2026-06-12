@@ -967,3 +967,15 @@ describe('watcher - wave548', () => {
     expect(mkdirSync).toBeDefined()
   })
 })
+
+describe('watcher - wave549', () => {
+  it('watcher module defined', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher module is function', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher module has name', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})

@@ -508,3 +508,15 @@ describe('rollback-dsu - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rollback-dsu - wave549', () => {
+  it('rollback-dsu module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

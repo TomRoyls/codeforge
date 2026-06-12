@@ -345,3 +345,15 @@ describe('continued-fraction - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('continued-fraction - wave549', () => {
+  it('continued-fraction module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

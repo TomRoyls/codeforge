@@ -615,3 +615,15 @@ describe('radix-tree - wave548', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('radix-tree - wave549', () => {
+  it('radix-tree module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('radix-tree module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('radix-tree module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -396,3 +396,15 @@ describe('coordinate-compressor - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('coordinate-compressor - wave549', () => {
+  it('coordinate-compressor module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

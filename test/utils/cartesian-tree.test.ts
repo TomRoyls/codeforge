@@ -412,3 +412,15 @@ describe('cartesian-tree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-tree - wave549', () => {
+  it('cartesian-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

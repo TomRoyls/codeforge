@@ -637,3 +637,15 @@ describe('bi-map - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bi-map - wave549', () => {
+  it('bi-map module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

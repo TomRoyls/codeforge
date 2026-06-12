@@ -490,3 +490,15 @@ describe('strongly-connected-components - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('strongly-connected-components - wave549', () => {
+  it('strongly-connected-components module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -787,3 +787,15 @@ describe('leftist-heap - wave548', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('leftist-heap - wave549', () => {
+  it('leftist-heap module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

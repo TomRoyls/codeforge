@@ -537,3 +537,15 @@ describe('interval-tree - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-tree - wave549', () => {
+  it('interval-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

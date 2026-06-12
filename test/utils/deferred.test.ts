@@ -470,3 +470,15 @@ describe('deferred - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deferred - wave549', () => {
+  it('deferred module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deferred module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

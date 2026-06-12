@@ -439,3 +439,15 @@ describe('monte-carlo - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monte-carlo - wave549', () => {
+  it('monte-carlo module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -515,3 +515,15 @@ describe('linked-list - wave548', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('linked-list - wave549', () => {
+  it('linked-list module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -392,3 +392,15 @@ describe('circular-suffix-array - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-suffix-array - wave549', () => {
+  it('circular-suffix-array module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

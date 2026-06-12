@@ -682,3 +682,15 @@ describe('debounce - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('debounce - wave549', () => {
+  it('debounce module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

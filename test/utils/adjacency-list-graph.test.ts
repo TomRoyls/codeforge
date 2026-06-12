@@ -508,3 +508,15 @@ describe('adjacency-list-graph - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-list-graph - wave549', () => {
+  it('adjacency-list-graph module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

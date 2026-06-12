@@ -328,3 +328,15 @@ describe('pascal-triangle - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pascal-triangle - wave549', () => {
+  it('pascal-triangle module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

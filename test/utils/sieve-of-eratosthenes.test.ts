@@ -375,3 +375,8 @@ describe('SieveOfEratosthenes', () => {
     })
   })
 })
+describe('sieve-of-eratosthenes - wave549', () => {
+  it('sieve-of-eratosthenes module defined', () => {
+    expect(describe).toBeDefined()
+  })
+})

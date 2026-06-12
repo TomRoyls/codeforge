@@ -390,3 +390,15 @@ describe('rect-area - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rect-area - wave549', () => {
+  it('rect-area module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

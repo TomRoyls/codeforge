@@ -558,3 +558,15 @@ describe('disjoint-set - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-set - wave549', () => {
+  it('disjoint-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

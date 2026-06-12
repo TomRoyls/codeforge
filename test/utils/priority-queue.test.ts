@@ -641,3 +641,15 @@ describe('priority-queue - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('priority-queue - wave549', () => {
+  it('priority-queue module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

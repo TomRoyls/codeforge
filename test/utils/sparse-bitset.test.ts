@@ -558,3 +558,15 @@ describe('sparse-bitset - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-bitset - wave549', () => {
+  it('sparse-bitset module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

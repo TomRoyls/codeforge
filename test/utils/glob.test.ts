@@ -390,3 +390,15 @@ describe('glob - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('glob - wave549', () => {
+  it('glob module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

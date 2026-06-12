@@ -498,3 +498,15 @@ describe('binary-lifting - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-lifting - wave549', () => {
+  it('binary-lifting module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

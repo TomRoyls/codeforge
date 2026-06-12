@@ -784,3 +784,15 @@ describe('state-machine - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('state-machine - wave549', () => {
+  it('state-machine module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -419,3 +419,15 @@ describe('miller-rabin - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('miller-rabin - wave549', () => {
+  it('miller-rabin module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

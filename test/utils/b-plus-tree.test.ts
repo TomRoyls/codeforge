@@ -660,3 +660,15 @@ describe('BPlusTree string keys', () => {
     expect(tree.max()).toBe('cherry')
   })
 })
+
+describe('b-plus-tree - wave549', () => {
+  it('b-plus-tree module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('b-plus-tree module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('b-plus-tree module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

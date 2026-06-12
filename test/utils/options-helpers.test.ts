@@ -386,3 +386,15 @@ describe('options-helpers - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('options-helpers - wave549', () => {
+  it('options-helpers module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

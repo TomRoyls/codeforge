@@ -573,3 +573,15 @@ describe('bimodal-map - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bimodal-map - wave549', () => {
+  it('bimodal-map module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

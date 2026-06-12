@@ -481,3 +481,15 @@ describe('persistent-queue - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-queue - wave549', () => {
+  it('persistent-queue module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

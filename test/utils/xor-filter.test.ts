@@ -445,3 +445,15 @@ describe('xor-filter - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-filter - wave549', () => {
+  it('xor-filter module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

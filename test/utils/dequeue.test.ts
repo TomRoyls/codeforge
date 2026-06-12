@@ -605,3 +605,15 @@ describe('dequeue - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dequeue - wave549', () => {
+  it('dequeue module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

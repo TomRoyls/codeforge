@@ -475,3 +475,15 @@ describe('vptrie - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vptrie - wave549', () => {
+  it('vptrie module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

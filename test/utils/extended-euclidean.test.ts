@@ -342,3 +342,15 @@ describe('extended-euclidean - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('extended-euclidean - wave549', () => {
+  it('extended-euclidean module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

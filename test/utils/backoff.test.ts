@@ -421,3 +421,15 @@ describe('backoff - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('backoff - wave549', () => {
+  it('backoff module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

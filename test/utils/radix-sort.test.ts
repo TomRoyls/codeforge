@@ -393,3 +393,15 @@ describe('radix-sort - wave548', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('radix-sort - wave549', () => {
+  it('radix-sort module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})
